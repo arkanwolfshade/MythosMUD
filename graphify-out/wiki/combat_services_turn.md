@@ -1,67 +1,64 @@
 # combat services turn
 
-> 131 nodes
+> 77 nodes
 
 ## Key Concepts
 
-- **look_room.py** (28 connections) — `server/commands/look_room.py`
-- **test_login_grace_period_visual_indicator.py** (28 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **disconnect_grace_period.py** (26 connections) — `server/realtime/disconnect_grace_period.py`
-- **is_player_in_grace_period()** (26 connections) — `server/realtime/disconnect_grace_period.py`
-- **test_rest_and_grace_period.py** (24 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **game_state_provider.py** (21 connections) — `server/realtime/integration/game_state_provider.py`
-- **PlayerOccupantProcessor** (21 connections) — `server/realtime/player_occupant_processor.py`
-- **start_grace_period()** (20 connections) — `server/realtime/disconnect_grace_period.py`
-- **_filter_other_players()** (17 connections) — `server/commands/look_room.py`
-- **test_disconnect_grace_period.py** (17 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **player_occupant_processor.py** (15 connections) — `server/realtime/player_occupant_processor.py`
-- **MockPersistenceFull** (14 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_visual_indicator.py** (13 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **cancel_grace_period()** (12 connections) — `server/realtime/disconnect_grace_period.py`
-- **._create_player_occupant_info()** (7 connections) — `server/realtime/player_occupant_processor.py`
-- **.process_players_for_occupants()** (7 connections) — `server/realtime/player_occupant_processor.py`
-- **test_both_linkdead_and_warded_indicators()** (6 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **.__init__()** (5 connections) — `server/realtime/player_occupant_processor.py`
-- **UUID** (5 connections)
-- **test_warded_indicator_in_game_state_provider()** (5 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **test_warded_indicator_in_player_occupant_processor()** (5 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **UUID** (4 connections)
-- **._ensure_player_included_in_list()** (4 connections) — `server/realtime/player_occupant_processor.py`
-- **._convert_player_ids_to_uuids()** (4 connections) — `server/realtime/player_occupant_processor.py`
-- **test_unintentional_disconnect_starts_grace_period()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- *... and 106 more nodes in this community*
+- **StatusEffect** (32 connections) — `server/models/game.py`
+- **Player** (26 connections) — `server/models/game.py`
+- **test_game_player.py** (23 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_game_status_effect.py** (13 connections) — `server/tests/unit/models/test_game_status_effect.py`
+- **.is_active()** (5 connections) — `server/models/game.py`
+- **.get_active_status_effects()** (4 connections) — `server/models/game.py`
+- **.__init__()** (4 connections) — `server/models/invite.py`
+- **_npc_alive_and_active()** (4 connections) — `server/npc/idle_movement.py`
+- **.is_alive()** (4 connections) — `server/npc/npc_base.py`
+- **test_player_add_item_existing()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_remove_item_success()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_remove_item_removes_when_zero()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_remove_item_insufficient_quantity()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_add_status_effect()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_remove_status_effect_success()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_get_active_status_effects()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_get_active_status_effects_all_active()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_can_carry_weight_true()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_can_carry_weight_false()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_status_effect_duration_validation_min()** (4 connections) — `server/tests/unit/models/test_game_status_effect.py`
+- **test_status_effect_intensity_validation_min()** (4 connections) — `server/tests/unit/models/test_game_status_effect.py`
+- **test_status_effect_intensity_validation_max()** (4 connections) — `server/tests/unit/models/test_game_status_effect.py`
+- **test_status_effect_rejects_extra_fields()** (4 connections) — `server/tests/unit/models/test_game_status_effect.py`
+- **.add_status_effect()** (3 connections) — `server/models/game.py`
+- **.remove_status_effect()** (3 connections) — `server/models/game.py`
+- *... and 52 more nodes in this community*
 
 ## Relationships
 
-- [command utility models](command_utility_models.md) (22 shared connections)
-- [look helpers commands](look_helpers_commands.md) (19 shared connections)
-- [player disconnect handlers](player_disconnect_handlers.md) (15 shared connections)
-- [look command commands](look_command_commands.md) (12 shared connections)
-- [NPC Combat](NPC_Combat.md) (9 shared connections)
-- [Player Name Validation](Player_Name_Validation.md) (9 shared connections)
-- [rest grace period](rest_grace_period.md) (9 shared connections)
-- [help content websocket](help_content_websocket.md) (6 shared connections)
-- [command models moderation](command_models_moderation.md) (6 shared connections)
-- [nats services metrics](nats_services_metrics.md) (6 shared connections)
-- [event bus events](event_bus_events.md) (4 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (3 shared connections)
+- [rate limiter realtime](rate_limiter_realtime.md) (15 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (7 shared connections)
+- [command inventory models](command_inventory_models.md) (4 shared connections)
+- [System Metrics](System_Metrics.md) (3 shared connections)
+- [idle movement npc](idle_movement_npc.md) (2 shared connections)
+- [player room realtime](player_room_realtime.md) (1 shared connections)
+- [Player Stats](Player_Stats.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [memory profiler rationale](memory_profiler_rationale.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (1 shared connections)
+- [lucidity event services](lucidity_event_services.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_room.py`
-- `server/realtime/disconnect_grace_period.py`
-- `server/realtime/integration/game_state_provider.py`
-- `server/realtime/player_occupant_processor.py`
-- `server/tests/integration/test_rest_and_grace_period.py`
-- `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- `server/tests/unit/realtime/test_player_occupant_processor.py`
-- `server/tests/unit/realtime/test_visual_indicator.py`
+- `server/models/game.py`
+- `server/models/invite.py`
+- `server/npc/idle_movement.py`
+- `server/npc/npc_base.py`
+- `server/tests/unit/models/test_game_player.py`
+- `server/tests/unit/models/test_game_status_effect.py`
 
 ## Audit Trail
 
-- EXTRACTED: 530 (100%)
-- INFERRED: 2 (0%)
+- EXTRACTED: 241 (96%)
+- INFERRED: 11 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # lucidityEventUtils mythosTime MythosTime
 
-> 35 nodes
+> 32 nodes
 
 ## Key Concepts
 
@@ -11,14 +11,12 @@
 - **mythosTime.ts** (13 connections) — `client/src/utils/mythosTime.ts`
 - **MythosTimeHud.tsx** (12 connections) — `client/src/components/MythosTimeHud.tsx`
 - **systemHandlers.test.ts** (12 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/systemHandlers.test.ts`
-- **useMythosTimeBootstrap.ts** (12 connections) — `client/src/components/ui-v2/hooks/useMythosTimeBootstrap.ts`
 - **formatMythosTime12Hour()** (9 connections) — `client/src/utils/mythosTime.ts`
 - **MythosTimePayload** (7 connections) — `client/src/types/mythosTime.ts`
 - **mythosTime.test.ts** (7 connections) — `client/src/utils/__tests__/mythosTime.test.ts`
 - **buildMythosTimeState()** (7 connections) — `client/src/utils/mythosTime.ts`
 - **MythosTimeHud.test.tsx** (6 connections) — `client/src/components/__tests__/MythosTimeHud.test.tsx`
 - **handleMythosTimeUpdate()** (6 connections) — `client/src/components/ui-v2/eventHandlers/systemHandlers.ts`
-- **useMythosTimeBootstrap()** (6 connections) — `client/src/components/ui-v2/hooks/useMythosTimeBootstrap.ts`
 - **HeaderBar()** (5 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
 - **MythosTimeHud()** (4 connections) — `client/src/components/MythosTimeHud.tsx`
 - **HeaderBar.test.tsx** (4 connections) — `client/src/components/ui-v2/__tests__/HeaderBar.test.tsx`
@@ -27,23 +25,24 @@
 - **handleLucidityChange()** (3 connections) — `client/src/components/ui-v2/eventHandlers/systemHandlers.ts`
 - **handleRescueUpdate()** (3 connections) — `client/src/components/ui-v2/eventHandlers/systemHandlers.ts`
 - **handleIntentionalDisconnect()** (3 connections) — `client/src/components/ui-v2/eventHandlers/systemHandlers.ts`
-- **isMythosTimePayload()** (3 connections) — `client/src/types/mythosTime.ts`
 - **DAYPART_MESSAGES** (3 connections) — `client/src/utils/mythosTime.ts`
-- *... and 10 more nodes in this community*
+- **MythosTimeHudProps** (2 connections) — `client/src/components/MythosTimeHud.tsx`
+- **formatRemaining()** (2 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
+- **UseMythosTimeBootstrapParams** (2 connections) — `client/src/components/ui-v2/hooks/useMythosTimeBootstrap.ts`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [game terminal lucidity](game_terminal_lucidity.md) (16 shared connections)
-- [Game Terminal UI](Game_Terminal_UI.md) (16 shared connections)
+- [command factories communication](command_factories_communication.md) (17 shared connections)
+- [combat service services](combat_service_services.md) (8 shared connections)
+- [game terminal lucidity](game_terminal_lucidity.md) (8 shared connections)
 - [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (5 shared connections)
-- [rate limiter services](rate_limiter_services.md) (5 shared connections)
-- [project paths rationale](project_paths_rationale.md) (4 shared connections)
-- [character creation service](character_creation_service.md) (3 shared connections)
+- [magic completion game](magic_completion_game.md) (5 shared connections)
+- [argon2 auth rationale](argon2_auth_rationale.md) (5 shared connections)
+- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (4 shared connections)
 - [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (3 shared connections)
-- [services rescue service](services_rescue_service.md) (3 shared connections)
-- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (2 shared connections)
-- [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
-- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (2 shared connections)
+- [casting game magic](casting_game_magic.md) (3 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (2 shared connections)
 - [eventHandlers messageHandlers statusPars](eventHandlers_messageHandlers_statusPars.md) (1 shared connections)
 
 ## Source Files
@@ -61,8 +60,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 224 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 204 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

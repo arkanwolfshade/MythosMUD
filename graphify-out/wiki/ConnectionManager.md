@@ -1,6 +1,6 @@
 # ConnectionManager
 
-> God node · 233 connections · `server/realtime/connection_manager.py`
+> God node · 272 connections · `server/realtime/connection_manager.py`
 
 **Community:** [Room Broadcast](Room_Broadcast.md)
 
@@ -29,10 +29,10 @@
 - websocket_handler_commands.py `EXTRACTED`
 - test_envelope.py `EXTRACTED`
 - player_disconnect_handlers.py `EXTRACTED`
+- container_events.py `EXTRACTED`
 - combat_loader.py `EXTRACTED`
 - websocket_handler_message_loop.py `EXTRACTED`
 - game.py `EXTRACTED`
-- follow_service.py `EXTRACTED`
 
 ### indirect_call
 - test_build_event_sequence_priority() `INFERRED`
@@ -69,6 +69,10 @@
 - transfer_items() `EXTRACTED`
 - open_container() `EXTRACTED`
 - close_container() `EXTRACTED`
+- emit_transfer_event() `EXTRACTED`
+- emit_loot_all_event() `EXTRACTED`
+- emit_container_opened_events() `EXTRACTED`
+- emit_close_container_event() `EXTRACTED`
 - resolve_connection_manager() `EXTRACTED`
 - force_disconnect_player_impl() `EXTRACTED`
 - .__init__() `EXTRACTED`
@@ -81,10 +85,6 @@
 - broadcast_room_event_impl() `EXTRACTED`
 - broadcast_to_room_impl() `EXTRACTED`
 - get_player_impl() `EXTRACTED`
-- get_players_batch_impl() `EXTRACTED`
-- send_initial_game_state_impl() `EXTRACTED`
-- _connection_manager_from_config_app() `EXTRACTED`
-- broadcast_global_impl() `EXTRACTED`
 
 ### uses
 - RateLimiter `INFERRED`
@@ -104,9 +104,9 @@
 - _NpcWithLife `INFERRED`
 - PlayerStateEventHandler `INFERRED`
 - RespawnPlayerEventPayload `INFERRED`
-- Party `INFERRED`
-- _EventBusPublishPort `INFERRED`
-- _AppWithState `INFERRED`
+- TestEmitLootAllEvent `INFERRED`
+- TestEmitCloseContainerEvent `INFERRED`
+- TestEmitTransferEvent `INFERRED`
 
 ---
 

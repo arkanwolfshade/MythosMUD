@@ -34,11 +34,11 @@
 ## Relationships
 
 - [room cache services](room_cache_services.md) (6 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
+- [aggro threat services](aggro_threat_services.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
 - [nats services service](nats_services_service.md) (3 shared connections)
-- [logging structured utilities](logging_structured_utilities.md) (1 shared connections)
-- [command combat models](command_combat_models.md) (1 shared connections)
+- [logging handlers structured](logging_handlers_structured.md) (1 shared connections)
+- [metrics memory leak](metrics_memory_leak.md) (1 shared connections)
 
 ## Source Files
 

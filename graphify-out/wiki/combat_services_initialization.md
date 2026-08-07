@@ -34,12 +34,12 @@
 ## Relationships
 
 - [commands npc admin](commands_npc_admin.md) (3 shared connections)
-- [commands whisper command](commands_whisper_command.md) (2 shared connections)
-- [health service services](health_service_services.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [character creation service](character_creation_service.md) (2 shared connections)
+- [command processor rationale](command_processor_rationale.md) (2 shared connections)
+- [combat attack handler](combat_attack_handler.md) (1 shared connections)
 - [command commands handler](command_commands_handler.md) (1 shared connections)
 - [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
-- [command parser rationale](command_parser_rationale.md) (1 shared connections)
+- [payload realtime optimizer](payload_realtime_optimizer.md) (1 shared connections)
 
 ## Source Files
 

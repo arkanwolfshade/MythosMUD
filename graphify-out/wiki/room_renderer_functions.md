@@ -1,53 +1,60 @@
 # room renderer functions
 
-> 73 nodes
+> 59 nodes
 
 ## Key Concepts
 
-- **test_room_renderer.py** (25 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **format_room_drop_lines()** (25 connections) — `server/utils/room_renderer.py`
-- **clone_room_drops()** (18 connections) — `server/utils/room_renderer.py`
-- **test_room_renderer_functions.py** (14 connections) — `server/tests/unit/utils/test_room_renderer_functions.py`
-- **build_room_drop_summary()** (13 connections) — `server/utils/room_renderer.py`
-- **room_renderer.py** (10 connections) — `server/utils/room_renderer.py`
-- **_coerce_stack()** (4 connections) — `server/utils/room_renderer.py`
-- **Any** (4 connections)
-- **test_format_room_drop_lines_empty_none()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_empty_list()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_single_drop()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_multiple_drops()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_uses_item_id_when_no_item_name()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_uses_default_when_no_name_or_id()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_handles_missing_slot_type()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_handles_missing_quantity()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_handles_invalid_quantity_string()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_handles_invalid_quantity_type()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_handles_large_quantity()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_build_room_drop_summary_empty()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_build_room_drop_summary_single_drop()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_build_room_drop_summary_multiple_drops()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_clone_room_drops_none()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_clone_room_drops_empty_list()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_clone_room_drops_single_drop()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- *... and 48 more nodes in this community*
+- **PlayerRespawnService** (39 connections) — `server/services/player_respawn_service.py`
+- **UUID** (16 connections)
+- **._prepare_sanitarium_respawn()** (16 connections) — `server/services/player_respawn_service.py`
+- **.respawn_player()** (11 connections) — `server/services/player_respawn_service.py`
+- **.respawn_player_from_delirium()** (10 connections) — `server/services/player_respawn_service.py`
+- **.respawn_player_from_sanitarium()** (10 connections) — `server/services/player_respawn_service.py`
+- **Player** (8 connections)
+- **._clear_respawn_combat_state()** (8 connections) — `server/services/player_respawn_service.py`
+- **._publish_standard_respawn_event()** (8 connections) — `server/services/player_respawn_service.py`
+- **._prepare_delirium_respawn()** (8 connections) — `server/services/player_respawn_service.py`
+- **_utc_now()** (7 connections) — `server/services/player_respawn_service.py`
+- **AsyncSession** (7 connections)
+- **.move_player_to_limbo()** (7 connections) — `server/services/player_respawn_service.py`
+- **.get_respawn_room()** (7 connections) — `server/services/player_respawn_service.py`
+- **_RespawnEventPublisher** (6 connections) — `server/services/player_respawn_service.py`
+- **_PlayerCombatClearing** (6 connections) — `server/services/player_respawn_service.py`
+- **._publish_delirium_respawn_event()** (6 connections) — `server/services/player_respawn_service.py`
+- **.publish()** (5 connections) — `server/services/player_respawn_service.py`
+- **._can_move_to_limbo()** (5 connections) — `server/services/player_respawn_service.py`
+- **._apply_standard_respawn_state()** (5 connections) — `server/services/player_respawn_service.py`
+- **._log_standard_respawn()** (5 connections) — `server/services/player_respawn_service.py`
+- **._log_sanitarium_respawn()** (5 connections) — `server/services/player_respawn_service.py`
+- **._log_delirium_respawn()** (5 connections) — `server/services/player_respawn_service.py`
+- **.clear_player_combat_state()** (4 connections) — `server/services/player_respawn_service.py`
+- **.__init__()** (4 connections) — `server/services/player_respawn_service.py`
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [command models moderation](command_models_moderation.md) (5 shared connections)
-- [connection realtime statistics](connection_realtime_statistics.md) (3 shared connections)
-- [combat services turn](combat_services_turn.md) (2 shared connections)
-- [look helpers commands](look_helpers_commands.md) (2 shared connections)
+- [player room realtime](player_room_realtime.md) (16 shared connections)
+- [auth endpoints rationale](auth_endpoints_rationale.md) (10 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (6 shared connections)
+- [game weapon player](game_weapon_player.md) (5 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (3 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [aggro threat services](aggro_threat_services.md) (2 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
+- [player service game](player_service_game.md) (2 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (2 shared connections)
+- [models player related](models_player_related.md) (1 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_room_renderer.py`
-- `server/tests/unit/utils/test_room_renderer_functions.py`
-- `server/utils/room_renderer.py`
+- `server/services/player_respawn_service.py`
+- `server/tests/unit/services/test_player_respawn_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 236 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 241 (91%)
+- INFERRED: 25 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

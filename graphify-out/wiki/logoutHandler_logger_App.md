@@ -1,56 +1,56 @@
 # logoutHandler logger App
 
-> 30 nodes
+> 62 nodes
 
 ## Key Concepts
 
-- **test_command_processing.py** (15 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **process_command_with_validation()** (13 connections) — `server/command_handler/processing.py`
-- **_dispatch_parsed_command()** (8 connections) — `server/command_handler/processing.py`
-- **_run_command_service_for_validated()** (7 connections) — `server/command_handler/processing.py`
-- **_log_security_sensitive_command()** (7 connections) — `server/command_handler/processing.py`
-- **_handle_processing_error()** (7 connections) — `server/command_handler/processing.py`
-- **_parse_command_line_or_client_error()** (6 connections) — `server/command_handler/processing.py`
-- **_handle_validation_error()** (6 connections) — `server/command_handler/processing.py`
-- **CommandExecutionRequest** (5 connections)
-- **test_handle_validation_error_security_sensitive()** (3 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_process_command_with_validation_validation_error()** (3 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **ValidationError** (2 connections)
-- **Exception** (2 connections)
-- **test_parse_command_line_or_client_error_with_message()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_parse_command_line_or_client_error_no_validated()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_parse_command_line_or_client_error_success()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_dispatch_parsed_command_client_error()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_dispatch_parsed_command_success()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_run_command_service_security_sensitive_audit()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_log_security_sensitive_command_no_session()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_handle_processing_error()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_process_command_with_validation_generic_error()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **Validate the raw command string via CommandProcessor.      Returns:         (** (1 connections) — `server/command_handler/processing.py`
-- **Extract structured command data, dispatch to CommandService, audit if needed.** (1 connections) — `server/command_handler/processing.py`
-- **Parse the command line; on success run CommandService (see ``_parse_command_line** (1 connections) — `server/command_handler/processing.py`
-- *... and 5 more nodes in this community*
+- **player_effect_repository.py** (21 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **PlayerEffectRepository** (18 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **test_player_effect_repository.py** (17 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **.get_active_effects_for_player()** (10 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **_row_to_player_effect()** (8 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **UUID** (8 connections)
+- **.add_effect()** (8 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **Any** (7 connections)
+- **AddEffectInput** (7 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **_add_effect_params()** (6 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **.delete_effect()** (6 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **.get_effects_expiring_this_tick()** (6 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **.expire_effects_for_tick()** (6 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **_make_effect()** (6 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **._execute_add_effect()** (5 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **.get_effect_remaining_ticks()** (5 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **_row_from_effect()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **_str_opt()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **_int_opt()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **_opt_str()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **.has_effect()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **test_get_active_effects_for_player_filters_by_remaining()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_has_effect_true()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_get_effect_remaining_ticks()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **._remaining_ticks()** (3 connections) — `server/persistence/repositories/player_effect_repository.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (12 shared connections)
-- [command validator validators](command_validator_validators.md) (4 shared connections)
-- [command validation commands](command_validation_commands.md) (3 shared connections)
-- [fixtures mock helpers](fixtures_mock_helpers.md) (2 shared connections)
-- [command commands handler](command_commands_handler.md) (2 shared connections)
-- [commands recovery lucidity](commands_recovery_lucidity.md) (1 shared connections)
-- [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
-- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (10 shared connections)
+- [player room realtime](player_room_realtime.md) (9 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (8 shared connections)
+- [add used user](add_used_user.md) (7 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
+- [useWebSocketConnectionTestFixtures useWe](useWebSocketConnectionTestFixtures_useWe.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
 
 ## Source Files
 
-- `server/command_handler/processing.py`
-- `server/tests/unit/commands/test_command_processing.py`
+- `server/persistence/repositories/player_effect_repository.py`
+- `server/tests/unit/persistence/test_player_effect_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 106 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 212 (95%)
+- INFERRED: 12 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

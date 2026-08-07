@@ -1,53 +1,57 @@
 # command commands talk
 
-> 34 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **test_command_alias.py** (18 connections) — `server/tests/unit/models/test_command_alias.py`
-- **AliasCommand** (17 connections) — `server/models/command_alias.py`
-- **UnaliasCommand** (12 connections) — `server/models/command_alias.py`
-- **test_alias_command_alias_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_alias_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_command_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_unalias_command_alias_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_unalias_command_alias_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
-- **.validate_alias_name_field()** (3 connections) — `server/models/command_alias.py`
-- **test_alias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_with_command()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_validate_command_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_validate_command_none()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_aliases_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_unalias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_unalias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **Command for creating or viewing command aliases.** (1 connections) — `server/models/command_alias.py`
-- **Command for removing an alias.** (1 connections) — `server/models/command_alias.py`
-- **Validate alias name format using centralized validation.** (1 connections) — `server/models/command_alias.py`
-- **Unit tests for alias command models.  Tests the alias command models and their v** (1 connections) — `server/tests/unit/models/test_command_alias.py`
-- **Test AliasCommand requires alias_name.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
-- **Test AliasCommand can have optional command.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
-- **Test AliasCommand calls validate_alias_name.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
-- **Test AliasCommand calls validate_command_content when command provided.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
-- *... and 9 more nodes in this community*
+- **extract_player_name()** (22 connections) — `server/realtime/player_presence_utils.py`
+- **test_player_presence_utils.py** (18 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
+- **player_presence_utils.py** (17 connections) — `server/realtime/player_presence_utils.py`
+- **get_player_position()** (11 connections) — `server/realtime/player_presence_utils.py`
+- **_is_valid_name()** (6 connections) — `server/realtime/player_presence_utils.py`
+- **_is_uuid_string()** (5 connections) — `server/realtime/player_presence_utils.py`
+- **_get_name_from_user()** (5 connections) — `server/realtime/player_presence_utils.py`
+- **Player** (3 connections)
+- **UUID** (3 connections)
+- **test_extract_player_name_user_access_error()** (3 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
+- **test_get_player_position_stats_error()** (3 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
+- **test_is_valid_name()** (2 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
+- **test_is_uuid_string()** (2 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
+- **test_extract_player_name_from_player_name()** (2 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
+- **test_extract_player_name_from_user()** (2 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
+- **test_extract_player_name_placeholder()** (2 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
+- **test_extract_player_name_rejects_uuid_string()** (2 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
+- **test_get_player_position_default()** (2 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
+- **test_get_player_position_from_stats()** (2 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
+- **Any** (1 connections)
+- **Utility functions for player presence tracking.  This module provides helper fun** (1 connections) — `server/realtime/player_presence_utils.py`
+- **Check if a value is a valid non-empty string name.      Args:         name: Valu** (1 connections) — `server/realtime/player_presence_utils.py`
+- **Check if a string is a UUID format.      Args:         value: String to check** (1 connections) — `server/realtime/player_presence_utils.py`
+- **Attempt to get player name from related User object.      Args:         player:** (1 connections) — `server/realtime/player_presence_utils.py`
+- **Extract and validate player name, ensuring it's never a UUID.      Args:** (1 connections) — `server/realtime/player_presence_utils.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (9 shared connections)
-- [Loot Generation](Loot_Generation.md) (5 shared connections)
-- [Security Validator Tests](Security_Validator_Tests.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [exceptions rationale error](exceptions_rationale_error.md) (2 shared connections)
+- [movement monitor game](movement_monitor_game.md) (6 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (5 shared connections)
+- [npc combat base](npc_combat_base.md) (3 shared connections)
+- [help content websocket](help_content_websocket.md) (3 shared connections)
+- [player disconnect handlers](player_disconnect_handlers.md) (3 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [player room realtime](player_room_realtime.md) (1 shared connections)
+- [command models moderation](command_models_moderation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_alias.py`
-- `server/tests/unit/models/test_command_alias.py`
+- `server/realtime/player_presence_utils.py`
+- `server/tests/unit/realtime/test_player_presence_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 102 (92%)
-- INFERRED: 9 (8%)
+- EXTRACTED: 117 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

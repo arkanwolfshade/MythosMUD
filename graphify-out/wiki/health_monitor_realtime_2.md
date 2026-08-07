@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [taunt combat commands](taunt_combat_commands.md) (4 shared connections)
+- [persistence rationale room](persistence_rationale_room.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 

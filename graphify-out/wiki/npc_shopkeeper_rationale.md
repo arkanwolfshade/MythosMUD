@@ -1,6 +1,6 @@
 # npc shopkeeper rationale
 
-> 48 nodes
+> 52 nodes
 
 ## Key Concepts
 
@@ -8,9 +8,11 @@
 - **test_npc_threading_messages.py** (23 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
 - **NPCMessageQueue** (16 connections) — `server/npc/threading.py`
 - **._npc_thread_worker()** (8 connections) — `server/npc/threading.py`
+- **._process_wander_action()** (8 connections) — `server/npc/threading.py`
 - **.start_npc_thread()** (5 connections) — `server/npc/threading.py`
 - **._stop_npc_thread_internal()** (5 connections) — `server/npc/threading.py`
 - **.restart_npc_thread()** (5 connections) — `server/npc/threading.py`
+- **._process_npc_message()** (5 connections) — `server/npc/threading.py`
 - **._execute_npc_behavior()** (5 connections) — `server/npc/threading.py`
 - **.get_messages()** (4 connections) — `server/npc/threading.py`
 - **.clear_messages()** (4 connections) — `server/npc/threading.py`
@@ -27,20 +29,21 @@
 - **test_npc_message_queue_trims_oldest()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
 - **test_npc_thread_manager_start_stop()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
 - **test_npc_thread_manager_start_stop_npc_thread()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_thread_manager_restart_npc_thread()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_thread_manager_stop_cancels_running_task()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- *... and 23 more nodes in this community*
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [idle npc movement](idle_npc_movement.md) (9 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (7 shared connections)
-- [container events rationale](container_events_rationale.md) (5 shared connections)
-- [npc behavior engine](npc_behavior_engine.md) (5 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [idle movement npc](idle_movement_npc.md) (2 shared connections)
-- [middleware metrics collector](middleware_metrics_collector.md) (1 shared connections)
-- [logging setup structured](logging_setup_structured.md) (1 shared connections)
+- [effect player repository](effect_player_repository.md) (9 shared connections)
+- [room look commands](room_look_commands.md) (5 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (4 shared connections)
+- [services npc startup](services_npc_startup.md) (4 shared connections)
+- [idle movement npc](idle_movement_npc.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [services nats service](services_nats_service.md) (2 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (2 shared connections)
+- [tick game processing](tick_game_processing.md) (2 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
+- [lucidity event services](lucidity_event_services.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,8 +52,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 161 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 175 (96%)
+- INFERRED: 7 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_get_player_room_from_persistence()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **Test get_player_room_from_persistence() returns player room.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_preload_receiver_mute_data_excludes_sender()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test preload_receiver_mute_data() excludes sender from targets.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 

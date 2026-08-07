@@ -26,7 +26,7 @@
 
 - [monitoring models rationale](monitoring_models_rationale.md) (1 shared connections)
 - [level service game](level_service_game.md) (1 shared connections)
-- [commands channel rationale](commands_channel_rationale.md) (1 shared connections)
+- [cache caching lru](cache_caching_lru.md) (1 shared connections)
 - [lint remediation commands](lint_remediation_commands.md) (1 shared connections)
 
 ## Source Files

@@ -34,8 +34,8 @@
 ## Relationships
 
 - [chat moderation game](chat_moderation_game.md) (2 shared connections)
-- [dialogue schemas tree](dialogue_schemas_tree.md) (2 shared connections)
-- [services ascii map](services_ascii_map.md) (1 shared connections)
+- [player persistence repository](player_persistence_repository.md) (2 shared connections)
+- [lucidity commands services](lucidity_commands_services.md) (1 shared connections)
 
 ## Source Files
 

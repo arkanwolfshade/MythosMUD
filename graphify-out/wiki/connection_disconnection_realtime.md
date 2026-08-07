@@ -1,52 +1,64 @@
 # connection disconnection realtime
 
-> 85 nodes
+> 96 nodes
 
 ## Key Concepts
 
-- **RateLimiter** (61 connections) — `server/realtime/rate_limiter.py`
-- **test_connection_rate_limiter.py** (33 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **.get_rate_limit_info()** (3 connections) — `server/realtime/rate_limiter.py`
-- **Any** (3 connections)
-- **.get_stats()** (3 connections) — `server/realtime/rate_limiter.py`
-- **.get_message_rate_limit_info()** (3 connections) — `server/realtime/rate_limiter.py`
-- **test_rate_limiter_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_init_custom()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_rate_limit_first_attempt()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_rate_limit_within_limit()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_rate_limit_old_attempts_removed()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_rate_limit_info()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_rate_limit_info_no_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_attempts_removes_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_attempts_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_large_structures()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_large_structures_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_remove_player_data()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_remove_player_data_not_present()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_remove_player_data_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_stats()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_stats_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_stats_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- *... and 60 more nodes in this community*
+- **test_connection_disconnection.py** (37 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
+- **connection_disconnection.py** (31 connections) — `server/realtime/connection_disconnection.py`
+- **_DisconnectConnectionManager** (19 connections) — `server/realtime/connection_disconnection.py`
+- **_track_disconnect_if_needed()** (15 connections) — `server/realtime/connection_disconnection.py`
+- **_cleanup_room_subscriptions()** (15 connections) — `server/realtime/connection_disconnection.py`
+- **cleanup_websocket_disconnect()** (15 connections) — `server/realtime/connection_disconnection.py`
+- **test_connection_disconnection_websockets.py** (15 connections) — `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
+- **message_queue.py** (14 connections) — `server/realtime/message_queue.py`
+- **rate_limiter.py** (14 connections) — `server/realtime/rate_limiter.py`
+- **disconnect_all_websockets_impl()** (13 connections) — `server/realtime/connection_disconnection.py`
+- **disconnect_connection_by_id_impl()** (13 connections) — `server/realtime/connection_disconnection.py`
+- **_cleanup_player_data()** (12 connections) — `server/realtime/connection_disconnection.py`
+- **force_disconnect_player_impl()** (12 connections) — `server/realtime/connection_manager_methods.py`
+- **UUID** (11 connections)
+- **_cleanup_fully_disconnected_player()** (8 connections) — `server/realtime/connection_disconnection.py`
+- **.has_websocket_connection()** (7 connections) — `server/realtime/connection_disconnection.py`
+- **_disconnect_single_websocket()** (7 connections) — `server/realtime/connection_disconnection.py`
+- **_is_non_intentional_force_disconnect()** (6 connections) — `server/realtime/connection_disconnection.py`
+- **_disconnect_websocket_by_connection_id()** (6 connections) — `server/realtime/connection_disconnection.py`
+- **_cleanup_connection_tracking()** (4 connections) — `server/realtime/connection_disconnection.py`
+- **test_cleanup_player_data_has_connection()** (4 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
+- **test_disconnect_connection_by_id_impl_websocket()** (4 connections) — `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
+- **.disconnect_connection_by_id()** (3 connections) — `server/realtime/connection_manager.py`
+- **test_track_disconnect_if_needed_new()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
+- **test_track_disconnect_if_needed_already_processed()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
+- *... and 71 more nodes in this community*
 
 ## Relationships
 
-- [taunt combat commands](taunt_combat_commands.md) (10 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (4 shared connections)
-- [persistence rationale room](persistence_rationale_room.md) (4 shared connections)
-- [connection realtime delegates](connection_realtime_delegates.md) (3 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (17 shared connections)
+- [command player state](command_player_state.md) (9 shared connections)
+- [spell models rationale](spell_models_rationale.md) (8 shared connections)
+- [realtime monitoring statistics](realtime_monitoring_statistics.md) (8 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (8 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (4 shared connections)
+- [connection realtime delegates](connection_realtime_delegates.md) (4 shared connections)
+- [target resolution service](target_resolution_service.md) (2 shared connections)
+- [persistence rationale room](persistence_rationale_room.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [commands follow rationale](commands_follow_rationale.md) (1 shared connections)
 
 ## Source Files
 
+- `server/realtime/connection_disconnection.py`
+- `server/realtime/connection_manager.py`
+- `server/realtime/connection_manager_methods.py`
+- `server/realtime/message_queue.py`
 - `server/realtime/rate_limiter.py`
-- `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- `server/tests/unit/realtime/test_connection_disconnection.py`
+- `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
 
 ## Audit Trail
 
-- EXTRACTED: 242 (96%)
-- INFERRED: 9 (4%)
+- EXTRACTED: 395 (98%)
+- INFERRED: 9 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

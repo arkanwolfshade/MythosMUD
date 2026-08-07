@@ -22,8 +22,8 @@
 ## Relationships
 
 - [channel broadcasting strategies](channel_broadcasting_strategies.md) (7 shared connections)
-- [npc behavior engine](npc_behavior_engine.md) (5 shared connections)
-- [message handler factory](message_handler_factory.md) (4 shared connections)
+- [time service rationale](time_service_rationale.md) (5 shared connections)
+- [player room persistence](player_room_persistence.md) (4 shared connections)
 - [channel broadcasting realtime](channel_broadcasting_realtime.md) (4 shared connections)
 - [world loader rationale](world_loader_rationale.md) (3 shared connections)
 - [realtime channel broadcasting](realtime_channel_broadcasting.md) (1 shared connections)

@@ -1,58 +1,49 @@
 # auth users rationale
 
-> 27 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **npc_spawn_rules_api.py** (23 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **test_npc_spawn_rules_api.py** (16 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **get_npc_spawn_rules()** (14 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **create_npc_spawn_rule()** (14 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **delete_npc_spawn_rule()** (11 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **NPCSpawnRuleResponse** (7 connections) — `server/api/admin/npc_schemas.py`
-- **.from_orm()** (6 connections) — `server/api/admin/npc_schemas.py`
-- **NPCSpawnRuleCreate** (5 connections) — `server/api/admin/npc_schemas.py`
-- **Request** (3 connections)
-- **AsyncSession** (3 connections)
-- **test_get_npc_spawn_rules_generic_error()** (3 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **test_create_npc_spawn_rule_rolls_back()** (3 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **test_delete_npc_spawn_rule_not_found()** (3 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **test_get_npc_spawn_rules_success()** (2 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **test_get_npc_spawn_rules_http_exception_propagates()** (2 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **test_create_npc_spawn_rule_success()** (2 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **test_delete_npc_spawn_rule_success()** (2 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **Model for creating NPC spawn rules.** (1 connections) — `server/api/admin/npc_schemas.py`
-- **Model for NPC spawn rule responses.** (1 connections) — `server/api/admin/npc_schemas.py`
-- **Create response from ORM object.** (1 connections) — `server/api/admin/npc_schemas.py`
-- **NPC spawn rule admin endpoints.  Split out from server.api.admin.npc to keep fil** (1 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **Get all NPC spawn rules.** (1 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **Create a new NPC spawn rule.** (1 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **Delete an NPC spawn rule.** (1 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **mock_user()** (1 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- *... and 2 more nodes in this community*
+- **test_item_instance_persistence.py** (16 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **item_instance_persistence.py** (15 connections) — `server/persistence/item_instance_persistence.py`
+- **create_item_instance()** (12 connections) — `server/persistence/item_instance_persistence.py`
+- **ensure_item_instance()** (11 connections) — `server/persistence/item_instance_persistence.py`
+- **get_item_instance()** (7 connections) — `server/persistence/item_instance_persistence.py`
+- **item_instance_exists()** (7 connections) — `server/persistence/item_instance_persistence.py`
+- **Any** (4 connections)
+- **test_create_item_instance_missing_id()** (3 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_create_item_instance_db_error()** (3 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_item_instance_exists_true()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_item_instance_exists_false()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_get_item_instance_found()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_get_item_instance_not_found()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_ensure_item_instance_calls_create()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_create_item_instance_success()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **Item instance persistence operations.  As documented in the restricted archives,** (1 connections) — `server/persistence/item_instance_persistence.py`
+- **Create a new item instance in the database.      Args:         conn: Database co** (1 connections) — `server/persistence/item_instance_persistence.py`
+- **Retrieve an item instance by ID.      Args:         conn: Database connection** (1 connections) — `server/persistence/item_instance_persistence.py`
+- **Check if an item instance exists in the database.      Args:         conn: Datab** (1 connections) — `server/persistence/item_instance_persistence.py`
+- **Ensure an item instance exists in the database, creating it if necessary.      T** (1 connections) — `server/persistence/item_instance_persistence.py`
+- **Unit tests for item_instance_persistence helpers.** (1 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
 
 ## Relationships
 
-- [player preferences services](player_preferences_services.md) (12 shared connections)
-- [Exception Containers](Exception_Containers.md) (8 shared connections)
-- [persistence container rationale](persistence_container_rationale.md) (6 shared connections)
-- [player requests schemas](player_requests_schemas.md) (6 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [container events rationale](container_events_rationale.md) (1 shared connections)
-- [game models enums](game_models_enums.md) (1 shared connections)
-- [command player state](command_player_state.md) (1 shared connections)
+- [commands party examples](commands_party_examples.md) (10 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (4 shared connections)
+- [command inventory models](command_inventory_models.md) (4 shared connections)
+- [add used user](add_used_user.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/admin/npc_schemas.py`
-- `server/api/admin/npc_spawn_rules_api.py`
-- `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- `server/persistence/item_instance_persistence.py`
+- `server/tests/unit/persistence/test_item_instance_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 126 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 92 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

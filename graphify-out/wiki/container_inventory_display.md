@@ -33,12 +33,12 @@
 
 ## Relationships
 
-- [services admin auth](services_admin_auth.md) (4 shared connections)
-- [container helpers endpoints](container_helpers_endpoints.md) (3 shared connections)
-- [Exception Containers](Exception_Containers.md) (3 shared connections)
-- [combat models rationale](combat_models_rationale.md) (2 shared connections)
-- [commands inventory pickup](commands_inventory_pickup.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [task registry app](task_registry_app.md) (6 shared connections)
+- [game rationale schemas](game_rationale_schemas.md) (4 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (1 shared connections)
+- [game weapon player](game_weapon_player.md) (1 shared connections)
 - [caching lru cache](caching_lru_cache.md) (1 shared connections)
 
 ## Source Files

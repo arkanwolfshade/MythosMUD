@@ -1,12 +1,13 @@
 # eventHandlers messageHandlers statusPars
 
-> 20 nodes
+> 21 nodes
 
 ## Key Concepts
 
 - **messageHandlers.ts** (21 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
 - **messageHandlers.test-utils.ts** (15 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
 - **handleCommandResponse()** (7 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- **determineMessageType()** (7 connections) — `client/src/utils/messageTypeUtils.ts`
 - **statusParser.ts** (6 connections) — `client/src/utils/statusParser.ts`
 - **handleChatMessage.test.ts** (5 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/handleChatMessage.test.ts`
 - **handleCommandResponse.test.ts** (5 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/handleCommandResponse.test.ts`
@@ -27,13 +28,14 @@
 
 ## Relationships
 
-- [game terminal lucidity](game_terminal_lucidity.md) (6 shared connections)
-- [Game Terminal UI](Game_Terminal_UI.md) (5 shared connections)
+- [command factories communication](command_factories_communication.md) (7 shared connections)
 - [panels chatPanelRuntimeUtils chatPanelEx](panels_chatPanelRuntimeUtils_chatPanelEx.md) (4 shared connections)
-- [project paths rationale](project_paths_rationale.md) (2 shared connections)
+- [casting game magic](casting_game_magic.md) (3 shared connections)
+- [game terminal lucidity](game_terminal_lucidity.md) (2 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (2 shared connections)
 - [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (1 shared connections)
 - [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (1 shared connections)
-- [realtime maintenance connection](realtime_maintenance_connection.md) (1 shared connections)
+- [argon2 auth rationale](argon2_auth_rationale.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,11 +46,12 @@
 - `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
 - `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
 - `client/src/utils/__tests__/statusParser.test.ts`
+- `client/src/utils/messageTypeUtils.ts`
 - `client/src/utils/statusParser.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 107 (99%)
+- EXTRACTED: 114 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

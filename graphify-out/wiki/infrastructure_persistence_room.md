@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_event_bus_publish_no_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.publish() with no subscribers.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_get_player_not_found()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_player() returns None when player not found.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [event bus events](event_bus_events.md) (1 shared connections)
-- [services exploration service](services_exploration_service.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/events/test_event_bus.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

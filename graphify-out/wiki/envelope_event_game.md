@@ -1,38 +1,36 @@
 # envelope event game
 
-> 14 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **test_player_spell_repository.py** (19 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **_mock_session_with_rows()** (9 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **_spell_row()** (6 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_get_player_spells()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_get_player_spell_found()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_learn_spell()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_learn_spell_no_row_raises()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_update_mastery()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_record_spell_cast()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **repo()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_get_player_spells_db_error()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_get_player_spell_missing()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_update_mastery_not_found()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **Unit tests for PlayerSpellRepository.** (1 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **__init__.py** (9 connections) — `server/schemas/quest/__init__.py`
+- **quest.py** (8 connections) — `server/schemas/quest/quest.py`
+- **BaseModel** (6 connections)
+- **QuestGoalSchema** (4 connections) — `server/schemas/quest/quest.py`
+- **QuestRewardSchema** (4 connections) — `server/schemas/quest/quest.py`
+- **QuestTriggerSchema** (4 connections) — `server/schemas/quest/quest.py`
+- **Quest subsystem schemas: definition, progress, API responses.** (1 connections) — `server/schemas/quest/__init__.py`
+- **Quest subsystem Pydantic schemas for MythosMUD server.  Defines schemas for ques** (1 connections) — `server/schemas/quest/quest.py`
+- **Single goal in a quest definition (complete_activity, kill_n, collect_n, etc.).** (1 connections) — `server/schemas/quest/quest.py`
+- **Single reward in a quest definition (xp, item, spell).** (1 connections) — `server/schemas/quest/quest.py`
+- **Single trigger that can start a quest (room, npc, item).** (1 connections) — `server/schemas/quest/quest.py`
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (6 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [Player Stats](Player_Stats.md) (6 shared connections)
+- [quest game service](quest_game_service.md) (3 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_spell_repository.py`
+- `server/schemas/quest/__init__.py`
+- `server/schemas/quest/quest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 40 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

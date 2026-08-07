@@ -1,49 +1,38 @@
 # event realtime publisher
 
-> 72 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **StatisticsAggregator** (29 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **test_statistics_aggregator.py** (14 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **._build_connection_stats()** (10 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **.get_connection_health_stats()** (8 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._compose_memory_stats()** (7 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **MemoryStatsSnapshot** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **UUID** (6 connections)
-- **._memory_connections_section()** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._memory_sessions_section()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._safe_ratio()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **.get_memory_stats()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._count_orphaned_connections()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **.get_connection_stats()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._analyze_connection_health()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._analyze_connection_ages()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._build_health_trends()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._build_health_stats_response()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._memory_monitor_config_section()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._session_connection_distribution()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._connection_age_extrema()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._analyze_connection_types()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._analyze_session_health()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._calculate_session_health_percentages()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **statistics_aggregator()** (3 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **.__init__()** (2 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- *... and 47 more nodes in this community*
+- **.spawn_npcs_on_startup()** (8 connections) — `server/services/npc_startup_service.py`
+- **._spawn_required_npcs()** (6 connections) — `server/services/npc_startup_service.py`
+- **._determine_spawn_room()** (6 connections) — `server/services/npc_startup_service.py`
+- **._spawn_optional_npcs()** (5 connections) — `server/services/npc_startup_service.py`
+- **._spawn_arena_npcs()** (5 connections) — `server/services/npc_startup_service.py`
+- **Any** (4 connections)
+- **._get_default_room_for_sub_zone()** (3 connections) — `server/services/npc_startup_service.py`
+- **Spawn NPCs during server startup.          This method handles the automatic spa** (1 connections) — `server/services/npc_startup_service.py`
+- **Spawn all required NPCs.          Args:             required_npcs: List of requi** (1 connections) — `server/services/npc_startup_service.py`
+- **Spawn optional NPCs based on spawn probability.          Args:             optio** (1 connections) — `server/services/npc_startup_service.py`
+- **Second pass: spawn one instance per definition (that was spawned in required/opt** (1 connections) — `server/services/npc_startup_service.py`
+- **Determine the appropriate room for spawning an NPC.          Args:             n** (1 connections) — `server/services/npc_startup_service.py`
+- **Get a default room for a given sub-zone.          Args:             sub_zone_id:** (1 connections) — `server/services/npc_startup_service.py`
 
 ## Relationships
 
-- [taunt combat commands](taunt_combat_commands.md) (9 shared connections)
+- [room validator path](room_validator_path.md) (6 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [tick game processing](tick_game_processing.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/monitoring/statistics_aggregator.py`
-- `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- `server/services/npc_startup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 203 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 43 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

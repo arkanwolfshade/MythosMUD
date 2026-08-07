@@ -1,63 +1,66 @@
 # game chat moderation
 
-> 28 nodes
+> 53 nodes
 
 ## Key Concepts
 
-- **useGameConnectionRefactored.ts** (18 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
-- **useGameConnection()** (12 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
-- **useConnectionStateMachine.ts** (8 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **useConnectionState.ts** (7 connections) — `client/src/hooks/useConnectionState.ts`
-- **useSessionManagement.ts** (7 connections) — `client/src/hooks/useSessionManagement.ts`
-- **useGameConnection.ts** (5 connections) — `client/src/hooks/useGameConnection.ts`
-- **useConnectionState()** (4 connections) — `client/src/hooks/useConnectionState.ts`
-- **connectionMachine** (4 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **useGameConnection.test.ts** (4 connections) — `client/src/hooks/useGameConnection.test.ts`
-- **useSessionManagement()** (4 connections) — `client/src/hooks/useSessionManagement.ts`
-- **useGameConnection.export.test.ts** (3 connections) — `client/src/hooks/__tests__/useGameConnection.export.test.ts`
-- **ConnectionContext** (3 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **UseGameConnectionOptions** (3 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
-- **useConnectionState.test.ts** (2 connections) — `client/src/hooks/__tests__/useConnectionState.test.ts`
-- **useConnectionStateMachine.test.ts** (2 connections) — `client/src/hooks/__tests__/useConnectionStateMachine.test.ts`
-- **useSessionManagement.test.ts** (2 connections) — `client/src/hooks/__tests__/useSessionManagement.test.ts`
-- **UseConnectionStateResult** (2 connections) — `client/src/hooks/useConnectionState.ts`
-- **useConnectionStateMachine.test.ts** (2 connections) — `client/src/hooks/useConnectionStateMachine.test.ts`
-- **generateSecureSessionId()** (2 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
-- **ConnectionState** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **ConnectionEvent** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **ConnectionMachineInput** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **mockWebSocket** (1 connections) — `client/src/hooks/useGameConnection.test.ts`
-- **NOTE: JWT tokens are passed via query string, not subprotocol, because JWT conta** (1 connections) — `client/src/hooks/useGameConnection.test.ts`
-- **GameEvent** (1 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
-- *... and 3 more nodes in this community*
+- **useMythosAppState.ts** (28 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **1774539086359-useMythosAppState.ts** (24 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
+- **submitAuth.ts** (18 connections) — `client/src/mythosApp/submitAuth.ts`
+- **applyAuthenticatedSession.ts** (16 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
+- **useAuthSessionRestore.ts** (15 connections) — `client/src/mythosApp/useAuthSessionRestore.ts`
+- **mythosAppViewModelFactory.ts** (12 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
+- **useMythosAuthForm.ts** (11 connections) — `client/src/mythosApp/useMythosAuthForm.ts`
+- **useMythosAuthForm()** (10 connections) — `client/src/mythosApp/useMythosAuthForm.ts`
+- **useMythosApp.tsx** (9 connections) — `client/src/mythosApp/useMythosApp.tsx`
+- **useMythosAppState()** (9 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **useAuthSessionRestore()** (7 connections) — `client/src/mythosApp/useAuthSessionRestore.ts`
+- **useMythosApp()** (6 connections) — `client/src/mythosApp/useMythosApp.tsx`
+- **assertLoginResponse()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
+- **useReducerStateSlices()** (5 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
+- **persistTokensAndApplySession()** (5 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
+- **restoreCharactersOnMount()** (5 connections) — `client/src/mythosApp/characterSessionApi.ts`
+- **buildMythosAppViewModel()** (5 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
+- **submitLoginRequest()** (5 connections) — `client/src/mythosApp/submitAuth.ts`
+- **submitRegisterRequest()** (5 connections) — `client/src/mythosApp/submitAuth.ts`
+- **useReducerStateSlices()** (5 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **useMythosAppState()** (4 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
+- **CreationSlice** (4 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **useMythosAppState.test.ts** (3 connections) — `client/src/mythosApp/__tests__/useMythosAppState.test.ts`
+- **AuthSessionSetters** (3 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
+- **toCharacterInfoFromLogin()** (3 connections) — `client/src/mythosApp/mapServerCharacters.ts`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [project paths rationale](project_paths_rationale.md) (4 shared connections)
-- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (3 shared connections)
-- [Game Terminal UI](Game_Terminal_UI.md) (2 shared connections)
-- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (2 shared connections)
-- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (1 shared connections)
-- [realtime maintenance connection](realtime_maintenance_connection.md) (1 shared connections)
+- [mythosApp CharacterSelectionScreen chara](mythosApp_CharacterSelectionScreen_chara.md) (37 shared connections)
+- [SkillAssignmentScreen helpers CharacterN](SkillAssignmentScreen_helpers_CharacterN.md) (11 shared connections)
+- [auth invites rationale](auth_invites_rationale.md) (9 shared connections)
+- [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (5 shared connections)
+- [memoryMonitor memoryLeakDetector constru](memoryMonitor_memoryLeakDetector_constru.md) (4 shared connections)
+- [logout command commands](logout_command_commands.md) (4 shared connections)
+- [App helpers professionSystemErrorHandlin](App_helpers_professionSystemErrorHandlin.md) (2 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/hooks/__tests__/useConnectionState.test.ts`
-- `client/src/hooks/__tests__/useConnectionStateMachine.test.ts`
-- `client/src/hooks/__tests__/useGameConnection.export.test.ts`
-- `client/src/hooks/__tests__/useSessionManagement.test.ts`
-- `client/src/hooks/useConnectionState.ts`
-- `client/src/hooks/useConnectionStateMachine.test.ts`
-- `client/src/hooks/useConnectionStateMachine.ts`
-- `client/src/hooks/useGameConnection.test.ts`
-- `client/src/hooks/useGameConnection.ts`
-- `client/src/hooks/useGameConnectionRefactored.ts`
-- `client/src/hooks/useSessionManagement.ts`
+- `client/src/mythosApp/1774539086359-useMythosAppState.ts`
+- `client/src/mythosApp/__tests__/useMythosAppState.test.ts`
+- `client/src/mythosApp/applyAuthenticatedSession.ts`
+- `client/src/mythosApp/characterSessionApi.ts`
+- `client/src/mythosApp/mapServerCharacters.ts`
+- `client/src/mythosApp/mythosAppViewModelFactory.ts`
+- `client/src/mythosApp/submitAuth.ts`
+- `client/src/mythosApp/useAuthSessionRestore.ts`
+- `client/src/mythosApp/useMythosApp.tsx`
+- `client/src/mythosApp/useMythosAppState.ts`
+- `client/src/mythosApp/useMythosAuthForm.ts`
+- `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 102 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 256 (96%)
+- INFERRED: 11 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

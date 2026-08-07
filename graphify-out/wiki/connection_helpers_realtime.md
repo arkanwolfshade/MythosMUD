@@ -14,7 +14,7 @@
 ## Relationships
 
 - [combat configuration service](combat_configuration_service.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
 
 ## Source Files
 

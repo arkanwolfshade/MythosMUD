@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_compare_canonical_rooms_different()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **Test compare_canonical_rooms() returns False for different rooms.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **.test_on_catatonia_cleared_not_registered()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **Test on_catatonia_cleared handles player not in registry.** (1 connections) — `server/tests/unit/services/test_catatonia_registry.py`
 
 ## Relationships
 
-- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
+- [catatonia registry services](catatonia_registry_services.md) (1 shared connections)
+- [commands time handle](commands_time_handle.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_message_filtering.py`
+- `server/tests/unit/services/test_catatonia_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

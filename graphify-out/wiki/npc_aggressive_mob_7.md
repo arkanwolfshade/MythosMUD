@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_resolve_player_by_name()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test _resolve_player_for_movement resolves player by name.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **mock_logger()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Create a mock logger.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

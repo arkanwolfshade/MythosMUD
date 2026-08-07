@@ -1,13 +1,12 @@
 # memory profiler rationale
 
-> 73 nodes
+> 71 nodes
 
 ## Key Concepts
 
 - **MemoryProfiler** (38 connections) — `server/utils/memory_profiler.py`
 - **test_memory_profiler.py** (21 connections) — `server/tests/unit/utils/test_memory_profiler.py`
 - **benchmark_model_memory_usage()** (13 connections) — `server/utils/memory_profiler.py`
-- **memory_profiler.py** (10 connections) — `server/utils/memory_profiler.py`
 - **SampleModel** (9 connections) — `server/tests/unit/utils/test_memory_profiler.py`
 - **.measure_model_instantiation()** (8 connections) — `server/utils/memory_profiler.py`
 - **Any** (8 connections)
@@ -29,16 +28,17 @@
 - **.print_memory_summary()** (4 connections) — `server/utils/memory_profiler.py`
 - **.print_model_memory_usage()** (4 connections) — `server/utils/memory_profiler.py`
 - **test_memory_profiler_init()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- *... and 48 more nodes in this community*
+- **test_memory_profiler_start_profiling()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- *... and 46 more nodes in this community*
 
 ## Relationships
 
-- [grace period login](grace_period_login.md) (5 shared connections)
-- [alias models rationale](alias_models_rationale.md) (3 shared connections)
-- [command factories communication](command_factories_communication.md) (3 shared connections)
-- [player service game](player_service_game.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (6 shared connections)
+- [alias models rationale](alias_models_rationale.md) (2 shared connections)
 - [command communication models](command_communication_models.md) (1 shared connections)
-- [message queue realtime](message_queue_realtime.md) (1 shared connections)
+- [room service sync](room_service_sync.md) (1 shared connections)
+- [combat services turn](combat_services_turn.md) (1 shared connections)
+- [System Metrics](System_Metrics.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 242 (91%)
+- EXTRACTED: 231 (91%)
 - INFERRED: 23 (9%)
 - AMBIGUOUS: 0 (0%)
 

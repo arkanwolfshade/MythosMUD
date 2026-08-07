@@ -1,48 +1,45 @@
 # cache caching service
 
-> 23 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **Any** (13 connections)
-- **.get_all_professions()** (5 connections) — `server/caching/cache_service.py`
-- **.get_room_sync()** (4 connections) — `server/caching/cache_service.py`
-- **.__init__()** (4 connections) — `server/caching/cache_service.py`
-- **.__init__()** (4 connections) — `server/caching/cache_service.py`
-- **.get_profession_by_id()** (4 connections) — `server/caching/cache_service.py`
-- **.preload_frequently_accessed_data()** (4 connections) — `server/caching/cache_service.py`
-- **.get_room()** (3 connections) — `server/caching/cache_service.py`
-- **.get_npc_definitions()** (3 connections) — `server/caching/cache_service.py`
-- **.get_npc_definition()** (3 connections) — `server/caching/cache_service.py`
-- **.get_spawn_rules()** (3 connections) — `server/caching/cache_service.py`
-- **.get_cache_stats()** (3 connections) — `server/caching/cache_service.py`
-- **Get room data with caching.          Args:             room_id: The room ID** (1 connections) — `server/caching/cache_service.py`
-- **Get room data with caching (synchronous version).          Args:             roo** (1 connections) — `server/caching/cache_service.py`
-- **Initialize the NPC cache service.          Args:             npc_service: NPC se** (1 connections) — `server/caching/cache_service.py`
-- **Get NPC definitions with caching.          Args:             session: Database s** (1 connections) — `server/caching/cache_service.py`
-- **Get a specific NPC definition with caching.          Args:             session:** (1 connections) — `server/caching/cache_service.py`
-- **Get NPC spawn rules with caching.          Args:             session: Database s** (1 connections) — `server/caching/cache_service.py`
-- **Initialize the profession cache service.          Args:             persistence:** (1 connections) — `server/caching/cache_service.py`
-- **Get all professions with caching.          Returns:             List of professi** (1 connections) — `server/caching/cache_service.py`
-- **Get a specific profession by ID with caching.          Args:             profess** (1 connections) — `server/caching/cache_service.py`
-- **Get statistics for all caches.          Returns:             Dictionary containi** (1 connections) — `server/caching/cache_service.py`
-- **Preload frequently accessed data into caches.          This method loads commonl** (1 connections) — `server/caching/cache_service.py`
+- **roomHandlers.ts** (26 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- **roomHandlers.test.ts** (12 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/roomHandlers.test.ts`
+- **handleRoomUpdate()** (7 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- **handleStructuredOccupantsFormat()** (5 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- **handleRoomOccupants()** (5 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- **hasOccupantData()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- **createRoomUpdateWithPreservedOccupants()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- **getValueOrDefault()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- **getFinalNpcs()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- **getFinalPlayers()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- **__setOccupantDebugForTests()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- **handleGameState()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- **handleFollowState()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- **extractRoomMetadata()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- **createInitialRoomState()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- **getRoomDataFromEvent()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- **validateRoomIdMatch()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- **calculateOccupantCount()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- **createMinimalRoomFromOccupantsEvent()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
 
 ## Relationships
 
-- [startup npc service](startup_npc_service.md) (4 shared connections)
-- [uuid services npc](uuid_services_npc.md) (4 shared connections)
-- [commands skills rationale](commands_skills_rationale.md) (3 shared connections)
-- [services lucidity repository](services_lucidity_repository.md) (3 shared connections)
-- [config rationale config()](config_rationale_config%28%29.md) (2 shared connections)
+- [command factories communication](command_factories_communication.md) (4 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (4 shared connections)
+- [game terminal lucidity](game_terminal_lucidity.md) (2 shared connections)
+- [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (2 shared connections)
+- [casting game magic](casting_game_magic.md) (2 shared connections)
 
 ## Source Files
 
-- `server/caching/cache_service.py`
+- `client/src/components/ui-v2/eventHandlers/__tests__/roomHandlers.test.ts`
+- `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 64 (100%)
+- EXTRACTED: 88 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,65 +1,66 @@
 # command player state
 
-> 79 nodes
+> 131 nodes
 
 ## Key Concepts
 
-- **get_async_session()** (54 connections) — `server/database.py`
-- **test_database_extended.py** (43 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **get_database_path()** (12 connections) — `server/database.py`
-- **init_db()** (11 connections) — `server/database.py`
-- **async_persistence_room_loader.py** (9 connections) — `server/async_persistence_room_loader.py`
-- **main()** (6 connections) — `scripts/verify_and_load_seed.py`
-- **.get_database_path()** (6 connections) — `server/database.py`
-- **Path** (6 connections)
-- **get_database_url()** (6 connections) — `server/database.py`
-- **.apply_encounter_lucidity_effect()** (6 connections) — `server/services/npc_combat_lucidity.py`
-- **test_database_manager_get_database_path_unsupported()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_get_database_path_none_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **load_seed_data()** (4 connections) — `scripts/load_seed_using_project_db.py`
-- **verify_and_load_seed.py** (4 connections) — `scripts/verify_and_load_seed.py`
-- **ensure_database_directory()** (4 connections) — `server/database.py`
-- **._resolve_lucidity_category()** (4 connections) — `server/services/npc_combat_lucidity.py`
-- **test_get_session_maker_initializes_database()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_get_database_url_initializes_database()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_get_engine_initializes()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_get_engine_reinitializes_if_none()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_get_session_maker_initializes()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_get_database_url_initializes()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_get_database_path_postgresql()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_close_with_engine()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_close_without_engine()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- *... and 54 more nodes in this community*
+- **RoomSubscriptionManager** (46 connections) — `server/realtime/room_subscription_manager.py`
+- **connection_initialization.py** (38 connections) — `server/realtime/connection_initialization.py`
+- **MemoryMonitor** (27 connections) — `server/realtime/memory_monitor.py`
+- **connection_cleaner.py** (22 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **game_state_provider.py** (21 connections) — `server/realtime/integration/game_state_provider.py`
+- **test_memory_monitor.py** (21 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **room_subscription_manager.py** (18 connections) — `server/realtime/room_subscription_manager.py`
+- **test_connection_initialization.py** (18 connections) — `server/tests/unit/realtime/test_connection_initialization.py`
+- **initialize_core_components()** (13 connections) — `server/realtime/connection_initialization.py`
+- **Any** (13 connections)
+- **._canonical_room_id()** (13 connections) — `server/realtime/room_subscription_manager.py`
+- **.__init__()** (12 connections) — `server/realtime/connection_manager.py`
+- **memory_monitor.py** (10 connections) — `server/realtime/memory_monitor.py`
+- **initialize_connection_state()** (9 connections) — `server/realtime/connection_initialization.py`
+- **initialize_messaging()** (9 connections) — `server/realtime/connection_initialization.py`
+- **Any** (8 connections)
+- **initialize_health_monitor()** (8 connections) — `server/realtime/connection_initialization.py`
+- **initialize_error_handler()** (8 connections) — `server/realtime/connection_initialization.py`
+- **initialize_connection_cleaner()** (8 connections) — `server/realtime/connection_initialization.py`
+- **initialize_game_state_provider()** (8 connections) — `server/realtime/connection_initialization.py`
+- **initialize_room_event_handler()** (8 connections) — `server/realtime/connection_initialization.py`
+- **.get_room_occupants()** (8 connections) — `server/realtime/room_subscription_manager.py`
+- **_max_connection_age_seconds()** (7 connections) — `server/realtime/memory_monitor.py`
+- **._get_fallback_npcs_from_room()** (7 connections) — `server/realtime/room_subscription_manager.py`
+- **._query_npcs_from_lifecycle_manager()** (6 connections) — `server/realtime/room_subscription_manager.py`
+- *... and 106 more nodes in this community*
 
 ## Relationships
 
-- [Database Access Layer](Database_Access_Layer.md) (32 shared connections)
-- [game models enums](game_models_enums.md) (12 shared connections)
-- [Loot Generation](Loot_Generation.md) (9 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
-- [models profession rationale](models_profession_rationale.md) (6 shared connections)
-- [NPC Combat](NPC_Combat.md) (5 shared connections)
-- [aggro threat services](aggro_threat_services.md) (3 shared connections)
-- [player requests schemas](player_requests_schemas.md) (3 shared connections)
-- [combat services persistence](combat_services_persistence.md) (3 shared connections)
-- [Database Config](Database_Config.md) (3 shared connections)
-- [magic healing game](magic_healing_game.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (16 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (13 shared connections)
+- [persistence rationale room](persistence_rationale_room.md) (11 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (9 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (6 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (6 shared connections)
+- [combat configuration service](combat_configuration_service.md) (6 shared connections)
+- [room subscription manager](room_subscription_manager.md) (6 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (4 shared connections)
+- [spell models rationale](spell_models_rationale.md) (4 shared connections)
+- [command utility models](command_utility_models.md) (4 shared connections)
+- [tick game processing](tick_game_processing.md) (4 shared connections)
 
 ## Source Files
 
-- `scripts/add_flavor_text_column.py`
-- `scripts/load_seed_using_project_db.py`
-- `scripts/verify_and_load_seed.py`
-- `server/async_persistence_room_loader.py`
-- `server/database.py`
-- `server/services/npc_combat_lucidity.py`
-- `server/tests/unit/infrastructure/test_database_extended.py`
+- `server/realtime/connection_initialization.py`
+- `server/realtime/connection_manager.py`
+- `server/realtime/integration/game_state_provider.py`
+- `server/realtime/maintenance/connection_cleaner.py`
+- `server/realtime/memory_monitor.py`
+- `server/realtime/room_subscription_manager.py`
+- `server/tests/unit/realtime/test_connection_initialization.py`
+- `server/tests/unit/realtime/test_memory_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 306 (98%)
-- INFERRED: 7 (2%)
+- EXTRACTED: 556 (99%)
+- INFERRED: 6 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

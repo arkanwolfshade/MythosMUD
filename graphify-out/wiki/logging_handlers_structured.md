@@ -1,53 +1,58 @@
 # logging handlers structured
 
-> 72 nodes
+> 139 nodes
 
 ## Key Concepts
 
+- **logging_file_setup.py** (35 connections) — `server/structured_logging/logging_file_setup.py`
 - **test_logging_handlers.py** (28 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **ensure_log_directory()** (23 connections) — `server/structured_logging/logging_utilities.py`
 - **create_aggregator_handler()** (22 connections) — `server/structured_logging/logging_handlers.py`
+- **WindowsSafeRotatingFileHandler** (21 connections) — `server/structured_logging/windows_safe_rotation.py`
+- **setup_enhanced_file_logging()** (20 connections) — `server/structured_logging/logging_file_setup.py`
 - **SafeRotatingFileHandler** (20 connections) — `server/structured_logging/logging_handlers.py`
 - **logging_handlers.py** (17 connections) — `server/structured_logging/logging_handlers.py`
 - **WarningOnlyFilter** (13 connections) — `server/structured_logging/logging_handlers.py`
 - **AsyncioConnLostWriteFilter** (11 connections) — `server/structured_logging/logging_handlers.py`
-- **._open()** (5 connections) — `server/structured_logging/logging_handlers.py`
-- **.shouldRollover()** (5 connections) — `server/structured_logging/logging_handlers.py`
-- **_make_exec_for_aggregator()** (5 connections) — `server/structured_logging/logging_handlers.py`
-- **_aggregator_handler_class_for_windows()** (5 connections) — `server/structured_logging/logging_handlers.py`
-- **test_create_aggregator_handler_warning_level()** (5 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **RotatingFileHandler** (4 connections)
-- **test_create_aggregator_handler_error_level()** (4 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **_LoggingState** (3 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **LogRecord** (3 connections)
-- **.filter()** (3 connections) — `server/structured_logging/logging_handlers.py`
-- **Path** (3 connections)
-- **test_safe_rotating_file_handler_init()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_safe_rotating_file_handler_open_success()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_safe_rotating_file_handler_open_no_base_filename()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_safe_rotating_file_handler_open_returns_stringio_on_final_failure()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_safe_rotating_file_handler_should_rollover_false()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_safe_rotating_file_handler_should_rollover_no_base_filename()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_safe_rotating_file_handler_should_rollover_retries_on_error()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_warning_only_filter_warning_level()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- *... and 47 more nodes in this community*
+- **load_player_guid_formatter_class()** (11 connections) — `server/structured_logging/logging_utilities.py`
+- **_Handler** (11 connections) — `server/tests/unit/realtime/test_nats_message_handler_base.py`
+- **_setup_aggregator_handlers()** (9 connections) — `server/structured_logging/logging_file_setup.py`
+- **_setup_console_handler()** (9 connections) — `server/structured_logging/logging_file_setup.py`
+- **_prepare_log_environment()** (9 connections) — `server/structured_logging/logging_file_setup.py`
+- **_setup_category_handlers()** (8 connections) — `server/structured_logging/logging_file_setup.py`
+- **LoggerNameFilter** (8 connections) — `server/structured_logging/logging_file_setup.py`
+- **_create_handler_for_category()** (8 connections) — `server/structured_logging/logging_file_setup.py`
+- **Queue** (7 connections)
+- **windows_safe_rotation.py** (7 connections) — `server/structured_logging/windows_safe_rotation.py`
+- **_CategoryHandlerConfig** (6 connections) — `server/structured_logging/logging_file_setup.py`
+- **_ConsoleHandlerConfig** (6 connections) — `server/structured_logging/logging_file_setup.py`
+- **_setup_async_logging_queue()** (6 connections) — `server/structured_logging/logging_file_setup.py`
+- **_create_formatter()** (6 connections) — `server/structured_logging/logging_file_setup.py`
+- **test_nats_message_handler_base.py** (6 connections) — `server/tests/unit/realtime/test_nats_message_handler_base.py`
+- *... and 114 more nodes in this community*
 
 ## Relationships
 
-- [logging structured utilities](logging_structured_utilities.md) (16 shared connections)
-- [NPC Combat](NPC_Combat.md) (5 shared connections)
-- [windows safe rotation](windows_safe_rotation.md) (5 shared connections)
-- [player guid formatter](player_guid_formatter.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (18 shared connections)
+- [logging structured utilities](logging_structured_utilities.md) (18 shared connections)
+- [windows safe rotation](windows_safe_rotation.md) (11 shared connections)
+- [services admin auth](services_admin_auth.md) (9 shared connections)
+- [player guid formatter](player_guid_formatter.md) (4 shared connections)
+- [log structured logging](log_structured_logging.md) (1 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/enhanced_logging_config.py`
+- `server/structured_logging/logging_file_setup.py`
 - `server/structured_logging/logging_handlers.py`
+- `server/structured_logging/logging_utilities.py`
+- `server/structured_logging/windows_safe_rotation.py`
+- `server/tests/unit/realtime/test_nats_message_handler_base.py`
 - `server/tests/unit/structured_logging/test_logging_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 230 (93%)
-- INFERRED: 18 (7%)
+- EXTRACTED: 512 (94%)
+- INFERRED: 34 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

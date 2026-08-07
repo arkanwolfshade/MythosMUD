@@ -1,6 +1,6 @@
 # commands logout helpers
 
-> 61 nodes
+> 59 nodes
 
 ## Key Concepts
 
@@ -8,7 +8,6 @@
 - **test_movement_integration.py** (29 connections) — `server/tests/unit/npc/test_movement_integration.py`
 - **.move_npc_to_room()** (7 connections) — `server/npc/movement_integration.py`
 - **.__init__()** (5 connections) — `server/npc/idle_movement.py`
-- **.__init__()** (5 connections) — `server/npc/movement_integration.py`
 - **._get_room_objects()** (4 connections) — `server/npc/movement_integration.py`
 - **._update_room_occupancy()** (4 connections) — `server/npc/movement_integration.py`
 - **._update_npc_instance_room_tracking()** (4 connections) — `server/npc/movement_integration.py`
@@ -29,16 +28,17 @@
 - **test_get_room_objects_missing_room()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
 - **test_validate_npc_movement()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
 - **test_get_room_npcs_and_exits()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
-- *... and 36 more nodes in this community*
+- **test_find_path_direct_connection()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (5 shared connections)
-- [Error Conversion](Error_Conversion.md) (4 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (3 shared connections)
-- [idle movement npc](idle_movement_npc.md) (2 shared connections)
-- [message nats handler](message_nats_handler.md) (1 shared connections)
-- [logging setup structured](logging_setup_structured.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (5 shared connections)
+- [idle movement npc](idle_movement_npc.md) (3 shared connections)
+- [services nats service](services_nats_service.md) (2 shared connections)
+- [lucidity event services](lucidity_event_services.md) (2 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [tick game processing](tick_game_processing.md) (1 shared connections)
 - [room rationale subzone](room_rationale_subzone.md) (1 shared connections)
 
 ## Source Files
@@ -49,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 199 (99%)
+- EXTRACTED: 193 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

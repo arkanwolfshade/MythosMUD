@@ -4,42 +4,45 @@
 
 ## Key Concepts
 
-- **test_lifecycle_despawn.py** (19 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **despawn_npc_impl()** (18 connections) — `server/npc/lifecycle_despawn.py`
-- **_make_manager()** (10 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **_remove_npc_from_room_on_despawn()** (5 connections) — `server/npc/lifecycle_despawn.py`
-- **test_despawn_publishes_event_when_room_missing()** (4 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **Any** (3 connections)
-- **.despawn_npc()** (3 connections) — `server/npc/lifecycle_manager.py`
-- **test_despawn_success_with_persistence_and_room()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **test_despawn_publishes_event_without_persistence()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **test_despawn_record_only_when_not_active()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **test_despawn_exception_sets_error_state()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **test_despawn_without_population_controller()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **test_despawn_skips_left_event_when_room_unknown()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **test_despawn_prefers_current_room_over_room_id()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **test_despawn_uses_lifecycle_spawn_room_when_attrs_missing()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **test_despawn_nonexistent_npc_returns_false()** (2 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **Mutate room occupants or publish NPCLeftRoom; skip unknown rooms.** (1 connections) — `server/npc/lifecycle_despawn.py`
-- **Despawn an NPC instance.      Args:         manager: NPCLifecycleManager instanc** (1 connections) — `server/npc/lifecycle_despawn.py`
-- **Despawn an NPC instance (delegates to lifecycle_despawn).** (1 connections) — `server/npc/lifecycle_manager.py`
-- **Unit tests for NPC lifecycle despawn helpers.** (1 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- **RoomRepository** (17 connections) — `server/persistence/repositories/room_repository.py`
+- **room_repository.py** (8 connections) — `server/persistence/repositories/room_repository.py`
+- **test_room_repository.py** (7 connections) — `server/tests/unit/persistence/test_room_repository.py`
+- **.__init__()** (3 connections) — `server/persistence/repositories/room_repository.py`
+- **.get_room_by_id()** (2 connections) — `server/persistence/repositories/room_repository.py`
+- **.list_rooms()** (2 connections) — `server/persistence/repositories/room_repository.py`
+- **.save_room()** (2 connections) — `server/persistence/repositories/room_repository.py`
+- **.save_rooms()** (2 connections) — `server/persistence/repositories/room_repository.py`
+- **test_get_room_by_id_from_cache()** (2 connections) — `server/tests/unit/persistence/test_room_repository.py`
+- **test_list_rooms_returns_cache_values()** (2 connections) — `server/tests/unit/persistence/test_room_repository.py`
+- **test_save_room_updates_cache()** (2 connections) — `server/tests/unit/persistence/test_room_repository.py`
+- **test_save_rooms_updates_cache()** (2 connections) — `server/tests/unit/persistence/test_room_repository.py`
+- **Room repository for async persistence operations.  This module provides async da** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **Repository for room persistence operations.      Handles room caching and retrie** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **Initialize the room repository.          Args:             room_cache: Shared ro** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **Get a room by ID from cache.          Args:             room_id: Room identifier** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **List all cached rooms.          Returns:             list[Room]: List of all roo** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **Save a room to the cache.          Args:             room: Room object to save** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **Save multiple rooms to the cache.          Args:             rooms: List of room** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **Unit tests for RoomRepository.** (1 connections) — `server/tests/unit/persistence/test_room_repository.py`
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (12 shared connections)
-- [combat services rationale](combat_services_rationale.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [room models instance](room_models_instance.md) (2 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [commands party examples](commands_party_examples.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/lifecycle_despawn.py`
-- `server/npc/lifecycle_manager.py`
-- `server/tests/unit/npc/test_lifecycle_despawn.py`
+- `server/persistence/repositories/room_repository.py`
+- `server/tests/unit/persistence/test_room_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 91 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 58 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

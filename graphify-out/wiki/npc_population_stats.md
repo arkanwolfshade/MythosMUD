@@ -1,61 +1,59 @@
 # npc population stats
 
-> 59 nodes
+> 98 nodes
 
 ## Key Concepts
 
-- **PlayerInventory** (25 connections) — `server/models/player.py`
-- **test_player_related_models.py** (19 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **PlayerExploration** (18 connections) — `server/models/player.py`
-- **PlayerSkill** (17 connections) — `server/models/player_skill.py`
-- **PlayerSavePreparer** (16 connections) — `server/persistence/repositories/player_repository_save.py`
-- **player_repository_save.py** (11 connections) — `server/persistence/repositories/player_repository_save.py`
-- **.prepare()** (10 connections) — `server/persistence/repositories/player_repository_save.py`
-- **Any** (7 connections)
-- **Player** (7 connections)
-- **._prepare_inventory_payload()** (7 connections) — `server/persistence/repositories/player_repository_save.py`
-- **_parse_inventory_raw()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
-- **_parse_equipped_raw()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
-- **._ensure_inventory_record()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
-- **._normalize_timestamps()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
-- **._upsert_string_defaults()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
-- **._upsert_numeric_defaults()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
-- **Base** (4 connections)
-- **._normalize_is_admin()** (4 connections) — `server/persistence/repositories/player_repository_save.py`
-- **.execute()** (3 connections) — `server/persistence/repositories/player_repository_save.py`
-- **test_player_inventory_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_defaults()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_with_data()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_repr()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_repr()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- *... and 34 more nodes in this community*
+- **test_hallucination_services.py** (23 connections) — `server/tests/unit/services/test_hallucination_services.py`
+- **HallucinationFrequencyService** (19 connections) — `server/services/hallucination_frequency_service.py`
+- **PhantomHostileService** (17 connections) — `server/services/phantom_hostile_service.py`
+- **hallucinations.py** (13 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
+- **FakeHallucinationService** (12 connections) — `server/services/fake_hallucination_service.py`
+- **hallucination_frequency_service.py** (10 connections) — `server/services/hallucination_frequency_service.py`
+- **handle_hallucination_triggers()** (10 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
+- **resolve_tier()** (8 connections) — `server/services/lucidity_helpers.py`
+- **test_passive_lucidity_hallucinations.py** (8 connections) — `server/tests/unit/services/test_passive_lucidity_hallucinations.py`
+- **.should_trigger_hallucination()** (7 connections) — `server/services/hallucination_frequency_service.py`
+- **.check_room_entry_hallucination()** (6 connections) — `server/services/hallucination_frequency_service.py`
+- **.check_time_based_hallucination()** (6 connections) — `server/services/hallucination_frequency_service.py`
+- **handle_phantom_hostile_hallucination()** (6 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
+- **handle_fake_hallucination()** (6 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
+- **.create_phantom_hostile_data()** (5 connections) — `server/services/phantom_hostile_service.py`
+- **UUID** (5 connections)
+- **.generate_fake_npc_tell()** (4 connections) — `server/services/fake_hallucination_service.py`
+- **.generate_room_text_overlay()** (4 connections) — `server/services/fake_hallucination_service.py`
+- **UUID** (4 connections)
+- **UUID** (4 connections)
+- **UUID** (3 connections)
+- **AsyncSession** (3 connections)
+- **.generate_phantom_name()** (3 connections) — `server/services/phantom_hostile_service.py`
+- **.remove_phantom()** (3 connections) — `server/services/phantom_hostile_service.py`
+- **.get_active_phantoms()** (3 connections) — `server/services/phantom_hostile_service.py`
+- *... and 73 more nodes in this community*
 
 ## Relationships
 
-- [combat models rationale](combat_models_rationale.md) (13 shared connections)
-- [player preferences service](player_preferences_service.md) (7 shared connections)
-- [world models rationale](world_models_rationale.md) (7 shared connections)
-- [player room realtime](player_room_realtime.md) (6 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (6 shared connections)
-- [shutdown command commands](shutdown_command_commands.md) (5 shared connections)
-- [logging file setup](logging_file_setup.md) (5 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (2 shared connections)
-- [effect player repository](effect_player_repository.md) (2 shared connections)
-- [player requests schemas](player_requests_schemas.md) (2 shared connections)
-- [endpoints auth rationale](endpoints_auth_rationale.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (10 shared connections)
+- [auth endpoints rationale](auth_endpoints_rationale.md) (8 shared connections)
+- [player room realtime](player_room_realtime.md) (4 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (3 shared connections)
+- [room renderer functions](room_renderer_functions.md) (1 shared connections)
+- [lucidity flux passive](lucidity_flux_passive.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/player.py`
-- `server/models/player_skill.py`
-- `server/persistence/repositories/player_repository_save.py`
-- `server/tests/unit/models/test_player_related_models.py`
+- `server/services/fake_hallucination_service.py`
+- `server/services/hallucination_frequency_service.py`
+- `server/services/lucidity_helpers.py`
+- `server/services/passive_lucidity_flux/hallucinations.py`
+- `server/services/phantom_hostile_service.py`
+- `server/tests/unit/services/test_hallucination_services.py`
+- `server/tests/unit/services/test_passive_lucidity_hallucinations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 205 (86%)
-- INFERRED: 32 (14%)
+- EXTRACTED: 299 (98%)
+- INFERRED: 6 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

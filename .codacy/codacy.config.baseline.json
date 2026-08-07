@@ -6,8 +6,8 @@
     "organization": null,
     "repositoryId": null,
     "repositoryName": null,
-    "createdAt": "2026-08-04T14:31:35.409Z",
-    "updatedAt": "2026-08-04T14:31:35.409Z",
+    "createdAt": "2026-08-06T22:56:49.959Z",
+    "updatedAt": "2026-08-06T22:56:49.959Z",
     "languages": [
       "CSS",
       "HTML",
@@ -2320,7 +2320,8 @@
         "**/tests/**/*.py",
         "**/test_*.py",
         "**/*_test.py",
-        "**/conftest.py"
+        "**/conftest.py",
+        "server/schemas/**"
       ]
     },
     {
@@ -2330,7 +2331,9 @@
       "patterns": [],
       "exclude": [
         "Makefile",
-        "**/Makefile"
+        "**/Makefile",
+        "server/schemas/**",
+        "server/models/**"
       ]
     },
     {
@@ -6107,6 +6110,8 @@
       "exclude": [
         "server/services/user_manager.py",
         "scripts/ci/quality_fragmentation_guard.py",
+        "uv.lock",
+        "**/uv.lock",
         "graphify-out/**",
         "**/graphify-out/**",
         "**/graphify/**",
@@ -7348,6 +7353,8 @@
     "**/node_modules/**",
     "**/dist/**",
     "**/build/**",
+    "uv.lock",
+    "**/uv.lock",
     "Makefile",
     "**/mythosmud_data/**",
     ".data/**",

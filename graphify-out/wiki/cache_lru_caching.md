@@ -1,50 +1,54 @@
 # cache lru caching
 
-> 26 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **test_lru_cache.py** (16 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **cache_with_ttl()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **cache_without_ttl()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_put_expired_entries_removed_before_lru_eviction()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_put_expired_entries_removed_before_capacity_check()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expired_entries_not_counted_in_evictions()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expiration_check_only_when_ttl_enabled()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expired_count_tracked_in_stats()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expiration_rate_calculated()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_size_stays_within_bounds_after_expiration()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expiration_performance_impact()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expired_entries_removed_efficiently()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_mixed_expired_and_valid_entries()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Unit tests for LRU cache expiration and eviction.  Tests the LRUCache class, foc** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Create an LRUCache with TTL enabled.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Create an LRUCache without TTL.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expired entries are removed before LRU eviction.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expired entries are removed before checking if cache is full.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expired entries are not counted as LRU evictions.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expiration check is skipped when TTL is None.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expired entry count is tracked in cache stats.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expiration rate is calculated in stats.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that cache size stays within bounds after expiration cleanup.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expiration checking doesn't significantly impact performance.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expired entries are removed efficiently in bulk.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- *... and 1 more nodes in this community*
+- **run_flee_effect()** (25 connections) — `server/game/magic/spell_effect_flee.py`
+- **spell_effect_flee.py** (18 connections) — `server/game/magic/spell_effect_flee.py`
+- **test_spell_effect_flee.py** (17 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **Any** (10 connections)
+- **_flee_effect_validate_room_exits()** (7 connections) — `server/game/magic/spell_effect_flee.py`
+- **_player_target()** (7 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **_flee_effect_services_available()** (6 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_not_in_combat_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_success_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_failure_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_invalid_target_type_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_services_unavailable_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_invalid_target_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_room_error_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **.get_room_by_id()** (3 connections) — `server/game/magic/spell_effects.py`
+- **test_run_flee_effect_invalid_target_type()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_run_flee_effect_services_unavailable()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_run_flee_effect_invalid_uuid()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_run_flee_effect_not_in_combat()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_run_flee_effect_room_error()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_run_flee_effect_success_and_failure()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **UUID** (2 connections)
+- **test_flee_effect_services_available()** (2 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_flee_effect_validate_room_exits()** (2 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **Flee spell effect: voluntary flee mechanics (success roll, lose-attack-on-fail,** (1 connections) — `server/game/magic/spell_effect_flee.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [commands skills rationale](commands_skills_rationale.md) (1 shared connections)
-- [caching lru cache](caching_lru_cache.md) (1 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (13 shared connections)
+- [command factories exploration](command_factories_exploration.md) (3 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (2 shared connections)
+- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (2 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/caching/test_lru_cache.py`
+- `server/game/magic/spell_effect_flee.py`
+- `server/game/magic/spell_effects.py`
+- `server/tests/unit/game/magic/test_spell_effect_flee.py`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 145 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

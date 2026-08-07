@@ -1,50 +1,40 @@
 # commands inventory put
 
-> 22 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **character_creation_service.py** (13 connections) — `server/game/character_creation_service.py`
-- **CharacterCreationService** (12 connections) — `server/game/character_creation_service.py`
-- **.create_character_with_stats()** (7 connections) — `server/game/character_creation_service.py`
-- **.validate_character_stats()** (6 connections) — `server/game/character_creation_service.py`
-- **Any** (5 connections)
-- **.roll_character_stats()** (5 connections) — `server/game/character_creation_service.py`
-- **.__init__()** (4 connections) — `server/game/character_creation_service.py`
-- **.get_available_classes_info()** (4 connections) — `server/game/character_creation_service.py`
-- **._get_class_description()** (3 connections) — `server/game/character_creation_service.py`
-- **character_creation_service()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_character_creation_service_init()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **UUID** (2 connections)
-- **Character creation service for MythosMUD server.  This module handles all charac** (1 connections) — `server/game/character_creation_service.py`
-- **Service class for character creation and stats generation business operations.** (1 connections) — `server/game/character_creation_service.py`
-- **Initialize the character creation service with a player service.** (1 connections) — `server/game/character_creation_service.py`
-- **Roll random stats for character creation.          Args:             method: The** (1 connections) — `server/game/character_creation_service.py`
-- **Validate character stats against class prerequisites.          Args:** (1 connections) — `server/game/character_creation_service.py`
-- **Create a new character with specific stats.          Args:             name: The** (1 connections) — `server/game/character_creation_service.py`
-- **Get information about all available character classes and their prerequisites.** (1 connections) — `server/game/character_creation_service.py`
-- **Get a description for a character class.** (1 connections) — `server/game/character_creation_service.py`
-- **Create a CharacterCreationService instance.** (1 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **Test CharacterCreationService initialization.** (1 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **_should_include_npc()** (14 connections) — `server/commands/look_npc.py`
+- **test_should_include_npc_alive_with_name()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_should_include_npc_dead()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_should_include_npc_no_name()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_should_include_npc()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_should_include_npc_no_name()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_should_include_npc_not_alive()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Check if an NPC should be included in the results (has name and is alive).** (1 connections) — `server/commands/look_npc.py`
+- **Test should_include_npc for alive NPC with name.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test should_include_npc for dead NPC.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test should_include_npc for NPC without name.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test _should_include_npc() returns True for valid NPC.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _should_include_npc() returns False when no name.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _should_include_npc() returns False when not alive.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (5 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (5 shared connections)
-- [event connection helpers](event_connection_helpers.md) (4 shared connections)
-- [npc rationale extract](npc_rationale_extract.md) (4 shared connections)
-- [player service game](player_service_game.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [commands quest rationale](commands_quest_rationale.md) (7 shared connections)
+- [npc look commands](npc_look_commands.md) (4 shared connections)
+- [player helpers error](player_helpers_error.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/character_creation_service.py`
-- `server/tests/unit/game/test_character_creation_service.py`
+- `server/commands/look_npc.py`
+- `server/tests/unit/commands/test_look_npc.py`
+- `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 73 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 39 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

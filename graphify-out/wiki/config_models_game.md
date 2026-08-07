@@ -1,41 +1,51 @@
 # config models game
 
-> 17 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **_StubPlayerRepo** (18 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **test_player_repository_protocol_stub()** (17 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **UUID** (6 connections)
-- **.get_player_by_id()** (4 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_players_batch()** (3 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.soft_delete_player()** (3 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.delete_player()** (3 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.update_player_last_active()** (3 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_player_by_user_id()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_players_by_user_id()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_active_players_by_user_id()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_player_by_name()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.save_player()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.save_players()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.list_players()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_players_in_room()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.validate_and_fix_player_room()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **npc_combat_grace.py** (14 connections) — `server/services/npc_combat_grace.py`
+- **is_player_attack_blocked_by_login_grace_period()** (11 connections) — `server/services/npc_combat_grace.py`
+- **is_npc_attack_on_player_blocked_by_login_grace_period()** (10 connections) — `server/services/npc_combat_grace.py`
+- **test_npc_combat_grace.py** (9 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **_connection_manager_from_config_app()** (8 connections) — `server/services/npc_combat_grace.py`
+- **get_app_instance()** (5 connections) — `server/config/__init__.py`
+- **UUID** (3 connections)
+- **test_player_attack_blocked_when_in_grace_period()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **test_player_attack_fail_open_without_connection_manager()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **test_player_attack_fail_open_on_invalid_uuid()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **test_npc_attack_blocked_when_target_in_grace_period()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **test_npc_attack_fail_open_without_app()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **Return the runtime app instance attached during lifespan startup.      This prov** (1 connections) — `server/config/__init__.py`
+- **Login grace-period checks for NPC combat integration (extracted to keep service** (1 connections) — `server/services/npc_combat_grace.py`
+- **Resolve connection_manager from the public config app accessor.      Uses geta** (1 connections) — `server/services/npc_combat_grace.py`
+- **True if the player should not attack (in login grace period). Fail-open on confi** (1 connections) — `server/services/npc_combat_grace.py`
+- **True if NPC attack on this player should be blocked (player in login grace perio** (1 connections) — `server/services/npc_combat_grace.py`
+- **Unit tests for npc_combat_grace login grace checks.** (1 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
 
 ## Relationships
 
-- [realtime circuit breaker](realtime_circuit_breaker.md) (4 shared connections)
-- [persistence protocols rationale](persistence_protocols_rationale.md) (2 shared connections)
-- [useDraggablePanelInteractions draggableP](useDraggablePanelInteractions_draggableP.md) (1 shared connections)
+- [command utility models](command_utility_models.md) (4 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
+- [models player rationale](models_player_rationale.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [websocket validation realtime](websocket_validation_realtime.md) (1 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
+- [message nats handler](message_nats_handler.md) (1 shared connections)
+- [service combat services](service_combat_services.md) (1 shared connections)
+- [connection models realtime](connection_models_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_protocols.py`
+- `server/config/__init__.py`
+- `server/services/npc_combat_grace.py`
+- `server/tests/unit/services/test_npc_combat_grace.py`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 74 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

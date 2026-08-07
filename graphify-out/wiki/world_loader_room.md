@@ -1,64 +1,48 @@
 # world loader room
 
-> 32 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **log_with_context()** (20 connections) — `server/structured_logging/logging_context.py`
-- **bind_request_context()** (18 connections) — `server/structured_logging/logging_context.py`
-- **clear_request_context()** (13 connections) — `server/structured_logging/logging_context.py`
-- **test_logging_context.py** (12 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
-- **update_player_background_task()** (8 connections) — `docs/examples/logging/fastapi_integration.py`
-- **get_current_context()** (8 connections) — `server/structured_logging/logging_context.py`
-- **logging_context.py** (7 connections) — `server/structured_logging/logging_context.py`
-- **add_request_context()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **.__call__()** (5 connections) — `server/middleware/correlation_middleware.py`
-- **correct_request_context()** (4 connections) — `docs/examples/logging/correct_patterns.py`
-- **.resolve_alert()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
-- **Any** (3 connections)
-- **test_get_current_context_returns_empty_on_error()** (3 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
-- **.update_player()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
-- **Any** (2 connections)
-- **test_bind_request_context_generates_correlation_id()** (2 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
-- **test_bind_request_context_omits_none_values()** (2 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
-- **test_clear_request_context()** (2 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
-- **test_get_current_context_returns_contextvars()** (2 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
-- **test_log_with_context_merges_context()** (2 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
-- **Demonstrate correct request context binding.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Add request context to all log entries using enhanced logging.** (1 connections) — `docs/examples/logging/fastapi_integration.py`
-- **Background task for player update with enhanced logging.** (1 connections) — `docs/examples/logging/fastapi_integration.py`
-- **Process the WebSocket connection with correlation ID.          Args:** (1 connections) — `server/middleware/correlation_middleware.py`
-- **Resolve an alert.          Args:             alert_id: ID of the alert to resolv** (1 connections) — `server/monitoring/monitoring_dashboard.py`
-- *... and 7 more nodes in this community*
+- **test_npc_startup_service.py** (39 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_npc_startup_service_init()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_required_npcs_success()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_optional_npcs_with_probability()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_optional_npcs_skips_low_probability()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_get_default_room_for_sub_zone_case_insensitive()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_optional_npcs_no_probability_attribute()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup_with_optional_npcs()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_arena_npcs_no_prior_spawns_returns_empty()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_arena_npcs_skips_unknown_definition_id()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_arena_room_ids()** (2 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Unit tests for NPC startup service.  Tests the NPCStartupService class.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test ARENA_ROOM_IDS defines 121 arena rooms (11x11) and includes center.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test NPCStartupService initialization.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_required_npcs() successfully spawns required NPCs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_optional_npcs() spawns based on probability.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_optional_npcs() skips NPCs with low probability.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _get_default_room_for_sub_zone() is case insensitive.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_optional_npcs() handles NPCs without spawn_probability attribute.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test spawn_npcs_on_startup() spawns optional NPCs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Arena pass is skipped when required/optional passes spawned nothing.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Stale definition_id in spawned_npcs that is not in definitions list is ignored.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Relationships
 
-- [middleware correlation rationale](middleware_correlation_rationale.md) (6 shared connections)
-- [models lucidity rationale](models_lucidity_rationale.md) (5 shared connections)
-- [NPC Combat](NPC_Combat.md) (5 shared connections)
-- [Spell Validation](Spell_Validation.md) (5 shared connections)
-- [correct patterns examples](correct_patterns_examples.md) (3 shared connections)
-- [room cache services](room_cache_services.md) (3 shared connections)
-- [websocket examples logging](websocket_examples_logging.md) (2 shared connections)
-- [app factory rationale](app_factory_rationale.md) (2 shared connections)
-- [examples logging testing](examples_logging_testing.md) (2 shared connections)
-- [tick game service](tick_game_service.md) (2 shared connections)
-- [models player related](models_player_related.md) (1 shared connections)
-- [examples migration logging](examples_migration_logging.md) (1 shared connections)
+- [room validator path](room_validator_path.md) (18 shared connections)
+- [realtime player connection](realtime_player_connection.md) (11 shared connections)
+- [realtime dead letter](realtime_dead_letter.md) (6 shared connections)
+- [room look commands](room_look_commands.md) (1 shared connections)
+- [aggro threat services](aggro_threat_services.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/correct_patterns.py`
-- `docs/examples/logging/fastapi_integration.py`
-- `server/middleware/correlation_middleware.py`
-- `server/monitoring/monitoring_dashboard.py`
-- `server/structured_logging/logging_context.py`
-- `server/tests/unit/structured_logging/test_logging_context.py`
+- `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 93 (69%)
-- INFERRED: 42 (31%)
+- EXTRACTED: 79 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

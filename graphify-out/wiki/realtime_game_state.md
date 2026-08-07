@@ -33,13 +33,14 @@
 
 ## Relationships
 
-- [npc service services](npc_service_services.md) (16 shared connections)
+- [npc service services](npc_service_services.md) (15 shared connections)
 - [commands admin mute](commands_admin_mute.md) (8 shared connections)
-- [player respawn event](player_respawn_event.md) (7 shared connections)
+- [npc rewards combat](npc_rewards_combat.md) (7 shared connections)
 - [commands npc admin](commands_npc_admin.md) (4 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (4 shared connections)
 - [admin structured logging](admin_structured_logging.md) (3 shared connections)
-- [commands whisper command](commands_whisper_command.md) (2 shared connections)
+- [character creation service](character_creation_service.md) (2 shared connections)
+- [security sessionManager SessionManager](security_sessionManager_SessionManager.md) (1 shared connections)
 
 ## Source Files
 

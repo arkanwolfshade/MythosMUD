@@ -1,49 +1,54 @@
 # persistence rationale player
 
-> 22 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **SecurityHeadersMiddleware** (13 connections) — `server/middleware/security_headers.py`
-- **security_headers.py** (6 connections) — `server/middleware/security_headers.py`
-- **.__call__()** (5 connections) — `server/middleware/security_headers.py`
-- **.dispatch()** (5 connections) — `server/middleware/security_headers.py`
-- **._add_security_headers_to_response()** (4 connections) — `server/middleware/security_headers.py`
-- **.__init__()** (3 connections) — `server/middleware/security_headers.py`
-- **test_security_headers_middleware_init()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_security_headers_middleware_init_with_env_vars()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Any** (2 connections)
-- **ASGIApp** (1 connections)
-- **Scope** (1 connections)
-- **Receive** (1 connections)
-- **Send** (1 connections)
-- **Request** (1 connections)
-- **Security headers middleware for MythosMUD server.  This module provides comprehe** (1 connections) — `server/middleware/security_headers.py`
-- **Pure ASGI middleware to add comprehensive security headers to all HTTP responses** (1 connections) — `server/middleware/security_headers.py`
-- **Initialize security headers middleware.          Args:             app: ASGI app** (1 connections) — `server/middleware/security_headers.py`
-- **ASGI application interface.          Args:             scope: ASGI connection sc** (1 connections) — `server/middleware/security_headers.py`
-- **Backward-compatible dispatch method for BaseHTTPMiddleware interface.          T** (1 connections) — `server/middleware/security_headers.py`
-- **Add security headers to Response object (compatibility method).** (1 connections) — `server/middleware/security_headers.py`
-- **Test SecurityHeadersMiddleware initialization.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test SecurityHeadersMiddleware initialization with environment variables.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_player_schemas.py** (21 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **PlayerCreate** (10 connections) — `server/schemas/players/player.py`
+- **test_player_base_validation()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_create()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_create_custom_stats()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_read()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_read_defaults()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_base_rejects_extra_fields()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_create_rejects_extra_fields()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_base()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_character_info()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_character_info_defaults()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_update()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_update_all_optional()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **Schema for creating a new player.** (1 connections) — `server/schemas/players/player.py`
+- **Unit tests for player schemas.  Tests the Pydantic models in player.py module.** (1 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **Test PlayerBase can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **Test PlayerBase validates name length.** (1 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **Test PlayerCreate can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **Test PlayerCreate can have custom stats.** (1 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **Test PlayerRead can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **Test PlayerRead has correct default values.** (1 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **Test CharacterInfo can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **Test CharacterInfo has correct default values.** (1 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **Test PlayerUpdate can be instantiated with optional fields.** (1 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [security headers middleware](security_headers_middleware.md) (5 shared connections)
-- [player service game](player_service_game.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [npc combat services](npc_combat_services.md) (1 shared connections)
-- [app factory rationale](app_factory_rationale.md) (1 shared connections)
+- [Player Stats](Player_Stats.md) (16 shared connections)
+- [System Metrics](System_Metrics.md) (5 shared connections)
+- [command inventory models](command_inventory_models.md) (3 shared connections)
+- [rate limiter realtime](rate_limiter_realtime.md) (2 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (1 shared connections)
+- [commands admin helpers](commands_admin_helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/middleware/security_headers.py`
-- `server/tests/unit/middleware/test_security_headers.py`
+- `server/schemas/players/player.py`
+- `server/tests/unit/schemas/test_player_schemas.py`
 
 ## Audit Trail
 
-- EXTRACTED: 56 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 83 (94%)
+- INFERRED: 5 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

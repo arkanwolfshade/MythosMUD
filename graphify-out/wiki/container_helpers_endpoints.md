@@ -1,66 +1,56 @@
 # container helpers endpoints
 
-> 89 nodes
+> 92 nodes
 
 ## Key Concepts
 
-- **InventoryService** (43 connections) — `server/services/inventory_service.py`
-- **inventory_unequip_command.py** (33 connections) — `server/commands/inventory_unequip_command.py`
-- **SlotValidationError** (27 connections) — `server/services/equipment_service.py`
-- **equipment_service.py** (23 connections) — `server/services/equipment_service.py`
-- **test_equipment_service.py** (22 connections) — `server/tests/unit/services/test_equipment_service.py`
-- **get_shared_services()** (19 connections) — `server/commands/inventory_service_helpers.py`
-- **handle_unequip_command()** (18 connections) — `server/commands/inventory_unequip_command.py`
-- **EquipmentCapacityError** (17 connections) — `server/services/equipment_service.py`
-- **EquipmentService** (17 connections) — `server/services/equipment_service.py`
-- **inventory_service_helpers.py** (16 connections) — `server/commands/inventory_service_helpers.py`
-- **_unequip_run_mutation()** (12 connections) — `server/commands/inventory_unequip_command.py`
-- **test_inventory_unequip_command.py** (12 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
-- **EquipmentServiceError** (10 connections) — `server/services/equipment_service.py`
-- **.equip_from_inventory()** (9 connections) — `server/services/equipment_service.py`
-- **.unequip_to_inventory()** (8 connections) — `server/services/equipment_service.py`
-- **handle_wearable_container_on_unequip()** (7 connections) — `server/commands/equipment_helpers.py`
-- **_ensure_shared_services_initialized()** (7 connections) — `server/commands/inventory_service_helpers.py`
-- **_unequip_success_payload()** (6 connections) — `server/commands/inventory_unequip_command.py`
-- **_clone_inventory()** (6 connections) — `server/services/equipment_service.py`
-- **_clone_equipped()** (6 connections) — `server/services/equipment_service.py`
-- **test_inventory_service_helpers.py** (6 connections) — `server/tests/unit/commands/test_inventory_service_helpers.py`
-- **test_handle_unequip_command_slot_validation_error()** (6 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
-- **_unequip_persist_or_rollback()** (5 connections) — `server/commands/inventory_unequip_command.py`
-- **_mutation_cm()** (5 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
-- **_player_with_equipped()** (5 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
-- *... and 64 more nodes in this community*
+- **test_look_player.py** (32 connections) — `server/tests/unit/commands/test_look_player.py`
+- **look_player.py** (23 connections) — `server/commands/look_player.py`
+- **_format_player_look_display()** (23 connections) — `server/commands/look_player.py`
+- **_select_target_player()** (17 connections) — `server/commands/look_player.py`
+- **_handle_player_look()** (13 connections) — `server/commands/look_player.py`
+- **test_visual_indicator.py** (13 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
+- **_try_lookup_player_implicit()** (12 connections) — `server/commands/look_player.py`
+- **test_look_player_helpers.py** (12 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
+- **_get_players_in_room()** (11 connections) — `server/commands/look_player.py`
+- **_find_matching_players()** (9 connections) — `server/commands/look_player.py`
+- **Any** (6 connections)
+- **test_get_players_in_room_success()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_get_players_in_room_empty()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_get_players_in_room_invalid_uuid()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_get_players_in_room_non_iterable()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_find_matching_players_success()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_find_matching_players_no_match()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_select_target_player_single_match()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_select_target_player_no_matches()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_select_target_player_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_select_target_player_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_select_target_player_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_format_player_look_display_basic()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_format_player_look_display_with_equipment()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_format_player_look_display_no_equipment()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- *... and 67 more nodes in this community*
 
 ## Relationships
 
-- [commands inventory command](commands_inventory_command.md) (40 shared connections)
-- [Exception Containers](Exception_Containers.md) (37 shared connections)
-- [wearable container service](wearable_container_service.md) (8 shared connections)
-- [payload realtime optimizer](payload_realtime_optimizer.md) (8 shared connections)
-- [commands inventory pickup](commands_inventory_pickup.md) (5 shared connections)
-- [logout command commands](logout_command_commands.md) (4 shared connections)
-- [NPC Combat](NPC_Combat.md) (4 shared connections)
-- [container inventory display](container_inventory_display.md) (3 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (3 shared connections)
-- [commands npc admin](commands_npc_admin.md) (2 shared connections)
-- [combat models rationale](combat_models_rationale.md) (2 shared connections)
-- [player cache rationale](player_cache_rationale.md) (2 shared connections)
+- [look helpers commands](look_helpers_commands.md) (12 shared connections)
+- [look command commands](look_command_commands.md) (7 shared connections)
+- [command utility models](command_utility_models.md) (7 shared connections)
+- [npc combat base](npc_combat_base.md) (3 shared connections)
+- [room realtime rationale](room_realtime_rationale.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/equipment_helpers.py`
-- `server/commands/inventory_service_helpers.py`
-- `server/commands/inventory_unequip_command.py`
-- `server/services/equipment_service.py`
-- `server/services/inventory_service.py`
-- `server/tests/unit/commands/test_inventory_service_helpers.py`
-- `server/tests/unit/commands/test_inventory_unequip_command.py`
-- `server/tests/unit/services/test_equipment_service.py`
+- `server/commands/look_player.py`
+- `server/tests/unit/commands/test_look_player.py`
+- `server/tests/unit/commands/test_look_player_helpers.py`
+- `server/tests/unit/realtime/test_visual_indicator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 413 (88%)
-- INFERRED: 56 (12%)
+- EXTRACTED: 320 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

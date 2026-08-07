@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [commands whisper command](commands_whisper_command.md) (12 shared connections)
-- [commands npc admin](commands_npc_admin.md) (11 shared connections)
+- [commands npc admin](commands_npc_admin.md) (13 shared connections)
+- [character creation service](character_creation_service.md) (10 shared connections)
 - [realtime game state](realtime_game_state.md) (8 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (8 shared connections)
-- [NPC Combat](NPC_Combat.md) (5 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (8 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (5 shared connections)
 - [container schemas containers](container_schemas_containers.md) (3 shared connections)
 - [command models admin](command_models_admin.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
 - [admin structured logging](admin_structured_logging.md) (3 shared connections)
+- [combat models rationale](combat_models_rationale.md) (3 shared connections)
 - [connection realtime manager](connection_realtime_manager.md) (3 shared connections)
 - [npc service services](npc_service_services.md) (2 shared connections)
-- [time service rationale](time_service_rationale.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
 
 ## Source Files
 

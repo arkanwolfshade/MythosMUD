@@ -1,27 +1,51 @@
 # combat services messaging
 
-> 4 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **TestNPCSessionMaker** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_get_npc_session_maker()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Test NPC session maker functions.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Test get_npc_session_maker() returns session maker.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **TestCombatMessagingService** (21 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **CombatMessagingService** (18 connections) — `server/services/combat_messaging_service.py`
+- **CombatMessages** (6 connections)
+- **.validate_npc_messages()** (6 connections) — `server/services/combat_messaging_service.py`
+- **test_combat_messaging_service.py** (4 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.get_attack_message()** (3 connections) — `server/services/combat_messaging_service.py`
+- **.get_death_message()** (3 connections) — `server/services/combat_messaging_service.py`
+- **.get_combat_start_messages()** (3 connections) — `server/services/combat_messaging_service.py`
+- **.get_combat_end_messages()** (3 connections) — `server/services/combat_messaging_service.py`
+- **.service()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.__init__()** (2 connections) — `server/services/combat_messaging_service.py`
+- **.get_error_message()** (2 connections) — `server/services/combat_messaging_service.py`
+- **Any** (2 connections)
+- **.test_get_attack_message_attacker_perspective()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_attack_message_defender_perspective()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_attack_message_other_perspective()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_attack_message_custom_action_type()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_attack_message_custom_npc_messages()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_attack_message_fallback_to_default()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_death_message_default()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_death_message_custom()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_combat_start_messages()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_combat_start_messages_single_occupant()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_combat_end_messages()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [player effects endpoints](player_effects_endpoints.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (6 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (4 shared connections)
+- [admin auth service](admin_auth_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_npc_database.py`
+- `server/services/combat_messaging_service.py`
+- `server/tests/unit/services/test_combat_messaging_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (89%)
-- INFERRED: 1 (11%)
+- EXTRACTED: 132 (95%)
+- INFERRED: 7 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

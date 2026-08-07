@@ -1,24 +1,26 @@
 # ascii map renderer
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/middleware/correlation_middleware.py`
-- **ASGIApp** (1 connections)
-- **Initialize the correlation middleware.          Args:             app: ASGI appl** (1 connections) — `server/middleware/correlation_middleware.py`
+- **check_invite_status.py** (4 connections) — `server/scripts/check_invite_status.py`
+- **check_invite()** (3 connections) — `server/scripts/check_invite_status.py`
+- **Check the status of a specific invite code.** (1 connections) — `server/scripts/check_invite_status.py`
+- **Check the status of an invite code.** (1 connections) — `server/scripts/check_invite_status.py`
 
 ## Relationships
 
-- [app factory rationale](app_factory_rationale.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
+- [useWebSocketConnectionTestFixtures useWe](useWebSocketConnectionTestFixtures_useWe.md) (1 shared connections)
 
 ## Source Files
 
-- `server/middleware/correlation_middleware.py`
+- `server/scripts/check_invite_status.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

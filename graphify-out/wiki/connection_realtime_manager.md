@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (11 shared connections)
+- [command inventory factories](command_inventory_factories.md) (4 shared connections)
+- [spell game magic](spell_game_magic.md) (3 shared connections)
 - [commands admin mute](commands_admin_mute.md) (3 shared connections)
-- [commands position system](commands_position_system.md) (3 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (3 shared connections)
-- [command factories create](command_factories_create.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (3 shared connections)
+- [command factories create](command_factories_create.md) (3 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [command inventory models](command_inventory_models.md) (2 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 - [command commands handler](command_commands_handler.md) (2 shared connections)
+- [character creation service](character_creation_service.md) (2 shared connections)
 - [commands logout rationale](commands_logout_rationale.md) (2 shared connections)
-- [commands quest rationale](commands_quest_rationale.md) (2 shared connections)
-- [argon2 auth rationale](argon2_auth_rationale.md) (1 shared connections)
-- [rest grace period](rest_grace_period.md) (1 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
 
 ## Source Files
 

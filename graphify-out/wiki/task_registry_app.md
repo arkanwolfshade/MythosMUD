@@ -1,63 +1,71 @@
 # task registry app
 
-> 249 nodes
+> 155 nodes
 
 ## Key Concepts
 
-- **ContainerComponent** (106 connections) — `server/models/container.py`
-- **test_corpse_lifecycle_service.py** (55 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_container.py** (38 connections) — `server/tests/unit/models/test_container.py`
-- **corpse_lifecycle_service.py** (19 connections) — `server/services/corpse_lifecycle_service.py`
-- **ContainerLockState** (15 connections) — `server/models/container.py`
-- **conftest.py** (14 connections) — `server/tests/unit/api/conftest.py`
-- **CorpseServiceError** (13 connections) — `server/services/corpse_lifecycle_service.py`
-- **.cleanup_decayed_corpse()** (10 connections) — `server/services/corpse_lifecycle_service.py`
-- **Any** (8 connections)
-- **_get_enum_value()** (8 connections) — `server/services/corpse_lifecycle_service.py`
-- **.create_corpse()** (7 connections) — `server/models/container.py`
-- **CorpseNotFoundError** (7 connections) — `server/services/corpse_lifecycle_service.py`
-- **.create_corpse_on_death()** (7 connections) — `server/services/corpse_lifecycle_service.py`
-- **.create_environment()** (6 connections) — `server/models/container.py`
-- **.create_equipment()** (6 connections) — `server/models/container.py`
-- **_filter_container_data()** (6 connections) — `server/services/corpse_lifecycle_service.py`
-- **.get_decayed_corpses_in_room()** (6 connections) — `server/services/corpse_lifecycle_service.py`
-- **UUID** (5 connections)
-- **ContainerComponent** (5 connections)
-- **.get_all_decayed_corpses()** (5 connections) — `server/services/corpse_lifecycle_service.py`
-- **.validate_source_type()** (4 connections) — `server/models/container.py`
-- **.validate_lock_state()** (4 connections) — `server/models/container.py`
-- **.validate_entity_id()** (4 connections) — `server/models/container.py`
-- **.would_exceed_capacity()** (4 connections) — `server/models/container.py`
-- **UUID** (4 connections)
-- *... and 224 more nodes in this community*
+- **inventory_equip_command.py** (46 connections) — `server/commands/inventory_equip_command.py`
+- **__init__.py** (42 connections) — `server/services/__init__.py`
+- **InventoryService** (40 connections) — `server/services/inventory_service.py`
+- **InventoryMutationGuard** (39 connections) — `server/services/inventory_mutation_guard.py`
+- **InventoryStack** (38 connections) — `server/services/inventory_service.py`
+- **inventory_unequip_command.py** (33 connections) — `server/commands/inventory_unequip_command.py`
+- **inventory_service.py** (33 connections) — `server/services/inventory_service.py`
+- **SlotValidationError** (27 connections) — `server/services/equipment_service.py`
+- **InventoryCapacityError** (26 connections) — `server/services/inventory_service.py`
+- **equipment_service.py** (23 connections) — `server/services/equipment_service.py`
+- **WearableContainerService** (23 connections) — `server/services/wearable_container_service.py`
+- **test_equipment_service.py** (22 connections) — `server/tests/unit/services/test_equipment_service.py`
+- **wearable_container_service.py** (20 connections) — `server/services/wearable_container_service.py`
+- **test_inventory_service.py** (20 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **get_shared_services()** (19 connections) — `server/commands/inventory_service_helpers.py`
+- **MutationDecision** (19 connections) — `server/services/inventory_mutation_guard.py`
+- **EquipmentCapacityError** (17 connections) — `server/services/equipment_service.py`
+- **EquipmentService** (17 connections) — `server/services/equipment_service.py`
+- **inventory_service_helpers.py** (16 connections) — `server/commands/inventory_service_helpers.py`
+- **InventoryValidationError** (13 connections) — `server/services/inventory_service.py`
+- **InventorySplitError** (13 connections) — `server/services/inventory_service.py`
+- **_unequip_run_mutation()** (12 connections) — `server/commands/inventory_unequip_command.py`
+- **_equip_try_inventory_swap()** (10 connections) — `server/commands/inventory_equip_command.py`
+- **EquipmentServiceError** (10 connections) — `server/services/equipment_service.py`
+- **EquipCommandWork** (9 connections) — `server/commands/inventory_equip_command.py`
+- *... and 130 more nodes in this community*
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (43 shared connections)
-- [models npc rationale](models_npc_rationale.md) (13 shared connections)
-- [auth rationale access](auth_rationale_access.md) (10 shared connections)
-- [Loot Generation](Loot_Generation.md) (4 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
-- [player requests schemas](player_requests_schemas.md) (3 shared connections)
-- [world models rationale](world_models_rationale.md) (2 shared connections)
-- [commands follow rationale](commands_follow_rationale.md) (2 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [alias storage commands](alias_storage_commands.md) (1 shared connections)
-- [services npc startup](services_npc_startup.md) (1 shared connections)
+- [player cache rationale](player_cache_rationale.md) (48 shared connections)
+- [player effects endpoints](player_effects_endpoints.md) (20 shared connections)
+- [container find inventory](container_find_inventory.md) (16 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (15 shared connections)
+- [database helpers infrastructure](database_helpers_infrastructure.md) (14 shared connections)
+- [room cache services](room_cache_services.md) (13 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (12 shared connections)
+- [models profession rationale](models_profession_rationale.md) (9 shared connections)
+- [alias storage commands](alias_storage_commands.md) (7 shared connections)
+- [player event handlers](player_event_handlers.md) (7 shared connections)
+- [container inventory display](container_inventory_display.md) (6 shared connections)
+- [emote game service](emote_game_service.md) (6 shared connections)
 
 ## Source Files
 
-- `server/models/container.py`
-- `server/services/corpse_lifecycle_service.py`
-- `server/tests/unit/api/conftest.py`
-- `server/tests/unit/models/test_container.py`
-- `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- `server/commands/inventory_equip_command.py`
+- `server/commands/inventory_service_helpers.py`
+- `server/commands/inventory_unequip_command.py`
+- `server/services/__init__.py`
+- `server/services/equipment_service.py`
+- `server/services/inventory_mutation_guard.py`
+- `server/services/inventory_service.py`
+- `server/services/wearable_container_service.py`
+- `server/tests/unit/commands/test_inventory_equip_command.py`
+- `server/tests/unit/services/test_equipment_service.py`
+- `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- `server/tests/unit/services/test_inventory_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 721 (93%)
-- INFERRED: 51 (7%)
+- EXTRACTED: 768 (85%)
+- INFERRED: 133 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

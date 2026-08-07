@@ -1,51 +1,63 @@
 # combat npc service
 
-> 67 nodes
+> 76 nodes
 
 ## Key Concepts
 
-- **test_player_repository.py** (40 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **_make_mock_row()** (10 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_get_player_by_name_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **UUID** (3 connections)
-- **player_repository()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **mock_player()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_player_repository_initialization()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_player_repository_initialization_with_cache()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_player_repository_initialization_with_event_bus()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_get_player_by_name_database_error()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_save_player_database_error()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_list_players_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_list_players_database_error()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_get_player_by_id_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_get_players_by_user_id_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_get_active_players_by_user_id_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_get_player_by_user_id_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_get_players_in_room_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_save_players_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_get_players_batch_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_validate_and_fix_player_room_valid()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_validate_and_fix_player_room_invalid()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_get_player_by_name_not_found()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_save_player_success()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_save_player_with_bool_is_admin()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- *... and 42 more nodes in this community*
+- **character_creation.py** (47 connections) — `server/api/character_creation.py`
+- **roll_character_stats()** (23 connections) — `server/api/character_creation.py`
+- **ProfessionService** (19 connections) — `server/game/profession_service.py`
+- **create_character_with_stats()** (18 connections) — `server/api/character_creation.py`
+- **_roll_stats_with_profession_preview()** (14 connections) — `server/api/character_creation.py`
+- **_execute_create_character()** (13 connections) — `server/api/character_creation.py`
+- **validate_character_stats()** (13 connections) — `server/api/character_creation.py`
+- **character_creation.py** (10 connections) — `server/schemas/players/character_creation.py`
+- **CreateCharacterResponse** (10 connections) — `server/schemas/players/character_creation.py`
+- **RolledStats** (10 connections) — `server/schemas/players/stat_values.py`
+- **TestCreateCharacterWithStats** (10 connections) — `server/tests/unit/api/test_character_creation.py`
+- **_convert_stat_summary_to_stat_summary_model()** (9 connections) — `server/api/character_creation.py`
+- **RollStatsResponse** (9 connections) — `server/schemas/players/character_creation.py`
+- **ValidateStatsResponse** (9 connections) — `server/schemas/players/character_creation.py`
+- **_check_shutdown_status()** (8 connections) — `server/api/character_creation.py`
+- **_roll_stats_raw()** (8 connections) — `server/api/character_creation.py`
+- **_roll_stats_with_class()** (8 connections) — `server/api/character_creation.py`
+- **StatSummary** (8 connections) — `server/schemas/players/character_creation.py`
+- **_stats_to_rolled_stats()** (7 connections) — `server/api/character_creation.py`
+- **Any** (6 connections)
+- **.test_create_character_rate_limit()** (6 connections) — `server/tests/unit/api/test_character_creation.py`
+- **Stats** (5 connections)
+- **_validate_user_for_stats_roll()** (5 connections) — `server/api/character_creation.py`
+- **_apply_rate_limiting_for_stats_roll()** (5 connections) — `server/api/character_creation.py`
+- **_apply_stat_modifiers()** (5 connections) — `server/api/character_creation.py`
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [combat models rationale](combat_models_rationale.md) (6 shared connections)
-- [shutdown command commands](shutdown_command_commands.md) (6 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (5 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [commands admin helpers](commands_admin_helpers.md) (24 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (14 shared connections)
+- [Player Stats](Player_Stats.md) (11 shared connections)
+- [System Metrics](System_Metrics.md) (10 shared connections)
+- [player requests schemas](player_requests_schemas.md) (10 shared connections)
+- [error websocket handler](error_websocket_handler.md) (7 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (6 shared connections)
+- [command inventory models](command_inventory_models.md) (5 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (4 shared connections)
+- [health realtime monitoring](health_realtime_monitoring.md) (3 shared connections)
+- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (3 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/api/character_creation.py`
+- `server/game/profession_service.py`
+- `server/schemas/players/character_creation.py`
+- `server/schemas/players/stat_values.py`
+- `server/tests/unit/api/test_character_creation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 158 (95%)
-- INFERRED: 8 (5%)
+- EXTRACTED: 358 (95%)
+- INFERRED: 20 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

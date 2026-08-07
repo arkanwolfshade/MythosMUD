@@ -1,34 +1,31 @@
 # combat death services
 
-> 10 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_database.py** (7 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **test_database_manager_singleton()** (4 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **test_database_manager_reset_instance()** (4 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **test_database_manager_direct_init_raises()** (4 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **test_database_manager_initial_state()** (4 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **Unit tests for database initialization.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **Test that DatabaseManager is a singleton.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **Test resetting the singleton instance.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **Test that direct initialization raises RuntimeError when instance exists.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **Test initial state of database manager.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **TestGetContainer** (6 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_container_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_container_missing_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_container_no_state_attribute()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_container dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_container returns container when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_container raises RuntimeError when container not in app.state.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_container raises RuntimeError when app.state doesn't exist.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [Database Access Layer](Database_Access_Layer.md) (7 shared connections)
-- [aggro threat services](aggro_threat_services.md) (2 shared connections)
-- [game models enums](game_models_enums.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (4 shared connections)
+- [Player Stats](Player_Stats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_database.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 18 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

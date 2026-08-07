@@ -1,6 +1,6 @@
 # AliasStorage
 
-> God node · 231 connections · `server/alias_storage.py`
+> God node · 283 connections · `server/alias_storage.py`
 
 **Community:** [commands npc admin](commands_npc_admin.md)
 
@@ -9,8 +9,8 @@
 ### calls
 - _websocket_unified_command_result() `EXTRACTED`
 - .delete_player() `EXTRACTED`
-- test_alias_storage_creates_directory() `EXTRACTED`
 - test_alias_storage_init_with_env_var() `EXTRACTED`
+- test_alias_storage_creates_directory() `EXTRACTED`
 - test_alias_storage_init_with_storage_dir() `EXTRACTED`
 - test_alias_storage_init_without_env_var() `EXTRACTED`
 
@@ -43,14 +43,15 @@
 - .test_ensure_alias_storage_provided() `INFERRED`
 
 ### method
-- ._get_alias_file_path() `EXTRACTED`
 - .get_player_aliases() `EXTRACTED`
+- ._load_alias_data() `EXTRACTED`
 - .create_alias() `EXTRACTED`
+- .get_alias_file_path() `EXTRACTED`
+- ._save_alias_data() `EXTRACTED`
 - .save_player_aliases() `EXTRACTED`
 - ._validate_alias_payload() `EXTRACTED`
 - .add_alias() `EXTRACTED`
-- ._load_alias_data() `EXTRACTED`
-- ._save_alias_data() `EXTRACTED`
+- ._resolved_alias_open_path() `EXTRACTED`
 - .backup_aliases() `EXTRACTED`
 - .get_alias() `EXTRACTED`
 - .get_alias_count() `EXTRACTED`

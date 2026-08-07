@@ -1,0 +1,44 @@
+---
+description: Prefer gh stack for multi-PR branches; auto-route PR open/sync/merge to noninteractive stack commands
+alwaysApply: true
+---
+
+# MythosMUD Stacked PRs (gh-stack)
+
+When shipping MythosMUD work through GitHub, **prefer `gh stack`** over ad-hoc
+`git push` + `gh pr create` whenever more than one logical layer exists, or the
+current branch already belongs to a stack.
+
+## Apply skill
+
+Read and follow `.cursor/skills/gh-stack/SKILL.md` (full command reference:
+`.agents/skills/gh-stack/SKILL.md`).
+
+## When to use stacks (automatic)
+
+| Situation                                                           | Action                                                                          |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Large change with dependency layers (models → API → client → tests) | Plan layers; `gh stack init` / `add` per layer                                  |
+| Open / update PRs for stacked work                                  | `gh stack submit --auto` (add `--open` when ready for review)                   |
+| Sync after trunk or base PR merged                                  | `gh stack sync` (add `--prune` to drop merged local branches)                   |
+| Mid-stack fix needed while on a higher branch                       | `gh stack down` / `checkout` lower layer → commit → `gh stack rebase --upstack` |
+| Merge stacked PRs                                                   | `gh stack merge --yes` (not `gh pr merge` alone)                                |
+| Single small independent PR                                         | Plain `gh pr create` is fine                                                    |
+
+## Non-interactive agent rules (hard)
+
+- Always `gh stack view --json` (never bare `view` / TUI).
+- Always `gh stack submit --auto`.
+- Always pass branch names to `init`, `add`, `checkout`.
+- Prefer `--remote origin` on `push` / `submit` / `sync` / `rebase` when useful.
+- Do **not** change `git config` unless the user explicitly asks (user policy).
+  If prompts appear for remotes, pass `--remote origin` instead.
+- Commits: standard `git add` / `git commit` (Mythos commit-message skill); then stack tools for push/PR.
+- Branch switches still need user permission when they leave the approved task branch; stack
+  `up` / `down` / `top` / `bottom` within an already-approved stack for this task is OK.
+
+## Session hygiene
+
+On PR-related work, run `gh stack view --json` early. If exit code 2 (not in a stack)
+and the user wants stacked PR(s), `gh stack init <branch...>` with explicit names
+(or adopt the current branch: `gh stack init $(git branch --show-current)`).

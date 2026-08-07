@@ -1,61 +1,65 @@
 # player effects endpoints
 
-> 32 nodes
+> 93 nodes
 
 ## Key Concepts
 
-- **npc_database.py** (27 connections) — `server/npc_database.py`
-- **get_npc_session()** (24 connections) — `server/npc_database.py`
-- **test_npc_database.py** (22 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **get_npc_engine()** (14 connections) — `server/npc_database.py`
-- **_initialize_npc_database()** (12 connections) — `server/npc_database.py`
-- **init_npc_db()** (11 connections) — `server/npc_database.py`
-- **get_npc_session_maker()** (9 connections) — `server/npc_database.py`
-- **close_npc_db()** (9 connections) — `server/npc_database.py`
-- **TestCloseNpcDb** (6 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **reset_npc_database()** (5 connections) — `server/npc_database.py`
-- **.test_close_npc_db_disposes_engine()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **async_sessionmaker** (3 connections)
-- **AsyncSession** (3 connections)
-- **reset_state()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_close_npc_db_handles_closed_loop()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_close_npc_db_handles_no_engine()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Initialize database engine and session maker from configuration.          CRITIC** (2 connections) — `server/database.py`
-- **AsyncEngine** (2 connections)
-- **Dependency to get NPC database session.      Yields:         AsyncSession: Datab** (2 connections) — `server/npc_database.py`
-- **NPC Database configuration for MythosMUD.  This module provides database connect** (1 connections) — `server/npc_database.py`
-- **Initialize NPC database engine and session maker from configuration.      CRITIC** (1 connections) — `server/npc_database.py`
-- **Get the NPC database engine, initializing if necessary.      Returns:         As** (1 connections) — `server/npc_database.py`
-- **Get the NPC async session maker, initializing if necessary.      Returns:** (1 connections) — `server/npc_database.py`
-- **Initialize NPC database connection and verify configuration.      NOTE: DDL (tab** (1 connections) — `server/npc_database.py`
-- **Close NPC database connections.** (1 connections) — `server/npc_database.py`
-- *... and 7 more nodes in this community*
+- **container_service.py** (33 connections) — `server/services/container_service.py`
+- **container_service_transfer_to.py** (33 connections) — `server/services/container_service_transfer_to.py`
+- **container_service_transfer_from.py** (26 connections) — `server/services/container_service_transfer_from.py`
+- **container_service_helpers.py** (23 connections) — `server/services/container_service_helpers.py`
+- **ContainerTransferToMixin** (20 connections) — `server/services/container_service_transfer_to.py`
+- **ContainerSessionMixin** (18 connections) — `server/services/container_service_session.py`
+- **ContainerTransferFromMixin** (18 connections) — `server/services/container_service_transfer_from.py`
+- **filter_container_data()** (14 connections) — `server/services/container_service_helpers.py`
+- **audit_logger.py** (14 connections) — `server/utils/audit_logger.py`
+- **as_object_dict()** (12 connections) — `server/services/container_service_helpers.py`
+- **._execute_transfer_from_container()** (12 connections) — `server/services/container_service_transfer_from.py`
+- **._require_container_component()** (12 connections) — `server/services/container_service_transfer_to.py`
+- **._execute_transfer_to_container()** (12 connections) — `server/services/container_service_transfer_to.py`
+- **get_enum_value()** (11 connections) — `server/services/container_service_helpers.py`
+- **.open_container()** (11 connections) — `server/services/container_service_session.py`
+- **._raise_if_cannot_open_locks()** (10 connections) — `server/services/container_service_session.py`
+- **UUID** (10 connections)
+- **._finalize_loot_all()** (10 connections) — `server/services/container_service_transfer_from.py`
+- **UUID** (9 connections)
+- **._add_item_to_player_inventory()** (9 connections) — `server/services/container_service_transfer_from.py`
+- **._persist_and_audit_transfer_from_container()** (9 connections) — `server/services/container_service_transfer_from.py`
+- **UUID** (9 connections)
+- **.transfer_to_container()** (9 connections) — `server/services/container_service_transfer_to.py`
+- **player_inventory_for_response()** (8 connections) — `server/services/container_service_helpers.py`
+- **InventoryStack** (8 connections)
+- *... and 68 more nodes in this community*
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (10 shared connections)
-- [nats services service](nats_services_service.md) (7 shared connections)
-- [persistence protocols rationale](persistence_protocols_rationale.md) (7 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (6 shared connections)
-- [schemas players profession](schemas_players_profession.md) (6 shared connections)
-- [game models enums](game_models_enums.md) (4 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
-- [shutdown commands admin](shutdown_commands_admin.md) (4 shared connections)
-- [persistence container rationale](persistence_container_rationale.md) (3 shared connections)
-- [commands npc admin](commands_npc_admin.md) (3 shared connections)
-- [tools generate invite](tools_generate_invite.md) (3 shared connections)
-- [level game service](level_game_service.md) (3 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (36 shared connections)
+- [add used user](add_used_user.md) (34 shared connections)
+- [task registry app](task_registry_app.md) (20 shared connections)
+- [alias storage commands](alias_storage_commands.md) (12 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (10 shared connections)
+- [player event handlers](player_event_handlers.md) (8 shared connections)
+- [Exception Containers](Exception_Containers.md) (4 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (4 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (3 shared connections)
+- [command inventory models](command_inventory_models.md) (3 shared connections)
+- [container inventory helpers](container_inventory_helpers.md) (3 shared connections)
+- [player room realtime](player_room_realtime.md) (2 shared connections)
 
 ## Source Files
 
-- `server/database.py`
-- `server/npc_database.py`
-- `server/tests/unit/infrastructure/test_npc_database.py`
+- `server/services/container_service.py`
+- `server/services/container_service_helpers.py`
+- `server/services/container_service_session.py`
+- `server/services/container_service_transfer_from.py`
+- `server/services/container_service_transfer_to.py`
+- `server/tests/unit/services/test_container_service.py`
+- `server/utils/audit_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 170 (96%)
-- INFERRED: 7 (4%)
+- EXTRACTED: 507 (92%)
+- INFERRED: 44 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

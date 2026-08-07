@@ -16,7 +16,7 @@
 ## Relationships
 
 - [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (1 shared connections)
 
 ## Source Files
 

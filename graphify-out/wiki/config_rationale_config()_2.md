@@ -1,39 +1,31 @@
 # config rationale config()
 
-> 11 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **CircuitBreakerOpen** (14 connections) — `server/realtime/circuit_breaker.py`
-- **test_call_rejects_when_open()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_circuit_breaker_open_exception()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_handle_nats_message_circuit_breaker_open()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_nats_message_unknown_message_id_defaults()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Exception** (1 connections)
-- **Exception raised when circuit breaker is open.      Indicates the protected serv** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Test call() raises CircuitBreakerOpen when circuit is OPEN.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test CircuitBreakerOpen exception.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test _handle_nats_message() handles circuit breaker open.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _handle_nats_message uses 'unknown' as default message_id when missing.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **TestGetPlayerServiceForTesting** (7 connections) — `server/tests/unit/test_dependency_injection.py`
+- **.test_get_player_service_for_testing_with_injection()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
+- **.test_get_player_service_for_testing_without_injection()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
+- **Test get_player_service_for_testing() function.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
+- **Test get_player_service_for_testing() with injected service.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
+- **Test get_player_service_for_testing() creates mock when None.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
 
 ## Relationships
 
-- [websocket handler realtime](websocket_handler_realtime.md) (5 shared connections)
-- [container persistence rationale](container_persistence_rationale.md) (3 shared connections)
-- [nats message handler](nats_message_handler.md) (3 shared connections)
-- [conftest mock rationale](conftest_mock_rationale.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [Player Stats](Player_Stats.md) (3 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (1 shared connections)
+- [System Metrics](System_Metrics.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/circuit_breaker.py`
-- `server/tests/unit/realtime/test_circuit_breaker.py`
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/test_dependency_injection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (85%)
-- INFERRED: 5 (15%)
+- EXTRACTED: 13 (72%)
+- INFERRED: 5 (28%)
 - AMBIGUOUS: 0 (0%)
 
 ---

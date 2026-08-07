@@ -1,62 +1,56 @@
 # commands quest rationale
 
-> 83 nodes
+> 100 nodes
 
 ## Key Concepts
 
-- **quest_commands.py** (39 connections) — `server/commands/quest_commands.py`
-- **handle_quest_command()** (20 connections) — `server/commands/quest_commands.py`
-- **test_quest_commands.py** (20 connections) — `server/tests/unit/commands/test_quest_commands.py`
-- **Any** (18 connections)
-- **handle_journal_command()** (14 connections) — `server/commands/quest_commands.py`
-- **_handle_quest_npc_sub()** (11 connections) — `server/commands/quest_commands.py`
-- **_resolve_quest_command_context()** (10 connections) — `server/commands/quest_commands.py`
-- **resolve_npc_in_player_room()** (9 connections) — `server/commands/quest_commands.py`
-- **_get_quest_service()** (7 connections) — `server/commands/quest_commands.py`
-- **npc_definition_id()** (7 connections) — `server/commands/quest_commands.py`
-- **emit_quest_npc_say()** (7 connections) — `server/game/quest/quest_chat_notify.py`
-- **_enter_quest_command_patches()** (7 connections) — `server/tests/unit/commands/test_quest_commands.py`
-- **_resolve_player_id()** (6 connections) — `server/commands/quest_commands.py`
-- **UUID** (6 connections)
-- **_active_npc_ids_in_room()** (6 connections) — `server/commands/quest_commands.py`
-- **_emit_npc_lines_for_results()** (6 connections) — `server/commands/quest_commands.py`
-- **_quest_command_ready()** (6 connections) — `server/commands/quest_commands.py`
-- **quest_ask_npc_line()** (6 connections) — `server/game/quest/quest_chat_notify.py`
-- **quest_turnin_npc_line()** (6 connections) — `server/game/quest/quest_chat_notify.py`
-- **_get_container_and_persistence()** (5 connections) — `server/commands/quest_commands.py`
-- **_format_one_quest_entry()** (5 connections) — `server/commands/quest_commands.py`
-- **_format_quest_log()** (5 connections) — `server/commands/quest_commands.py`
-- **_handle_quest_abandon()** (5 connections) — `server/commands/quest_commands.py`
-- **ExitStack** (5 connections)
-- **test_quest_ask_success()** (5 connections) — `server/tests/unit/commands/test_quest_commands.py`
-- *... and 58 more nodes in this community*
+- **test_look_npc.py** (59 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **look_npc.py** (25 connections) — `server/commands/look_npc.py`
+- **_format_npc_description()** (15 connections) — `server/commands/look_npc.py`
+- **Any** (14 connections)
+- **_parse_npc_stats_dict()** (14 connections) — `server/commands/look_npc.py`
+- **_get_npc_room_id()** (14 connections) — `server/commands/look_npc.py`
+- **_format_npc_stats_for_admin()** (12 connections) — `server/commands/look_npc.py`
+- **_try_lookup_npc_implicit()** (12 connections) — `server/commands/look_npc.py`
+- **_find_matching_npcs()** (11 connections) — `server/commands/look_npc.py`
+- **_format_lifecycle_info()** (11 connections) — `server/commands/look_npc.py`
+- **_get_lifecycle_manager()** (11 connections) — `server/commands/look_npc.py`
+- **_format_core_attributes()** (10 connections) — `server/commands/look_npc.py`
+- **_format_other_stats()** (10 connections) — `server/commands/look_npc.py`
+- **_format_single_npc_result()** (10 connections) — `server/commands/look_npc.py`
+- **_get_npcs_in_room()** (7 connections) — `server/commands/look_npc.py`
+- **_format_multiple_npcs_result()** (6 connections) — `server/commands/look_npc.py`
+- **test_parse_npc_stats_dict_from_dict()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_npc_stats_dict_from_json_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_npc_stats_dict_invalid_json()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_npc_stats_dict_non_dict_non_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_core_attributes_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_core_attributes_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_other_stats_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_other_stats_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_lifecycle_info_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- *... and 75 more nodes in this community*
 
 ## Relationships
 
-- [npc look commands](npc_look_commands.md) (9 shared connections)
-- [calendar models rationale](calendar_models_rationale.md) (6 shared connections)
-- [dialogue service game](dialogue_service_game.md) (5 shared connections)
-- [quest chat game](quest_chat_game.md) (5 shared connections)
-- [commands whisper command](commands_whisper_command.md) (4 shared connections)
-- [commands npc admin](commands_npc_admin.md) (3 shared connections)
-- [quest game service](quest_game_service.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [connection realtime manager](connection_realtime_manager.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
-- [quest service game](quest_service_game.md) (1 shared connections)
-- [player preferences services](player_preferences_services.md) (1 shared connections)
+- [npc look commands](npc_look_commands.md) (32 shared connections)
+- [commands inventory put](commands_inventory_put.md) (7 shared connections)
+- [player helpers error](player_helpers_error.md) (7 shared connections)
+- [look helpers commands](look_helpers_commands.md) (6 shared connections)
+- [tick game processing](tick_game_processing.md) (4 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [commands admin mute](commands_admin_mute.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/quest_commands.py`
-- `server/game/quest/quest_chat_notify.py`
-- `server/tests/unit/commands/test_quest_commands.py`
-- `server/tests/unit/game/test_chat_npc_system.py`
+- `server/commands/look_npc.py`
+- `server/tests/unit/commands/test_look_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 336 (98%)
-- INFERRED: 8 (2%)
+- EXTRACTED: 391 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

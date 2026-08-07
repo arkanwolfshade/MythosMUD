@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_player_lucidity_tier_default()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _get_player_lucidity_tier returns default on error.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_is_channel_muted_false()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test is_channel_muted() returns False when channel is not muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [message chat nats](message_chat_nats.md) (1 shared connections)
+- [user manager services](user_manager_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 

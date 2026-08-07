@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [taunt combat commands](taunt_combat_commands.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [mythos mud mapbuilder](mythos_mud_mapbuilder.md) (1 shared connections)
 
 ## Source Files
 

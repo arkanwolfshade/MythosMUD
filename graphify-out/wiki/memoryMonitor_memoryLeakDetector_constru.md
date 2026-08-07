@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (4 shared connections)
+- [game chat moderation](game_chat_moderation.md) (4 shared connections)
 - [containers stores containerStore](containers_stores_containerStore.md) (3 shared connections)
 
 ## Source Files

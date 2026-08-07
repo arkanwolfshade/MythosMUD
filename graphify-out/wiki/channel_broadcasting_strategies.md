@@ -1,43 +1,45 @@
 # channel broadcasting strategies
 
-> 19 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **CommunicationIntegrationProtocol** (10 connections) — `server/npc/npc_protocols.py`
-- **CombatIntegrationProtocol** (7 connections) — `server/npc/npc_protocols.py`
-- **.speak()** (4 connections) — `server/npc/npc_base.py`
-- **.listen()** (4 connections) — `server/npc/npc_base.py`
-- **npc_protocols.py** (4 connections) — `server/npc/npc_protocols.py`
-- **Protocol** (2 connections)
-- **.handle_npc_death()** (2 connections) — `server/npc/npc_protocols.py`
-- **.send_whisper_to_player()** (2 connections) — `server/npc/npc_protocols.py`
-- **.send_message_to_room()** (2 connections) — `server/npc/npc_protocols.py`
-- **.handle_player_message()** (2 connections) — `server/npc/npc_protocols.py`
-- **NPC speaks a message.** (1 connections) — `server/npc/npc_base.py`
-- **NPC receives/listens to a message.** (1 connections) — `server/npc/npc_base.py`
-- **Protocols for NPC combat and communication integration (used by NPCBase).** (1 connections) — `server/npc/npc_protocols.py`
-- **Protocol for combat integration handle_npc_death.** (1 connections) — `server/npc/npc_protocols.py`
-- **Handle NPC death in the combat integration layer.** (1 connections) — `server/npc/npc_protocols.py`
-- **Protocol for communication integration (whisper, room message, handle player mes** (1 connections) — `server/npc/npc_protocols.py`
-- **Send a private whisper from this NPC to a single player.** (1 connections) — `server/npc/npc_protocols.py`
-- **Send a message from this NPC to all players in a room.** (1 connections) — `server/npc/npc_protocols.py`
-- **Handle an incoming player message directed at this NPC.** (1 connections) — `server/npc/npc_protocols.py`
+- **channel_broadcasting_strategies.py** (14 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **ChannelBroadcastingStrategy** (12 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **UnknownChannelStrategy** (9 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **GlobalChannelStrategy** (7 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.get_strategy()** (6 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **test_unknown_channel_strategy_broadcast()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **ABC** (2 connections)
+- **.__init__()** (2 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Channel Broadcasting Strategies for NATS Message Handler.  This module implement** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Abstract base class for channel broadcasting strategies.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Strategy for global channel broadcasting.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Strategy for unknown channel types.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Initialize unknown channel strategy.          Args:             channel_type: Un** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Get strategy for channel type.          Args:             channel_type: Type of** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Test UnknownChannelStrategy.broadcast() handles unknown channel.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (5 shared connections)
-- [Error Conversion](Error_Conversion.md) (5 shared connections)
+- [channel realtime broadcasting](channel_realtime_broadcasting.md) (7 shared connections)
+- [time service rationale](time_service_rationale.md) (4 shared connections)
+- [realtime channel broadcasting](realtime_channel_broadcasting.md) (4 shared connections)
+- [player room persistence](player_room_persistence.md) (3 shared connections)
+- [channel broadcasting realtime](channel_broadcasting_realtime.md) (2 shared connections)
+- [world loader rationale](world_loader_rationale.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (2 shared connections)
 
 ## Source Files
 
-- `server/npc/npc_base.py`
-- `server/npc/npc_protocols.py`
+- `server/realtime/channel_broadcasting_strategies.py`
+- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (85%)
-- INFERRED: 7 (15%)
+- EXTRACTED: 59 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

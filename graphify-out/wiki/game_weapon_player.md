@@ -1,54 +1,67 @@
 # game weapon player
 
-> 43 nodes
+> 130 nodes
 
 ## Key Concepts
 
-- **PydanticErrorHandler** (23 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.handle_validation_error()** (14 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **__init__.py** (9 connections) — `server/error_handlers/__init__.py`
-- **handle_pydantic_error()** (9 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **convert_pydantic_error()** (9 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **_ExtractedErrorInfo** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._create_fallback_error_response()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.convert_to_mythos_error()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **ErrorContextInitKwargs** (8 connections) — `server/exceptions.py`
-- **ValidationError** (7 connections)
-- **._extract_error_info()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._generate_user_friendly_message()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._create_error_details()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.create_handler()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._determine_error_type()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._determine_severity()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._format_single_field_error_message()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **_ExtractedFieldErrorInfo** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._get_display_field_name()** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **StandardizedErrorResponseDict** (3 connections)
-- **._get_field_path()** (3 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **Unpack** (3 connections)
-- **TypedDict** (2 connections)
-- **Keyword arguments accepted by create_error_context and ErrorContext().** (2 connections) — `server/exceptions.py`
-- **Error handlers package for MythosMUD.  This package provides specialized error h** (1 connections) — `server/error_handlers/__init__.py`
-- *... and 18 more nodes in this community*
+- **Player** (240 connections) — `server/models/player.py`
+- **HealthRepository** (31 connections) — `server/persistence/repositories/health_repository.py`
+- **test_health_repository.py** (19 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **health_repository.py** (17 connections) — `server/persistence/repositories/health_repository.py`
+- **.get_stats()** (13 connections) — `server/models/player.py`
+- **test_inventory_commands_persistence_helpers.py** (12 connections) — `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- **.update_player_health()** (8 connections) — `server/persistence/repositories/health_repository.py`
+- **.respawn_player_from_delirium_by_user_id()** (7 connections) — `server/game/player_respawn_wrapper.py`
+- **._damage_player_inner()** (7 connections) — `server/persistence/repositories/health_repository.py`
+- **test_health_repository_cold_resistance.py** (7 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
+- **.set_stats()** (6 connections) — `server/models/player.py`
+- **_stats_int()** (6 connections) — `server/persistence/repositories/health_repository.py`
+- **Player** (6 connections)
+- **._heal_player_inner()** (6 connections) — `server/persistence/repositories/health_repository.py`
+- **.apply_dp_decay()** (5 connections) — `server/models/player.py`
+- **.restore_to_full_health()** (5 connections) — `server/models/player.py`
+- **.apply_dp_change()** (5 connections) — `server/models/player.py`
+- **._log_damage_error()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **._update_player_health_inner()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **.damage_player()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **quest_seed_data()** (5 connections) — `server/tests/integration/test_quest_flow.py`
+- **.is_alive()** (4 connections) — `server/models/player.py`
+- **.is_mortally_wounded()** (4 connections) — `server/models/player.py`
+- **.is_dead()** (4 connections) — `server/models/player.py`
+- **.get_health_state()** (4 connections) — `server/models/player.py`
+- *... and 105 more nodes in this community*
 
 ## Relationships
 
-- [Error Handling Core](Error_Handling_Core.md) (19 shared connections)
-- [handler realtime nats](handler_realtime_nats.md) (8 shared connections)
-- [Spell Validation](Spell_Validation.md) (4 shared connections)
-- [health service services](health_service_services.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (45 shared connections)
+- [npc spawn validator](npc_spawn_validator.md) (43 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (22 shared connections)
+- [database helpers infrastructure](database_helpers_infrastructure.md) (14 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (13 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (11 shared connections)
+- [level curve game](level_curve_game.md) (9 shared connections)
+- [add used user](add_used_user.md) (8 shared connections)
+- [player service game](player_service_game.md) (8 shared connections)
+- [player cache rationale](player_cache_rationale.md) (7 shared connections)
+- [room renderer functions](room_renderer_functions.md) (5 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (5 shared connections)
 
 ## Source Files
 
-- `server/error_handlers/__init__.py`
-- `server/error_handlers/pydantic_error_handler.py`
-- `server/exceptions.py`
+- `server/game/player_respawn_wrapper.py`
+- `server/models/player.py`
+- `server/persistence/repositories/health_repository.py`
+- `server/tests/integration/test_quest_flow.py`
+- `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- `server/tests/unit/persistence/repositories/test_health_repository.py`
+- `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
+- `server/tests/unit/services/test_player_respawn_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 183 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 488 (78%)
+- INFERRED: 140 (22%)
 - AMBIGUOUS: 0 (0%)
 
 ---

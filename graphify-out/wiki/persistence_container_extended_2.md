@@ -1,52 +1,36 @@
 # persistence container extended
 
-> 36 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **HealthService** (21 connections) — `server/services/health_service.py`
-- **.get_health_status()** (10 connections) — `server/services/health_service.py`
-- **.check_database_health_async()** (7 connections) — `server/services/health_service.py`
-- **.get_server_component_health()** (7 connections) — `server/services/health_service.py`
-- **.check_database_health()** (6 connections) — `server/services/health_service.py`
-- **Any** (5 connections)
-- **._create_health_response()** (5 connections) — `server/services/health_service.py`
-- **.check_connections_health()** (5 connections) — `server/services/health_service.py`
-- **.get_database_component_health()** (5 connections) — `server/services/health_service.py`
-- **.get_connections_component_health()** (5 connections) — `server/services/health_service.py`
-- **.determine_overall_status()** (5 connections) — `server/services/health_service.py`
-- **.get_server_uptime()** (4 connections) — `server/services/health_service.py`
-- **.get_database_component_health_async()** (4 connections) — `server/services/health_service.py`
-- **.generate_alerts()** (4 connections) — `server/services/health_service.py`
-- **.__init__()** (3 connections) — `server/services/health_service.py`
-- **.get_memory_usage()** (3 connections) — `server/services/health_service.py`
-- **.get_cpu_usage()** (3 connections) — `server/services/health_service.py`
-- **health_service()** (3 connections) — `server/tests/unit/services/test_health_service.py`
-- **HealthStatus** (2 connections)
-- **Health monitoring service for MythosMUD server.      Provides comprehensive heal** (1 connections) — `server/services/health_service.py`
-- **Initialize the health service.          Args:             connection_manager: Co** (1 connections) — `server/services/health_service.py`
-- **Get server uptime in seconds.** (1 connections) — `server/services/health_service.py`
-- **Get current memory usage in MB.** (1 connections) — `server/services/health_service.py`
-- **Get current CPU usage percentage.** (1 connections) — `server/services/health_service.py`
-- **Create a standardized health check response dictionary.          Args:** (1 connections) — `server/services/health_service.py`
-- *... and 11 more nodes in this community*
+- **test_persistence_container_persistence.py** (8 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_none()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_string()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_dict()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_empty_string()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_list()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_invalid_json()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Unit tests for persistence.container_persistence module.  This module tests the** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing None JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing string JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing dict JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing empty string JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing list JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing invalid JSON string.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
 
 ## Relationships
 
-- [grace period login](grace_period_login.md) (13 shared connections)
-- [nats services service](nats_services_service.md) (2 shared connections)
-- [room service game](room_service_game.md) (2 shared connections)
-- [health models rationale](health_models_rationale.md) (1 shared connections)
+- [commands party examples](commands_party_examples.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/health_service.py`
-- `server/tests/unit/services/test_health_service.py`
+- `server/tests/unit/persistence/test_persistence_container_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 121 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 27 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

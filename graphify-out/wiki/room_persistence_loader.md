@@ -1,56 +1,44 @@
 # room persistence loader
 
-> 34 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **GameMechanicsService** (27 connections) — `server/game/mechanics.py`
-- **test_mechanics.py** (16 connections) — `server/tests/unit/game/test_mechanics.py`
-- **_player()** (8 connections) — `server/tests/unit/game/test_mechanics.py`
-- **.gain_occult_knowledge()** (6 connections) — `server/game/mechanics.py`
-- **.apply_lucidity_loss()** (5 connections) — `server/game/mechanics.py`
-- **.__init__()** (5 connections) — `server/npc/combat_integration_base.py`
-- **.apply_fear()** (4 connections) — `server/game/mechanics.py`
-- **.apply_corruption()** (4 connections) — `server/game/mechanics.py`
-- **.heal_player()** (4 connections) — `server/game/mechanics.py`
-- **.damage_player()** (4 connections) — `server/game/mechanics.py`
-- **.gain_experience()** (4 connections) — `server/game/mechanics.py`
-- **.__init__()** (3 connections) — `server/game/mechanics.py`
-- **test_apply_lucidity_loss_success()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
-- **test_apply_lucidity_loss_player_not_found()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
-- **test_apply_fear_success()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
-- **test_apply_corruption_success()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
-- **test_gain_occult_knowledge_success()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
-- **test_heal_player_success()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
-- **test_damage_player_success()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
-- **test_gain_experience_success()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
-- **service()** (2 connections) — `server/tests/unit/game/test_mechanics.py`
-- **Any** (1 connections)
-- **Service class for game mechanics operations.** (1 connections) — `server/game/mechanics.py`
-- **Initialize the game mechanics service with a persistence layer.** (1 connections) — `server/game/mechanics.py`
-- **Apply lucidity loss to a player.** (1 connections) — `server/game/mechanics.py`
-- *... and 9 more nodes in this community*
+- **._cleanup_player_mutes()** (8 connections) — `server/services/user_manager.py`
+- **datetime** (7 connections)
+- **.get_player_mutes()** (7 connections) — `server/services/user_manager.py`
+- **._cleanup_expired_mutes()** (6 connections) — `server/services/user_manager.py`
+- **._get_active_player_mutes()** (5 connections) — `server/services/user_manager.py`
+- **._get_active_channel_mutes()** (5 connections) — `server/services/user_manager.py`
+- **._get_active_global_mutes()** (5 connections) — `server/services/user_manager.py`
+- **._cleanup_channel_mutes()** (4 connections) — `server/services/user_manager.py`
+- **._cleanup_global_mutes()** (4 connections) — `server/services/user_manager.py`
+- **.get_system_stats()** (3 connections) — `server/services/user_manager.py`
+- **Get active player mutes for a player.** (1 connections) — `server/services/user_manager.py`
+- **Get active channel mutes for a player.** (1 connections) — `server/services/user_manager.py`
+- **Get active global mutes applied by a player.** (1 connections) — `server/services/user_manager.py`
+- **Get all mutes applied by a player.          Args:             player_id: Play** (1 connections) — `server/services/user_manager.py`
+- **Get system-wide user management statistics.          Returns:             Dic** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired player mutes.** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired channel mutes.** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired global mutes.** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired mutes from all storage.** (1 connections) — `server/services/user_manager.py`
+- **Remove mute data for a player from memory and optionally delete their file.** (1 connections) — `server/services/user_manager.py`
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (10 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
-- [NPC Combat](NPC_Combat.md) (6 shared connections)
-- [argon2 auth rationale](argon2_auth_rationale.md) (2 shared connections)
-- [npc combat base](npc_combat_base.md) (2 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [services user manager](services_user_manager.md) (16 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [services rescue service](services_rescue_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/mechanics.py`
-- `server/npc/combat_integration_base.py`
-- `server/tests/unit/game/test_mechanics.py`
+- `server/services/user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 120 (93%)
-- INFERRED: 9 (7%)
+- EXTRACTED: 64 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_is_player_in_room_false()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **Test is_player_in_room() returns False when player is not in room.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_extract_chat_event_info()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test extract_chat_event_info() extracts event info.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 

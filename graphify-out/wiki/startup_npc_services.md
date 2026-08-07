@@ -1,51 +1,54 @@
 # startup npc services
 
-> 23 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **look_container.py** (23 connections) — `server/commands/look_container.py`
-- **Any** (14 connections)
-- **_find_container_in_room_or_equipped()** (14 connections) — `server/commands/look_container.py`
-- **_find_container_via_inner_container()** (13 connections) — `server/commands/look_container.py`
-- **_handle_container_look()** (11 connections) — `server/commands/look_container.py`
-- **_try_lookup_container_implicit()** (10 connections) — `server/commands/look_container.py`
-- **_matches_item_instance_id()** (8 connections) — `server/commands/look_container.py`
-- **_try_match_container_component()** (8 connections) — `server/commands/look_container.py`
-- **_matches_name_or_slot()** (7 connections) — `server/commands/look_container.py`
-- **_get_container_data_from_component()** (7 connections) — `server/commands/look_container.py`
-- **_extract_container_metadata()** (6 connections) — `server/commands/look_container.py`
-- **_find_container_via_wearable_service()** (6 connections) — `server/commands/look_container.py`
-- **Container look functionality for MythosMUD.  This module handles looking at cont** (1 connections) — `server/commands/look_container.py`
-- **Find container via inner_container_id from item.** (1 connections) — `server/commands/look_container.py`
-- **Check if item instance IDs match.** (1 connections) — `server/commands/look_container.py`
-- **Check if container matches by name or slot.** (1 connections) — `server/commands/look_container.py`
-- **Get container data from component ID.** (1 connections) — `server/commands/look_container.py`
-- **Extract metadata from container component.** (1 connections) — `server/commands/look_container.py`
-- **Try to match a container component and return container data if found.** (1 connections) — `server/commands/look_container.py`
-- **Find container via wearable container service.** (1 connections) — `server/commands/look_container.py`
-- **Find container in room or equipped items.      Returns:         tuple: (containe** (1 connections) — `server/commands/look_container.py`
-- **Handle looking at a specific container.** (1 connections) — `server/commands/look_container.py`
-- **Try to find and display a container in implicit lookup.** (1 connections) — `server/commands/look_container.py`
+- **ChatPanel()** (11 connections) — `client/src/components/panels/ChatPanelRuntime.tsx`
+- **ChatPanel.tsx** (9 connections) — `client/src/components/panels/ChatPanel.tsx`
+- **chat-panel.spec.tsx** (9 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- **ChatPanel.test.tsx** (7 connections) — `client/src/components/__tests__/ChatPanel.test.tsx`
+- **chat-panel.test.tsx** (7 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
+- **ChatPanel.edgeCases.test.tsx** (6 connections) — `client/src/components/__tests__/ChatPanel.edgeCases.test.tsx`
+- **chatPanelTestHelpers.ts** (5 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
+- **createChatPanelDefaultProps()** (3 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
+- **chatPanelTestSetup.tsx** (3 connections) — `client/src/components/__tests__/chatPanelTestSetup.tsx`
+- **mockConsoleLog** (3 connections) — `client/src/components/__tests__/chatPanelTestSetup.tsx`
+- **ChatPanelCore.tsx** (3 connections) — `client/src/components/panels/ChatPanelCore.tsx`
+- **mockMessages** (2 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
+- **ChatPanelTestMessage** (1 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
+- **TerminalButtonProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- **TerminalInputProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- **Channel** (1 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- **ChannelSelectorProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- **TerminalButtonProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
+- **Channel** (1 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
+- **ChannelSelectorProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
 
 ## Relationships
 
-- [DI Container Format](DI_Container_Format.md) (21 shared connections)
-- [schemas validator rationale](schemas_validator_rationale.md) (20 shared connections)
-- [connection realtime statistics](connection_realtime_statistics.md) (5 shared connections)
-- [command processor rationale](command_processor_rationale.md) (4 shared connections)
-- [status game spell](status_game_spell.md) (4 shared connections)
-- [services inventory mutation](services_inventory_mutation.md) (3 shared connections)
-- [look command commands](look_command_commands.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (4 shared connections)
+- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (3 shared connections)
+- [panels chatPanelRuntimeUtils chatPanelEx](panels_chatPanelRuntimeUtils_chatPanelEx.md) (3 shared connections)
+- [combat service services](combat_service_services.md) (2 shared connections)
+- [performanceTester performance ExtendedPe](performanceTester_performance_ExtendedPe.md) (2 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/look_container.py`
+- `client/src/components/__tests__/ChatPanel.edgeCases.test.tsx`
+- `client/src/components/__tests__/ChatPanel.test.tsx`
+- `client/src/components/__tests__/chatPanelTestHelpers.ts`
+- `client/src/components/__tests__/chatPanelTestSetup.tsx`
+- `client/src/components/panels/ChatPanel.tsx`
+- `client/src/components/panels/ChatPanelCore.tsx`
+- `client/src/components/panels/ChatPanelRuntime.tsx`
+- `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- `client/src/components/panels/__tests__/chat-panel.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 138 (100%)
+- EXTRACTED: 76 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

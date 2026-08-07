@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **message_filtering_helper()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **Create a MessageFilteringHelper instance.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **.test_on_sanitarium_failover_with_string()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **Test on_sanitarium_failover with string player_id.** (1 connections) — `server/tests/unit/services/test_catatonia_registry.py`
 
 ## Relationships
 
-- [commands communication say](commands_communication_say.md) (1 shared connections)
-- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
+- [catatonia registry services](catatonia_registry_services.md) (1 shared connections)
+- [commands time handle](commands_time_handle.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_message_filtering.py`
+- `server/tests/unit/services/test_catatonia_registry.py`
 
 ## Audit Trail
 

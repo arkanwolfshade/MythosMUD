@@ -1,6 +1,6 @@
 # containers stores containerStore
 
-> 58 nodes
+> 60 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,7 @@
 - **ContainerSplitPane.tsx** (16 connections) — `client/src/components/containers/ContainerSplitPane.tsx`
 - **ContainerKeyboardAccessibility.test.tsx** (15 connections) — `client/src/components/containers/__tests__/ContainerKeyboardAccessibility.test.tsx`
 - **BackpackTab.tsx** (12 connections) — `client/src/components/containers/BackpackTab.tsx`
+- **useGameStore** (11 connections) — `client/src/stores/gameStore.ts`
 - **CorpseOverlay()** (10 connections) — `client/src/components/containers/CorpseOverlay.tsx`
 - **BackpackTab.test.tsx** (10 connections) — `client/src/components/containers/__tests__/BackpackTab.test.tsx`
 - **useContainerStore** (10 connections) — `client/src/stores/containerStore.ts`
@@ -28,17 +29,18 @@
 - **formatTimeRemaining()** (2 connections) — `client/src/components/containers/CorpseOverlay.tsx`
 - **calculateTimeRemaining()** (2 connections) — `client/src/components/containers/CorpseOverlay.tsx`
 - **isCorpseOwner()** (2 connections) — `client/src/components/containers/CorpseOverlay.tsx`
-- **isGracePeriodActive()** (2 connections) — `client/src/components/containers/CorpseOverlay.tsx`
-- *... and 33 more nodes in this community*
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
 - [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (12 shared connections)
-- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (9 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (5 shared connections)
 - [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (3 shared connections)
 - [memoryMonitor memoryLeakDetector constru](memoryMonitor_memoryLeakDetector_constru.md) (3 shared connections)
 - [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (2 shared connections)
-- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (2 shared connections)
+- [auth invites rationale](auth_invites_rationale.md) (2 shared connections)
+- [idle npc movement](idle_npc_movement.md) (2 shared connections)
+- [stateNormalization stores basic](stateNormalization_stores_basic.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,12 +54,14 @@
 - `client/src/components/containers/__tests__/CorpseOverlay.test.tsx`
 - `client/src/components/ui-v2/hooks/useGameClientV2MemoryMonitorEffect.ts`
 - `client/src/stores/__tests__/containerStore.test.ts`
+- `client/src/stores/__tests__/gameStore.test.ts`
 - `client/src/stores/containerStore.ts`
+- `client/src/stores/gameStore.ts`
 - `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 233 (100%)
+- EXTRACTED: 246 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,49 +1,48 @@
 # combat services messaging
 
-> 40 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **TestCombatMessagingService** (21 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **test_combat_messaging_service.py** (4 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.service()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_init()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_attacker_perspective()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_defender_perspective()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_other_perspective()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_custom_action_type()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_custom_npc_messages()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_fallback_to_default()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_death_message_default()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_death_message_custom()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_combat_start_messages()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_combat_start_messages_single_occupant()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_combat_end_messages()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_combat_end_messages_winner_perspective()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_combat_end_messages_loser_perspective()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_combat_end_messages_empty_occupants()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_zero_damage()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_high_damage()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **Unit tests for combat messaging service.  Tests the CombatMessagingService class** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **Test suite for CombatMessagingService class.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **Create a CombatMessagingService instance for testing.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **Test CombatMessagingService initialization.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **Test get_attack_message from attacker perspective.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- *... and 15 more nodes in this community*
+- **test_quest_definition_repository.py** (20 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **_make_session_context()** (11 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **_row_for_quest_definition()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_get_by_id_success()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_get_by_id_database_error()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_get_by_name_success()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_get_by_name_database_error()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_list_quest_ids_offered_by_database_error()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_get_by_id_not_found()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_get_by_name_not_found()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_list_quest_ids_offered_by_success()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_list_quest_ids_offered_by_empty()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Unit tests for QuestDefinitionRepository.  Tests get_by_id, get_by_name, and lis** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Return context manager that yields mock_session for async with.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Build a procedure result row (mappings().first() return value) for QuestDefiniti** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test get_by_id returns definition when found (procedure returns row, repo maps t** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test get_by_id returns None when not found.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test get_by_id raises DatabaseError on DB failure.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test get_by_name returns definition when found by common name.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test get_by_name returns None when not found.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test get_by_name raises DatabaseError on DB failure.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test list_quest_ids_offered_by returns quest IDs for entity (procedure returns r** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test list_quest_ids_offered_by returns empty list when no offers.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test list_quest_ids_offered_by raises DatabaseError on DB failure.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
 
 ## Relationships
 
-- [combat services messaging](combat_services_messaging.md) (4 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (6 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (4 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_service.py`
+- `server/tests/unit/persistence/test_quest_definition_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 82 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 76 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

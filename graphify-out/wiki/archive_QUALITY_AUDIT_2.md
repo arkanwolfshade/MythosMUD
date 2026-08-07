@@ -1,26 +1,23 @@
 # archive QUALITY AUDIT
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Phase 1: Quantitative Analysis Results** (5 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **1.1 Test Distribution by Category** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **1.2 Largest Test Files (Splitting/Pruning Candidates)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **1.3 Infrastructure Test Analysis** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Files** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **test_unsubscribe_all_for_service_nonexistent()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.unsubscribe_all_for_service() with nonexistent service_id.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [archive quality QUALITY](archive_quality_QUALITY.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

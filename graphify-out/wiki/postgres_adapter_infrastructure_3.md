@@ -31,8 +31,8 @@
 
 - [postgres adapter infrastructure](postgres_adapter_infrastructure.md) (15 shared connections)
 - [postgres adapter rationale](postgres_adapter_rationale.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [room game service](room_game_service.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [realtime circuit breaker](realtime_circuit_breaker.md) (1 shared connections)
 - [player room realtime](player_room_realtime.md) (1 shared connections)
 
 ## Source Files

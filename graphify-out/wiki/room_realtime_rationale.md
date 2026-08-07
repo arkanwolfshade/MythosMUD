@@ -1,45 +1,54 @@
 # room realtime rationale
 
-> 16 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **MagicServiceHealingMixin** (17 connections) — `server/game/magic/magic_healing_events.py`
-- **._send_healing_update_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
-- **._publish_dp_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
-- **UUID** (6 connections)
-- **._publish_or_send_dp_update()** (6 connections) — `server/game/magic/magic_healing_events.py`
-- **._is_heal_other_target()** (5 connections) — `server/game/magic/magic_healing_events.py`
-- **Any** (5 connections)
-- **._send_instant_heal_event_if_applied()** (5 connections) — `server/game/magic/magic_healing_events.py`
-- **._effect_result_has_healing()** (4 connections) — `server/game/magic/magic_healing_events.py`
-- **Mixin for MagicService: send DP update events when spells apply healing.** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **True when healing was applied to another player (heal-other, not steal-life or s** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **True if effect result indicates healing was applied (success, effect_applied, he** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **Send player_dp_updated event for the healed player (target for heal other, caste** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **Load player stats and delegate DP event publishing.** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **Publish DP update via event bus, or send fallback game event.** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **If instant cast applied healing, send DP update event to the healed player.** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **PlayerOccupantProcessor** (21 connections) — `server/realtime/player_occupant_processor.py`
+- **._create_player_occupant_info()** (7 connections) — `server/realtime/player_occupant_processor.py`
+- **.process_players_for_occupants()** (7 connections) — `server/realtime/player_occupant_processor.py`
+- **.__init__()** (5 connections) — `server/realtime/player_occupant_processor.py`
+- **UUID** (5 connections)
+- **._ensure_player_included_in_list()** (4 connections) — `server/realtime/player_occupant_processor.py`
+- **._convert_player_ids_to_uuids()** (4 connections) — `server/realtime/player_occupant_processor.py`
+- **test_warded_indicator_not_shown_for_reconnections()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **Any** (3 connections)
+- **processor()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_player_occupant_processor_adds_linkdead_indicator()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
+- **test_player_occupant_processor_no_linkdead_when_not_in_grace_period()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
+- **Processes player occupants for rooms.** (1 connections) — `server/realtime/player_occupant_processor.py`
+- **Initialize player occupant processor.          Args:             connection_mana** (1 connections) — `server/realtime/player_occupant_processor.py`
+- **Ensure a player is included in the player ID strings list if specified.** (1 connections) — `server/realtime/player_occupant_processor.py`
+- **Convert player ID strings to UUIDs for batch loading.          Args:** (1 connections) — `server/realtime/player_occupant_processor.py`
+- **Create occupant information dictionary for a single player.          Args:** (1 connections) — `server/realtime/player_occupant_processor.py`
+- **Process players and convert to occupant information.          Args:** (1 connections) — `server/realtime/player_occupant_processor.py`
+- **Test that '(warded)' indicator is not shown for reconnections.** (1 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **Create PlayerOccupantProcessor instance.** (1 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **Test PlayerOccupantProcessor adds (linkdead) indicator for grace period players.** (1 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
+- **Test PlayerOccupantProcessor does not add (linkdead) when player not in grace pe** (1 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (5 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
-- [spell game magic](spell_game_magic.md) (2 shared connections)
-- [game models player](game_models_player.md) (2 shared connections)
-- [player respawn event](player_respawn_event.md) (1 shared connections)
-- [subject nats manager](subject_nats_manager.md) (1 shared connections)
-- [nats services service](nats_services_service.md) (1 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (1 shared connections)
+- [command utility models](command_utility_models.md) (8 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (3 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (3 shared connections)
+- [skill service game](skill_service_game.md) (2 shared connections)
+- [logging processors structured](logging_processors_structured.md) (2 shared connections)
+- [schemas players profession](schemas_players_profession.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [npc combat base](npc_combat_base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/magic_healing_events.py`
+- `server/realtime/player_occupant_processor.py`
+- `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- `server/tests/unit/realtime/test_player_occupant_processor.py`
+- `server/tests/unit/realtime/test_visual_indicator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 62 (90%)
-- INFERRED: 7 (10%)
+- EXTRACTED: 77 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

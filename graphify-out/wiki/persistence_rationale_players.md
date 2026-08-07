@@ -1,70 +1,64 @@
 # persistence rationale players
 
-> 256 nodes
+> 88 nodes
 
 ## Key Concepts
 
-- **AsyncPersistenceLayer** (184 connections) — `server/async_persistence.py`
-- **async_persistence.py** (73 connections) — `server/async_persistence.py`
-- **combat_turn_participant_actions.py** (46 connections) — `server/services/combat_turn_participant_actions.py`
-- **ScheduleService** (30 connections) — `server/services/schedule_service.py`
-- **ScheduleEntry** (29 connections) — `server/schemas/calendar/calendar.py`
-- **schedule_service.py** (25 connections) — `server/services/schedule_service.py`
-- **Player** (22 connections)
-- **UUID** (21 connections)
-- **TestScheduleService** (21 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **Any** (19 connections)
-- **idle_movement.py** (17 connections) — `server/npc/idle_movement.py`
-- **combat_hp_sync.py** (15 connections) — `server/services/combat_hp_sync.py`
-- **._ensure_room_cache_loaded()** (13 connections) — `server/async_persistence.py`
-- **profession_service.py** (13 connections) — `server/game/profession_service.py`
-- **test_schedule_service.py** (12 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **CreateItemInstanceInput** (11 connections) — `server/async_persistence_constants.py`
-- **_weapon_damage_from_equipped_player()** (11 connections) — `server/services/combat_turn_participant_actions.py`
-- **_resolve_npc_target()** (11 connections) — `server/services/combat_turn_participant_actions.py`
-- **process_npc_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
-- **process_player_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
-- **_schedule_entry_from_row()** (10 connections) — `server/services/schedule_service.py`
-- **resolve_player_attack_damage()** (9 connections) — `server/services/combat_turn_participant_actions.py`
-- **_get_combat_container_services()** (8 connections) — `server/services/combat_turn_participant_actions.py`
-- **_select_npc_target()** (7 connections) — `server/services/combat_turn_participant_actions.py`
-- **_execute_player_attack()** (7 connections) — `server/services/combat_turn_participant_actions.py`
-- *... and 231 more nodes in this community*
+- **command_result_text()** (41 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- **test_inventory_put_command.py** (24 connections) — `server/tests/unit/commands/test_inventory_put_command.py`
+- **inventory_put_command.py** (22 connections) — `server/commands/inventory_put_command.py`
+- **test_inventory_commands.py** (20 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **PickupTestWiring** (19 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- **test_inventory_commands_pickup.py** (17 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- **handle_put_command()** (16 connections) — `server/commands/inventory_put_command.py`
+- **handle_inventory_command()** (13 connections) — `server/commands/inventory_commands.py`
+- **_put_resolve_container_id()** (13 connections) — `server/commands/inventory_put_command.py`
+- **_put_transfer_finish()** (13 connections) — `server/commands/inventory_put_command.py`
+- **_put_run_validated()** (10 connections) — `server/commands/inventory_put_command.py`
+- **inventory_commands_test_support.py** (10 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- **PutCommandRuntime** (7 connections) — `server/commands/inventory_put_command.py`
+- **PutValidatedWork** (7 connections) — `server/commands/inventory_put_command.py`
+- **test_handle_pickup_command()** (7 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- **test_handle_pickup_command_inventory_capacity_error()** (7 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- **sample_floor_item_stack()** (6 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- **_pickup_with_persist_patch()** (6 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- **test_handle_pickup_command_persist_failure_restores_drop_and_inventory()** (6 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- **test_put_run_validated_container_error()** (6 connections) — `server/tests/unit/commands/test_inventory_put_command.py`
+- **test_put_run_validated_success()** (6 connections) — `server/tests/unit/commands/test_inventory_put_command.py`
+- **inventory_has_named_item()** (5 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- **test_handle_drop_command_broadcasts_room_event_after_persist()** (5 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **test_handle_pickup_command_no_target()** (5 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- **test_handle_pickup_command_no_room_manager()** (5 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (38 shared connections)
-- [models npc rationale](models_npc_rationale.md) (37 shared connections)
-- [schemas invite user](schemas_invite_user.md) (23 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (18 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (17 shared connections)
-- [Item Instances](Item_Instances.md) (14 shared connections)
-- [persistence container helpers](persistence_container_helpers.md) (13 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (11 shared connections)
-- [Error Conversion](Error_Conversion.md) (9 shared connections)
-- [holiday service services](holiday_service_services.md) (9 shared connections)
-- [commands follow rationale](commands_follow_rationale.md) (7 shared connections)
-- [nats services service](nats_services_service.md) (7 shared connections)
+- [database helpers infrastructure](database_helpers_infrastructure.md) (26 shared connections)
+- [game weapon player](game_weapon_player.md) (13 shared connections)
+- [player cache rationale](player_cache_rationale.md) (12 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (5 shared connections)
+- [task registry app](task_registry_app.md) (5 shared connections)
+- [commands npc admin](commands_npc_admin.md) (4 shared connections)
+- [game rationale schemas](game_rationale_schemas.md) (3 shared connections)
+- [container inventory helpers](container_inventory_helpers.md) (3 shared connections)
+- [character creation service](character_creation_service.md) (2 shared connections)
+- [container inventory display](container_inventory_display.md) (2 shared connections)
+- [player room realtime](player_room_realtime.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
-- `server/async_persistence_constants.py`
-- `server/commands/combat_handler.py`
-- `server/game/profession_service.py`
-- `server/npc/idle_movement.py`
-- `server/schemas/calendar/calendar.py`
-- `server/services/combat_hp_sync.py`
-- `server/services/combat_turn_participant_actions.py`
-- `server/services/schedule_service.py`
-- `server/tests/unit/infrastructure/conftest.py`
-- `server/tests/unit/services/test_combat_turn_participant_actions.py`
-- `server/tests/unit/services/test_schedule_service.py`
+- `server/commands/inventory_commands.py`
+- `server/commands/inventory_put_command.py`
+- `server/tests/unit/commands/inventory_commands_test_support.py`
+- `server/tests/unit/commands/test_inventory_commands.py`
+- `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- `server/tests/unit/commands/test_inventory_put_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1069 (93%)
-- INFERRED: 81 (7%)
+- EXTRACTED: 392 (92%)
+- INFERRED: 36 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [room game service](room_game_service.md) (4 shared connections)
-- [persistence container extended](persistence_container_extended.md) (2 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (4 shared connections)
+- [uuid npc combat](uuid_npc_combat.md) (2 shared connections)
 
 ## Source Files
 

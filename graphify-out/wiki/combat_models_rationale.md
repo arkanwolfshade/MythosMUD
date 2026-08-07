@@ -1,69 +1,73 @@
 # combat models rationale
 
-> 251 nodes
+> 295 nodes
 
 ## Key Concepts
 
-- **Player** (236 connections) — `server/models/player.py`
-- **player.py** (89 connections) — `server/models/player.py`
-- **test_player_death_service.py** (52 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_player_model.py** (48 connections) — `server/tests/unit/models/test_player_model.py`
-- **HealthRepository** (31 connections) — `server/persistence/repositories/health_repository.py`
-- **PositionState** (20 connections) — `server/models/game.py`
-- **test_health_repository.py** (19 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
-- **player_repository_mappers.py** (11 connections) — `server/persistence/repositories/player_repository_mappers.py`
-- **test_procedures_return_shape.py** (11 connections) — `server/tests/integration/test_procedures_return_shape.py`
-- **test_lucidity_round_trip.py** (10 connections) — `server/tests/integration/test_lucidity_round_trip.py`
-- **._damage_player_inner()** (7 connections) — `server/persistence/repositories/health_repository.py`
-- **test_lucidity_adjustment_round_trip()** (7 connections) — `server/tests/integration/test_lucidity_round_trip.py`
-- **test_add_player_effect_generates_id()** (7 connections) — `server/tests/integration/test_procedures_return_shape.py`
-- **test_health_repository_cold_resistance.py** (7 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
-- **_stats_int()** (6 connections) — `server/persistence/repositories/health_repository.py`
-- **Player** (6 connections)
-- **._heal_player_inner()** (6 connections) — `server/persistence/repositories/health_repository.py`
-- **._log_damage_error()** (5 connections) — `server/persistence/repositories/health_repository.py`
-- **.damage_player()** (5 connections) — `server/persistence/repositories/health_repository.py`
-- **.heal_player()** (4 connections) — `server/persistence/repositories/health_repository.py`
-- **InventoryPayload** (4 connections) — `server/persistence/repositories/player_repository_mappers.py`
-- **test_cold_damage_resistance_reduces_damage()** (4 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
-- **test_damage_defaults_current_dp_to_20_when_missing()** (4 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
-- **_convert_legacy_stats_string()** (3 connections) — `server/models/player.py`
-- **.__init__()** (3 connections) — `server/persistence/repositories/health_repository.py`
-- *... and 226 more nodes in this community*
+- **HolidayService** (45 connections) — `server/services/holiday_service.py`
+- **game.py** (43 connections) — `server/container/bundles/game.py`
+- **HolidayCollection** (41 connections) — `server/schemas/calendar/calendar.py`
+- **.initialize()** (35 connections) — `server/container/bundles/game.py`
+- **HolidayEntry** (31 connections) — `server/schemas/calendar/calendar.py`
+- **ScheduleService** (30 connections) — `server/services/schedule_service.py`
+- **ScheduleEntry** (29 connections) — `server/schemas/calendar/calendar.py`
+- **TestHolidayService** (27 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **time_service.py** (26 connections) — `server/time/time_service.py`
+- **get_mythos_chronicle()** (26 connections) — `server/time/time_service.py`
+- **schedule_service.py** (25 connections) — `server/services/schedule_service.py`
+- **time_event_consumer.py** (25 connections) — `server/time/time_event_consumer.py`
+- **holiday_service.py** (24 connections) — `server/services/holiday_service.py`
+- **test_calendar_schemas.py** (21 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **TestScheduleService** (21 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **validate_calendar.py** (17 connections) — `scripts/validate_calendar.py`
+- **normalize_environment()** (15 connections) — `server/utils/project_paths.py`
+- **get_calendar_paths_for_environment()** (14 connections) — `server/utils/project_paths.py`
+- **ChronicleLike** (13 connections) — `server/time/time_service.py`
+- **ScheduleCollection** (12 connections) — `server/schemas/calendar/calendar.py`
+- **test_schedule_service.py** (12 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **project_paths.py** (12 connections) — `server/utils/project_paths.py`
+- **time_commands.py** (10 connections) — `server/commands/time_commands.py`
+- **__init__.py** (10 connections) — `server/schemas/calendar/__init__.py`
+- **_schedule_entry_from_row()** (10 connections) — `server/services/schedule_service.py`
+- *... and 270 more nodes in this community*
 
 ## Relationships
 
-- [commands inventory command](commands_inventory_command.md) (18 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (17 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (14 shared connections)
-- [npc population stats](npc_population_stats.md) (13 shared connections)
-- [commands inventory pickup](commands_inventory_pickup.md) (13 shared connections)
-- [nats services service](nats_services_service.md) (12 shared connections)
-- [models player rationale](models_player_rationale.md) (12 shared connections)
-- [shutdown command commands](shutdown_command_commands.md) (12 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (11 shared connections)
-- [world models rationale](world_models_rationale.md) (11 shared connections)
-- [schemas invite user](schemas_invite_user.md) (11 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (10 shared connections)
+- [rate limiter services](rate_limiter_services.md) (28 shared connections)
+- [nats services service](nats_services_service.md) (21 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (17 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (16 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (7 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (7 shared connections)
+- [NPC Combat](NPC_Combat.md) (7 shared connections)
+- [aggro threat services](aggro_threat_services.md) (7 shared connections)
+- [manager subject services](manager_subject_services.md) (6 shared connections)
+- [Error Conversion](Error_Conversion.md) (5 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (5 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
-- `server/models/player.py`
-- `server/persistence/repositories/health_repository.py`
-- `server/persistence/repositories/player_repository_mappers.py`
-- `server/tests/integration/test_lucidity_round_trip.py`
-- `server/tests/integration/test_procedures_return_shape.py`
-- `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
-- `server/tests/unit/models/test_player_model.py`
-- `server/tests/unit/persistence/repositories/test_health_repository.py`
-- `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
-- `server/tests/unit/services/test_player_death_service.py`
+- `scripts/validate_calendar.py`
+- `server/commands/time_commands.py`
+- `server/container/bundles/game.py`
+- `server/npc/lifecycle_manager.py`
+- `server/schemas/calendar/__init__.py`
+- `server/schemas/calendar/calendar.py`
+- `server/services/holiday_service.py`
+- `server/services/schedule_service.py`
+- `server/tests/unit/schemas/test_calendar_schemas.py`
+- `server/tests/unit/services/test_holiday_service.py`
+- `server/tests/unit/services/test_schedule_service.py`
+- `server/tests/unit/utils/test_project_paths.py`
+- `server/time/time_event_consumer.py`
+- `server/time/time_service.py`
+- `server/utils/project_paths.py`
 
 ## Audit Trail
 
-- EXTRACTED: 866 (87%)
-- INFERRED: 129 (13%)
+- EXTRACTED: 1241 (97%)
+- INFERRED: 45 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

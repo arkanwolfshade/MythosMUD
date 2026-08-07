@@ -1,67 +1,57 @@
 # room game service
 
-> 112 nodes
+> 31 nodes
 
 ## Key Concepts
 
-- **RoomService** (80 connections) — `server/game/room_service.py`
-- **rooms.py** (36 connections) — `server/api/rooms.py`
-- **room_service.py** (22 connections) — `server/game/room_service.py`
-- **test_rooms_api.py** (22 connections) — `server/tests/unit/api/test_rooms_api.py`
-- **update_room_position()** (16 connections) — `server/api/rooms.py`
-- **exploration_service.py** (16 connections) — `server/services/exploration_service.py`
-- **_apply_exploration_filter_if_needed()** (13 connections) — `server/api/rooms.py`
-- **list_rooms()** (12 connections) — `server/api/rooms.py`
-- **test_rooms_exploration_filter.py** (12 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **.get_room()** (11 connections) — `server/game/room_service.py`
-- **_validate_room_position_update()** (10 connections) — `server/api/rooms.py`
-- **_update_room_position_in_db()** (10 connections) — `server/api/rooms.py`
-- **get_room()** (10 connections) — `server/api/rooms.py`
-- **Any** (10 connections)
-- **RoomListResponse** (8 connections) — `server/schemas/rooms/room.py`
-- **RoomPositionUpdateResponse** (8 connections) — `server/schemas/rooms/room.py`
-- **RoomResponse** (8 connections) — `server/schemas/rooms/room.py`
-- **RoomData** (8 connections) — `server/schemas/rooms/room_data.py`
-- **.get_room_info()** (7 connections) — `server/game/room_service.py`
-- **room.py** (7 connections) — `server/schemas/rooms/room.py`
-- **_invalidate_room_cache()** (6 connections) — `server/api/rooms.py`
-- **RoomPositionUpdate** (6 connections) — `server/api/rooms.py`
-- **.get_adjacent_rooms()** (6 connections) — `server/game/room_service.py`
-- **player_respawn.py** (6 connections) — `server/schemas/players/player_respawn.py`
-- **__init__.py** (6 connections) — `server/schemas/rooms/__init__.py`
-- *... and 87 more nodes in this community*
+- **profession_repository.py** (18 connections) — `server/persistence/repositories/profession_repository.py`
+- **test_profession_repository.py** (18 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **ProfessionRepository** (13 connections) — `server/persistence/repositories/profession_repository.py`
+- **_row_to_profession()** (11 connections) — `server/persistence/repositories/profession_repository.py`
+- **.get_all_professions()** (7 connections) — `server/persistence/repositories/profession_repository.py`
+- **.get_profession_by_id()** (7 connections) — `server/persistence/repositories/profession_repository.py`
+- **_text_or_default()** (6 connections) — `server/persistence/repositories/profession_repository.py`
+- **_bool_or_default()** (6 connections) — `server/persistence/repositories/profession_repository.py`
+- **_str_or_default()** (5 connections) — `server/persistence/repositories/profession_repository.py`
+- **Any** (5 connections)
+- **Profession** (4 connections)
+- **test_helpers_defaults()** (4 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **_mock_session()** (4 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **.__init__()** (3 connections) — `server/persistence/repositories/profession_repository.py`
+- **_profession_row()** (3 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **test_get_all_professions()** (3 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **test_get_profession_by_id()** (3 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **test_row_to_profession()** (2 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **repo()** (2 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **test_get_profession_by_id_not_found()** (2 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **test_get_all_professions_db_error()** (2 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **Profession repository for async persistence operations.  This module provides as** (1 connections) — `server/persistence/repositories/profession_repository.py`
+- **Return value as str or a default if falsy.** (1 connections) — `server/persistence/repositories/profession_repository.py`
+- **Return text value or default if falsy.** (1 connections) — `server/persistence/repositories/profession_repository.py`
+- **Return bool(value) when not None, otherwise default.** (1 connections) — `server/persistence/repositories/profession_repository.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [maps handle ascii](maps_handle_ascii.md) (18 shared connections)
-- [corpse lifecycle service](corpse_lifecycle_service.md) (14 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (12 shared connections)
-- [Exception Containers](Exception_Containers.md) (11 shared connections)
-- [database helpers infrastructure](database_helpers_infrastructure.md) (10 shared connections)
-- [NPC Combat](NPC_Combat.md) (9 shared connections)
-- [player requests schemas](player_requests_schemas.md) (7 shared connections)
-- [player preferences services](player_preferences_services.md) (5 shared connections)
-- [Player Stats](Player_Stats.md) (5 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (4 shared connections)
-- [room service game](room_service_game.md) (4 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (8 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (5 shared connections)
+- [add used user](add_used_user.md) (4 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (3 shared connections)
+- [room websocket updates](room_websocket_updates.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [useWebSocketConnectionTestFixtures useWe](useWebSocketConnectionTestFixtures_useWe.md) (1 shared connections)
+- [commands party examples](commands_party_examples.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/rooms.py`
-- `server/game/room_service.py`
-- `server/schemas/players/player_respawn.py`
-- `server/schemas/rooms/__init__.py`
-- `server/schemas/rooms/room.py`
-- `server/schemas/rooms/room_data.py`
-- `server/services/exploration_service.py`
-- `server/tests/unit/api/test_rooms_api.py`
-- `server/tests/unit/api/test_rooms_exploration_filter.py`
+- `server/persistence/repositories/profession_repository.py`
+- `server/tests/unit/persistence/repositories/test_profession_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 482 (90%)
-- INFERRED: 53 (10%)
+- EXTRACTED: 131 (95%)
+- INFERRED: 7 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

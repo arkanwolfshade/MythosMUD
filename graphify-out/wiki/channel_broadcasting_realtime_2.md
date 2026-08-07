@@ -4,28 +4,26 @@
 
 ## Key Concepts
 
-- **UserBase** (8 connections) — `server/schemas/auth/user.py`
-- **test_user_base()** (3 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **test_user_base_defaults()** (3 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **Base user schema with common fields.** (1 connections) — `server/schemas/auth/user.py`
-- **Test UserBase can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **Test UserBase has correct default values.** (1 connections) — `server/tests/unit/schemas/test_user_schemas.py`
+- **TestGetSpellLearningService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_spell_learning_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_spell_learning_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_spell_learning_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_spell_learning_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_spell_learning_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [command factories moderation](command_factories_moderation.md) (4 shared connections)
-- [message filtering helpers](message_filtering_helpers.md) (2 shared connections)
-- [level curve game](level_curve_game.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [Player Stats](Player_Stats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/auth/user.py`
-- `server/tests/unit/schemas/test_user_schemas.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

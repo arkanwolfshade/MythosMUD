@@ -1,10 +1,11 @@
 # command communication models
 
-> 100 nodes
+> 104 nodes
 
 ## Key Concepts
 
 - **test_command_communication.py** (45 connections) — `server/tests/unit/models/test_command_communication.py`
+- **command_communication.py** (19 connections) — `server/models/command_communication.py`
 - **WhisperCommand** (15 connections) — `server/models/command_communication.py`
 - **SayCommand** (13 connections) — `server/models/command_communication.py`
 - **PoseCommand** (13 connections) — `server/models/command_communication.py`
@@ -28,16 +29,15 @@
 - **test_whisper_command_target_min_length()** (4 connections) — `server/tests/unit/models/test_command_communication.py`
 - **test_whisper_command_message_min_length()** (4 connections) — `server/tests/unit/models/test_command_communication.py`
 - **test_whisper_command_message_max_length()** (4 connections) — `server/tests/unit/models/test_command_communication.py`
-- **test_reply_command_message_min_length()** (4 connections) — `server/tests/unit/models/test_command_communication.py`
-- *... and 75 more nodes in this community*
+- *... and 79 more nodes in this community*
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (25 shared connections)
-- [Loot Generation](Loot_Generation.md) (17 shared connections)
-- [Security Validator Tests](Security_Validator_Tests.md) (9 shared connections)
-- [command inventory factories](command_inventory_factories.md) (8 shared connections)
-- [services chat logger](services_chat_logger.md) (8 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (19 shared connections)
+- [command inventory models](command_inventory_models.md) (17 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (14 shared connections)
+- [command inventory factories](command_inventory_factories.md) (9 shared connections)
+- [rescue service services](rescue_service_services.md) (8 shared connections)
 - [memory profiler rationale](memory_profiler_rationale.md) (1 shared connections)
 
 ## Source Files
@@ -47,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 302 (90%)
-- INFERRED: 34 (10%)
+- EXTRACTED: 326 (91%)
+- INFERRED: 34 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

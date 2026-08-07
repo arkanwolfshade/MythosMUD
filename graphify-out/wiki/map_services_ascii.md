@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [database helpers infrastructure](database_helpers_infrastructure.md) (3 shared connections)
-- [maps handle ascii](maps_handle_ascii.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (4 shared connections)
+- [map helpers rationale](map_helpers_rationale.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 

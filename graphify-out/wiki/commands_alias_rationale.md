@@ -1,51 +1,51 @@
 # commands alias rationale
 
-> 69 nodes
+> 84 nodes
 
 ## Key Concepts
 
-- **test_alias_commands.py** (30 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **handle_alias_command()** (24 connections) — `server/commands/alias_commands.py`
-- **alias_commands.py** (15 connections) — `server/commands/alias_commands.py`
-- **handle_unalias_command()** (12 connections) — `server/commands/alias_commands.py`
-- **handle_aliases_command()** (11 connections) — `server/commands/alias_commands.py`
-- **_create_alias()** (5 connections) — `server/commands/alias_commands.py`
-- **_extract_alias_params()** (4 connections) — `server/commands/alias_commands.py`
-- **Any** (4 connections)
-- **_view_alias()** (4 connections) — `server/commands/alias_commands.py`
-- **_validate_alias_params()** (3 connections) — `server/commands/alias_commands.py`
-- **test_handle_alias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_no_args()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_view_existing()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_view_nonexistent()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_create_from_args()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_create_from_structured_data()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_invalid_name_too_long()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_invalid_command_too_long()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_circular_reference()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_create_error()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_aliases_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_aliases_command_no_aliases()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_aliases_command_with_aliases()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_aliases_command_error()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_unalias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- *... and 44 more nodes in this community*
+- **NATSRetryHandler** (42 connections) — `server/realtime/nats_retry_handler.py`
+- **test_nats_retry_handler.py** (34 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- **RetryableMessage** (13 connections) — `server/realtime/nats_retry_handler.py`
+- **RetryConfig** (10 connections) — `server/realtime/nats_retry_handler.py`
+- **.retry_async()** (5 connections) — `server/realtime/nats_retry_handler.py`
+- **.calculate_backoff()** (4 connections) — `server/realtime/nats_retry_handler.py`
+- **.should_retry()** (4 connections) — `server/realtime/nats_retry_handler.py`
+- **test_should_retry_under_max()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- **test_should_retry_at_max()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- **test_should_retry_over_max()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- **test_retry_async_increments_attempt()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- **test_retry_async_calls_function()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- **test_retry_async_waits_for_backoff()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- **test_retry_async_zero_delay()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- **test_get_config()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- **.__init__()** (3 connections) — `server/realtime/nats_retry_handler.py`
+- **Any** (3 connections)
+- **.get_retry_stats()** (3 connections) — `server/realtime/nats_retry_handler.py`
+- **.retry_with_backoff()** (3 connections) — `server/realtime/nats_retry_handler.py`
+- **.get_config()** (3 connections) — `server/realtime/nats_retry_handler.py`
+- **.update_config()** (3 connections) — `server/realtime/nats_retry_handler.py`
+- **test_retry_config_calculate_delay_base()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- **test_retry_config_calculate_delay_capped()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- **test_retry_config_defaults()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- **test_retryable_message_init()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [commands whisper command](commands_whisper_command.md) (9 shared connections)
-- [commands npc admin](commands_npc_admin.md) (6 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (8 shared connections)
+- [command parser helpers](command_parser_helpers.md) (2 shared connections)
+- [nats message handler](nats_message_handler.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/alias_commands.py`
-- `server/tests/unit/commands/test_alias_commands.py`
+- `server/realtime/nats_retry_handler.py`
+- `server/tests/unit/realtime/test_nats_retry_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 219 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 261 (98%)
+- INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

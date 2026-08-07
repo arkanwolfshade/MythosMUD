@@ -1,6 +1,6 @@
 # commands rescue rationale
 
-> 59 nodes
+> 65 nodes
 
 ## Key Concepts
 
@@ -8,8 +8,10 @@
 - **total_xp_for_level()** (15 connections) — `server/game/level_curve.py`
 - **test_level_curve.py** (15 connections) — `server/tests/unit/game/test_level_curve.py`
 - **level_from_total_xp()** (13 connections) — `server/game/level_curve.py`
+- **LevelService** (13 connections) — `server/game/level_service.py`
 - **level_curve.py** (6 connections) — `server/game/level_curve.py`
 - **xp_required_for_level()** (6 connections) — `server/game/level_curve.py`
+- **.__init__()** (4 connections) — `server/game/level_service.py`
 - **.grant_xp()** (4 connections) — `server/game/level_service.py`
 - **.check_level_up()** (4 connections) — `server/game/level_service.py`
 - **test_xp_required_for_level_marginal()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
@@ -27,14 +29,14 @@
 - **level_service()** (3 connections) — `server/tests/unit/game/test_level_service.py`
 - **test_check_level_up_no_change_returns_false()** (3 connections) — `server/tests/unit/game/test_level_service.py`
 - **test_check_level_up_increase_persists_and_returns_true()** (3 connections) — `server/tests/unit/game/test_level_service.py`
-- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- **sample_player()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- *... and 34 more nodes in this community*
+- *... and 40 more nodes in this community*
 
 ## Relationships
 
-- [websocket realtime handler](websocket_realtime_handler.md) (5 shared connections)
-- [NPC Combat](NPC_Combat.md) (4 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (5 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 171 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 191 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

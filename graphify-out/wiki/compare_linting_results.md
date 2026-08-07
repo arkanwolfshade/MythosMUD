@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [scripts run guard](scripts_run_guard.md) (2 shared connections)
+- [scripts run guard](scripts_run_guard.md) (1 shared connections)
+- [player presence tracker](player_presence_tracker.md) (1 shared connections)
 
 ## Source Files
 

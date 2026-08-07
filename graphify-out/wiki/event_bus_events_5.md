@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_exit_no_exits()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test _validate_exit returns False when room has no exits.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_compare_canonical_rooms_same()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test compare_canonical_rooms() returns True for same rooms.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 

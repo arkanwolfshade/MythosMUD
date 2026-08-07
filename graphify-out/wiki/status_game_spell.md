@@ -1,52 +1,49 @@
 # status game spell
 
-> 28 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **_find_container_wearable()** (20 connections) — `server/commands/look_container.py`
-- **test_find_container_wearable_success()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_wearable_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_wearable_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_wearable_with_inner_container()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_wearable_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_wearable_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_wearable_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_wearable_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_wearable_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_wearable_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_wearable_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_wearable_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_wearable_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Find a wearable container in equipped items by name or prototype_id.      This f** (1 connections) — `server/commands/look_container.py`
-- **Test finding wearable container by name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding wearable container by prototype_id.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding wearable container when not found.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding wearable container with inner_container.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding wearable container with instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding wearable container with invalid instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test _find_container_wearable() finds wearable container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_wearable() returns None when container not found.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_wearable() with empty dict.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_wearable() with no matching containers.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- *... and 3 more nodes in this community*
+- **GameTickService** (30 connections) — `server/services/game_tick_service.py`
+- **TestGameTickService** (20 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.start()** (4 connections) — `server/services/game_tick_service.py`
+- **test_game_tick_service.py** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **._tick_loop()** (3 connections) — `server/services/game_tick_service.py`
+- **.test_init_default_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_init_custom_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_start_success()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_start_already_running()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_start_failure()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_stop_success()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_stop_not_running()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_stop_task_already_done()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_stop_failure()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_get_tick_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_reset_tick_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_get_tick_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_increments_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_publishes_events()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_handles_cancellation()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_handles_publish_failure()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_handles_exceptions()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.__init__()** (2 connections) — `server/services/game_tick_service.py`
+- **.stop()** (2 connections) — `server/services/game_tick_service.py`
+- **.get_tick_count()** (2 connections) — `server/services/game_tick_service.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [schemas validator rationale](schemas_validator_rationale.md) (8 shared connections)
-- [DI Container Format](DI_Container_Format.md) (7 shared connections)
-- [startup npc services](startup_npc_services.md) (4 shared connections)
+- [schemas player rationale](schemas_player_rationale.md) (3 shared connections)
 
 ## Source Files
 
-- `server/commands/look_container.py`
-- `server/tests/unit/commands/test_look_container.py`
-- `server/tests/unit/commands/test_look_container_helpers.py`
+- `server/services/game_tick_service.py`
+- `server/tests/unit/services/test_game_tick_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 73 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 153 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,28 +1,36 @@
 # tools generate invite
 
-> 7 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **generate_unique_codes()** (5 connections) — `tools/invite_tools/generate_invites.py`
-- **generate_invites.py** (4 connections) — `tools/invite_tools/generate_invites.py`
-- **generate_invite_code()** (3 connections) — `tools/invite_tools/generate_invites.py`
-- **main()** (3 connections) — `tools/invite_tools/generate_invites.py`
-- **Generate a unique Mythos-themed invite code.** (1 connections) — `tools/invite_tools/generate_invites.py`
-- **Generate a list of unique invite codes and store them in the database.** (1 connections) — `tools/invite_tools/generate_invites.py`
-- **Generate invite codes and store them in the database.** (1 connections) — `tools/invite_tools/generate_invites.py`
+- **test_inventory_mutation_guard_async.py** (9 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **guard()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_acquire_async_enforces_max_tokens()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_acquire_async_token_expiry()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_acquire_async_token_ttl_zero()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_acquire_async_cleanup_empty_state()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_acquire_async_concurrent_same_player()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Unit tests for inventory mutation guard - asynchronous acquire operations.  Test** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Test acquire_async enforces max_tokens limit.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Test acquire_async allows token reuse after expiry.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Test acquire_async with token_ttl=0 (no expiry).** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Test acquire_async cleans up state when tokens are empty.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Test acquire_async serializes concurrent mutations for same player.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [task registry app](task_registry_app.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/invite_tools/generate_invites.py`
+- `server/tests/unit/services/test_inventory_mutation_guard_async.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

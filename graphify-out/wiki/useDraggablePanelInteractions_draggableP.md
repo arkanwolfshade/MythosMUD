@@ -1,49 +1,57 @@
 # useDraggablePanelInteractions draggableP
 
-> 23 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **test_retry.py** (13 connections) — `server/tests/unit/utils/test_retry.py`
-- **retry_with_backoff()** (11 connections) — `server/utils/retry.py`
-- **test_is_transient_error_wrapped_connection_closed()** (4 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_is_transient_error_cause_chain_connection_closed()** (4 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_retry_retries_wrapped_connection_closed_then_succeeds()** (4 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_is_transient_error_transient()** (3 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_is_transient_error_non_transient()** (3 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_retry_with_backoff_success()** (3 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_retry_with_backoff_failure_then_success()** (3 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_retry_with_backoff_async_success()** (3 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_retry_with_backoff_async_failure_then_success()** (3 connections) — `server/tests/unit/utils/test_retry.py`
-- **Unit tests for retry utilities.  Tests the retry decorator and retry logic.** (1 connections) — `server/tests/unit/utils/test_retry.py`
-- **Test is_transient_error() identifies transient errors.** (1 connections) — `server/tests/unit/utils/test_retry.py`
-- **Test is_transient_error() returns False for non-transient errors.** (1 connections) — `server/tests/unit/utils/test_retry.py`
-- **DatabaseError wrapping asyncpg closed-connection must still retry (e2e regressio** (1 connections) — `server/tests/unit/utils/test_retry.py`
-- **__cause__ ConnectionDoesNotExistError makes the outer wrapper transient.** (1 connections) — `server/tests/unit/utils/test_retry.py`
-- **Retry decorator must not treat wrapped closed-connection as final on attempt 1.** (1 connections) — `server/tests/unit/utils/test_retry.py`
-- **Test retry_with_backoff() succeeds on first attempt.** (1 connections) — `server/tests/unit/utils/test_retry.py`
-- **Test retry_with_backoff() retries on failure then succeeds.** (1 connections) — `server/tests/unit/utils/test_retry.py`
-- **Test retry_with_backoff() with async function succeeds on first attempt.** (1 connections) — `server/tests/unit/utils/test_retry.py`
-- **Test retry_with_backoff() with async function retries on failure then succeeds.** (1 connections) — `server/tests/unit/utils/test_retry.py`
-- **F** (1 connections)
-- **Decorator to retry a function with exponential backoff on transient errors.** (1 connections) — `server/utils/retry.py`
+- **InventorySchemaValidationError** (20 connections) — `server/schemas/shared/inventory_schema.py`
+- **validate_inventory_payload()** (13 connections) — `server/schemas/shared/inventory_schema.py`
+- **__init__.py** (12 connections) — `server/schemas/shared/__init__.py`
+- **test_inventory_schema.py** (11 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **validate_inventory_items()** (9 connections) — `server/schemas/shared/inventory_schema.py`
+- **inventory_schema.py** (7 connections) — `server/schemas/shared/inventory_schema.py`
+- **_build_validator()** (5 connections) — `server/schemas/shared/inventory_schema.py`
+- **test_persist_player_error()** (4 connections) — `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- **test_validate_inventory_payload_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_payload_invalid_inventory()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_items_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_items_invalid_quantity()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Any** (3 connections)
+- **test_validate_inventory_payload_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_items_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Shared schemas: base models, target resolution, inventory validation.** (1 connections) — `server/schemas/shared/__init__.py`
+- **Exception** (1 connections)
+- **Inventory JSON schema validation utilities.  As recorded in the restricted stack** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Raised when inventory payloads fail schema validation.** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Internal helper to construct a Draft7 validator instance.** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Validate a complete inventory payload against the canonical schema.      Raises:** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Validate only the inventory portion to simplify testing workflows.      Raises:** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Test _persist_player() handles save errors.** (1 connections) — `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- **Unit tests for inventory_schema validation functions.  Tests the validation func** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Test validate_inventory_payload() accepts valid payload.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [retry rationale transient()](retry_rationale_transient%28%29.md) (8 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
-- [config models game](config_models_game.md) (1 shared connections)
-- [shutdown command commands](shutdown_command_commands.md) (1 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (6 shared connections)
+- [logging file setup](logging_file_setup.md) (5 shared connections)
+- [command factories moderation](command_factories_moderation.md) (3 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (3 shared connections)
+- [game weapon player](game_weapon_player.md) (2 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (1 shared connections)
+- [admin auth service](admin_auth_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_retry.py`
-- `server/utils/retry.py`
+- `server/schemas/shared/__init__.py`
+- `server/schemas/shared/inventory_schema.py`
+- `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- `server/tests/unit/schemas/test_inventory_schema.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 113 (93%)
+- INFERRED: 8 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,50 +1,49 @@
 # room conftest toolkit
 
-> 20 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **inventory_drop_command.py** (25 connections) — `server/commands/inventory_drop_command.py`
-- **handle_drop_command()** (14 connections) — `server/commands/inventory_drop_command.py`
-- **_drop_resolve_stack_or_error()** (12 connections) — `server/commands/inventory_drop_command.py`
-- **CommandResponse** (7 connections)
-- **_drop_parsed_quantity_or_error()** (6 connections) — `server/commands/inventory_drop_command.py`
-- **_drop_finish_after_persist()** (6 connections) — `server/commands/inventory_drop_command.py`
-- **_drop_quantity_or_error()** (4 connections) — `server/commands/inventory_drop_command.py`
-- **_inventory_rows_after_drop()** (4 connections) — `server/commands/inventory_drop_command.py`
-- **_drop_slot_index_or_error()** (4 connections) — `server/commands/inventory_drop_command.py`
-- **_drop_quantity_bounds_or_error()** (4 connections) — `server/commands/inventory_drop_command.py`
-- **Player** (3 connections)
-- **test_handle_drop_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
-- **_DropResolved** (1 connections)
-- **Drop command: move an inventory stack to the room floor.** (1 connections) — `server/commands/inventory_drop_command.py`
-- **Apply partial or full removal of one inventory slot (1-based index).** (1 connections) — `server/commands/inventory_drop_command.py`
-- **Resolve 1-based inventory slot from command data or return a usage / range error** (1 connections) — `server/commands/inventory_drop_command.py`
-- **Return an error response if drop quantity is out of range for the stack.** (1 connections) — `server/commands/inventory_drop_command.py`
-- **Parse quantity from command + stack; return error dict or a validated int (may s** (1 connections) — `server/commands/inventory_drop_command.py`
-- **Drop an inventory stack into the current room.** (1 connections) — `server/commands/inventory_drop_command.py`
-- **Test handle_drop_command() drops item.** (1 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **MockEventClass** (35 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_unsubscribe_not_found()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_publish()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_unsubscribe_multiple_handlers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_unsubscribe_all_for_service()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_publish_isolates_sync_subscriber_errors()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_async_subscriber_error_isolation()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_inject_and_get_all_counts()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_stop_processing_and_publish_when_running()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_publish_queue_full_raises()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_inject_queue_full_and_invalid()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Mock event class for testing.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.unsubscribe() when handler not found.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.publish() queues or processes event.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.unsubscribe() with multiple handlers.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.unsubscribe_all_for_service() removes all handlers for a service.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [commands inventory command](commands_inventory_command.md) (12 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (5 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (5 shared connections)
-- [commands inventory pickup](commands_inventory_pickup.md) (3 shared connections)
-- [commands npc admin](commands_npc_admin.md) (2 shared connections)
-- [combat models rationale](combat_models_rationale.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [commands whisper command](commands_whisper_command.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (11 shared connections)
+- [services ascii map](services_ascii_map.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (1 shared connections)
+- [tsconfig build DOM](tsconfig_build_DOM.md) (1 shared connections)
+- [realtime player presence](realtime_player_presence.md) (1 shared connections)
+- [liability types call](liability_types_call.md) (1 shared connections)
+- [tsconfig app DOM](tsconfig_app_DOM.md) (1 shared connections)
+- [combat npc services](combat_npc_services.md) (1 shared connections)
+- [logging utilities structured](logging_utilities_structured.md) (1 shared connections)
+- [holiday services service](holiday_services_service.md) (1 shared connections)
+- [level game service](level_game_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_drop_command.py`
-- `server/tests/unit/commands/test_inventory_commands.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 91 (91%)
-- INFERRED: 9 (9%)
+- EXTRACTED: 29 (45%)
+- INFERRED: 35 (55%)
 - AMBIGUOUS: 0 (0%)
 
 ---

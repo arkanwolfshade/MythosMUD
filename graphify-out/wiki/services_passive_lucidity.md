@@ -1,34 +1,35 @@
 # services passive lucidity
 
-> 12 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **.validate_current_vs_max_stats()** (5 connections) — `server/models/game.py`
-- **._calculate_max_magic_points()** (4 connections) — `server/models/game.py`
-- **._calculate_max_lucidity()** (4 connections) — `server/models/game.py`
-- **.max_magic_points()** (3 connections) — `server/models/game.py`
-- **.max_lucidity()** (3 connections) — `server/models/game.py`
-- **._calculate_max_dp()** (3 connections) — `server/models/game.py`
-- **Calculate max magic points (MP) using formula: 20% of Power (ceiling rounded).** (1 connections) — `server/models/game.py`
-- **Calculate max lucidity based on education.          AI: This computed field uses** (1 connections) — `server/models/game.py`
-- **Calculate max determination points (DP) using formula: (CON + SIZ) / 5.** (1 connections) — `server/models/game.py`
-- **Calculate max magic points (MP) using formula: 20% of Power (ceiling rounded).** (1 connections) — `server/models/game.py`
-- **Calculate max lucidity based on education.          AI: Helper method to calcula** (1 connections) — `server/models/game.py`
-- **Ensure current_dp (DP), magic_points (MP), and lucidity don't exceed their max v** (1 connections) — `server/models/game.py`
+- **UUID** (6 connections)
+- **.player_entered()** (5 connections) — `server/models/room.py`
+- **.player_left()** (4 connections) — `server/models/room.py`
+- **.has_player()** (4 connections) — `server/models/room.py`
+- **.add_player_silently()** (3 connections) — `server/models/room.py`
+- **.remove_player_silently()** (3 connections) — `server/models/room.py`
+- **Add a player to the room and trigger event.          Args:             player_id** (1 connections) — `server/models/room.py`
+- **Add a player to the room without triggering an event.          This method is us** (1 connections) — `server/models/room.py`
+- **Remove a player from the room without triggering an event.          This method** (1 connections) — `server/models/room.py`
+- **Remove a player from the room and trigger event.          Args:             play** (1 connections) — `server/models/room.py`
+- **Check if a player is in the room.          Args:             player_id: The ID o** (1 connections) — `server/models/room.py`
 
 ## Relationships
 
-- [player service game](player_service_game.md) (6 shared connections)
+- [room models instance](room_models_instance.md) (5 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
+- `server/models/room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 28 (93%)
+- INFERRED: 2 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

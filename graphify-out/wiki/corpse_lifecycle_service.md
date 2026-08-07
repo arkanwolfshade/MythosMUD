@@ -1,27 +1,13 @@
 # corpse lifecycle service
 
-> 88 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **ExplorationService** (79 connections) — `server/services/exploration_service.py`
 - **test_exploration_service.py** (45 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **get_ascii_minimap()** (16 connections) — `server/api/maps.py`
-- **_row_scalar_one_or_none()** (10 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_ascii_minimap_requires_auth()** (5 connections) — `server/tests/unit/api/test_maps.py`
-- **test_get_ascii_minimap_success()** (5 connections) — `server/tests/unit/api/test_maps.py`
-- **_async_session_maker_mock()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_room_uuid_by_stable_id_no_session()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **_row_scalar_one()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **_row_fetchall()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_mark_room_as_explored_no_session()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_mark_room_as_explored_database_error()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_room_uuid_by_stable_id_with_session()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_room_uuid_by_stable_id_not_found()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_room_uuid_by_stable_id_string_uuid()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_room_uuid_by_stable_id_asyncpg_like_uuid_object()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_mark_explored_in_session_new_record()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_mark_explored_in_session_existing_record()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_get_explored_rooms()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_get_explored_rooms_empty()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_get_explored_rooms_database_error()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
@@ -29,33 +15,37 @@
 - **test_is_room_explored_false()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_is_room_explored_database_error()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_mark_room_as_explored_sync_with_error_handler()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- *... and 63 more nodes in this community*
+- **test_get_room_uuid_by_stable_id_database_error()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_is_room_explored_database_error_in_query()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **mock_database_manager()** (2 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Unit tests for exploration service.  Tests the ExplorationService class.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **SQLAlchemy-style result mock with scalar_one() -> value.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **SQLAlchemy-style result mock with fetchall() -> rows.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Create a mock database manager.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test mark_room_as_explored() raises DatabaseError on database failure.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test get_explored_rooms() returns list of explored room IDs.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test get_explored_rooms() returns empty list when no explored rooms.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test get_explored_rooms() raises DatabaseError on database failure.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test is_room_explored() returns True when room is explored.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test is_room_explored() returns False when room is not explored.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test is_room_explored() raises DatabaseError on database failure.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [maps handle ascii](maps_handle_ascii.md) (25 shared connections)
-- [room game service](room_game_service.md) (14 shared connections)
-- [combat services service](combat_services_service.md) (7 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
-- [database helpers infrastructure](database_helpers_infrastructure.md) (3 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
-- [Exception Containers](Exception_Containers.md) (2 shared connections)
-- [player requests schemas](player_requests_schemas.md) (2 shared connections)
-- [command handler processing](command_handler_processing.md) (1 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (27 shared connections)
+- [playerHandlers eventHandlers healthEvent](playerHandlers_eventHandlers_healthEvent.md) (12 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (7 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/maps.py`
-- `server/services/exploration_service.py`
-- `server/tests/unit/api/test_maps.py`
 - `server/tests/unit/services/test_exploration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 319 (93%)
-- INFERRED: 25 (7%)
+- EXTRACTED: 104 (95%)
+- INFERRED: 5 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

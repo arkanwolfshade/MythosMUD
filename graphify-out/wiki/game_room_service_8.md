@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_add_player_to_room_room_not_found()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test add_player_to_room() when room is not found.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_process_dict_occupant_with_player_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test process_dict_occupant() processes player occupant.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

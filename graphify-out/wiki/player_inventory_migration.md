@@ -16,7 +16,7 @@
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 

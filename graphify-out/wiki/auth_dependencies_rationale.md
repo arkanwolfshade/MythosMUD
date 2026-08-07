@@ -1,50 +1,56 @@
 # auth dependencies rationale
 
-> 27 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **CommandRequest** (11 connections) — `server/command_handler_unified.py`
-- **TestProcessCommandUnified** (7 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **TestLegacyFunctions** (6 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **TestHandleCommand** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_handle_command_unauthorized()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_handle_command_success()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_process_command_legacy()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_get_help_content()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_get_help_content_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_process_command_unified_rate_limited()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_process_command_unified_blocked()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_process_command_unified_special_routing()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_process_command_unified_normal_processing()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **BaseModel** (1 connections)
-- **Request model for command processing.** (1 connections) — `server/command_handler_unified.py`
-- **Test legacy compatibility functions.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test process_command() legacy function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test get_help_content() delegates to help system.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test get_help_content() with None command.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test process_command_unified function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test process_command_unified returns rate limit result.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test process_command_unified returns block result.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test process_command_unified handles special command routing.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test process_command_unified processes normal commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test handle_command HTTP endpoint.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- *... and 2 more nodes in this community*
+- **skills.py** (18 connections) — `server/api/skills.py`
+- **test_skills.py** (14 connections) — `server/tests/unit/api/test_skills.py`
+- **get_skills_catalog()** (11 connections) — `server/api/skills.py`
+- **skill.py** (8 connections) — `server/schemas/players/skill.py`
+- **SkillListResponse** (7 connections) — `server/schemas/players/skill.py`
+- **SkillData** (5 connections) — `server/schemas/players/skill.py`
+- **test_get_skills_catalog_returns_list()** (4 connections) — `server/tests/unit/api/test_skills.py`
+- **test_get_skills_catalog_unauthorized()** (4 connections) — `server/tests/unit/api/test_skills.py`
+- **mock_user()** (3 connections) — `server/tests/unit/api/test_skills.py`
+- **mock_request()** (2 connections) — `server/tests/unit/api/test_skills.py`
+- **mock_skill_repository()** (2 connections) — `server/tests/unit/api/test_skills.py`
+- **Request** (1 connections)
+- **Skills catalog API endpoints.  GET /v1/skills returns the skills catalog for cha** (1 connections) — `server/api/skills.py`
+- **Return the  skills catalog (base values, allow_at_creation).      Cthulhu Mythos** (1 connections) — `server/api/skills.py`
+- **Skill catalog API response schemas.  Used by GET /v1/skills (or equivalent) for** (1 connections) — `server/schemas/players/skill.py`
+- **Single skill catalog entry.** (1 connections) — `server/schemas/players/skill.py`
+- **Response model for skills catalog list.** (1 connections) — `server/schemas/players/skill.py`
+- **Unit tests for skills catalog API (GET /v1/skills).  Character creation revamp 4** (1 connections) — `server/tests/unit/api/test_skills.py`
+- **Create a mock request object.** (1 connections) — `server/tests/unit/api/test_skills.py`
+- **Create a mock user for auth.** (1 connections) — `server/tests/unit/api/test_skills.py`
+- **Mock SkillRepository that returns sample skills.** (1 connections) — `server/tests/unit/api/test_skills.py`
+- **GET /v1/skills returns SkillListResponse with skills list.** (1 connections) — `server/tests/unit/api/test_skills.py`
+- **GET /v1/skills without authenticated user returns 401.** (1 connections) — `server/tests/unit/api/test_skills.py`
 
 ## Relationships
 
-- [command commands handler](command_commands_handler.md) (15 shared connections)
-- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (6 shared connections)
+- [player requests schemas](player_requests_schemas.md) (5 shared connections)
+- [Player Stats](Player_Stats.md) (5 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (4 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (1 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/command_handler_unified.py`
-- `server/tests/unit/commands/test_command_handler_unified.py`
+- `server/api/skills.py`
+- `server/schemas/players/skill.py`
+- `server/tests/unit/api/test_skills.py`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (90%)
-- INFERRED: 7 (10%)
+- EXTRACTED: 87 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

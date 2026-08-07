@@ -1,13 +1,10 @@
 # config models cors
 
-> 42 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **CORSConfig** (31 connections) — `server/config/models/cors.py`
-- **test_cors_config.py** (13 connections) — `server/tests/unit/config/test_cors_config.py`
 - **._parse_csv()** (10 connections) — `server/config/models/cors.py`
-- **cors.py** (8 connections) — `server/config/models/cors.py`
 - **._validate_non_empty()** (5 connections) — `server/config/models/cors.py`
 - **._clean_list_items()** (5 connections) — `server/config/models/cors.py`
 - **._parse_json_array()** (5 connections) — `server/config/models/cors.py`
@@ -16,37 +13,29 @@
 - **.parse_allow_methods()** (3 connections) — `server/config/models/cors.py`
 - **.parse_allow_headers()** (3 connections) — `server/config/models/cors.py`
 - **.parse_expose_headers()** (3 connections) — `server/config/models/cors.py`
-- **._validate_and_warn_wildcards()** (2 connections) — `server/config/models/cors.py`
-- **.parse_max_age()** (2 connections) — `server/config/models/cors.py`
-- **.validate_max_age()** (2 connections) — `server/config/models/cors.py`
-- **test_cors_defaults_include_local_dev_origins()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_parse_allow_origins_from_comma_separated_string()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_parse_allow_origins_from_json_array()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_parse_allow_methods_uppercases()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_parse_max_age_from_string()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_parse_max_age_invalid_string_uses_default()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_rejects_negative_max_age()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_parse_expose_headers_allows_empty()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_rejects_empty_allow_origins()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_wildcard_origin_accepted()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- *... and 17 more nodes in this community*
+- **Any** (1 connections)
+- **Validate that cleaned list is not empty if allow_empty is False.** (1 connections) — `server/config/models/cors.py`
+- **Clean and filter list items, removing empty strings.** (1 connections) — `server/config/models/cors.py`
+- **Parse JSON array string if it looks like one, otherwise return None.** (1 connections) — `server/config/models/cors.py`
+- **Parse comma-separated string into cleaned list.** (1 connections) — `server/config/models/cors.py`
+- **Parse comma separated strings or lists into a cleaned list of strings.** (1 connections) — `server/config/models/cors.py`
+- **Parse allowed origins from various input formats.** (1 connections) — `server/config/models/cors.py`
+- **Parse and validate CORS allowed methods. Converts all methods to uppercase.** (1 connections) — `server/config/models/cors.py`
+- **Parse and validate CORS allowed headers.** (1 connections) — `server/config/models/cors.py`
+- **Parse and validate CORS exposed headers. Allows empty list.** (1 connections) — `server/config/models/cors.py`
 
 ## Relationships
 
-- [lucidity npc combat](lucidity_npc_combat.md) (4 shared connections)
-- [player service game](player_service_game.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [player event handlers](player_event_handlers.md) (2 shared connections)
+- [websocket validation realtime](websocket_validation_realtime.md) (9 shared connections)
 
 ## Source Files
 
 - `server/config/models/cors.py`
-- `server/tests/unit/config/test_cors_config.py`
 
 ## Audit Trail
 
-- EXTRACTED: 135 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 51 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

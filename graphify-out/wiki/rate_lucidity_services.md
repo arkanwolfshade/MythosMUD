@@ -29,10 +29,10 @@
 
 ## Relationships
 
-- [lucidity flux passive](lucidity_flux_passive.md) (4 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [manager subject services](manager_subject_services.md) (2 shared connections)
-- [game models enums](game_models_enums.md) (1 shared connections)
+- [manager subject services](manager_subject_services.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [lucidity flux passive](lucidity_flux_passive.md) (2 shared connections)
+- [player room realtime](player_room_realtime.md) (2 shared connections)
 
 ## Source Files
 

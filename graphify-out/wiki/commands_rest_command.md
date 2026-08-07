@@ -1,32 +1,33 @@
 # commands rest command
 
-> 9 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **populate_test_npc_databases.py** (6 connections) — `scripts/populate_test_npc_databases.py`
-- **main()** (5 connections) — `scripts/populate_test_npc_databases.py`
-- **get_npc_data_from_source()** (4 connections) — `scripts/populate_test_npc_databases.py`
-- **populate_database()** (4 connections) — `scripts/populate_test_npc_databases.py`
-- **get_npc_database_url()** (3 connections) — `scripts/populate_test_npc_databases.py`
-- **Get NPC database URL for the specified environment.      Args:         environme** (1 connections) — `scripts/populate_test_npc_databases.py`
-- **Extract NPC data from the source PostgreSQL database.      Args:         source_** (1 connections) — `scripts/populate_test_npc_databases.py`
-- **Populate a PostgreSQL database with NPC data.      Args:         target_url: Pos** (1 connections) — `scripts/populate_test_npc_databases.py`
-- **Main function to populate test NPC databases.** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **process_combat_tick()** (9 connections) — `server/app/game_tick_processing.py`
+- **test_process_combat_tick_no_service()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
+- **test_process_combat_tick_success()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
+- **test_process_combat_tick_calls_service()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Process combat auto-progression.** (1 connections) — `server/app/game_tick_processing.py`
+- **Test process_combat_tick() when combat service is not available.** (1 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
+- **Test process_combat_tick() successful execution.** (1 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (4 shared connections)
+- [command helpers functions](command_helpers_functions.md) (3 shared connections)
+- [schemas calendar rationale](schemas_calendar_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/populate_test_npc_databases.py`
+- `server/app/game_tick_processing.py`
+- `server/tests/unit/app/test_game_tick_processing.py`
+- `server/tests/unit/app/test_game_tick_processing_async.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (92%)
-- INFERRED: 2 (8%)
+- EXTRACTED: 20 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

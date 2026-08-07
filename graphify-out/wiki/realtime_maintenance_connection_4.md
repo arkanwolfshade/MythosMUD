@@ -1,27 +1,25 @@
 # realtime maintenance connection
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.start()** (4 connections) — `server/services/game_tick_service.py`
-- **._tick_loop()** (3 connections) — `server/services/game_tick_service.py`
-- **Start the game tick service.          Returns:             bool: True if started** (1 connections) — `server/services/game_tick_service.py`
-- **Main tick loop that runs at the specified interval.** (1 connections) — `server/services/game_tick_service.py`
+- **test_handle_event_async_sync_subscriber_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test _handle_event_async() handles sync subscriber errors.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [tick service services](tick_service_services.md) (2 shared connections)
-- [schemas player rationale](schemas_player_rationale.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/game_tick_service.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

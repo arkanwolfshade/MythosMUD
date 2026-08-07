@@ -1,47 +1,53 @@
 # nats services service
 
-> 24 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **Stats** (11 connections)
-- **.roll_stats_with_profession()** (7 connections) — `server/game/stats_generator.py`
-- **.roll_stats()** (6 connections) — `server/game/stats_generator.py`
-- **._roll_size()** (5 connections) — `server/game/stats_generator.py`
-- **._roll_3d6()** (5 connections) — `server/game/stats_generator.py`
-- **.get_available_classes()** (5 connections) — `server/game/stats_generator.py`
-- **.roll_stats_with_validation()** (5 connections) — `server/game/stats_generator.py`
-- **._roll_4d6_drop_lowest()** (4 connections) — `server/game/stats_generator.py`
-- **._roll_point_buy()** (4 connections) — `server/game/stats_generator.py`
-- **.validate_class_prerequisites()** (4 connections) — `server/game/stats_generator.py`
-- **._check_profession_requirements()** (4 connections) — `server/game/stats_generator.py`
-- **.get_stat_summary()** (4 connections) — `server/game/stats_generator.py`
-- **Any** (2 connections)
-- **Roll character stats using the specified method.          Args:             meth** (1 connections) — `server/game/stats_generator.py`
-- **Roll Size using formula: (2D6+6)*5 (range 40-90).** (1 connections) — `server/game/stats_generator.py`
-- **Roll stats using 3d6 method (scaled to 15-90 range).** (1 connections) — `server/game/stats_generator.py`
-- **Roll stats using 4d6 drop lowest method (more generous, scaled to 15-90 range).** (1 connections) — `server/game/stats_generator.py`
-- **Generate stats using a point-buy system (balanced, scaled to 1-100 range).** (1 connections) — `server/game/stats_generator.py`
-- **Check if stats meet the prerequisites for a given class.          Args:** (1 connections) — `server/game/stats_generator.py`
-- **Get a list of classes that the character qualifies for.          Args:** (1 connections) — `server/game/stats_generator.py`
-- **Roll stats and validate against class requirements.          Args:             m** (1 connections) — `server/game/stats_generator.py`
-- **Roll stats and validate against profession requirements.          Args:** (1 connections) — `server/game/stats_generator.py`
-- **Check if stats meet profession requirements.          Args:             stats: T** (1 connections) — `server/game/stats_generator.py`
-- **Get a summary of the character's stats including modifiers and totals.** (1 connections) — `server/game/stats_generator.py`
+- **canonical_room_id_impl()** (17 connections) — `server/realtime/connection_room_utils.py`
+- **prune_player_from_all_rooms_impl()** (7 connections) — `server/realtime/connection_room_utils.py`
+- **.canonical_room_id()** (5 connections) — `server/realtime/connection_manager.py`
+- **._prune_player_from_all_rooms()** (4 connections) — `server/realtime/connection_manager.py`
+- **Any** (3 connections)
+- **test_canonical_room_id_impl_none()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **test_canonical_room_id_impl_empty_string()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **test_canonical_room_id_impl_success_room_manager()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **test_canonical_room_id_impl_fallback_to_main_persistence()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **test_canonical_room_id_impl_no_room_found()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **test_canonical_room_id_impl_room_no_id_attribute()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **test_canonical_room_id_impl_attribute_error()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **test_prune_player_from_all_rooms_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **Resolve a room id to the canonical Room.id value (public method).** (1 connections) — `server/realtime/connection_manager.py`
+- **Resolve a room id to the canonical Room.id value (compatibility method).** (1 connections) — `server/realtime/connection_manager.py`
+- **Remove a player from all room subscriptions and occupant lists (compatibility me** (1 connections) — `server/realtime/connection_manager.py`
+- **Resolve a room id to the canonical Room.id value.      Args:         room_id: Th** (1 connections) — `server/realtime/connection_room_utils.py`
+- **Remove a player from all room subscriptions and occupant lists.** (1 connections) — `server/realtime/connection_room_utils.py`
+- **Test canonical_room_id_impl() returns None when room_id is None.** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **Test canonical_room_id_impl() returns empty string when room_id is empty.** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **Test canonical_room_id_impl() resolves room ID from room_manager persistence.** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **Test canonical_room_id_impl() falls back to main persistence.** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **Test canonical_room_id_impl() returns original room_id when room not found.** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **Test canonical_room_id_impl() returns original room_id when room has no id.** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **Test canonical_room_id_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [event connection helpers](event_connection_helpers.md) (12 shared connections)
-- [nats services service](nats_services_service.md) (1 shared connections)
+- [config rationale config()](config_rationale_config%28%29.md) (14 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (7 shared connections)
+- [target resolution service](target_resolution_service.md) (1 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/stats_generator.py`
+- `server/realtime/connection_manager.py`
+- `server/realtime/connection_room_utils.py`
+- `server/tests/unit/realtime/test_connection_room_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 77 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 72 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

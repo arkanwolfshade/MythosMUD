@@ -1,11 +1,10 @@
 # Inventory Equip
 
-> 110 nodes
+> 80 nodes
 
 ## Key Concepts
 
 - **test_command_factories_exploration.py** (48 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **.create_look_command()** (18 connections) — `server/utils/command_factories_exploration.py`
 - **ExplorationCommandFactory** (17 connections) — `server/utils/command_factories_exploration.py`
 - **.create_party_command()** (12 connections) — `server/utils/command_factories_exploration.py`
 - **.create_lie_command()** (8 connections) — `server/utils/command_factories_exploration.py`
@@ -29,16 +28,19 @@
 - **test_create_following_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
 - **test_create_party_command_invite_no_target()** (4 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
 - **test_create_party_command_kick_no_target()** (4 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- *... and 85 more nodes in this community*
+- **test_create_go_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (27 shared connections)
-- [command factories create](command_factories_create.md) (5 shared connections)
-- [admin auth service](admin_auth_service.md) (4 shared connections)
-- [message queue realtime](message_queue_realtime.md) (3 shared connections)
+- [room service sync](room_service_sync.md) (16 shared connections)
+- [command inventory models](command_inventory_models.md) (14 shared connections)
+- [spell game magic](spell_game_magic.md) (12 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (5 shared connections)
+- [world models rationale](world_models_rationale.md) (4 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
 - [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [commands who helpers](commands_who_helpers.md) (1 shared connections)
+- [websocket examples logging](websocket_examples_logging.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 330 (96%)
-- INFERRED: 15 (4%)
+- EXTRACTED: 256 (95%)
+- INFERRED: 14 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

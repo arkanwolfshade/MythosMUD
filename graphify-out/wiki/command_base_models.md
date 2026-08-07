@@ -34,9 +34,9 @@
 ## Relationships
 
 - [nats services service](nats_services_service.md) (4 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [time service rationale](time_service_rationale.md) (2 shared connections)
+- [aggro threat services](aggro_threat_services.md) (3 shared connections)
+- [combat models rationale](combat_models_rationale.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 

@@ -21,5 +21,8 @@ When the context matches a situation below, apply the corresponding project skil
 | Auth, user data, or features affecting minors / user info                   | **mythosmud-coppa-checklist**      |
 | Improving code for AI, maintainability, or AI-friendly code quality         | **mythosmud-code-quality-ai**      |
 | Obsidian vault, LLM wiki, permanent memory, ingest/lint wiki, graphify sync | **mythosmud-llm-wiki**             |
+| Stacked PRs, `gh stack`, multi-layer PR, sync/rebase/merge stacked branches | **gh-stack**                       |
+| Open PR / ship / review-and-ship with >1 layer or existing stack            | **gh-stack** (then PR tooling)     |
 
-Skills live in `.cursor/skills/`. Apply the skill by following its SKILL.md; do not duplicate content here.
+Skills live in `.cursor/skills/`. Apply the skill by following its SKILL.md; do not
+duplicate content here. Full `gh stack` agent reference: `.agents/skills/gh-stack/SKILL.md`.

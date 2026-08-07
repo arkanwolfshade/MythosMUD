@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [combat services turn](combat_services_turn.md) (3 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [room realtime rationale](room_realtime_rationale.md) (2 shared connections)
+- [command utility models](command_utility_models.md) (1 shared connections)
+- [command models moderation](command_models_moderation.md) (1 shared connections)
 
 ## Source Files
 

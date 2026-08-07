@@ -21,7 +21,7 @@
 ## Relationships
 
 - [monitoring models rationale](monitoring_models_rationale.md) (1 shared connections)
-- [skill game service](skill_game_service.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
 
 ## Source Files
 

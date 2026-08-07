@@ -1,36 +1,25 @@
 # services ascii map
 
-> 8 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **chat_moderation.py** (11 connections) — `server/game/chat_moderation.py`
-- **PlayerServiceProtocol** (5 connections) — `server/game/chat_moderation.py`
-- **._format_mute_duration()** (4 connections) — `server/game/chat_moderation.py`
-- **Protocol** (2 connections)
-- **datetime** (2 connections)
-- **Chat moderation utilities.  This module provides moderation functionality includ** (1 connections) — `server/game/chat_moderation.py`
-- **Protocol for player service.** (1 connections) — `server/game/chat_moderation.py`
-- **Format mute duration text with remaining time or expiration status.** (1 connections) — `server/game/chat_moderation.py`
+- **test_handle_event_async_async_subscriber_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test _handle_event_async() handles async subscriber errors.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [chat moderation game](chat_moderation_game.md) (4 shared connections)
-- [dialogue schemas tree](dialogue_schemas_tree.md) (2 shared connections)
-- [player helpers error](player_helpers_error.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [chat game message](chat_game_message.md) (1 shared connections)
-- [eventLog eventStore projector](eventLog_eventStore_projector.md) (1 shared connections)
-- [command parser build](command_parser_build.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_moderation.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

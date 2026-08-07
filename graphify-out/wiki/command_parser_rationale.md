@@ -1,69 +1,57 @@
 # command parser rationale
 
-> 54 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **ansiToHtml.ts** (16 connections) — `client/src/utils/ansiToHtml.ts`
-- **ansiToHtmlWithBreaks()** (15 connections) — `client/src/utils/ansiToHtml.ts`
-- **SafeHtml.tsx** (14 connections) — `client/src/components/common/SafeHtml.tsx`
-- **ChatMessage.tsx** (14 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
-- **domPurifyClient.ts** (14 connections) — `client/src/utils/domPurifyClient.ts`
-- **setup.ts** (13 connections) — `client/src/test/setup.ts`
-- **SafeHtml()** (11 connections) — `client/src/components/common/SafeHtml.tsx`
-- **ChatMessagesList.tsx** (9 connections) — `client/src/components/panels/chat/ChatMessagesList.tsx`
-- **ChatMessage()** (7 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
-- **ansiToHtml()** (6 connections) — `client/src/utils/ansiToHtml.ts`
-- **domPurifyClient.test.ts** (5 connections) — `client/src/utils/__tests__/domPurifyClient.test.ts`
-- **resolveSanitizeWindow()** (5 connections) — `client/src/utils/domPurifyClient.ts`
-- **getDomPurify()** (5 connections) — `client/src/utils/domPurifyClient.ts`
-- **localStorageShim.ts** (5 connections) — `client/src/utils/localStorageShim.ts`
-- **installLocalStorageShim()** (5 connections) — `client/src/utils/localStorageShim.ts`
-- **localStorageShim.test.ts** (4 connections) — `client/src/utils/__tests__/localStorageShim.test.ts`
-- **verifiesDomPurifySanitize()** (4 connections) — `client/src/utils/domPurifyClient.ts`
-- **resolveVitestSanitizeWindow()** (4 connections) — `client/src/utils/domPurifyClient.ts`
-- **sanitizeWithDomPurify()** (4 connections) — `client/src/utils/domPurifyClient.ts`
-- **ChatMessagesList()** (3 connections) — `client/src/components/panels/chat/ChatMessagesList.tsx`
-- **domPurifyTestWindow.ts** (3 connections) — `client/src/test/domPurifyTestWindow.ts`
-- **installDomPurifyTestWindow()** (3 connections) — `client/src/test/domPurifyTestWindow.ts`
-- **ansiToHtml.test.ts** (3 connections) — `client/src/utils/ansiToHtml.test.ts`
-- **collectWindowCandidates()** (3 connections) — `client/src/utils/domPurifyClient.ts`
-- **resetDomPurifyClientForTests()** (3 connections) — `client/src/utils/domPurifyClient.ts`
-- *... and 29 more nodes in this community*
+- **reset_database()** (16 connections) — `server/database.py`
+- **generate_invites_db.py** (14 connections) — `tools/invite_tools/generate_invites_db.py`
+- **set_test_database_url()** (9 connections) — `server/database_config_helpers.py`
+- **main()** (7 connections) — `tools/invite_tools/generate_invites_db.py`
+- **normalize_database_url()** (6 connections) — `server/database_config_helpers.py`
+- **create_invite_in_db()** (6 connections) — `tools/invite_tools/generate_invites_db.py`
+- **test_reset_database()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **_set_database_url_from_env()** (5 connections) — `tools/invite_tools/generate_invites_db.py`
+- **test_reset_database_resets_singleton()** (4 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **parse_expires_date()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
+- **generate_unique_codes()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
+- **get_existing_codes()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
+- **reset_db_state()** (3 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_reset_database_resets_module_url()** (3 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **reset_db_state()** (3 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **reset_db()** (3 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_reset_database_resets_module_url()** (3 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **datetime** (3 connections)
+- **generate_invite_code()** (3 connections) — `tools/invite_tools/generate_invites_db.py`
+- **Reset the database connection state (for testing).      This resets the Database** (1 connections) — `server/database.py`
+- **Set test override database URL.** (1 connections) — `server/database_config_helpers.py`
+- **Normalize database URL for asyncpg.      Args:         database_url: Original da** (1 connections) — `server/database_config_helpers.py`
+- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **Test reset_database resets module-level _database_url.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (10 shared connections)
-- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (7 shared connections)
-- [panels chatPanelRuntimeUtils chatPanelEx](panels_chatPanelRuntimeUtils_chatPanelEx.md) (7 shared connections)
-- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (6 shared connections)
-- [character creation service](character_creation_service.md) (6 shared connections)
-- [map maps useAsciiMap](map_maps_useAsciiMap.md) (4 shared connections)
-- [panels chatPanelRefactoredDerived ChatPa](panels_chatPanelRefactoredDerived_ChatPa.md) (2 shared connections)
-- [PanelContextRuntime contexts package](PanelContextRuntime_contexts_package.md) (1 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (12 shared connections)
+- [useWebSocketConnectionTestFixtures useWe](useWebSocketConnectionTestFixtures_useWe.md) (7 shared connections)
+- [manager subject services](manager_subject_services.md) (4 shared connections)
+- [game models player](game_models_player.md) (3 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
+- [player requests schemas](player_requests_schemas.md) (3 shared connections)
 
 ## Source Files
 
-- `client/src/components/common/SafeHtml.tsx`
-- `client/src/components/common/__tests__/SafeHtml.test.tsx`
-- `client/src/components/panels/chat/ChatMessage.tsx`
-- `client/src/components/panels/chat/ChatMessagesList.tsx`
-- `client/src/components/panels/chat/__tests__/ChatMessage.test.tsx`
-- `client/src/components/panels/chat/__tests__/ChatMessagesList.test.tsx`
-- `client/src/test/domPurifyTestWindow.ts`
-- `client/src/test/setup.ts`
-- `client/src/utils/__tests__/domPurifyClient.test.ts`
-- `client/src/utils/__tests__/localStorageShim.test.ts`
-- `client/src/utils/ansiToHtml.test.ts`
-- `client/src/utils/ansiToHtml.ts`
-- `client/src/utils/domPurifyClient.ts`
-- `client/src/utils/localStorageShim.ts`
-- `client/src/utils/security.ts`
-- `client/src/utils/testAnsi.ts`
+- `server/database.py`
+- `server/database_config_helpers.py`
+- `server/tests/unit/infrastructure/test_database_error_handling.py`
+- `server/tests/unit/infrastructure/test_database_extended.py`
+- `server/tests/unit/infrastructure/test_database_init.py`
+- `tools/invite_tools/generate_invites_db.py`
 
 ## Audit Trail
 
-- EXTRACTED: 223 (100%)
+- EXTRACTED: 122 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

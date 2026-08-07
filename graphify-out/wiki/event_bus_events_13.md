@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_is_leader_false_when_member()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **is_leader is False for non-leader member.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_add_valid_name_to_lists_player()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test add_valid_name_to_lists() adds player name.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

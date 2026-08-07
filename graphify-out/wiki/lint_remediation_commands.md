@@ -21,7 +21,7 @@
 ## Relationships
 
 - [commands communication flows](commands_communication_flows.md) (1 shared connections)
-- [services user manager](services_user_manager.md) (1 shared connections)
+- [npc populate databases](npc_populate_databases.md) (1 shared connections)
 
 ## Source Files
 

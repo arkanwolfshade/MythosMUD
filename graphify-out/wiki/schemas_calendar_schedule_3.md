@@ -21,7 +21,7 @@
 ## Relationships
 
 - [schemas calendar schedule](schemas_calendar_schedule.md) (4 shared connections)
-- [lucidity services npc](lucidity_services_npc.md) (1 shared connections)
+- [commands combat handler](commands_combat_handler.md) (1 shared connections)
 - [holidays static schemas](holidays_static_schemas.md) (1 shared connections)
 
 ## Source Files

@@ -1,55 +1,54 @@
 # admin command setstat
 
-> 26 nodes
+> 40 nodes
 
 ## Key Concepts
 
-- **_helpers.py** (12 connections) — `server/config/models/_helpers.py`
-- **test_config_model_helpers.py** (11 connections) — `server/tests/unit/config/test_config_model_helpers.py`
-- **server_db.py** (9 connections) — `server/config/models/server_db.py`
-- **_apply_url_fallback()** (8 connections) — `server/config/models/_helpers.py`
-- **nats.py** (8 connections) — `server/config/models/nats.py`
-- **_validate_tls_files_and_maybe_update_url()** (7 connections) — `server/config/models/_helpers.py`
-- **_parse_list_from_string()** (4 connections) — `server/config/models/_helpers.py`
-- **Any** (3 connections)
-- **.validate_tls_config()** (3 connections) — `server/config/models/nats.py`
-- **test_default_cors_origins_from_env()** (3 connections) — `server/tests/unit/config/test_config_model_helpers.py`
-- **test_apply_url_fallback_from_database_env()** (3 connections) — `server/tests/unit/config/test_config_model_helpers.py`
-- **test_validate_tls_files_missing_cert_raises()** (3 connections) — `server/tests/unit/config/test_config_model_helpers.py`
-- **test_validate_tls_updates_url_scheme()** (3 connections) — `server/tests/unit/config/test_config_model_helpers.py`
-- **test_parse_list_from_string_json_and_csv()** (2 connections) — `server/tests/unit/config/test_config_model_helpers.py`
-- **MonkeyPatch** (2 connections)
-- **test_apply_url_fallback_from_npc_url()** (2 connections) — `server/tests/unit/config/test_config_model_helpers.py`
-- **test_apply_url_fallback_keeps_existing_url()** (2 connections) — `server/tests/unit/config/test_config_model_helpers.py`
-- **Path** (2 connections)
-- **Shared helpers for config model parsing and validation.  Used by server_db, nats** (1 connections) — `server/config/models/_helpers.py`
-- **Parse non-empty string as JSON list or CSV. Used by _parse_env_list.** (1 connections) — `server/config/models/_helpers.py`
-- **If url is missing, set it from npc_url in data or from DATABASE_* env vars.** (1 connections) — `server/config/models/_helpers.py`
-- **When TLS is enabled, validate cert/key (and optional CA) exist and update url to** (1 connections) — `server/config/models/_helpers.py`
-- **NATS messaging configuration model.** (1 connections) — `server/config/models/nats.py`
-- **Validate TLS configuration is complete when enabled.** (1 connections) — `server/config/models/nats.py`
-- **Server and database configuration models.** (1 connections) — `server/config/models/server_db.py`
-- *... and 1 more nodes in this community*
+- **test_command_factories_combat.py** (14 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **CombatCommandFactory** (12 connections) — `server/utils/command_factories_combat.py`
+- **command_factories_combat.py** (7 connections) — `server/utils/command_factories_combat.py`
+- **.create_attack_command()** (5 connections) — `server/utils/command_factories_combat.py`
+- **.create_punch_command()** (5 connections) — `server/utils/command_factories_combat.py`
+- **.create_kick_command()** (5 connections) — `server/utils/command_factories_combat.py`
+- **.create_strike_command()** (5 connections) — `server/utils/command_factories_combat.py`
+- **.create_taunt_command()** (5 connections) — `server/utils/command_factories_combat.py`
+- **.create_flee_command()** (4 connections) — `server/utils/command_factories_combat.py`
+- **test_create_attack_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_attack_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_punch_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_punch_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_kick_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_kick_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_strike_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_strike_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_flee_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_taunt_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_taunt_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Unit tests for combat command factories.  Tests the CombatCommandFactory class m** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Test create_attack_command() creates AttackCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Test create_attack_command() allows None target (validation happens later).** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Test create_punch_command() creates PunchCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Test create_punch_command() allows None target (validation happens later).** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [config models rationale](config_models_rationale.md) (8 shared connections)
-- [NPC Combat](NPC_Combat.md) (6 shared connections)
-- [lucidity npc combat](lucidity_npc_combat.md) (5 shared connections)
-- [playerHandlers eventHandlers healthEvent](playerHandlers_eventHandlers_healthEvent.md) (2 shared connections)
-- [combat validator validators](combat_validator_validators.md) (2 shared connections)
+- [commands who helpers](commands_who_helpers.md) (4 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [spell game magic](spell_game_magic.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [websocket examples logging](websocket_examples_logging.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/models/_helpers.py`
-- `server/config/models/nats.py`
-- `server/config/models/server_db.py`
-- `server/tests/unit/config/test_config_model_helpers.py`
+- `server/tests/unit/utils/test_command_factories_combat.py`
+- `server/utils/command_factories_combat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 95 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 114 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

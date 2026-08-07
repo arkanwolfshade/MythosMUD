@@ -1,6 +1,6 @@
 # panels chatPanelRuntimeUtils chatPanelEx
 
-> 74 nodes
+> 73 nodes
 
 ## Key Concepts
 
@@ -20,7 +20,6 @@
 - **resolveChatExportPayload()** (8 connections) — `client/src/components/panels/chatPanelExportFormat.ts`
 - **isVisibleInChannelView()** (7 connections) — `client/src/components/panels/chatPanelChannelVisibility.ts`
 - **formatChatTimestampUtc()** (7 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
-- **determineMessageType()** (7 connections) — `client/src/utils/messageTypeUtils.ts`
 - **ChatPanelRuntimeView.tsx** (6 connections) — `client/src/components/panels/ChatPanelRuntimeView.tsx`
 - **filterMessagesForChannelView()** (6 connections) — `client/src/components/panels/chatPanelChannelFilter.ts`
 - **getChatPanelMessageClass()** (6 connections) — `client/src/components/panels/chatPanelMessageClass.ts`
@@ -29,17 +28,18 @@
 - **computeUnreadChatCounts()** (6 connections) — `client/src/components/panels/chatPanelUnreadCounts.ts`
 - **chatPanelChannelFilter.ts** (5 connections) — `client/src/components/panels/chatPanelChannelFilter.ts`
 - **chatPanelMessageClass.ts** (5 connections) — `client/src/components/panels/chatPanelMessageClass.ts`
-- *... and 49 more nodes in this community*
+- **applyChatSearchFilters()** (5 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
 - [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (16 shared connections)
-- [command parser rationale](command_parser_rationale.md) (7 shared connections)
+- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (7 shared connections)
 - [panels chatPanelRefactoredDerived ChatPa](panels_chatPanelRefactoredDerived_ChatPa.md) (5 shared connections)
 - [eventHandlers messageHandlers statusPars](eventHandlers_messageHandlers_statusPars.md) (4 shared connections)
-- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (3 shared connections)
-- [rate limiter services](rate_limiter_services.md) (2 shared connections)
-- [character creation service](character_creation_service.md) (2 shared connections)
+- [startup npc services](startup_npc_services.md) (3 shared connections)
+- [command factories communication](command_factories_communication.md) (2 shared connections)
+- [argon2 auth rationale](argon2_auth_rationale.md) (1 shared connections)
 
 ## Source Files
 
@@ -62,7 +62,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 385 (98%)
+- EXTRACTED: 378 (98%)
 - INFERRED: 8 (2%)
 - AMBIGUOUS: 0 (0%)
 

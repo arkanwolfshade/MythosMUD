@@ -1,75 +1,78 @@
 # Error Conversion
 
-> 277 nodes
+> 386 nodes
 
 ## Key Concepts
 
 - **EventBus** (159 connections) — `server/events/event_bus.py`
-- **NPCBase** (83 connections) — `server/npc/npc_base.py`
+- **PlayerEnteredRoom** (85 connections) — `server/events/event_types.py`
+- **NPCLifecycleManager** (78 connections) — `server/npc/lifecycle_manager.py`
 - **NPCSpawningService** (67 connections) — `server/npc/spawning_service.py`
+- **NPCPopulationController** (64 connections) — `server/npc/population_control.py`
+- **PlayerLeftRoom** (57 connections) — `server/events/event_types.py`
+- **NPCEnteredRoom** (56 connections) — `server/events/event_types.py`
+- **test_npc_instance_service.py** (53 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **NPCLeftRoom** (52 connections) — `server/events/event_types.py`
+- **population_control.py** (42 connections) — `server/npc/population_control.py`
+- **PopulationStats** (42 connections) — `server/npc/population_stats.py`
 - **test_spawning_modules.py** (41 connections) — `server/tests/unit/npc/test_spawning_modules.py`
 - **spawning_service.py** (38 connections) — `server/npc/spawning_service.py`
-- **event_bus.py** (31 connections) — `server/events/event_bus.py`
-- **spawning_instance_factory.py** (25 connections) — `server/npc/spawning_instance_factory.py`
+- **npc_instance_service.py** (32 connections) — `server/services/npc_instance_service.py`
+- **room.py** (30 connections) — `server/models/room.py`
+- **MessageBuilder** (26 connections) — `server/realtime/message_builders.py`
+- **NPCInstanceService** (24 connections) — `server/services/npc_instance_service.py`
+- **test_population_stats.py** (23 connections) — `server/tests/unit/npc/test_population_stats.py`
 - **spawning_request_execution.py** (20 connections) — `server/npc/spawning_request_execution.py`
-- **behaviors.py** (17 connections) — `server/npc/behaviors.py`
-- **SimpleNPCDefinition** (17 connections) — `server/npc/spawning_models.py`
+- **movement_integration.py** (19 connections) — `server/npc/movement_integration.py`
 - **NPCSpawnRequest** (17 connections) — `server/npc/spawning_models.py`
 - **spawn_npc_from_request()** (17 connections) — `server/npc/spawning_request_execution.py`
-- **party_service.py** (16 connections) — `server/game/party_service.py`
-- **create_npc_instance()** (16 connections) — `server/npc/spawning_instance_factory.py`
+- **_SpawningServiceProtocol** (16 connections) — `server/npc/lifecycle_manager.py`
 - **NPCSpawnResult** (16 connections) — `server/npc/spawning_models.py`
 - **NPCSpawnStatistics** (16 connections) — `server/npc/spawning_service.py`
-- **spawning_models.py** (13 connections) — `server/npc/spawning_models.py`
-- **test_follow_flow.py** (13 connections) — `server/tests/integration/test_follow_flow.py`
-- **PartyUpdated** (12 connections) — `server/events/event_types.py`
-- **Party** (12 connections) — `server/game/party_service.py`
-- **shopkeeper_npc.py** (12 connections) — `server/npc/shopkeeper_npc.py`
-- **.event_bus()** (12 connections) — `server/realtime/connection_manager.py`
-- **test_party_flow.py** (12 connections) — `server/tests/integration/test_party_flow.py`
-- **Any** (10 connections)
-- **generate_npc_id()** (10 connections) — `server/npc/spawning_instance_factory.py`
-- *... and 252 more nodes in this community*
+- *... and 361 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (104 shared connections)
-- [NPC Combat](NPC_Combat.md) (35 shared connections)
-- [container events rationale](container_events_rationale.md) (24 shared connections)
-- [item models rationale](item_models_rationale.md) (16 shared connections)
-- [services nats service](services_nats_service.md) (15 shared connections)
-- [party game service](party_game_service.md) (14 shared connections)
-- [models npc rationale](models_npc_rationale.md) (13 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (9 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (8 shared connections)
-- [command input commands](command_input_commands.md) (8 shared connections)
-- [rate limiter realtime](rate_limiter_realtime.md) (8 shared connections)
-- [party service game](party_service_game.md) (7 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (110 shared connections)
+- [room look commands](room_look_commands.md) (75 shared connections)
+- [services nats service](services_nats_service.md) (44 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (26 shared connections)
+- [party service game](party_service_game.md) (22 shared connections)
+- [container events rationale](container_events_rationale.md) (22 shared connections)
+- [EdgeCreationModal map STANDARD](EdgeCreationModal_map_STANDARD.md) (18 shared connections)
+- [wearable container service](wearable_container_service.md) (17 shared connections)
+- [combat services rationale](combat_services_rationale.md) (14 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (13 shared connections)
+- [npc event handlers](npc_event_handlers.md) (13 shared connections)
+- [nats services service](nats_services_service.md) (12 shared connections)
 
 ## Source Files
 
+- `server/container/bundles/npc.py`
+- `server/events/__init__.py`
 - `server/events/event_bus.py`
 - `server/events/event_types.py`
-- `server/game/party_service.py`
-- `server/npc/behaviors.py`
-- `server/npc/npc_base.py`
-- `server/npc/passive_mob_npc.py`
-- `server/npc/shopkeeper_npc.py`
-- `server/npc/spawning_instance_factory.py`
+- `server/game/follow_service.py`
+- `server/game/movement_service.py`
+- `server/models/room.py`
+- `server/npc/lifecycle_manager.py`
+- `server/npc/movement_integration.py`
+- `server/npc/population_control.py`
+- `server/npc/population_stats.py`
 - `server/npc/spawning_models.py`
 - `server/npc/spawning_request_execution.py`
 - `server/npc/spawning_service.py`
-- `server/realtime/connection_manager.py`
-- `server/tests/integration/test_follow_flow.py`
-- `server/tests/integration/test_party_flow.py`
+- `server/realtime/connection_event_helpers.py`
+- `server/realtime/integration/room_event_handler.py`
+- `server/realtime/message_builders.py`
+- `server/realtime/npc_event_handlers.py`
+- `server/services/npc_instance_service.py`
 - `server/tests/unit/events/test_event_bus.py`
-- `server/tests/unit/npc/test_spawning_modules.py`
-- `server/tests/unit/services/test_npc_instance_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1202 (91%)
-- INFERRED: 116 (9%)
+- EXTRACTED: 1748 (88%)
+- INFERRED: 229 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

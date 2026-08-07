@@ -33,15 +33,17 @@
 
 ## Relationships
 
-- [spell game magic](spell_game_magic.md) (8 shared connections)
-- [NPC Combat](NPC_Combat.md) (6 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (3 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (7 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (4 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (4 shared connections)
 - [player respawn event](player_respawn_event.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [room realtime rationale](room_realtime_rationale.md) (1 shared connections)
-- [magic completion game](magic_completion_game.md) (1 shared connections)
-- [manager room npcs](manager_room_npcs.md) (1 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (1 shared connections)
+- [room occupant manager](room_occupant_manager.md) (2 shared connections)
+- [npc combat player](npc_combat_player.md) (1 shared connections)
+- [game models enums](game_models_enums.md) (1 shared connections)
+- [Player Stats](Player_Stats.md) (1 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (1 shared connections)
+- [models player rationale](models_player_rationale.md) (1 shared connections)
+- [lucidity npc combat](lucidity_npc_combat.md) (1 shared connections)
 
 ## Source Files
 

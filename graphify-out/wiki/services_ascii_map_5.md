@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_check_combat_state_blocks_when_in_combat()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test _check_combat_state returns False when player is in combat.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_get_player_info_invalid_player_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test get_player_info() returns None for invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

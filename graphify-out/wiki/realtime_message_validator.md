@@ -1,6 +1,6 @@
 # realtime message validator
 
-> 93 nodes
+> 97 nodes
 
 ## Key Concepts
 
@@ -29,28 +29,29 @@
 - **WebSocket** (4 connections)
 - **get_connection_csrf_context()** (4 connections) — `server/realtime/websocket_handler_validation.py`
 - **test_validate_size_counts_utf8_bytes()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- *... and 68 more nodes in this community*
+- *... and 72 more nodes in this community*
 
 ## Relationships
 
-- [room websocket updates](room_websocket_updates.md) (8 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (6 shared connections)
-- [NPC Combat](NPC_Combat.md) (4 shared connections)
-- [combat schemas schema](combat_schemas_schema.md) (4 shared connections)
+- [occupant formatter realtime](occupant_formatter_realtime.md) (8 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (5 shared connections)
+- [persistence container item](persistence_container_item.md) (4 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (4 shared connections)
 - [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
 - [Room Broadcast](Room_Broadcast.md) (2 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/message_validator.py`
 - `server/realtime/websocket_handler_validation.py`
 - `server/tests/unit/realtime/test_message_validator.py`
+- `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
 - `server/tests/unit/realtime/test_websocket_handler_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 336 (92%)
+- EXTRACTED: 344 (92%)
 - INFERRED: 30 (8%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,47 +1,34 @@
 # memory lifespan app
 
-> 19 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **useDraggablePanelInteractions.ts** (11 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **DraggablePanel()** (10 connections) — `client/src/components/DraggablePanelCore.tsx`
-- **DraggablePanel.tsx** (8 connections) — `client/src/components/DraggablePanel.tsx`
-- **draggablePanelUtils.ts** (7 connections) — `client/src/components/draggablePanelUtils.ts`
-- **useDraggablePanelInteractions()** (7 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **relativeToAbsolute()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
-- **relativeSizeToAbsolute()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
-- **isPanelDragBlockedTarget()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
-- **isMouseEventOnHeader()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
-- **DraggablePanelProps** (2 connections) — `client/src/components/DraggablePanelCore.tsx`
-- **DraggablePanel.grid-positioning.test.tsx** (2 connections) — `client/src/components/__tests__/DraggablePanel.grid-positioning.test.tsx`
-- **DraggablePanel.test.tsx** (2 connections) — `client/src/components/__tests__/DraggablePanel.test.tsx`
-- **updateDragPosition()** (2 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **updateResizePosition()** (2 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **PANEL_DRAG_BLOCK_SELECTORS** (1 connections) — `client/src/components/draggablePanelUtils.ts`
-- **Size** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **Position** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **UseDraggablePanelInteractionsArgs** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **UseDraggablePanelInteractionsResult** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **test_websocket_handler_error_handling.py** (9 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **test_send_error_response_success()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **test_send_error_response_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **test_handle_runtime_error_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **test_handle_runtime_error_other()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Unit tests for websocket handler error handling.  Tests the error handling funct** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Test _send_error_response() successfully sends error.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Test _send_error_response() handles WebSocket disconnection.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Test _handle_runtime_error() detects WebSocket disconnection.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Test _handle_runtime_error() handles other runtime errors.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
 
 ## Relationships
 
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (10 shared connections)
-- [game terminal lucidity](game_terminal_lucidity.md) (2 shared connections)
-- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [occupant formatter realtime](occupant_formatter_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/DraggablePanel.tsx`
-- `client/src/components/DraggablePanelCore.tsx`
-- `client/src/components/__tests__/DraggablePanel.grid-positioning.test.tsx`
-- `client/src/components/__tests__/DraggablePanel.test.tsx`
-- `client/src/components/draggablePanelUtils.ts`
-- `client/src/components/useDraggablePanelInteractions.ts`
+- `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
 
 ## Audit Trail
 
-- EXTRACTED: 70 (100%)
+- EXTRACTED: 25 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

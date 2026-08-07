@@ -1,6 +1,6 @@
 # party game service
 
-> 48 nodes
+> 46 nodes
 
 ## Key Concepts
 
@@ -28,20 +28,21 @@
 - **.is_leader()** (5 connections) — `server/game/party_service.py`
 - **.is_in_same_party()** (5 connections) — `server/game/party_service.py`
 - **.get_party_members()** (4 connections) — `server/game/party_service.py`
-- **.get_party()** (3 connections) — `server/game/party_service.py`
-- *... and 23 more nodes in this community*
+- **Normalize ID to string for dict keys and membership sets.** (1 connections) — `server/game/party_service.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (14 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
+- [message handler factory](message_handler_factory.md) (10 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
 - [Room Broadcast](Room_Broadcast.md) (2 shared connections)
-- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
-- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
-- [skill game service](skill_game_service.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (1 shared connections)
-- [room look commands](room_look_commands.md) (1 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (2 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
+- [validator room toolkit](validator_room_toolkit.md) (1 shared connections)
+- [lucidity npc combat](lucidity_npc_combat.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,7 +50,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 237 (98%)
+- EXTRACTED: 233 (98%)
 - INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 

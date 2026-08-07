@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_get_player_room_from_online_players_not_found()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **Test get_player_room_from_online_players() returns None when player not found.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_preload_receiver_mute_data()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test preload_receiver_mute_data() preloads mute data.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 

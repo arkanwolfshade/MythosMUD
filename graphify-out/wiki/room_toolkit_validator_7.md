@@ -1,48 +1,50 @@
 # room toolkit validator
 
-> 25 nodes
+> 81 nodes
 
 ## Key Concepts
 
-- **ValidationRule** (10 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **ValidationError** (8 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **base_rule.py** (5 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **__init__.py** (3 connections) — `tools/room_toolkit/room_validator/rules/__init__.py`
-- **.create_error()** (3 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.create_warning()** (3 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.to_dict()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.__str__()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **ABC** (2 connections)
-- **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **._filter_rooms_by_zone()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.get_rule_info()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Validation rules for room pathing analysis.  This module contains the rule syste** (1 connections) — `tools/room_toolkit/room_validator/rules/__init__.py`
-- **Base validation rule class.  This module defines the abstract base class for all** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Represents a validation error with metadata.      As documented in the restricte** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Initialize a validation error.          Args:             rule_name: Name of the** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Convert error to dictionary format.** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **String representation of the error.** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Abstract base class for all validation rules.      Each rule implements specific** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Initialize the validation rule.          Args:             name: Name of the rul** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Filter rooms by zone if specified.          Args:             room_database: Dic** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Create a validation error for this rule.          Args:             room_id: Roo** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Create a validation warning for this rule.          Args:             room_id: R** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Get information about this rule.          Returns:             Dictionary with r** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **RoomLoader** (56 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **TestRoomLoader** (19 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
+- **.load_room_data()** (11 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **Path** (8 connections)
+- **._load_referenced_intersections()** (7 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **.build_room_database()** (6 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **.discover_room_files()** (5 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **._validate_or_update_room_id()** (5 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **.discover_config_files()** (4 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **.test_build_room_database_empty_directory()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
+- **.test_build_room_database_with_errors()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
+- **.__init__()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **.parse_room_filename()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **.generate_room_id()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **._validate_room_structure()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **._extract_location_from_path()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **._validate_required_fields()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **._add_location_fields()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **._check_intersection_references_rooms()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **._add_intersection_to_database()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **.count_config_subzones()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **.validate_file_structure()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **.load_config_file()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **.test_init_with_default_path()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
+- **.test_init_with_custom_path()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
-- [room validator toolkit](room_validator_toolkit.md) (2 shared connections)
+- [room validator toolkit](room_validator_toolkit.md) (11 shared connections)
+- [services user manager](services_user_manager.md) (9 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/rules/__init__.py`
-- `tools/room_toolkit/room_validator/rules/base_rule.py`
+- `tools/room_toolkit/room_validator/core/room_loader.py`
+- `tools/room_toolkit/room_validator/tests/test_room_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 58 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 211 (83%)
+- INFERRED: 43 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

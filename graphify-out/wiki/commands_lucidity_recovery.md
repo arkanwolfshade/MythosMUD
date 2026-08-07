@@ -1,63 +1,54 @@
 # commands lucidity recovery
 
-> 53 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **combat_loader.py** (26 connections) — `server/commands/combat_loader.py`
-- **get_combat_command_handler()** (22 connections) — `server/commands/combat_loader.py`
-- **test_combat_loader.py** (22 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **combat.py** (19 connections) — `server/commands/combat.py`
-- **_app_from_request()** (11 connections) — `server/commands/combat_loader.py`
-- **handle_attack_command()** (11 connections) — `server/commands/combat_loader.py`
-- **handle_punch_command()** (9 connections) — `server/commands/combat_loader.py`
-- **handle_kick_command()** (9 connections) — `server/commands/combat_loader.py`
-- **handle_strike_command()** (9 connections) — `server/commands/combat_loader.py`
-- **handle_flee_command()** (8 connections) — `server/commands/combat_loader.py`
-- **handle_taunt_command()** (8 connections) — `server/commands/combat_loader.py`
-- **_mock_app_with_container()** (8 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **format_combat_status()** (6 connections) — `server/commands/combat_helpers.py`
-- **get_combat_target()** (6 connections) — `server/commands/combat_helpers.py`
-- **test_combat_helpers.py** (6 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **.movement_service()** (3 connections) — `server/commands/combat_handler.py`
-- **.player_position_service()** (3 connections) — `server/commands/combat_handler.py`
-- **test_format_combat_status_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **test_format_combat_status_not_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **test_get_combat_target()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **test_get_combat_target_not_found()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **test_get_combat_command_handler_creates_singleton()** (3 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **test_handle_attack_command_delegates()** (3 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **test_handle_punch_command_sets_type()** (3 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **test_handle_kick_command_sets_type()** (3 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- *... and 28 more nodes in this community*
+- **test_look_container_helpers.py** (45 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **_format_container_contents()** (11 connections) — `server/commands/look_container.py`
+- **test_format_container_contents_with_quantity()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_via_inner_container_no_inner_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_via_inner_container_invalid_uuid()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_via_inner_container_no_get_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_matches_item_instance_id_true()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_matches_item_instance_id_false()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_matches_item_instance_id_none()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_matches_name_or_slot_slot_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_matches_name_or_slot_name_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_matches_name_or_slot_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_get_container_data_from_component_no_container_id()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_get_container_data_from_component_no_get_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_extract_container_metadata_no_metadata()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_format_container_contents_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_format_container_contents_with_quantity()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Format container contents as list of lines.** (1 connections) — `server/commands/look_container.py`
+- **Test formatting container contents with quantity > 1.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Unit tests for look container helper functions.  Tests the helper functions in l** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_via_inner_container() when item has no inner_container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_via_inner_container() with invalid UUID.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_via_inner_container() when persistence has no get_container** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _matches_item_instance_id() returns True when IDs match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _matches_item_instance_id() returns False when IDs don't match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (14 shared connections)
-- [commands npc admin](commands_npc_admin.md) (7 shared connections)
-- [combat flee commands](combat_flee_commands.md) (4 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [commands whisper command](commands_whisper_command.md) (2 shared connections)
-- [container helpers loot](container_helpers_loot.md) (2 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [command factories communication](command_factories_communication.md) (1 shared connections)
-- [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
+- [player realtime presence](player_realtime_presence.md) (20 shared connections)
+- [logging setup structured](logging_setup_structured.md) (10 shared connections)
+- [room realtime subscription](room_realtime_subscription.md) (8 shared connections)
+- [calendar schemas validate](calendar_schemas_validate.md) (6 shared connections)
+- [DI Container Format](DI_Container_Format.md) (4 shared connections)
 
 ## Source Files
 
-- `server/commands/combat.py`
-- `server/commands/combat_handler.py`
-- `server/commands/combat_helpers.py`
-- `server/commands/combat_loader.py`
-- `server/tests/unit/commands/test_combat_helpers.py`
-- `server/tests/unit/commands/test_combat_loader.py`
+- `server/commands/look_container.py`
+- `server/tests/unit/commands/test_look_container.py`
+- `server/tests/unit/commands/test_look_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 230 (93%)
-- INFERRED: 18 (7%)
+- EXTRACTED: 118 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

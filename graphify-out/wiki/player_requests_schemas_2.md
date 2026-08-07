@@ -1,48 +1,45 @@
 # player requests schemas
 
-> 21 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **test_item_instance_persistence.py** (16 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **item_instance_persistence.py** (15 connections) — `server/persistence/item_instance_persistence.py`
-- **create_item_instance()** (12 connections) — `server/persistence/item_instance_persistence.py`
-- **ensure_item_instance()** (11 connections) — `server/persistence/item_instance_persistence.py`
-- **get_item_instance()** (7 connections) — `server/persistence/item_instance_persistence.py`
-- **item_instance_exists()** (7 connections) — `server/persistence/item_instance_persistence.py`
-- **Any** (4 connections)
-- **test_create_item_instance_missing_id()** (3 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_create_item_instance_db_error()** (3 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_item_instance_exists_true()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_item_instance_exists_false()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_get_item_instance_found()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_get_item_instance_not_found()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_ensure_item_instance_calls_create()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_create_item_instance_success()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **Item instance persistence operations.  As documented in the restricted archives,** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Create a new item instance in the database.      Args:         conn: Database co** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Retrieve an item instance by ID.      Args:         conn: Database connection** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Check if an item instance exists in the database.      Args:         conn: Datab** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Ensure an item instance exists in the database, creating it if necessary.      T** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Unit tests for item_instance_persistence helpers.** (1 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **NPCCacheService** (30 connections) — `server/caching/cache_service.py`
+- **TestNPCCacheService** (12 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **_NpcDef** (9 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **_SpawnRule** (8 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_invalidate_caches()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.npc_service()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_definitions_cache_hit()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_npc_definition_hit_and_miss()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_spawn_rules_cache_hit()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.invalidate_npc_definitions()** (2 connections) — `server/caching/cache_service.py`
+- **.invalidate_spawn_rules()** (2 connections) — `server/caching/cache_service.py`
+- **.test_get_definitions_cache_miss()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_spawn_rules_cache_miss()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **Service for caching NPC definitions and spawn rules.** (1 connections) — `server/caching/cache_service.py`
+- **Invalidate all NPC definition caches.** (1 connections) — `server/caching/cache_service.py`
+- **Invalidate all NPC spawn rule caches.** (1 connections) — `server/caching/cache_service.py`
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
-- [Loot Generation](Loot_Generation.md) (5 shared connections)
-- [persistence container item](persistence_container_item.md) (5 shared connections)
-- [auth users rationale](auth_users_rationale.md) (5 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [admin commands setstat](admin_commands_setstat.md) (7 shared connections)
+- [player left room](player_left_room.md) (6 shared connections)
+- [services lucidity repository](services_lucidity_repository.md) (5 shared connections)
+- [persistence container helpers](persistence_container_helpers.md) (4 shared connections)
+- [message realtime messaging](message_realtime_messaging.md) (4 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (3 shared connections)
+- [caching lru cache](caching_lru_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/item_instance_persistence.py`
-- `server/tests/unit/persistence/test_item_instance_persistence.py`
+- `server/caching/cache_service.py`
+- `server/tests/unit/caching/test_cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 92 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 63 (73%)
+- INFERRED: 23 (27%)
 - AMBIGUOUS: 0 (0%)
 
 ---

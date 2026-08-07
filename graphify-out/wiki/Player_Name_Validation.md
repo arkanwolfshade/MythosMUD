@@ -33,16 +33,14 @@
 
 ## Relationships
 
-- [combat services turn](combat_services_turn.md) (9 shared connections)
-- [event bus events](event_bus_events.md) (8 shared connections)
-- [player_event_handler_utils](player_event_handler_utils.md) (4 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
-- [commands communication channels](commands_communication_channels.md) (2 shared connections)
-- [schedule services service](schedule_services_service.md) (2 shared connections)
-- [inventory mutation guard](inventory_mutation_guard.md) (2 shared connections)
-- [command utility models](command_utility_models.md) (1 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (8 shared connections)
+- [profession models rationale](profession_models_rationale.md) (8 shared connections)
+- [command utility models](command_utility_models.md) (7 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [room realtime rationale](room_realtime_rationale.md) (3 shared connections)
+- [schemas players profession](schemas_players_profession.md) (2 shared connections)
+- [skill service game](skill_service_game.md) (2 shared connections)
+- [command models moderation](command_models_moderation.md) (1 shared connections)
 
 ## Source Files
 

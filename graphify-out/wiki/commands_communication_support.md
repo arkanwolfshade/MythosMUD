@@ -1,53 +1,50 @@
 # commands communication support
 
-> 39 nodes
+> 50 nodes
 
 ## Key Concepts
 
-- **PatternNotFoundError** (21 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **MissingParameterError** (17 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **NATSSubjectError** (16 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **test_nats_subject_exceptions.py** (16 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_exception_hierarchy()** (7 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_exceptions_can_be_raised()** (6 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_exceptions_can_be_caught_by_base()** (5 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_pattern_not_found_error()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_missing_parameter_error_single()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_invalid_pattern_error()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_subject_validation_error()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **.get_subscription_pattern()** (3 connections) — `server/services/nats_subject_manager/manager.py`
-- **test_build_subject_pattern_not_found()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_build_subject_missing_parameter()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_get_pattern_info_not_found()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_get_subscription_pattern_not_found()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_nats_subject_error()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_missing_parameter_error_multiple()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **.__init__()** (2 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **.__init__()** (2 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **Exception** (1 connections)
-- **Base exception for NATS subject-related errors.** (1 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **Exception raised when a pattern name is not found in registry.** (1 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **Exception raised when required parameters are missing.** (1 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **Get a subscription pattern with wildcards for NATS subscriptions.          This** (1 connections) — `server/services/nats_subject_manager/manager.py`
-- *... and 14 more nodes in this community*
+- **test_player_event_handlers.py** (33 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **player_event_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_entered_delegates_to_room_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_entered_no_send_occupants_update()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_left_delegates_to_room_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_xp_awarded_delegates_to_state_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_dp_updated_delegates_to_state_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_entered_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_left_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_xp_awarded_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_dp_updated_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_room_sync_service()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_chat_logger()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_task_registry()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_message_builder()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_name_extractor()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_occupant_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_player_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_send_occupants_snapshot_to_player_delegates_to_room_handler()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_send_occupants_snapshot_to_player_string_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_died_delegates_to_state_handler()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_dp_decay_delegates_to_state_handler()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_respawned_delegates_to_respawn_handler()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_delirium_respawned_delegates_to_respawn_handler()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [manager subject services](manager_subject_services.md) (20 shared connections)
-- [zone npc config](zone_npc_config.md) (9 shared connections)
-- [subject validation services](subject_validation_services.md) (5 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (7 shared connections)
+- [Error Conversion](Error_Conversion.md) (7 shared connections)
+- [Database Config](Database_Config.md) (4 shared connections)
 
 ## Source Files
 
-- `server/services/nats_subject_manager/exceptions.py`
-- `server/services/nats_subject_manager/manager.py`
-- `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- `server/tests/unit/realtime/test_player_event_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 125 (84%)
-- INFERRED: 23 (16%)
+- EXTRACTED: 116 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,48 +1,54 @@
 # npc rewards combat
 
-> 34 nodes
+> 43 nodes
 
 ## Key Concepts
 
-- **TestNPCCombatRewards** (19 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.rewards_service()** (3 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.mock_persistence()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.mock_game_mechanics()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_calculate_xp_reward_with_npc_definition()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_calculate_xp_reward_no_xp_value()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_calculate_xp_reward_none_npc()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_calculate_xp_reward_non_dict_stats()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_is_valid_uuid_valid()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_is_valid_uuid_invalid()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_check_player_connection_state_with_connection_manager()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_check_player_connection_state_no_container()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_award_xp_to_killer_success()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_award_xp_to_killer_failure()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_award_xp_to_killer_exception()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_award_xp_to_killer_zero_xp()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **Test suite for NPCCombatRewards class.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **Create a mock game mechanics service.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **Create a NPCCombatRewards instance for testing.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **Test NPCCombatRewards initialization.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **Test calculate_xp_reward returns XP from NPC definition.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **Test calculate_xp_reward returns 0 when no xp_value in stats.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **Test calculate_xp_reward returns 0 when NPC is None.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- *... and 9 more nodes in this community*
+- **test_goto_helpers.py** (32 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **goto_helpers.py** (21 connections) — `server/commands/goto_helpers.py`
+- **validate_goto_context()** (13 connections) — `server/commands/goto_helpers.py`
+- **execute_goto_teleport()** (13 connections) — `server/commands/goto_helpers.py`
+- **validate_confirm_goto_context()** (11 connections) — `server/commands/goto_helpers.py`
+- **execute_confirm_goto()** (11 connections) — `server/commands/goto_helpers.py`
+- **resolve_goto_target()** (10 connections) — `server/commands/goto_helpers.py`
+- **log_goto_failure()** (10 connections) — `server/commands/goto_helpers.py`
+- **resolve_target_player_for_goto()** (10 connections) — `server/commands/goto_helpers.py`
+- **Any** (7 connections)
+- **test_validate_goto_context_no_app()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_validate_goto_context_no_player_service()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_validate_goto_context_not_admin()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_validate_goto_context_player_not_found()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_validate_goto_context_no_connection_manager()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_validate_goto_context_success()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_resolve_goto_target_offline()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_resolve_goto_target_success()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_execute_goto_teleport_success()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_execute_goto_teleport_db_failure()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_log_goto_failure()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_validate_confirm_goto_context_success()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_resolve_target_player_for_goto()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_execute_confirm_goto()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_resolve_goto_target_not_in_database()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (4 shared connections)
+- [npc service services](npc_service_services.md) (12 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (8 shared connections)
+- [realtime game state](realtime_game_state.md) (7 shared connections)
+- [admin structured logging](admin_structured_logging.md) (5 shared connections)
+- [security sessionManager SessionManager](security_sessionManager_SessionManager.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_combat_rewards.py`
+- `server/commands/goto_helpers.py`
+- `server/tests/unit/commands/test_goto_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 69 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 194 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

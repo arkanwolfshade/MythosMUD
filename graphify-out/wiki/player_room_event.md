@@ -1,48 +1,55 @@
 # player room event
 
-> 70 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **test_player_event_handlers_room.py** (37 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_process_player_entered_event_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_process_player_entered_event_no_player_info()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_process_player_entered_event_no_room_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_handle_player_entered_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_handle_player_entered_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_handle_player_entered_no_player_info()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_handle_player_entered_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_player_room_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_log_player_movement_joined()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_log_player_movement_left()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_log_player_movement_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_log_player_movement_no_room()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_log_player_movement_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_broadcast_player_entered_message()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_broadcast_player_entered_message_no_room_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_subscribe_player_to_room_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_subscribe_player_to_room_invalid_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_subscribe_player_to_room_error()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_send_room_name_message()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_prepare_room_data_with_to_dict()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_prepare_room_data_without_to_dict()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_send_room_update_to_player_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_send_room_update_to_player_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_send_room_update_to_player_room_not_found()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- *... and 45 more nodes in this community*
+- **test_quest_events.py** (16 connections) — `server/tests/unit/game/test_quest_events.py`
+- **quest_events.py** (15 connections) — `server/game/quest/quest_events.py`
+- **subscribe_quest_events()** (15 connections) — `server/game/quest/quest_events.py`
+- **_make_on_player_entered()** (7 connections) — `server/game/quest/quest_events.py`
+- **_make_on_npc_died()** (6 connections) — `server/game/quest/quest_events.py`
+- **_make_on_player_left()** (5 connections) — `server/game/quest/quest_events.py`
+- **_entity_id_for_quest_offer()** (4 connections) — `server/game/quest/quest_events.py`
+- **Any** (4 connections)
+- **_parse_player_id()** (4 connections) — `server/game/quest/quest_events.py`
+- **test_player_entered_starts_quest_by_room_trigger()** (4 connections) — `server/tests/unit/game/test_quest_events.py`
+- **test_player_entered_invalid_player_id_skips()** (4 connections) — `server/tests/unit/game/test_quest_events.py`
+- **test_player_left_records_exit_activity()** (4 connections) — `server/tests/unit/game/test_quest_events.py`
+- **test_npc_died_records_kill_for_player_killer()** (4 connections) — `server/tests/unit/game/test_quest_events.py`
+- **test_npc_died_no_killer_skips()** (4 connections) — `server/tests/unit/game/test_quest_events.py`
+- **test_entity_id_for_quest_offer_strips_instance_prefix()** (3 connections) — `server/tests/unit/game/test_quest_events.py`
+- **test_entity_id_for_quest_offer_plain_room_unchanged()** (3 connections) — `server/tests/unit/game/test_quest_events.py`
+- **test_parse_player_id_valid_and_invalid()** (3 connections) — `server/tests/unit/game/test_quest_events.py`
+- **test_subscribe_quest_events_no_op_without_dependencies()** (3 connections) — `server/tests/unit/game/test_quest_events.py`
+- **test_subscribe_quest_events_registers_handlers()** (3 connections) — `server/tests/unit/game/test_quest_events.py`
+- **UUID** (2 connections)
+- **Quest event subscriptions: room entry (trigger start), room exit (complete_activ** (1 connections) — `server/game/quest/quest_events.py`
+- **Return entity_id for quest_offers lookup: strip instance_<uuid>_ prefix if prese** (1 connections) — `server/game/quest/quest_events.py`
+- **Subscribe to room events for quest triggers and progress.      - PlayerEnteredRo** (1 connections) — `server/game/quest/quest_events.py`
+- **Return an async handler for PlayerEnteredRoom (entering via exit); starts room-o** (1 connections) — `server/game/quest/quest_events.py`
+- **Return an async handler for PlayerLeftRoom that records exit_<room_id> activity.** (1 connections) — `server/game/quest/quest_events.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (9 shared connections)
+- [Error Conversion](Error_Conversion.md) (9 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (7 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [spawn npc services](spawn_npc_services.md) (2 shared connections)
+- [lucidity event services](lucidity_event_services.md) (1 shared connections)
+- [quest service game](quest_service_game.md) (1 shared connections)
+- [party service game](party_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `server/game/quest/quest_events.py`
+- `server/tests/unit/game/test_quest_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 147 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 125 (95%)
+- INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,65 +1,61 @@
 # target resolution service
 
-> 167 nodes
+> 62 nodes
 
 ## Key Concepts
 
-- **TargetResolutionService** (53 connections) — `server/services/target_resolution_service.py`
-- **TargetResolutionResult** (42 connections) — `server/schemas/shared/target_resolution.py`
-- **test_target_resolution_service.py** (40 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **TargetType** (39 connections) — `server/schemas/shared/target_resolution.py`
-- **target_resolution_service.py** (27 connections) — `server/services/target_resolution_service.py`
-- **TargetMetadata** (16 connections) — `server/schemas/shared/target_metadata.py`
-- **test_target_resolution.py** (16 connections) — `server/tests/unit/schemas/test_target_resolution.py`
-- **__init__.py** (12 connections) — `server/schemas/shared/__init__.py`
-- **target_resolution.py** (11 connections) — `server/schemas/shared/target_resolution.py`
-- **.resolve_target()** (9 connections) — `server/services/target_resolution_service.py`
-- **._search_npcs_in_room()** (8 connections) — `server/services/target_resolution_service.py`
-- **PersistenceProtocol** (7 connections) — `server/services/target_resolution_service.py`
-- **._gather_room_target_matches()** (7 connections) — `server/services/target_resolution_service.py`
-- **._search_players_in_room()** (7 connections) — `server/services/target_resolution_service.py`
-- **._match_npcs_by_name()** (7 connections) — `server/services/target_resolution_service.py`
-- **UUID** (6 connections)
-- **.get_room_by_id()** (6 connections) — `server/services/target_resolution_service.py`
-- **._get_player_from_persistence()** (6 connections) — `server/services/target_resolution_service.py`
-- **._validate_player_and_room()** (6 connections) — `server/services/target_resolution_service.py`
-- **._load_npc_ids_with_room_fallback()** (6 connections) — `server/services/target_resolution_service.py`
-- **target_metadata.py** (5 connections) — `server/schemas/shared/target_metadata.py`
-- **.get_player_by_id()** (5 connections) — `server/services/target_resolution_service.py`
+- **UUID** (41 connections)
+- **handle_new_login_impl()** (9 connections) — `server/realtime/connection_helpers.py`
+- **.check_connection_health()** (6 connections) — `server/realtime/connection_manager.py`
+- **._get_player()** (6 connections) — `server/realtime/connection_manager.py`
+- **._track_player_disconnected()** (6 connections) — `server/realtime/connection_manager.py`
+- **.disconnect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
 - **Player** (5 connections)
-- **PlayerServiceProtocol** (5 connections) — `server/services/target_resolution_service.py`
-- **._build_target_result()** (5 connections) — `server/services/target_resolution_service.py`
-- *... and 142 more nodes in this community*
+- **._get_players_batch()** (5 connections) — `server/realtime/connection_manager.py`
+- **._track_player_connected()** (5 connections) — `server/realtime/connection_manager.py`
+- **._broadcast_connection_message()** (5 connections) — `server/realtime/connection_manager.py`
+- **._send_initial_game_state()** (5 connections) — `server/realtime/connection_manager.py`
+- **.get_player_websocket_connection_id()** (4 connections) — `server/realtime/connection_manager.py`
+- **.get_connection_count()** (4 connections) — `server/realtime/connection_manager.py`
+- **.unsubscribe_from_room()** (4 connections) — `server/realtime/connection_manager.py`
+- **.force_disconnect_player()** (4 connections) — `server/realtime/connection_manager.py`
+- **.handle_new_game_session()** (4 connections) — `server/realtime/connection_manager.py`
+- **.get_player_session()** (4 connections) — `server/realtime/connection_manager.py`
+- **.validate_session()** (4 connections) — `server/realtime/connection_manager.py`
+- **.mark_player_seen()** (4 connections) — `server/realtime/connection_manager.py`
+- **.send_personal_message_old()** (4 connections) — `server/realtime/connection_manager.py`
+- **.cleanup_dead_connections()** (4 connections) — `server/realtime/connection_manager.py`
+- **._cleanup_dead_websocket()** (4 connections) — `server/realtime/connection_manager.py`
+- **._validate_token()** (4 connections) — `server/realtime/connection_manager.py`
+- **.detect_and_handle_error_state()** (4 connections) — `server/realtime/connection_manager.py`
+- **.handle_websocket_error()** (4 connections) — `server/realtime/connection_manager.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (34 shared connections)
-- [spell game magic](spell_game_magic.md) (31 shared connections)
-- [commands position system](commands_position_system.md) (10 shared connections)
-- [models player related](models_player_related.md) (6 shared connections)
-- [services ascii map](services_ascii_map.md) (5 shared connections)
-- [game models player](game_models_player.md) (5 shared connections)
-- [logging file setup](logging_file_setup.md) (4 shared connections)
-- [uuid npc combat](uuid_npc_combat.md) (4 shared connections)
-- [message filtering helpers](message_filtering_helpers.md) (3 shared connections)
-- [party service game](party_service_game.md) (3 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (49 shared connections)
+- [realtime connection helpers](realtime_connection_helpers.md) (5 shared connections)
+- [connection realtime error](connection_realtime_error.md) (5 shared connections)
+- [movement monitor game](movement_monitor_game.md) (3 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (2 shared connections)
+- [connection realtime delegates](connection_realtime_delegates.md) (2 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [commands channel rationale](commands_channel_rationale.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
+- [session connection management](session_connection_management.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/shared/__init__.py`
-- `server/schemas/shared/target_metadata.py`
-- `server/schemas/shared/target_resolution.py`
-- `server/services/target_resolution_service.py`
-- `server/tests/unit/commands/test_combat_handler.py`
-- `server/tests/unit/schemas/test_target_resolution.py`
-- `server/tests/unit/services/test_target_resolution_service.py`
+- `server/realtime/connection_helpers.py`
+- `server/realtime/connection_manager.py`
+- `server/tests/unit/realtime/test_connection_helpers_impl.py`
 
 ## Audit Trail
 
-- EXTRACTED: 588 (94%)
-- INFERRED: 35 (6%)
+- EXTRACTED: 206 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

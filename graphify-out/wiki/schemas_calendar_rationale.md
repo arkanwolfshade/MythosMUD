@@ -1,47 +1,60 @@
 # schemas calendar rationale
 
-> 18 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **npc_combat_grace.py** (14 connections) — `server/services/npc_combat_grace.py`
-- **is_player_attack_blocked_by_login_grace_period()** (11 connections) — `server/services/npc_combat_grace.py`
-- **is_npc_attack_on_player_blocked_by_login_grace_period()** (10 connections) — `server/services/npc_combat_grace.py`
-- **test_npc_combat_grace.py** (9 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
-- **_connection_manager_from_config_app()** (8 connections) — `server/services/npc_combat_grace.py`
-- **get_app_instance()** (5 connections) — `server/config/__init__.py`
-- **UUID** (3 connections)
-- **test_player_attack_blocked_when_in_grace_period()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
-- **test_player_attack_fail_open_without_connection_manager()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
-- **test_player_attack_fail_open_on_invalid_uuid()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
-- **test_npc_attack_blocked_when_target_in_grace_period()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
-- **test_npc_attack_fail_open_without_app()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
-- **Return the runtime app instance attached during lifespan startup.      This prov** (1 connections) — `server/config/__init__.py`
-- **Login grace-period checks for NPC combat integration (extracted to keep service** (1 connections) — `server/services/npc_combat_grace.py`
-- **Resolve connection_manager from the public config app accessor.      Uses geta** (1 connections) — `server/services/npc_combat_grace.py`
-- **True if the player should not attack (in login grace period). Fail-open on confi** (1 connections) — `server/services/npc_combat_grace.py`
-- **True if NPC attack on this player should be blocked (player in login grace perio** (1 connections) — `server/services/npc_combat_grace.py`
-- **Unit tests for npc_combat_grace login grace checks.** (1 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **game_tick_processing.py** (68 connections) — `server/app/game_tick_processing.py`
+- **_process_mortally_wounded_player()** (10 connections) — `server/app/game_tick_processing.py`
+- **process_player_effects_expiration()** (9 connections) — `server/app/game_tick_processing.py`
+- **_process_mp_regeneration()** (8 connections) — `server/app/game_tick_processing.py`
+- **_process_session_dp_decay_and_death()** (8 connections) — `server/app/game_tick_processing.py`
+- **_process_single_player_mp_regeneration()** (7 connections) — `server/app/game_tick_processing.py`
+- **UUID** (6 connections)
+- **AsyncSession** (6 connections)
+- **_process_dead_players()** (6 connections) — `server/app/game_tick_processing.py`
+- **_process_mortally_wounded_players()** (5 connections) — `server/app/game_tick_processing.py`
+- **_validate_mp_regeneration_services()** (5 connections) — `server/app/game_tick_processing.py`
+- **test_process_single_player_mp_regeneration()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_mp_regeneration_services()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_player_effects_expiration_login_warded()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_mortally_wounded_skips_active_combat()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_mortally_wounded_death_threshold()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_dead_players_moves_to_limbo()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Game tick processing functions.  This module handles all game tick processing lo** (1 connections) — `server/app/game_tick_processing.py`
+- **Expire player_effects for this tick; for LOGIN_WARDED clear in-memory state and** (1 connections) — `server/app/game_tick_processing.py`
+- **Process a single mortally wounded player's DP decay and death check.      CRITIC** (1 connections) — `server/app/game_tick_processing.py`
+- **Process all mortally wounded players.** (1 connections) — `server/app/game_tick_processing.py`
+- **Validate that required services exist for MP regeneration.      Args:         co** (1 connections) — `server/app/game_tick_processing.py`
+- **Process MP regeneration for a single player.      Args:         mp_service: MP r** (1 connections) — `server/app/game_tick_processing.py`
+- **Process MP regeneration for online players.** (1 connections) — `server/app/game_tick_processing.py`
+- **Process dead players and move them to limbo if needed.** (1 connections) — `server/app/game_tick_processing.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (7 shared connections)
-- [command utility models](command_utility_models.md) (4 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [player event handlers](player_event_handlers.md) (1 shared connections)
-- [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (33 shared connections)
+- [command helpers functions](command_helpers_functions.md) (9 shared connections)
+- [command utility models](command_utility_models.md) (5 shared connections)
+- [player room realtime](player_room_realtime.md) (4 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [database config helpers](database_config_helpers.md) (2 shared connections)
+- [npc lifecycle config](npc_lifecycle_config.md) (2 shared connections)
+- [useWebSocketConnectionTestFixtures useWe](useWebSocketConnectionTestFixtures_useWe.md) (2 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (2 shared connections)
+- [Item Instances](Item_Instances.md) (2 shared connections)
+- [lucidity npc combat](lucidity_npc_combat.md) (2 shared connections)
+- [player preferences services](player_preferences_services.md) (2 shared connections)
 
 ## Source Files
 
-- `server/config/__init__.py`
-- `server/services/npc_combat_grace.py`
-- `server/tests/unit/services/test_npc_combat_grace.py`
+- `server/app/game_tick_processing.py`
+- `server/tests/unit/app/test_game_tick_processing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 74 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 161 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
+- [player event realtime](player_event_realtime.md) (3 shared connections)
 
 ## Source Files
 

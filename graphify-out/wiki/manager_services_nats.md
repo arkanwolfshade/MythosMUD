@@ -36,7 +36,7 @@
 - [subject validation services](subject_validation_services.md) (4 shared connections)
 - [manager subject services](manager_subject_services.md) (1 shared connections)
 - [pattern matcher services](pattern_matcher_services.md) (1 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
+- [mythos mud mapbuilder](mythos_mud_mapbuilder.md) (1 shared connections)
 
 ## Source Files
 

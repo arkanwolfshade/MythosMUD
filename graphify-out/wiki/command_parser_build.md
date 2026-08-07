@@ -1,34 +1,25 @@
 # command parser build
 
-> 9 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **._format_mute_entry()** (5 connections) — `server/game/chat_moderation.py`
-- **._format_mute_section()** (5 connections) — `server/game/chat_moderation.py`
-- **.get_user_management_stats()** (4 connections) — `server/game/chat_moderation.py`
-- **.get_system_stats()** (3 connections) — `server/game/chat_moderation.py`
-- **.get_player_mutes()** (2 connections) — `server/game/chat_moderation.py`
-- **Get user management system statistics.** (1 connections) — `server/game/chat_moderation.py`
-- **Format a single mute entry for display.** (1 connections) — `server/game/chat_moderation.py`
-- **Format a section of mutes (personal or global) for display.** (1 connections) — `server/game/chat_moderation.py`
+- **test_subscribe_invalid_handler()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test subscribe() raises error for non-callable handler.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [services ascii map](services_ascii_map.md) (3 shared connections)
-- [dialogue schemas tree](dialogue_schemas_tree.md) (3 shared connections)
-- [chat moderation game](chat_moderation_game.md) (2 shared connections)
-- [player helpers error](player_helpers_error.md) (2 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_moderation.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

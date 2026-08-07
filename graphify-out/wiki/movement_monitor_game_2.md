@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [lucidity services helpers](lucidity_services_helpers.md) (3 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
+- [auth endpoints rationale](auth_endpoints_rationale.md) (3 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (2 shared connections)
 - [container schemas containers](container_schemas_containers.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
 
 ## Source Files
 

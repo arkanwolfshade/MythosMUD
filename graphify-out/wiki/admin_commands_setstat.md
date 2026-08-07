@@ -1,54 +1,62 @@
 # admin commands setstat
 
-> 30 nodes
+> 31 nodes
 
 ## Key Concepts
 
-- **run_flee_effect()** (25 connections) — `server/game/magic/spell_effect_flee.py`
-- **spell_effect_flee.py** (18 connections) — `server/game/magic/spell_effect_flee.py`
-- **test_spell_effect_flee.py** (17 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **Any** (10 connections)
-- **_flee_effect_validate_room_exits()** (7 connections) — `server/game/magic/spell_effect_flee.py`
-- **_player_target()** (7 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **_flee_effect_services_available()** (6 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_not_in_combat_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_success_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_failure_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_invalid_target_type_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_services_unavailable_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_invalid_target_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_room_error_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **.get_room_by_id()** (3 connections) — `server/game/magic/spell_effects.py`
-- **test_run_flee_effect_invalid_target_type()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_run_flee_effect_services_unavailable()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_run_flee_effect_invalid_uuid()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_run_flee_effect_not_in_combat()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_run_flee_effect_room_error()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_run_flee_effect_success_and_failure()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **UUID** (2 connections)
-- **test_flee_effect_services_available()** (2 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_flee_effect_validate_room_exits()** (2 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **Flee spell effect: voluntary flee mechanics (success roll, lose-attack-on-fail,** (1 connections) — `server/game/magic/spell_effect_flee.py`
-- *... and 5 more nodes in this community*
+- **get_cache_manager()** (21 connections) — `server/caching/lru_cache.py`
+- **test_cache_service.py** (21 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **cache_service.py** (14 connections) — `server/caching/cache_service.py`
+- **lru_cache.py** (13 connections) — `server/caching/lru_cache.py`
+- **__init__.py** (12 connections) — `server/caching/__init__.py`
+- **CacheManager** (12 connections) — `server/caching/lru_cache.py`
+- **cached()** (11 connections) — `server/caching/cache_service.py`
+- **TestCachedDecorator** (10 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **_seed_players_cache()** (6 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **reset_cache_manager()** (5 connections) — `server/caching/lru_cache.py`
+- **._initialize_default_caches()** (4 connections) — `server/caching/lru_cache.py`
+- **.__init__()** (3 connections) — `server/caching/lru_cache.py`
+- **.test_sync_cache_hit_and_miss()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_async_cache_hit_and_miss()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_cached_custom_key_func()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.delete_cache()** (2 connections) — `server/caching/lru_cache.py`
+- **_reset_cache_manager()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_cached_missing_cache_calls_function()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_async_cached_missing_cache_calls_function()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **Caching module for MythosMUD server.  This module provides comprehensive caching** (1 connections) — `server/caching/__init__.py`
+- **Cache service for MythosMUD server.  This module provides caching services that** (1 connections) — `server/caching/cache_service.py`
+- **Decorator to cache function results.      Args:         cache_name: Name of the** (1 connections) — `server/caching/cache_service.py`
+- **LRU Cache implementation for MythosMUD server.  This module provides thread-safe** (1 connections) — `server/caching/lru_cache.py`
+- **Centralized cache manager for MythosMUD server.      Manages multiple LRU caches** (1 connections) — `server/caching/lru_cache.py`
+- **Initialize the cache manager.** (1 connections) — `server/caching/lru_cache.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [spell game magic](spell_game_magic.md) (11 shared connections)
-- [command factories exploration](command_factories_exploration.md) (3 shared connections)
-- [command factories communication](command_factories_communication.md) (3 shared connections)
-- [target resolution service](target_resolution_service.md) (2 shared connections)
-- [retry nats handler](retry_nats_handler.md) (2 shared connections)
+- [player left room](player_left_room.md) (11 shared connections)
+- [caching lru cache](caching_lru_cache.md) (9 shared connections)
+- [player requests schemas](player_requests_schemas.md) (7 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (7 shared connections)
+- [services lucidity repository](services_lucidity_repository.md) (6 shared connections)
+- [message realtime messaging](message_realtime_messaging.md) (5 shared connections)
+- [persistence container helpers](persistence_container_helpers.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [services chat logger](services_chat_logger.md) (2 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (1 shared connections)
+- [map layout useMapLayout](map_layout_useMapLayout.md) (1 shared connections)
+- [metrics memory leak](metrics_memory_leak.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_effect_flee.py`
-- `server/game/magic/spell_effects.py`
-- `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- `server/caching/__init__.py`
+- `server/caching/cache_service.py`
+- `server/caching/lru_cache.py`
+- `server/tests/unit/caching/test_cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 145 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 157 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

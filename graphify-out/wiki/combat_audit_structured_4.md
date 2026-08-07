@@ -25,7 +25,7 @@
 
 - [combat audit structured](combat_audit_structured.md) (14 shared connections)
 - [player realtime event](player_realtime_event.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 - [player event realtime](player_event_realtime.md) (1 shared connections)
 
 ## Source Files

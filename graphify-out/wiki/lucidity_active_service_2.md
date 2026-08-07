@@ -1,11 +1,10 @@
 # lucidity active service
 
-> 46 nodes
+> 44 nodes
 
 ## Key Concepts
 
 - **test_connection_cleaner.py** (26 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **CleanupContext** (9 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **connection_cleaner()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 - **test_check_and_cleanup_skips_when_not_due()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 - **test_check_and_cleanup()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
@@ -27,26 +26,26 @@
 - **test_stale_prune_max_age_local()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 - **test_cleanup_ghost_players()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 - **test_force_cleanup()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **Context for periodic cleanup checks. Groups parameters to stay under param-count** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **Unit tests for connection cleaner.  Tests the ConnectionCleaner class.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- *... and 21 more nodes in this community*
+- **Create a mock memory monitor.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **Create a mock rate limiter.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [taunt combat commands](taunt_combat_commands.md) (3 shared connections)
-- [realtime maintenance connection](realtime_maintenance_connection.md) (3 shared connections)
-- [container service services](container_service_services.md) (2 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
+- [container service services](container_service_services.md) (3 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [command player state](command_player_state.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/maintenance/connection_cleaner.py`
 - `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 102 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 93 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

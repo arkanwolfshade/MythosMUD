@@ -33,13 +33,13 @@
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (5 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (5 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [connection realtime delegates](connection_realtime_delegates.md) (3 shared connections)
 - [rest grace period](rest_grace_period.md) (2 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (2 shared connections)
-- [persistence rationale room](persistence_rationale_room.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [commands channel rationale](commands_channel_rationale.md) (1 shared connections)
 
 ## Source Files
 

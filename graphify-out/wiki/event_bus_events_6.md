@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_exit_found()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test _validate_exit returns True when exit matches target.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_compare_canonical_rooms_different()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test compare_canonical_rooms() returns False for different rooms.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 

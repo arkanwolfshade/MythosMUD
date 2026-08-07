@@ -1,48 +1,60 @@
 # lucidity active service
 
-> 20 nodes
+> 31 nodes
 
 ## Key Concepts
 
-- **playerHandlers.ts** (22 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
-- **playerHandlers.test.ts** (14 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/playerHandlers.test.ts`
-- **healthEventUtils.ts** (12 connections) — `client/src/utils/healthEventUtils.ts`
-- **buildHealthStatusFromEvent()** (7 connections) — `client/src/utils/healthEventUtils.ts`
-- **healthEventUtils.test.ts** (6 connections) — `client/src/utils/__tests__/healthEventUtils.test.ts`
-- **buildHealthChangeMessage()** (4 connections) — `client/src/utils/healthEventUtils.ts`
-- **handlePlayerRespawned()** (3 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
-- **handlePlayerDpUpdated()** (3 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
-- **handlePlayerEnteredGame()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
-- **handlePlayerEntered()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
-- **handlePlayerLeftGame()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
-- **handlePlayerLeft()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
-- **handlePlayerDied()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
-- **handlePlayerDeliriumRespawned()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
-- **handlePlayerUpdate()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
-- **parseNumber()** (2 connections) — `client/src/utils/healthEventUtils.ts`
-- **toReasonString()** (2 connections) — `client/src/utils/healthEventUtils.ts`
-- **humanizeReason()** (2 connections) — `client/src/utils/healthEventUtils.ts`
-- **formatSource()** (2 connections) — `client/src/utils/healthEventUtils.ts`
-- **HEALTH_LOG_TAGS** (2 connections) — `client/src/utils/healthEventUtils.ts`
+- **player_spell_repository.py** (21 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **test_player_spell_repository.py** (19 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **_row_to_player_spell()** (11 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **_mock_session_with_rows()** (9 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **.get_player_spells()** (8 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **.get_player_spell()** (8 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **.learn_spell()** (8 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **.update_mastery()** (8 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **.record_spell_cast()** (8 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **UUID** (7 connections)
+- **_spell_row()** (6 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_get_player_spells()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_get_player_spell_found()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_learn_spell()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_learn_spell_no_row_raises()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_update_mastery()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_record_spell_cast()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **Any** (2 connections)
+- **test_row_to_player_spell_maps_fields()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **repo()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_get_player_spells_db_error()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_get_player_spell_missing()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_update_mastery_not_found()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **Player spell repository for async persistence operations.  This module provides** (1 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **Map procedure result row to PlayerSpell model.** (1 connections) — `server/persistence/repositories/player_spell_repository.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [game terminal lucidity](game_terminal_lucidity.md) (12 shared connections)
-- [Game Terminal UI](Game_Terminal_UI.md) (5 shared connections)
-- [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (2 shared connections)
-- [project paths rationale](project_paths_rationale.md) (2 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (11 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (9 shared connections)
+- [player room realtime](player_room_realtime.md) (8 shared connections)
+- [add used user](add_used_user.md) (7 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (6 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [useWebSocketConnectionTestFixtures useWe](useWebSocketConnectionTestFixtures_useWe.md) (1 shared connections)
+- [room occupant manager](room_occupant_manager.md) (1 shared connections)
+- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/eventHandlers/__tests__/playerHandlers.test.ts`
-- `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
-- `client/src/utils/__tests__/healthEventUtils.test.ts`
-- `client/src/utils/healthEventUtils.ts`
+- `server/persistence/repositories/player_spell_repository.py`
+- `server/tests/unit/persistence/test_player_spell_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 95 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 142 (94%)
+- INFERRED: 9 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

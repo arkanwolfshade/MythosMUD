@@ -1,12 +1,16 @@
 # schemas intersection schema
 
-> 4 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **zone** (4 connections) — `schemas/intersection_schema.json`
+- **environment** (5 connections) — `schemas/intersection_schema.json`
+- **enum** (4 connections) — `schemas/intersection_schema.json`
 - **type** (1 connections) — `schemas/intersection_schema.json`
-- **pattern** (1 connections) — `schemas/intersection_schema.json`
+- **indoors** (1 connections) — `schemas/intersection_schema.json`
+- **outdoors** (1 connections) — `schemas/intersection_schema.json`
+- **underwater** (1 connections) — `schemas/intersection_schema.json`
+- **default** (1 connections) — `schemas/intersection_schema.json`
 - **description** (1 connections) — `schemas/intersection_schema.json`
 
 ## Relationships
@@ -19,7 +23,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

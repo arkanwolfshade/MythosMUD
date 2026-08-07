@@ -1,68 +1,61 @@
 # Magic Spell Service
 
-> 132 nodes
+> 103 nodes
 
 ## Key Concepts
 
-- **lifespan.py** (43 connections) — `server/app/lifespan.py`
-- **test_lifespan_startup.py** (39 connections) — `server/tests/unit/app/test_lifespan_startup.py`
-- **test_lifespan_helpers.py** (21 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
-- **lifespan()** (17 connections) — `server/app/lifespan.py`
-- **_startup_application()** (15 connections) — `server/app/lifespan.py`
-- **initialize_container_and_legacy_services()** (15 connections) — `server/app/lifespan_startup.py`
-- **test_main.py** (13 connections) — `server/tests/unit/test_main.py`
-- **_shutdown_with_error_handling()** (12 connections) — `server/app/lifespan.py`
-- **setup_connection_manager()** (11 connections) — `server/app/lifespan_startup.py`
-- **_initialize_enhanced_systems()** (10 connections) — `server/app/lifespan.py`
-- **initialize_npc_startup_spawning()** (10 connections) — `server/app/lifespan_startup.py`
-- **set_auth_epoch()** (10 connections) — `server/auth/token_epoch.py`
-- **test_jwt_strategy.py** (9 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
-- **_cleanup_container_on_error()** (8 connections) — `server/app/lifespan.py`
-- **_get_item_prototype_entries()** (8 connections) — `server/app/lifespan_startup.py`
-- **token_epoch.py** (8 connections) — `server/auth/token_epoch.py`
-- **get_auth_epoch()** (8 connections) — `server/auth/token_epoch.py`
-- **update_logging_with_player_service()** (8 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **_calculate_metrics_delta()** (7 connections) — `server/app/lifespan.py`
-- **_persist_mythos_state_on_error()** (7 connections) — `server/app/lifespan.py`
-- **_get_item_prototype_count()** (7 connections) — `server/app/lifespan_startup.py`
-- **jwt_strategy.py** (7 connections) — `server/auth/jwt_strategy.py`
-- **_persist_metrics_to_file()** (6 connections) — `server/app/lifespan.py`
-- **_log_npc_startup_errors()** (6 connections) — `server/app/lifespan_startup.py`
-- **conftest.py** (6 connections) — `server/tests/unit/auth/conftest.py`
-- *... and 107 more nodes in this community*
+- **ExceptionTracker** (29 connections) — `server/monitoring/exception_tracker.py`
+- **websocket_integration.py** (22 connections) — `docs/examples/logging/websocket_integration.py`
+- **exception_tracker.py** (19 connections) — `server/monitoring/exception_tracker.py`
+- **track_exception()** (17 connections) — `server/monitoring/exception_tracker.py`
+- **ExceptionRecord** (12 connections) — `server/monitoring/exception_tracker.py`
+- **get_exception_tracker()** (12 connections) — `server/monitoring/exception_tracker.py`
+- **test_exception_tracker.py** (12 connections) — `server/tests/unit/monitoring/test_exception_tracker.py`
+- **handle_websocket_message()** (8 connections) — `docs/examples/logging/websocket_integration.py`
+- **.track_exception()** (8 connections) — `server/monitoring/exception_tracker.py`
+- **track_exception_with_context()** (8 connections) — `server/monitoring/exception_tracker.py`
+- **WebSocketManager** (7 connections) — `docs/examples/logging/websocket_integration.py`
+- **websocket_endpoint()** (7 connections) — `docs/examples/logging/websocket_integration.py`
+- **.send_text()** (7 connections) — `docs/examples/logging/websocket_integration.py`
+- **.disconnect()** (6 connections) — `docs/examples/logging/websocket_integration.py`
+- **handle_game_action()** (6 connections) — `docs/examples/logging/websocket_integration.py`
+- **chat_service** (6 connections) — `docs/examples/logging/websocket_integration.py`
+- **.connect()** (5 connections) — `docs/examples/logging/websocket_integration.py`
+- **handle_chat_message()** (5 connections) — `docs/examples/logging/websocket_integration.py`
+- **WebSocket** (5 connections) — `docs/examples/logging/websocket_integration.py`
+- **Exception** (5 connections)
+- **Any** (5 connections)
+- **._call_handlers()** (5 connections) — `server/monitoring/exception_tracker.py`
+- **.send_message()** (4 connections) — `docs/examples/logging/websocket_integration.py`
+- **.broadcast_message()** (4 connections) — `docs/examples/logging/websocket_integration.py`
+- **authenticate_websocket_connection()** (4 connections) — `docs/examples/logging/websocket_integration.py`
+- *... and 78 more nodes in this community*
 
 ## Relationships
 
-- [nats services service](nats_services_service.md) (38 shared connections)
-- [player requests schemas](player_requests_schemas.md) (9 shared connections)
-- [NPC Combat](NPC_Combat.md) (6 shared connections)
-- [System Metrics](System_Metrics.md) (5 shared connections)
-- [command combat models](command_combat_models.md) (4 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (3 shared connections)
-- [command base models](command_base_models.md) (3 shared connections)
-- [websocket examples logging](websocket_examples_logging.md) (3 shared connections)
-- [room cache services](room_cache_services.md) (3 shared connections)
-- [models lucidity rationale](models_lucidity_rationale.md) (3 shared connections)
-- [Spell Validation](Spell_Validation.md) (3 shared connections)
-- [log structured logging](log_structured_logging.md) (3 shared connections)
+- [room cache services](room_cache_services.md) (8 shared connections)
+- [models lucidity rationale](models_lucidity_rationale.md) (7 shared connections)
+- [middleware correlation rationale](middleware_correlation_rationale.md) (4 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [app factory rationale](app_factory_rationale.md) (3 shared connections)
+- [examples logging testing](examples_logging_testing.md) (3 shared connections)
+- [aggro threat services](aggro_threat_services.md) (3 shared connections)
+- [spell game magic](spell_game_magic.md) (3 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [commands communication flows](commands_communication_flows.md) (1 shared connections)
+- [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
+- [persistence combat services](persistence_combat_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan.py`
-- `server/app/lifespan_startup.py`
-- `server/auth/jwt_strategy.py`
-- `server/auth/token_epoch.py`
-- `server/structured_logging/enhanced_logging_config.py`
-- `server/tests/unit/app/test_lifespan_helpers.py`
-- `server/tests/unit/app/test_lifespan_startup.py`
-- `server/tests/unit/auth/conftest.py`
-- `server/tests/unit/auth/test_jwt_strategy.py`
-- `server/tests/unit/test_main.py`
+- `docs/examples/logging/websocket_integration.py`
+- `server/monitoring/exception_tracker.py`
+- `server/tests/unit/monitoring/test_exception_tracker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 505 (99%)
-- INFERRED: 6 (1%)
+- EXTRACTED: 357 (98%)
+- INFERRED: 9 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

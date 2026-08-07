@@ -1,52 +1,52 @@
 # command admin setlucidity
 
-> 36 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **.change_position()** (12 connections) — `server/services/player_position_service.py`
-- **Player** (8 connections)
-- **PositionChangeResponse** (6 connections) — `server/services/player_position_service.py`
-- **SupportsPlayerPersistence** (6 connections) — `server/services/player_position_service.py`
-- **._get_player_for_position_change()** (6 connections) — `server/services/player_position_service.py`
-- **._update_player_position()** (6 connections) — `server/services/player_position_service.py`
-- **.save_player()** (5 connections) — `server/services/player_position_service.py`
-- **SupportsConnectionManager** (5 connections) — `server/services/player_position_service.py`
-- **._apply_player_info()** (5 connections) — `server/services/player_position_service.py`
-- **._load_player_stats()** (5 connections) — `server/services/player_position_service.py`
-- **._get_current_position()** (5 connections) — `server/services/player_position_service.py`
-- **._update_connection_manager()** (5 connections) — `server/services/player_position_service.py`
-- **.get_player_by_name()** (4 connections) — `server/services/player_position_service.py`
-- **.__init__()** (4 connections) — `server/services/player_position_service.py`
-- **._initial_response()** (4 connections) — `server/services/player_position_service.py`
-- **.get_online_player_by_display_name()** (3 connections) — `server/services/player_position_service.py`
-- **.ensure_default_aliases()** (3 connections) — `server/services/player_position_service.py`
-- **._validate_position()** (3 connections) — `server/services/player_position_service.py`
-- **Protocol** (2 connections)
-- **TypedDict** (1 connections)
-- **Result payload for a posture transition attempt.** (1 connections) — `server/services/player_position_service.py`
-- **Persistence surface required for posture updates.** (1 connections) — `server/services/player_position_service.py`
-- **Look up a player by name.** (1 connections) — `server/services/player_position_service.py`
-- **Persist player posture and related state.** (1 connections) — `server/services/player_position_service.py`
-- **Live presence surface used to mirror posture into online player records.** (1 connections) — `server/services/player_position_service.py`
-- *... and 11 more nodes in this community*
+- **_find_item_in_room_drops()** (23 connections) — `server/commands/look_item.py`
+- **test_find_item_in_room_drops_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_by_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Find an item in room drops by name or prototype_id.      Args:         room_drop** (1 connections) — `server/commands/look_item.py`
+- **Test finding item in room drops by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops by prototype_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops with multiple matches.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops with invalid instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops by item_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _find_item_in_room_drops() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [position player service](position_player_service.md) (11 shared connections)
-- [commands whisper command](commands_whisper_command.md) (3 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [contexts GameTerminalContext useGameTerm](contexts_GameTerminalContext_useGameTerm.md) (10 shared connections)
+- [Item Lookup](Item_Lookup.md) (8 shared connections)
+- [schemas validator rationale](schemas_validator_rationale.md) (4 shared connections)
 
 ## Source Files
 
-- `server/services/player_position_service.py`
+- `server/commands/look_item.py`
+- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 111 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 72 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

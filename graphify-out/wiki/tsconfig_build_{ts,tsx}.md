@@ -1,38 +1,51 @@
 # tsconfig build {ts,tsx}
 
-> 14 nodes
+> 77 nodes
 
 ## Key Concepts
 
-- **test_player_connection_setup.py** (16 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **_manager()** (11 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **test_update_player_last_active_database_error()** (3 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **test_broadcast_player_entered_game_success_and_error()** (3 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **test_send_room_occupants_update_paths()** (3 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **test_update_player_last_active_no_persistence()** (2 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **test_update_player_last_active_success()** (2 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **test_trigger_quests_no_service()** (2 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **test_trigger_quests_success_and_failure()** (2 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **test_add_player_to_room_silently_paths()** (2 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **test_handle_new_connection_setup_room_none_early_return()** (2 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **test_handle_new_connection_setup_ends_combat_on_login()** (2 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **test_stable_room_id_strips_instance_prefix()** (1 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **Gap coverage for player_connection_setup helpers and setup paths.** (1 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
+- **test_logging_processors.py** (36 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **set_global_player_service()** (17 connections) — `server/structured_logging/logging_processors.py`
+- **enhance_player_ids()** (17 connections) — `server/structured_logging/logging_processors.py`
+- **sanitize_sensitive_data()** (14 connections) — `server/structured_logging/logging_processors.py`
+- **logging_processors.py** (12 connections) — `server/structured_logging/logging_processors.py`
+- **add_request_context()** (11 connections) — `server/structured_logging/logging_processors.py`
+- **add_correlation_id()** (8 connections) — `server/structured_logging/logging_processors.py`
+- **EventDict** (5 connections)
+- **test_enhance_player_ids_persistence_error()** (5 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **_EnhancePlayerIdsTls** (4 connections) — `server/structured_logging/logging_processors.py`
+- **test_enhance_player_ids_no_player_service()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_enhance_player_ids_player_found()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_enhance_player_ids_player_not_found()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_enhance_player_ids_invalid_uuid_format()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_enhance_player_ids_short_string()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_enhance_player_ids_non_string_value()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_enhance_player_ids_no_player_id_field()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_enhance_player_ids_player_no_name_attribute()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_enhance_player_ids_prevents_recursion()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_enhance_player_ids_no_persistence_attribute()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_set_global_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_sanitize_sensitive_data_password()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_sanitize_sensitive_data_token()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_sanitize_sensitive_data_api_key()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_sanitize_sensitive_data_safe_fields()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- *... and 52 more nodes in this community*
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
-- [help content websocket](help_content_websocket.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (12 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (4 shared connections)
+- [command models moderation](command_models_moderation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_connection_setup.py`
+- `server/structured_logging/logging_processors.py`
+- `server/tests/unit/structured_logging/test_logging_processors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 253 (97%)
+- INFERRED: 8 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

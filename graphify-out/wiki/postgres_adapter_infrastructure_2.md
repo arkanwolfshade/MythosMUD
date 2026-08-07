@@ -35,7 +35,7 @@
 
 - [postgres adapter infrastructure](postgres_adapter_infrastructure.md) (16 shared connections)
 - [postgres adapter rationale](postgres_adapter_rationale.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 

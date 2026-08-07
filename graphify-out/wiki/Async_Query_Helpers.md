@@ -1,64 +1,56 @@
 # Async Query Helpers
 
-> 92 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **player_respawn_service.py** (44 connections) — `server/services/player_respawn_service.py`
-- **PlayerRespawnService** (39 connections) — `server/services/player_respawn_service.py`
-- **coerce_int()** (37 connections) — `server/utils/int_coercion.py`
-- **UUID** (16 connections)
-- **._prepare_sanitarium_respawn()** (16 connections) — `server/services/player_respawn_service.py`
-- **int_coercion.py** (13 connections) — `server/utils/int_coercion.py`
-- **encode_liabilities()** (12 connections) — `server/services/lucidity_helpers.py`
-- **._apply_sanitarium_liability_update()** (12 connections) — `server/services/player_respawn_service.py`
-- **test_inventory_command_coercion.py** (12 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **.respawn_player()** (11 connections) — `server/services/player_respawn_service.py`
-- **.respawn_player_from_delirium()** (10 connections) — `server/services/player_respawn_service.py`
-- **.respawn_player_from_sanitarium()** (10 connections) — `server/services/player_respawn_service.py`
-- **Player** (8 connections)
-- **._clear_respawn_combat_state()** (8 connections) — `server/services/player_respawn_service.py`
-- **._publish_standard_respawn_event()** (8 connections) — `server/services/player_respawn_service.py`
-- **._prepare_delirium_respawn()** (8 connections) — `server/services/player_respawn_service.py`
-- **_utc_now()** (7 connections) — `server/services/player_respawn_service.py`
-- **AsyncSession** (7 connections)
-- **.move_player_to_limbo()** (7 connections) — `server/services/player_respawn_service.py`
-- **.get_respawn_room()** (7 connections) — `server/services/player_respawn_service.py`
-- **DecodeLiabilitiesFn** (7 connections) — `server/utils/liability_types.py`
-- **EncodeLiabilitiesFn** (7 connections) — `server/utils/liability_types.py`
-- **inventory_command_coercion.py** (6 connections) — `server/commands/inventory_command_coercion.py`
-- **_RespawnEventPublisher** (6 connections) — `server/services/player_respawn_service.py`
-- **_PlayerCombatClearing** (6 connections) — `server/services/player_respawn_service.py`
-- *... and 67 more nodes in this community*
+- **LoggedException** (23 connections) — `server/exceptions.py`
+- **test_enhanced_logging_config.py** (9 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **_StubBoundLogger** (8 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **_as_bound_logger()** (6 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **test_log_exception_once_logged_exception_uses_mark_logged()** (6 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **test_log_exception_once_plain_exception_sets_flag_and_skips_repeat()** (5 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **test_logged_http_exception_initialization()** (5 connections) — `server/tests/unit/test_exceptions.py`
+- **test_logged_http_exception_inheritance()** (4 connections) — `server/tests/unit/test_exceptions.py`
+- **test_logged_exception_initialization()** (3 connections) — `server/tests/unit/test_exceptions.py`
+- **test_logged_exception_already_logged()** (3 connections) — `server/tests/unit/test_exceptions.py`
+- **test_logged_exception_mark_logged()** (3 connections) — `server/tests/unit/test_exceptions.py`
+- **test_logged_exception()** (3 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
+- **test_logged_exception_mark_logged()** (3 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
+- **test_logged_exception_already_logged()** (3 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
+- **Exception** (2 connections)
+- **.already_logged()** (2 connections) — `server/exceptions.py`
+- **Keyword arguments accepted by create_error_context and ErrorContext().** (2 connections) — `server/exceptions.py`
+- **BoundLogger** (2 connections)
+- **Marker base class indicating an exception has already produced a log entry.** (1 connections) — `server/exceptions.py`
+- **Return True if this exception instance has already been logged.** (1 connections) — `server/exceptions.py`
+- **.__init__()** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **Unit tests for enhanced_logging_config helpers.  Covers log_exception_once ded** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **Minimal stand-in for BoundLogger: only what log_exception_once touches for these** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **Adapt test double to the function param type (structural use only).** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **Plain exceptions get _already_logged via __setattr__ fallback; second log is sup** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [lucidity services helpers](lucidity_services_helpers.md) (34 shared connections)
-- [combat models rationale](combat_models_rationale.md) (10 shared connections)
-- [NPC Combat](NPC_Combat.md) (9 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (8 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
-- [models npc rationale](models_npc_rationale.md) (6 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (6 shared connections)
-- [room conftest toolkit](room_conftest_toolkit.md) (5 shared connections)
-- [nats services service](nats_services_service.md) (5 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (4 shared connections)
-- [Loot Generation](Loot_Generation.md) (4 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (17 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (3 shared connections)
+- [player service game](player_service_game.md) (3 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [exceptions rationale error](exceptions_rationale_error.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_command_coercion.py`
-- `server/services/lucidity_helpers.py`
-- `server/services/player_respawn_service.py`
-- `server/tests/unit/commands/test_inventory_command_coercion.py`
-- `server/utils/int_coercion.py`
-- `server/utils/liability_types.py`
+- `server/exceptions.py`
+- `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- `server/tests/unit/test_exceptions.py`
+- `server/tests/unit/test_exceptions_comprehensive.py`
 
 ## Audit Trail
 
-- EXTRACTED: 419 (91%)
-- INFERRED: 39 (9%)
+- EXTRACTED: 100 (93%)
+- INFERRED: 8 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,62 +1,62 @@
 # lucidity npc combat
 
-> 35 nodes
+> 45 nodes
 
 ## Key Concepts
 
-- **__init__.py** (24 connections) — `server/config/models/__init__.py`
-- **app.py** (20 connections) — `server/config/models/app.py`
-- **LoggingConfig** (10 connections) — `server/config/models/security_logging.py`
-- **TimeConfig** (9 connections) — `server/config/models/chat_time.py`
-- **ChatConfig** (8 connections) — `server/config/models/chat_time.py`
-- **security_logging.py** (7 connections) — `server/config/models/security_logging.py`
-- **SecurityConfig** (7 connections) — `server/config/models/security_logging.py`
-- **chat_time.py** (5 connections) — `server/config/models/chat_time.py`
-- **game.py** (4 connections) — `server/config/models/game.py`
-- **player_stats.py** (4 connections) — `server/config/models/player_stats.py`
-- **.to_legacy_dict()** (3 connections) — `server/config/models/security_logging.py`
-- **BaseSettings** (2 connections)
-- **.validate_rate_limits()** (2 connections) — `server/config/models/chat_time.py`
-- **.validate_compression_ratio()** (2 connections) — `server/config/models/chat_time.py`
-- **BaseSettings** (2 connections)
-- **.validate_admin_password()** (2 connections) — `server/config/models/security_logging.py`
-- **.validate_environment()** (2 connections) — `server/config/models/security_logging.py`
-- **Pydantic-based configuration models for MythosMUD server.  This package replaces** (1 connections) — `server/config/models/__init__.py`
-- **Composite application configuration model.** (1 connections) — `server/config/models/app.py`
-- **Chat and time configuration models.** (1 connections) — `server/config/models/chat_time.py`
-- **Chat system configuration.** (1 connections) — `server/config/models/chat_time.py`
-- **Validate rate limits are reasonable.** (1 connections) — `server/config/models/chat_time.py`
-- **Temporal compression configuration for the MythosChronicle.** (1 connections) — `server/config/models/chat_time.py`
-- **Ensure we never divide by zero or run the chronicle backward.** (1 connections) — `server/config/models/chat_time.py`
-- **Game-specific configuration model.** (1 connections) — `server/config/models/game.py`
-- *... and 10 more nodes in this community*
+- **send_game_event()** (30 connections) — `server/realtime/connection_manager_api.py`
+- **connection_manager_api.py** (21 connections) — `server/realtime/connection_manager_api.py`
+- **broadcast_game_event()** (12 connections) — `server/realtime/connection_manager_api.py`
+- **resolve_connection_manager()** (10 connections) — `server/realtime/connection_manager_utils.py`
+- **test_connection_manager_api.py** (10 connections) — `server/tests/unit/realtime/test_connection_manager_api.py`
+- **__getattr__()** (9 connections) — `server/realtime/connection_manager.py`
+- **send_room_event()** (8 connections) — `server/realtime/connection_manager_api.py`
+- **connection_manager_utils.py** (8 connections) — `server/realtime/connection_manager_utils.py`
+- **_ConnectionManagerAPI** (7 connections) — `server/realtime/connection_manager_api.py`
+- **_require_manager()** (7 connections) — `server/realtime/connection_manager_api.py`
+- **send_system_notification()** (7 connections) — `server/realtime/connection_manager_api.py`
+- **send_player_status_update()** (7 connections) — `server/realtime/connection_manager_api.py`
+- **send_room_description()** (7 connections) — `server/realtime/connection_manager_api.py`
+- **UUID** (6 connections)
+- **_ensure_async_compat()** (4 connections) — `server/realtime/connection_manager_utils.py`
+- **.send_personal_message()** (3 connections) — `server/realtime/connection_manager_api.py`
+- **_coerce_connection_manager()** (3 connections) — `server/realtime/connection_manager_utils.py`
+- **_make_async_compat_wrapper()** (3 connections) — `server/realtime/connection_manager_utils.py`
+- **.broadcast_global()** (2 connections) — `server/realtime/connection_manager_api.py`
+- **.broadcast_to_room()** (2 connections) — `server/realtime/connection_manager_api.py`
+- **Lazy import for API utility functions to avoid circular dependencies.** (1 connections) — `server/realtime/connection_manager.py`
+- **Protocol** (1 connections)
+- **Public API utility functions for connection manager.  This module provides conve** (1 connections) — `server/realtime/connection_manager_api.py`
+- **Structural type for API helpers; avoids importing ConnectionManager.** (1 connections) — `server/realtime/connection_manager_api.py`
+- **Resolve manager without importing ConnectionManager (import cycle).** (1 connections) — `server/realtime/connection_manager_api.py`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [player event handlers](player_event_handlers.md) (8 shared connections)
-- [admin command setstat](admin_command_setstat.md) (5 shared connections)
-- [config models cors](config_models_cors.md) (4 shared connections)
-- [config models rationale](config_models_rationale.md) (4 shared connections)
-- [invite models rationale](invite_models_rationale.md) (3 shared connections)
-- [persistence container parse](persistence_container_parse.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [combat validator validators](combat_validator_validators.md) (2 shared connections)
-- [playerHandlers eventHandlers healthEvent](playerHandlers_eventHandlers_healthEvent.md) (2 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (9 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (8 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (7 shared connections)
+- [party service game](party_service_game.md) (5 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (4 shared connections)
+- [schemas calendar rationale](schemas_calendar_rationale.md) (2 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (2 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (2 shared connections)
+- [nats services service](nats_services_service.md) (2 shared connections)
+- [command models moderation](command_models_moderation.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/models/__init__.py`
-- `server/config/models/app.py`
-- `server/config/models/chat_time.py`
-- `server/config/models/game.py`
-- `server/config/models/player_stats.py`
-- `server/config/models/security_logging.py`
+- `server/realtime/connection_manager.py`
+- `server/realtime/connection_manager_api.py`
+- `server/realtime/connection_manager_utils.py`
+- `server/tests/unit/realtime/test_connection_manager_api.py`
 
 ## Audit Trail
 
-- EXTRACTED: 127 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 171 (90%)
+- INFERRED: 20 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

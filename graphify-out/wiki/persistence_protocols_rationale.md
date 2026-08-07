@@ -1,43 +1,55 @@
 # persistence protocols rationale
 
-> 17 nodes
+> 66 nodes
 
 ## Key Concepts
 
-- **get_npc_database_path()** (11 connections) — `server/npc_database.py`
-- **ensure_npc_database_directory()** (6 connections) — `server/npc_database.py`
-- **TestGetNPCDatabasePath** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **TestEnsureNPCDatabaseDirectory** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_get_npc_database_path_raises_for_non_postgresql()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_get_npc_database_path_returns_none_for_postgresql()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_ensure_npc_database_directory_no_op_for_postgresql()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_ensure_npc_database_directory_creates_directory()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Path** (2 connections)
-- **Get the NPC database file path.      DEPRECATED: PostgreSQL does not use file pa** (1 connections) — `server/npc_database.py`
-- **Ensure NPC database directory exists.      DEPRECATED: PostgreSQL does not use f** (1 connections) — `server/npc_database.py`
-- **Test get_npc_database_path() function.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Test get_npc_database_path() returns None for PostgreSQL.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Test get_npc_database_path() raises for non-PostgreSQL URLs.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Test ensure_npc_database_directory() function.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Test ensure_npc_database_directory() is no-op for PostgreSQL.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Test ensure_npc_database_directory() creates directory if needed.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **PlayerRepositoryProtocol** (25 connections) — `server/persistence/protocols.py`
+- **_StubPlayerRepo** (18 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **test_protocol_ellipsis_bodies_via_unbound_methods()** (18 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **test_player_repository_protocol_stub()** (17 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **RoomRepositoryProtocol** (13 connections) — `server/persistence/protocols.py`
+- **protocols.py** (12 connections) — `server/persistence/protocols.py`
+- **Player** (11 connections)
+- **test_protocols.py** (10 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **UUID** (6 connections)
+- **UUID** (6 connections)
+- **_StubRoomRepo** (6 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.get_players_batch()** (5 connections) — `server/persistence/protocols.py`
+- **.update_player_last_active()** (5 connections) — `server/persistence/protocols.py`
+- **test_room_repository_protocol_stub()** (5 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.get_player_by_id()** (4 connections) — `server/persistence/protocols.py`
+- **.get_player_by_user_id()** (4 connections) — `server/persistence/protocols.py`
+- **.get_players_by_user_id()** (4 connections) — `server/persistence/protocols.py`
+- **.get_active_players_by_user_id()** (4 connections) — `server/persistence/protocols.py`
+- **.get_player_by_name()** (4 connections) — `server/persistence/protocols.py`
+- **.save_player()** (4 connections) — `server/persistence/protocols.py`
+- **.save_players()** (4 connections) — `server/persistence/protocols.py`
+- **.get_players_in_room()** (4 connections) — `server/persistence/protocols.py`
+- **.soft_delete_player()** (4 connections) — `server/persistence/protocols.py`
+- **.delete_player()** (4 connections) — `server/persistence/protocols.py`
+- **.validate_and_fix_player_room()** (4 connections) — `server/persistence/protocols.py`
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
-- [player effects endpoints](player_effects_endpoints.md) (7 shared connections)
-- [Loot Generation](Loot_Generation.md) (5 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (3 shared connections)
+- [game weapon player](game_weapon_player.md) (3 shared connections)
+- [room models instance](room_models_instance.md) (3 shared connections)
+- [commands party examples](commands_party_examples.md) (3 shared connections)
+- [player room realtime](player_room_realtime.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [retry rationale transient()](retry_rationale_transient%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc_database.py`
-- `server/tests/unit/infrastructure/test_npc_database.py`
+- `server/persistence/protocols.py`
+- `server/tests/unit/persistence/test_protocols.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (88%)
-- INFERRED: 6 (12%)
+- EXTRACTED: 258 (94%)
+- INFERRED: 17 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

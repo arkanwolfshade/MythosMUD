@@ -1,62 +1,56 @@
 # realtime monitoring statistics
 
-> 45 nodes
+> 87 nodes
 
 ## Key Concepts
 
-- **send_game_event()** (30 connections) — `server/realtime/connection_manager_api.py`
-- **connection_manager_api.py** (21 connections) — `server/realtime/connection_manager_api.py`
-- **broadcast_game_event()** (12 connections) — `server/realtime/connection_manager_api.py`
-- **resolve_connection_manager()** (10 connections) — `server/realtime/connection_manager_utils.py`
-- **test_connection_manager_api.py** (10 connections) — `server/tests/unit/realtime/test_connection_manager_api.py`
-- **__getattr__()** (9 connections) — `server/realtime/connection_manager.py`
-- **send_room_event()** (8 connections) — `server/realtime/connection_manager_api.py`
-- **connection_manager_utils.py** (8 connections) — `server/realtime/connection_manager_utils.py`
-- **_ConnectionManagerAPI** (7 connections) — `server/realtime/connection_manager_api.py`
-- **_require_manager()** (7 connections) — `server/realtime/connection_manager_api.py`
-- **send_system_notification()** (7 connections) — `server/realtime/connection_manager_api.py`
-- **send_player_status_update()** (7 connections) — `server/realtime/connection_manager_api.py`
-- **send_room_description()** (7 connections) — `server/realtime/connection_manager_api.py`
-- **UUID** (6 connections)
-- **_ensure_async_compat()** (4 connections) — `server/realtime/connection_manager_utils.py`
-- **.send_personal_message()** (3 connections) — `server/realtime/connection_manager_api.py`
-- **_coerce_connection_manager()** (3 connections) — `server/realtime/connection_manager_utils.py`
-- **_make_async_compat_wrapper()** (3 connections) — `server/realtime/connection_manager_utils.py`
-- **.broadcast_global()** (2 connections) — `server/realtime/connection_manager_api.py`
-- **.broadcast_to_room()** (2 connections) — `server/realtime/connection_manager_api.py`
-- **Lazy import for API utility functions to avoid circular dependencies.** (1 connections) — `server/realtime/connection_manager.py`
-- **Protocol** (1 connections)
-- **Public API utility functions for connection manager.  This module provides conve** (1 connections) — `server/realtime/connection_manager_api.py`
-- **Structural type for API helpers; avoids importing ConnectionManager.** (1 connections) — `server/realtime/connection_manager_api.py`
-- **Resolve manager without importing ConnectionManager (import cycle).** (1 connections) — `server/realtime/connection_manager_api.py`
-- *... and 20 more nodes in this community*
+- **RateLimiter** (61 connections) — `server/realtime/rate_limiter.py`
+- **test_connection_rate_limiter.py** (33 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **.get_rate_limit_info()** (3 connections) — `server/realtime/rate_limiter.py`
+- **Any** (3 connections)
+- **.get_stats()** (3 connections) — `server/realtime/rate_limiter.py`
+- **.get_message_rate_limit_info()** (3 connections) — `server/realtime/rate_limiter.py`
+- **mock_manager()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
+- **test_rate_limiter_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_init_custom()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_check_rate_limit_first_attempt()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_check_rate_limit_within_limit()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_check_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_check_rate_limit_old_attempts_removed()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_get_rate_limit_info()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_get_rate_limit_info_no_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_old_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_old_attempts_removes_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_old_attempts_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_large_structures()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_large_structures_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_remove_player_data()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_remove_player_data_not_present()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_remove_player_data_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_get_stats()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_get_stats_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- *... and 62 more nodes in this community*
 
 ## Relationships
 
-- [Room Broadcast](Room_Broadcast.md) (9 shared connections)
-- [NPC Combat](NPC_Combat.md) (9 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
-- [party service game](party_service_game.md) (5 shared connections)
-- [room look commands](room_look_commands.md) (4 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (3 shared connections)
-- [manager subject services](manager_subject_services.md) (2 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (2 shared connections)
-- [nats services service](nats_services_service.md) (2 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
-- [room realtime rationale](room_realtime_rationale.md) (1 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (8 shared connections)
+- [connection realtime delegates](connection_realtime_delegates.md) (5 shared connections)
+- [command player state](command_player_state.md) (3 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [persistence rationale room](persistence_rationale_room.md) (1 shared connections)
+- [spell models rationale](spell_models_rationale.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_manager.py`
-- `server/realtime/connection_manager_api.py`
-- `server/realtime/connection_manager_utils.py`
-- `server/tests/unit/realtime/test_connection_manager_api.py`
+- `server/realtime/rate_limiter.py`
+- `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
+- `server/tests/unit/realtime/test_connection_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 171 (90%)
-- INFERRED: 20 (10%)
+- EXTRACTED: 245 (96%)
+- INFERRED: 10 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,78 +1,56 @@
 # Game Terminal UI
 
-> 79 nodes
+> 123 nodes
 
 ## Key Concepts
 
-- **types.ts** (44 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
-- **stateUpdateUtils.ts** (41 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **ChatMessage** (32 connections) — `client/src/components/ui-v2/types.ts`
-- **GameState** (26 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **sanitizeChatMessageForState()** (24 connections) — `client/src/components/ui-v2/utils/messageUtils.ts`
-- **GameEvent** (21 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
-- **projector.ts** (21 connections) — `client/src/components/ui-v2/eventLog/projector.ts`
-- **useRespawnHandlers.ts** (21 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
-- **messageUtils.ts** (18 connections) — `client/src/components/ui-v2/utils/messageUtils.ts`
-- **index.ts** (17 connections) — `client/src/components/ui-v2/eventHandlers/index.ts`
-- **useGameConnectionManagement.ts** (15 connections) — `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
-- **combatHandlers.ts** (14 connections) — `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
-- **stateUpdateUtils.test.ts** (14 connections) — `client/src/components/ui-v2/utils/__tests__/stateUpdateUtils.test.ts`
-- **useEventProcessing.ts** (13 connections) — `client/src/components/ui-v2/hooks/useEventProcessing.ts`
-- **combatHandlers.test.ts** (12 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/combatHandlers.test.ts`
-- **projector.projectEvent.test.ts** (12 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.projectEvent.test.ts`
-- **projector.test.ts** (12 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.test.ts`
-- **index.ts** (11 connections) — `client/src/components/ui-v2/eventLog/index.ts`
-- **types.ts** (11 connections) — `client/src/components/ui-v2/eventLog/types.ts`
-- **GameStateUpdates** (10 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
-- **projector.projectState.test.ts** (10 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.projectState.test.ts`
-- **projectState()** (10 connections) — `client/src/components/ui-v2/eventLog/projector.ts`
-- **EventLog** (10 connections) — `client/src/components/ui-v2/eventLog/types.ts`
-- **eventStore.ts** (9 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
-- **EventStore** (9 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
-- *... and 54 more nodes in this community*
+- **test_corpse_lifecycle_service.py** (55 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **CorpseLifecycleService** (23 connections) — `server/services/corpse_lifecycle_service.py`
+- **CorpseServiceError** (13 connections) — `server/services/corpse_lifecycle_service.py`
+- **.cleanup_decayed_corpse()** (10 connections) — `server/services/corpse_lifecycle_service.py`
+- **_get_enum_value()** (8 connections) — `server/services/corpse_lifecycle_service.py`
+- **CorpseNotFoundError** (7 connections) — `server/services/corpse_lifecycle_service.py`
+- **.create_corpse_on_death()** (7 connections) — `server/services/corpse_lifecycle_service.py`
+- **_filter_container_data()** (6 connections) — `server/services/corpse_lifecycle_service.py`
+- **.get_decayed_corpses_in_room()** (6 connections) — `server/services/corpse_lifecycle_service.py`
+- **ContainerComponent** (5 connections)
+- **.get_all_decayed_corpses()** (5 connections) — `server/services/corpse_lifecycle_service.py`
+- **UUID** (4 connections)
+- **.can_access_corpse()** (4 connections) — `server/services/corpse_lifecycle_service.py`
+- **.is_corpse_decayed()** (4 connections) — `server/services/corpse_lifecycle_service.py`
+- **.cleanup_decayed_corpses_in_room()** (4 connections) — `server/services/corpse_lifecycle_service.py`
+- **.cleanup_all_decayed_corpses()** (4 connections) — `server/services/corpse_lifecycle_service.py`
+- **test_corpse_not_found_error()** (4 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **Any** (3 connections)
+- **.__init__()** (3 connections) — `server/services/corpse_lifecycle_service.py`
+- **test_get_enum_value_enum()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_get_enum_value_string()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **corpse_service()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_corpse_lifecycle_service_init_no_persistence()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_corpse_service_error()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_create_corpse_on_death_success()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- *... and 98 more nodes in this community*
 
 ## Relationships
 
-- [game terminal lucidity](game_terminal_lucidity.md) (35 shared connections)
-- [rate limiter services](rate_limiter_services.md) (20 shared connections)
-- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (16 shared connections)
-- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (16 shared connections)
-- [project paths rationale](project_paths_rationale.md) (15 shared connections)
-- [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (14 shared connections)
-- [character creation service](character_creation_service.md) (10 shared connections)
-- [eventHandlers messageHandlers statusPars](eventHandlers_messageHandlers_statusPars.md) (5 shared connections)
-- [lucidity active service](lucidity_active_service.md) (5 shared connections)
-- [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
-- [game chat moderation](game_chat_moderation.md) (2 shared connections)
-- [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (2 shared connections)
+- [player event handlers](player_event_handlers.md) (28 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (4 shared connections)
+- [message nats handler](message_nats_handler.md) (2 shared connections)
+- [add used user](add_used_user.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [schemas calendar rationale](schemas_calendar_rationale.md) (1 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (1 shared connections)
+- [command helpers functions](command_helpers_functions.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/eventHandlers/__tests__/combatHandlers.test.ts`
-- `client/src/components/ui-v2/eventHandlers/__tests__/index.test.ts`
-- `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
-- `client/src/components/ui-v2/eventHandlers/index.ts`
-- `client/src/components/ui-v2/eventHandlers/types.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/eventStore.test.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/projector.projectEvent.test.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/projector.projectState.test.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/projector.test.ts`
-- `client/src/components/ui-v2/eventLog/eventStore.ts`
-- `client/src/components/ui-v2/eventLog/index.ts`
-- `client/src/components/ui-v2/eventLog/projector.ts`
-- `client/src/components/ui-v2/eventLog/projectorConstants.ts`
-- `client/src/components/ui-v2/eventLog/types.ts`
-- `client/src/components/ui-v2/hooks/__tests__/useRespawnHandlers.test.ts`
-- `client/src/components/ui-v2/hooks/useEventProcessing.ts`
-- `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
-- `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
-- `client/src/components/ui-v2/types.ts`
-- `client/src/components/ui-v2/utils/__tests__/messageUtils.test.ts`
+- `server/services/corpse_lifecycle_service.py`
+- `server/tests/unit/services/test_corpse_lifecycle_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 598 (99%)
-- INFERRED: 6 (1%)
+- EXTRACTED: 325 (93%)
+- INFERRED: 25 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

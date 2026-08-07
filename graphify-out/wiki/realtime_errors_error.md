@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (3 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (3 shared connections)
+- [command player state](command_player_state.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 

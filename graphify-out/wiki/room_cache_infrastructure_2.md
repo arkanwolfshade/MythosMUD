@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_convert_ids_to_uuids_uuid_objects()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _convert_ids_to_uuids handles UUID objects.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_is_valid_json_array_valid()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Test _is_valid_json_array with valid JSON array.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Relationships
 
-- [message chat nats](message_chat_nats.md) (1 shared connections)
+- [player preferences service](player_preferences_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 

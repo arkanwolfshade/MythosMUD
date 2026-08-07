@@ -1,45 +1,42 @@
 # channel broadcasting strategies
 
-> 15 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **channel_broadcasting_strategies.py** (14 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **ChannelBroadcastingStrategy** (12 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **UnknownChannelStrategy** (9 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **GlobalChannelStrategy** (7 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.get_strategy()** (6 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **test_unknown_channel_strategy_broadcast()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **ABC** (2 connections)
-- **.__init__()** (2 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Channel Broadcasting Strategies for NATS Message Handler.  This module implement** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Abstract base class for channel broadcasting strategies.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Strategy for global channel broadcasting.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Strategy for unknown channel types.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Initialize unknown channel strategy.          Args:             channel_type: Un** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Get strategy for channel type.          Args:             channel_type: Type of** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Test UnknownChannelStrategy.broadcast() handles unknown channel.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **TestNPCCombatLifecycle** (12 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **.lifecycle_service()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **.mock_persistence()** (2 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **.test_despawn_npc_safely_success()** (2 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **.test_despawn_npc_safely_no_lifecycle_manager()** (2 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **.test_despawn_npc_safely_exception()** (2 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **.test_despawn_npc_safely_sqlalchemy_error()** (2 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **.test_despawn_npc_with_active_npcs()** (2 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **.test_despawn_npc_no_active_npcs()** (2 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **Test suite for NPCCombatLifecycle class.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **Create a NPCCombatLifecycle instance for testing.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **Test NPCCombatLifecycle initialization.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **Test despawn_npc_safely successfully despawns NPC.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **Test despawn_npc_safely handles missing lifecycle manager.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **Test despawn_npc_safely handles exceptions gracefully.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **Test despawn_npc_safely handles SQLAlchemy errors.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **Test _despawn_npc handles NPC in active_npcs via fallback path.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **Test _despawn_npc handles NPC not in active_npcs.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
 
 ## Relationships
 
-- [channel realtime broadcasting](channel_realtime_broadcasting.md) (7 shared connections)
-- [npc behavior engine](npc_behavior_engine.md) (4 shared connections)
-- [realtime channel broadcasting](realtime_channel_broadcasting.md) (4 shared connections)
-- [message handler factory](message_handler_factory.md) (3 shared connections)
-- [channel broadcasting realtime](channel_broadcasting_realtime.md) (2 shared connections)
-- [world loader rationale](world_loader_rationale.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [player requests schemas](player_requests_schemas.md) (2 shared connections)
+- [player event realtime](player_event_realtime.md) (4 shared connections)
 
 ## Source Files
 
-- `server/realtime/channel_broadcasting_strategies.py`
-- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- `server/tests/unit/services/test_npc_combat_lifecycle.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 41 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

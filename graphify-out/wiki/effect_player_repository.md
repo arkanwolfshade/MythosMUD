@@ -1,60 +1,62 @@
 # effect player repository
 
-> 61 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **player_effect_repository.py** (21 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **PlayerEffectRepository** (18 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **PlayerEffect** (17 connections) — `server/models/player_effect.py`
-- **test_player_effect_repository.py** (17 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **.get_active_effects_for_player()** (10 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **_row_to_player_effect()** (8 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **UUID** (8 connections)
-- **.add_effect()** (8 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **Any** (7 connections)
-- **AddEffectInput** (7 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **_add_effect_params()** (6 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **.delete_effect()** (6 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **_make_effect()** (6 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **._execute_add_effect()** (5 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **.get_effect_remaining_ticks()** (5 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **_row_from_effect()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **_str_opt()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **_int_opt()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **_opt_str()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **.has_effect()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **test_get_active_effects_for_player_filters_by_remaining()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **test_has_effect_true()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **test_get_effect_remaining_ticks()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **._remaining_ticks()** (3 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **repo()** (3 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- *... and 36 more nodes in this community*
+- **NPCCommunicationBridge** (14 connections) — `server/npc/threading.py`
+- **Any** (11 connections)
+- **Lock** (9 connections)
+- **.__init__()** (3 connections) — `server/container/main.py`
+- **.__init__()** (3 connections) — `server/middleware/metrics_collector.py`
+- **.add_message()** (3 connections) — `server/npc/threading.py`
+- **.__init__()** (3 connections) — `server/npc/threading.py`
+- **.send_message_to_npc()** (3 connections) — `server/npc/threading.py`
+- **.receive_message_from_npc()** (3 connections) — `server/npc/threading.py`
+- **.broadcast_to_all_npcs()** (3 connections) — `server/npc/threading.py`
+- **.get_pending_messages()** (3 connections) — `server/npc/threading.py`
+- **.get_messages_for_npc()** (3 connections) — `server/npc/threading.py`
+- **.__init__()** (2 connections) — `server/services/inventory_mutation_guard.py`
+- **test_npc_communication_bridge_messages()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **test_bridge_receive_message_failure()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **test_bridge_broadcast_failure()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **Initialize the container. Services are NOT initialized here - use initialize().** (1 connections) — `server/container/main.py`
+- **Initialize metrics collector.          AI: Uses Lock for thread-safety in async** (1 connections) — `server/middleware/metrics_collector.py`
+- **Add a message to an NPC's pending message queue.          Args:             npc_** (1 connections) — `server/npc/threading.py`
+- **Bridge for communication between NPC threads and main game thread.      This cla** (1 connections) — `server/npc/threading.py`
+- **Initialize the communication bridge.** (1 connections) — `server/npc/threading.py`
+- **Send a message to a specific NPC.          Args:             npc_id: The NPC's I** (1 connections) — `server/npc/threading.py`
+- **Receive a message from a specific NPC.          Args:             npc_id: The NP** (1 connections) — `server/npc/threading.py`
+- **Broadcast a message to all NPCs.          Args:             message: The message** (1 connections) — `server/npc/threading.py`
+- **Get all pending outgoing messages from NPCs.** (1 connections) — `server/npc/threading.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (15 shared connections)
-- [world models rationale](world_models_rationale.md) (5 shared connections)
-- [Database Config](Database_Config.md) (4 shared connections)
-- [argon2 auth rationale](argon2_auth_rationale.md) (3 shared connections)
-- [combat models rationale](combat_models_rationale.md) (2 shared connections)
-- [npc population stats](npc_population_stats.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [player preferences service](player_preferences_service.md) (1 shared connections)
-- [game models enums](game_models_enums.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
+- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (9 shared connections)
+- [services npc startup](services_npc_startup.md) (2 shared connections)
+- [room cache services](room_cache_services.md) (2 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
+- [middleware metrics collector](middleware_metrics_collector.md) (1 shared connections)
+- [services nats service](services_nats_service.md) (1 shared connections)
+- [idle movement npc](idle_movement_npc.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [command player state](command_player_state.md) (1 shared connections)
+- [rate limiter services](rate_limiter_services.md) (1 shared connections)
+- [task registry app](task_registry_app.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/player_effect.py`
-- `server/persistence/repositories/player_effect_repository.py`
-- `server/tests/unit/persistence/test_player_effect_repository.py`
+- `server/container/main.py`
+- `server/middleware/metrics_collector.py`
+- `server/npc/threading.py`
+- `server/services/inventory_mutation_guard.py`
+- `server/tests/unit/npc/test_npc_threading_messages.py`
 
 ## Audit Trail
 
-- EXTRACTED: 211 (92%)
-- INFERRED: 18 (8%)
+- EXTRACTED: 69 (87%)
+- INFERRED: 10 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

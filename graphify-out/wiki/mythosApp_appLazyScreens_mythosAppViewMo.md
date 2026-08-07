@@ -1,68 +1,56 @@
 # mythosApp appLazyScreens mythosAppViewMo
 
-> 28 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **config.ts** (28 connections) — `client/src/utils/config.ts`
-- **API_V1_BASE** (18 connections) — `client/src/utils/config.ts`
-- **MythosAppViewModel** (14 connections) — `client/src/mythosApp/mythosAppViewModel.ts`
-- **AppRootViews.tsx** (11 connections) — `client/src/mythosApp/AppRootViews.tsx`
-- **AppCreationFlowViews.tsx** (10 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- **appLazyScreens.tsx** (9 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- **AppSessionOutroViews.tsx** (8 connections) — `client/src/mythosApp/AppSessionOutroViews.tsx`
-- **AppRootViews()** (6 connections) — `client/src/mythosApp/AppRootViews.tsx`
-- **AppDemoView.tsx** (5 connections) — `client/src/mythosApp/AppDemoView.tsx`
-- **LoadingFallback()** (5 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- **config.test.ts** (5 connections) — `client/src/utils/__tests__/config.test.ts`
-- **AppCreationFlowViews()** (4 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- **AppDemoView()** (4 connections) — `client/src/mythosApp/AppDemoView.tsx`
-- **AppSessionOutroViews()** (4 connections) — `client/src/mythosApp/AppSessionOutroViews.tsx`
-- **startLoginGracePeriod.ts** (4 connections) — `client/src/mythosApp/startLoginGracePeriod.ts`
-- **getApiBaseUrl()** (3 connections) — `client/src/utils/config.ts`
-- **MythosLoginForm.tsx** (2 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
-- **MythosLoginForm()** (2 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
-- **EldritchEffectsDemo** (2 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- **GameClientV2Container** (2 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- **MotdInterstitialScreen** (2 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- **ProfessionSelectionScreen** (2 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- **StatsRollingScreen** (2 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- **CharacterSelectionScreen** (2 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- **SkillAssignmentScreen** (2 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- *... and 3 more nodes in this community*
+- **test_follow_commands.py** (23 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **handle_follow_command()** (18 connections) — `server/commands/follow_commands.py`
+- **follow_commands.py** (15 connections) — `server/commands/follow_commands.py`
+- **_make_container()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **_make_request()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **handle_unfollow_command()** (10 connections) — `server/commands/follow_commands.py`
+- **handle_following_command()** (10 connections) — `server/commands/follow_commands.py`
+- **test_handle_follow_self_rejected()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_same_room_player_sends_request()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_same_room_npc_immediate()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **_get_container()** (6 connections) — `server/commands/follow_commands.py`
+- **test_handle_follow_no_such_player_or_npc()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_no_persistence()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_no_target()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_player_not_in_game()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_unfollow_success()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_unfollow_was_not_following()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_following_display()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **Any** (4 connections)
+- **test_handle_follow_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_unfollow_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_following_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **Follow commands for MythosMUD.  Handlers for /follow, /unfollow, and /following.** (1 connections) — `server/commands/follow_commands.py`
+- **Get application container from request.** (1 connections) — `server/commands/follow_commands.py`
+- **Handle /follow <target>. Target must be a player or NPC in the same room.** (1 connections) — `server/commands/follow_commands.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (13 shared connections)
-- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (8 shared connections)
-- [mythosApp CharacterSelectionScreen chara](mythosApp_CharacterSelectionScreen_chara.md) (8 shared connections)
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (6 shared connections)
-- [App helpers professionSystemErrorHandlin](App_helpers_professionSystemErrorHandlin.md) (2 shared connections)
-- [containers stores containerStore](containers_stores_containerStore.md) (2 shared connections)
-- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (2 shared connections)
-- [Game Terminal UI](Game_Terminal_UI.md) (2 shared connections)
-- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (2 shared connections)
-- [zone configuration npc](zone_configuration_npc.md) (2 shared connections)
-- [mapPageRenderer mapPageState MapPage](mapPageRenderer_mapPageState_MapPage.md) (2 shared connections)
-- [dialogue DialogueEditorPage baseUrl()](dialogue_DialogueEditorPage_baseUrl%28%29.md) (1 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (10 shared connections)
+- [commands npc admin](commands_npc_admin.md) (5 shared connections)
+- [character creation service](character_creation_service.md) (4 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (4 shared connections)
+- [connection realtime manager](connection_realtime_manager.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [middleware correlation rationale](middleware_correlation_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/mythosApp/AppCreationFlowViews.tsx`
-- `client/src/mythosApp/AppDemoView.tsx`
-- `client/src/mythosApp/AppRootViews.tsx`
-- `client/src/mythosApp/AppSessionOutroViews.tsx`
-- `client/src/mythosApp/MythosLoginForm.tsx`
-- `client/src/mythosApp/appLazyScreens.tsx`
-- `client/src/mythosApp/mythosAppViewModel.ts`
-- `client/src/mythosApp/startLoginGracePeriod.ts`
-- `client/src/utils/__tests__/config.test.ts`
-- `client/src/utils/config.ts`
+- `server/commands/follow_commands.py`
+- `server/tests/unit/commands/test_follow_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 161 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 192 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

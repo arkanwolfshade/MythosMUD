@@ -33,10 +33,11 @@
 
 ## Relationships
 
-- [combat validator validators](combat_validator_validators.md) (3 shared connections)
 - [combat commands handler](combat_commands_handler.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [commands emote rationale](commands_emote_rationale.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [combat validator validators](combat_validator_validators.md) (2 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (2 shared connections)
+- [player event state](player_event_state.md) (1 shared connections)
 
 ## Source Files
 

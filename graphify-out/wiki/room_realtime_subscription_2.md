@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **party_service()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **PartyService with no dependencies (in-memory only).** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_execute_action_success()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test execute_action() successfully executes action.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [party game service](party_game_service.md) (1 shared connections)
-- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 

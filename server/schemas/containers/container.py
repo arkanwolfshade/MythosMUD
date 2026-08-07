@@ -5,6 +5,8 @@ This module provides Pydantic models for container-related API responses,
 ensuring type safety and automatic OpenAPI documentation.
 """
 
+from typing import ClassVar
+
 from pydantic import BaseModel, ConfigDict, Field
 
 from .container_data import ContainerData, InventoryStack
@@ -16,7 +18,7 @@ class ContainerOpenResponse(BaseModel):
     container: ContainerData = Field(..., description="Container data including inventory and metadata")
     mutation_token: str = Field(..., description="Token required for subsequent container operations")
 
-    model_config = ConfigDict(
+    model_config: ClassVar[ConfigDict] = ConfigDict(
         json_schema_extra={
             "example": {
                 "container": {
@@ -25,7 +27,7 @@ class ContainerOpenResponse(BaseModel):
                     "inventory": [],
                     "capacity": 10,
                 },
-                "mutation_token": "abc123def456",
+                "mutation_token": "example-mutation-token-not-a-secret",
             }
         }
     )
@@ -37,7 +39,7 @@ class ContainerTransferResponse(BaseModel):
     container: ContainerData = Field(..., description="Updated container data")
     player_inventory: list[InventoryStack] = Field(..., description="Updated player inventory")
 
-    model_config = ConfigDict(
+    model_config: ClassVar[ConfigDict] = ConfigDict(
         json_schema_extra={
             "example": {
                 "container": {
@@ -61,7 +63,7 @@ class ContainerCloseResponse(BaseModel):
 
     status: str = Field(..., description="Status of the close operation")
 
-    model_config = ConfigDict(
+    model_config: ClassVar[ConfigDict] = ConfigDict(
         json_schema_extra={
             "example": {
                 "status": "closed",
@@ -77,7 +79,7 @@ class ContainerLootAllResponse(BaseModel):
     player_inventory: list[InventoryStack] = Field(..., description="Updated player inventory with looted items")
     items_looted: int = Field(..., description="Number of items successfully looted")
 
-    model_config = ConfigDict(
+    model_config: ClassVar[ConfigDict] = ConfigDict(
         json_schema_extra={
             "example": {
                 "container": {

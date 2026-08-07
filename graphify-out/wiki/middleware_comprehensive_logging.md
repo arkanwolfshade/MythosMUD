@@ -1,6 +1,6 @@
 # middleware comprehensive logging
 
-> 31 nodes
+> 30 nodes
 
 ## Key Concepts
 
@@ -18,7 +18,6 @@
 - **test_comprehensive_logging_successful_request()** (3 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
 - **test_comprehensive_logging_reraises_exception()** (3 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
 - **test_log_request_start_long_auth_header()** (3 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **.default()** (2 connections) — `server/realtime/envelope.py`
 - **test_comprehensive_logging_dispatch_success()** (2 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
 - **test_comprehensive_logging_dispatch_error()** (2 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
 - **ASGIApp** (1 connections)
@@ -29,27 +28,26 @@
 - **Exception** (1 connections)
 - **Comprehensive logging middleware for MythosMUD server.  This module provides a u** (1 connections) — `server/middleware/comprehensive_logging.py`
 - **Pure ASGI middleware that combines access, error, and request logging.      This** (1 connections) — `server/middleware/comprehensive_logging.py`
-- *... and 6 more nodes in this community*
+- **Initialize comprehensive logging middleware.          Args:             app: ASG** (1 connections) — `server/middleware/comprehensive_logging.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
 - [app factory rationale](app_factory_rationale.md) (3 shared connections)
-- [player service game](player_service_game.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
-- [npc combat services](npc_combat_services.md) (1 shared connections)
-- [room look commands](room_look_commands.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (2 shared connections)
+- [feature services flag](feature_services_flag.md) (1 shared connections)
+- [combat npc mixin](combat_npc_mixin.md) (1 shared connections)
 
 ## Source Files
 
 - `server/middleware/comprehensive_logging.py`
-- `server/realtime/envelope.py`
 - `server/tests/unit/middleware/test_comprehensive_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 96 (94%)
-- INFERRED: 6 (6%)
+- EXTRACTED: 95 (95%)
+- INFERRED: 5 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

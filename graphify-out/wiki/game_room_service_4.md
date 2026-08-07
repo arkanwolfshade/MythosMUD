@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_move_player_same_room()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test move_player() when from and to rooms are the same.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_is_player_muted_by_receiver_not_muted()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test is_player_muted_by_receiver() returns False when not muted.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 

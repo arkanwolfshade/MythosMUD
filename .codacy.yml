@@ -26,6 +26,9 @@ exclude_paths:
   - "**/node_modules/**"
   - "**/dist/**"
   - "**/build/**"
+  # Lockfiles are not product source; Lizard file-nloc on uv.lock is pure noise.
+  - "uv.lock"
+  - "**/uv.lock"
   # Makefile is build DSL, not Python/Go source; avoid false parse errors from Pylint/Revive.
   - "Makefile"
   - "**/mythosmud_data/**"
@@ -83,6 +86,9 @@ engines:
     exclude_paths:
       - "server/services/user_manager.py"
       - "scripts/ci/quality_fragmentation_guard.py"
+      # Lockfiles are not product source (file-nloc noise).
+      - "uv.lock"
+      - "**/uv.lock"
       # Generated graphify trees (CLI local scans; root exclude_paths covers Cloud).
       - "graphify-out/**"
       - "**/graphify-out/**"
@@ -97,12 +103,17 @@ engines:
       - "**/test_*.py"
       - "**/*_test.py"
       - "**/conftest.py"
-  # Codacy Cloud tool-level excludes (see root exclude_paths for Makefile too).
-  # Note: Codacy CLI v2 may still run Pylint/Revive on an opened Makefile; see .vscode/settings.json.
+      # OpenAPI example strings in Pydantic schemas are documentation only, not real secrets.
+      - "server/schemas/**"
   pylintpython3:
+    # Pydantic/schema models are data holders; R0903 "too few public methods" is expected.
     exclude_paths:
       - "Makefile"
       - "**/Makefile"
+      - "server/schemas/**"
+      - "server/models/**"
+  # Codacy Cloud tool-level excludes (see root exclude_paths for Makefile too).
+  # Note: Codacy CLI v2 may still run Pylint/Revive on an opened Makefile; see .vscode/settings.json.
   revive:
     exclude_paths:
       - "Makefile"
@@ -116,6 +127,10 @@ engines:
 # Assert and test passwords are standard in pytest; bandit.yml skips them but Codacy
 # may still report - these patterns suppress for all pytest-related paths.
 ignore_patterns:
+  # Mixin extracted from container_service; Codacy R0801 is a false positive (no twin block).
+  - pattern_id: "PyLintPython3_R0801"
+    file_paths:
+      - "server/services/container_service_access.py"
   # Bandit B101: Use of assert detected (acceptable in pytest - assert is the test API)
   # NOTE: Also configured in bandit.yml - see bandit.yml for native Bandit runs.
   # Multiple pattern_id variants for Codacy/Prospector (Bandit_B101, bandit.B101, etc.)
@@ -145,16 +160,22 @@ ignore_patterns:
       - "**/tests/**/*.py"
       - "**/*_test.py"
       - "**/conftest.py"
+  # Bandit B105/B106: OpenAPI example passwords / tokens in Pydantic schemas (docs only)
+  - pattern_id: "Bandit_B105"
+    file_paths:
+      - "server/schemas/**"
+      - "scripts/verify_migration.py"
+      - "scripts/apply_players_migration.py"
+  - pattern_id: "Bandit_B106"
+    file_paths:
+      - "server/schemas/**"
   # Bandit B608: SQL injection false positive in integration fixtures (db_name used only in ValueError
   # messages for protected-DB checks, not in any SQL; see PR #408 discussion r2838388474)
   - pattern_id: "Bandit_B608"
     file_paths:
       - "server/tests/fixtures/integration/__init__.py"
   # Bandit B105: Hardcoded password (acceptable for development defaults with environment variable fallback)
-  - pattern_id: "Bandit_B105"
-    file_paths:
-      - "scripts/verify_migration.py"
-      - "scripts/apply_players_migration.py"
+  # (schema paths already listed above with scripts)
   # Semgrep: XSS warnings in SafeHtml.test.tsx (false positives - tests verify XSS protection)
   - pattern_id: "typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml"
     file_paths:
@@ -308,11 +329,20 @@ ignore_patterns:
       - "server/game/**/*.py"
       - "server/npc/**/*.py"
   # Lizard CCN: Ignore cyclomatic complexity warnings for complexity <= 10
-  # We want to only report complexity > 10, but Codacy doesn't support custom CCN thresholds
-  # So we suppress the medium severity warnings (which report complexity > 8)
-  # This effectively sets our threshold to 11 (only reports complexity > 10)
+  # We want to only report complexity > 10, but Codacy Cloud historically used limit 8 for
+  # medium. Project policy (AGENTS.md / Ruff max-complexity=11) is CCN > 10 only.
+  # engines.lizard.config.CCN=11 must match; this ignore is defense if Cloud keeps default 8.
   - pattern_id: "Lizard_ccn-medium"
     reason: "Cyclomatic complexity threshold set to 11 (only report > 10). Medium severity reports > 8, which we want to ignore."
+  # Pylint R0903: too-few-public-methods on Pydantic models / typed containers (by design).
+  - pattern_id: "Pylint_R0903"
+    file_paths:
+      - "server/schemas/**"
+      - "server/models/**"
+  - pattern_id: "R0903"
+    file_paths:
+      - "server/schemas/**"
+      - "server/models/**"
   # Lizard file NLOC medium uses tool default threshold 500 in Codacy CLI. Project policy is 550.
   # Suppress this single file until Codacy CLI honors engines.lizard.config.file-nloc=550.
   - pattern_id: "Lizard_file-nloc-medium"
@@ -338,10 +368,12 @@ ignore_patterns:
 # Pylint (line-too-long), ESLint (max-len), Ruff (E501), and markdownlint (MD013) are configured
 # in the project to not enforce line length. Codacy uses those configs; no line-length ignore here.
 
-# Package.json "variant versions" (npm: aliases / OR ranges): prefer removing
-# npm: overrides (e.g. use magic-string ^0.30 instead of sourcemap-codec npm: remap).
-# Caret ranges + committed lockfiles remain best practice; JSON cannot host inline
-# suppressions. PR #409 r2842724151: no duplicate dependency keys in client/package.json.
+# Package.json "variant versions" (npm: aliases / OR ranges / bare ">=" floors):
+# pin exact overrides in client/package.json (no ">=x" floors) so Codacy SRM does
+# not flag dependency confusion. Caret ranges on direct deps + lockfile remain OK.
+# PR #409 r2842724151: no duplicate dependency keys in client/package.json.
 #
-# Trivy SCA: GHSA-qwww-vcr4-c8h2 (react-router RSC CSRF) ignored in .trivyignore —
-# SPA does not use RSC APIs; same rationale as Dependabot #162.
+# Trivy SCA: GHSA-qwww-vcr4-c8h2 (react-router RSC CSRF) ignored in .trivyignore -
+# SPA does not use RSC APIs; same rationale as Dependabot #162 and dependency-review
+# allow-ghsas. Codacy SRM High for this GHSA should be dismissed as tolerable_risk
+# (SPA path; no RSC) until react-router-dom >= 8.3 is a planned client upgrade.

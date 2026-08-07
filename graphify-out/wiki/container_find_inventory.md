@@ -1,54 +1,52 @@
 # container find inventory
 
-> 53 nodes
+> 135 nodes
 
 ## Key Concepts
 
-- **test_container_helpers_inventory_find.py** (55 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **find_wearable_container()** (17 connections) — `server/commands/container_helpers_inventory_find.py`
-- **find_container_in_room()** (13 connections) — `server/commands/container_helpers_inventory_find.py`
-- **find_item_in_inventory()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
-- **try_inner_container()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
-- **_player_for_wearable()** (12 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **try_inner_container_by_id()** (11 connections) — `server/commands/container_helpers_inventory_find.py`
-- **find_matching_equipped_containers()** (9 connections) — `server/commands/container_helpers_inventory_find.py`
-- **check_item_matches_target()** (7 connections) — `server/commands/container_helpers_inventory_find.py`
-- **test_find_item_in_inventory_non_numeric_token_name_search()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_check_item_matches_target_partial_name()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_create_wearable_container_uses_equip_dict_branch()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_create_wearable_container_fallback_when_equip_returns_non_dict()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_wearable_container_for_put_hits_inner_container()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_wearable_container_for_put_creates_on_slot_only_match()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_wearable_container_no_match_returns_none()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_wearable_container_inner_id_short_circuits()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_wearable_container_resolves_via_wearable_instance_id()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_wearable_container_falls_back_to_name_slot_match()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_wearable_container_wearable_raises_returns_none()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_item_in_inventory_by_index()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_item_in_inventory_by_name_substring()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_item_in_inventory_miss()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_item_in_inventory_index_zero_invalid()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_item_in_inventory_uppercase_query()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- *... and 28 more nodes in this community*
+- **test_wearable_container_service.py** (62 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **WearableContainerServiceError** (22 connections) — `server/services/wearable_container_service.py`
+- **_get_enum_value()** (9 connections) — `server/services/wearable_container_service.py`
+- **_filter_container_data()** (9 connections) — `server/services/wearable_container_service.py`
+- **Any** (8 connections)
+- **.add_items_to_wearable_container()** (8 connections) — `server/services/wearable_container_service.py`
+- **.update_wearable_container_items()** (8 connections) — `server/services/wearable_container_service.py`
+- **UUID** (7 connections)
+- **.handle_equip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
+- **.handle_unequip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
+- **.handle_container_overflow()** (6 connections) — `server/services/wearable_container_service.py`
+- **.get_wearable_containers_for_player()** (5 connections) — `server/services/wearable_container_service.py`
+- **.__init__()** (3 connections) — `server/services/wearable_container_service.py`
+- **wearable_service()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_wearable_container_service_init_no_persistence()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_equip_wearable_container_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_container_overflow_player_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_equip_wearable_container_creation_error()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_wrong_player()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_wrong_source_type()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_update_fails()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_update_wearable_container_items_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_update_wearable_container_items_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- *... and 110 more nodes in this community*
 
 ## Relationships
 
-- [logout command commands](logout_command_commands.md) (38 shared connections)
-- [services admin auth](services_admin_auth.md) (8 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (2 shared connections)
-- [room models instance](room_models_instance.md) (1 shared connections)
-- [commands inventory pickup](commands_inventory_pickup.md) (1 shared connections)
-- [container helpers endpoints](container_helpers_endpoints.md) (1 shared connections)
+- [task registry app](task_registry_app.md) (16 shared connections)
+- [add used user](add_used_user.md) (4 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/container_helpers_inventory_find.py`
-- `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- `server/services/wearable_container_service.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 233 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 320 (90%)
+- INFERRED: 34 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

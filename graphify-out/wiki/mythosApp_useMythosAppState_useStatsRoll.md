@@ -1,76 +1,62 @@
 # mythosApp useMythosAppState useStatsRoll
 
-> 92 nodes
+> 85 nodes
 
 ## Key Concepts
 
-- **useMythosAppState.ts** (28 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **useMythosAppActions.ts** (27 connections) — `client/src/mythosApp/useMythosAppActions.ts`
-- **Profession** (26 connections) — `client/src/components/ProfessionCard.tsx`
-- **useStatsRolling.ts** (26 connections) — `client/src/hooks/useStatsRolling.ts`
-- **1774539086359-useMythosAppState.ts** (24 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- **CharacterInfo** (20 connections) — `client/src/types/auth.ts`
-- **ProfessionCard.tsx** (18 connections) — `client/src/components/ProfessionCard.tsx`
-- **useProfessions.ts** (16 connections) — `client/src/hooks/useProfessions.ts`
-- **creationCompleteActions.ts** (16 connections) — `client/src/mythosApp/creationCompleteActions.ts`
-- **Stats** (15 connections) — `client/src/hooks/useStatsRolling.ts`
-- **mythosAppViewModel.ts** (15 connections) — `client/src/mythosApp/mythosAppViewModel.ts`
-- **useAuthSessionRestore.ts** (15 connections) — `client/src/mythosApp/useAuthSessionRestore.ts`
-- **auth.ts** (15 connections) — `client/src/types/auth.ts`
-- **deleteCharacterActions.ts** (14 connections) — `client/src/mythosApp/deleteCharacterActions.ts`
-- **CreationStep** (13 connections) — `client/src/mythosApp/creationTypes.ts`
-- **useMythosAppActions()** (13 connections) — `client/src/mythosApp/useMythosAppActions.ts`
-- **ProfessionSelectionScreen.tsx** (12 connections) — `client/src/components/ProfessionSelectionScreen.tsx`
-- **mythosAppViewModelFactory.ts** (12 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
-- **StatsRollingScreen.tsx** (10 connections) — `client/src/components/StatsRollingScreen.tsx`
-- **useMythosApp.tsx** (9 connections) — `client/src/mythosApp/useMythosApp.tsx`
-- **useMythosAppState()** (9 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **StatsRollingScreen.test.tsx** (8 connections) — `client/src/components/StatsRollingScreen.test.tsx`
-- **creationTypes.ts** (8 connections) — `client/src/mythosApp/creationTypes.ts`
-- **runAfterCharacterCreatedFlow()** (7 connections) — `client/src/mythosApp/creationCompleteActions.ts`
-- **executeDeleteCharacterUi()** (7 connections) — `client/src/mythosApp/deleteCharacterActions.ts`
-- *... and 67 more nodes in this community*
+- **spell_effects.py** (47 connections) — `server/game/magic/spell_effects.py`
+- **spell_effects_heal.py** (41 connections) — `server/game/magic/spell_effects_heal.py`
+- **NpcSpellDamageTarget** (17 connections) — `server/game/magic/spell_effect_types.py`
+- **run_heal_effect()** (15 connections) — `server/game/magic/spell_effects_heal.py`
+- **SpellEffectPlayer** (14 connections) — `server/game/magic/spell_effect_types.py`
+- **SpellEffectsEngineHealPort** (13 connections) — `server/game/magic/spell_effect_types.py`
+- **UUID** (13 connections)
+- **spell_effect_types.py** (11 connections) — `server/game/magic/spell_effect_types.py`
+- **_steal_life_resolve_target_dp()** (11 connections) — `server/game/magic/spell_effects_heal.py`
+- **_steal_life_apply_target_damage()** (11 connections) — `server/game/magic/spell_effects_heal.py`
+- **_run_steal_life()** (11 connections) — `server/game/magic/spell_effects_heal.py`
+- **PlayerPersistenceSpellPort** (10 connections) — `server/game/magic/spell_effect_types.py`
+- **_run_standard_heal_after_validation()** (10 connections) — `server/game/magic/spell_effects_heal.py`
+- **get_npc_instance_for_steal_life()** (9 connections) — `server/game/magic/spell_effects_heal.py`
+- **_steal_life_publish_npc_events()** (8 connections) — `server/game/magic/spell_effects_heal.py`
+- **get_combat_service()** (8 connections) — `server/services/combat_service_state.py`
+- **Protocol** (7 connections)
+- **_add_healing_threat_if_in_combat()** (7 connections) — `server/game/magic/spell_effects_heal.py`
+- **_lookup_npc_by_id_or_uuid()** (7 connections) — `server/game/magic/spell_effects_heal.py`
+- **NpcLifecycleManagerPort** (6 connections) — `server/game/magic/spell_effect_types.py`
+- **NpcIntegrationStringIdPort** (6 connections) — `server/game/magic/spell_effect_types.py`
+- **_is_heal_other_self_target()** (6 connections) — `server/game/magic/spell_effects_heal.py`
+- **_steal_life_apply_player_damage()** (6 connections) — `server/game/magic/spell_effects_heal.py`
+- **_resolve_npc_id_for_event()** (6 connections) — `server/game/magic/spell_effects_heal.py`
+- **UUID** (5 connections)
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
-- [mythosApp CharacterSelectionScreen chara](mythosApp_CharacterSelectionScreen_chara.md) (52 shared connections)
-- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (13 shared connections)
-- [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (12 shared connections)
-- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (11 shared connections)
-- [zone configuration npc](zone_configuration_npc.md) (10 shared connections)
-- [project paths rationale](project_paths_rationale.md) (8 shared connections)
-- [SkillAssignmentScreen helpers CharacterN](SkillAssignmentScreen_helpers_CharacterN.md) (6 shared connections)
-- [memoryMonitor memoryLeakDetector constru](memoryMonitor_memoryLeakDetector_constru.md) (4 shared connections)
-- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (2 shared connections)
-- [App helpers professionSystemErrorHandlin](App_helpers_professionSystemErrorHandlin.md) (2 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (34 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (25 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (9 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (5 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (5 shared connections)
+- [room validator toolkit](room_validator_toolkit.md) (3 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (3 shared connections)
+- [cache lru caching](cache_lru_caching.md) (2 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (2 shared connections)
+- [tick game processing](tick_game_processing.md) (2 shared connections)
+- [quest game service](quest_game_service.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/CharacterNameScreen.tsx`
-- `client/src/components/ProfessionCard.test.tsx`
-- `client/src/components/ProfessionCard.tsx`
-- `client/src/components/ProfessionSelectionScreen.test.tsx`
-- `client/src/components/ProfessionSelectionScreen.tsx`
-- `client/src/components/StatsRollingScreen.test.tsx`
-- `client/src/components/StatsRollingScreen.tsx`
-- `client/src/hooks/useProfessions.ts`
-- `client/src/hooks/useStatsRolling.ts`
-- `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- `client/src/mythosApp/__tests__/useMythosAppState.test.ts`
-- `client/src/mythosApp/creationCompleteActions.ts`
-- `client/src/mythosApp/creationTypes.ts`
-- `client/src/mythosApp/deleteCharacterActions.ts`
-- `client/src/mythosApp/deleteCharacterFlow.ts`
-- `client/src/mythosApp/mythosAppViewModel.ts`
-- `client/src/mythosApp/mythosAppViewModelFactory.ts`
-- `client/src/mythosApp/useAuthSessionRestore.ts`
-- `client/src/mythosApp/useMythosApp.tsx`
-- `client/src/mythosApp/useMythosAppActions.ts`
+- `server/game/magic/spell_effect_types.py`
+- `server/game/magic/spell_effects.py`
+- `server/game/magic/spell_effects_heal.py`
+- `server/services/combat_service_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 540 (99%)
-- INFERRED: 8 (1%)
+- EXTRACTED: 394 (97%)
+- INFERRED: 12 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

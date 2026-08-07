@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_room_players()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test get_room_players() returns list of player IDs.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_get_room_occupants_empty_online_players()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_room_occupants() with empty online_players.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 

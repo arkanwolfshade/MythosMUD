@@ -1,28 +1,32 @@
 # conftest eslint config
 
-> 6 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_json_error.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **test_handle_json_decode_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **Unit tests for websocket handler JSON error handling.  Tests the JSON decode err** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **Test _handle_json_decode_error() sends error response.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **._initialize_item_services()** (10 connections) — `server/container/bundles/game.py`
+- **._handle_item_prototypes_db_error()** (4 connections) — `server/container/bundles/game.py`
+- **Exception** (1 connections)
+- **On SQLAlchemyError: log, optionally warn about schema/DDL, and clear item regist** (1 connections) — `server/container/bundles/game.py`
+- **Load item prototypes from PostgreSQL and create item factory.** (1 connections) — `server/container/bundles/game.py`
 
 ## Relationships
 
-- [room websocket updates](room_websocket_updates.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (4 shared connections)
+- [combat models rationale](combat_models_rationale.md) (1 shared connections)
+- [schedule service services](schedule_service_services.md) (1 shared connections)
+- [connection cleaner realtime](connection_cleaner_realtime.md) (1 shared connections)
+- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- `server/container/bundles/game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 16 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

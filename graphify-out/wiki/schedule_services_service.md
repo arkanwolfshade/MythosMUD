@@ -1,60 +1,51 @@
 # schedule services service
 
-> 29 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **PlayerEventHandler** (26 connections) — `server/realtime/player_event_handlers.py`
-- **Any** (9 connections)
-- **.__init__()** (8 connections) — `server/realtime/player_event_handlers.py`
-- **._initialize_handlers()** (7 connections) — `server/realtime/player_event_handlers.py`
-- **.handle_player_entered()** (4 connections) — `server/realtime/player_event_handlers.py`
-- **.handle_player_left()** (4 connections) — `server/realtime/player_event_handlers.py`
-- **.send_occupants_snapshot_to_player()** (3 connections) — `server/realtime/player_event_handlers.py`
-- **.get_room_state_event()** (3 connections) — `server/realtime/player_event_handlers.py`
-- **.handle_player_xp_awarded()** (3 connections) — `server/realtime/player_event_handlers.py`
-- **.handle_player_dp_updated()** (3 connections) — `server/realtime/player_event_handlers.py`
-- **.handle_player_died()** (3 connections) — `server/realtime/player_event_handlers.py`
-- **.handle_player_dp_decay()** (3 connections) — `server/realtime/player_event_handlers.py`
-- **.handle_player_respawned()** (3 connections) — `server/realtime/player_event_handlers.py`
-- **.handle_player_delirium_respawned()** (3 connections) — `server/realtime/player_event_handlers.py`
-- **player_event_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
-- **Handles all player-related real-time events.** (1 connections) — `server/realtime/player_event_handlers.py`
-- **Initialize the player event handler.          Args:             connection_manag** (1 connections) — `server/realtime/player_event_handlers.py`
-- **Initialize utility functions and specialized handlers.** (1 connections) — `server/realtime/player_event_handlers.py`
-- **Handle player entering a room with enhanced synchronization.          Args:** (1 connections) — `server/realtime/player_event_handlers.py`
-- **Handle player leaving a room with enhanced synchronization.          Args:** (1 connections) — `server/realtime/player_event_handlers.py`
-- **Send occupants snapshot to a player.          CRITICAL: This method MUST include** (1 connections) — `server/realtime/player_event_handlers.py`
-- **Build authoritative room_state event for a room (for request/response enter-room** (1 connections) — `server/realtime/player_event_handlers.py`
-- **Handle player XP award events by sending updates to the client.          Args:** (1 connections) — `server/realtime/player_event_handlers.py`
-- **Handle player DP update events by sending updates to the client.          Args:** (1 connections) — `server/realtime/player_event_handlers.py`
-- **Handle player death events by sending death notification to the client.** (1 connections) — `server/realtime/player_event_handlers.py`
-- *... and 4 more nodes in this community*
+- **test_command_parser_helpers.py** (24 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_removes_slash_prefix()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_cleans_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_strips_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_no_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_simple()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_with_args()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_lowercases_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_empty_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_whitespace_only_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_get_command_help_specific_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_get_command_help_unknown_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_get_command_help_none()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_with_alias_l()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_with_alias_g()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_with_alias_w()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_unsupported_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_pydantic_validation_error()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_value_error()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Unit tests for command_parser helper methods.  Tests the helper methods in Comma** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() removes leading slash.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() cleans multiple whitespace.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() strips leading/trailing whitespace.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() handles command without slash.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _parse_command_parts() parses simple command.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
-- [event bus events](event_bus_events.md) (3 shared connections)
-- [commands communication channels](commands_communication_channels.md) (2 shared connections)
-- [realtime monitoring performance](realtime_monitoring_performance.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [inventory mutation guard](inventory_mutation_guard.md) (2 shared connections)
-- [message handler factory](message_handler_factory.md) (2 shared connections)
-- [player_event_handler_utils](player_event_handler_utils.md) (2 shared connections)
-- [Player Name Validation](Player_Name_Validation.md) (2 shared connections)
-- [feature services flag](feature_services_flag.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [item models rationale](item_models_rationale.md) (1 shared connections)
+- [payload realtime optimizer](payload_realtime_optimizer.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_event_handlers.py`
-- `server/tests/unit/realtime/test_player_event_handlers.py`
+- `server/tests/unit/utils/test_command_parser_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 91 (92%)
-- INFERRED: 8 (8%)
+- EXTRACTED: 79 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

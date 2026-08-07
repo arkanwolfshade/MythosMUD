@@ -1,54 +1,70 @@
 # tick game processing
 
-> 57 nodes
+> 177 nodes
 
 ## Key Concepts
 
-- **test_game_tick_processing_async.py** (26 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **_process_damage_over_time_effect()** (13 connections) — `server/app/game_tick_processing.py`
-- **_process_single_effect()** (13 connections) — `server/app/game_tick_processing.py`
-- **_process_heal_over_time_effect()** (10 connections) — `server/app/game_tick_processing.py`
-- **_update_player_status_effects()** (9 connections) — `server/app/game_tick_processing.py`
-- **process_combat_tick()** (9 connections) — `server/app/game_tick_processing.py`
-- **_cleanup_single_decayed_corpse()** (8 connections) — `server/app/game_tick_processing.py`
-- **Any** (7 connections)
-- **test_process_damage_over_time_effect_no_damage()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_damage_over_time_effect_no_remaining()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_damage_over_time_effect_success()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_heal_over_time_effect_no_healing()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_heal_over_time_effect_no_remaining()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_heal_over_time_effect_success()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_single_effect_damage_over_time()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_single_effect_heal_over_time()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_single_effect_expired()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_update_player_status_effects_no_changes()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_update_player_status_effects_changes()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_status_effects_no_container()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_status_effects_no_online_players()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_combat_tick_no_service()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_combat_tick_success()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_heal_over_time_effect()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_process_damage_over_time_zero_remaining()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- *... and 32 more nodes in this community*
+- **get_npc_instance_service()** (79 connections) — `server/services/npc_instance_service.py`
+- **test_npc_admin_commands.py** (54 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **router.py** (30 connections) — `server/commands/npc_admin/router.py`
+- **__init__.py** (24 connections) — `server/commands/npc_admin/__init__.py`
+- **instance.py** (22 connections) — `server/commands/npc_admin/instance.py`
+- **npc_admin_commands.py** (21 connections) — `server/commands/npc_admin_commands.py`
+- **_build_subcommand_map()** (20 connections) — `server/commands/npc_admin/router.py`
+- **definition.py** (16 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_command()** (16 connections) — `server/commands/npc_admin/router.py`
+- **handle_npc_behavior_command()** (14 connections) — `server/commands/npc_admin/behavior.py`
+- **handle_npc_create_command()** (14 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_spawn_command()** (14 connections) — `server/commands/npc_admin/instance.py`
+- **handle_npc_edit_command()** (13 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_react_command()** (12 connections) — `server/commands/npc_admin/behavior.py`
+- **handle_npc_stop_command()** (12 connections) — `server/commands/npc_admin/behavior.py`
+- **behavior.py** (11 connections) — `server/commands/npc_admin/behavior.py`
+- **handle_npc_delete_command()** (11 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_list_command()** (11 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_despawn_command()** (11 connections) — `server/commands/npc_admin/instance.py`
+- **handle_npc_move_command()** (11 connections) — `server/commands/npc_admin/instance.py`
+- **monitoring.py** (11 connections) — `server/commands/npc_admin/monitoring.py`
+- **handle_npc_population_command()** (11 connections) — `server/commands/npc_admin/monitoring.py`
+- **handle_npc_zone_command()** (11 connections) — `server/commands/npc_admin/monitoring.py`
+- **handle_npc_status_command()** (11 connections) — `server/commands/npc_admin/monitoring.py`
+- **NPCDefinitionType** (11 connections) — `server/models/npc.py`
+- *... and 152 more nodes in this community*
 
 ## Relationships
 
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (31 shared connections)
-- [command utility models](command_utility_models.md) (1 shared connections)
-- [player persistence repository](player_persistence_repository.md) (1 shared connections)
-- [auth rationale access](auth_rationale_access.md) (1 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (26 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (13 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (12 shared connections)
+- [Error Conversion](Error_Conversion.md) (11 shared connections)
+- [instance game manager](instance_game_manager.md) (7 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (5 shared connections)
+- [room look commands](room_look_commands.md) (4 shared connections)
+- [commands quest rationale](commands_quest_rationale.md) (4 shared connections)
+- [command player state](command_player_state.md) (4 shared connections)
+- [command models moderation](command_models_moderation.md) (4 shared connections)
+- [commands inventory command](commands_inventory_command.md) (3 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
 
 ## Source Files
 
-- `server/app/game_tick_processing.py`
-- `server/tests/unit/app/test_game_tick_processing.py`
-- `server/tests/unit/app/test_game_tick_processing_async.py`
+- `server/commands/combat_handler.py`
+- `server/commands/npc_admin/__init__.py`
+- `server/commands/npc_admin/behavior.py`
+- `server/commands/npc_admin/definition.py`
+- `server/commands/npc_admin/instance.py`
+- `server/commands/npc_admin/monitoring.py`
+- `server/commands/npc_admin/router.py`
+- `server/commands/npc_admin_commands.py`
+- `server/models/npc.py`
+- `server/services/npc_instance_service.py`
+- `server/tests/unit/commands/test_npc_admin_commands.py`
+- `server/tests/unit/services/test_npc_instance_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 183 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 732 (91%)
+- INFERRED: 69 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

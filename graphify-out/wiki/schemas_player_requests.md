@@ -1,33 +1,28 @@
 # schemas player requests
 
-> 11 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_spell_effects_support.py** (13 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **_spell()** (8 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **_target()** (7 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **test_process_stat_modify_rejects_non_player()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **test_process_stat_modify_success()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **test_process_create_object_missing_prototype()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **test_process_create_object_for_player()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **test_create_object_for_room_placeholder()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **test_build_stat_modifications_shorthand()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **test_build_stat_modifications_missing()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **Unit tests for server.game.magic.spell_effects_support.** (1 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **items** (5 connections) — `db/static/schemas/holidays.schema.json`
+- **holidays** (4 connections) — `db/static/schemas/holidays.schema.json`
+- **properties** (2 connections) — `db/static/schemas/holidays.schema.json`
+- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **additionalProperties** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **minItems** (1 connections) — `db/static/schemas/holidays.schema.json`
 
 ## Relationships
 
-- [spell game magic](spell_game_magic.md) (3 shared connections)
-- [target resolution service](target_resolution_service.md) (1 shared connections)
+- [static schemas holidays](static_schemas_holidays.md) (3 shared connections)
+- [holidays schema static](holidays_schema_static.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_spell_effects_support.py`
+- `db/static/schemas/holidays.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

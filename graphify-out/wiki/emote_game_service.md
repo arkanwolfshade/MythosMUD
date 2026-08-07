@@ -1,43 +1,48 @@
 # emote game service
 
-> 22 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **test_room_subscription_manager_npcs.py** (13 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **subscription_manager()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **test_get_npc_name_from_lifecycle_manager()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **test_get_npc_name_from_lifecycle_manager_not_found()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **test_get_npc_name_from_lifecycle_manager_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **test_add_npc_to_occupants()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **test_query_npcs_from_lifecycle_manager()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **test_filter_fallback_npcs()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **test_filter_fallback_npcs_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **test_get_room_occupants_with_npcs()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **test_get_room_occupants_fallback_npcs()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Unit tests for room subscription manager NPC helpers.  Tests NPC-related helpers** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Create a RoomSubscriptionManager instance.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Test _get_npc_name_from_lifecycle_manager gets NPC name.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Test _get_npc_name_from_lifecycle_manager returns ID when NPC not found.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Test _get_npc_name_from_lifecycle_manager handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Test _add_npc_to_occupants adds NPC to list.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Test _query_npcs_from_lifecycle_manager queries NPCs.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Test _filter_fallback_npcs filters dead NPCs.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Test _filter_fallback_npcs handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Test get_room_occupants() includes NPCs from lifecycle manager.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Test get_room_occupants() falls back to room.get_npcs() when lifecycle manager f** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_inventory_mutation_guard.py** (17 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **guard()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_mutation_decision_init()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_mutation_decision_duplicate()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_inventory_mutation_guard_init_custom_params()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_inventory_mutation_guard_init()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_without_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_with_unique_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_with_duplicate_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_different_players_same_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_async_without_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_async_with_unique_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_async_with_duplicate_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_async_different_players_same_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Unit tests for inventory mutation guard - core functionality.  Tests initializat** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test MutationDecision initialization.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test MutationDecision for duplicate.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test InventoryMutationGuard initialization.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test InventoryMutationGuard initialization with custom parameters.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test acquire without token allows mutation.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test acquire with unique token allows mutation.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test acquire with duplicate token suppresses mutation.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test acquire allows same token for different players.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test acquire_async without token allows mutation.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [taunt combat commands](taunt_combat_commands.md) (3 shared connections)
+- [task registry app](task_registry_app.md) (6 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- `server/tests/unit/services/test_inventory_mutation_guard.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
+- EXTRACTED: 61 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

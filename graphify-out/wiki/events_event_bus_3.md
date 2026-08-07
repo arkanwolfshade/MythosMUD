@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_movement_service_init()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test MovementService initialization.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_extract_name_from_occupant_string()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test _extract_name_from_occupant() with string.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [message nats handler](message_nats_handler.md) (1 shared connections)
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

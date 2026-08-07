@@ -1,61 +1,60 @@
 # command combat models
 
-> 35 nodes
+> 138 nodes
 
 ## Key Concepts
 
-- **MemoryLeakMetricsCollector** (33 connections) — `server/monitoring/memory_leak_metrics.py`
-- **get_system_metrics()** (11 connections) — `server/api/system_monitoring.py`
-- **Any** (10 connections)
-- **.collect_all_metrics()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.check_alerts()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.__init__()** (6 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.collect_connection_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_event_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_cache_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_task_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_nats_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._calculate_single_growth_rate()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.calculate_growth_rates()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_connection_alerts()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_cache_alerts()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.__init__()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_subscriber_alerts()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_task_alerts()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Get system metrics from monitoring dashboard.** (1 connections) — `server/api/system_monitoring.py`
-- **Unified metrics collector for memory leak detection.      Aggregates metrics fro** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Initialize the memory leak metrics collector.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect all metrics from all sources.          Returns:             Dictionary c** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect connection metrics from ConnectionManager.          Returns:** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect event metrics from EventBus.          Returns:             Dictionary wi** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect cache metrics from CacheManager.          Returns:             Dictionar** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- *... and 10 more nodes in this community*
+- **container_persistence.py** (42 connections) — `server/container_persistence/container_persistence.py`
+- **test_container_persistence_crud.py** (42 connections) — `server/tests/unit/container_persistence/test_container_persistence_crud.py`
+- **ContainerCreateParams** (34 connections) — `server/persistence/container_create_params.py`
+- **container_helpers.py** (25 connections) — `server/container_persistence/container_helpers.py`
+- **create_container()** (23 connections) — `server/container_persistence/container_persistence.py`
+- **_container_data_from_dict()** (18 connections) — `server/container_persistence/container_persistence.py`
+- **update_container()** (17 connections) — `server/container_persistence/container_persistence.py`
+- **get_container()** (15 connections) — `server/container_persistence/container_persistence.py`
+- **get_containers_by_entity_id()** (13 connections) — `server/container_persistence/container_persistence.py`
+- **get_containers_by_room_id()** (12 connections) — `server/container_persistence/container_persistence.py`
+- **PsycopgConnection** (11 connections)
+- **_complete_container_create()** (11 connections) — `server/container_persistence/container_persistence.py`
+- **delete_container()** (11 connections) — `server/container_persistence/container_persistence.py`
+- **UUID** (10 connections)
+- **_execute_container_update()** (9 connections) — `server/container_persistence/container_persistence.py`
+- **__init__.py** (8 connections) — `server/container_persistence/__init__.py`
+- **ContainerData** (8 connections) — `server/container_persistence/container_data.py`
+- **ContainerData** (8 connections)
+- **validate_update_lock_state()** (7 connections) — `server/container_persistence/container_helpers.py`
+- **fetch_container_items()** (7 connections) — `server/container_persistence/container_helpers.py`
+- **validate_create_container_args()** (6 connections) — `server/container_persistence/container_helpers.py`
+- **UUID** (6 connections)
+- **as_uuid()** (6 connections) — `server/container_persistence/container_helpers.py`
+- **as_opt_datetime()** (6 connections) — `server/container_persistence/container_helpers.py`
+- **_map_container_content_row()** (6 connections) — `server/container_persistence/container_helpers.py`
+- *... and 113 more nodes in this community*
 
 ## Relationships
 
-- [room cache services](room_cache_services.md) (7 shared connections)
-- [health models rationale](health_models_rationale.md) (6 shared connections)
-- [System Metrics](System_Metrics.md) (5 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (4 shared connections)
-- [metrics memory leak](metrics_memory_leak.md) (3 shared connections)
-- [commands skills rationale](commands_skills_rationale.md) (2 shared connections)
-- [nats services service](nats_services_service.md) (2 shared connections)
-- [Exception Containers](Exception_Containers.md) (1 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
-- [follow service game](follow_service_game.md) (1 shared connections)
-- [websocket examples logging](websocket_examples_logging.md) (1 shared connections)
-- [models lucidity rationale](models_lucidity_rationale.md) (1 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (15 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (13 shared connections)
+- [add used user](add_used_user.md) (12 shared connections)
+- [commands party examples](commands_party_examples.md) (11 shared connections)
+- [command inventory models](command_inventory_models.md) (9 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (4 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (3 shared connections)
+- [combat schemas schema](combat_schemas_schema.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/system_monitoring.py`
-- `server/monitoring/memory_leak_metrics.py`
-- `server/monitoring/monitoring_dashboard.py`
+- `server/container_persistence/__init__.py`
+- `server/container_persistence/container_data.py`
+- `server/container_persistence/container_helpers.py`
+- `server/container_persistence/container_persistence.py`
+- `server/persistence/container_create_params.py`
+- `server/tests/unit/container_persistence/test_container_persistence_crud.py`
 
 ## Audit Trail
 
-- EXTRACTED: 139 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 579 (96%)
+- INFERRED: 25 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,62 +1,65 @@
 # aggro threat services
 
-> 101 nodes
+> 135 nodes
 
 ## Key Concepts
 
-- **test_database_helpers.py** (46 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **database_helpers.py** (30 connections) — `server/database_helpers.py`
-- **DatabaseManager** (29 connections) — `server/database.py`
-- **get_database_path()** (16 connections) — `server/database_helpers.py`
-- **get_async_session()** (13 connections) — `server/database_helpers.py`
-- **get_engine()** (9 connections) — `server/database_helpers.py`
-- **get_session_maker()** (9 connections) — `server/database_helpers.py`
-- **close_db()** (9 connections) — `server/database_helpers.py`
-- **reset_database()** (8 connections) — `server/database_helpers.py`
-- **init_db()** (8 connections) — `server/database_helpers.py`
-- **ensure_database_directory()** (7 connections) — `server/database_helpers.py`
-- **get_test_database_url()** (6 connections) — `server/database_config_helpers.py`
-- **get_database_url()** (6 connections) — `server/database_helpers.py`
-- **_reset_database_url_state()** (5 connections) — `server/database.py`
-- **test_get_engine_raises_validation_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_get_session_maker_raises_validation_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **_get_database_url_state()** (4 connections) — `server/database.py`
-- **AsyncSession** (4 connections)
-- **test_reset_database()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_get_engine()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_get_session_maker()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_get_database_url()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_get_database_url_returns_none()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_get_database_path_unsupported_url_raises()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_get_database_path_empty_string_url_raises()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- *... and 76 more nodes in this community*
+- **lifespan_startup.py** (59 connections) — `server/app/lifespan_startup.py`
+- **lifespan.py** (43 connections) — `server/app/lifespan.py`
+- **test_lifespan_startup.py** (39 connections) — `server/tests/unit/app/test_lifespan_startup.py`
+- **test_lifespan_helpers.py** (21 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
+- **lifespan()** (17 connections) — `server/app/lifespan.py`
+- **_startup_application()** (15 connections) — `server/app/lifespan.py`
+- **initialize_container_and_legacy_services()** (15 connections) — `server/app/lifespan_startup.py`
+- **NPCService** (14 connections) — `server/services/npc_service/__init__.py`
+- **FastAPI** (13 connections)
+- **_shutdown_with_error_handling()** (12 connections) — `server/app/lifespan.py`
+- **initialize_combat_services()** (12 connections) — `server/app/lifespan_startup.py`
+- **setup_connection_manager()** (11 connections) — `server/app/lifespan_startup.py`
+- **_initialize_enhanced_systems()** (10 connections) — `server/app/lifespan.py`
+- **_create_npc_services_on_app()** (10 connections) — `server/app/lifespan_startup.py`
+- **initialize_npc_services()** (10 connections) — `server/app/lifespan_startup.py`
+- **initialize_npc_startup_spawning()** (10 connections) — `server/app/lifespan_startup.py`
+- **initialize_mythos_time_consumer()** (9 connections) — `server/app/lifespan_startup.py`
+- **initialize_nats_and_combat_services()** (9 connections) — `server/app/lifespan_startup.py`
+- **initialize_chat_service()** (9 connections) — `server/app/lifespan_startup.py`
+- **_cleanup_container_on_error()** (8 connections) — `server/app/lifespan.py`
+- **_get_item_prototype_entries()** (8 connections) — `server/app/lifespan_startup.py`
+- **get_npc_startup_service()** (8 connections) — `server/services/npc_startup_service.py`
+- **_calculate_metrics_delta()** (7 connections) — `server/app/lifespan.py`
+- **_persist_mythos_state_on_error()** (7 connections) — `server/app/lifespan.py`
+- **_get_item_prototype_count()** (7 connections) — `server/app/lifespan_startup.py`
+- *... and 110 more nodes in this community*
 
 ## Relationships
 
-- [Database Access Layer](Database_Access_Layer.md) (18 shared connections)
-- [Loot Generation](Loot_Generation.md) (15 shared connections)
-- [game models enums](game_models_enums.md) (14 shared connections)
-- [models profession rationale](models_profession_rationale.md) (3 shared connections)
-- [command player state](command_player_state.md) (3 shared connections)
-- [player room realtime](player_room_realtime.md) (3 shared connections)
-- [nats services service](nats_services_service.md) (2 shared connections)
-- [combat death services](combat_death_services.md) (2 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
-- [player requests schemas](player_requests_schemas.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [magic healing game](magic_healing_game.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (21 shared connections)
+- [Error Conversion](Error_Conversion.md) (12 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (8 shared connections)
+- [combat models rationale](combat_models_rationale.md) (7 shared connections)
+- [player service game](player_service_game.md) (6 shared connections)
+- [player requests schemas](player_requests_schemas.md) (5 shared connections)
+- [spawn npc services](spawn_npc_services.md) (4 shared connections)
+- [commands inventory command](commands_inventory_command.md) (4 shared connections)
+- [command base models](command_base_models.md) (3 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
+- [metrics memory leak](metrics_memory_leak.md) (3 shared connections)
+- [room cache services](room_cache_services.md) (3 shared connections)
 
 ## Source Files
 
-- `server/database.py`
-- `server/database_config_helpers.py`
-- `server/database_helpers.py`
-- `server/tests/unit/infrastructure/test_database_helpers.py`
+- `server/app/lifespan.py`
+- `server/app/lifespan_startup.py`
+- `server/services/npc_service/__init__.py`
+- `server/services/npc_startup_service.py`
+- `server/tests/unit/app/test_lifespan_helpers.py`
+- `server/tests/unit/app/test_lifespan_startup.py`
+- `server/tests/unit/test_main.py`
 
 ## Audit Trail
 
-- EXTRACTED: 358 (95%)
-- INFERRED: 20 (5%)
+- EXTRACTED: 593 (98%)
+- INFERRED: 14 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

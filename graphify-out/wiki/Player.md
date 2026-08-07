@@ -1,8 +1,8 @@
 # Player
 
-> God node · 236 connections · `server/models/player.py`
+> God node · 240 connections · `server/models/player.py`
 
-**Community:** [combat models rationale](combat_models_rationale.md)
+**Community:** [game weapon player](game_weapon_player.md)
 
 ## Connections by Relation
 

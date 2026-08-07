@@ -1,40 +1,39 @@
 # RoomEditModal map buildInitialFormData()
 
-> 16 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **RoomEditModal.tsx** (20 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **RoomEditModal()** (5 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **RoomEditModal.test.tsx** (4 connections) — `client/src/components/map/__tests__/RoomEditModal.test.tsx`
-- **RoomEditModalProps** (3 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **buildInitialFormData()** (3 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **toFormValue()** (2 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **ENVIRONMENT_OPTIONS** (2 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **EnvironmentOption** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **RoomEditFormData** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **EditableRoomField** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **validateName()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **validateDescription()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **validatePlane()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **validateZone()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **validateSubZone()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **FIELD_VALIDATORS** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **CoordinateValidator** (9 connections) — `server/services/coordinate_validator.py`
+- **coordinate_validator.py** (6 connections) — `server/services/coordinate_validator.py`
+- **test_coordinate_validator.py** (6 connections) — `server/tests/unit/services/test_coordinate_validator.py`
+- **.__init__()** (3 connections) — `server/services/coordinate_validator.py`
+- **.validate_coordinates()** (3 connections) — `server/services/coordinate_validator.py`
+- **validator()** (2 connections) — `server/tests/unit/services/test_coordinate_validator.py`
+- **AsyncSession** (1 connections)
+- **Any** (1 connections)
+- **Coordinate validation service for ASCII maps.  This module provides conflict det** (1 connections) — `server/services/coordinate_validator.py`
+- **Validates room coordinates and detects conflicts.      A conflict occurs when mu** (1 connections) — `server/services/coordinate_validator.py`
+- **Initialize coordinate validator.          Args:             session: Database se** (1 connections) — `server/services/coordinate_validator.py`
+- **Validate coordinates for rooms in a zone/subzone and detect conflicts.** (1 connections) — `server/services/coordinate_validator.py`
+- **test_validate_coordinates_no_conflicts()** (1 connections) — `server/tests/unit/services/test_coordinate_validator.py`
+- **test_validate_coordinates_reports_conflicts()** (1 connections) — `server/tests/unit/services/test_coordinate_validator.py`
+- **Unit tests for coordinate validation.** (1 connections) — `server/tests/unit/services/test_coordinate_validator.py`
 
 ## Relationships
 
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (8 shared connections)
-- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (2 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (4 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/RoomEditModal.tsx`
-- `client/src/components/map/__tests__/RoomEditModal.test.tsx`
+- `server/services/coordinate_validator.py`
+- `server/tests/unit/services/test_coordinate_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (79%)
-- INFERRED: 10 (21%)
+- EXTRACTED: 38 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

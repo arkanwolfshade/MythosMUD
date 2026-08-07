@@ -12,6 +12,11 @@ updates:
     directory: "/client"
     schedule:
       interval: "weekly"
+    # typescript-eslint does not support TypeScript 7.x yet (see typescript-eslint#10940).
+    # Keep ~6.x until eslint stack supports 7; upgrade compiler + eslint together in a feature PR.
+    ignore:
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: npm
     directory: /client/.vite/deps

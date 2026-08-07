@@ -1,60 +1,71 @@
 # player event handlers
 
-> 30 nodes
+> 296 nodes
 
 ## Key Concepts
 
-- **AppConfig** (31 connections) — `server/config/models/app.py`
-- **__init__.py** (11 connections) — `server/config/__init__.py`
-- **.to_legacy_dict()** (7 connections) — `server/config/models/app.py`
-- **Any** (6 connections)
-- **_create_config_instance()** (5 connections) — `server/config/__init__.py`
-- **_get_config_cached()** (5 connections) — `server/config/__init__.py`
-- **_get_config_test()** (5 connections) — `server/config/__init__.py`
-- **.__init__()** (5 connections) — `server/config/models/app.py`
-- **._legacy_game_entries()** (5 connections) — `server/config/models/app.py`
-- **._legacy_nats_dict()** (5 connections) — `server/config/models/app.py`
-- **._legacy_chat_dict()** (5 connections) — `server/config/models/app.py`
-- **._legacy_cors_dict()** (5 connections) — `server/config/models/app.py`
-- **._sanitize_environment_for_nested_configs()** (4 connections) — `server/config/models/app.py`
-- **._first_cors_origins_env()** (3 connections) — `server/config/models/app.py`
-- **.set_legacy_environment_variables()** (2 connections) — `server/config/models/app.py`
-- **Configuration module for MythosMUD server.  This module provides type-safe, vali** (1 connections) — `server/config/__init__.py`
-- **Create a new AppConfig instance from current environment.      This is a helper** (1 connections) — `server/config/__init__.py`
-- **Production config loader with caching.      Uses both @lru_cache and global _con** (1 connections) — `server/config/__init__.py`
-- **Test config loader without caching - always returns fresh instances.      This e** (1 connections) — `server/config/__init__.py`
-- **BaseSettings** (1 connections)
-- **Composite application configuration.      This is the main configuration class t** (1 connections) — `server/config/models/app.py`
-- **Initialize configuration and set environment variables for legacy compatibility.** (1 connections) — `server/config/models/app.py`
-- **Set environment variables for legacy code that reads them directly.** (1 connections) — `server/config/models/app.py`
-- **Return first set CORS origins env var to reduce CCN in _sanitize.** (1 connections) — `server/config/models/app.py`
-- **Normalize environment variables so nested configs can parse them reliably.** (1 connections) — `server/config/models/app.py`
-- *... and 5 more nodes in this community*
+- **ContainerComponent** (111 connections) — `server/models/container.py`
+- **LootAllRequest** (57 connections) — `server/api/container_models.py`
+- **test_container.py** (38 connections) — `server/tests/unit/models/test_container.py`
+- **container.py** (32 connections) — `server/models/container.py`
+- **ContainerSourceType** (30 connections) — `server/models/container.py`
+- **container_events.py** (26 connections) — `server/api/container_events.py`
+- **test_container_events.py** (25 connections) — `server/tests/unit/api/test_container_events.py`
+- **test_container_helpers_loot.py** (22 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **transfer_all_items_from_container()** (21 connections) — `server/api/container_helpers.py`
+- **corpse_lifecycle_service.py** (19 connections) — `server/services/corpse_lifecycle_service.py`
+- **ContainerLockState** (18 connections) — `server/models/container.py`
+- **TestTransferAllItemsFromContainer** (18 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **emit_transfer_event()** (17 connections) — `server/api/container_events.py`
+- **emit_loot_all_event()** (17 connections) — `server/api/container_events.py`
+- **get_container_and_player_for_loot_all()** (17 connections) — `server/api/container_helpers.py`
+- **container_service_access.py** (17 connections) — `server/services/container_service_access.py`
+- **emit_container_opened_events()** (16 connections) — `server/api/container_events.py`
+- **test_container_events_loot.py** (16 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **emit_close_container_event()** (15 connections) — `server/api/container_events.py`
+- **environmental_container_loader.py** (14 connections) — `server/services/environmental_container_loader.py`
+- **TestRegisterLootEndpoints** (14 connections) — `server/tests/unit/api/test_container_endpoints_loot_register.py`
+- **TestEmitTransferEvent** (13 connections) — `server/tests/unit/api/test_container_events.py`
+- **TestEmitCloseContainerEvent** (13 connections) — `server/tests/unit/api/test_container_events.py`
+- **TestEmitLootAllEvent** (13 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **test_container_endpoints_loot.py** (12 connections) — `server/tests/unit/api/test_container_endpoints_loot.py`
+- *... and 271 more nodes in this community*
 
 ## Relationships
 
-- [lucidity npc combat](lucidity_npc_combat.md) (8 shared connections)
-- [models npc rationale](models_npc_rationale.md) (6 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (3 shared connections)
-- [config models cors](config_models_cors.md) (2 shared connections)
-- [invite models rationale](invite_models_rationale.md) (2 shared connections)
-- [combat validator validators](combat_validator_validators.md) (2 shared connections)
-- [schemas calendar rationale](schemas_calendar_rationale.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [persistence container parse](persistence_container_parse.md) (1 shared connections)
-- [playerHandlers eventHandlers healthEvent](playerHandlers_eventHandlers_healthEvent.md) (1 shared connections)
-- [config models rationale](config_models_rationale.md) (1 shared connections)
-- [Spell Validation](Spell_Validation.md) (1 shared connections)
+- [Exception Containers](Exception_Containers.md) (50 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (45 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (42 shared connections)
+- [Game Terminal UI](Game_Terminal_UI.md) (28 shared connections)
+- [alias storage commands](alias_storage_commands.md) (23 shared connections)
+- [add used user](add_used_user.md) (17 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (16 shared connections)
+- [player preferences services](player_preferences_services.md) (14 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (8 shared connections)
+- [player effects endpoints](player_effects_endpoints.md) (8 shared connections)
+- [task registry app](task_registry_app.md) (7 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (7 shared connections)
 
 ## Source Files
 
-- `server/config/__init__.py`
-- `server/config/models/app.py`
+- `server/api/container_events.py`
+- `server/api/container_helpers.py`
+- `server/api/container_models.py`
+- `server/models/container.py`
+- `server/services/container_service_access.py`
+- `server/services/corpse_lifecycle_service.py`
+- `server/services/environmental_container_loader.py`
+- `server/tests/unit/api/test_container_endpoints_loot.py`
+- `server/tests/unit/api/test_container_endpoints_loot_register.py`
+- `server/tests/unit/api/test_container_events.py`
+- `server/tests/unit/api/test_container_events_loot.py`
+- `server/tests/unit/api/test_container_helpers_loot.py`
+- `server/tests/unit/models/test_container.py`
 
 ## Audit Trail
 
-- EXTRACTED: 108 (91%)
-- INFERRED: 11 (9%)
+- EXTRACTED: 1196 (92%)
+- INFERRED: 108 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

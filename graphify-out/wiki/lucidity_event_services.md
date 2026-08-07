@@ -1,56 +1,65 @@
 # lucidity event services
 
-> 71 nodes
+> 121 nodes
 
 ## Key Concepts
 
-- **AggressiveMobNPC** (33 connections) — `server/npc/aggressive_mob_npc.py`
-- **test_aggressive_mob_npc.py** (22 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **aggressive_mob_npc.py** (18 connections) — `server/npc/aggressive_mob_npc.py`
-- **_make_aggro()** (13 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **_RoomPersistence** (8 connections) — `server/npc/aggressive_mob_npc.py`
-- **._compute_player_context()** (7 connections) — `server/npc/aggressive_mob_npc.py`
-- **._attack_target_impl()** (6 connections) — `server/npc/aggressive_mob_npc.py`
-- **._enrich_behavior_context()** (4 connections) — `server/npc/aggressive_mob_npc.py`
-- **._attack_via_combat_integration()** (4 connections) — `server/npc/aggressive_mob_npc.py`
-- **.attack_target()** (4 connections) — `server/npc/aggressive_mob_npc.py`
-- **.get_room_by_id()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **.__init__()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **._setup_aggressive_mob_behavior_rules()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **._log_context_enriched()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **.hunt_target()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **._get_attack_damage()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **.flee()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **.patrol_territory()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **._handle_hunt_target()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **._handle_attack_target()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **._handle_flee()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **._handle_patrol_territory()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **test_enrich_behavior_context_sets_player_in_range_when_players_in_room()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **test_enrich_behavior_context_sets_false_when_no_players_in_room()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **test_enrich_behavior_context_handles_no_current_room()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- *... and 46 more nodes in this community*
+- **NPCBase** (83 connections) — `server/npc/npc_base.py`
+- **.event_bus()** (12 connections) — `server/realtime/connection_manager.py`
+- **.__init__()** (11 connections) — `server/npc/npc_base.py`
+- **CommunicationIntegrationProtocol** (10 connections) — `server/npc/npc_protocols.py`
+- **schedule_end_combat_if_npc_died_best_effort()** (8 connections) — `server/npc/npc_combat_schedule.py`
+- **._finalize_spawn_record()** (7 connections) — `server/npc/lifecycle_manager.py`
+- **to_int_or_default()** (7 connections) — `server/npc/npc_config_parsing.py`
+- **get_combat_stats_dict()** (7 connections) — `server/npc/npc_config_parsing.py`
+- **CombatIntegrationProtocol** (7 connections) — `server/npc/npc_protocols.py`
+- **._handle_npc_death()** (6 connections) — `server/npc/npc_base.py`
+- **._move_with_integration()** (6 connections) — `server/npc/npc_base.py`
+- **._register_reactions_and_chat_name()** (5 connections) — `server/npc/npc_base.py`
+- **.take_damage()** (5 connections) — `server/npc/npc_base.py`
+- **._get_integration_dependencies()** (5 connections) — `server/npc/npc_base.py`
+- **.move_to_room()** (5 connections) — `server/npc/npc_base.py`
+- **_safe_stat_int()** (5 connections) — `server/npc/npc_config_parsing.py`
+- **test_npc_combat_schedule.py** (5 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **._set_npc_room_tracking()** (4 connections) — `server/npc/lifecycle_manager.py`
+- **._validate_npc_room_tracking()** (4 connections) — `server/npc/lifecycle_manager.py`
+- **._safe_get()** (4 connections) — `server/npc/npc_base.py`
+- **._apply_definition_attributes()** (4 connections) — `server/npc/npc_base.py`
+- **._publish_damage_event()** (4 connections) — `server/npc/npc_base.py`
+- **._schedule_end_combat_if_npc_died()** (4 connections) — `server/npc/npc_base.py`
+- **.heal()** (4 connections) — `server/npc/npc_base.py`
+- **.speak()** (4 connections) — `server/npc/npc_base.py`
+- *... and 96 more nodes in this community*
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (7 shared connections)
-- [services nats service](services_nats_service.md) (7 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (5 shared connections)
-- [container events rationale](container_events_rationale.md) (2 shared connections)
-- [logging setup structured](logging_setup_structured.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [room models instance](room_models_instance.md) (1 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [services nats service](services_nats_service.md) (18 shared connections)
+- [Error Conversion](Error_Conversion.md) (12 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (11 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (10 shared connections)
+- [room look commands](room_look_commands.md) (10 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (3 shared connections)
+- [commands logout helpers](commands_logout_helpers.md) (2 shared connections)
+- [combat services rationale](combat_services_rationale.md) (2 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (2 shared connections)
+- [error logging rationale](error_logging_rationale.md) (1 shared connections)
+- [quest game service](quest_game_service.md) (1 shared connections)
+- [combat services turn](combat_services_turn.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/aggressive_mob_npc.py`
-- `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- `server/npc/lifecycle_manager.py`
+- `server/npc/npc_base.py`
+- `server/npc/npc_combat_schedule.py`
+- `server/npc/npc_config_parsing.py`
+- `server/npc/npc_protocols.py`
+- `server/realtime/connection_manager.py`
+- `server/tests/unit/npc/test_npc_combat_schedule.py`
 
 ## Audit Trail
 
-- EXTRACTED: 220 (95%)
-- INFERRED: 11 (5%)
+- EXTRACTED: 345 (90%)
+- INFERRED: 37 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

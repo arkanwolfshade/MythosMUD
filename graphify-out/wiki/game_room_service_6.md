@@ -4,22 +4,21 @@
 
 ## Key Concepts
 
-- **test_move_player_invalid_to_room()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test move_player() with invalid to_room_id.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_get_user_manager_global()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test _get_user_manager() returns global user manager when custom not set.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

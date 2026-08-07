@@ -1,56 +1,61 @@
 # room occupant manager
 
-> 95 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **NPCCombatUUIDMapping** (39 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **TestNPCCombatUUIDMapping** (22 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **_NPCCombatIntegrationValidationDeps** (19 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.store_npc_xp_mapping_for_mixin()** (10 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **UUID** (8 connections)
-- **.get_base_stats()** (6 connections) — `server/models/npc.py`
-- **.get_data_provider()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_uuid_mapping()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **UUID** (6 connections)
-- **._setup_combat_uuids_and_mappings()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._validate_and_get_npc_instance()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._validate_combat_location()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._end_combat_if_participant_in_combat()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._setup_combat_uuids_npc_attacker()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_combat_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_lucidity_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.is_valid_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **.convert_to_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **test_npc_combat_uuid_mapping.py** (4 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.get_uuid_mapping()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **_coerce_xp_mapping_value()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **_warn_attacked_dead_npc()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.store_npc_xp_mapping_for_mixin()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.store_string_id_mapping()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **.store_xp_mapping()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
-- *... and 70 more nodes in this community*
+- **magic_service_completion.py** (25 connections) — `server/game/magic/magic_service_completion.py`
+- **MagicServiceCompletionMixin** (21 connections) — `server/game/magic/magic_service_completion.py`
+- **SpellCostsService** (16 connections) — `server/game/magic/spell_costs.py`
+- **UUID** (12 connections)
+- **Any** (11 connections)
+- **._execute_casting_immediately()** (9 connections) — `server/game/magic/magic_service_completion.py`
+- **._complete_casting()** (8 connections) — `server/game/magic/magic_service_completion.py`
+- **._recreate_target_from_state()** (7 connections) — `server/game/magic/magic_service_completion.py`
+- **._try_queue_spell_for_combat()** (6 connections) — `server/game/magic/magic_service_completion.py`
+- **._try_complete_casting_via_combat()** (6 connections) — `server/game/magic/magic_service_completion.py`
+- **._get_player_and_room()** (5 connections) — `server/game/magic/magic_service_completion.py`
+- **._apply_spell_costs_and_effects()** (5 connections) — `server/game/magic/magic_service_completion.py`
+- **._parse_casting_target_id()** (5 connections) — `server/game/magic/magic_service_completion.py`
+- **.apply_costs()** (5 connections) — `server/game/magic/spell_costs.py`
+- **_send_spell_completion_message()** (4 connections) — `server/game/magic/magic_service_completion.py`
+- **_is_heal_other_target()** (4 connections) — `server/game/magic/magic_service_completion.py`
+- **_send_healing_update_event()** (4 connections) — `server/game/magic/magic_service_completion.py`
+- **.restore_mp()** (4 connections) — `server/game/magic/spell_costs.py`
+- **UUID** (3 connections)
+- **costs_service()** (2 connections) — `server/tests/unit/game/magic/test_spell_costs.py`
+- **Casting completion flow for spellcasting.  Mixin that handles completing a casti** (1 connections) — `server/game/magic/magic_service_completion.py`
+- **Mixin for MagicService: complete casting (player/room, target, costs/effects, co** (1 connections) — `server/game/magic/magic_service_completion.py`
+- **Get player and room_id for casting completion.          Returns:             Tup** (1 connections) — `server/game/magic/magic_service_completion.py`
+- **Recreate target from stored casting state.          Args:             casting_st** (1 connections) — `server/game/magic/magic_service_completion.py`
+- **Apply spell costs and process effects.          Args:             player_id: Pla** (1 connections) — `server/game/magic/magic_service_completion.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (22 shared connections)
-- [container events rationale](container_events_rationale.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [player look commands](player_look_commands.md) (2 shared connections)
-- [room validator services](room_validator_services.md) (2 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (10 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (7 shared connections)
+- [player respawn event](player_respawn_event.md) (5 shared connections)
+- [Player Stats](Player_Stats.md) (4 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (4 shared connections)
+- [npc combat player](npc_combat_player.md) (2 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (2 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [subject nats manager](subject_nats_manager.md) (2 shared connections)
+- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/npc.py`
-- `server/services/npc_combat_integration_service.py`
-- `server/services/npc_combat_integration_validation_mixin.py`
-- `server/services/npc_combat_uuid_mapping.py`
-- `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- `server/game/magic/magic_service_completion.py`
+- `server/game/magic/spell_costs.py`
+- `server/tests/unit/game/magic/test_spell_costs.py`
 
 ## Audit Trail
 
-- EXTRACTED: 288 (96%)
-- INFERRED: 13 (4%)
+- EXTRACTED: 160 (91%)
+- INFERRED: 16 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,13 +1,12 @@
 # player guid formatter
 
-> 59 nodes
+> 57 nodes
 
 ## Key Concepts
 
 - **PlayerGuidFormatter** (34 connections) — `server/structured_logging/player_guid_formatter.py`
 - **test_player_guid_formatter.py** (24 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 - **_player_service_mock()** (11 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **player_guid_formatter.py** (4 connections) — `server/structured_logging/player_guid_formatter.py`
 - **.format()** (4 connections) — `server/structured_logging/player_guid_formatter.py`
 - **test_format_with_guid_player_found()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 - **test_format_multiple_guids()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
@@ -29,13 +28,14 @@
 - **test_uuid_pattern_matching()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 - **test_uuid_pattern_not_matching_partial()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 - **test_uuid_pattern_case_insensitive()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- *... and 34 more nodes in this community*
+- **.__init__()** (2 connections) — `server/structured_logging/player_guid_formatter.py`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [logging structured utilities](logging_structured_utilities.md) (5 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
-- [logging handlers structured](logging_handlers_structured.md) (1 shared connections)
+- [logging handlers structured](logging_handlers_structured.md) (4 shared connections)
+- [logging structured utilities](logging_structured_utilities.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 178 (97%)
+- EXTRACTED: 173 (97%)
 - INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,25 +1,25 @@
 # service services rescue
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.get_system_stats()** (3 connections) — `server/services/rate_limiter.py`
-- **Any** (2 connections)
-- **Get system-wide rate limiting statistics.          Returns:             Dictiona** (1 connections) — `server/services/rate_limiter.py`
+- **test_subscribe_with_service_id()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.subscribe() with service_id for tracking.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [event events serialization](event_events_serialization.md) (2 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/rate_limiter.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

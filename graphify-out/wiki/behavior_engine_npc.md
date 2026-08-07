@@ -1,53 +1,59 @@
 # behavior engine npc
 
-> 139 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **BehaviorEngine** (73 connections) — `server/npc/behavior_engine.py`
 - **test_behavior_engine.py** (54 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Any** (12 connections)
-- **behavior_engine.py** (7 connections) — `server/npc/behavior_engine.py`
-- **._try_evaluators()** (7 connections) — `server/npc/behavior_engine.py`
-- **.evaluate_condition()** (6 connections) — `server/npc/behavior_engine.py`
-- **.get_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
-- **.execute_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_equality()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_inequality()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_numeric_comparison()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_boolean_condition()** (4 connections) — `server/npc/behavior_engine.py`
-- **.execute_action()** (4 connections) — `server/npc/behavior_engine.py`
-- **.add_rule()** (3 connections) — `server/npc/behavior_engine.py`
-- **.get_rules()** (3 connections) — `server/npc/behavior_engine.py`
-- **.register_action_handler()** (3 connections) — `server/npc/behavior_engine.py`
-- **.get_behavior_engine()** (3 connections) — `server/npc/npc_base.py`
-- **test_behavior_engine_init()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_add_rule_success()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_add_rule_missing_fields()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_add_rule_replaces_existing()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_add_rule_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_remove_rule_success()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_remove_rule_not_found()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 - **test_remove_rule_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- *... and 114 more nodes in this community*
+- **test_evaluate_equality_boolean_true()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_equality_boolean_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_numeric_comparison_greater_than()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_numeric_comparison_less_than()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_numeric_comparison_invalid()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_condition_greater_equal()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_execute_applicable_rules_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_execute_action_no_handler()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_execute_action_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_boolean_condition_true()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_boolean_condition_variable()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_condition_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Unit tests for behavior engine.  Tests the BehaviorEngine class.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test remove_rule() handles exceptions gracefully.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_equality() handles boolean true.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_equality() handles boolean false.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_numeric_comparison() handles > operator.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_numeric_comparison() handles < operator.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_numeric_comparison() returns None for invalid format.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test evaluate_condition() handles >= operator.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test execute_applicable_rules() handles exceptions.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test execute_action() returns False when no handler.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test execute_action() handles exceptions.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (4 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
-- [rate limiter realtime](rate_limiter_realtime.md) (1 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (21 shared connections)
+- [realtime player event](realtime_player_event.md) (4 shared connections)
+- [schemas calendar schedule](schemas_calendar_schedule.md) (2 shared connections)
+- [command factories create](command_factories_create.md) (2 shared connections)
+- [game room service](game_room_service.md) (2 shared connections)
+- [schemas intersection schema](schemas_intersection_schema.md) (2 shared connections)
+- [schemas unified room](schemas_unified_room.md) (2 shared connections)
+- [player realtime event](player_realtime_event.md) (2 shared connections)
+- [realtime npc event](realtime_npc_event.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [events event bus](events_event_bus.md) (1 shared connections)
+- [player services death](player_services_death.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/behavior_engine.py`
-- `server/npc/npc_base.py`
 - `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 426 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 107 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

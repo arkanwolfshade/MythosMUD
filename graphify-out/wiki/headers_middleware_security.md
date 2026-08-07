@@ -4,24 +4,23 @@
 
 ## Key Concepts
 
-- **TestResetNPCDatabase** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_reset_npc_database_resets_state()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Test reset_npc_database() function.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Test reset_npc_database() resets all global state.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.patrol_territory()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._handle_patrol_territory()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **Patrol the NPC's territory.** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **Handle patrolling territory action.** (1 connections) — `server/npc/aggressive_mob_npc.py`
 
 ## Relationships
 
-- [player effects endpoints](player_effects_endpoints.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [error logging rationale](error_logging_rationale.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_npc_database.py`
+- `server/npc/aggressive_mob_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (89%)
-- INFERRED: 1 (11%)
+- EXTRACTED: 8 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,23 +1,24 @@
 # subzone realtime nats
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **mock_event_bus()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Create a mock event bus.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **.to_legacy_dict()** (3 connections) — `server/config/models/security_logging.py`
+- **Any** (1 connections)
+- **Convert to legacy logging config dict format for backward compatibility.** (1 connections) — `server/config/models/security_logging.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [websocket validation realtime](websocket_validation_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/config/models/security_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

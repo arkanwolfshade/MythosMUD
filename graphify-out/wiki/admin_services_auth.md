@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_regen_multiplier_standing()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test _get_regen_multiplier() returns 1.0 for standing position.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_service_shutdown_removes_subscribers()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test that service shutdown removes all subscribers for that service.      This t** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [config rationale reset](config_rationale_reset.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 

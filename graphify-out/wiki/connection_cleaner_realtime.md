@@ -33,12 +33,14 @@
 
 ## Relationships
 
-- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (17 shared connections)
-- [Loot Generation](Loot_Generation.md) (4 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
-- [npc spawn validator](npc_spawn_validator.md) (2 shared connections)
-- [combat npc mixin](combat_npc_mixin.md) (2 shared connections)
-- [models profession rationale](models_profession_rationale.md) (1 shared connections)
+- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (18 shared connections)
+- [command inventory models](command_inventory_models.md) (4 shared connections)
+- [tick service services](tick_service_services.md) (2 shared connections)
+- [combat models rationale](combat_models_rationale.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
+- [conftest eslint config](conftest_eslint_config.md) (1 shared connections)
+- [schedule service services](schedule_service_services.md) (1 shared connections)
+- [player realtime event](player_realtime_event.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,53 +1,64 @@
 # player cache rationale
 
-> 32 nodes
+> 127 nodes
 
 ## Key Concepts
 
-- **test_inventory_service.py** (20 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **InventoryValidationError** (13 connections) — `server/services/inventory_service.py`
-- **inventory_service()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_add_stack_capacity_error()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_add_stack_validation_error_missing_field()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_add_stack_validation_error_invalid_quantity()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_split_stack_invalid_index()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_split_stack_invalid_quantity_zero()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_split_stack_invalid_quantity_negative()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_split_stack_quantity_too_large()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_split_stack_capacity_error()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_add_stack_new_item()** (2 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_add_stack_merges_existing()** (2 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_split_stack_success()** (2 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_begin_mutation_success()** (2 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_begin_mutation_with_string_id()** (2 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **Raised when item payloads are malformed or incomplete.** (1 connections) — `server/services/inventory_service.py`
-- **Unit tests for inventory service.  Tests the InventoryService class for inventor** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **Create an InventoryService instance.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **Test add_stack adds new item to inventory.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **Test add_stack merges with existing stack.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **Test add_stack raises InventoryCapacityError when at capacity.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **Test add_stack raises InventoryValidationError for missing fields.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **Test add_stack raises InventoryValidationError for invalid quantity.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **Test split_stack successfully splits a stack.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
-- *... and 7 more nodes in this community*
+- **test_inventory_equip_command.py** (36 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
+- **equipment_helpers.py** (29 connections) — `server/commands/equipment_helpers.py`
+- **test_equipment_helpers.py** (25 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
+- **inventory_item_matching.py** (22 connections) — `server/commands/inventory_item_matching.py`
+- **match_room_drop_by_name()** (19 connections) — `server/commands/inventory_item_matching.py`
+- **normalize_slot_name()** (19 connections) — `server/commands/inventory_item_matching.py`
+- **match_equipped_item_by_name()** (18 connections) — `server/commands/inventory_item_matching.py`
+- **handle_equip_command()** (16 connections) — `server/commands/inventory_equip_command.py`
+- **match_inventory_item_by_name()** (16 connections) — `server/commands/inventory_item_matching.py`
+- **resolve_unequip_slot()** (14 connections) — `server/commands/equipment_helpers.py`
+- **resolve_equip_item_index()** (13 connections) — `server/commands/equipment_helpers.py`
+- **_equip_build_work()** (13 connections) — `server/commands/inventory_equip_command.py`
+- **test_inventory_commands_helpers.py** (13 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **_sample_work()** (13 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
+- **_equip_run_mutation()** (12 connections) — `server/commands/inventory_equip_command.py`
+- **normalize_inventory_slots()** (10 connections) — `server/commands/equipment_helpers.py`
+- **normalize_equipped_items()** (10 connections) — `server/commands/equipment_helpers.py`
+- **handle_wearable_container_on_equip()** (10 connections) — `server/commands/equipment_helpers.py`
+- **find_equipped_item_after_equip()** (9 connections) — `server/commands/equipment_helpers.py`
+- **_equip_target_slot_or_error()** (9 connections) — `server/commands/inventory_equip_command.py`
+- **_equip_success_payload()** (9 connections) — `server/commands/inventory_equip_command.py`
+- **_equip_persist_or_rollback()** (8 connections) — `server/commands/inventory_equip_command.py`
+- **_player()** (8 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
+- **handle_wearable_container_on_unequip()** (7 connections) — `server/commands/equipment_helpers.py`
+- **CommandResponse** (7 connections)
+- *... and 102 more nodes in this community*
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (14 shared connections)
-- [payload realtime optimizer](payload_realtime_optimizer.md) (2 shared connections)
-- [container helpers endpoints](container_helpers_endpoints.md) (2 shared connections)
-- [commands inventory command](commands_inventory_command.md) (1 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
+- [task registry app](task_registry_app.md) (48 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (26 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (12 shared connections)
+- [game weapon player](game_weapon_player.md) (7 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (6 shared connections)
+- [stats game generator](stats_game_generator.md) (4 shared connections)
+- [database helpers infrastructure](database_helpers_infrastructure.md) (4 shared connections)
+- [player room realtime](player_room_realtime.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [models profession rationale](models_profession_rationale.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/inventory_service.py`
-- `server/tests/unit/services/test_inventory_service.py`
+- `server/commands/equipment_helpers.py`
+- `server/commands/inventory_equip_command.py`
+- `server/commands/inventory_item_matching.py`
+- `server/tests/unit/commands/test_equipment_helpers.py`
+- `server/tests/unit/commands/test_inventory_commands.py`
+- `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- `server/tests/unit/commands/test_inventory_equip_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 73 (85%)
-- INFERRED: 13 (15%)
+- EXTRACTED: 596 (99%)
+- INFERRED: 9 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

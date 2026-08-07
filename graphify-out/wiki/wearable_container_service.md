@@ -1,53 +1,57 @@
 # wearable container service
 
-> 137 nodes
+> 56 nodes
 
 ## Key Concepts
 
-- **test_wearable_container_service.py** (62 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **WearableContainerService** (23 connections) — `server/services/wearable_container_service.py`
-- **WearableContainerServiceError** (22 connections) — `server/services/wearable_container_service.py`
-- **_get_enum_value()** (9 connections) — `server/services/wearable_container_service.py`
-- **_filter_container_data()** (9 connections) — `server/services/wearable_container_service.py`
-- **Any** (8 connections)
-- **.add_items_to_wearable_container()** (8 connections) — `server/services/wearable_container_service.py`
-- **.update_wearable_container_items()** (8 connections) — `server/services/wearable_container_service.py`
-- **UUID** (7 connections)
-- **.handle_equip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
-- **.handle_unequip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
-- **.handle_container_overflow()** (6 connections) — `server/services/wearable_container_service.py`
-- **.get_wearable_containers_for_player()** (5 connections) — `server/services/wearable_container_service.py`
-- **.__init__()** (3 connections) — `server/services/wearable_container_service.py`
-- **wearable_service()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_wearable_container_service_init_no_persistence()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_equip_wearable_container_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_container_overflow_player_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_equip_wearable_container_creation_error()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_wrong_player()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_wrong_source_type()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_update_fails()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- *... and 112 more nodes in this community*
+- **test_lifecycle_manager.py** (27 connections) — `server/tests/unit/npc/test_lifecycle_manager.py`
+- **test_lifecycle_despawn.py** (19 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- **despawn_npc_impl()** (18 connections) — `server/npc/lifecycle_despawn.py`
+- **_make_manager()** (18 connections) — `server/tests/unit/npc/test_lifecycle_manager.py`
+- **NPCLifecycleState** (17 connections) — `server/npc/lifecycle_types.py`
+- **lifecycle_despawn.py** (16 connections) — `server/npc/lifecycle_despawn.py`
+- **lifecycle_types.py** (16 connections) — `server/npc/lifecycle_types.py`
+- **NPCLifecycleEvent** (12 connections) — `server/npc/lifecycle_types.py`
+- **_make_manager()** (10 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- **_resolve_despawn_room_id()** (6 connections) — `server/npc/lifecycle_despawn.py`
+- **_remove_npc_from_room_on_despawn()** (5 connections) — `server/npc/lifecycle_despawn.py`
+- **.add_event()** (5 connections) — `server/npc/lifecycle_types.py`
+- **.change_state()** (4 connections) — `server/npc/lifecycle_types.py`
+- **test_despawn_publishes_event_when_room_missing()** (4 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- **Any** (3 connections)
+- **.despawn_npc()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **.get_statistics()** (3 connections) — `server/npc/lifecycle_types.py`
+- **test_despawn_success_with_persistence_and_room()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- **test_despawn_publishes_event_without_persistence()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- **test_despawn_record_only_when_not_active()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- **test_despawn_exception_sets_error_state()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- **test_despawn_without_population_controller()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- **test_despawn_skips_left_event_when_room_unknown()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- **test_despawn_prefers_current_room_over_room_id()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- **test_despawn_uses_lifecycle_spawn_room_when_attrs_missing()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (9 shared connections)
-- [container helpers endpoints](container_helpers_endpoints.md) (8 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
-- [look command commands](look_command_commands.md) (2 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (24 shared connections)
+- [Error Conversion](Error_Conversion.md) (17 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (6 shared connections)
+- [combat services rationale](combat_services_rationale.md) (5 shared connections)
+- [npc lifecycle config](npc_lifecycle_config.md) (4 shared connections)
+- [room look commands](room_look_commands.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/wearable_container_service.py`
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/npc/lifecycle_despawn.py`
+- `server/npc/lifecycle_manager.py`
+- `server/npc/lifecycle_types.py`
+- `server/tests/unit/npc/test_lifecycle_despawn.py`
+- `server/tests/unit/npc/test_lifecycle_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 340 (90%)
-- INFERRED: 38 (10%)
+- EXTRACTED: 253 (97%)
+- INFERRED: 9 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

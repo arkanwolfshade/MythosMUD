@@ -1,24 +1,48 @@
 # profession models rationale
 
-> 2 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **test_unsubscribe_from_subject_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _unsubscribe_from_subject() handles errors.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Commands** (12 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **gh-stack** (11 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Workflows** (9 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **gh-stack (MythosMUD)** (7 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **Thinking about stack structure** (6 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **SKILL.md** (2 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **SKILL.md** (2 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **When to use this skill** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Prerequisites** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Agent rules** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Dependency chain** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Branch naming** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Staging changes deliberately** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **When to create a new branch** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **One stack, one story** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Quick reference** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **End-to-end: create a stack from scratch** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Making mid-stack changes** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Modify a mid-stack branch and sync** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Routine sync after merges** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Squash-merge recovery** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Handle rebase conflicts (agent workflow)** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Parsing `--json` output** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Restructure a stack (remove a branch, reorder, or rename)** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Initialize a stack — `gh stack init`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [commands communication say](commands_communication_say.md) (1 shared connections)
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `.agents/skills/gh-stack/SKILL.md`
+- `.cursor/skills/gh-stack/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 86 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,45 +1,35 @@
 # magic healing game
 
-> 18 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **reset_database()** (16 connections) — `server/database.py`
-- **test_reset_database_resets_singleton()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_reset_database()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_reset_database_resets_singleton()** (4 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **reset_db_state()** (3 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_reset_database_resets_module_url()** (3 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **reset_db_state()** (3 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **reset_db()** (3 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **test_reset_database_resets_module_url()** (3 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **Reset the database connection state (for testing).      This resets the Database** (1 connections) — `server/database.py`
-- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **Test reset_database resets singleton.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **Test reset_database resets module-level _database_url.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Test reset_database resets both singleton and module-level URL.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **Test reset_database resets module-level _database_url.** (1 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **Test reset_database resets DatabaseManager singleton.** (1 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **_utc_now()** (8 connections) — `server/models/lucidity.py`
+- **test_lucidity_utils.py** (7 connections) — `server/tests/unit/models/test_lucidity_utils.py`
+- **test_utc_now_returns_datetime()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
+- **test_utc_now_returns_naive_datetime()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
+- **test_utc_now_returns_utc_time()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
+- **test_utc_now_returns_different_times()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
+- **datetime** (2 connections)
+- **Return naive UTC timestamps for PostgreSQL TIMESTAMP WITHOUT TIME ZONE compatibi** (1 connections) — `server/models/lucidity.py`
+- **Unit tests for lucidity model utility functions.  Tests the _utc_now utility fun** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
+- **Test _utc_now returns a datetime object.** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
+- **Test _utc_now returns naive datetime (tzinfo=None).** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
+- **Test _utc_now returns time close to current UTC time.** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
+- **Test _utc_now returns different times on subsequent calls.** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
 
 ## Relationships
 
-- [Database Access Layer](Database_Access_Layer.md) (14 shared connections)
-- [command player state](command_player_state.md) (3 shared connections)
-- [game models enums](game_models_enums.md) (2 shared connections)
-- [aggro threat services](aggro_threat_services.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (3 shared connections)
 
 ## Source Files
 
-- `server/database.py`
-- `server/tests/unit/infrastructure/test_database_error_handling.py`
-- `server/tests/unit/infrastructure/test_database_extended.py`
-- `server/tests/unit/infrastructure/test_database_init.py`
+- `server/models/lucidity.py`
+- `server/tests/unit/models/test_lucidity_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 54 (100%)
+- EXTRACTED: 35 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

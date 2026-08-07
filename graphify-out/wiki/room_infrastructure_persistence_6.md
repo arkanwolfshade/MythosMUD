@@ -4,21 +4,22 @@
 
 ## Key Concepts
 
-- **test_unsubscribe_from_subject_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _unsubscribe_from_subject() successfully unsubscribes.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **sample_preferences()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Create sample player preferences.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [event events serialization](event_events_serialization.md) (1 shared connections)
+- [player preferences service](player_preferences_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

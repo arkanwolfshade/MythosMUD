@@ -1,24 +1,38 @@
 # skill game service
 
-> 2 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **test_message_filtering_helper_init()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **Test MessageFilteringHelper initialization.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **NATSRequestError** (11 connections) — `server/services/nats_exceptions.py`
+- **.request()** (4 connections) — `server/services/nats_service.py`
+- **test_request_not_connected()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_request_timeout()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_request_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **Raised when request/response operations fail.** (1 connections) — `server/services/nats_exceptions.py`
+- **Send a request to a NATS subject and wait for a response.          Args:** (1 connections) — `server/services/nats_service.py`
+- **Test request() raises NATSRequestError when not connected.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
+- **Test request() raises NATSRequestError on timeout.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
+- **Test request() raises NATSRequestError on errors.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
 
 ## Relationships
 
-- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
+- [combat commands handler](combat_commands_handler.md) (4 shared connections)
+- [combat validator validators](combat_validator_validators.md) (3 shared connections)
+- [game chat service](game_chat_service.md) (2 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (1 shared connections)
+- [player event state](player_event_state.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_message_filtering.py`
+- `server/services/nats_exceptions.py`
+- `server/services/nats_service.py`
+- `server/tests/unit/services/test_nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 22 (76%)
+- INFERRED: 7 (24%)
 - AMBIGUOUS: 0 (0%)
 
 ---

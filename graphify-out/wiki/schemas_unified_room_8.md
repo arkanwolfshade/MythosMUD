@@ -27,7 +27,7 @@
 ## Relationships
 
 - [schemas unified room](schemas_unified_room.md) (2 shared connections)
-- [liability types call](liability_types_call.md) (1 shared connections)
+- [archive QUALITY AUDIT](archive_QUALITY_AUDIT.md) (1 shared connections)
 
 ## Source Files
 

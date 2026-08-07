@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_add_player_to_room_success()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test add_player_to_room() successfully adds player.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_add_valid_name_to_lists_none_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test add_valid_name_to_lists() skips None name.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

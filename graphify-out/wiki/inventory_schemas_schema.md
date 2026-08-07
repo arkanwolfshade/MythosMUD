@@ -1,50 +1,51 @@
 # inventory schemas schema
 
-> 86 nodes
+> 78 nodes
 
 ## Key Concepts
 
-- **test_admin_auth_service.py** (54 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **mock_user()** (3 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **superuser()** (3 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_admin_role_enum()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_admin_action_enum()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_admin_auth_service_init()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_get_user_role_superuser()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_get_user_role_viewer()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_get_user_role_none()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_get_user_role_with_is_admin_attribute()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_get_user_role_with_dict_is_admin()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_get_username_from_user_object()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_get_username_from_dict()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_get_username_none()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_get_username_missing_attribute()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_get_username_dict_without_username()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_get_user_id_from_user_object()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_get_user_id_from_dict()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_get_user_id_none()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_validate_permission_superuser_all_actions()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_validate_permission_viewer_limited()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_validate_permission_none_user()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_validate_permission_rate_limit_exceeded()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_has_permission_superuser()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_has_permission_admin()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- *... and 61 more nodes in this community*
+- **DeadLetterQueue** (37 connections) — `server/realtime/dead_letter_queue.py`
+- **test_dead_letter_queue.py** (28 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **Any** (7 connections)
+- **.from_dict()** (6 connections) — `server/realtime/dead_letter_queue.py`
+- **.to_dict()** (5 connections) — `server/realtime/dead_letter_queue.py`
+- **.enqueue_async()** (5 connections) — `server/realtime/dead_letter_queue.py`
+- **Path** (5 connections)
+- **.enqueue()** (5 connections) — `server/realtime/dead_letter_queue.py`
+- **.__init__()** (4 connections) — `server/realtime/dead_letter_queue.py`
+- **.replay_message()** (4 connections) — `server/realtime/dead_letter_queue.py`
+- **test_enqueue_creates_file()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_enqueue_writes_correct_data()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_dequeue_returns_oldest_message()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_dequeue_removes_file()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_get_statistics_with_messages()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_list_messages_returns_all()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_list_messages_respects_limit()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_list_messages_handles_read_error()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_replay_message()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_delete_message()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_cleanup_old_messages()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_cleanup_old_messages_no_old_messages()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **.dequeue_async()** (3 connections) — `server/realtime/dead_letter_queue.py`
+- **.dequeue()** (3 connections) — `server/realtime/dead_letter_queue.py`
+- **.get_statistics()** (3 connections) — `server/realtime/dead_letter_queue.py`
+- *... and 53 more nodes in this community*
 
 ## Relationships
 
-- [commands inventory helpers](commands_inventory_helpers.md) (6 shared connections)
-- [player requests schemas](player_requests_schemas.md) (4 shared connections)
-- [player preferences services](player_preferences_services.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (24 shared connections)
+- [command parser helpers](command_parser_helpers.md) (2 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_admin_auth_service.py`
+- `server/realtime/dead_letter_queue.py`
+- `server/tests/unit/realtime/test_dead_letter_queue.py`
 
 ## Audit Trail
 
-- EXTRACTED: 183 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 243 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

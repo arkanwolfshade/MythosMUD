@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_send_messages_to_players_invalid_player_id()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _send_messages_to_players handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_unmute_player_not_muted()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test unmute_player() when player is not muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [message chat nats](message_chat_nats.md) (1 shared connections)
+- [user manager services](user_manager_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 

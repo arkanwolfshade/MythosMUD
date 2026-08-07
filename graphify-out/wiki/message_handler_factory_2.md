@@ -1,56 +1,48 @@
 # message handler factory
 
-> 54 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **test_player_event_handlers_state.py** (33 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **PlayerStateEventHandler** (14 connections) — `server/realtime/player_event_handlers_state.py`
-- **.__init__()** (5 connections) — `server/realtime/player_event_handlers_state.py`
-- **mock_utils()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **player_state_event_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_xp_awarded_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_xp_awarded_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_xp_awarded_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_xp_awarded_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_xp_awarded_player_no_current_room_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_player_no_get_stats()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **mock_logger()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_player_state_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_died_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_died_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_died_no_death_location()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_died_invalid_player_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_died_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_decay_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_decay_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- *... and 29 more nodes in this community*
+- **subscribe_to_room_events_impl()** (13 connections) — `server/realtime/connection_event_helpers.py`
+- **test_connection_event_helpers.py** (13 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_attribute_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_attribute_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_success()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_no_event_bus()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_success()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_no_event_bus()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Any** (2 connections)
+- **Subscribe to room movement events for occupant broadcasting.** (1 connections) — `server/realtime/connection_event_helpers.py`
+- **Unit tests for connection event helpers.  Tests the connection_event_helpers mod** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() successfully subscribes to events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() successfully unsubscribes from events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
 
 ## Relationships
 
-- [room look commands](room_look_commands.md) (7 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (7 shared connections)
-- [item models rationale](item_models_rationale.md) (6 shared connections)
-- [player_event_handler_utils](player_event_handler_utils.md) (5 shared connections)
+- [Error Conversion](Error_Conversion.md) (8 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (4 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 - [Room Broadcast](Room_Broadcast.md) (2 shared connections)
-- [schedule services service](schedule_services_service.md) (2 shared connections)
-- [event bus events](event_bus_events.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [command models moderation](command_models_moderation.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_event_handlers_state.py`
-- `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- `server/realtime/connection_event_helpers.py`
+- `server/tests/unit/realtime/test_connection_event_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 136 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 61 (92%)
+- INFERRED: 5 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

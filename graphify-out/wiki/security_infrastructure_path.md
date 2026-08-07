@@ -33,7 +33,7 @@
 
 - [security infrastructure secure](security_infrastructure_secure.md) (12 shared connections)
 - [player repository persistence](player_repository_persistence.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 

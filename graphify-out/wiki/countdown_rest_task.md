@@ -1,42 +1,36 @@
 # countdown rest task
 
-> 15 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **get_npc_population_stats()** (13 connections) — `server/api/admin/npc_population_api.py`
-- **test_npc_population_api.py** (13 connections) — `server/tests/unit/api/admin/test_npc_population_api.py`
-- **get_npc_zone_stats()** (11 connections) — `server/api/admin/npc_population_api.py`
-- **get_npc_system_status()** (11 connections) — `server/api/admin/npc_population_api.py`
-- **Request** (3 connections)
-- **test_get_npc_population_stats_generic_error()** (3 connections) — `server/tests/unit/api/admin/test_npc_population_api.py`
-- **test_get_npc_population_stats_success()** (2 connections) — `server/tests/unit/api/admin/test_npc_population_api.py`
-- **test_get_npc_population_stats_http_exception_reraises()** (2 connections) — `server/tests/unit/api/admin/test_npc_population_api.py`
-- **test_get_npc_zone_stats_success()** (2 connections) — `server/tests/unit/api/admin/test_npc_population_api.py`
-- **test_get_npc_system_status_success()** (2 connections) — `server/tests/unit/api/admin/test_npc_population_api.py`
-- **Get NPC population statistics.** (1 connections) — `server/api/admin/npc_population_api.py`
-- **Get NPC zone statistics.** (1 connections) — `server/api/admin/npc_population_api.py`
-- **Get NPC system status.** (1 connections) — `server/api/admin/npc_population_api.py`
-- **admin_user()** (1 connections) — `server/tests/unit/api/admin/test_npc_population_api.py`
-- **Unit tests for admin NPC population API endpoints.** (1 connections) — `server/tests/unit/api/admin/test_npc_population_api.py`
+- **SessionManager** (12 connections) — `client/src/utils/security.ts`
+- **sessionManager.test.ts** (3 connections) — `client/src/utils/__tests__/sessionManager.test.ts`
+- **.cleanupExpiredSessions()** (3 connections) — `client/src/utils/security.ts`
+- **.startCleanupInterval()** (3 connections) — `client/src/utils/security.ts`
+- **.constructor()** (2 connections) — `client/src/utils/security.ts`
+- **.createSession()** (2 connections) — `client/src/utils/security.ts`
+- **.expireSession()** (2 connections) — `client/src/utils/security.ts`
+- **.generateSessionId()** (2 connections) — `client/src/utils/security.ts`
+- **SessionManagerTestHooks** (1 connections) — `client/src/utils/__tests__/sessionManager.test.ts`
+- **.isSessionValid()** (1 connections) — `client/src/utils/security.ts`
+- **.refreshSession()** (1 connections) — `client/src/utils/security.ts`
+- **.removeSession()** (1 connections) — `client/src/utils/security.ts`
+- **.destroy()** (1 connections) — `client/src/utils/security.ts`
 
 ## Relationships
 
-- [player preferences services](player_preferences_services.md) (10 shared connections)
-- [logging setup structured](logging_setup_structured.md) (6 shared connections)
-- [Exception Containers](Exception_Containers.md) (5 shared connections)
-- [player requests schemas](player_requests_schemas.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [auth invites rationale](auth_invites_rationale.md) (2 shared connections)
 
 ## Source Files
 
-- `server/api/admin/npc_population_api.py`
-- `server/tests/unit/api/admin/test_npc_population_api.py`
+- `client/src/utils/__tests__/sessionManager.test.ts`
+- `client/src/utils/security.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 34 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

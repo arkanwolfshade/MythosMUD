@@ -1,59 +1,47 @@
 # services admin auth
 
-> 42 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **container_helpers_inventory.py** (31 connections) — `server/commands/container_helpers_inventory.py`
-- **container_helpers_inventory_ops.py** (29 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **UUID** (12 connections)
-- **validate_put_command_inputs()** (12 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **parse_container_items()** (11 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **extract_items_from_container()** (10 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **parse_json_string_items()** (9 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **resolve_container_id()** (9 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **Player** (8 connections)
-- **filter_valid_items()** (8 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **find_item_in_container()** (8 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **validate_get_command_inputs()** (8 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **_app_state_container_service()** (4 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **_ensure_item_instance_for_put()** (3 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **_strip_cmd_field()** (3 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **_extract_items_json_branch()** (3 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **_extract_items_dict_branch()** (3 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **_inventory_rows_from_transfer_result()** (3 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **test_extract_items_from_container_dict()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_extract_items_from_container_items_json_attr()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_parse_json_string_items_valid()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_parse_json_string_items_invalid_returns_none()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_filter_valid_items_drops_non_dict()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_parse_container_items_full_pipeline()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_resolve_container_id_explicit()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- *... and 17 more nodes in this community*
+- **test_logging_file_setup.py** (14 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **test_queue_listener_has_aggregator_handlers()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **test_warning_and_error_reach_aggregator_files()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **get_queue_listener()** (6 connections) — `server/structured_logging/logging_file_setup.py`
+- **stop_queue_listener()** (6 connections) — `server/structured_logging/logging_file_setup.py`
+- **_root_handlers_snapshot()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **_restore_root_handlers()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **test_aggregator_handlers_on_root_when_async()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **test_log_directory_under_env()** (5 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **QueueListener** (2 connections)
+- **temp_log_base()** (2 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **default_log_config()** (2 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **Return the global QueueListener if running (for tests and shutdown).      Return** (1 connections) — `server/structured_logging/logging_file_setup.py`
+- **Stop the global QueueListener and reset state (for tests and shutdown).      All** (1 connections) — `server/structured_logging/logging_file_setup.py`
+- **Unit tests for logging file setup.  Verifies aggregator handlers attached to roo** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **Temporary directory used as log_base for setup.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **Default log config with rotation.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **Return a copy of root logger handlers (for restore).** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **Replace root logger handlers with the given list.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **H1: With async enabled, root logger has a QueueHandler for the aggregator path (** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **H3: QueueListener is started and includes aggregator handlers.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **H2/H5: WARNING and ERROR logged from root appear in warnings.log and errors.log.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **H4 (setup): Log files are created under env_log_dir (e.g. .../test/).** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
 
 ## Relationships
 
-- [container inventory helpers](container_inventory_helpers.md) (36 shared connections)
-- [container find inventory](container_find_inventory.md) (8 shared connections)
-- [logout command commands](logout_command_commands.md) (7 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (5 shared connections)
-- [container inventory display](container_inventory_display.md) (4 shared connections)
-- [commands inventory command](commands_inventory_command.md) (3 shared connections)
-- [combat models rationale](combat_models_rationale.md) (2 shared connections)
-- [commands inventory pickup](commands_inventory_pickup.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
+- [logging handlers structured](logging_handlers_structured.md) (9 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/container_helpers_inventory.py`
-- `server/commands/container_helpers_inventory_ops.py`
-- `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
+- `server/structured_logging/logging_file_setup.py`
+- `server/tests/unit/structured_logging/test_logging_file_setup.py`
 
 ## Audit Trail
 
-- EXTRACTED: 204 (97%)
-- INFERRED: 7 (3%)
+- EXTRACTED: 80 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

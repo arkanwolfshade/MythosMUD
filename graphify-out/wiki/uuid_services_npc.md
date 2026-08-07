@@ -1,45 +1,35 @@
 # uuid services npc
 
-> 16 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **NPCCacheService** (30 connections) — `server/caching/cache_service.py`
-- **TestNPCCacheService** (12 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **_NpcDef** (9 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **_SpawnRule** (8 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_invalidate_caches()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.npc_service()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_definitions_cache_hit()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_npc_definition_hit_and_miss()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_spawn_rules_cache_hit()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.invalidate_npc_definitions()** (2 connections) — `server/caching/cache_service.py`
-- **.invalidate_spawn_rules()** (2 connections) — `server/caching/cache_service.py`
-- **.test_get_definitions_cache_miss()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_spawn_rules_cache_miss()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **Service for caching NPC definitions and spawn rules.** (1 connections) — `server/caching/cache_service.py`
-- **Invalidate all NPC definition caches.** (1 connections) — `server/caching/cache_service.py`
-- **Invalidate all NPC spawn rule caches.** (1 connections) — `server/caching/cache_service.py`
+- **Any** (6 connections)
+- **.merge_room_data()** (4 connections) — `server/services/room_data_cache.py`
+- **._is_newer_data()** (4 connections) — `server/services/room_data_cache.py`
+- **.is_room_data_fresh()** (3 connections) — `server/services/room_data_cache.py`
+- **.get_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **.set_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **.get_cache_stats()** (3 connections) — `server/services/room_data_cache.py`
+- **Check if room data is fresh enough to use.          Args:             room_data:** (1 connections) — `server/services/room_data_cache.py`
+- **Get room data from cache.          Args:             room_id: Room ID to retriev** (1 connections) — `server/services/room_data_cache.py`
+- **Store room data in cache.          Args:             room_id: Room ID to store** (1 connections) — `server/services/room_data_cache.py`
+- **Get statistics about the room data cache.          Args:             is_room_dat** (1 connections) — `server/services/room_data_cache.py`
+- **Merge room data with proper conflict resolution.          Args:             old_** (1 connections) — `server/services/room_data_cache.py`
+- **Check if new data is newer than old data for a specific key.          Args:** (1 connections) — `server/services/room_data_cache.py`
 
 ## Relationships
 
-- [commands skills rationale](commands_skills_rationale.md) (7 shared connections)
-- [startup npc service](startup_npc_service.md) (6 shared connections)
-- [services lucidity repository](services_lucidity_repository.md) (5 shared connections)
-- [cache caching service](cache_caching_service.md) (4 shared connections)
-- [config rationale config()](config_rationale_config%28%29.md) (4 shared connections)
-- [ascii map renderer](ascii_map_renderer.md) (3 shared connections)
-- [caching lru cache](caching_lru_cache.md) (1 shared connections)
+- [room fixer services](room_fixer_services.md) (6 shared connections)
 
 ## Source Files
 
-- `server/caching/cache_service.py`
-- `server/tests/unit/caching/test_cache_service.py`
+- `server/services/room_data_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (73%)
-- INFERRED: 23 (27%)
+- EXTRACTED: 32 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

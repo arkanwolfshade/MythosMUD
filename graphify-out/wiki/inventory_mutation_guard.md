@@ -1,55 +1,77 @@
 # inventory mutation guard
 
-> 42 nodes
+> 359 nodes
 
 ## Key Concepts
 
-- **PlayerRoomEventHandler** (30 connections) — `server/realtime/player_event_handlers_room.py`
-- **UUID** (12 connections)
-- **Any** (10 connections)
-- **.handle_player_entered()** (9 connections) — `server/realtime/player_event_handlers_room.py`
-- **.__init__()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_occupants_snapshot_to_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_room_updates_to_entering_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **.handle_player_left()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **._prepare_room_data()** (6 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_room_update_to_player()** (6 connections) — `server/realtime/player_event_handlers_room.py`
-- **.log_player_movement()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **._send_room_name_message()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **._log_occupants_info()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.query_room_occupants_snapshot()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_room_state_to_player()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.get_room_state_event()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.broadcast_player_entered_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **.subscribe_player_to_room()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **.build_room_occupants_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **._process_player_entered_event()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **.unsubscribe_player_from_room()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **.broadcast_player_left_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **Handles room-related player events (entered, left, occupants).** (1 connections) — `server/realtime/player_event_handlers_room.py`
-- **Initialize room event handler.          Args:             connection_manager: Co** (1 connections) — `server/realtime/player_event_handlers_room.py`
-- **Log player movement for AI processing.          Args:             player_id: The** (1 connections) — `server/realtime/player_event_handlers_room.py`
-- *... and 17 more nodes in this community*
+- **event_types.py** (86 connections) — `server/events/event_types.py`
+- **BaseEvent** (75 connections) — `server/events/event_types.py`
+- **lifecycle_manager.py** (49 connections) — `server/npc/lifecycle_manager.py`
+- **RealTimeEventHandler** (44 connections) — `server/realtime/event_handler.py`
+- **test_event_handler.py** (41 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_room_sync_service.py** (40 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **PlayerDPUpdated** (39 connections) — `server/events/event_types.py`
+- **NPCDied** (35 connections) — `server/events/event_types.py`
+- **event_handler.py** (35 connections) — `server/realtime/event_handler.py`
+- **event_bus.py** (31 connections) — `server/events/event_bus.py`
+- **player_event_handlers.py** (26 connections) — `server/realtime/player_event_handlers.py`
+- **PlayerEventHandler** (26 connections) — `server/realtime/player_event_handlers.py`
+- **lifecycle_death.py** (24 connections) — `server/npc/lifecycle_death.py`
+- **player_event_handlers_state.py** (23 connections) — `server/realtime/player_event_handlers_state.py`
+- **DistributedEventBus** (22 connections) — `server/events/distributed_event_bus.py`
+- **PlayerRespawnedEvent** (20 connections) — `server/events/event_types.py`
+- **PlayerDiedEvent** (19 connections) — `server/events/event_types.py`
+- **NPCLifecycleRecord** (19 connections) — `server/npc/lifecycle_types.py`
+- **RoomSyncService** (19 connections) — `server/services/room_sync_service.py`
+- **NATSEventBusBridge** (18 connections) — `server/events/nats_event_bridge.py`
+- **RoomOccupantsRefreshRequested** (17 connections) — `server/events/event_types.py`
+- **_SpawnTrackedNPC** (17 connections) — `server/npc/lifecycle_manager.py`
+- **NPCSpoke** (16 connections) — `server/events/event_types.py`
+- **PlayerDPDecayEvent** (16 connections) — `server/events/event_types.py`
+- **_LifecycleManagerForDeath** (16 connections) — `server/npc/lifecycle_death.py`
+- *... and 334 more nodes in this community*
 
 ## Relationships
 
-- [event bus events](event_bus_events.md) (5 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
-- [realtime monitoring performance](realtime_monitoring_performance.md) (2 shared connections)
-- [schedule services service](schedule_services_service.md) (2 shared connections)
-- [player_event_handler_utils](player_event_handler_utils.md) (2 shared connections)
-- [Player Name Validation](Player_Name_Validation.md) (2 shared connections)
-- [realtime messaging message](realtime_messaging_message.md) (2 shared connections)
-- [room look commands](room_look_commands.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (110 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (37 shared connections)
+- [services nats service](services_nats_service.md) (32 shared connections)
+- [wearable container service](wearable_container_service.md) (24 shared connections)
+- [profession models rationale](profession_models_rationale.md) (23 shared connections)
+- [Database Config](Database_Config.md) (19 shared connections)
+- [scripts worktree ops](scripts_worktree_ops.md) (15 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (13 shared connections)
+- [player service game](player_service_game.md) (12 shared connections)
+- [command service commands](command_service_commands.md) (12 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (11 shared connections)
+- [player room realtime](player_room_realtime.md) (11 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_event_handlers_room.py`
+- `server/events/distributed_event_bus.py`
+- `server/events/event_bus.py`
+- `server/events/event_types.py`
+- `server/events/nats_event_bridge.py`
+- `server/npc/event_reaction_system.py`
+- `server/npc/lifecycle_death.py`
+- `server/npc/lifecycle_manager.py`
+- `server/npc/lifecycle_types.py`
+- `server/realtime/event_handler.py`
+- `server/realtime/player_event_handlers.py`
+- `server/realtime/player_event_handlers_state.py`
+- `server/services/combat_hp_sync.py`
+- `server/services/room_sync_service.py`
+- `server/tests/integration/test_party_flow.py`
+- `server/tests/unit/events/test_distributed_event_bus.py`
+- `server/tests/unit/events/test_nats_event_bridge.py`
+- `server/tests/unit/npc/test_lifecycle_death.py`
+- `server/tests/unit/realtime/test_event_handler.py`
+- `server/tests/unit/services/test_room_sync_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 170 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 1461 (90%)
+- INFERRED: 165 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,42 +1,50 @@
 # combat services service
 
-> 17 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **.mark_room_as_explored()** (7 connections) — `server/services/exploration_service.py`
-- **UUID** (7 connections)
-- **._get_room_uuid_by_stable_id()** (7 connections) — `server/services/exploration_service.py`
-- **.is_room_explored()** (6 connections) — `server/services/exploration_service.py`
-- **AsyncSession** (5 connections)
-- **._mark_explored_in_session()** (5 connections) — `server/services/exploration_service.py`
-- **.get_explored_rooms()** (5 connections) — `server/services/exploration_service.py`
-- **.__init__()** (4 connections) — `server/services/exploration_service.py`
-- **.mark_room_as_explored_sync()** (4 connections) — `server/services/exploration_service.py`
-- **Any** (2 connections)
-- **Initialize the exploration service.          Args:             database_manager:** (1 connections) — `server/services/exploration_service.py`
-- **Mark a room as explored by a player.          This method inserts a record into** (1 connections) — `server/services/exploration_service.py`
-- **Get room UUID by stable_id (hierarchical room ID).          Args:             st** (1 connections) — `server/services/exploration_service.py`
-- **Mark room as explored using the provided session.          Args:             ses** (1 connections) — `server/services/exploration_service.py`
-- **Get list of room IDs that a player has explored.          Args:             play** (1 connections) — `server/services/exploration_service.py`
-- **Check if a player has explored a specific room.          Args:             playe** (1 connections) — `server/services/exploration_service.py`
-- **Synchronous wrapper for mark_room_as_explored.          This method is designed** (1 connections) — `server/services/exploration_service.py`
+- **UserManagerProtocol** (21 connections) — `server/game/chat_moderation.py`
+- **.mute_channel()** (2 connections) — `server/game/chat_moderation.py`
+- **.unmute_channel()** (2 connections) — `server/game/chat_moderation.py`
+- **.is_channel_muted()** (2 connections) — `server/game/chat_moderation.py`
+- **.mute_player()** (2 connections) — `server/game/chat_moderation.py`
+- **.unmute_player()** (2 connections) — `server/game/chat_moderation.py`
+- **.is_player_muted()** (2 connections) — `server/game/chat_moderation.py`
+- **.is_globally_muted()** (2 connections) — `server/game/chat_moderation.py`
+- **.is_admin()** (2 connections) — `server/game/chat_moderation.py`
+- **.can_send_message()** (2 connections) — `server/game/chat_moderation.py`
+- **.mute_global()** (1 connections) — `server/game/chat_moderation.py`
+- **.unmute_global()** (1 connections) — `server/game/chat_moderation.py`
+- **.add_admin()** (1 connections) — `server/game/chat_moderation.py`
+- **.remove_admin()** (1 connections) — `server/game/chat_moderation.py`
+- **Protocol for user manager.** (1 connections) — `server/game/chat_moderation.py`
+- **Mute a channel for a player.** (1 connections) — `server/game/chat_moderation.py`
+- **Unmute a channel for a player.** (1 connections) — `server/game/chat_moderation.py`
+- **Check if channel is muted.** (1 connections) — `server/game/chat_moderation.py`
+- **Mute a player for another player.** (1 connections) — `server/game/chat_moderation.py`
+- **Unmute a player for another player.** (1 connections) — `server/game/chat_moderation.py`
+- **Check if player is muted.** (1 connections) — `server/game/chat_moderation.py`
+- **Check if player is globally muted.** (1 connections) — `server/game/chat_moderation.py`
+- **Check if player is admin.** (1 connections) — `server/game/chat_moderation.py`
+- **Check if player can send message.** (1 connections) — `server/game/chat_moderation.py`
 
 ## Relationships
 
-- [corpse lifecycle service](corpse_lifecycle_service.md) (7 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
-- [room game service](room_game_service.md) (1 shared connections)
+- [lucidity commands services](lucidity_commands_services.md) (2 shared connections)
+- [startup services npc](startup_services_npc.md) (2 shared connections)
+- [tsconfig app src/**/*](tsconfig_app_src-__-_.md) (1 shared connections)
+- [chat game message](chat_game_message.md) (1 shared connections)
+- [chat service game](chat_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/exploration_service.py`
+- `server/game/chat_moderation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 52 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

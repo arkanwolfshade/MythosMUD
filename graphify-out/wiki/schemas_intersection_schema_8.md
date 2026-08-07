@@ -1,38 +1,24 @@
 # schemas intersection schema
 
-> 17 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **properties** (7 connections) — `schemas/intersection_schema.json`
-- **exits** (5 connections) — `schemas/intersection_schema.json`
-- **north** (2 connections) — `schemas/intersection_schema.json`
-- **south** (2 connections) — `schemas/intersection_schema.json`
-- **east** (2 connections) — `schemas/intersection_schema.json`
-- **west** (2 connections) — `schemas/intersection_schema.json`
-- **up** (2 connections) — `schemas/intersection_schema.json`
-- **down** (2 connections) — `schemas/intersection_schema.json`
-- **type** (1 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **additionalProperties** (1 connections) — `schemas/intersection_schema.json`
+- **test_evaluate_equality_invalid_format()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_equality() returns None for invalid format.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [schemas intersection schema](schemas_intersection_schema.md) (1 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/intersection_schema.json`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

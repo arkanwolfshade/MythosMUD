@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [chat game message](chat_game_message.md) (10 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [alias command models](alias_command_models.md) (1 shared connections)
+- [chat game message](chat_game_message.md) (5 shared connections)
+- [quest chat game](quest_chat_game.md) (3 shared connections)
+- [alias command models](alias_command_models.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 

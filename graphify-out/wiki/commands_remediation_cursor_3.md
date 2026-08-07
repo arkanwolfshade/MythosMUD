@@ -21,7 +21,7 @@
 - [commands remediation cursor](commands_remediation_cursor.md) (2 shared connections)
 - [remediation commands cursor](remediation_commands_cursor.md) (1 shared connections)
 - [message queue realtime](message_queue_realtime.md) (1 shared connections)
-- [memory realtime monitor](memory_realtime_monitor.md) (1 shared connections)
+- [commands admin shutdown](commands_admin_shutdown.md) (1 shared connections)
 
 ## Source Files
 

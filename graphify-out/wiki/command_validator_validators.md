@@ -33,14 +33,10 @@
 
 ## Relationships
 
-- [Security Validator Tests](Security_Validator_Tests.md) (5 shared connections)
-- [command commands handler](command_commands_handler.md) (4 shared connections)
-- [logoutHandler logger App](logoutHandler_logger_App.md) (4 shared connections)
-- [fixtures mock helpers](fixtures_mock_helpers.md) (3 shared connections)
-- [command factories create](command_factories_create.md) (2 shared connections)
-- [commands recovery lucidity](commands_recovery_lucidity.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [combat attack handler](combat_attack_handler.md) (9 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (7 shared connections)
+- [command commands handler](command_commands_handler.md) (6 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 

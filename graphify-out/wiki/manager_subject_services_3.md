@@ -1,55 +1,49 @@
 # manager subject services
 
-> 50 nodes
+> 64 nodes
 
 ## Key Concepts
 
-- **test_message_handlers.py** (24 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **message_handlers.py** (14 connections) — `server/realtime/message_handlers.py`
-- **handle_follow_response_message()** (14 connections) — `server/realtime/message_handlers.py`
-- **handle_party_invite_response_message()** (13 connections) — `server/realtime/message_handlers.py`
-- **handle_command_message()** (11 connections) — `server/realtime/message_handlers.py`
-- **handle_chat_message()** (10 connections) — `server/realtime/message_handlers.py`
-- **handle_ping_message()** (10 connections) — `server/realtime/message_handlers.py`
-- **handle_client_error_report_message()** (8 connections) — `server/realtime/message_handlers.py`
-- **WebSocket** (6 connections)
-- **Any** (6 connections)
-- **test_handle_command_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_command_message_no_command()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_command_message_no_args()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_chat_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_chat_message_no_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_ping_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_ping_message_with_data()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_client_error_report_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_follow_response_invalid_request_id()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_follow_response_no_container()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_party_invite_response_invalid()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_party_invite_response_accept()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_party_invite_response_decline()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_follow_response_accept_success()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_follow_response_decline()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- *... and 25 more nodes in this community*
+- **test_manager.py** (48 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_build_subject_pattern_not_found()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_build_subject_missing_parameter()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_build_subject_invalid_parameter_value()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_register_pattern_duplicate_name()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_register_pattern_invalid_format()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_register_pattern_missing_placeholder()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_get_pattern_info_not_found()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_get_subscription_pattern_not_found()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_build_subject_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_build_subject_no_params()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_build_subject_multiple_params()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_validate_subject_valid()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_validate_subject_invalid()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_validate_subject_event_domain()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_validate_subject_empty()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_validate_subject_uses_cache()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_validate_subject_no_cache()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_register_pattern_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_register_pattern_clears_cache()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_get_pattern_info_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_get_all_patterns()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_get_subscription_pattern_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_get_chat_subscription_patterns()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_get_event_subscription_patterns()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (12 shared connections)
-- [room look commands](room_look_commands.md) (4 shared connections)
-- [nats services service](nats_services_service.md) (3 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (2 shared connections)
-- [command commands handler](command_commands_handler.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
+- [subject validation services](subject_validation_services.md) (14 shared connections)
+- [manager subject services](manager_subject_services.md) (10 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_handlers.py`
-- `server/tests/unit/realtime/test_message_handlers.py`
+- `server/tests/unit/services/nats_subject_manager/test_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 187 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 142 (95%)
+- INFERRED: 8 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

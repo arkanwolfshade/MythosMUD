@@ -1,54 +1,39 @@
 # realtime monitoring performance
 
-> 39 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **MessageBuilder** (26 connections) — `server/realtime/message_builders.py`
-- **test_message_builders.py** (15 connections) — `server/tests/unit/realtime/test_message_builders.py`
-- **._get_next_sequence()** (8 connections) — `server/realtime/message_builders.py`
-- **_builder()** (8 connections) — `server/tests/unit/realtime/test_message_builders.py`
-- **Any** (6 connections)
-- **.create_player_entered_message()** (5 connections) — `server/realtime/message_builders.py`
-- **.create_player_left_message()** (5 connections) — `server/realtime/message_builders.py`
-- **.build_occupants_update_message()** (4 connections) — `server/realtime/message_builders.py`
-- **.build_room_update_message()** (4 connections) — `server/realtime/message_builders.py`
-- **.build_room_state_message()** (4 connections) — `server/realtime/message_builders.py`
-- **test_create_player_entered_message()** (4 connections) — `server/tests/unit/realtime/test_message_builders.py`
-- **test_create_player_left_message()** (4 connections) — `server/tests/unit/realtime/test_message_builders.py`
-- **.__init__()** (3 connections) — `server/realtime/message_builders.py`
-- **test_get_next_sequence_uses_callable()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
-- **test_get_next_sequence_non_callable_returns_zero()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
-- **test_create_npc_movement_message_variants()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
-- **test_build_occupants_update_message()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
-- **test_build_room_update_message()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
-- **test_build_room_state_message()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
-- **.create_npc_movement_message()** (2 connections) — `server/realtime/message_builders.py`
-- **Utility class for building real-time event messages.** (1 connections) — `server/realtime/message_builders.py`
-- **Initialize the message builder.          Args:             sequence_counter: Cal** (1 connections) — `server/realtime/message_builders.py`
-- **Get the next sequence number.** (1 connections) — `server/realtime/message_builders.py`
-- **Get the next sequence number (public API).          Returns:             The nex** (1 connections) — `server/realtime/message_builders.py`
-- **Create a real-time message for player entering a room.          Args:** (1 connections) — `server/realtime/message_builders.py`
-- *... and 14 more nodes in this community*
+- **.load_player_mutes()** (12 connections) — `server/services/user_manager.py`
+- **._load_player_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
+- **._load_global_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
+- **._convert_mute_info_timestamps()** (5 connections) — `server/services/user_manager.py`
+- **._convert_mute_info_uuids()** (5 connections) — `server/services/user_manager.py`
+- **._load_channel_mutes_from_data()** (5 connections) — `server/services/user_manager.py`
+- **user_manager()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Convert timestamp strings in mute_info to datetime objects.** (1 connections) — `server/services/user_manager.py`
+- **Convert UUID strings in mute_info to UUID objects.** (1 connections) — `server/services/user_manager.py`
+- **Load player mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
+- **Load channel mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
+- **Load global mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
+- **Load mute data for a specific player from JSON file.          Args:** (1 connections) — `server/services/user_manager.py`
+- **Create a UserManager instance.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (11 shared connections)
-- [commands communication channels](commands_communication_channels.md) (2 shared connections)
-- [npc event handlers](npc_event_handlers.md) (2 shared connections)
-- [event bus events](event_bus_events.md) (2 shared connections)
-- [schedule services service](schedule_services_service.md) (2 shared connections)
-- [inventory mutation guard](inventory_mutation_guard.md) (2 shared connections)
+- [services user manager](services_user_manager.md) (17 shared connections)
+- [services rescue service](services_rescue_service.md) (1 shared connections)
+- [user manager services](user_manager_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_builders.py`
-- `server/tests/unit/realtime/test_message_builders.py`
+- `server/services/user_manager.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 131 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 49 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,61 +1,68 @@
 # rate limiter services
 
-> 37 nodes
+> 139 nodes
 
 ## Key Concepts
 
-- **projectorHandlersMessages.ts** (26 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
-- **projectorHandlersState.ts** (23 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
-- **projectorRoom.ts** (18 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **projectorMessageUtils.ts** (11 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- **roomMergeUtils.ts** (10 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **messageMapper.ts** (8 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- **messageMapper.test.ts** (7 connections) — `client/src/components/ui-v2/eventLog/__tests__/messageMapper.test.ts`
-- **mergeRoomState()** (7 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **deriveRoomFromRoomUpdate()** (6 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **deriveRoomFromRoomOccupants()** (5 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **buildChatMessage()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- **appendMessage()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- **appendMovementMessage()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- **roomMergeUtils.test.ts** (4 connections) — `client/src/components/ui-v2/utils/__tests__/roomMergeUtils.test.ts`
-- **formatNpcTookDamageLine()** (3 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- **formatNpcAttackedLine()** (3 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- **formatPlayerAttackedLine()** (3 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- **mergePlayerDpFromPlayerAttackedPayload()** (3 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- **createRoomUpdateWithPreservedOccupants()** (3 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **deriveRoomFromRoomState()** (3 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **selectPlayersArray()** (3 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **selectNpcsArray()** (3 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **messageHandlers** (2 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
-- **ProjectorHandler** (2 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
-- **stateHandlers** (2 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
-- *... and 12 more nodes in this community*
+- **MythosTickScheduler** (29 connections) — `server/time/tick_scheduler.py`
+- **MythosChronicle** (29 connections) — `server/time/time_service.py`
+- **MythosTimeEventConsumer** (24 connections) — `server/time/time_event_consumer.py`
+- **test_time_bundle.py** (20 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **test_tick_scheduler.py** (17 connections) — `server/tests/unit/time/test_tick_scheduler.py`
+- **MythosHourTickEvent** (16 connections) — `server/events/event_types.py`
+- **tick_scheduler.py** (15 connections) — `server/time/tick_scheduler.py`
+- **datetime** (15 connections)
+- **TimeBundle** (14 connections) — `server/container/bundles/time.py`
+- **_ensure_utc()** (13 connections) — `server/time/time_service.py`
+- **.get_calendar_components()** (10 connections) — `server/time/time_service.py`
+- **ChronicleState** (9 connections) — `server/time/time_service.py`
+- **.get_current_mythos_datetime()** (9 connections) — `server/time/time_service.py`
+- **test_time_event_consumer.py** (8 connections) — `server/tests/unit/time/test_time_event_consumer.py`
+- **__init__.py** (8 connections) — `server/time/__init__.py`
+- **.get_daypart()** (8 connections) — `server/time/time_service.py`
+- **._load_state()** (8 connections) — `server/time/time_service.py`
+- **._persist_state()** (8 connections) — `server/time/time_service.py`
+- **.__init__()** (7 connections) — `server/time/tick_scheduler.py`
+- **.to_mythos_datetime()** (7 connections) — `server/time/time_service.py`
+- **.is_witching_hour()** (7 connections) — `server/time/time_service.py`
+- **.is_daytime()** (7 connections) — `server/time/time_service.py`
+- **._handle_tick()** (6 connections) — `server/time/time_event_consumer.py`
+- **._migrate_old_state_file()** (6 connections) — `server/time/time_service.py`
+- **.initialize()** (5 connections) — `server/container/bundles/time.py`
+- *... and 114 more nodes in this community*
 
 ## Relationships
 
-- [Game Terminal UI](Game_Terminal_UI.md) (20 shared connections)
-- [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (7 shared connections)
-- [game terminal lucidity](game_terminal_lucidity.md) (7 shared connections)
-- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (5 shared connections)
-- [project paths rationale](project_paths_rationale.md) (2 shared connections)
-- [panels chatPanelRuntimeUtils chatPanelEx](panels_chatPanelRuntimeUtils_chatPanelEx.md) (2 shared connections)
-- [character creation service](character_creation_service.md) (1 shared connections)
+- [combat models rationale](combat_models_rationale.md) (28 shared connections)
+- [nats services service](nats_services_service.md) (9 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (6 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (5 shared connections)
+- [Error Conversion](Error_Conversion.md) (5 shared connections)
+- [follow service game](follow_service_game.md) (4 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (3 shared connections)
+- [aggro threat services](aggro_threat_services.md) (2 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
+- [exceptions rationale error](exceptions_rationale_error.md) (2 shared connections)
+- [command service commands](command_service_commands.md) (1 shared connections)
+- [effect player repository](effect_player_repository.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/eventLog/__tests__/messageMapper.test.ts`
-- `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
-- `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
-- `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- `client/src/components/ui-v2/utils/__tests__/roomMergeUtils.test.ts`
-- `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- `server/container/bundles/time.py`
+- `server/events/event_types.py`
+- `server/tests/unit/container/test_container_bundles.py`
+- `server/tests/unit/container/test_time_bundle.py`
+- `server/tests/unit/time/test_tick_scheduler.py`
+- `server/tests/unit/time/test_time_event_consumer.py`
+- `server/time/__init__.py`
+- `server/time/tick_scheduler.py`
+- `server/time/time_event_consumer.py`
+- `server/time/time_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 190 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 502 (95%)
+- INFERRED: 26 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

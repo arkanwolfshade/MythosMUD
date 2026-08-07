@@ -1,49 +1,34 @@
 # services exploration service
 
-> 16 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **MockEventClass** (35 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_unsubscribe_not_found()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_publish()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_unsubscribe_multiple_handlers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_unsubscribe_all_for_service()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_publish_isolates_sync_subscriber_errors()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_async_subscriber_error_isolation()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_inject_and_get_all_counts()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_stop_processing_and_publish_when_running()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_publish_queue_full_raises()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_inject_queue_full_and_invalid()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Mock event class for testing.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.unsubscribe() when handler not found.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.publish() queues or processes event.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.unsubscribe() with multiple handlers.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.unsubscribe_all_for_service() removes all handlers for a service.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **GameClientV2Dock.test.tsx** (13 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **mockPanelRecord()** (4 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **mockUsePanelManagerValue()** (3 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **mockPanelRecordCore()** (2 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **mockPanelRecordFlags()** (2 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **mockUsePanelManagerNoops()** (2 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **dockTest** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **chatHistoryLayoutIdentity** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **chatHistoryLayoutState** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **defaultChatHistoryLayoutKey** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **mockDefaultPanelLayout()** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
 
 ## Relationships
 
-- [event bus events](event_bus_events.md) (11 shared connections)
-- [game room service](game_room_service.md) (2 shared connections)
-- [room toolkit validator](room_toolkit_validator.md) (2 shared connections)
-- [realtime player event](realtime_player_event.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [item models rationale](item_models_rationale.md) (1 shared connections)
-- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
-- [services chat rate](services_chat_rate.md) (1 shared connections)
-- [room infrastructure persistence](room_infrastructure_persistence.md) (1 shared connections)
-- [infrastructure security rationale](infrastructure_security_rationale.md) (1 shared connections)
-- [infrastructure persistence room](infrastructure_persistence_room.md) (1 shared connections)
-- [realtime messaging message](realtime_messaging_message.md) (1 shared connections)
+- [command factories communication](command_factories_communication.md) (2 shared connections)
+- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/events/test_event_bus.py`
+- `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (45%)
-- INFERRED: 35 (55%)
+- EXTRACTED: 31 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

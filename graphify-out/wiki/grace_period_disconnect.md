@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (6 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [services nats service](services_nats_service.md) (5 shared connections)
+- [lucidity event services](lucidity_event_services.md) (1 shared connections)
+- [room look commands](room_look_commands.md) (1 shared connections)
+- [command models moderation](command_models_moderation.md) (1 shared connections)
 
 ## Source Files
 

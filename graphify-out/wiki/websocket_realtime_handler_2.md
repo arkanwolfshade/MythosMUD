@@ -1,49 +1,60 @@
 # websocket realtime handler
 
-> 19 nodes
+> 76 nodes
 
 ## Key Concepts
 
-- **websocket_handler_connection.py** (17 connections) — `server/realtime/websocket_handler_connection.py`
-- **cleanup_websocket_connection()** (7 connections) — `server/realtime/websocket_handler_connection.py`
-- **setup_initial_connection_state()** (7 connections) — `server/realtime/websocket_handler_connection.py`
-- **PlayerDisconnectService** (6 connections) — `server/realtime/websocket_handler_connection.py`
-- **AsyncPersistenceRoomLookup** (6 connections) — `server/realtime/websocket_handler_connection.py`
-- **send_welcome_event()** (6 connections) — `server/realtime/websocket_handler_connection.py`
+- **CombatParticipantData** (37 connections) — `server/services/combat_types.py`
+- **.create_combat_instance()** (17 connections) — `server/services/combat_initialization.py`
+- **combat_initialization.py** (15 connections) — `server/services/combat_initialization.py`
+- **TestCombatInitializer** (15 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **TestCombatParticipantData** (12 connections) — `server/tests/unit/services/test_combat_types.py`
+- **combat_types.py** (11 connections) — `server/services/combat_types.py`
+- **CombatInitializer** (8 connections) — `server/services/combat_initialization.py`
+- **test_combat_initialization.py** (8 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **test_combat_types.py** (6 connections) — `server/tests/unit/services/test_combat_types.py`
+- **_build_participant()** (5 connections) — `server/services/combat_initialization.py`
+- **_compute_turn_order()** (5 connections) — `server/services/combat_initialization.py`
+- **.start_combat()** (5 connections) — `server/services/combat_service.py`
 - **UUID** (5 connections)
-- **_fetch_room_for_tracked_player()** (4 connections) — `server/realtime/websocket_helpers.py`
-- **.on_player_disconnect()** (3 connections) — `server/realtime/websocket_handler_connection.py`
-- **.get_room_by_id()** (3 connections) — `server/realtime/websocket_handler_connection.py`
-- **Protocol** (2 connections)
-- **WebSocket** (2 connections)
-- **WebSocket connection lifecycle: setup, welcome, and cleanup on disconnect.  Extr** (1 connections) — `server/realtime/websocket_handler_connection.py`
-- **Notify subsystems when a WebSocket session ends for a player.** (1 connections) — `server/realtime/websocket_handler_connection.py`
-- **Narrow persistence surface for loading ``Room`` by id in the WS handler.** (1 connections) — `server/realtime/websocket_handler_connection.py`
-- **Clean up connection, follow state, party state, and player mute data on disconne** (1 connections) — `server/realtime/websocket_handler_connection.py`
-- **Set up initial connection state and send initial game state.      Returns:** (1 connections) — `server/realtime/websocket_handler_connection.py`
-- **Send welcome event to the client.      Returns:         True if successful, Fals** (1 connections) — `server/realtime/websocket_handler_connection.py`
-- **Load the room instance for the player's current_room_id.      Returns:** (1 connections) — `server/realtime/websocket_helpers.py`
+- **.get_npc_combat_data()** (5 connections) — `server/services/npc_combat_data_provider.py`
+- **_build_combat_instance()** (4 connections) — `server/services/combat_initialization.py`
+- **.get_player_combat_data()** (4 connections) — `server/services/npc_combat_data_provider.py`
+- **.get_player_name()** (3 connections) — `server/services/npc_combat_data_provider.py`
+- **.get_player_room_id()** (3 connections) — `server/services/npc_combat_data_provider.py`
+- **.attacker_data()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.target_data()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.test_create_combat_instance_basic()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.test_create_combat_instance_participants()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.test_create_combat_instance_turn_order_higher_dexterity_first()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.test_create_combat_instance_turn_order_lower_dexterity_first()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.test_create_combat_instance_turn_order_equal_dexterity()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [Room Broadcast](Room_Broadcast.md) (4 shared connections)
-- [room websocket updates](room_websocket_updates.md) (4 shared connections)
-- [room look commands](room_look_commands.md) (3 shared connections)
-- [nats services service](nats_services_service.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
-- [room models instance](room_models_instance.md) (1 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (11 shared connections)
+- [models player rationale](models_player_rationale.md) (9 shared connections)
+- [Item Instances](Item_Instances.md) (6 shared connections)
+- [command factories exploration](command_factories_exploration.md) (4 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (3 shared connections)
+- [cleanup combat handler](cleanup_combat_handler.md) (3 shared connections)
+- [subject admin controller](subject_admin_controller.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_handler_connection.py`
-- `server/realtime/websocket_helpers.py`
+- `server/services/combat_initialization.py`
+- `server/services/combat_service.py`
+- `server/services/combat_types.py`
+- `server/services/npc_combat_data_provider.py`
+- `server/tests/unit/services/test_combat_initialization.py`
+- `server/tests/unit/services/test_combat_types.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (89%)
-- INFERRED: 8 (11%)
+- EXTRACTED: 256 (96%)
+- INFERRED: 11 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

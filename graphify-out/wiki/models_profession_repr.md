@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_move_player_success()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test move_player completes a valid room transfer.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

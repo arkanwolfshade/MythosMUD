@@ -1,53 +1,66 @@
 # models player rationale
 
-> 26 nodes
+> 130 nodes
 
 ## Key Concepts
 
-- **_stats_int()** (16 connections) — `server/models/player.py`
-- **.get_stats()** (13 connections) — `server/models/player.py`
-- **.set_stats()** (6 connections) — `server/models/player.py`
-- **.apply_dp_decay()** (5 connections) — `server/models/player.py`
-- **.restore_to_full_health()** (5 connections) — `server/models/player.py`
-- **.apply_dp_change()** (5 connections) — `server/models/player.py`
-- **.is_alive()** (4 connections) — `server/models/player.py`
-- **.is_mortally_wounded()** (4 connections) — `server/models/player.py`
-- **.is_dead()** (4 connections) — `server/models/player.py`
-- **.get_health_state()** (4 connections) — `server/models/player.py`
-- **.get_combat_stats()** (4 connections) — `server/models/player.py`
-- **.get_health_percentage()** (4 connections) — `server/models/player.py`
-- **test_stats_int_delegates_to_coerce_int()** (3 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **Coerce a JSONB stat value to int for DP and combat helpers.** (1 connections) — `server/models/player.py`
-- **Get player stats as dictionary.          Returns a MutableDict instance that aut** (1 connections) — `server/models/player.py`
-- **Set player stats from dictionary.          Accepts both plain dict and MutableDi** (1 connections) — `server/models/player.py`
-- **Check if player is alive (DP > 0).** (1 connections) — `server/models/player.py`
-- **Check if player is mortally wounded (0 >= DP > -10).          Returns:** (1 connections) — `server/models/player.py`
-- **Check if player is dead (DP <= -10).          Returns:             True if playe** (1 connections) — `server/models/player.py`
-- **Get player's current health state.          Returns:             "alive" if DP >** (1 connections) — `server/models/player.py`
-- **Get stats used for combat participant creation.          Returns current_dp, max** (1 connections) — `server/models/player.py`
-- **Get player determination points (DP) as percentage.** (1 connections) — `server/models/player.py`
-- **Apply DP decay (e.g. mortally wounded bleeding) with posture updates.          D** (1 connections) — `server/models/player.py`
-- **Restore player to full health (max DP, standing posture).          Used on respa** (1 connections) — `server/models/player.py`
-- **Apply a DP change (e.g. from combat sync) with posture updates.          Updates** (1 connections) — `server/models/player.py`
-- *... and 1 more nodes in this community*
+- **npc_combat_integration_service.py** (50 connections) — `server/services/npc_combat_integration_service.py`
+- **NPCCombatDataProvider** (39 connections) — `server/services/npc_combat_data_provider.py`
+- **NPCCombatLucidity** (30 connections) — `server/services/npc_combat_lucidity.py`
+- **npc_combat_integration_validation_mixin.py** (20 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **_NPCCombatIntegrationValidationDeps** (19 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **npc_combat_data_provider.py** (18 connections) — `server/services/npc_combat_data_provider.py`
+- **test_npc_combat_data_provider.py** (17 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
+- **TestNPCCombatLucidity** (17 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **get_current_tick()** (16 connections) — `server/app/game_tick_processing.py`
+- **npc_combat_integration_combat_mixin.py** (16 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **NPCCombatIntegrationValidationMixin** (15 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **_NPCCombatIntegrationDeps** (14 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **npc_combat_lucidity.py** (12 connections) — `server/services/npc_combat_lucidity.py`
+- **NPCCombatIntegrationCombatMixin** (11 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.store_npc_xp_mapping_for_mixin()** (10 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._process_combat_attack()** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.start_new_combat_for_mixin()** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **._apply_npc_attack_damage_for_npc_initiated_combat()** (7 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **._broadcast_room_after_npc_death()** (7 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.get_combat_service()** (6 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **UUID** (6 connections)
+- **.get_data_provider()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_uuid_mapping()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **UUID** (6 connections)
+- **._setup_combat_uuids_and_mappings()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- *... and 105 more nodes in this community*
 
 ## Relationships
 
-- [combat models rationale](combat_models_rationale.md) (12 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (3 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (1 shared connections)
-- [player persistence repository](player_persistence_repository.md) (1 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (15 shared connections)
+- [player event realtime](player_event_realtime.md) (13 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (10 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (9 shared connections)
+- [grace period login](grace_period_login.md) (8 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (7 shared connections)
+- [auth endpoints rationale](auth_endpoints_rationale.md) (6 shared connections)
+- [player look commands](player_look_commands.md) (5 shared connections)
+- [combat commands handler](combat_commands_handler.md) (5 shared connections)
+- [Item Instances](Item_Instances.md) (4 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
+- [room validator services](room_validator_services.md) (4 shared connections)
 
 ## Source Files
 
-- `server/models/player.py`
-- `server/tests/unit/commands/test_inventory_command_coercion.py`
+- `server/app/game_tick_processing.py`
+- `server/services/npc_combat_data_provider.py`
+- `server/services/npc_combat_integration_combat_mixin.py`
+- `server/services/npc_combat_integration_service.py`
+- `server/services/npc_combat_integration_validation_mixin.py`
+- `server/services/npc_combat_lucidity.py`
+- `server/tests/unit/services/test_npc_combat_data_provider.py`
+- `server/tests/unit/services/test_npc_combat_lucidity.py`
 
 ## Audit Trail
 
-- EXTRACTED: 89 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 542 (94%)
+- INFERRED: 37 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

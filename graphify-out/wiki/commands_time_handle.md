@@ -1,35 +1,42 @@
 # commands time handle
 
-> 13 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **run_quality_fragmentation_guard.py** (12 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **main()** (6 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_run_git()** (5 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_resolved_changed_files()** (5 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_git_executable()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_changed_files_between()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_local_changed_files()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_build_guard_command()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_resolve_base_sha()** (3 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_is_graphify_path()** (3 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_argv_char_len()** (2 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **Path** (1 connections)
-- **Generated graphify trees are not product code; skip guard/lint argv bloat.** (1 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **TestCatatoniaRegistry** (26 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **.test_on_catatonia_entered_with_string()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **.test_on_catatonia_cleared_with_uuid()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **.test_on_sanitarium_failover_callback_exception()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **.test_get_snapshot_with_players()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **.test_multiple_players_catatonic()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **Test suite for CatatoniaRegistry class.** (1 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **Test on_catatonia_entered with string player_id.** (1 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **Test on_catatonia_cleared removes player from registry.** (1 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **Test on_sanitarium_failover handles callback exceptions.** (1 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **Test get_snapshot returns copy of catatonic players.** (1 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **Test registry can track multiple catatonic players.** (1 connections) — `server/tests/unit/services/test_catatonia_registry.py`
 
 ## Relationships
 
-- [scripts run guard](scripts_run_guard.md) (6 shared connections)
+- [catatonia registry services](catatonia_registry_services.md) (6 shared connections)
+- [skill game service](skill_game_service.md) (4 shared connections)
+- [game room service](game_room_service.md) (3 shared connections)
+- [infrastructure persistence room](infrastructure_persistence_room.md) (3 shared connections)
+- [room game service](room_game_service.md) (3 shared connections)
+- [room infrastructure persistence](room_infrastructure_persistence.md) (3 shared connections)
+- [infrastructure persistence core](infrastructure_persistence_core.md) (1 shared connections)
+- [room service game](room_service_game.md) (1 shared connections)
+- [game skill service](game_skill_service.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/run_quality_fragmentation_guard.py`
+- `server/tests/unit/services/test_catatonia_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 54 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 46 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

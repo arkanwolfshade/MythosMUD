@@ -1,12 +1,11 @@
 # lucidity flux passive
 
-> 96 nodes
+> 94 nodes
 
 ## Key Concepts
 
 - **PassiveLucidityFluxService** (41 connections) — `server/services/passive_lucidity_flux/service.py`
 - **test_passive_lucidity_flux_service.py** (32 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **service.py** (30 connections) — `server/services/passive_lucidity_flux/service.py`
 - **_make_service()** (22 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
 - **.process_tick()** (14 connections) — `server/services/passive_lucidity_flux/service.py`
 - **PassiveFluxContext** (13 connections) — `server/services/passive_lucidity_flux/models.py`
@@ -29,22 +28,23 @@
 - **._is_player_active()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
 - **._lookup_base_flux_for_room()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
 - **._get_room_for_context()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
-- *... and 71 more nodes in this community*
+- **normalize_environment_config()** (5 connections) — `server/services/passive_lucidity_flux/config.py`
+- *... and 69 more nodes in this community*
 
 ## Relationships
 
-- [lucidity services helpers](lucidity_services_helpers.md) (11 shared connections)
-- [combat models rationale](combat_models_rationale.md) (5 shared connections)
-- [rate lucidity services](rate_lucidity_services.md) (4 shared connections)
-- [models lucidity rationale](models_lucidity_rationale.md) (4 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (3 shared connections)
-- [services service phantom](services_service_phantom.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
-- [player room realtime](player_room_realtime.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (16 shared connections)
+- [auth endpoints rationale](auth_endpoints_rationale.md) (4 shared connections)
+- [game weapon player](game_weapon_player.md) (2 shared connections)
+- [rate lucidity services](rate_lucidity_services.md) (2 shared connections)
+- [models lucidity rationale](models_lucidity_rationale.md) (2 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (2 shared connections)
+- [aggro threat services](aggro_threat_services.md) (1 shared connections)
 - [nats services service](nats_services_service.md) (1 shared connections)
 - [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [Spell Validation](Spell_Validation.md) (1 shared connections)
+- [npc population stats](npc_population_stats.md) (1 shared connections)
 
 ## Source Files
 
@@ -58,7 +58,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 430 (96%)
+- EXTRACTED: 399 (96%)
 - INFERRED: 16 (4%)
 - AMBIGUOUS: 0 (0%)
 

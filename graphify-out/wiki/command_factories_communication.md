@@ -1,70 +1,78 @@
 # command factories communication
 
-> 182 nodes
+> 112 nodes
 
 ## Key Concepts
 
-- **game.py** (32 connections) — `server/models/game.py`
-- **StatusEffect** (32 connections) — `server/models/game.py`
-- **Player** (26 connections) — `server/models/game.py`
-- **spell_effects_status.py** (24 connections) — `server/game/magic/spell_effects_status.py`
-- **test_game_player.py** (23 connections) — `server/tests/unit/models/test_game_player.py`
-- **player_schema_converter.py** (19 connections) — `server/game/player_schema_converter.py`
-- **InventoryItem** (19 connections) — `server/models/game.py`
-- **test_player_schema_converter_weapon.py** (19 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
-- **StatusEffectType** (18 connections) — `server/models/game.py`
-- **PlayerSchemaConverter** (16 connections) — `server/game/player_schema_converter.py`
-- **test_game_status_effect.py** (13 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **_weapon_from_prototype_registry()** (12 connections) — `server/game/player_schema_converter.py`
-- **.create_player_read_from_object()** (12 connections) — `server/game/player_schema_converter.py`
-- **Any** (11 connections)
-- **_inventory_item_with_weapon()** (11 connections) — `server/game/player_schema_converter.py`
-- **test_game_enums.py** (11 connections) — `server/tests/unit/models/test_game_enums.py`
-- **_apply_player_status_with_grace_check()** (10 connections) — `server/game/magic/spell_effects_status.py`
-- **_handle_player_status_effect()** (10 connections) — `server/game/magic/spell_effects_status.py`
-- **run_status_effect()** (10 connections) — `server/game/magic/spell_effects_status.py`
-- **.create_player_read_from_dict()** (10 connections) — `server/game/player_schema_converter.py`
-- **_apply_status_effect_to_player()** (9 connections) — `server/game/magic/spell_effects_status.py`
-- **Any** (8 connections)
-- **.convert_player_to_schema()** (8 connections) — `server/game/player_schema_converter.py`
-- **AttributeType** (8 connections) — `server/models/game.py`
-- **_grace_period_blocks_negative_status_effect()** (7 connections) — `server/game/magic/spell_effects_status.py`
-- *... and 157 more nodes in this community*
+- **GameClientV2.tsx** (52 connections) — `client/src/components/ui-v2/GameClientV2.tsx`
+- **Room** (36 connections) — `client/src/components/ui-v2/types.ts`
+- **Player** (32 connections) — `client/src/components/ui-v2/types.ts`
+- **ChatMessage** (32 connections) — `client/src/components/ui-v2/types.ts`
+- **GameClientV2AuxiliaryPanels.tsx** (29 connections) — `client/src/components/ui-v2/GameClientV2AuxiliaryPanels.tsx`
+- **lucidity.ts** (29 connections) — `client/src/types/lucidity.ts`
+- **health.ts** (26 connections) — `client/src/types/health.ts`
+- **LucidityStatus** (26 connections) — `client/src/types/lucidity.ts`
+- **useGameClientV2ContainerRefsAndBootstrap.ts** (25 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
+- **HealthStatus** (25 connections) — `client/src/types/health.ts`
+- **CharacterInfoPanel.tsx** (17 connections) — `client/src/components/ui-v2/panels/CharacterInfoPanel.tsx`
+- **RescueState** (17 connections) — `client/src/types/lucidity.ts`
+- **EventHandlerContext** (15 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
+- **useEventProcessing.test.ts** (14 connections) — `client/src/components/ui-v2/hooks/__tests__/useEventProcessing.test.ts`
+- **useRefSynchronization.ts** (14 connections) — `client/src/components/ui-v2/hooks/useRefSynchronization.ts`
+- **characterInfoPanelOutline.ts** (13 connections) — `client/src/components/ui-v2/utils/characterInfoPanelOutline.ts`
+- **useMythosTimeBootstrap.ts** (12 connections) — `client/src/components/ui-v2/hooks/useMythosTimeBootstrap.ts`
+- **GameClientV2RefsBundle** (11 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
+- **HealthMeter.tsx** (10 connections) — `client/src/components/health/HealthMeter.tsx`
+- **GameStateUpdates** (10 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
+- **CharacterInfoPanel.test.tsx** (10 connections) — `client/src/components/ui-v2/panels/__tests__/CharacterInfoPanel.test.tsx`
+- **QuestLogEntry** (10 connections) — `client/src/components/ui-v2/types.ts`
+- **LucidityMeter.tsx** (9 connections) — `client/src/components/lucidity/LucidityMeter.tsx`
+- **GameClientV2Props** (9 connections) — `client/src/components/ui-v2/GameClientV2.tsx`
+- **QuestLogPanel.tsx** (9 connections) — `client/src/components/ui-v2/panels/QuestLogPanel.tsx`
+- *... and 87 more nodes in this community*
 
 ## Relationships
 
-- [spell game magic](spell_game_magic.md) (21 shared connections)
-- [player service game](player_service_game.md) (10 shared connections)
-- [NPC Combat](NPC_Combat.md) (9 shared connections)
-- [combat models rationale](combat_models_rationale.md) (8 shared connections)
-- [Player Stats](Player_Stats.md) (8 shared connections)
-- [Loot Generation](Loot_Generation.md) (7 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
-- [world models rationale](world_models_rationale.md) (4 shared connections)
-- [admin commands setstat](admin_commands_setstat.md) (3 shared connections)
-- [command utility models](command_utility_models.md) (3 shared connections)
-- [npc spawn validator](npc_spawn_validator.md) (3 shared connections)
-- [commands follow rationale](commands_follow_rationale.md) (3 shared connections)
+- [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (42 shared connections)
+- [game terminal lucidity](game_terminal_lucidity.md) (35 shared connections)
+- [combat service services](combat_service_services.md) (28 shared connections)
+- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (26 shared connections)
+- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (17 shared connections)
+- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (9 shared connections)
+- [services combat sync](services_combat_sync.md) (9 shared connections)
+- [argon2 auth rationale](argon2_auth_rationale.md) (9 shared connections)
+- [eventHandlers messageHandlers statusPars](eventHandlers_messageHandlers_statusPars.md) (7 shared connections)
+- [magic completion game](magic_completion_game.md) (7 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (7 shared connections)
+- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (6 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_handler.py`
-- `server/game/magic/spell_effects_status.py`
-- `server/game/player_schema_converter.py`
-- `server/models/game.py`
-- `server/npc/idle_movement.py`
-- `server/npc/npc_base.py`
-- `server/schemas/game/weapon.py`
-- `server/tests/unit/game/test_player_schema_converter_weapon.py`
-- `server/tests/unit/models/test_game_enums.py`
-- `server/tests/unit/models/test_game_inventory_item.py`
-- `server/tests/unit/models/test_game_player.py`
-- `server/tests/unit/models/test_game_status_effect.py`
+- `client/src/components/GameTerminal.tsx`
+- `client/src/components/health/HealthMeter.tsx`
+- `client/src/components/health/__tests__/HealthMeter.test.tsx`
+- `client/src/components/lucidity/LucidityMeter.tsx`
+- `client/src/components/lucidity/__tests__/LucidityMeter.test.tsx`
+- `client/src/components/magic/MagicPointsMeter.tsx`
+- `client/src/components/magic/__tests__/MagicPointsMeter.test.tsx`
+- `client/src/components/ui-v2/GameClientV2.tsx`
+- `client/src/components/ui-v2/GameClientV2AuxiliaryPanels.tsx`
+- `client/src/components/ui-v2/GameClientV2Minimap.tsx`
+- `client/src/components/ui-v2/TentacleBackdrop.tsx`
+- `client/src/components/ui-v2/__tests__/GameClientV2.test.tsx`
+- `client/src/components/ui-v2/__tests__/TentacleBackdrop.test.tsx`
+- `client/src/components/ui-v2/eventHandlers/types.ts`
+- `client/src/components/ui-v2/hooks/__tests__/useEventProcessing.test.ts`
+- `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
+- `client/src/components/ui-v2/hooks/useHallucinationFeedCleanup.ts`
+- `client/src/components/ui-v2/hooks/useMythosTimeBootstrap.ts`
+- `client/src/components/ui-v2/hooks/usePlayerStatusEffects.ts`
+- `client/src/components/ui-v2/hooks/useRefSynchronization.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 696 (96%)
-- INFERRED: 30 (4%)
+- EXTRACTED: 773 (100%)
+- INFERRED: 3 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,57 +1,59 @@
 # persistence container extended
 
-> 174 nodes
+> 82 nodes
 
 ## Key Concepts
 
-- **test_container_persistence.py** (61 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **_parse_jsonb_column()** (28 connections) — `server/container_persistence/container_persistence.py`
-- **_fetch_container_items()** (25 connections) — `server/container_persistence/container_persistence.py`
-- **ContainerData** (23 connections) — `server/container_persistence/container_persistence.py`
-- **create_container()** (23 connections) — `server/container_persistence/container_persistence.py`
-- **container_persistence.py** (21 connections) — `server/container_persistence/container_persistence.py`
-- **update_container()** (17 connections) — `server/container_persistence/container_persistence.py`
-- **get_container()** (16 connections) — `server/container_persistence/container_persistence.py`
-- **get_containers_by_entity_id()** (14 connections) — `server/container_persistence/container_persistence.py`
-- **get_containers_by_room_id()** (13 connections) — `server/container_persistence/container_persistence.py`
-- **delete_container()** (11 connections) — `server/container_persistence/container_persistence.py`
-- **Any** (10 connections)
-- **__init__.py** (9 connections) — `server/container_persistence/__init__.py`
-- **UUID** (9 connections)
-- **test_persistence_container_persistence.py** (8 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **.__init__()** (4 connections) — `server/container_persistence/container_persistence.py`
-- **.to_dict()** (4 connections) — `server/container_persistence/container_persistence.py`
-- **test_create_container_invalid_source_type()** (4 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **test_create_container_invalid_capacity()** (4 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **test_create_container_invalid_lock_state()** (4 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **test_update_container_invalid_lock_state()** (4 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **test_create_container_database_error()** (4 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **test_get_container_database_error()** (4 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **test_create_container_success()** (4 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **test_create_container_no_id_returned()** (4 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- *... and 149 more nodes in this community*
+- **test_combat_attack_handler.py** (37 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **CombatAttackHandler** (17 connections) — `server/services/combat_attack_handler.py`
+- **._apply_damage()** (9 connections) — `server/services/combat_attack_handler.py`
+- **.validate_and_get_combat_participants()** (6 connections) — `server/services/combat_attack_handler.py`
+- **.apply_attack_damage()** (5 connections) — `server/services/combat_attack_handler.py`
+- **._validate_attack()** (4 connections) — `server/services/combat_attack_handler.py`
+- **._room_has_no_death()** (4 connections) — `server/services/combat_attack_handler.py`
+- **test_apply_damage_blocked_during_grace_period()** (4 connections) — `server/tests/unit/services/test_damage_grace_period.py`
+- **.__init__()** (3 connections) — `server/services/combat_attack_handler.py`
+- **attack_handler()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **mock_combat()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **mock_attacker()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **mock_target_player()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **mock_target_npc()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player_no_death_room_caps_damage()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player_no_death_room_zero_damage_when_at_zero()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_allowed_after_grace_period()** (3 connections) — `server/tests/unit/services/test_damage_grace_period.py`
+- **test_apply_damage_fails_open_on_error()** (3 connections) — `server/tests/unit/services/test_damage_grace_period.py`
+- **UUID** (2 connections)
+- **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_attack_handler_init()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_validate_attack_active()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_validate_attack_inactive()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player_kills()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (23 shared connections)
-- [persistence container item](persistence_container_item.md) (18 shared connections)
-- [Loot Generation](Loot_Generation.md) (11 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [auth users rationale](auth_users_rationale.md) (1 shared connections)
+- [Item Instances](Item_Instances.md) (16 shared connections)
+- [command factories exploration](command_factories_exploration.md) (8 shared connections)
+- [command utility models](command_utility_models.md) (2 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (1 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (1 shared connections)
+- [correct patterns examples](correct_patterns_examples.md) (1 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
+- [message nats handler](message_nats_handler.md) (1 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [cleanup combat handler](cleanup_combat_handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container_persistence/__init__.py`
-- `server/container_persistence/container_persistence.py`
-- `server/tests/unit/container_persistence/test_container_persistence.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- `server/services/combat_attack_handler.py`
+- `server/tests/unit/services/test_combat_attack_handler.py`
+- `server/tests/unit/services/test_damage_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 539 (87%)
-- INFERRED: 78 (13%)
+- EXTRACTED: 197 (97%)
+- INFERRED: 6 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

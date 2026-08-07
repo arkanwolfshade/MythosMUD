@@ -1,25 +1,35 @@
 # dead letter realtime
 
-> 2 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **test_check_equipped_item_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking equipped item when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **SkillUseLog** (8 connections) — `server/models/skill_use_log.py`
+- **test_skill_use_log.py** (6 connections) — `server/tests/unit/models/test_skill_use_log.py`
+- **test_skill_use_log_creation()** (3 connections) — `server/tests/unit/models/test_skill_use_log.py`
+- **test_skill_use_log_repr()** (3 connections) — `server/tests/unit/models/test_skill_use_log.py`
+- **test_skill_use_log_table_name()** (2 connections) — `server/tests/unit/models/test_skill_use_log.py`
+- **Base** (1 connections)
+- **.__repr__()** (1 connections) — `server/models/skill_use_log.py`
+- **One recorded successful use of a skill by a character at a given level.      cha** (1 connections) — `server/models/skill_use_log.py`
+- **Unit tests for SkillUseLog ORM model.** (1 connections) — `server/tests/unit/models/test_skill_use_log.py`
+- **SkillUseLog can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_skill_use_log.py`
+- **SkillUseLog maps to the expected table.** (1 connections) — `server/tests/unit/models/test_skill_use_log.py`
+- **SkillUseLog __repr__ includes key identifiers.** (1 connections) — `server/tests/unit/models/test_skill_use_log.py`
 
 ## Relationships
 
-- [npc realtime occupant](npc_realtime_occupant.md) (1 shared connections)
-- [Item Lookup](Item_Lookup.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/models/skill_use_log.py`
+- `server/tests/unit/models/test_skill_use_log.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 28 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,57 +1,62 @@
 # command parser helpers
 
-> 36 nodes
+> 51 nodes
 
 ## Key Concepts
 
-- **test_player_respawn_api.py** (17 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **respawn_player()** (15 connections) — `server/api/player_respawn.py`
-- **test_player_respawn_handlers.py** (14 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **respawn_player_from_delirium()** (13 connections) — `server/api/player_respawn.py`
-- **_handle_delirium_respawn_validation_error()** (12 connections) — `server/api/player_respawn.py`
-- **_handle_respawn_validation_error()** (11 connections) — `server/api/player_respawn.py`
-- **_user()** (9 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **RespawnResponse** (8 connections) — `server/schemas/players/player_respawn.py`
-- **_user()** (8 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_respawn_player_validation_error()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_respawn_player_from_delirium_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_respawn_player_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_handle_respawn_validation_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_respawn_validation_must_be_dead()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_respawn_validation_generic_500()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_must_be_delirious()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_lucidity_keyword()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_generic_500()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **Request** (4 connections)
-- **RespawnPlayerData** (4 connections) — `server/schemas/players/player_respawn.py`
-- **test_respawn_player_success()** (4 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_respawn_player_from_delirium_success()** (4 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_respawn_player_unexpected_error()** (4 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_respawn_player_no_session()** (4 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- *... and 11 more nodes in this community*
+- **MessageFilteringHelper** (25 connections) — `server/realtime/message_filtering.py`
+- **NATSMessageHandler** (24 connections) — `server/realtime/nats_message_handler.py`
+- **test_message_filtering_helpers.py** (10 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- **.is_player_in_room()** (7 connections) — `server/realtime/message_filtering.py`
+- **.__init__()** (7 connections) — `server/realtime/nats_message_handler.py`
+- **.check_player_mute_status()** (6 connections) — `server/realtime/message_filtering.py`
+- **.filter_target_players()** (6 connections) — `server/realtime/message_filtering.py`
+- **Any** (4 connections)
+- **.is_player_muted_by_receiver()** (4 connections) — `server/realtime/message_filtering.py`
+- **.is_player_muted_by_receiver_with_user_manager()** (4 connections) — `server/realtime/message_filtering.py`
+- **.__init__()** (3 connections) — `server/realtime/message_filtering.py`
+- **._get_user_manager()** (3 connections) — `server/realtime/message_filtering.py`
+- **.extract_chat_event_info()** (3 connections) — `server/realtime/message_filtering.py`
+- **.should_apply_mute_check()** (3 connections) — `server/realtime/message_filtering.py`
+- **.compare_canonical_rooms()** (3 connections) — `server/realtime/message_filtering.py`
+- **.get_player_room_from_online_players()** (3 connections) — `server/realtime/message_filtering.py`
+- **.get_player_room_from_persistence()** (3 connections) — `server/realtime/message_filtering.py`
+- **nats_message_handler()** (3 connections) — `server/tests/unit/realtime/conftest.py`
+- **message_filtering_helper()** (3 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- **.collect_room_targets()** (2 connections) — `server/realtime/message_filtering.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- **test_extract_chat_event_info()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- **test_should_apply_mute_check()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- **test_compare_canonical_rooms()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- **test_get_player_room_from_online_players()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (19 shared connections)
-- [Loot Generation](Loot_Generation.md) (14 shared connections)
-- [NPC Combat](NPC_Combat.md) (9 shared connections)
-- [player requests schemas](player_requests_schemas.md) (4 shared connections)
-- [Player Stats](Player_Stats.md) (3 shared connections)
-- [command player state](command_player_state.md) (2 shared connections)
-- [room game service](room_game_service.md) (2 shared connections)
+- [game chat service](game_chat_service.md) (10 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (7 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [command commands handler](command_commands_handler.md) (2 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (2 shared connections)
+- [inventory schemas schema](inventory_schemas_schema.md) (2 shared connections)
+- [follow game service](follow_game_service.md) (2 shared connections)
+- [commands alias rationale](commands_alias_rationale.md) (2 shared connections)
+- [profession models rationale](profession_models_rationale.md) (2 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
+- [command factories create](command_factories_create.md) (1 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/player_respawn.py`
-- `server/schemas/players/player_respawn.py`
-- `server/tests/unit/api/test_player_respawn_api.py`
-- `server/tests/unit/api/test_player_respawn_handlers.py`
+- `server/realtime/message_filtering.py`
+- `server/realtime/nats_message_handler.py`
+- `server/tests/unit/realtime/conftest.py`
+- `server/tests/unit/realtime/test_message_filtering_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 186 (93%)
-- INFERRED: 13 (7%)
+- EXTRACTED: 147 (90%)
+- INFERRED: 16 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

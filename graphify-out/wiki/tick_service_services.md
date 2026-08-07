@@ -1,50 +1,41 @@
 # tick service services
 
-> 54 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **GameTickService** (30 connections) — `server/services/game_tick_service.py`
-- **TestGameTickService** (20 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **test_game_tick_service.py** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_init_default_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_init_custom_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_start_success()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_start_already_running()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_start_failure()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_stop_success()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_stop_not_running()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_stop_task_already_done()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_stop_failure()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_get_tick_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_reset_tick_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_get_tick_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_tick_loop_increments_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_tick_loop_publishes_events()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_tick_loop_handles_cancellation()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_tick_loop_handles_publish_failure()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_tick_loop_handles_exceptions()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.__init__()** (2 connections) — `server/services/game_tick_service.py`
-- **.stop()** (2 connections) — `server/services/game_tick_service.py`
-- **.get_tick_count()** (2 connections) — `server/services/game_tick_service.py`
-- **.reset_tick_count()** (2 connections) — `server/services/game_tick_service.py`
-- **.get_tick_interval()** (2 connections) — `server/services/game_tick_service.py`
-- *... and 29 more nodes in this community*
+- **.load_from_path()** (13 connections) — `server/game/items/prototype_registry.py`
+- **.get()** (6 connections) — `server/game/items/prototype_registry.py`
+- **Path** (5 connections)
+- **test_load_from_path_missing_directory()** (4 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **parse_arguments()** (3 connections) — `server/scripts/validate_prototypes.py`
+- **main()** (3 connections) — `server/scripts/validate_prototypes.py`
+- **test_load_from_path_valid_json()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_load_from_path_invalid_json()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_load_from_path_validation_error()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_load_from_path_durability_anomaly()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **Path** (1 connections)
+- **Load item prototypes from JSON files in a directory.          Args:** (1 connections) — `server/game/items/prototype_registry.py`
+- **Get a prototype by ID.          Args:             prototype_id: The ID of the pr** (1 connections) — `server/game/items/prototype_registry.py`
+- **Namespace** (1 connections)
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
+- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (12 shared connections)
+- [connection cleaner realtime](connection_cleaner_realtime.md) (2 shared connections)
+- [room cache services](room_cache_services.md) (1 shared connections)
+- [stats game generator](stats_game_generator.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/game_tick_service.py`
-- `server/tests/unit/services/test_game_tick_service.py`
+- `server/game/items/prototype_registry.py`
+- `server/scripts/validate_prototypes.py`
+- `server/tests/unit/game/items/test_prototype_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 144 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 48 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,54 +1,52 @@
 # calendar schemas validate
 
-> 60 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **test_async_persistence_core.py** (40 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_async_persistence_layer_init_skip_room_cache()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_async_persistence_layer_init_with_room_cache()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_async_persistence_layer_init_deprecated_params()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_player_by_name_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_player_by_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_players_by_user_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_active_players_by_user_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_user_by_username_case_insensitive_success()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_user_by_username_case_insensitive_database_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_save_player_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_list_players_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_players_in_room_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_save_players_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_professions_success()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_professions_database_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_professions_os_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_profession_by_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_close()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_player_by_name_not_found()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_user_by_username_case_insensitive_not_found()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_room_by_id_delegates()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_room_by_id_not_found()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_list_rooms_delegates()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_async_list_rooms_delegates()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- *... and 35 more nodes in this community*
+- **_format_container_display()** (19 connections) — `server/commands/look_container.py`
+- **test_format_container_display_basic()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_format_container_display_with_description()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_format_container_display_locked()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_format_container_display_sealed()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_format_container_display_with_contents()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_format_container_display_with_target_type()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_format_container_display_with_metadata_name()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_format_container_display_fallback_name()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_format_container_display_locked()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_format_container_display_sealed()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_format_container_display_with_look_in()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_format_container_display_with_target_type_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Format the complete container display text.** (1 connections) — `server/commands/look_container.py`
+- **Test formatting container display with basic info.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test formatting container display with description.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test formatting container display when locked.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test formatting container display when sealed.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test formatting container display with look_in flag.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test formatting container display with target_type container.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test formatting container display uses metadata name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test formatting container display uses fallback when no metadata name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test _format_container_display() with locked container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _format_container_display() with sealed container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _format_container_display() with look_in flag.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [combat models rationale](combat_models_rationale.md) (10 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (5 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
-- [profession models rationale](profession_models_rationale.md) (3 shared connections)
-- [player requests schemas](player_requests_schemas.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
-- [world models rationale](world_models_rationale.md) (1 shared connections)
+- [DI Container Format](DI_Container_Format.md) (9 shared connections)
+- [commands lucidity recovery](commands_lucidity_recovery.md) (6 shared connections)
+- [player realtime presence](player_realtime_presence.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- `server/commands/look_container.py`
+- `server/tests/unit/commands/test_look_container.py`
+- `server/tests/unit/commands/test_look_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 132 (91%)
-- INFERRED: 13 (9%)
+- EXTRACTED: 68 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

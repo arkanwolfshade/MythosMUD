@@ -1,6 +1,6 @@
 # party service game
 
-> 132 nodes
+> 142 nodes
 
 ## Key Concepts
 
@@ -9,7 +9,7 @@
 - **follow_service.py** (25 connections) — `server/game/follow_service.py`
 - **_str_id()** (15 connections) — `server/game/follow_service.py`
 - **UUID** (14 connections)
-- **.__init__()** (10 connections) — `server/game/follow_service.py`
+- **test_follow_flow.py** (13 connections) — `server/tests/integration/test_follow_flow.py`
 - **.request_follow()** (10 connections) — `server/game/follow_service.py`
 - **._send_result_to_player()** (9 connections) — `server/game/follow_service.py`
 - **._send_follow_state_to_player()** (9 connections) — `server/game/follow_service.py`
@@ -29,22 +29,22 @@
 - **._send_result_and_player_update()** (5 connections) — `server/game/follow_service.py`
 - **._send_follow_request_to_target()** (5 connections) — `server/game/follow_service.py`
 - **.get_following()** (5 connections) — `server/game/follow_service.py`
-- *... and 107 more nodes in this community*
+- *... and 117 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (19 shared connections)
-- [Error Conversion](Error_Conversion.md) (7 shared connections)
-- [NPC Combat](NPC_Combat.md) (5 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (5 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (4 shared connections)
-- [skill game service](skill_game_service.md) (4 shared connections)
-- [message nats handler](message_nats_handler.md) (3 shared connections)
-- [position player service](position_player_service.md) (3 shared connections)
-- [target resolution service](target_resolution_service.md) (3 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
-- [room look commands](room_look_commands.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (22 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (5 shared connections)
+- [lucidity npc combat](lucidity_npc_combat.md) (5 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (5 shared connections)
+- [validator room toolkit](validator_room_toolkit.md) (4 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (3 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (2 shared connections)
+- [position player service](position_player_service.md) (2 shared connections)
 - [services user manager](services_user_manager.md) (2 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
+- [add used user](add_used_user.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 438 (98%)
-- INFERRED: 11 (2%)
+- EXTRACTED: 460 (98%)
+- INFERRED: 9 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

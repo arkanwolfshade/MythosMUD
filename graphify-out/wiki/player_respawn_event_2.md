@@ -1,62 +1,49 @@
 # player respawn event
 
-> 70 nodes
+> 49 nodes
 
 ## Key Concepts
 
-- **MagicService** (57 connections) — `server/game/magic/magic_service.py`
-- **test_magic_service.py** (47 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **CastingStateManager** (27 connections) — `server/game/magic/casting_state_manager.py`
-- **UUID** (26 connections)
-- **test_casting_state_manager.py** (10 connections) — `server/tests/unit/game/magic/test_casting_state_manager.py`
-- **CastingState** (8 connections) — `server/game/magic/casting_state_manager.py`
-- **UUID** (8 connections)
-- **_spell()** (8 connections) — `server/tests/unit/game/magic/test_casting_state_manager.py`
-- **.start_casting()** (5 connections) — `server/game/magic/casting_state_manager.py`
-- **test_can_cast_spell_unknown_and_materials()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_cast_spell_material_consume_failure()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_check_casting_progress_completes()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_start_delayed_cast_in_combat()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_start_delayed_cast_value_error()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **.get_casting_state()** (4 connections) — `server/game/magic/casting_state_manager.py`
-- **.complete_casting()** (4 connections) — `server/game/magic/casting_state_manager.py`
-- **.interrupt_casting()** (4 connections) — `server/game/magic/casting_state_manager.py`
-- **_build_magic_service()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_can_cast_spell_paths()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_cast_spell_delayed()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_interrupt_casting_luck_pass()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_interrupt_casting_luck_fail()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_complete_casting_via_combat_queue()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **.is_casting()** (3 connections) — `server/game/magic/casting_state_manager.py`
-- **.update_casting_progress()** (3 connections) — `server/game/magic/casting_state_manager.py`
-- *... and 45 more nodes in this community*
+- **test_combat_handler.py** (37 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_handler_with_persistence()** (20 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_AppStatePersistence** (10 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_AppWithPersistence** (10 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_as_app_with_state()** (8 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_get_player_and_room_unknown_player()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_get_player_and_room_no_current_room()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_get_player_and_room_unknown_room()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_get_player_and_room_success()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_resolve_combat_target_rejects_non_npc()** (5 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_resolve_combat_target_rejects_dead_npc()** (5 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_get_player_and_room_no_persistence_on_app()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_resolve_combat_target_failure_message()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_combat_command_handler_requires_async_persistence()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_extract_combat_command_data_string_type()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_extract_combat_command_data_enum_value()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_validate_target_name_empty()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_validate_target_name_present()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_room_forbids_combat_true()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_room_forbids_combat_false_no_attrs()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_validate_combat_action()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_validate_combat_action_empty_name()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_handle_flee_command_delegates()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_handle_taunt_command_delegates()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **Enum** (2 connections)
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [spell game magic](spell_game_magic.md) (19 shared connections)
-- [NPC Combat](NPC_Combat.md) (14 shared connections)
-- [game models player](game_models_player.md) (8 shared connections)
-- [commands magic rationale](commands_magic_rationale.md) (7 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (7 shared connections)
-- [nats services service](nats_services_service.md) (3 shared connections)
-- [magic completion game](magic_completion_game.md) (2 shared connections)
-- [subject nats manager](subject_nats_manager.md) (2 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [room realtime rationale](room_realtime_rationale.md) (1 shared connections)
-- [manager room npcs](manager_room_npcs.md) (1 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (24 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (5 shared connections)
 
 ## Source Files
 
-- `server/game/magic/casting_state_manager.py`
-- `server/game/magic/magic_service.py`
-- `server/tests/unit/game/magic/test_casting_state_manager.py`
-- `server/tests/unit/game/magic/test_magic_service.py`
+- `server/tests/unit/commands/test_combat_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 335 (94%)
-- INFERRED: 22 (6%)
+- EXTRACTED: 177 (95%)
+- INFERRED: 10 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

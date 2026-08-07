@@ -33,10 +33,11 @@
 
 ## Relationships
 
-- [npc aggressive mob](npc_aggressive_mob.md) (2 shared connections)
-- [package argon2 engines](package_argon2_engines.md) (1 shared connections)
-- [schemas player respawn](schemas_player_respawn.md) (1 shared connections)
-- [websocket handler validation](websocket_handler_validation.md) (1 shared connections)
+- [player death service](player_death_service.md) (1 shared connections)
+- [services npc combat](services_npc_combat.md) (1 shared connections)
+- [character creation validate](character_creation_validate.md) (1 shared connections)
+- [shutdown commands admin](shutdown_commands_admin.md) (1 shared connections)
+- [commands command validation](commands_command_validation.md) (1 shared connections)
 
 ## Source Files
 

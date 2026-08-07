@@ -1,37 +1,38 @@
 # panels monitoringPanelTestFixtures Monit
 
-> 13 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **.spawn_npcs_on_startup()** (8 connections) — `server/services/npc_startup_service.py`
-- **._spawn_required_npcs()** (6 connections) — `server/services/npc_startup_service.py`
-- **._determine_spawn_room()** (6 connections) — `server/services/npc_startup_service.py`
-- **._spawn_optional_npcs()** (5 connections) — `server/services/npc_startup_service.py`
-- **._spawn_arena_npcs()** (5 connections) — `server/services/npc_startup_service.py`
-- **Any** (4 connections)
-- **._get_default_room_for_sub_zone()** (3 connections) — `server/services/npc_startup_service.py`
-- **Spawn NPCs during server startup.          This method handles the automatic spa** (1 connections) — `server/services/npc_startup_service.py`
-- **Spawn all required NPCs.          Args:             required_npcs: List of requi** (1 connections) — `server/services/npc_startup_service.py`
-- **Spawn optional NPCs based on spawn probability.          Args:             optio** (1 connections) — `server/services/npc_startup_service.py`
-- **Second pass: spawn one instance per definition (that was spawned in required/opt** (1 connections) — `server/services/npc_startup_service.py`
-- **Determine the appropriate room for spawning an NPC.          Args:             n** (1 connections) — `server/services/npc_startup_service.py`
-- **Get a default room for a given sub-zone.          Args:             sub_zone_id:** (1 connections) — `server/services/npc_startup_service.py`
+- **test_inventory_mutation_guard_error_handling.py** (10 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **guard()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **test_cleanup_async_state_lock_attribute_error()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **test_cleanup_async_state_lock_runtime_error()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **test_acquire_record_custom_alert_with_message_param()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **test_acquire_async_record_custom_alert_with_message_param()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **test_acquire_record_custom_alert_type_error_fallback()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **test_acquire_async_record_custom_alert_type_error_fallback()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **Unit tests for inventory mutation guard - error handling and monitoring.  Tests** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **Test _cleanup_async_state handles AttributeError from lock.locked().** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **Test _cleanup_async_state handles RuntimeError from lock.locked().** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **Test acquire handles record_custom_alert with message parameter.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **Test acquire_async handles record_custom_alert with message parameter.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **Test acquire handles TypeError from record_custom_alert and uses fallback.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **Test acquire_async handles TypeError from record_custom_alert and uses fallback.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
 
 ## Relationships
 
-- [map layout useMapLayout](map_layout_useMapLayout.md) (6 shared connections)
-- [nats services service](nats_services_service.md) (3 shared connections)
-- [player effects endpoints](player_effects_endpoints.md) (1 shared connections)
-- [logging setup structured](logging_setup_structured.md) (1 shared connections)
+- [task registry app](task_registry_app.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_startup_service.py`
+- `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

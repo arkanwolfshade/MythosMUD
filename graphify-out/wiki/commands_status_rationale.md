@@ -33,13 +33,12 @@
 
 ## Relationships
 
-- [commands npc admin](commands_npc_admin.md) (3 shared connections)
+- [commands npc admin](commands_npc_admin.md) (4 shared connections)
 - [commands who rationale](commands_who_rationale.md) (3 shared connections)
 - [commands whoami utility](commands_whoami_utility.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
-- [commands whisper command](commands_whisper_command.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [command models moderation](command_models_moderation.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 - [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
 
 ## Source Files

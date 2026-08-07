@@ -1,67 +1,50 @@
 # project paths rationale
 
-> 44 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **logger.ts** (36 connections) — `client/src/utils/logger.ts`
-- **logger** (33 connections) — `client/src/utils/logger.ts`
-- **roomHandlers.ts** (26 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **roomHandlers.test.ts** (12 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/roomHandlers.test.ts`
-- **RoomInfoPanel.tsx** (10 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **useCommandHandlers.ts** (10 connections) — `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
-- **logger.test.ts** (8 connections) — `client/src/utils/logger.test.ts`
-- **handleRoomUpdate()** (7 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **RoomInfoPanel()** (6 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **handleStructuredOccupantsFormat()** (5 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **handleRoomOccupants()** (5 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **RoomInfoPanel.test.tsx** (4 connections) — `client/src/components/__tests__/RoomInfoPanel.test.tsx`
-- **useCommandHandlers()** (4 connections) — `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
-- **RoomInfoPanel.test.tsx** (3 connections) — `client/src/components/RoomInfoPanel.test.tsx`
-- **hasOccupantData()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **createRoomUpdateWithPreservedOccupants()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **getValueOrDefault()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **getFinalNpcs()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **getFinalPlayers()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **validateAndFixRoomData()** (2 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **__setOccupantDebugForTests()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **handleGameState()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **handleFollowState()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **extractRoomMetadata()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **createInitialRoomState()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- *... and 19 more nodes in this community*
+- **EnvironmentalContainerLoader** (16 connections) — `server/services/environmental_container_loader.py`
+- **test_environmental_container_loader.py** (16 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **.load_container_from_room_json()** (8 connections) — `server/services/environmental_container_loader.py`
+- **.migrate_room_container_to_postgresql()** (7 connections) — `server/services/environmental_container_loader.py`
+- **.__init__()** (3 connections) — `server/services/environmental_container_loader.py`
+- **Any** (3 connections)
+- **.load_containers_for_room()** (3 connections) — `server/services/environmental_container_loader.py`
+- **test_load_container_from_room_json_invalid_capacity()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_load_container_from_room_json_invalid_lock_state()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **ContainerComponent** (2 connections)
+- **UUID** (2 connections)
+- **test_environmental_loader_requires_persistence()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_load_container_from_room_json_none_when_missing()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_load_container_from_room_json_disabled()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_load_container_from_room_json_success()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_migrate_room_container_existing()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_migrate_room_container_creates_new()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_load_containers_for_room_filters_environment()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **Service for loading environmental containers from JSON and PostgreSQL.      Hand** (1 connections) — `server/services/environmental_container_loader.py`
+- **Initialize the environmental container loader.          Args:             persis** (1 connections) — `server/services/environmental_container_loader.py`
+- **Load a container definition from room JSON.          Args:             room_json** (1 connections) — `server/services/environmental_container_loader.py`
+- **Migrate a container from room JSON to PostgreSQL.          Checks if container a** (1 connections) — `server/services/environmental_container_loader.py`
+- **Load all environmental containers for a room from PostgreSQL.          Args:** (1 connections) — `server/services/environmental_container_loader.py`
+- **Unit tests for EnvironmentalContainerLoader (room JSON -> container models).** (1 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
 
 ## Relationships
 
-- [Game Terminal UI](Game_Terminal_UI.md) (15 shared connections)
-- [game terminal lucidity](game_terminal_lucidity.md) (8 shared connections)
-- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (8 shared connections)
-- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (6 shared connections)
-- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (5 shared connections)
-- [SkillAssignmentScreen helpers CharacterN](SkillAssignmentScreen_helpers_CharacterN.md) (4 shared connections)
-- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (4 shared connections)
-- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (4 shared connections)
-- [game chat moderation](game_chat_moderation.md) (4 shared connections)
-- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (2 shared connections)
-- [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (2 shared connections)
-- [mythosApp CharacterSelectionScreen chara](mythosApp_CharacterSelectionScreen_chara.md) (2 shared connections)
+- [player event handlers](player_event_handlers.md) (6 shared connections)
+- [command inventory models](command_inventory_models.md) (5 shared connections)
+- [add used user](add_used_user.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/RoomInfoPanel.test.tsx`
-- `client/src/components/RoomInfoPanel.tsx`
-- `client/src/components/__tests__/RoomInfoPanel.test.tsx`
-- `client/src/components/ui-v2/eventHandlers/__tests__/roomHandlers.test.ts`
-- `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- `client/src/components/ui-v2/hooks/__tests__/useCommandHandlers.test.ts`
-- `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
-- `client/src/utils/logger.test.ts`
-- `client/src/utils/logger.ts`
+- `server/services/environmental_container_loader.py`
+- `server/tests/unit/services/test_environmental_container_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 221 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 82 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

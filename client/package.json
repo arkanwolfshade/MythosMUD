@@ -83,7 +83,7 @@
   },
   "overrides": {
     "undici": "^7.28.0",
-    "fast-uri": ">=3.1.4",
+    "fast-uri": "4.1.2",
     "lodash": "^4.18.1",
     "flatted": "^3.4.2",
     "glob": "^13.0.6",
@@ -94,9 +94,9 @@
     "@stoplight/spectral-ruleset-bundler": {
       "rollup": "^2.80.0"
     },
-    "markdown-it": ">=14.2.0",
-    "linkify-it": ">=5.0.2",
-    "js-yaml": ">=5.2.2",
+    "markdown-it": "14.2.0",
+    "linkify-it": "6.1.0",
+    "js-yaml": "5.2.2",
     "@asyncapi/specs": "6.11.1",
     "@asyncapi/generator": "3.3.0",
     "@asyncapi/generator-helpers": "1.1.0",

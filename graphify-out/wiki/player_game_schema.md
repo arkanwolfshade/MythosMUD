@@ -1,49 +1,55 @@
 # player game schema
 
-> 25 nodes
+> 45 nodes
 
 ## Key Concepts
 
-- **get_cached_player()** (15 connections) — `server/utils/player_cache.py`
-- **cache_player()** (13 connections) — `server/utils/player_cache.py`
-- **test_player_cache.py** (11 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **player_cache.py** (7 connections) — `server/utils/player_cache.py`
-- **_get_request_state()** (6 connections) — `server/utils/player_cache.py`
-- **test_cache_and_get_player()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_cache_player_multiple()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_cache_player_overwrite()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_get_cached_player_none()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_get_cached_player_nonexistent()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_get_cached_player_no_state()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_cache_player_no_state()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Any** (3 connections)
-- **Unit tests for player_cache utilities.  Tests the player caching functions for r** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test get_cached_player() returns None when no cache exists.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test cache_player() and get_cached_player() operations.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test get_cached_player() returns None for nonexistent key.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test cache_player() can cache multiple players.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test cache_player() overwrites existing entries.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test get_cached_player() handles missing state.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test cache_player() handles missing state gracefully.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Helpers for caching player objects during a single command request.  This avoids** (1 connections) — `server/utils/player_cache.py`
-- **Safely extract the state object from a FastAPI/Starlette request.** (1 connections) — `server/utils/player_cache.py`
-- **Return a cached player object for this request if one exists.** (1 connections) — `server/utils/player_cache.py`
-- **Cache a player object on the request for reuse within the command.** (1 connections) — `server/utils/player_cache.py`
+- **test_error_logging.py** (23 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **create_error_context()** (10 connections) — `server/api/player_helpers.py`
+- **create_context_from_request()** (10 connections) — `server/utils/error_logging.py`
+- **player_helpers.py** (9 connections) — `server/api/player_helpers.py`
+- **wrap_third_party_exception()** (8 connections) — `server/utils/error_logging.py`
+- **create_context_from_websocket()** (7 connections) — `server/utils/error_logging.py`
+- **log_error_with_context()** (7 connections) — `server/utils/error_logging.py`
+- **create_logged_http_exception()** (7 connections) — `server/utils/error_logging.py`
+- **log_and_raise_http()** (6 connections) — `server/utils/error_logging.py`
+- **test_player_helpers.py** (5 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **Any** (5 connections)
+- **test_create_error_context_without_user_sets_metadata()** (3 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **test_create_error_context_with_user_sets_user_id_and_metadata()** (3 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **test_create_error_context()** (3 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **test_create_error_context_with_metadata()** (3 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **test_error_context_to_dict()** (3 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **test_log_and_raise_delegates_to_enhanced()** (3 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **test_wrap_third_party_exception_delegates()** (3 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **test_log_and_raise_http_delegates()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **test_create_context_from_request_with_state()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **test_create_context_from_request_none()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **test_create_context_from_websocket()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **test_log_error_with_context_delegates()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **test_create_logged_http_exception_delegates()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **Exception** (2 connections)
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [command validation commands](command_validation_commands.md) (5 shared connections)
-- [commands logout rationale](commands_logout_rationale.md) (5 shared connections)
-- [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (12 shared connections)
+- [add used user](add_used_user.md) (11 shared connections)
+- [spell game magic](spell_game_magic.md) (6 shared connections)
+- [player requests schemas](player_requests_schemas.md) (2 shared connections)
+- [command inventory models](command_inventory_models.md) (2 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_player_cache.py`
-- `server/utils/player_cache.py`
+- `server/api/player_helpers.py`
+- `server/tests/unit/api/test_player_helpers.py`
+- `server/tests/unit/utils/test_error_logging.py`
+- `server/utils/error_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (99%)
+- EXTRACTED: 151 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

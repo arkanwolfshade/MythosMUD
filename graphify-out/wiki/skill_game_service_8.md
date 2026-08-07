@@ -1,26 +1,24 @@
 # skill game service
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Phase 2: Categorize and Prioritize Lint Issues** (5 connections) — `.cursor/commands/lint-remediation.md`
-- **🔴 CRITICAL (Fix First - Blocking Issues)** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **🟡 HIGH PRIORITY (Fix Second - Core Functionality)** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **🟢 MEDIUM PRIORITY (Fix Third - Enhancement)** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **🔵 LOW PRIORITY (Fix Last - Polish)** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **.test_get_snapshot_empty()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **Test get_snapshot returns empty dict when no catatonic players.** (1 connections) — `server/tests/unit/services/test_catatonia_registry.py`
 
 ## Relationships
 
-- [players coverage rationale](players_coverage_rationale.md) (1 shared connections)
+- [catatonia registry services](catatonia_registry_services.md) (1 shared connections)
+- [commands time handle](commands_time_handle.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/lint-remediation.md`
+- `server/tests/unit/services/test_catatonia_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

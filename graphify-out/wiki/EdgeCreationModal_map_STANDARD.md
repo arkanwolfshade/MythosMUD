@@ -1,50 +1,49 @@
 # EdgeCreationModal map STANDARD
 
-> 36 nodes
+> 37 nodes
 
 ## Key Concepts
 
-- **EdgeCreationModal.tsx** (39 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **useEdgeCreationModal()** (13 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **EdgeCreationModal.test.tsx** (7 connections) — `client/src/components/map/__tests__/EdgeCreationModal.test.tsx`
-- **EdgeValidationResult** (6 connections) — `client/src/components/map/hooks/useMapEditing.ts`
-- **EdgeCreationData** (5 connections) — `client/src/components/map/hooks/useMapEditing.ts`
-- **EdgeCreationModalProps** (4 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **getInitialEdgeFormState()** (4 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **EdgeCreationModal()** (4 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **isStandardExitDirection()** (3 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **filterNodesForTargetSelection()** (3 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **edgeFormStateFromExisting()** (3 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **resetEdgeFormFields()** (3 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **STANDARD_DIRECTION_SET** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **roomNodeMatchesSearchQuery()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **findRoomNodeById()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **emptyEdgeFormState()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **toggleStringFlag()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **edgeFormCanSubmit()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **deriveEdgeCreationData()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **submitValidatedEdge()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **runValidationAndPreviewSync()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **subscribeEscapeToClose()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **applyModalBodyScrollLock()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **EdgeFormResetters** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **EdgeModalValidationMessagesProps** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- *... and 11 more nodes in this community*
+- **Any** (10 connections)
+- **._handle_event_async()** (8 connections) — `server/events/event_bus.py`
+- **._ensure_async_processing()** (6 connections) — `server/events/event_bus.py`
+- **._create_async_subscriber_tasks()** (6 connections) — `server/events/event_bus.py`
+- **.unsubscribe()** (6 connections) — `server/events/event_bus.py`
+- **._separate_subscribers()** (5 connections) — `server/events/event_bus.py`
+- **._process_sync_subscribers()** (5 connections) — `server/events/event_bus.py`
+- **._wait_for_async_subscribers()** (5 connections) — `server/events/event_bus.py`
+- **.subscribe()** (5 connections) — `server/events/event_bus.py`
+- **._process_events_async()** (4 connections) — `server/events/event_bus.py`
+- **._handle_task_result_async()** (4 connections) — `server/events/event_bus.py`
+- **.publish()** (4 connections) — `server/events/event_bus.py`
+- **.inject()** (4 connections) — `server/events/event_bus.py`
+- **.get_subscriber_stats()** (4 connections) — `server/events/event_bus.py`
+- **._ensure_processing_started()** (3 connections) — `server/events/event_bus.py`
+- **Task** (3 connections)
+- **.get_all_subscriber_counts()** (3 connections) — `server/events/event_bus.py`
+- **.get_active_task_details()** (3 connections) — `server/events/event_bus.py`
+- **.get_subscriber_lifecycle_metrics()** (3 connections) — `server/events/event_bus.py`
+- **T** (2 connections)
+- **Ensure async processing is started only when needed and within an event loop.** (1 connections) — `server/events/event_bus.py`
+- **Legacy wrapper for API compatibility during transition.** (1 connections) — `server/events/event_bus.py`
+- **Pure async event processing loop replacing the dangerous threading pattern.** (1 connections) — `server/events/event_bus.py`
+- **Separate async and sync subscribers for appropriate execution.          Uses ins** (1 connections) — `server/events/event_bus.py`
+- **Execute sync subscribers sequentially with error isolation.          Sync subscr** (1 connections) — `server/events/event_bus.py`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (13 shared connections)
+- [Error Conversion](Error_Conversion.md) (18 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (8 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/EdgeCreationModal.tsx`
-- `client/src/components/map/__tests__/EdgeCreationModal.test.tsx`
-- `client/src/components/map/hooks/useMapEditing.ts`
+- `server/events/event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 131 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 108 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

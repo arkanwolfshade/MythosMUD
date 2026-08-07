@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_check_combat_state_allows_without_service()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test _check_combat_state allows movement when no combat service.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_should_apply_mute_check_non_sensitive_channel()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test should_apply_mute_check() returns False for non-sensitive channels.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 

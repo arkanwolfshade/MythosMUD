@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_should_echo_to_sender_not_chat_message()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _should_echo_to_sender returns False for non-chat messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_unmute_player_not_found()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test unmute_player() when mute doesn't exist.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [message chat nats](message_chat_nats.md) (1 shared connections)
+- [user manager services](user_manager_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 

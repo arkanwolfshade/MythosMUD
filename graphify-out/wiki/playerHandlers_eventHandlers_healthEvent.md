@@ -1,43 +1,47 @@
 # playerHandlers eventHandlers healthEvent
 
-> 17 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **DatabaseConfig** (14 connections) — `server/config/models/server_db.py`
-- **.ensure_url_set()** (4 connections) — `server/config/models/server_db.py`
-- **test_database_config_validate_url_postgresql()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_database_config_validate_url_empty()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_database_config_validate_pool_config_positive()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_database_config_validate_pool_config_invalid()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **.validate_database_url()** (2 connections) — `server/config/models/server_db.py`
-- **.validate_pool_config()** (2 connections) — `server/config/models/server_db.py`
-- **Any** (1 connections)
-- **Database configuration.** (1 connections) — `server/config/models/server_db.py`
-- **Validate database URL format - PostgreSQL only.** (1 connections) — `server/config/models/server_db.py`
-- **Validate pool configuration values are positive.** (1 connections) — `server/config/models/server_db.py`
-- **Ensure url is set - use npc_url as fallback if url is missing.          This han** (1 connections) — `server/config/models/server_db.py`
-- **Test DatabaseConfig URL validation with PostgreSQL URL.** (1 connections) — `server/tests/unit/config/test_config_models.py`
-- **Test DatabaseConfig URL validation with empty URL.** (1 connections) — `server/tests/unit/config/test_config_models.py`
-- **Test DatabaseConfig pool config validation with positive values.** (1 connections) — `server/tests/unit/config/test_config_models.py`
-- **Test DatabaseConfig pool config validation with invalid value.** (1 connections) — `server/tests/unit/config/test_config_models.py`
+- **_row_scalar_one_or_none()** (10 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **_async_session_maker_mock()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_room_uuid_by_stable_id_no_session()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_mark_room_as_explored_no_session()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_room_uuid_by_stable_id_with_session()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_room_uuid_by_stable_id_not_found()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_room_uuid_by_stable_id_string_uuid()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_room_uuid_by_stable_id_asyncpg_like_uuid_object()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_mark_explored_in_session_new_record()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_mark_explored_in_session_existing_record()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_room_uuid_by_stable_id_asyncpg_uuid()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_mark_room_as_explored_commits_session()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **SQLAlchemy-style result mock with scalar_one_or_none() -> value.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Async context manager returned by get_session_maker() -> maker() in tests.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test mark_room_as_explored() creates new session when none provided.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _get_room_uuid_by_stable_id() with provided session.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _get_room_uuid_by_stable_id() creates session when none provided.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _get_room_uuid_by_stable_id() returns None when room not found.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _get_room_uuid_by_stable_id() handles string UUID from database.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **DB drivers may return non-stdlib UUID; conversion via str() must yield stdlib UU** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _mark_explored_in_session() inserts new exploration record.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _mark_explored_in_session() returns True for existing record.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _get_room_uuid_by_stable_id() handles asyncpg UUID objects.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test mark_room_as_explored() commits session when creating new session.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
 
 ## Relationships
 
-- [config models rationale](config_models_rationale.md) (6 shared connections)
-- [lucidity npc combat](lucidity_npc_combat.md) (2 shared connections)
-- [admin command setstat](admin_command_setstat.md) (2 shared connections)
-- [player event handlers](player_event_handlers.md) (1 shared connections)
+- [corpse lifecycle service](corpse_lifecycle_service.md) (12 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (10 shared connections)
 
 ## Source Files
 
-- `server/config/models/server_db.py`
-- `server/tests/unit/config/test_config_models.py`
+- `server/tests/unit/services/test_exploration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 68 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

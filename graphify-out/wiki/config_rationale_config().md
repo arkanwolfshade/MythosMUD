@@ -1,39 +1,37 @@
 # config rationale config()
 
-> 11 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **CacheService** (24 connections) — `server/caching/cache_service.py`
-- **TestCacheService** (12 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.persistence()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_init_without_npc_service()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_init_with_npc_service()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_cache_stats_and_clear()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_frequently_accessed_data()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_handles_room_failure()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_handles_profession_failure()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.clear_all_caches()** (1 connections) — `server/caching/cache_service.py`
-- **Main cache service that coordinates all caching operations.      This service pr** (1 connections) — `server/caching/cache_service.py`
+- **test_connection_room_utils.py** (16 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **connection_room_utils.py** (10 connections) — `server/realtime/connection_room_utils.py`
+- **reconcile_room_presence_impl()** (7 connections) — `server/realtime/connection_room_utils.py`
+- **test_canonical_room_id_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **test_reconcile_room_presence_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **Room and subscription utility helpers for connection manager.  This module provi** (1 connections) — `server/realtime/connection_room_utils.py`
+- **Ensure room_occupants only contains currently online players.** (1 connections) — `server/realtime/connection_room_utils.py`
+- **Unit tests for connection room utils.  Tests the connection_room_utils module fu** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **Test canonical_room_id_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **Test reconcile_room_presence_impl() calls room_manager.reconcile_room_presence()** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
 
 ## Relationships
 
-- [commands skills rationale](commands_skills_rationale.md) (5 shared connections)
-- [startup npc service](startup_npc_service.md) (4 shared connections)
-- [uuid services npc](uuid_services_npc.md) (4 shared connections)
-- [services lucidity repository](services_lucidity_repository.md) (4 shared connections)
-- [cache caching service](cache_caching_service.md) (2 shared connections)
-- [caching lru cache](caching_lru_cache.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (14 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (3 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
 
 ## Source Files
 
-- `server/caching/cache_service.py`
-- `server/tests/unit/caching/test_cache_service.py`
+- `server/realtime/connection_room_utils.py`
+- `server/tests/unit/realtime/test_connection_room_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (73%)
-- INFERRED: 14 (27%)
+- EXTRACTED: 45 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

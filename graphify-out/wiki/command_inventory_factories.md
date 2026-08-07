@@ -1,11 +1,12 @@
 # command inventory factories
 
-> 142 nodes
+> 144 nodes
 
 ## Key Concepts
 
 - **BaseCommand** (152 connections) — `server/models/command_base.py`
 - **CommandFactory** (83 connections) — `server/utils/command_factories.py`
+- **command_parser.py** (46 connections) — `server/utils/command_parser.py`
 - **_build_command_factory()** (6 connections) — `server/utils/command_parser.py`
 - **.create_npc_command()** (4 connections) — `server/utils/command_factories.py`
 - **.create_spawn_command()** (4 connections) — `server/utils/command_factories.py`
@@ -28,23 +29,22 @@
 - **.create_ground_command()** (3 connections) — `server/utils/command_factories.py`
 - **.create_follow_command()** (3 connections) — `server/utils/command_factories.py`
 - **.create_unfollow_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_following_command()** (3 connections) — `server/utils/command_factories.py`
-- *... and 117 more nodes in this community*
+- *... and 119 more nodes in this community*
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (43 shared connections)
-- [command communication models](command_communication_models.md) (8 shared connections)
-- [message queue realtime](message_queue_realtime.md) (7 shared connections)
-- [admin auth service](admin_auth_service.md) (7 shared connections)
-- [Loot Generation](Loot_Generation.md) (7 shared connections)
-- [commands who helpers](commands_who_helpers.md) (6 shared connections)
-- [npc commands admin](npc_commands_admin.md) (6 shared connections)
-- [auth endpoints rationale](auth_endpoints_rationale.md) (5 shared connections)
-- [player presence tracker](player_presence_tracker.md) (3 shared connections)
-- [command commands talk](command_commands_talk.md) (2 shared connections)
-- [command parser rationale](command_parser_rationale.md) (2 shared connections)
-- [factory](factory.md) (1 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (29 shared connections)
+- [command communication models](command_communication_models.md) (9 shared connections)
+- [npc commands admin](npc_commands_admin.md) (8 shared connections)
+- [health models rationale](health_models_rationale.md) (8 shared connections)
+- [world models rationale](world_models_rationale.md) (7 shared connections)
+- [payload realtime optimizer](payload_realtime_optimizer.md) (7 shared connections)
+- [inventory commands command](inventory_commands_command.md) (5 shared connections)
+- [npc realtime occupant](npc_realtime_occupant.md) (5 shared connections)
+- [spell game magic](spell_game_magic.md) (5 shared connections)
+- [command processor rationale](command_processor_rationale.md) (4 shared connections)
+- [commands who helpers](commands_who_helpers.md) (4 shared connections)
+- [command factories create](command_factories_create.md) (4 shared connections)
 
 ## Source Files
 
@@ -54,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 447 (86%)
-- INFERRED: 73 (14%)
+- EXTRACTED: 494 (87%)
+- INFERRED: 73 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

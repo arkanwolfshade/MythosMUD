@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [commands npc admin](commands_npc_admin.md) (14 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (12 shared connections)
-- [commands whisper command](commands_whisper_command.md) (7 shared connections)
+- [commands npc admin](commands_npc_admin.md) (15 shared connections)
 - [player respawn event](player_respawn_event.md) (7 shared connections)
+- [character creation service](character_creation_service.md) (6 shared connections)
 - [rest grace period](rest_grace_period.md) (6 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (6 shared connections)
+- [npc combat player](npc_combat_player.md) (5 shared connections)
 - [chat service game](chat_service_game.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [spell game magic](spell_game_magic.md) (2 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (2 shared connections)
 - [chat game message](chat_game_message.md) (1 shared connections)
-- [game models player](game_models_player.md) (1 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
-- [command commands handler](command_commands_handler.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (1 shared connections)
 
 ## Source Files
 

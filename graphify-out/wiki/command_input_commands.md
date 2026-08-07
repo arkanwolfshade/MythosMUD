@@ -1,12 +1,11 @@
 # command input commands
 
-> 59 nodes
+> 57 nodes
 
 ## Key Concepts
 
 - **PassiveMobNPC** (59 connections) — `server/npc/passive_mob_npc.py`
 - **test_npc_base.py** (24 connections) — `server/tests/unit/npc/test_npc_base.py`
-- **passive_mob_npc.py** (19 connections) — `server/npc/passive_mob_npc.py`
 - **test_passive_mob_npc.py** (19 connections) — `server/tests/unit/npc/test_passive_mob_npc.py`
 - **._setup_passive_mob_behavior_rules()** (3 connections) — `server/npc/passive_mob_npc.py`
 - **.respond_to_player()** (3 connections) — `server/npc/passive_mob_npc.py`
@@ -29,19 +28,17 @@
 - **test_npc_base_take_damage_fatal()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_take_damage_when_dead()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_execute_behavior()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
-- *... and 34 more nodes in this community*
+- **test_npc_base_ai_placeholders()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [npc behavior engine](npc_behavior_engine.md) (10 shared connections)
-- [Error Conversion](Error_Conversion.md) (8 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [idle movement npc](idle_movement_npc.md) (2 shared connections)
-- [container events rationale](container_events_rationale.md) (2 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
-- [nats services service](nats_services_service.md) (1 shared connections)
-- [logging setup structured](logging_setup_structured.md) (1 shared connections)
+- [services npc startup](services_npc_startup.md) (7 shared connections)
+- [services nats service](services_nats_service.md) (4 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (4 shared connections)
+- [room look commands](room_look_commands.md) (3 shared connections)
+- [idle movement npc](idle_movement_npc.md) (1 shared connections)
+- [lucidity event services](lucidity_event_services.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 219 (97%)
+- EXTRACTED: 199 (97%)
 - INFERRED: 7 (3%)
 - AMBIGUOUS: 0 (0%)
 

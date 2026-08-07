@@ -33,7 +33,7 @@
 ## Relationships
 
 - [scripts run guard](scripts_run_guard.md) (2 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 

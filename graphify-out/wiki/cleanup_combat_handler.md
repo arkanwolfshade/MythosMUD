@@ -1,55 +1,61 @@
 # cleanup combat handler
 
-> 33 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **test_time_bundle.py** (20 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **TimeBundle** (14 connections) — `server/container/bundles/time.py`
-- **.initialize()** (5 connections) — `server/container/bundles/time.py`
-- **_season_for_month()** (5 connections) — `server/time/time_service.py`
-- **isolated_chronicle()** (4 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_get_mythos_chronicle_singleton()** (4 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **.reset_instance()** (4 connections) — `server/time/time_service.py`
-- **test_ensure_utc_naive_datetime()** (3 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_season_for_month()** (3 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_time_bundle_initialize_with_deps()** (2 connections) — `server/tests/unit/container/test_container_bundles.py`
-- **test_time_bundle_initialize_missing_deps()** (2 connections) — `server/tests/unit/container/test_container_bundles.py`
-- **test_time_bundle_initialize_with_dependencies()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_time_bundle_initialize_missing_dependencies()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_chronicle_calendar_and_dayparts()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_chronicle_time_conversion()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_chronicle_advance_and_freeze()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_chronicle_format_clock()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_chronicle_advance_rejects_negative_delta()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **Mythos time consumer service.** (1 connections) — `server/container/bundles/time.py`
-- **Initialize Mythos time event consumer.** (1 connections) — `server/container/bundles/time.py`
-- **test_time_bundle_attrs()** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **Unit tests for TimeBundle container wiring.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **Naive datetimes are normalized to UTC.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **Season mapping follows month bands.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **Chronicle with isolated state file.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- *... and 8 more nodes in this community*
+- **CombatParticipantType** (44 connections) — `server/models/combat.py`
+- **CombatEventHandler** (27 connections) — `server/services/combat_event_handler.py`
+- **test_combat_event_handler.py** (16 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **_participant()** (10 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **.handle_attack_events_and_xp()** (8 connections) — `server/services/combat_event_handler.py`
+- **.award_xp_to_player()** (5 connections) — `server/services/combat_event_handler.py`
+- **.publish_combat_ended_event()** (5 connections) — `server/services/combat_event_handler.py`
+- **._resolve_participant_display_name()** (4 connections) — `server/services/combat_event_handler.py`
+- **UUID** (4 connections)
+- **._calculate_xp_reward()** (4 connections) — `server/services/combat_event_handler.py`
+- **.__init__()** (3 connections) — `server/services/combat_event_handler.py`
+- **test_resolve_participant_display_name_player()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_resolve_participant_display_name_npc_fallback()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_resolve_participant_display_name_npc_from_lifecycle()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_publish_attack_events_no_publisher()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_handle_attack_events_and_xp_npc_death()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_publish_attack_events_player_target()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_award_xp_to_player()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_calculate_xp_reward_default()** (2 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_publish_combat_ended_event()** (2 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **Type of combat participant.** (1 connections) — `server/models/combat.py`
+- **Any** (1 connections)
+- **Handles combat event publishing.** (1 connections) — `server/services/combat_event_handler.py`
+- **Initialize the event handler.          Args:             combat_service: Referen** (1 connections) — `server/services/combat_event_handler.py`
+- **Resolve display name for combat messages. For NPCs, resolve from lifecycle** (1 connections) — `server/services/combat_event_handler.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [time service rationale](time_service_rationale.md) (9 shared connections)
-- [nats services service](nats_services_service.md) (8 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (2 shared connections)
-- [command service commands](command_service_commands.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (16 shared connections)
+- [Item Instances](Item_Instances.md) (12 shared connections)
+- [room validator toolkit](room_validator_toolkit.md) (5 shared connections)
+- [subject admin controller](subject_admin_controller.md) (4 shared connections)
+- [command factories exploration](command_factories_exploration.md) (4 shared connections)
+- [game chat service](game_chat_service.md) (4 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (3 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
+- [commands position system](commands_position_system.md) (2 shared connections)
+- [services service phantom](services_service_phantom.md) (2 shared connections)
+- [models player rationale](models_player_rationale.md) (2 shared connections)
+- [player look commands](player_look_commands.md) (2 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/time.py`
-- `server/tests/unit/container/test_container_bundles.py`
-- `server/tests/unit/container/test_time_bundle.py`
-- `server/time/time_service.py`
+- `server/models/combat.py`
+- `server/services/combat_event_handler.py`
+- `server/tests/unit/services/test_combat_event_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 93 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 156 (95%)
+- INFERRED: 9 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

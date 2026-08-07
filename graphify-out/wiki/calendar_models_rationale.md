@@ -1,54 +1,46 @@
 # calendar models rationale
 
-> 28 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **quest_chat_notify.py** (20 connections) — `server/game/quest/quest_chat_notify.py`
-- **schedule_personal_system()** (12 connections) — `server/game/chat_npc_system.py`
-- **should_notify_quest_progress()** (10 connections) — `server/game/quest/quest_chat_notify.py`
-- **notify_quest_progress()** (9 connections) — `server/game/quest/quest_chat_notify.py`
-- **notify_quest_started()** (8 connections) — `server/game/quest/quest_chat_notify.py`
-- **notify_quest_completed()** (8 connections) — `server/game/quest/quest_chat_notify.py`
-- **notify_quest_abandoned()** (8 connections) — `server/game/quest/quest_chat_notify.py`
-- **title_from_quest_result()** (7 connections) — `server/game/quest/quest_chat_notify.py`
-- **test_notify_quest_lifecycle_schedules_personal_system()** (6 connections) — `server/tests/unit/game/test_chat_npc_system.py`
-- **UUID** (5 connections)
-- **_goal_is_met()** (5 connections) — `server/game/quest/quest_chat_notify.py`
-- **Any** (4 connections)
-- **_progress_has_any_value()** (4 connections) — `server/game/quest/quest_chat_notify.py`
-- **_as_int()** (3 connections) — `server/game/quest/quest_chat_notify.py`
-- **test_title_from_quest_result_prefers_title_field()** (3 connections) — `server/tests/unit/game/test_chat_npc_system.py`
-- **Schedule personal system chat from sync or async callers.** (1 connections) — `server/game/chat_npc_system.py`
-- **Quest lifecycle and NPC quest-line chat helpers (issue #146 MVP).  # group: ques** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Personal system chat when a quest becomes active.** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Personal system chat for milestone progress (first tick or goal newly met).** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Personal system chat when a quest completes.** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Personal system chat when a quest is abandoned.** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Coerce progress/config scalars to int; non-numeric becomes default.** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Return True if one goal is satisfied given current progress.** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **True if any goal slot has a non-zero / non-empty progress value.** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Return True when a progress personal-system line should be sent.      Notifies o** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- *... and 3 more nodes in this community*
+- **Any** (12 connections)
+- **._try_evaluators()** (7 connections) — `server/npc/behavior_engine.py`
+- **.evaluate_condition()** (6 connections) — `server/npc/behavior_engine.py`
+- **.get_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **.execute_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_equality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_inequality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_numeric_comparison()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_boolean_condition()** (4 connections) — `server/npc/behavior_engine.py`
+- **.execute_action()** (4 connections) — `server/npc/behavior_engine.py`
+- **.add_rule()** (3 connections) — `server/npc/behavior_engine.py`
+- **.get_rules()** (3 connections) — `server/npc/behavior_engine.py`
+- **.register_action_handler()** (3 connections) — `server/npc/behavior_engine.py`
+- **Add a behavior rule to the engine.          Args:             rule: Rule diction** (1 connections) — `server/npc/behavior_engine.py`
+- **Get all behavior rules.** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate equality condition (==).          Returns:             bool if conditio** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate inequality condition (!=).          Returns:             bool if condit** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate numeric comparison conditions (>=, <=, >, <).          Args:** (1 connections) — `server/npc/behavior_engine.py`
+- **Try multiple evaluator methods in sequence.          Args:             condition** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate boolean conditions and variable lookups.          Args:             con** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate a condition string against context.          Args:             conditio** (1 connections) — `server/npc/behavior_engine.py`
+- **Get rules that are applicable given the current context.          Args:** (1 connections) — `server/npc/behavior_engine.py`
+- **Register an action handler for a specific action.          Args:             act** (1 connections) — `server/npc/behavior_engine.py`
+- **Execute a specific action.          Args:             action_name: Name of the a** (1 connections) — `server/npc/behavior_engine.py`
+- **Execute all applicable rules based on context.          Args:             contex** (1 connections) — `server/npc/behavior_engine.py`
 
 ## Relationships
 
-- [quest chat game](quest_chat_game.md) (12 shared connections)
-- [quest game service](quest_game_service.md) (7 shared connections)
-- [commands quest rationale](commands_quest_rationale.md) (6 shared connections)
-- [collect inventory game](collect_inventory_game.md) (6 shared connections)
-- [chat game message](chat_game_message.md) (4 shared connections)
-- [dialogue service game](dialogue_service_game.md) (2 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (12 shared connections)
 
 ## Source Files
 
-- `server/game/chat_npc_system.py`
-- `server/game/quest/quest_chat_notify.py`
-- `server/tests/unit/game/test_chat_npc_system.py`
+- `server/npc/behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 125 (100%)
+- EXTRACTED: 76 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

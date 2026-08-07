@@ -1,62 +1,48 @@
 # player service game
 
-> 69 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **Stats** (88 connections) — `server/models/game.py`
-- **test_game_stats_methods.py** (31 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_create_player_with_stats_character_limit()** (4 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_create_player_with_stats_success()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_stats_validate_current_vs_max_stats_caps_dp()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_validate_current_vs_max_stats_caps_magic_points()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_validate_current_vs_max_stats_caps_lucidity()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_validate_current_vs_max_stats_allows_valid_values()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_get_attribute_modifier_negative()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_get_attribute_modifier_zero()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_get_attribute_modifier_different_attribute()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_max_dp_calculation()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_max_dp_calculation_alternative()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_max_dp_with_none()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_max_magic_points_calculation()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_max_magic_points_calculation_alternative()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_max_lucidity_calculation()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_max_lucidity_calculation_alternative()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_is_lucid_true()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_is_lucid_false()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_is_corrupted_true()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_is_corrupted_false()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_is_delirious_true()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_is_delirious_false()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_get_attribute_modifier_positive()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- *... and 44 more nodes in this community*
+- **test_room_renderer.py** (25 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_empty_none()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_empty_list()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_single_drop()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_multiple_drops()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_uses_item_id_when_no_item_name()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_uses_default_when_no_name_or_id()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_handles_missing_slot_type()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_handles_missing_quantity()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_handles_invalid_quantity_string()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_handles_invalid_quantity_type()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_handles_large_quantity()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_build_room_drop_summary_empty()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_build_room_drop_summary_single_drop()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_build_room_drop_summary_multiple_drops()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_clone_room_drops_none()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_clone_room_drops_empty_list()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_clone_room_drops_single_drop()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_clone_room_drops_multiple_drops()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_clone_room_drops_nested_structure()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_clone_room_drops_converts_to_dict()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **Unit tests for room rendering utilities.  Tests helpers for formatting room drop** (1 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **Test format_room_drop_lines returns empty line for None.** (1 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **Test format_room_drop_lines returns empty line for empty list.** (1 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **Test format_room_drop_lines formats single drop correctly.** (1 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [command factories communication](command_factories_communication.md) (10 shared connections)
-- [event connection helpers](event_connection_helpers.md) (10 shared connections)
-- [services passive lucidity](services_passive_lucidity.md) (6 shared connections)
-- [Player Stats](Player_Stats.md) (6 shared connections)
-- [npc rationale extract](npc_rationale_extract.md) (6 shared connections)
-- [profession game service](profession_game_service.md) (5 shared connections)
-- [commands inventory put](commands_inventory_put.md) (3 shared connections)
-- [player event state](player_event_state.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [service combat services](service_combat_services.md) (2 shared connections)
-- [npc idle movement](npc_idle_movement.md) (2 shared connections)
-- [memory profiler rationale](memory_profiler_rationale.md) (2 shared connections)
+- [look helpers commands](look_helpers_commands.md) (24 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
-- `server/tests/unit/api/test_character_creation.py`
-- `server/tests/unit/game/test_player_service.py`
-- `server/tests/unit/models/test_game_stats_methods.py`
+- `server/tests/unit/utils/test_room_renderer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 239 (96%)
-- INFERRED: 10 (4%)
+- EXTRACTED: 106 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

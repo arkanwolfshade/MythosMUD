@@ -1,32 +1,34 @@
 # tick game service
 
-> 8 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **.__call__()** (8 connections) — `server/middleware/correlation_middleware.py`
-- **_get_header()** (6 connections) — `server/middleware/correlation_middleware.py`
-- **Scope** (2 connections)
-- **test_get_header_case_insensitive()** (2 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
-- **Receive** (1 connections)
-- **Send** (1 connections)
-- **Return first header value for name (case-insensitive) from ASGI scope.** (1 connections) — `server/middleware/correlation_middleware.py`
-- **ASGI application interface.          Args:             scope: ASGI connection sc** (1 connections) — `server/middleware/correlation_middleware.py`
+- **test_spell_effects_support.py** (13 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **_spell()** (8 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **_target()** (7 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_process_stat_modify_rejects_non_player()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_process_stat_modify_success()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_process_create_object_missing_prototype()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_process_create_object_for_player()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_create_object_for_room_placeholder()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_build_stat_modifications_shorthand()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_build_stat_modifications_missing()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **Unit tests for server.game.magic.spell_effects_support.** (1 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
 
 ## Relationships
 
-- [app factory rationale](app_factory_rationale.md) (4 shared connections)
-- [world loader room](world_loader_room.md) (2 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (3 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (1 shared connections)
 
 ## Source Files
 
-- `server/middleware/correlation_middleware.py`
-- `server/tests/unit/middleware/test_correlation_middleware.py`
+- `server/tests/unit/game/magic/test_spell_effects_support.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (91%)
-- INFERRED: 2 (9%)
+- EXTRACTED: 48 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

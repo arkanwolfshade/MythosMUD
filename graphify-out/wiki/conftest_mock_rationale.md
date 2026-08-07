@@ -1,37 +1,37 @@
 # conftest mock rationale
 
-> 15 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **.call()** (9 connections) — `server/realtime/circuit_breaker.py`
-- **._transition_to()** (6 connections) — `server/realtime/circuit_breaker.py`
-- **._on_success()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **._on_failure()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **._time_until_retry()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **.get_stats()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **._should_attempt_reset()** (3 connections) — `server/realtime/circuit_breaker.py`
-- **Any** (2 connections)
-- **Execute function through circuit breaker.          Enforces circuit breaker logi** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Handle successful function call.          Updates state based on current circuit** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Handle failed function call.          Updates state based on failure count:** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Check if enough time has passed to attempt circuit reset.          Returns:** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Calculate seconds until circuit can attempt reset.          Returns:** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Transition circuit to new state.          Args:             new_state: State to** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Get circuit breaker statistics.          Returns:             Dictionary with ci** (1 connections) — `server/realtime/circuit_breaker.py`
+- **useConnectionStateMachine.ts** (8 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **useConnectionState.ts** (7 connections) — `client/src/hooks/useConnectionState.ts`
+- **useConnectionState()** (4 connections) — `client/src/hooks/useConnectionState.ts`
+- **connectionMachine** (4 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **ConnectionContext** (3 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **useConnectionState.test.ts** (2 connections) — `client/src/hooks/__tests__/useConnectionState.test.ts`
+- **useConnectionStateMachine.test.ts** (2 connections) — `client/src/hooks/__tests__/useConnectionStateMachine.test.ts`
+- **UseConnectionStateResult** (2 connections) — `client/src/hooks/useConnectionState.ts`
+- **useConnectionStateMachine.test.ts** (2 connections) — `client/src/hooks/useConnectionStateMachine.test.ts`
+- **ConnectionState** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **ConnectionEvent** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **ConnectionMachineInput** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
 
 ## Relationships
 
-- [websocket handler realtime](websocket_handler_realtime.md) (8 shared connections)
-- [config rationale config()](config_rationale_config%28%29.md) (1 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (3 shared connections)
 
 ## Source Files
 
-- `server/realtime/circuit_breaker.py`
+- `client/src/hooks/__tests__/useConnectionState.test.ts`
+- `client/src/hooks/__tests__/useConnectionStateMachine.test.ts`
+- `client/src/hooks/useConnectionState.ts`
+- `client/src/hooks/useConnectionStateMachine.test.ts`
+- `client/src/hooks/useConnectionStateMachine.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
+- EXTRACTED: 37 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

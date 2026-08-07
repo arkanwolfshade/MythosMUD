@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (2 shared connections)
 
 ## Source Files
 

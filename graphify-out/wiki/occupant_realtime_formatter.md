@@ -1,33 +1,35 @@
 # occupant realtime formatter
 
-> 8 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **validate_shutdown_admin_permission()** (9 connections) — `server/commands/admin_shutdown_command.py`
-- **test_validate_shutdown_admin_permission_no_player()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_validate_shutdown_admin_permission_not_admin()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_validate_shutdown_admin_permission_admin()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Validate that a player has admin permissions for server shutdown.      Args:** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Test validate_shutdown_admin_permission() returns False when player is None.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test validate_shutdown_admin_permission() returns False when player is not admin** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test validate_shutdown_admin_permission() returns True when player is admin.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **apply_stat_modifications()** (10 connections) — `server/game/magic/spell_effects_stats.py`
+- **test_spell_effects_stats.py** (8 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **spell_effects_stats.py** (6 connections) — `server/game/magic/spell_effects_stats.py`
+- **test_apply_stat_modifications_basic()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **test_apply_stat_modifications_clamps_to_bounds()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **test_apply_stat_modifications_skips_invalid_stat()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **test_apply_stat_modifications_string_coercion()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **test_apply_stat_modifications_bad_string_skipped()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **Stat modification helpers for spell effects.  This module contains utility fun** (1 connections) — `server/game/magic/spell_effects_stats.py`
+- **Apply stat modification dict to stats.      Returns (updated stats, stat_chang** (1 connections) — `server/game/magic/spell_effects_stats.py`
+- **Unit tests for spell_effects_stats helpers.** (1 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
 
 ## Relationships
 
-- [shutdown admin command](shutdown_admin_command.md) (4 shared connections)
-- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (3 shared connections)
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_shutdown_command.py`
-- `server/tests/unit/commands/test_admin_shutdown_command.py`
+- `server/game/magic/spell_effects_stats.py`
+- `server/tests/unit/game/magic/test_spell_effects_stats.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 37 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

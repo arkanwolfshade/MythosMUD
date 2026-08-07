@@ -1,8 +1,8 @@
 # ValidationError
 
-> God node · 582 connections · `server/exceptions.py`
+> God node · 583 connections · `server/exceptions.py`
 
-**Community:** [Loot Generation](Loot_Generation.md)
+**Community:** [command inventory models](command_inventory_models.md)
 
 ## Connections by Relation
 
@@ -34,9 +34,8 @@
 ### imports
 - command_service.py `EXTRACTED`
 - database.py `EXTRACTED`
-- test_container_service.py `EXTRACTED`
 - players.py `EXTRACTED`
-- test_container_persistence.py `EXTRACTED`
+- test_container_service.py `EXTRACTED`
 - container_persistence.py `EXTRACTED`
 - test_players_api_coverage.py `EXTRACTED`
 - test_container_persistence_extended_row_helpers.py `EXTRACTED`
@@ -52,28 +51,29 @@
 - test_command_parser.py `EXTRACTED`
 - test_movement_service.py `EXTRACTED`
 - test_database_extended.py `EXTRACTED`
+- test_exceptions.py `EXTRACTED`
 
 ### indirect_call
 - handle_transfer_items_exceptions() `INFERRED`
-- create_container() `INFERRED`
-- .transfer_from_container() `INFERRED`
-- update_container() `INFERRED`
 - ._initialize_database() `INFERRED`
 - validate_room_data() `INFERRED`
-- .open_container() `INFERRED`
 - .handle_exception() `INFERRED`
 - register_error_handlers() `INFERRED`
 - create_item_instance_async() `INFERRED`
-- .transfer_to_container() `INFERRED`
 - _execute_movement() `INFERRED`
 - _weapon_from_prototype_registry() `INFERRED`
 - _initialize_npc_database() `INFERRED`
 - _populate_container_items_async() `INFERRED`
 - create_item_instance() `INFERRED`
-- .lock_container() `INFERRED`
-- .unlock_container() `INFERRED`
-- _convert_inventory_list_to_inventory_stacks() `INFERRED`
 - get_npc_database_path() `INFERRED`
+- init_npc_db() `INFERRED`
+- _seed_new_container_items() `INFERRED`
+- .open_container() `INFERRED`
+- update_container_items() `INFERRED`
+- fetch_user_by_username_case_insensitive() `INFERRED`
+- .create_player_with_stats() `INFERRED`
+- .delete_player() `INFERRED`
+- .create_player() `INFERRED`
 
 ### inherits
 - MythosMUDError `EXTRACTED`
@@ -101,11 +101,11 @@
 - TestLegacyHandlerSecurity `INFERRED`
 - ErrorResponseDetailsInput `INFERRED`
 - FastAPI `INFERRED`
-- TestHandleTransferItemsExceptions `INFERRED`
 - TestGracefulDegradation `INFERRED`
 - _CircuitBreakerResult `INFERRED`
 - Exception `INFERRED`
 - HTTPException `INFERRED`
+- TestRollCharacterStats `INFERRED`
 
 ---
 

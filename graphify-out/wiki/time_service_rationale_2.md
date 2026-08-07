@@ -1,62 +1,51 @@
 # time service rationale
 
-> 92 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **MythosTickScheduler** (29 connections) — `server/time/tick_scheduler.py`
-- **MythosChronicle** (29 connections) — `server/time/time_service.py`
-- **get_mythos_chronicle()** (26 connections) — `server/time/time_service.py`
-- **test_tick_scheduler.py** (17 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **tick_scheduler.py** (15 connections) — `server/time/tick_scheduler.py`
-- **datetime** (15 connections)
-- **_ensure_utc()** (13 connections) — `server/time/time_service.py`
-- **.get_calendar_components()** (10 connections) — `server/time/time_service.py`
-- **ChronicleState** (9 connections) — `server/time/time_service.py`
-- **.get_current_mythos_datetime()** (9 connections) — `server/time/time_service.py`
-- **__init__.py** (8 connections) — `server/time/__init__.py`
-- **.get_daypart()** (8 connections) — `server/time/time_service.py`
-- **._load_state()** (8 connections) — `server/time/time_service.py`
-- **._persist_state()** (8 connections) — `server/time/time_service.py`
-- **.__init__()** (7 connections) — `server/time/tick_scheduler.py`
-- **.to_mythos_datetime()** (7 connections) — `server/time/time_service.py`
-- **.is_witching_hour()** (7 connections) — `server/time/time_service.py`
-- **.is_daytime()** (7 connections) — `server/time/time_service.py`
-- **._migrate_old_state_file()** (6 connections) — `server/time/time_service.py`
-- **._run()** (5 connections) — `server/time/tick_scheduler.py`
-- **._emit_pending_ticks()** (5 connections) — `server/time/tick_scheduler.py`
-- **._publish_tick()** (5 connections) — `server/time/tick_scheduler.py`
-- **._truncate_to_hour()** (5 connections) — `server/time/tick_scheduler.py`
-- **.__init__()** (5 connections) — `server/time/time_service.py`
-- **.to_real_datetime()** (5 connections) — `server/time/time_service.py`
-- *... and 67 more nodes in this community*
+- **AliasGraph** (18 connections) — `server/utils/alias_graph.py`
+- **test_alias_graph.py** (9 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **alias_graph.py** (8 connections) — `server/utils/alias_graph.py`
+- **test_alias_graph_init()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **test_alias_graph_build_graph()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **test_alias_graph_detect_cycle_no_cycle()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **test_alias_graph_is_safe_to_expand()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **test_alias_graph_get_expansion_depth()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **test_alias_graph_clear()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **.__init__()** (3 connections) — `server/utils/alias_graph.py`
+- **.build_graph()** (3 connections) — `server/utils/alias_graph.py`
+- **._extract_alias_references()** (3 connections) — `server/utils/alias_graph.py`
+- **.detect_cycle()** (3 connections) — `server/utils/alias_graph.py`
+- **.is_safe_to_expand()** (3 connections) — `server/utils/alias_graph.py`
+- **.get_expansion_depth()** (2 connections) — `server/utils/alias_graph.py`
+- **.clear()** (2 connections) — `server/utils/alias_graph.py`
+- **Unit tests for alias_graph utilities.  Tests the AliasGraph class.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Test AliasGraph initialization.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Test AliasGraph.build_graph() builds dependency graph.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Test AliasGraph.detect_cycle() returns None when no cycle.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Test AliasGraph.is_safe_to_expand() returns True when safe.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Test AliasGraph.get_expansion_depth() returns depth.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Test AliasGraph.clear() clears the graph.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Alias circular dependency detection using graph analysis.  This module provides** (1 connections) — `server/utils/alias_graph.py`
+- **Graph-based circular dependency detection for alias expansion.      Uses depth-f** (1 connections) — `server/utils/alias_graph.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (12 shared connections)
-- [cleanup combat handler](cleanup_combat_handler.md) (9 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (8 shared connections)
-- [follow service game](follow_service_game.md) (4 shared connections)
-- [Error Conversion](Error_Conversion.md) (4 shared connections)
-- [command service commands](command_service_commands.md) (3 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (3 shared connections)
-- [Spell Validation](Spell_Validation.md) (2 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (2 shared connections)
-- [command base models](command_base_models.md) (2 shared connections)
-- [nats services service](nats_services_service.md) (2 shared connections)
-- [commands admin mute](commands_admin_mute.md) (2 shared connections)
+- [commands npc admin](commands_npc_admin.md) (3 shared connections)
+- [combat attack handler](combat_attack_handler.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/time/test_tick_scheduler.py`
-- `server/time/__init__.py`
-- `server/time/tick_scheduler.py`
-- `server/time/time_service.py`
+- `server/tests/unit/utils/test_alias_graph.py`
+- `server/utils/alias_graph.py`
 
 ## Audit Trail
 
-- EXTRACTED: 372 (98%)
-- INFERRED: 9 (2%)
+- EXTRACTED: 88 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

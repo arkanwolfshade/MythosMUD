@@ -4,22 +4,21 @@
 
 ## Key Concepts
 
-- **test_move_player_empty_player_id()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test move_player() with empty player_id.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_get_player_room_from_persistence()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test get_player_room_from_persistence() returns player room.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

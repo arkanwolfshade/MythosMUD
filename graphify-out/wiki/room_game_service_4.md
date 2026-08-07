@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_add_member_no_such_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **Adding to a non-existent party fails.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_collect_room_targets_empty()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test collect_room_targets() returns empty set when no subscribers.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 

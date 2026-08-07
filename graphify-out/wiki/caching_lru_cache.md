@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **LRUCache** (27 connections) — `server/caching/lru_cache.py`
-- **.items()** (8 connections) — `server/caching/lru_cache.py`
 - **K** (7 connections)
+- **.items()** (7 connections) — `server/caching/lru_cache.py`
 - **.get()** (6 connections) — `server/caching/lru_cache.py`
 - **.put()** (6 connections) — `server/caching/lru_cache.py`
 - **.get_or_set()** (6 connections) — `server/caching/lru_cache.py`
@@ -33,14 +33,13 @@
 
 ## Relationships
 
-- [commands skills rationale](commands_skills_rationale.md) (9 shared connections)
-- [startup npc service](startup_npc_service.md) (1 shared connections)
-- [uuid services npc](uuid_services_npc.md) (1 shared connections)
+- [admin commands setstat](admin_commands_setstat.md) (9 shared connections)
+- [player left room](player_left_room.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (1 shared connections)
 - [services lucidity repository](services_lucidity_repository.md) (1 shared connections)
-- [config rationale config()](config_rationale_config%28%29.md) (1 shared connections)
-- [cache lru caching](cache_lru_caching.md) (1 shared connections)
+- [message realtime messaging](message_realtime_messaging.md) (1 shared connections)
+- [map layout useMapLayout](map_layout_useMapLayout.md) (1 shared connections)
 - [container inventory display](container_inventory_display.md) (1 shared connections)
-- [Exception Containers](Exception_Containers.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 142 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 142 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

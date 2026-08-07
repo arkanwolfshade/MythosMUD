@@ -4,30 +4,26 @@
 
 ## Key Concepts
 
-- **InviteCreate** (8 connections) — `server/schemas/auth/invite.py`
-- **test_invite_create()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **test_invite_create_no_expiry()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **Schema for creating a new invite.** (1 connections) — `server/schemas/auth/invite.py`
-- **Test InviteCreate can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **Test InviteCreate can be instantiated without expiry.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **TestGetPlayerServiceForTesting** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_player_service_for_testing_creates_mock()** (4 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_player_service_for_testing_with_provided_service()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_player_service_for_testing helper function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_player_service_for_testing returns provided service.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_player_service_for_testing creates PlayerService when None provided.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [spawn npc services](spawn_npc_services.md) (3 shared connections)
-- [Player Stats](Player_Stats.md) (1 shared connections)
-- [level curve game](level_curve_game.md) (1 shared connections)
-- [message filtering helpers](message_filtering_helpers.md) (1 shared connections)
-- [professions endpoints all](professions_endpoints_all.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [Player Stats](Player_Stats.md) (2 shared connections)
 
 ## Source Files
 
-- `server/schemas/auth/invite.py`
-- `server/tests/unit/schemas/test_invite_schemas.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (87%)
+- INFERRED: 2 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

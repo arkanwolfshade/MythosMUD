@@ -1,10 +1,11 @@
 # message broadcaster realtime
 
-> 39 nodes
+> 43 nodes
 
 ## Key Concepts
 
 - **DialogueDefinitionRepository** (32 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
+- **dialogue_definition_repository.py** (20 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
 - **test_dialogue_definition_repository.py** (20 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
 - **DialogueDefinition** (13 connections) — `server/models/dialogue.py`
 - **_row_to_dialogue()** (11 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
@@ -16,6 +17,7 @@
 - **_as_dialogue_row()** (7 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
 - **_definition_dict()** (6 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
 - **_mock_session_with_rows()** (6 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
+- **.delete()** (5 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
 - **test_list_all_success()** (3 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
 - **test_list_all_db_error()** (3 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
 - **test_get_by_id_found()** (3 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
@@ -27,20 +29,19 @@
 - **test_definition_dict_non_dict()** (2 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
 - **test_definition_dict_coerces_keys()** (2 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
 - **test_row_to_dialogue()** (2 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **repo()** (2 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_delete_true()** (2 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- *... and 14 more nodes in this community*
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (20 shared connections)
-- [player preferences services](player_preferences_services.md) (6 shared connections)
-- [dialogue service game](dialogue_service_game.md) (5 shared connections)
-- [Database Config](Database_Config.md) (4 shared connections)
-- [world models rationale](world_models_rationale.md) (3 shared connections)
-- [argon2 auth rationale](argon2_auth_rationale.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (10 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (8 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (7 shared connections)
+- [add used user](add_used_user.md) (7 shared connections)
+- [dialogue service game](dialogue_service_game.md) (6 shared connections)
+- [player room realtime](player_room_realtime.md) (4 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [useWebSocketConnectionTestFixtures useWe](useWebSocketConnectionTestFixtures_useWe.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,8 +52,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 166 (92%)
-- INFERRED: 15 (8%)
+- EXTRACTED: 192 (92%)
+- INFERRED: 16 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

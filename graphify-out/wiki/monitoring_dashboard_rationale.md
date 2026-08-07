@@ -1,52 +1,48 @@
 # monitoring dashboard rationale
 
-> 47 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **test_admin_commands_helpers.py** (20 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **notify_player_of_teleport()** (18 connections) — `server/commands/admin_teleport_utils.py`
-- **test_admin_teleport_utils.py** (18 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
-- **broadcast_teleport_effects()** (17 connections) — `server/commands/admin_teleport_utils.py`
-- **get_online_player_by_display_name()** (16 connections) — `server/commands/admin_teleport_utils.py`
-- **create_teleport_effect_message()** (16 connections) — `server/commands/admin_teleport_utils.py`
-- **Any** (3 connections)
-- **test_create_teleport_effect_message_teleport_departure()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_teleport_departure_with_direction()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_teleport_arrival()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_teleport_arrival_with_direction()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_goto_departure()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_goto_arrival()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_goto_arrival_with_direction()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_unknown_type()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_direction_opposites()** (2 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_get_online_player_by_display_name_no_manager()** (2 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_get_online_player_by_display_name_found()** (2 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_broadcast_teleport_effects()** (2 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_notify_player_of_teleport_custom_message()** (2 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_get_online_player_no_connection_manager()** (2 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
-- **test_get_online_player_found()** (2 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
-- **test_create_teleport_effect_message()** (2 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
-- **test_create_teleport_effect_message_fallback()** (2 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
-- **test_broadcast_teleport_effects_success()** (2 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
-- *... and 22 more nodes in this community*
+- **test_room_id_utils.py** (15 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **.normalize_room_id_for_comparison()** (7 connections) — `server/realtime/room_id_utils.py`
+- **.check_normalized_ids_match()** (5 connections) — `server/realtime/room_id_utils.py`
+- **.check_normalized_room_matches()** (5 connections) — `server/realtime/room_id_utils.py`
+- **.check_npc_room_match()** (5 connections) — `server/realtime/room_id_utils.py`
+- **.check_fallback_room_matches()** (4 connections) — `server/realtime/room_id_utils.py`
+- **test_room_id_utils_init()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_get_canonical_room_id()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_get_canonical_room_id_no_manager()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_normalize_room_id_for_comparison_none()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_normalize_room_id_for_comparison_string()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_normalize_room_id_for_comparison_whitespace()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_normalize_room_id_for_comparison_empty()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_normalized_ids_match()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_normalized_ids_match_none()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_normalized_room_matches()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_fallback_room_matches()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_npc_room_match()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **Normalize room ID for comparison.          Args:             rid: Room ID to nor** (1 connections) — `server/realtime/room_id_utils.py`
+- **Check if two normalized room IDs match.          Args:             id1: First no** (1 connections) — `server/realtime/room_id_utils.py`
+- **Check if normalized NPC room IDs match normalized target room IDs.          Args** (1 connections) — `server/realtime/room_id_utils.py`
+- **Check if NPC room IDs match target room IDs using fallback comparison.** (1 connections) — `server/realtime/room_id_utils.py`
+- **Check if NPC room matches target room using normalized comparison.          Args** (1 connections) — `server/realtime/room_id_utils.py`
+- **Unit tests for room ID utilities.  Tests the RoomIDUtils class for room ID norma** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **Test RoomIDUtils initialization.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [npc service services](npc_service_services.md) (10 shared connections)
-- [room look commands](room_look_commands.md) (8 shared connections)
-- [player respawn event](player_respawn_event.md) (8 shared connections)
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
+- [schemas players profession](schemas_players_profession.md) (11 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_teleport_utils.py`
-- `server/tests/unit/commands/test_admin_commands_helpers.py`
-- `server/tests/unit/commands/test_admin_teleport_utils.py`
+- `server/realtime/room_id_utils.py`
+- `server/tests/unit/realtime/test_room_id_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 181 (100%)
+- EXTRACTED: 95 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

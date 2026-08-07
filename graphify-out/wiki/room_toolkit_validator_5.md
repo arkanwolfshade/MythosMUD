@@ -1,51 +1,48 @@
 # room toolkit validator
 
-> 87 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **Reporter** (55 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **TestReporter** (27 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.print_error()** (5 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_bidirectional_errors()** (5 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_room_header()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_parsing_errors()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_validation_errors()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_summary()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_warning()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_success()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_validation_warnings()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.format_error()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.generate_json_output()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.test_init_with_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_init_without_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_format_error_with_suggestion()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_format_error_without_suggestion()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_format_warning()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_generate_json_output()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_colorize_output_with_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_colorize_output_without_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_colorize_output_unknown_color()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_print_header_default()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_print_header_custom_title()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_print_progress()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- *... and 62 more nodes in this community*
+- **MinimapRenderer** (16 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **._create_grid_map()** (6 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **.render_ascii_map()** (5 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **._assign_coordinates()** (5 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **.get_street_name()** (4 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **.get_street_color()** (4 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **._generate_color_legend()** (4 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Any** (3 connections)
+- **._get_next_coordinates()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **._reverse_direction()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **._draw_connection()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **.render_json_summary()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **.render_connectivity_stats()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **.get_street_acronym()** (2 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Renders room connectivity graphs in various visual formats.      Implements the** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Initialize the mini-map renderer.** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Extract street acronym from room ID.          Args:             room_id: Full ro** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Extract street name from room ID.          Args:             room_id: Full room** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Get color code for a street.          Args:             room_id: Full room ID** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Render the mini-map as ASCII art with grid-based visualization.          Args:** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Create a grid-based map visualization.          Args:             nodes: List of** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Assign grid coordinates to rooms based on connectivity.          Args:** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Get coordinates for the next room based on direction.          Args:** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Reverse a direction.          Args:             direction: Original direction** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [room validator toolkit](room_validator_toolkit.md) (7 shared connections)
-- [player service mutations](player_service_mutations.md) (3 shared connections)
-- [validator room toolkit](validator_room_toolkit.md) (2 shared connections)
+- [room validator toolkit](room_validator_toolkit.md) (2 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/core/reporter.py`
-- `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- `tools/room_toolkit/room_validator/core/minimap_renderer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 197 (78%)
-- INFERRED: 55 (22%)
+- EXTRACTED: 79 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

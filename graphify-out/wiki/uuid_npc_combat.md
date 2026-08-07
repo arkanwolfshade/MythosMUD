@@ -1,62 +1,51 @@
 # uuid npc combat
 
-> 70 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **combat_taunt.py** (32 connections) — `server/commands/combat_taunt.py`
-- **TauntCommandHandler** (29 connections) — `server/commands/combat_taunt.py`
-- **test_combat_taunt.py** (20 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **_validate_taunt_context()** (13 connections) — `server/commands/combat_taunt.py`
-- **run_handle_taunt_command()** (13 connections) — `server/commands/combat_taunt.py`
-- **_validate_taunt_target()** (9 connections) — `server/commands/combat_taunt.py`
-- **_resolve_taunt_combat_and_participant()** (9 connections) — `server/commands/combat_taunt.py`
-- **_apply_taunt_and_maybe_broadcast()** (9 connections) — `server/commands/combat_taunt.py`
-- **test_run_handle_taunt_success()** (7 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **Any** (6 connections)
-- **_resolve_taunt_room_and_player()** (6 connections) — `server/commands/combat_taunt.py`
-- **UUID** (6 connections)
-- **_validate_taunt_target_name()** (6 connections) — `server/commands/combat_taunt.py`
-- **_RoomWithIdOnly** (6 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **.handle_attack_command()** (5 connections) — `server/commands/combat_handler.py`
-- **.handle_taunt_command()** (5 connections) — `server/commands/combat_handler.py`
-- **test_validate_taunt_target_not_npc()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_validate_taunt_target_dead()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_run_handle_taunt_no_combat_service()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_run_handle_taunt_not_in_combat()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **.extract_combat_command_data()** (4 connections) — `server/commands/combat_handler.py`
-- **.handle_flee_command()** (4 connections) — `server/commands/combat_handler.py`
-- **.get_player_and_room()** (4 connections) — `server/commands/combat_taunt.py`
-- **AppWithState** (4 connections)
-- **.resolve_combat_target()** (4 connections) — `server/commands/combat_taunt.py`
-- *... and 45 more nodes in this community*
+- **HealthService** (21 connections) — `server/services/health_service.py`
+- **.get_health_status()** (10 connections) — `server/services/health_service.py`
+- **.check_database_health_async()** (7 connections) — `server/services/health_service.py`
+- **.get_server_component_health()** (7 connections) — `server/services/health_service.py`
+- **.check_database_health()** (6 connections) — `server/services/health_service.py`
+- **Any** (5 connections)
+- **._create_health_response()** (5 connections) — `server/services/health_service.py`
+- **.check_connections_health()** (5 connections) — `server/services/health_service.py`
+- **.get_database_component_health()** (5 connections) — `server/services/health_service.py`
+- **.get_connections_component_health()** (5 connections) — `server/services/health_service.py`
+- **.determine_overall_status()** (5 connections) — `server/services/health_service.py`
+- **.get_server_uptime()** (4 connections) — `server/services/health_service.py`
+- **.get_database_component_health_async()** (4 connections) — `server/services/health_service.py`
+- **.generate_alerts()** (4 connections) — `server/services/health_service.py`
+- **.__init__()** (3 connections) — `server/services/health_service.py`
+- **.get_memory_usage()** (3 connections) — `server/services/health_service.py`
+- **.get_cpu_usage()** (3 connections) — `server/services/health_service.py`
+- **health_service()** (3 connections) — `server/tests/unit/services/test_health_service.py`
+- **HealthStatus** (2 connections)
+- **Health monitoring service for MythosMUD server.      Provides comprehensive heal** (1 connections) — `server/services/health_service.py`
+- **Initialize the health service.          Args:             connection_manager: Co** (1 connections) — `server/services/health_service.py`
+- **Get server uptime in seconds.** (1 connections) — `server/services/health_service.py`
+- **Get current memory usage in MB.** (1 connections) — `server/services/health_service.py`
+- **Get current CPU usage percentage.** (1 connections) — `server/services/health_service.py`
+- **Create a standardized health check response dictionary.          Args:** (1 connections) — `server/services/health_service.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (14 shared connections)
-- [models npc rationale](models_npc_rationale.md) (14 shared connections)
-- [spell game magic](spell_game_magic.md) (12 shared connections)
-- [commands npc admin](commands_npc_admin.md) (9 shared connections)
-- [Item Instances](Item_Instances.md) (7 shared connections)
-- [room validator toolkit](room_validator_toolkit.md) (5 shared connections)
-- [target resolution service](target_resolution_service.md) (4 shared connections)
-- [npc database infrastructure](npc_database_infrastructure.md) (3 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
-- [attack combat commands](attack_combat_commands.md) (1 shared connections)
-- [commands whisper command](commands_whisper_command.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (14 shared connections)
+- [nats services service](nats_services_service.md) (2 shared connections)
+- [room service game](room_service_game.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_handler.py`
-- `server/commands/combat_taunt.py`
-- `server/models/combat.py`
-- `server/services/npc_combat_integration_service.py`
-- `server/tests/unit/commands/test_combat_taunt.py`
+- `server/services/health_service.py`
+- `server/tests/unit/services/test_health_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 275 (95%)
-- INFERRED: 16 (5%)
+- EXTRACTED: 121 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

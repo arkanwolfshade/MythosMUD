@@ -32,7 +32,7 @@
 
 ## Relationships
 
-- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (2 shared connections)
+- [startup npc services](startup_npc_services.md) (2 shared connections)
 - [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (2 shared connections)
 - [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (2 shared connections)
 

@@ -1,65 +1,59 @@
 # combat commands handler
 
-> 93 nodes
+> 138 nodes
 
 ## Key Concepts
 
-- **real_time.py** (36 connections) — `server/api/real_time.py`
-- **test_real_time_helpers.py** (31 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **handle_websocket_connection()** (21 connections) — `server/realtime/websocket_handler.py`
-- **get_async_persistence()** (19 connections) — `server/async_persistence.py`
-- **realtime.py** (13 connections) — `server/schemas/realtime/realtime.py`
-- **PresenceStatistics** (12 connections) — `server/schemas/realtime/presence_data.py`
-- **SessionStatistics** (12 connections) — `server/schemas/realtime/presence_data.py`
-- **ErrorStatistics** (12 connections) — `server/schemas/realtime/presence_data.py`
-- **_resolve_player_id()** (11 connections) — `server/api/real_time.py`
-- **handle_new_game_session()** (11 connections) — `server/api/real_time.py`
-- **_ensure_connection_manager()** (10 connections) — `server/api/real_time.py`
-- **_resolve_player_id_from_token()** (10 connections) — `server/api/real_time.py`
-- **websocket_endpoint()** (10 connections) — `server/api/real_time.py`
-- **PlayerConnectionsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
-- **NewGameSessionResponse** (10 connections) — `server/schemas/realtime/realtime.py`
-- **ConnectionStatisticsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
-- **Any** (9 connections)
-- **_parse_websocket_token()** (9 connections) — `server/api/real_time.py`
-- **_resolve_player_id_from_test()** (9 connections) — `server/api/real_time.py`
-- **get_player_connections()** (9 connections) — `server/api/real_time.py`
-- **websocket_endpoint_route()** (9 connections) — `server/api/real_time.py`
-- **__init__.py** (9 connections) — `server/schemas/realtime/__init__.py`
-- **SessionInfo** (9 connections) — `server/schemas/realtime/realtime.py`
-- **WebSocket** (8 connections)
-- **_validate_websocket_connection_manager()** (8 connections) — `server/api/real_time.py`
-- *... and 68 more nodes in this community*
+- **test_nats_service.py** (76 connections) — `server/tests/unit/services/test_nats_service.py`
+- **NATSMetrics** (31 connections) — `server/services/nats_metrics.py`
+- **nats_service()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_with_config()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **nats_metrics.py** (4 connections) — `server/services/nats_metrics.py`
+- **test_nats_service_init_with_subject_manager()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
+- **.get_metrics()** (3 connections) — `server/services/nats_metrics.py`
+- **nats_config()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_init()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_publish_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_publish_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_subscribe_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_subscribe_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_batch_flush_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_batch_flush_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_connection_health()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_connection_health_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_pool_utilization()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_pool_utilization_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_get_metrics()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_get_metrics_empty_processing_times()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_message_processing_times_maxlen()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_connection_pool()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_message_batch()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_publish_not_initialized()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- *... and 113 more nodes in this community*
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (14 shared connections)
-- [command commands handler](command_commands_handler.md) (7 shared connections)
-- [NPC Combat](NPC_Combat.md) (6 shared connections)
-- [command commands aliases](command_commands_aliases.md) (6 shared connections)
-- [npc lifecycle combat](npc_lifecycle_combat.md) (4 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (4 shared connections)
-- [schemas invite user](schemas_invite_user.md) (4 shared connections)
-- [Player Stats](Player_Stats.md) (4 shared connections)
-- [room websocket updates](room_websocket_updates.md) (3 shared connections)
-- [realtime websocket initial](realtime_websocket_initial.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [health models rationale](health_models_rationale.md) (2 shared connections)
+- [combat validator validators](combat_validator_validators.md) (17 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (4 shared connections)
+- [skill game service](skill_game_service.md) (4 shared connections)
+- [connection state machine](connection_state_machine.md) (3 shared connections)
+- [game chat service](game_chat_service.md) (3 shared connections)
+- [manager subject services](manager_subject_services.md) (2 shared connections)
+- [player event state](player_event_state.md) (1 shared connections)
+- [mythos mud mapbuilder](mythos_mud_mapbuilder.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [metrics schemas rationale](metrics_schemas_rationale.md) (1 shared connections)
+- [aggro threat services](aggro_threat_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/real_time.py`
-- `server/async_persistence.py`
-- `server/realtime/websocket_handler.py`
-- `server/schemas/realtime/__init__.py`
-- `server/schemas/realtime/presence_data.py`
-- `server/schemas/realtime/realtime.py`
-- `server/tests/unit/api/test_real_time_helpers.py`
+- `server/services/nats_metrics.py`
+- `server/tests/unit/services/test_nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 438 (91%)
-- INFERRED: 45 (9%)
+- EXTRACTED: 331 (96%)
+- INFERRED: 13 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

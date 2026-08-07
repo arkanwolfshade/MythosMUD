@@ -1,33 +1,35 @@
 # startup services npc
 
-> 10 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **TestHandleSpecialCommandRouting** (7 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_handle_special_command_routing_alias_command()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_handle_special_command_routing_alias_storage_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_handle_special_command_routing_emote_conversion()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_handle_special_command_routing_returns_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Tests for _handle_special_command_routing function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Test _handle_special_command_routing processes alias commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Test _handle_special_command_routing returns error when alias_storage is None.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Test _handle_special_command_routing converts single-word emotes.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Test _handle_special_command_routing returns None for normal commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **Any** (8 connections)
+- **._format_mute_entry()** (5 connections) — `server/game/chat_moderation.py`
+- **._format_mute_section()** (5 connections) — `server/game/chat_moderation.py`
+- **.get_user_management_stats()** (4 connections) — `server/game/chat_moderation.py`
+- **.get_system_stats()** (3 connections) — `server/game/chat_moderation.py`
+- **.get_player_mutes()** (2 connections) — `server/game/chat_moderation.py`
+- **Get user management system statistics.** (1 connections) — `server/game/chat_moderation.py`
+- **Format a single mute entry for display.** (1 connections) — `server/game/chat_moderation.py`
+- **Format a section of mutes (personal or global) for display.** (1 connections) — `server/game/chat_moderation.py`
 
 ## Relationships
 
-- [command commands handler](command_commands_handler.md) (5 shared connections)
-- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [player persistence repository](player_persistence_repository.md) (3 shared connections)
+- [chat moderation game](chat_moderation_game.md) (2 shared connections)
+- [tsconfig app src/**/*](tsconfig_app_src-__-_.md) (2 shared connections)
+- [combat services service](combat_services_service.md) (2 shared connections)
+- [lucidity commands services](lucidity_commands_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- `server/game/chat_moderation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 30 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

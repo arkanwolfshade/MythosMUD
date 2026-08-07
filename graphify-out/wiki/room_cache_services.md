@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (17 shared connections)
-- [websocket examples logging](websocket_examples_logging.md) (8 shared connections)
+- [task registry app](task_registry_app.md) (13 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (8 shared connections)
 - [models lucidity rationale](models_lucidity_rationale.md) (8 shared connections)
-- [command combat models](command_combat_models.md) (7 shared connections)
-- [System Metrics](System_Metrics.md) (6 shared connections)
+- [services chat logger](services_chat_logger.md) (7 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (7 shared connections)
+- [metrics memory leak](metrics_memory_leak.md) (6 shared connections)
 - [log structured logging](log_structured_logging.md) (6 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
-- [inventory commands command](inventory_commands_command.md) (3 shared connections)
+- [aggro threat services](aggro_threat_services.md) (3 shared connections)
+- [shutdown command commands](shutdown_command_commands.md) (3 shared connections)
 - [nats services service](nats_services_service.md) (3 shared connections)
-- [world loader room](world_loader_room.md) (3 shared connections)
+- [app factory rationale](app_factory_rationale.md) (3 shared connections)
 - [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
 
 ## Source Files
 

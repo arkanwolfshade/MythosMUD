@@ -36,12 +36,12 @@
 - async_persistence.py `EXTRACTED`
 - __init__.py `EXTRACTED`
 - players.py `EXTRACTED`
+- container_endpoints_basic.py `EXTRACTED`
 - endpoints.py `EXTRACTED`
 - test_admin_auth_service.py `EXTRACTED`
 - maps.py `EXTRACTED`
 - test_users.py `EXTRACTED`
 - test_maps.py `EXTRACTED`
-- container_endpoints_basic.py `EXTRACTED`
 - users.py `EXTRACTED`
 - character_creation.py `EXTRACTED`
 - container_helpers.py `EXTRACTED`
@@ -50,8 +50,8 @@
 - test_metrics_endpoints.py `EXTRACTED`
 - container_endpoints_loot.py `EXTRACTED`
 - rooms.py `EXTRACTED`
-- test_container_exception_handlers.py `EXTRACTED`
-- test_containers.py `EXTRACTED`
+- test_npc_definitions_api.py `EXTRACTED`
+- npc_definitions_api.py `EXTRACTED`
 
 ### indirect_call
 - _admin_user() `INFERRED`
@@ -91,13 +91,13 @@
 - loot_all_items() `EXTRACTED`
 - validate_admin_permission() `EXTRACTED`
 - handle_transfer_items_exceptions() `EXTRACTED`
-- handle_open_container_exceptions() `EXTRACTED`
 - transfer_items() `EXTRACTED`
+- open_container() `EXTRACTED`
+- handle_open_container_exceptions() `EXTRACTED`
 - handle_loot_all_exceptions() `EXTRACTED`
 - roll_character_stats() `EXTRACTED`
-- open_container() `EXTRACTED`
-- handle_close_container_exceptions() `EXTRACTED`
 - close_container() `EXTRACTED`
+- handle_close_container_exceptions() `EXTRACTED`
 - get_player_id_from_user() `EXTRACTED`
 - handle_container_service_error() `EXTRACTED`
 - create_character_with_stats() `EXTRACTED`
@@ -115,21 +115,21 @@
 - Invite `INFERRED`
 - PlayerChannelPreferences `INFERRED`
 - PlayerInventory `INFERRED`
+- PlayerExploration `INFERRED`
 - TestTransferAllItemsFromContainer `INFERRED`
 - TestHelperFunctions `INFERRED`
 - TestOpenContainer `INFERRED`
 - TestTransferItems `INFERRED`
-- PlayerExploration `INFERRED`
+- TestRollCharacterStats `INFERRED`
 - TestHandleTransferItemsExceptions `INFERRED`
+- TestHandleContainerServiceErrorEdgeCases `INFERRED`
+- TestGetContainerAndPlayerForLootAll `INFERRED`
+- TestHandleContainerServiceError `INFERRED`
 - TestCloseContainer `INFERRED`
+- TestGetMythosTime `INFERRED`
 - TestHandleLootAllExceptions `INFERRED`
 - TestHandleOpenContainerExceptions `INFERRED`
-- TestRequestModels `INFERRED`
-- TestHandleContainerServiceErrorEdgeCases `INFERRED`
-- TestExceptionChaining `INFERRED`
-- TestExceptionHandlerContext `INFERRED`
-- TestExceptionHandlerLoggerCalls `INFERRED`
-- TestHandleCloseContainerExceptions `INFERRED`
+- TestCreateErrorContext `INFERRED`
 
 ---
 

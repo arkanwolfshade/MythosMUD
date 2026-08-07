@@ -1,55 +1,60 @@
 # game rationale schemas
 
-> 76 nodes
+> 89 nodes
 
 ## Key Concepts
 
-- **test_game.py** (20 connections) — `server/tests/unit/api/test_game.py`
-- **MythosTimeResponse** (15 connections) — `server/schemas/game/game.py`
-- **get_mythos_time()** (14 connections) — `server/api/game.py`
-- **broadcast_message()** (13 connections) — `server/api/game.py`
-- **TestGetMythosTime** (12 connections) — `server/tests/unit/api/test_game.py`
-- **GameStatusResponse** (9 connections) — `server/schemas/game/game.py`
-- **BroadcastMessageResponse** (9 connections) — `server/schemas/game/game.py`
-- **get_game_status()** (7 connections) — `server/api/game.py`
-- **__init__.py** (7 connections) — `server/schemas/game/__init__.py`
-- **game.py** (7 connections) — `server/schemas/game/game.py`
-- **BroadcastStats** (6 connections) — `server/schemas/game/game.py`
-- **TestBroadcastMessage** (6 connections) — `server/tests/unit/api/test_game.py`
-- **TestGetMythosTimeEdgeCases** (6 connections) — `server/tests/unit/api/test_game.py`
-- **TestGetGameStatus** (5 connections) — `server/tests/unit/api/test_game.py`
-- **BaseModel** (4 connections)
-- **.test_get_game_status_success()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_broadcast_message_success()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_success()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_no_holiday_service()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_holiday_service_error()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_with_holidays()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_no_container()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_holiday_service_upcoming_error()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **TestGetGameStatusLogger** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_container_no_holiday_service_attribute()** (4 connections) — `server/tests/unit/api/test_game.py`
-- *... and 51 more nodes in this community*
+- **test_container_helpers_inventory_find.py** (55 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **container_helpers_inventory_find.py** (32 connections) — `server/commands/container_helpers_inventory_find.py`
+- **container_helpers_inventory.py** (31 connections) — `server/commands/container_helpers_inventory.py`
+- **find_wearable_container()** (17 connections) — `server/commands/container_helpers_inventory_find.py`
+- **UUID** (16 connections)
+- **try_wearable_container_service()** (14 connections) — `server/commands/container_helpers_inventory_find.py`
+- **find_container_in_room()** (13 connections) — `server/commands/container_helpers_inventory_find.py`
+- **try_wearable_container_service_by_instance_id()** (13 connections) — `server/commands/container_helpers_inventory_find.py`
+- **find_item_in_inventory()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
+- **try_inner_container()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
+- **create_wearable_container()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_player_for_wearable()** (12 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **try_inner_container_by_id()** (11 connections) — `server/commands/container_helpers_inventory_find.py`
+- **try_wearable_container_service_by_name()** (11 connections) — `server/commands/container_helpers_inventory_find.py`
+- **find_wearable_container_for_put()** (10 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_get_container_pair()** (9 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_try_put_container_for_equipped_item()** (9 connections) — `server/commands/container_helpers_inventory_find.py`
+- **find_matching_equipped_containers()** (9 connections) — `server/commands/container_helpers_inventory_find.py`
+- **check_item_matches_target()** (7 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_container_uuid()** (5 connections) — `server/commands/container_helpers_inventory_find.py`
+- **Player** (5 connections)
+- **container_id()** (5 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **_component_metadata()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_resolve_inner_uuid()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_container_from_equip_dict()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
+- *... and 64 more nodes in this community*
 
 ## Relationships
 
-- [player requests schemas](player_requests_schemas.md) (10 shared connections)
-- [NPC Combat](NPC_Combat.md) (8 shared connections)
-- [Player Stats](Player_Stats.md) (4 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [container inventory helpers](container_inventory_helpers.md) (14 shared connections)
+- [task registry app](task_registry_app.md) (5 shared connections)
+- [container inventory display](container_inventory_display.md) (4 shared connections)
+- [database helpers infrastructure](database_helpers_infrastructure.md) (4 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (1 shared connections)
+- [game weapon player](game_weapon_player.md) (1 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (1 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/game.py`
-- `server/schemas/game/__init__.py`
-- `server/schemas/game/game.py`
-- `server/tests/unit/api/test_game.py`
+- `server/commands/container_helpers_inventory.py`
+- `server/commands/container_helpers_inventory_find.py`
+- `server/tests/unit/api/test_container_exception_handlers.py`
+- `server/tests/unit/commands/test_container_helpers_inventory_find.py`
 
 ## Audit Trail
 
-- EXTRACTED: 233 (90%)
-- INFERRED: 25 (10%)
+- EXTRACTED: 444 (98%)
+- INFERRED: 11 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

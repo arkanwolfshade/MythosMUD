@@ -31,9 +31,10 @@
 
 ## Relationships
 
-- [dialogue schemas tree](dialogue_schemas_tree.md) (13 shared connections)
-- [services ascii map](services_ascii_map.md) (10 shared connections)
-- [command parser build](command_parser_build.md) (2 shared connections)
+- [player persistence repository](player_persistence_repository.md) (13 shared connections)
+- [tsconfig app src/**/*](tsconfig_app_src-__-_.md) (6 shared connections)
+- [lucidity commands services](lucidity_commands_services.md) (4 shared connections)
+- [startup services npc](startup_services_npc.md) (2 shared connections)
 - [eventLog eventStore projector](eventLog_eventStore_projector.md) (2 shared connections)
 
 ## Source Files

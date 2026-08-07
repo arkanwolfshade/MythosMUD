@@ -1,45 +1,24 @@
 # tools generate invite
 
-> 18 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **migrate_combat_data.py** (15 connections) — `server/scripts/migrate_combat_data.py`
-- **migrate_npc_combat_data()** (10 connections) — `server/scripts/migrate_combat_data.py`
-- **add_default_combat_data_to_stats()** (9 connections) — `server/schemas/combat/combat_schema.py`
-- **validate_migration_results()** (8 connections) — `server/scripts/migrate_combat_data.py`
-- **rollback_migration()** (7 connections) — `server/scripts/migrate_combat_data.py`
-- **main()** (6 connections) — `server/scripts/migrate_combat_data.py`
-- **AsyncSession** (3 connections)
-- **Any** (3 connections)
-- **test_add_default_combat_data_to_stats()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_add_default_combat_data_to_stats_preserves_existing()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **Add default combat data to base_stats if not present.      Args:         stats:** (1 connections) — `server/schemas/combat/combat_schema.py`
-- **Combat data migration script.  This script adds default combat data to existing** (1 connections) — `server/scripts/migrate_combat_data.py`
-- **Migrate combat data for all NPC definitions.      Args:         session: Databas** (1 connections) — `server/scripts/migrate_combat_data.py`
-- **Validate that migration was successful.      Args:         session: Database ses** (1 connections) — `server/scripts/migrate_combat_data.py`
-- **Rollback combat data migration by removing combat fields.      Args:         ses** (1 connections) — `server/scripts/migrate_combat_data.py`
-- **Main migration function.** (1 connections) — `server/scripts/migrate_combat_data.py`
-- **Test add_default_combat_data_to_stats() adds defaults.** (1 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **Test add_default_combat_data_to_stats() preserves existing values.** (1 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_stop_processing_not_running()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test _stop_processing() when not running.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (15 shared connections)
-- [container events rationale](container_events_rationale.md) (5 shared connections)
-- [player effects endpoints](player_effects_endpoints.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/combat/combat_schema.py`
-- `server/scripts/migrate_combat_data.py`
-- `server/tests/unit/schemas/test_combat_schema.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 69 (92%)
-- INFERRED: 6 (8%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

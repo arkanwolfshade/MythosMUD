@@ -1,6 +1,6 @@
 # room validator toolkit
 
-> 90 nodes
+> 88 nodes
 
 ## Key Concepts
 
@@ -16,7 +16,6 @@
 - **apply_taunt()** (12 connections) — `server/services/aggro_threat.py`
 - **UUID** (11 connections)
 - **_make_participant()** (9 connections) — `server/tests/integration/test_aggro_flow.py`
-- **get_npc_current_target()** (8 connections) — `server/services/aggro_threat.py`
 - **_make_combat()** (8 connections) — `server/tests/integration/test_aggro_flow.py`
 - **_get_aggro_config()** (7 connections) — `server/services/aggro_threat.py`
 - **apply_stealth_wipe()** (7 connections) — `server/services/aggro_threat.py`
@@ -29,18 +28,21 @@
 - **test_aggro_tank_swap_taunt_sequence()** (6 connections) — `server/tests/integration/test_aggro_flow.py`
 - **test_update_aggro_one_entity_sets_target()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
 - **test_update_aggro_stability_no_switch_when_below_threshold()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- *... and 65 more nodes in this community*
+- **test_update_aggro_stability_switch_when_at_or_above_threshold()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (26 shared connections)
-- [Item Instances](Item_Instances.md) (10 shared connections)
-- [uuid npc combat](uuid_npc_combat.md) (5 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (5 shared connections)
-- [services combat sync](services_combat_sync.md) (3 shared connections)
-- [retry nats handler](retry_nats_handler.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [spell game magic](spell_game_magic.md) (1 shared connections)
+- [Item Instances](Item_Instances.md) (13 shared connections)
+- [command factories exploration](command_factories_exploration.md) (12 shared connections)
+- [services service phantom](services_service_phantom.md) (7 shared connections)
+- [subject admin controller](subject_admin_controller.md) (6 shared connections)
+- [commands position system](commands_position_system.md) (5 shared connections)
+- [cleanup combat handler](cleanup_combat_handler.md) (5 shared connections)
+- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (3 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 453 (100%)
+- EXTRACTED: 444 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

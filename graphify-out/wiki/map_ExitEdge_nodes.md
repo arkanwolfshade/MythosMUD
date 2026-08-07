@@ -1,57 +1,43 @@
 # map ExitEdge nodes
 
-> 26 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **config.ts** (14 connections) — `client/src/components/map/config.ts`
-- **ExitEdge.tsx** (10 connections) — `client/src/components/map/edges/ExitEdge.tsx`
-- **ReactFlowConfig.test.tsx** (9 connections) — `client/src/components/map/__tests__/ReactFlowConfig.test.tsx`
-- **RoomNode.tsx** (9 connections) — `client/src/components/map/nodes/RoomNode.tsx`
-- **IntersectionNode.tsx** (7 connections) — `client/src/components/map/nodes/IntersectionNode.tsx`
-- **ExitEdge** (6 connections) — `client/src/components/map/edges/ExitEdge.tsx`
-- **ExitEdge.rendering.test.tsx** (6 connections) — `client/src/components/map/edges/__tests__/ExitEdge.rendering.test.tsx`
-- **ExitEdge.test-fixtures.tsx** (6 connections) — `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
-- **RoomNode.test.tsx** (5 connections) — `client/src/components/map/nodes/__tests__/RoomNode.test.tsx`
-- **ExitEdge.edge-creation.test.tsx** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.edge-creation.test.tsx`
-- **ExitEdge.interactions.test.tsx** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.interactions.test.tsx`
-- **defaultExitEdgeProps** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
-- **IntersectionNode** (4 connections) — `client/src/components/map/nodes/IntersectionNode.tsx`
-- **RoomNode** (4 connections) — `client/src/components/map/nodes/RoomNode.tsx`
-- **IntersectionNode.test.tsx** (4 connections) — `client/src/components/map/nodes/__tests__/IntersectionNode.test.tsx`
-- **nodeTypes** (3 connections) — `client/src/components/map/config.ts`
-- **edgeTypes** (3 connections) — `client/src/components/map/config.ts`
-- **getNodeTypes()** (2 connections) — `client/src/components/map/config.ts`
-- **getEdgeTypes()** (2 connections) — `client/src/components/map/config.ts`
-- **RoomNodeProps** (2 connections) — `client/src/components/map/nodes/RoomNode.tsx`
-- **getNodeShape()** (2 connections) — `client/src/components/map/nodes/RoomNode.tsx`
-- **getNodeClasses()** (2 connections) — `client/src/components/map/nodes/RoomNode.tsx`
-- **defaultReactFlowOptions** (1 connections) — `client/src/components/map/config.ts`
-- **ExitEdgeProps** (1 connections) — `client/src/components/map/edges/ExitEdge.tsx`
-- **getFlagIcon()** (1 connections) — `client/src/components/map/edges/ExitEdge.tsx`
-- *... and 1 more nodes in this community*
+- **test_room_subscription_manager_npcs.py** (13 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **subscription_manager()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_get_npc_name_from_lifecycle_manager()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_get_npc_name_from_lifecycle_manager_not_found()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_get_npc_name_from_lifecycle_manager_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_add_npc_to_occupants()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_query_npcs_from_lifecycle_manager()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_filter_fallback_npcs()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_filter_fallback_npcs_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_get_room_occupants_with_npcs()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_get_room_occupants_fallback_npcs()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Unit tests for room subscription manager NPC helpers.  Tests NPC-related helpers** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Create a RoomSubscriptionManager instance.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _get_npc_name_from_lifecycle_manager gets NPC name.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _get_npc_name_from_lifecycle_manager returns ID when NPC not found.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _get_npc_name_from_lifecycle_manager handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _add_npc_to_occupants adds NPC to list.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _query_npcs_from_lifecycle_manager queries NPCs.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _filter_fallback_npcs filters dead NPCs.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _filter_fallback_npcs handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test get_room_occupants() includes NPCs from lifecycle manager.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test get_room_occupants() falls back to room.get_npcs() when lifecycle manager f** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
 
 ## Relationships
 
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (20 shared connections)
+- [command player state](command_player_state.md) (3 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/__tests__/ReactFlowConfig.test.tsx`
-- `client/src/components/map/config.ts`
-- `client/src/components/map/edges/ExitEdge.tsx`
-- `client/src/components/map/edges/__tests__/ExitEdge.edge-creation.test.tsx`
-- `client/src/components/map/edges/__tests__/ExitEdge.interactions.test.tsx`
-- `client/src/components/map/edges/__tests__/ExitEdge.rendering.test.tsx`
-- `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
-- `client/src/components/map/nodes/IntersectionNode.tsx`
-- `client/src/components/map/nodes/RoomNode.tsx`
-- `client/src/components/map/nodes/__tests__/IntersectionNode.test.tsx`
-- `client/src/components/map/nodes/__tests__/RoomNode.test.tsx`
+- `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
 
 ## Audit Trail
 
-- EXTRACTED: 116 (100%)
+- EXTRACTED: 45 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

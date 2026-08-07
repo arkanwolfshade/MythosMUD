@@ -33,12 +33,13 @@
 
 ## Relationships
 
-- [infrastructure nats broker](infrastructure_nats_broker.md) (17 shared connections)
-- [combat validator validators](combat_validator_validators.md) (4 shared connections)
+- [holiday service services](holiday_service_services.md) (17 shared connections)
+- [combat validator validators](combat_validator_validators.md) (3 shared connections)
 - [infrastructure message broker](infrastructure_message_broker.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [player event state](player_event_state.md) (1 shared connections)
 - [schemas nats messages](schemas_nats_messages.md) (1 shared connections)
-- [zone npc config](zone_npc_config.md) (1 shared connections)
+- [subject validation services](subject_validation_services.md) (1 shared connections)
 - [manager subject services](manager_subject_services.md) (1 shared connections)
 
 ## Source Files

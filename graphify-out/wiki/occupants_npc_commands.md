@@ -1,42 +1,53 @@
 # occupants npc commands
 
-> 17 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **test_occupants.py** (14 connections) — `server/commands/npc_admin/test_occupants.py`
-- **Any** (7 connections)
-- **_resolve_room_and_handler_for_test_occupants()** (6 connections) — `server/commands/npc_admin/test_occupants.py`
-- **_resolve_test_occupants_context()** (6 connections) — `server/commands/npc_admin/test_occupants.py`
-- **_get_event_handler_for_test_occupants()** (5 connections) — `server/commands/npc_admin/test_occupants.py`
-- **_get_room_id_for_test_occupants()** (4 connections) — `server/commands/npc_admin/test_occupants.py`
-- **_separate_occupants()** (4 connections) — `server/commands/npc_admin/test_occupants.py`
-- **_resolve_app_and_player_for_test_occupants()** (4 connections) — `server/commands/npc_admin/test_occupants.py`
-- **_format_occupants_result()** (3 connections) — `server/commands/npc_admin/test_occupants.py`
-- **NPC test-occupants command for debugging occupant queries.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
-- **Get room_id from args or current room. Returns (room_id, error_result).** (1 connections) — `server/commands/npc_admin/test_occupants.py`
-- **Get event handler from app.state. Returns (event_handler, error_result).** (1 connections) — `server/commands/npc_admin/test_occupants.py`
-- **Separate occupants into players and NPCs.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
-- **Format occupants result as a string.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
-- **Resolve application and player object for NPC test occupants command.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
-- **Resolve room_id and event handler for NPC test occupants command.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
-- **Resolve application, player, room_id, and event handler for NPC test occupants c** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **talk_command.py** (27 connections) — `server/commands/talk_command.py`
+- **handle_talk_command()** (11 connections) — `server/commands/talk_command.py`
+- **_emit_prompt()** (8 connections) — `server/commands/talk_command.py`
+- **_talk_with_npc()** (8 connections) — `server/commands/talk_command.py`
+- **format_dialogue_prompt()** (7 connections) — `server/game/dialogue/dialogue_service.py`
+- **_talk_by_option_index()** (6 connections) — `server/commands/talk_command.py`
+- **_resolve_player_id()** (5 connections) — `server/commands/talk_command.py`
+- **UUID** (5 connections)
+- **_remainder_from_command_data()** (3 connections) — `server/commands/talk_command.py`
+- **test_format_dialogue_prompt_numbers_options()** (3 connections) — `server/tests/unit/game/test_dialogue_service.py`
+- **talk / talk <n> command for NPC dialogue trees (#583).** (1 connections) — `server/commands/talk_command.py`
+- **Extract player UUID from player model.** (1 connections) — `server/commands/talk_command.py`
+- **Join talk args into a single remainder string.** (1 connections) — `server/commands/talk_command.py`
+- **Send personal system message for a node; return short command result.** (1 connections) — `server/commands/talk_command.py`
+- **Advance an active dialogue by numbered option.** (1 connections) — `server/commands/talk_command.py`
+- **Start dialogue with a same-room NPC.** (1 connections) — `server/commands/talk_command.py`
+- **Handle talk <npc> or talk <n> against same-room NPCs.** (1 connections) — `server/commands/talk_command.py`
+- **Build personal-system message body for a dialogue node.** (1 connections) — `server/game/dialogue/dialogue_service.py`
+- **Prompt includes NPC line and numbered options.** (1 connections) — `server/tests/unit/game/test_dialogue_service.py`
 
 ## Relationships
 
-- [commands npc admin](commands_npc_admin.md) (7 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [commands whisper command](commands_whisper_command.md) (1 shared connections)
-- [commands communication channels](commands_communication_channels.md) (1 shared connections)
+- [dialogue service game](dialogue_service_game.md) (10 shared connections)
+- [commands communication flows](commands_communication_flows.md) (5 shared connections)
+- [player helpers error](player_helpers_error.md) (5 shared connections)
+- [commands npc admin](commands_npc_admin.md) (3 shared connections)
+- [character creation service](character_creation_service.md) (2 shared connections)
+- [npc combat service](npc_combat_service.md) (2 shared connections)
+- [quest game service](quest_game_service.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [quest chat game](quest_chat_game.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/npc_admin/test_occupants.py`
+- `server/commands/talk_command.py`
+- `server/game/dialogue/dialogue_service.py`
+- `server/tests/unit/game/test_dialogue_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 91 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

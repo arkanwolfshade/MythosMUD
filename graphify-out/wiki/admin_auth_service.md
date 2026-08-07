@@ -1,53 +1,56 @@
 # admin auth service
 
-> 50 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **test_command_player_state.py** (23 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **command_player_state.py** (15 connections) — `server/models/command_player_state.py`
-- **LieCommand** (15 connections) — `server/models/command_player_state.py`
-- **GroundCommand** (12 connections) — `server/models/command_player_state.py`
-- **QuitCommand** (8 connections) — `server/models/command_player_state.py`
-- **LogoutCommand** (8 connections) — `server/models/command_player_state.py`
-- **SitCommand** (8 connections) — `server/models/command_player_state.py`
-- **StandCommand** (8 connections) — `server/models/command_player_state.py`
-- **test_lie_command_validate_modifier_invalid()** (4 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_lie_command_validate_modifier_empty_string()** (4 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_ground_command_target_player_min_length()** (4 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_ground_command_target_player_max_length()** (4 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **.validate_target_player()** (3 connections) — `server/models/command_player_state.py`
-- **test_quit_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_logout_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_sit_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_stand_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_lie_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_lie_command_with_modifier_down()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_lie_command_validate_modifier_strips_and_lowercases()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_lie_command_validate_modifier_case_insensitive()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_lie_command_validate_modifier_none()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_ground_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_ground_command_validate_target_player_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **.validate_modifier()** (2 connections) — `server/models/command_player_state.py`
-- *... and 25 more nodes in this community*
+- **test_combat_schema.py** (20 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **CombatSchemaValidationError** (17 connections) — `server/schemas/combat/combat_schema.py`
+- **validate_npc_combat_data()** (13 connections) — `server/schemas/combat/combat_schema.py`
+- **validate_base_stats_combat_data()** (11 connections) — `server/schemas/combat/combat_schema.py`
+- **validate_combat_messages()** (11 connections) — `server/schemas/combat/combat_schema.py`
+- **__init__.py** (10 connections) — `server/schemas/combat/__init__.py`
+- **validate_behavior_config_combat_data()** (9 connections) — `server/schemas/combat/combat_schema.py`
+- **add_default_combat_data_to_config()** (8 connections) — `server/schemas/combat/combat_schema.py`
+- **get_combat_stats_summary()** (6 connections) — `server/schemas/combat/combat_schema.py`
+- **Any** (5 connections)
+- **validate_message_template_variables()** (4 connections) — `server/schemas/combat/combat_schema.py`
+- **Draft7Validator** (4 connections)
+- **test_validate_base_stats_combat_data_missing_required()** (4 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_validate_base_stats_combat_data_invalid_type()** (4 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_validate_combat_messages_missing_required()** (4 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_validate_base_stats_combat_data_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_validate_behavior_config_combat_data_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_validate_combat_messages_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_add_default_combat_data_to_config()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_validate_npc_combat_data()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_get_combat_stats_summary()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **Combat domain schemas: combat JSON schema validation and defaults.** (1 connections) — `server/schemas/combat/__init__.py`
+- **Exception** (1 connections)
+- **Raised when combat data fails schema validation.** (1 connections) — `server/schemas/combat/combat_schema.py`
+- **Validate base_stats combat data against schema.      Args:         data: Base st** (1 connections) — `server/schemas/combat/combat_schema.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (17 shared connections)
-- [command inventory factories](command_inventory_factories.md) (7 shared connections)
-- [Loot Generation](Loot_Generation.md) (6 shared connections)
-- [Inventory Equip](Inventory_Equip.md) (4 shared connections)
-- [Security Validator Tests](Security_Validator_Tests.md) (2 shared connections)
+- [room look commands](room_look_commands.md) (9 shared connections)
+- [skill game service](skill_game_service.md) (6 shared connections)
+- [commands skills rationale](commands_skills_rationale.md) (5 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [combat services messaging](combat_services_messaging.md) (1 shared connections)
+- [useDraggablePanelInteractions draggableP](useDraggablePanelInteractions_draggableP.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_player_state.py`
-- `server/tests/unit/models/test_command_player_state.py`
+- `server/schemas/combat/__init__.py`
+- `server/schemas/combat/combat_schema.py`
+- `server/tests/unit/schemas/test_combat_schema.py`
 
 ## Audit Trail
 
-- EXTRACTED: 160 (91%)
-- INFERRED: 16 (9%)
+- EXTRACTED: 153 (91%)
+- INFERRED: 15 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

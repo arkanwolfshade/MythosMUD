@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [taunt combat commands](taunt_combat_commands.md) (3 shared connections)
+- [command player state](command_player_state.md) (3 shared connections)
 
 ## Source Files
 

@@ -28,7 +28,7 @@
 
 ## Relationships
 
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (2 shared connections)
+- [StatusPanel AllStats() CommandsCount()](StatusPanel_AllStats%28%29_CommandsCount%28%29.md) (2 shared connections)
 
 ## Source Files
 

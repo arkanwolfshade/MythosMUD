@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_player_room_membership_auto_add()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test _validate_player_room_membership adds player when DB room matches.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_process_dict_occupant_with_npc_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test process_dict_occupant() processes NPC occupant.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

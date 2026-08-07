@@ -1,53 +1,58 @@
 # schemas validator rationale
 
-> 34 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **test_look_container_helpers.py** (45 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **_format_container_contents()** (11 connections) — `server/commands/look_container.py`
-- **test_format_container_contents_with_quantity()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_via_inner_container_no_inner_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_via_inner_container_invalid_uuid()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_via_inner_container_no_get_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_item_instance_id_true()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_item_instance_id_false()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_item_instance_id_none()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_name_or_slot_slot_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_name_or_slot_name_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_name_or_slot_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_get_container_data_from_component_no_container_id()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_get_container_data_from_component_no_get_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_extract_container_metadata_no_metadata()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_format_container_contents_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_format_container_contents_with_quantity()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Format container contents as list of lines.** (1 connections) — `server/commands/look_container.py`
-- **Test formatting container contents with quantity > 1.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Unit tests for look container helper functions.  Tests the helper functions in l** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_via_inner_container() when item has no inner_container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_via_inner_container() with invalid UUID.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_via_inner_container() when persistence has no get_container** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _matches_item_instance_id() returns True when IDs match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _matches_item_instance_id() returns False when IDs don't match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- *... and 9 more nodes in this community*
+- **_find_item_in_equipped()** (17 connections) — `server/commands/look_item.py`
+- **_handle_item_look()** (17 connections) — `server/commands/look_item.py`
+- **_try_lookup_item_implicit()** (15 connections) — `server/commands/look_item.py`
+- **look_item.py** (14 connections) — `server/commands/look_item.py`
+- **_check_item_in_location()** (13 connections) — `server/commands/look_item.py`
+- **_get_item_description_from_prototype()** (12 connections) — `server/commands/look_item.py`
+- **_check_equipped_item()** (10 connections) — `server/commands/look_item.py`
+- **Any** (8 connections)
+- **test_get_item_description_from_prototype_fallback_no_prototype()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_check_item_in_location_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_look_in_skips_equipped()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_equipped_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Item look functionality for MythosMUD.  This module handles looking at items, in** (1 connections) — `server/commands/look_item.py`
+- **Find an item in equipped items by name or prototype_id.      Args:         equip** (1 connections) — `server/commands/look_item.py`
+- **Get item description from prototype registry.      Returns:         Formatted re** (1 connections) — `server/commands/look_item.py`
+- **Check if item found in a location and return formatted result.** (1 connections) — `server/commands/look_item.py`
+- **Check if item is equipped and return formatted result.** (1 connections) — `server/commands/look_item.py`
+- **Handle looking at a specific item.** (1 connections) — `server/commands/look_item.py`
+- **Try to find and display an item in implicit lookup.** (1 connections) — `server/commands/look_item.py`
+- **Test getting item description with fallback name when prototype doesn't exist.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test checking item in location when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look with look_in flag skips equipped items.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in equipped by prototype_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [startup npc services](startup_npc_services.md) (20 shared connections)
-- [command processor rationale](command_processor_rationale.md) (10 shared connections)
-- [status game spell](status_game_spell.md) (8 shared connections)
-- [services inventory mutation](services_inventory_mutation.md) (6 shared connections)
-- [DI Container Format](DI_Container_Format.md) (4 shared connections)
+- [Item Lookup](Item_Lookup.md) (27 shared connections)
+- [contexts GameTerminalContext useGameTerm](contexts_GameTerminalContext_useGameTerm.md) (9 shared connections)
+- [look helpers commands](look_helpers_commands.md) (5 shared connections)
+- [npc combat services](npc_combat_services.md) (4 shared connections)
+- [command admin setlucidity](command_admin_setlucidity.md) (4 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [test_subscribe_to_subzone_subscribe_failure](test_subscribe_to_subzone_subscribe_failure.md) (1 shared connections)
+- [test_handle_combat_ended_event](test_handle_combat_ended_event.md) (1 shared connections)
+- [test_handle_combat_started_event](test_handle_combat_started_event.md) (1 shared connections)
+- [test_handle_player_attacked_event](test_handle_player_attacked_event.md) (1 shared connections)
+- [test_broadcast_player_respawn](test_broadcast_player_respawn.md) (1 shared connections)
+- [test_handle_npc_took_damage_event](test_handle_npc_took_damage_event.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_container.py`
-- `server/tests/unit/commands/test_look_container.py`
-- `server/tests/unit/commands/test_look_container_helpers.py`
+- `server/commands/look_item.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 118 (100%)
+- EXTRACTED: 133 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

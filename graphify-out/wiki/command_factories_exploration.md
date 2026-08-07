@@ -1,9 +1,11 @@
 # command factories exploration
 
-> 59 nodes
+> 180 nodes
 
 ## Key Concepts
 
+- **CombatInstance** (186 connections) — `server/models/combat.py`
+- **test_combat.py** (60 connections) — `server/tests/unit/models/test_combat.py`
 - **test_combat_flee_handler.py** (33 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
 - **combat_flee_handler.py** (22 connections) — `server/services/combat_flee_handler.py`
 - **execute_voluntary_flee()** (20 connections) — `server/services/combat_flee_handler.py`
@@ -12,6 +14,7 @@
 - **_check_involuntary_flee_with_session()** (11 connections) — `server/services/combat_flee_handler.py`
 - **_involuntary_flee_on_cooldown()** (10 connections) — `server/services/combat_flee_handler.py`
 - **check_involuntary_flee()** (9 connections) — `server/services/combat_flee_handler.py`
+- **_get_default_damage()** (6 connections) — `server/models/combat.py`
 - **test_try_voluntary_flee_roll_zero_exits_returns_false()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
 - **test_try_voluntary_flee_roll_roll_above_chance_fails()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
 - **test_try_voluntary_flee_roll_roll_below_chance_succeeds()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
@@ -25,34 +28,35 @@
 - **test_execute_voluntary_flee_free_hits_error_logged()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
 - **test_execute_voluntary_flee_move_fails_returns_false()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
 - **UUID** (4 connections)
-- **test_check_involuntary_flee_zero_max_dp_returns_false()** (4 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **test_check_involuntary_flee_with_session_tier_blocks()** (4 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **test_check_involuntary_flee_with_session_sets_cooldown()** (4 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **test_check_involuntary_flee_session_path()** (4 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- *... and 34 more nodes in this community*
+- **UUID** (4 connections)
+- *... and 155 more nodes in this community*
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (21 shared connections)
-- [Item Instances](Item_Instances.md) (7 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (4 shared connections)
-- [admin commands setstat](admin_commands_setstat.md) (3 shared connections)
-- [message handlers realtime](message_handlers_realtime.md) (3 shared connections)
-- [command player state](command_player_state.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [combat flee commands](combat_flee_commands.md) (2 shared connections)
-- [game models enums](game_models_enums.md) (1 shared connections)
-- [target resolution service](target_resolution_service.md) (1 shared connections)
+- [Item Instances](Item_Instances.md) (76 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (25 shared connections)
+- [services service phantom](services_service_phantom.md) (14 shared connections)
+- [room validator toolkit](room_validator_toolkit.md) (12 shared connections)
+- [subject admin controller](subject_admin_controller.md) (11 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (11 shared connections)
+- [combat flee commands](combat_flee_commands.md) (8 shared connections)
+- [persistence container extended](persistence_container_extended.md) (8 shared connections)
+- [message nats handler](message_nats_handler.md) (8 shared connections)
+- [commands position system](commands_position_system.md) (6 shared connections)
+- [correct patterns examples](correct_patterns_examples.md) (6 shared connections)
+- [cleanup combat handler](cleanup_combat_handler.md) (4 shared connections)
 
 ## Source Files
 
+- `server/models/combat.py`
 - `server/services/combat_flee_handler.py`
+- `server/tests/unit/models/test_combat.py`
 - `server/tests/unit/services/test_combat_flee_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 259 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 732 (98%)
+- INFERRED: 17 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

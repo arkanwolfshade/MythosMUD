@@ -1,40 +1,44 @@
 # skill service game
 
-> 16 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **.resolve_spell_target()** (9 connections) — `server/game/magic/spell_targeting.py`
-- **UUID** (8 connections)
-- **._get_player()** (7 connections) — `server/game/magic/spell_targeting.py`
-- **._match_combat_opponent()** (7 connections) — `server/game/magic/spell_targeting.py`
-- **._resolve_self_target()** (6 connections) — `server/game/magic/spell_targeting.py`
-- **._resolve_area_target()** (6 connections) — `server/game/magic/spell_targeting.py`
-- **._resolve_entity_target()** (6 connections) — `server/game/magic/spell_targeting.py`
-- **._get_combat_target()** (6 connections) — `server/game/magic/spell_targeting.py`
-- **Player** (1 connections)
-- **Resolve self-target spell. Returns (target_match, error_message).** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Resolve area/all target spell. Returns (target_match, error_message).** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Resolve entity/location target spell with explicit target. Returns (target_match** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Resolve the target for a spell cast.          Args:             player_id: ID of** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Get player from persistence.** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Build a TargetMatch for a combat opponent, or None if unresolved.** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Get the combat target for a player if they are in combat.          Args:** (1 connections) — `server/game/magic/spell_targeting.py`
+- **RoomOccupantManager** (22 connections) — `server/realtime/room_occupant_manager.py`
+- **.__init__()** (9 connections) — `server/realtime/room_occupant_manager.py`
+- **.get_room_occupants()** (4 connections) — `server/realtime/room_occupant_manager.py`
+- **Any** (3 connections)
+- **.separate_occupants_by_type()** (3 connections) — `server/realtime/room_occupant_manager.py`
+- **occupant_manager()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_get_room_occupants_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **UUID** (2 connections)
+- **Manages room occupant queries and processing.      Handles both players and NPCs** (1 connections) — `server/realtime/room_occupant_manager.py`
+- **Initialize the room occupant manager.          Args:             connection_mana** (1 connections) — `server/realtime/room_occupant_manager.py`
+- **Get the list of occupants in a room.          Args:             room_id: The roo** (1 connections) — `server/realtime/room_occupant_manager.py`
+- **Separate occupants into players, NPCs, and all occupants lists.          Args:** (1 connections) — `server/realtime/room_occupant_manager.py`
+- **Create RoomOccupantManager instance.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **Test get_room_occupants returns empty when no connection manager.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (8 shared connections)
-- [spell game magic](spell_game_magic.md) (8 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (6 shared connections)
+- [schemas players profession](schemas_players_profession.md) (6 shared connections)
+- [profession models rationale](profession_models_rationale.md) (3 shared connections)
+- [player occupant processor](player_occupant_processor.md) (3 shared connections)
+- [occupant formatter realtime](occupant_formatter_realtime.md) (2 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (2 shared connections)
+- [room realtime rationale](room_realtime_rationale.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_targeting.py`
+- `server/realtime/room_occupant_manager.py`
+- `server/tests/unit/realtime/test_room_occupant_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 47 (85%)
+- INFERRED: 8 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,57 +1,43 @@
 # startup npc service
 
-> 26 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **RoomCacheService** (38 connections) — `server/caching/cache_service.py`
-- **TestRoomCacheService** (17 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **_RoomObj** (9 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.__init__()** (7 connections) — `server/caching/cache_service.py`
-- **.__init__()** (4 connections) — `server/caching/cache_service.py`
-- **.test_init_uses_existing_rooms_cache()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_init_lazy_creates_rooms_cache()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_init_concurrent_create_uses_existing()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_room_sync_miss_with_to_dict()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_rooms()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.invalidate_room()** (2 connections) — `server/caching/cache_service.py`
-- **.preload_rooms()** (2 connections) — `server/caching/cache_service.py`
-- **.to_dict()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.persistence()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_room_cache_hit()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_room_miss_with_to_dict()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_room_miss_returns_none()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_room_sync_cache_hit()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_room_sync_miss_caches_dict()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_invalidate_room()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **Service for caching room data.** (1 connections) — `server/caching/cache_service.py`
-- **Initialize the room cache service.          Args:             persistence: Persi** (1 connections) — `server/caching/cache_service.py`
-- **Invalidate cached room data.          Args:             room_id: The room ID to** (1 connections) — `server/caching/cache_service.py`
-- **Preload multiple rooms into cache.          Args:             room_ids: List of** (1 connections) — `server/caching/cache_service.py`
-- **Initialize the cache service.          Args:             persistence: Persistenc** (1 connections) — `server/caching/cache_service.py`
-- *... and 1 more nodes in this community*
+- **MonitoringPanel.test.tsx** (11 connections) — `client/src/components/panels/__tests__/MonitoringPanel.test.tsx`
+- **monitoringPanelTestFixtures.ts** (11 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **MonitoringPanel.tsx** (8 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **mockOkJsonResponse()** (5 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **setupSequentialMonitoringFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **setupRoundRobinMonitoringFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **setupDualConnectionsUrlFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **setupTimestampMonitoringFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **MonitoringPanel()** (2 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **SAMPLE_MONITORING_MOCKS** (2 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **EMPTY_MONITORING_MOCKS** (2 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **MonitoringData** (1 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **MonitoringPanelProps** (1 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **fetchSpy** (1 connections) — `client/src/components/panels/__tests__/MonitoringPanel.test.tsx`
+- **MonitoringMocks** (1 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **TIMESTAMP_DUAL_CONNECTIONS** (1 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **FetchSpy** (1 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
 
 ## Relationships
 
-- [commands skills rationale](commands_skills_rationale.md) (11 shared connections)
-- [uuid services npc](uuid_services_npc.md) (6 shared connections)
-- [services lucidity repository](services_lucidity_repository.md) (5 shared connections)
-- [cache caching service](cache_caching_service.md) (4 shared connections)
-- [config rationale config()](config_rationale_config%28%29.md) (4 shared connections)
-- [room build realtime](room_build_realtime.md) (3 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
-- [caching lru cache](caching_lru_cache.md) (1 shared connections)
-- [room game service](room_game_service.md) (1 shared connections)
+- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (2 shared connections)
+- [auth invites rationale](auth_invites_rationale.md) (2 shared connections)
+- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (1 shared connections)
 
 ## Source Files
 
-- `server/caching/cache_service.py`
-- `server/tests/unit/caching/test_cache_service.py`
+- `client/src/components/panels/MonitoringPanel.tsx`
+- `client/src/components/panels/__tests__/MonitoringPanel.test.tsx`
+- `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 96 (83%)
-- INFERRED: 20 (17%)
+- EXTRACTED: 59 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

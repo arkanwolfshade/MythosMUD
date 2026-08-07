@@ -1,52 +1,61 @@
 # correct patterns examples
 
-> 32 nodes
+> 37 nodes
 
 ## Key Concepts
 
-- **correct_patterns.py** (20 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_performance_logging()** (5 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_async_logging()** (5 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_exception_tracking()** (4 connections) — `docs/examples/logging/correct_patterns.py`
-- **risky_operation()** (4 connections) — `docs/examples/logging/correct_patterns.py`
-- **database** (4 connections) — `docs/examples/logging/correct_patterns.py`
-- **.execute()** (4 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_error_handling()** (3 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_database_logging()** (3 connections) — `docs/examples/logging/correct_patterns.py`
-- **process_data()** (3 connections) — `docs/examples/logging/correct_patterns.py`
-- **.query()** (3 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_basic_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_security_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_api_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_websocket_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_batch_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **async_work()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct basic logging patterns.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct error handling with logging.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct performance logging patterns.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct security logging patterns.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct async logging patterns.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct exception tracking.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct database operation logging.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct API request/response logging.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- *... and 7 more nodes in this community*
+- **test_combat_cleanup_handler.py** (18 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **.__init__()** (14 connections) — `server/services/combat_service.py`
+- **CombatCleanupHandler** (12 connections) — `server/services/combat_cleanup_handler.py`
+- **.__init__()** (3 connections) — `server/services/combat_cleanup_handler.py`
+- **.cleanup_combat_tracking()** (3 connections) — `server/services/combat_cleanup_handler.py`
+- **cleanup_handler()** (3 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **mock_combat()** (3 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **test_cleanup_stale_combats()** (3 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **test_cleanup_stale_combats_no_end_combat_method()** (3 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **test_cleanup_stale_combats_no_stale_combats()** (3 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **.cleanup_stale_combats()** (2 connections) — `server/services/combat_cleanup_handler.py`
+- **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **test_cleanup_handler_init()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **test_cleanup_combat_tracking()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **test_check_connection_state()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **test_check_connection_state_error()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **test_check_connection_state_no_connection_manager()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **test_check_connection_state_no_room_subscriptions()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **Any** (1 connections)
+- **Handles combat cleanup and tracking operations.** (1 connections) — `server/services/combat_cleanup_handler.py`
+- **Initialize the cleanup handler.          Args:             combat_service: Refer** (1 connections) — `server/services/combat_cleanup_handler.py`
+- **Remove combat from tracking dictionaries.** (1 connections) — `server/services/combat_cleanup_handler.py`
+- **Clean up combats that have been inactive for too long.          Args:** (1 connections) — `server/services/combat_cleanup_handler.py`
+- **Initialize the combat service.** (1 connections) — `server/services/combat_service.py`
+- **Unit tests for combat cleanup handler.  Tests the CombatCleanupHandler class for** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [world loader room](world_loader_room.md) (3 shared connections)
-- [websocket examples logging](websocket_examples_logging.md) (3 shared connections)
-- [models lucidity rationale](models_lucidity_rationale.md) (3 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
-- [player requests schemas](player_requests_schemas.md) (1 shared connections)
+- [command factories exploration](command_factories_exploration.md) (6 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (4 shared connections)
+- [Item Instances](Item_Instances.md) (3 shared connections)
+- [message nats handler](message_nats_handler.md) (2 shared connections)
+- [game chat service](game_chat_service.md) (2 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (2 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [persistence container extended](persistence_container_extended.md) (1 shared connections)
+- [cleanup combat handler](cleanup_combat_handler.md) (1 shared connections)
+- [combat validator validators](combat_validator_validators.md) (1 shared connections)
+- [manager subject services](manager_subject_services.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/correct_patterns.py`
+- `server/services/combat_cleanup_handler.py`
+- `server/services/combat_service.py`
+- `server/tests/unit/services/test_combat_cleanup_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 82 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 94 (94%)
+- INFERRED: 6 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

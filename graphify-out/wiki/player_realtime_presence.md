@@ -1,48 +1,51 @@
 # player realtime presence
 
-> 38 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **test_command_parser_helpers.py** (24 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_normalize_command_removes_slash_prefix()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_normalize_command_cleans_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_normalize_command_strips_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_normalize_command_no_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_simple()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_with_args()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_lowercases_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_empty_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_whitespace_only_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_get_command_help_specific_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_get_command_help_unknown_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_get_command_help_none()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_with_alias_l()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_with_alias_g()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_with_alias_w()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_unsupported_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_pydantic_validation_error()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_value_error()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Unit tests for command_parser helper methods.  Tests the helper methods in Comma** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _normalize_command() removes leading slash.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _normalize_command() cleans multiple whitespace.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _normalize_command() strips leading/trailing whitespace.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _normalize_command() handles command without slash.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _parse_command_parts() parses simple command.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- *... and 13 more nodes in this community*
+- **look_container.py** (23 connections) — `server/commands/look_container.py`
+- **Any** (14 connections)
+- **_find_container_in_room_or_equipped()** (14 connections) — `server/commands/look_container.py`
+- **_find_container_via_inner_container()** (13 connections) — `server/commands/look_container.py`
+- **_handle_container_look()** (11 connections) — `server/commands/look_container.py`
+- **_try_lookup_container_implicit()** (10 connections) — `server/commands/look_container.py`
+- **_matches_item_instance_id()** (8 connections) — `server/commands/look_container.py`
+- **_try_match_container_component()** (8 connections) — `server/commands/look_container.py`
+- **_matches_name_or_slot()** (7 connections) — `server/commands/look_container.py`
+- **_get_container_data_from_component()** (7 connections) — `server/commands/look_container.py`
+- **_extract_container_metadata()** (6 connections) — `server/commands/look_container.py`
+- **_find_container_via_wearable_service()** (6 connections) — `server/commands/look_container.py`
+- **Container look functionality for MythosMUD.  This module handles looking at cont** (1 connections) — `server/commands/look_container.py`
+- **Find container via inner_container_id from item.** (1 connections) — `server/commands/look_container.py`
+- **Check if item instance IDs match.** (1 connections) — `server/commands/look_container.py`
+- **Check if container matches by name or slot.** (1 connections) — `server/commands/look_container.py`
+- **Get container data from component ID.** (1 connections) — `server/commands/look_container.py`
+- **Extract metadata from container component.** (1 connections) — `server/commands/look_container.py`
+- **Try to match a container component and return container data if found.** (1 connections) — `server/commands/look_container.py`
+- **Find container via wearable container service.** (1 connections) — `server/commands/look_container.py`
+- **Find container in room or equipped items.      Returns:         tuple: (containe** (1 connections) — `server/commands/look_container.py`
+- **Handle looking at a specific container.** (1 connections) — `server/commands/look_container.py`
+- **Try to find and display a container in implicit lookup.** (1 connections) — `server/commands/look_container.py`
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
-- [command parser rationale](command_parser_rationale.md) (2 shared connections)
+- [DI Container Format](DI_Container_Format.md) (21 shared connections)
+- [commands lucidity recovery](commands_lucidity_recovery.md) (20 shared connections)
+- [look helpers commands](look_helpers_commands.md) (5 shared connections)
+- [logging setup structured](logging_setup_structured.md) (4 shared connections)
+- [room realtime subscription](room_realtime_subscription.md) (4 shared connections)
+- [calendar schemas validate](calendar_schemas_validate.md) (3 shared connections)
+- [look command commands](look_command_commands.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_parser_helpers.py`
+- `server/commands/look_container.py`
 
 ## Audit Trail
 
-- EXTRACTED: 79 (100%)
+- EXTRACTED: 138 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

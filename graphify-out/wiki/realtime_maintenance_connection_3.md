@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (9 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (6 shared connections)
-- [lucidity active service](lucidity_active_service.md) (3 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (9 shared connections)
+- [command player state](command_player_state.md) (6 shared connections)
+- [lucidity active service](lucidity_active_service.md) (2 shared connections)
+- [container service services](container_service_services.md) (1 shared connections)
 
 ## Source Files
 

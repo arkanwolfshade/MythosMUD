@@ -1,38 +1,51 @@
 # npc behavior engine
 
-> 12 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **ChannelBroadcastingStrategyFactory** (11 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **test_channel_broadcasting_strategy_factory_get_strategy_unknown()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **.register_strategy()** (3 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **test_channel_broadcasting_strategy_factory_init()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_channel_broadcasting_strategy_factory_register_strategy()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_global_channel_strategy_factory_instance()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Factory for creating channel broadcasting strategies.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Register a new strategy for a channel type.          Args:             channel_t** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Test ChannelBroadcastingStrategyFactory.__init__() initializes with default stra** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test ChannelBroadcastingStrategyFactory.get_strategy() returns UnknownChannelStr** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test ChannelBroadcastingStrategyFactory.register_strategy() registers new strate** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test global channel_strategy_factory instance exists.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_admin_summon_command.py** (33 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_persist_summoned_item_swallows_db_error()** (2 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_validate_summon_prerequisites_missing_item_services()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_validate_summon_prerequisites_missing_room_manager()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_validate_summon_prerequisites_ok()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_summon_npc_stub_response()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_summon_npc_stub_response_item_type()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_create_summon_item_instance_success()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_parse_summon_command_data_missing_prototype()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_parse_summon_command_data_npc_stub()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_parse_summon_command_data_item_ok()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_persist_summoned_item_success()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_parse_summon_command_data_quantity_spike()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_parse_summon_command_data_room_manager_missing_at_execution()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_complete_summon_success()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_complete_summon_no_instance_without_error()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_broadcast_and_log_summon_success()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_handle_summon_command_success()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_handle_summon_command_context_error()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_handle_summon_command_parse_error()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_resolve_summon_context_permission_denied()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_validate_summon_prerequisites_room_manager_no_add_drop()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_log_summon_success()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_resolve_summon_context_success()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_resolve_summon_context_player_error()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [channel realtime broadcasting](channel_realtime_broadcasting.md) (5 shared connections)
-- [channel broadcasting strategies](channel_broadcasting_strategies.md) (4 shared connections)
-- [message handler factory](message_handler_factory.md) (1 shared connections)
-- [channel broadcasting realtime](channel_broadcasting_realtime.md) (1 shared connections)
+- [schedule service services](schedule_service_services.md) (4 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (2 shared connections)
+- [shutdown command commands](shutdown_command_commands.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/channel_broadcasting_strategies.py`
-- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- `server/tests/unit/commands/test_admin_summon_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (91%)
-- INFERRED: 3 (9%)
+- EXTRACTED: 60 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

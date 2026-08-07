@@ -1,71 +1,60 @@
 # commands follow rationale
 
-> 196 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **RateLimitError** (76 connections) — `server/exceptions.py`
-- **TransferContainerRequest** (57 connections) — `server/api/container_models.py`
-- **container_endpoints_basic.py** (50 connections) — `server/api/container_endpoints_basic.py`
-- **container_helpers.py** (44 connections) — `server/api/container_helpers.py`
-- **test_container_helpers.py** (43 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **container_endpoints_loot.py** (36 connections) — `server/api/container_endpoints_loot.py`
-- **transfer_items()** (25 connections) — `server/api/container_endpoints_basic.py`
-- **open_container()** (23 connections) — `server/api/container_endpoints_basic.py`
-- **close_container()** (19 connections) — `server/api/container_endpoints_basic.py`
-- **get_player_id_from_user()** (19 connections) — `server/api/container_helpers.py`
-- **handle_container_service_error()** (19 connections) — `server/api/container_helpers.py`
-- **get_container_service()** (16 connections) — `server/api/container_helpers.py`
-- **TestHandleContainerServiceError** (13 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **_convert_container_dict_to_container_data()** (12 connections) — `server/api/container_endpoints_basic.py`
-- **execute_transfer()** (12 connections) — `server/api/container_helpers.py`
-- **TestCreateErrorContext** (12 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **_convert_inventory_list_to_inventory_stacks()** (11 connections) — `server/api/container_endpoints_basic.py`
-- **Request** (11 connections)
-- **TestGetPlayerIdFromUser** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **TestValidateUserForOpenContainer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **TestApplyRateLimitingForOpenContainer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **TestValidateUserForTransfer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **TestApplyRateLimitingForTransfer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **TestExecuteTransfer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **TestValidateUserForCloseContainer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
-- *... and 171 more nodes in this community*
+- **PersonalMessageSender** (21 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **personal_message_sender.py** (15 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **test_personal_message_sender.py** (14 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **.send_message()** (8 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **UUID** (7 connections)
+- **._prepare_payload()** (7 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Any** (6 connections)
+- **._send_to_websocket()** (6 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **._queue_message_if_needed()** (6 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **__init__.py** (5 connections) — `server/realtime/messaging/__init__.py`
+- **.__init__()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **.get_delivery_stats()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **test_send_to_websocket_accept_first_is_debug_not_warning()** (4 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **test_send_to_websocket_empty_runtime_error_is_debug()** (3 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **test_get_delivery_stats()** (3 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **test_send_message_outer_exception()** (3 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **sender()** (2 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **test_send_message_delivers_via_websocket()** (2 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **test_send_message_queues_when_offline()** (2 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **test_prepare_payload_too_large()** (2 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **test_send_to_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **LogCaptureFixture** (2 connections)
+- **Messaging components for connection management.  This package provides modular m** (1 connections) — `server/realtime/messaging/__init__.py`
+- **Personal message delivery for connection management.  This module provides direc** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Sends personal messages to individual players.      This class provides:     - P** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (190 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (43 shared connections)
-- [player requests schemas](player_requests_schemas.md) (36 shared connections)
-- [auth rationale access](auth_rationale_access.md) (31 shared connections)
-- [NPC Combat](NPC_Combat.md) (8 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (7 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (7 shared connections)
-- [command handler unified](command_handler_unified.md) (7 shared connections)
-- [profession game service](profession_game_service.md) (7 shared connections)
-- [Loot Generation](Loot_Generation.md) (6 shared connections)
-- [Player Stats](Player_Stats.md) (5 shared connections)
-- [Spell Validation](Spell_Validation.md) (4 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (5 shared connections)
+- [command player state](command_player_state.md) (3 shared connections)
+- [combat configuration service](combat_configuration_service.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [npc event handlers](npc_event_handlers.md) (2 shared connections)
+- [occupant formatter realtime](occupant_formatter_realtime.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [mythos mud mapbuilder](mythos_mud_mapbuilder.md) (2 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (1 shared connections)
+- [spell models rationale](spell_models_rationale.md) (1 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/container_endpoints_basic.py`
-- `server/api/container_endpoints_loot.py`
-- `server/api/container_helpers.py`
-- `server/api/container_models.py`
-- `server/api/containers.py`
-- `server/exceptions.py`
-- `server/schemas/containers/__init__.py`
-- `server/schemas/containers/container.py`
-- `server/schemas/containers/container_data.py`
-- `server/tests/unit/api/test_container_endpoints_loot_register.py`
-- `server/tests/unit/api/test_container_helpers.py`
-- `server/tests/unit/api/test_containers.py`
-- `server/tests/unit/test_exceptions.py`
+- `server/realtime/messaging/__init__.py`
+- `server/realtime/messaging/personal_message_sender.py`
+- `server/tests/unit/realtime/test_personal_message_sender.py`
 
 ## Audit Trail
 
-- EXTRACTED: 892 (81%)
-- INFERRED: 203 (19%)
+- EXTRACTED: 135 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

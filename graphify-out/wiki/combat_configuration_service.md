@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [taunt combat commands](taunt_combat_commands.md) (6 shared connections)
-- [room look commands](room_look_commands.md) (4 shared connections)
-- [services npc startup](services_npc_startup.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [command player state](command_player_state.md) (6 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (6 shared connections)
+- [commands follow rationale](commands_follow_rationale.md) (2 shared connections)
 
 ## Source Files
 

@@ -1,39 +1,50 @@
 # message broadcast realtime
 
-> 16 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **apply_communication_dampening()** (13 connections) — `server/services/lucidity_communication_dampening.py`
-- **test_lucidity_communication_dampening.py** (11 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **lucidity_communication_dampening.py** (6 connections) — `server/services/lucidity_communication_dampening.py`
-- **should_block_shout()** (4 connections) — `server/services/lucidity_communication_dampening.py`
-- **test_should_block_shout_deranged()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_whisper_uneasy_adds_strained_tag()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_deranged_shout_blocked()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_fractured_outgoing_no_glyph_when_roll_high()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_fractured_outgoing_appends_glyph()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_fractured_incoming_strips_punctuation()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_deranged_incoming_scrambles_words()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **Any** (1 connections)
-- **Communication dampening utilities for lucidity system.  Implements communication** (1 connections) — `server/services/lucidity_communication_dampening.py`
-- **Apply communication dampening based on lucidity tiers.      Args:         messag** (1 connections) — `server/services/lucidity_communication_dampening.py`
-- **Check if shout should be blocked based on tier.** (1 connections) — `server/services/lucidity_communication_dampening.py`
-- **Unit tests for lucidity communication dampening.** (1 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- **test_communication_commands_channels.py** (20 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **handle_global_command()** (11 connections) — `server/commands/communication_commands.py`
+- **handle_local_command()** (10 connections) — `server/commands/communication_commands.py`
+- **handle_system_command()** (10 connections) — `server/commands/communication_commands.py`
+- **test_handle_local_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_level_too_low()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_system_command_not_admin()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_system_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_local_command_no_room()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_local_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_local_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_system_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_system_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Local channel message.** (1 connections) — `server/commands/communication_commands.py`
+- **Global channel message (level-gated in flow).** (1 connections) — `server/commands/communication_commands.py`
+- **Admin-only system broadcast.** (1 connections) — `server/commands/communication_commands.py`
+- **Unit tests for local, global, and system chat command handlers.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Test handle_local_command with no message.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Test handle_local_command when services are not available.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Test handle_local_command successful execution.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Test handle_global_command with no message.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [commands communication say](commands_communication_say.md) (2 shared connections)
+- [character creation service](character_creation_service.md) (12 shared connections)
+- [commands communication flows](commands_communication_flows.md) (7 shared connections)
+- [commands npc admin](commands_npc_admin.md) (3 shared connections)
 
 ## Source Files
 
-- `server/services/lucidity_communication_dampening.py`
-- `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- `server/commands/communication_commands.py`
+- `server/tests/unit/commands/test_communication_commands_channels.py`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (100%)
+- EXTRACTED: 114 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

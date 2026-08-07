@@ -1,23 +1,25 @@
 # archive QUALITY AUDIT
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.reset_player_limits()** (2 connections) — `server/services/rate_limiter.py`
-- **Reset rate limiting for a player.          Args:             player_id: Player I** (1 connections) — `server/services/rate_limiter.py`
+- **enabled** (4 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **default** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [event events serialization](event_events_serialization.md) (1 shared connections)
+- [schemas unified room](schemas_unified_room.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/rate_limiter.py`
+- `schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

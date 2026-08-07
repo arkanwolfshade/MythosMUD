@@ -1,56 +1,70 @@
 # dialogue definition persistence
 
-> 29 nodes
+> 90 nodes
 
 ## Key Concepts
 
-- **test_profession_repository.py** (18 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
-- **ProfessionRepository** (13 connections) — `server/persistence/repositories/profession_repository.py`
-- **_row_to_profession()** (11 connections) — `server/persistence/repositories/profession_repository.py`
-- **.get_all_professions()** (7 connections) — `server/persistence/repositories/profession_repository.py`
-- **.get_profession_by_id()** (7 connections) — `server/persistence/repositories/profession_repository.py`
-- **_text_or_default()** (6 connections) — `server/persistence/repositories/profession_repository.py`
-- **_bool_or_default()** (6 connections) — `server/persistence/repositories/profession_repository.py`
-- **_str_or_default()** (5 connections) — `server/persistence/repositories/profession_repository.py`
-- **Any** (5 connections)
-- **Profession** (4 connections)
-- **test_helpers_defaults()** (4 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
-- **_mock_session()** (4 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
-- **.__init__()** (3 connections) — `server/persistence/repositories/profession_repository.py`
-- **_profession_row()** (3 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
-- **test_get_all_professions()** (3 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
-- **test_get_profession_by_id()** (3 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
-- **test_row_to_profession()** (2 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
-- **repo()** (2 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
-- **test_get_profession_by_id_not_found()** (2 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
-- **test_get_all_professions_db_error()** (2 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
-- **Return value as str or a default if falsy.** (1 connections) — `server/persistence/repositories/profession_repository.py`
-- **Return text value or default if falsy.** (1 connections) — `server/persistence/repositories/profession_repository.py`
-- **Return bool(value) when not None, otherwise default.** (1 connections) — `server/persistence/repositories/profession_repository.py`
-- **Map procedure result row to Profession model.** (1 connections) — `server/persistence/repositories/profession_repository.py`
-- **Repository for profession persistence operations.      Handles profession querie** (1 connections) — `server/persistence/repositories/profession_repository.py`
-- *... and 4 more nodes in this community*
+- **command.py** (98 connections) — `server/models/command.py`
+- **CommandType** (85 connections) — `server/models/command_base.py`
+- **command_base.py** (23 connections) — `server/models/command_base.py`
+- **test_command_utility.py** (20 connections) — `server/tests/unit/models/test_command_utility.py`
+- **command_utility.py** (19 connections) — `server/models/command_utility.py`
+- **command_admin.py** (14 connections) — `server/models/command_admin.py`
+- **command_combat.py** (14 connections) — `server/models/command_combat.py`
+- **HelpCommand** (13 connections) — `server/models/command_utility.py`
+- **WhoCommand** (13 connections) — `server/models/command_utility.py`
+- **command_magic.py** (10 connections) — `server/models/command_magic.py`
+- **command_follow.py** (8 connections) — `server/models/command_follow.py`
+- **SpellsCommand** (8 connections) — `server/models/command_magic.py`
+- **StatusCommand** (8 connections) — `server/models/command_utility.py`
+- **TimeCommand** (8 connections) — `server/models/command_utility.py`
+- **WhoamiCommand** (8 connections) — `server/models/command_utility.py`
+- **TauntCommand** (7 connections) — `server/models/command_combat.py`
+- **command_channel.py** (6 connections) — `server/models/command_channel.py`
+- **ChannelCommand** (6 connections) — `server/models/command_channel.py`
+- **FleeCommand** (6 connections) — `server/models/command_combat.py`
+- **FollowCommand** (6 connections) — `server/models/command_follow.py`
+- **UnfollowCommand** (6 connections) — `server/models/command_follow.py`
+- **FollowingCommand** (6 connections) — `server/models/command_follow.py`
+- **command_party.py** (6 connections) — `server/models/command_party.py`
+- **PartyCommand** (6 connections) — `server/models/command_party.py`
+- **RestCommand** (6 connections) — `server/models/command_player_state.py`
+- *... and 65 more nodes in this community*
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (15 shared connections)
-- [profession models rationale](profession_models_rationale.md) (2 shared connections)
-- [argon2 auth rationale](argon2_auth_rationale.md) (2 shared connections)
-- [Database Config](Database_Config.md) (2 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
-- [persistence container item](persistence_container_item.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (29 shared connections)
+- [command communication models](command_communication_models.md) (19 shared connections)
+- [health models rationale](health_models_rationale.md) (18 shared connections)
+- [inventory commands command](inventory_commands_command.md) (17 shared connections)
+- [npc commands admin](npc_commands_admin.md) (17 shared connections)
+- [world models rationale](world_models_rationale.md) (16 shared connections)
+- [commands who helpers](commands_who_helpers.md) (13 shared connections)
+- [room service sync](room_service_sync.md) (12 shared connections)
+- [game models stats](game_models_stats.md) (12 shared connections)
+- [command processor rationale](command_processor_rationale.md) (10 shared connections)
+- [websocket examples logging](websocket_examples_logging.md) (10 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (9 shared connections)
 
 ## Source Files
 
-- `server/persistence/repositories/profession_repository.py`
-- `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- `server/models/command.py`
+- `server/models/command_admin.py`
+- `server/models/command_base.py`
+- `server/models/command_channel.py`
+- `server/models/command_combat.py`
+- `server/models/command_follow.py`
+- `server/models/command_magic.py`
+- `server/models/command_party.py`
+- `server/models/command_player_state.py`
+- `server/models/command_utility.py`
+- `server/tests/unit/models/test_command_utility.py`
+- `server/utils/command_factories_player_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 112 (94%)
-- INFERRED: 7 (6%)
+- EXTRACTED: 427 (80%)
+- INFERRED: 105 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

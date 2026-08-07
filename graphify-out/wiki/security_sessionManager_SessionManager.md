@@ -1,53 +1,42 @@
 # security sessionManager SessionManager
 
-> 41 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **UUID** (14 connections)
-- **Any** (11 connections)
-- **.delete_player()** (9 connections) — `server/game/player_service.py`
-- **.get_player_by_id()** (8 connections) — `server/game/player_service.py`
-- **.convert_player_to_schema()** (8 connections) — `server/game/player_service.py`
-- **.soft_delete_character()** (7 connections) — `server/game/player_service.py`
-- **.create_player_with_stats()** (5 connections) — `server/game/player_service.py`
-- **.get_player_by_name()** (5 connections) — `server/game/player_service.py`
-- **.get_user_characters()** (5 connections) — `server/game/player_service.py`
-- **.validate_character_access()** (5 connections) — `server/game/player_service.py`
-- **.create_player()** (4 connections) — `server/game/player_service.py`
-- **.list_players()** (4 connections) — `server/game/player_service.py`
-- **.apply_lucidity_loss()** (4 connections) — `server/game/player_service.py`
-- **.apply_fear()** (4 connections) — `server/game/player_service.py`
-- **.apply_corruption()** (4 connections) — `server/game/player_service.py`
-- **.gain_occult_knowledge()** (4 connections) — `server/game/player_service.py`
-- **.heal_player()** (4 connections) — `server/game/player_service.py`
-- **.damage_player()** (4 connections) — `server/game/player_service.py`
-- **.set_item_prototype_registry()** (3 connections) — `server/game/player_service.py`
-- **.respawn_player_by_user_id()** (3 connections) — `server/game/player_service.py`
-- **.respawn_player_from_delirium_by_user_id()** (3 connections) — `server/game/player_service.py`
-- **Stats** (1 connections)
-- **Set the item prototype registry on the schema converter (e.g. after item service** (1 connections) — `server/game/player_service.py`
-- **Create a new player character.          Args:             name: The player's nam** (1 connections) — `server/game/player_service.py`
-- **Create a new player character with specific stats.          Args:             na** (1 connections) — `server/game/player_service.py`
-- *... and 16 more nodes in this community*
+- **validate_admin_permission()** (20 connections) — `server/commands/admin_permission_utils.py`
+- **test_admin_permission_utils.py** (11 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **_BrokenAdminPlayer** (4 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **test_validate_admin_permission_attribute_error()** (3 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **test_validate_admin_permission_logs_secondary_failure()** (3 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **test_validate_admin_permission_no_player()** (2 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **test_validate_admin_permission_missing_is_admin_attr()** (2 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **test_validate_admin_permission_is_admin_false()** (2 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **test_validate_admin_permission_granted()** (2 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **.is_admin()** (2 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **Any** (1 connections)
+- **Validate that a player has admin permissions.      Args:         player: Player** (1 connections) — `server/commands/admin_permission_utils.py`
+- **mock_admin_logger()** (1 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **Unit tests for admin permission validation.** (1 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (21 shared connections)
-- [Player Stats](Player_Stats.md) (8 shared connections)
-- [Loot Generation](Loot_Generation.md) (5 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
-- [commands npc admin](commands_npc_admin.md) (1 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [admin structured logging](admin_structured_logging.md) (3 shared connections)
+- [npc service services](npc_service_services.md) (3 shared connections)
+- [npc rewards combat](npc_rewards_combat.md) (3 shared connections)
+- [shutdown command commands](shutdown_command_commands.md) (2 shared connections)
+- [realtime game state](realtime_game_state.md) (1 shared connections)
+- [command models moderation](command_models_moderation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/player_service.py`
+- `server/commands/admin_permission_utils.py`
+- `server/tests/unit/commands/test_admin_permission_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 134 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 54 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

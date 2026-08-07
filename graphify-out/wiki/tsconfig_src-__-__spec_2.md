@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [manager subject services](manager_subject_services.md) (12 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (5 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (14 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (3 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
 - [infrastructure message broker](infrastructure_message_broker.md) (1 shared connections)
-- [infrastructure nats broker](infrastructure_nats_broker.md) (1 shared connections)
+- [holiday service services](holiday_service_services.md) (1 shared connections)
 - [services nats service](services_nats_service.md) (1 shared connections)
 
 ## Source Files
