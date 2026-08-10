@@ -1,34 +1,28 @@
 # Cursor Plans Postgresql
 
-> 10 nodes · cohesion 0.20
+> 2 nodes
 
 ## Key Concepts
 
-- **PostgreSQL Audit Remediation Plan** (9 connections) — `.cursor/plans/postgresql-audit-remediation_92cd2475.plan.md`
-- **postgresql-audit-remediation_92cd2475.plan.md** (1 connections) — `.cursor/plans/postgresql-audit-remediation_92cd2475.plan.md`
-- **1. Fix high-risk semantic and compatibility issues** (1 connections) — `.cursor/plans/postgresql-audit-remediation_92cd2475.plan.md`
-- **2. Eliminate `select *` in application and maintenance scripts** (1 connections) — `.cursor/plans/postgresql-audit-remediation_92cd2475.plan.md`
-- **3. Align schema definitions and data types with PostgreSQL guide** (1 connections) — `.cursor/plans/postgresql-audit-remediation_92cd2475.plan.md`
-- **4. Tighten query style and structural patterns** (1 connections) — `.cursor/plans/postgresql-audit-remediation_92cd2475.plan.md`
-- **5. Ensure secure, parameterized database access in code** (1 connections) — `.cursor/plans/postgresql-audit-remediation_92cd2475.plan.md`
-- **6. Testing and verification** (1 connections) — `.cursor/plans/postgresql-audit-remediation_92cd2475.plan.md`
-- **7. Documentation and ongoing hygiene** (1 connections) — `.cursor/plans/postgresql-audit-remediation_92cd2475.plan.md`
-- **Context and Inputs** (1 connections) — `.cursor/plans/postgresql-audit-remediation_92cd2475.plan.md`
+- **test_game_tick_service.py** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Unit tests for game tick service.  Tests the GameTickService class for managing** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Combat Health Persistence Fix](Combat_Health_Persistence_Fix.md) (1 shared connections)
+- [AnyIO Code Review](AnyIO_Code_Review.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/postgresql-audit-remediation_92cd2475.plan.md`
+- `server/tests/unit/services/test_game_tick_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

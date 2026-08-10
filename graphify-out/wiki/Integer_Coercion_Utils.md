@@ -1,63 +1,57 @@
 # Integer Coercion Utils
 
-> 41 nodes · cohesion 0.08
+> 50 nodes
 
 ## Key Concepts
 
-- **coerce_int()** (37 connections) — `server/utils/int_coercion.py`
-- **_stats_int()** (16 connections) — `server/models/player.py`
-- **.get_stats()** (12 connections) — `server/models/player.py`
-- **test_inventory_command_coercion.py** (11 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **int_coercion.py** (11 connections) — `server/utils/int_coercion.py`
-- **.set_stats()** (6 connections) — `server/models/player.py`
-- **.apply_dp_change()** (5 connections) — `server/models/player.py`
-- **.apply_dp_decay()** (5 connections) — `server/models/player.py`
-- **.restore_to_full_health()** (5 connections) — `server/models/player.py`
-- **.get_combat_stats()** (4 connections) — `server/models/player.py`
-- **.get_health_percentage()** (4 connections) — `server/models/player.py`
-- **.get_health_state()** (4 connections) — `server/models/player.py`
-- **.is_alive()** (4 connections) — `server/models/player.py`
-- **.is_dead()** (4 connections) — `server/models/player.py`
-- **.is_mortally_wounded()** (4 connections) — `server/models/player.py`
-- **test_stats_int_delegates_to_coerce_int()** (3 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_bool_before_int()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_float()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_float_inf_falls_back_to_default()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_float_nan_falls_back_to_default()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_plain_int()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_string_parsing()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_unknown_type()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **_int_from_decimal_string()** (2 connections) — `server/utils/int_coercion.py`
-- **_int_from_float_safe()** (2 connections) — `server/utils/int_coercion.py`
-- *... and 16 more nodes in this community*
+- **test_command_alias.py** (18 connections) — `server/tests/unit/models/test_command_alias.py`
+- **AliasCommand** (17 connections) — `server/models/command_alias.py`
+- **command_alias.py** (12 connections) — `server/models/command_alias.py`
+- **UnaliasCommand** (12 connections) — `server/models/command_alias.py`
+- **validate_alias_name()** (10 connections) — `server/validators/security_validator.py`
+- **AliasesCommand** (8 connections) — `server/models/command_alias.py`
+- **test_alias_command_alias_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_alias_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_command_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_alias_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_alias_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **.validate_alias_name_field()** (3 connections) — `server/models/command_alias.py`
+- **.validate_alias_name_field()** (3 connections) — `server/models/command_alias.py`
+- **test_alias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_with_command()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_validate_command_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_validate_command_none()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_aliases_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_validate_alias_name_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_alias_name_valid()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_alias_name_rejects_invalid_format()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_alias_name_rejects_hyphens()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [[Player Domain Model]] (11 shared connections)
-- [[Admin Summon Command]] (7 shared connections)
-- [[Player Respawn Events]] (6 shared connections)
-- [[Lucidity Rescue Helpers]] (5 shared connections)
-- [[SQLAlchemy Model Base]] (3 shared connections)
-- [[Persistence Container Extended]] (3 shared connections)
-- [[WebSocket Initial State]] (3 shared connections)
-- [[NPC Admin API]] (2 shared connections)
-- [[Player Respawn Service]] (2 shared connections)
-- [[Game Tick Processing]] (1 shared connections)
-- [[App Game Tick]] (1 shared connections)
-- [[Lucidity State Models]] (1 shared connections)
+- [Chat Panel Components](Chat_Panel_Components.md) (9 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (8 shared connections)
+- [Emote Schema Validator](Emote_Schema_Validator.md) (5 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (4 shared connections)
 
 ## Source Files
 
-- `server/models/player.py`
-- `server/tests/unit/commands/test_inventory_command_coercion.py`
-- `server/utils/int_coercion.py`
+- `server/models/command_alias.py`
+- `server/tests/unit/models/test_command_alias.py`
+- `server/tests/unit/validators/test_security_validator.py`
+- `server/validators/security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 163 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 152 (93%)
+- INFERRED: 12 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

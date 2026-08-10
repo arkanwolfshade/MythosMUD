@@ -1,45 +1,40 @@
 # Archive Planning Code
 
-> 20 nodes · cohesion 0.10
+> 12 nodes
 
 ## Key Concepts
 
-- ****Comprehensive Testing Strategy**** (10 connections) — `docs/archive/PLANNING_code_coverage.md`
-- ****Academic Testing Plan for `api/players.py`**** (6 connections) — `docs/archive/PLANNING_code_coverage.md`
-- **Recommendations** (4 connections) — `e2e-tests/SCENARIO_15_RATE_LIMITING_BLOCKED.md`
-- ****9. Implementation Priority**** (2 connections) — `docs/archive/PLANNING_code_coverage.md`
-- **PLANNING: Code Coverage Implementation for `api/players.py`** (2 connections) — `docs/archive/PLANNING_code_coverage.md`
-- **PLANNING_code_coverage.md** (1 connections) — `docs/archive/PLANNING_code_coverage.md`
-- ****1. Test File Structure**** (1 connections) — `docs/archive/PLANNING_code_coverage.md`
-- ****2. Critical Code Paths to Cover**** (1 connections) — `docs/archive/PLANNING_code_coverage.md`
-- ****3. Mock Strategy**** (1 connections) — `docs/archive/PLANNING_code_coverage.md`
-- ****4. Test Categories**** (1 connections) — `docs/archive/PLANNING_code_coverage.md`
-- ****5. Coverage Targets**** (1 connections) — `docs/archive/PLANNING_code_coverage.md`
-- ****6. Test Implementation Plan**** (1 connections) — `docs/archive/PLANNING_code_coverage.md`
-- ****7. Fixtures and Setup**** (1 connections) — `docs/archive/PLANNING_code_coverage.md`
-- ****8. Quality Assurance**** (1 connections) — `docs/archive/PLANNING_code_coverage.md`
-- ****Current State Analysis**** (1 connections) — `docs/archive/PLANNING_code_coverage.md`
-- ****Dependencies and Imports to Mock**** (1 connections) — `docs/archive/PLANNING_code_coverage.md`
-- ****Success Criteria**** (1 connections) — `docs/archive/PLANNING_code_coverage.md`
-- ****Testing Patterns from Project**** (1 connections) — `docs/archive/PLANNING_code_coverage.md`
-- **Immediate Actions** (1 connections) — `e2e-tests/SCENARIO_15_RATE_LIMITING_BLOCKED.md`
-- **Suggested Implementation Approach** (1 connections) — `e2e-tests/SCENARIO_15_RATE_LIMITING_BLOCKED.md`
+- **get_game_status()** (7 connections) — `server/api/game.py`
+- **TestGetGameStatus** (5 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_game_status_success()** (4 connections) — `server/tests/unit/api/test_game.py`
+- **TestGetGameStatusLogger** (4 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_game_status_empty_connections()** (3 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_game_status_logs_debug()** (3 connections) — `server/tests/unit/api/test_game.py`
+- **Get current game status and connection information.** (1 connections) — `server/api/game.py`
+- **Test get_game_status endpoint.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **Test get_game_status returns game status data.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **Test get_game_status handles empty connections.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **Test logger calls in get_game_status.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **Test get_game_status logs debug messages.** (1 connections) — `server/tests/unit/api/test_game.py`
 
 ## Relationships
 
-- [[Rate Limiting Scenario Blocked]] (1 shared connections)
+- [Chat Panel Filtering](Chat_Panel_Filtering.md) (3 shared connections)
+- [Client Lifecycle Metrics](Client_Lifecycle_Metrics.md) (2 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PLANNING_code_coverage.md`
-- `e2e-tests/SCENARIO_15_RATE_LIMITING_BLOCKED.md`
+- `server/api/game.py`
+- `server/tests/unit/api/test_game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 29 (91%)
+- INFERRED: 3 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,36 +1,26 @@
 # Cursor Plans Updates
 
-> 12 nodes · cohesion 0.17
+> 2 nodes
 
 ## Key Concepts
 
-- **Client Updates System Audit and Fix Plan** (7 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
-- **2. Option C Implementation Plan** (5 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
-- **client_updates_system_audit_628e3fef.plan.md** (1 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
-- **1. Current Architecture (Summary)** (1 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
-- **3. Key Files (Current)** (1 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
-- **4. Implementation Order (Summary)** (1 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
-- **5. Dependency for Architecture Review Plan** (1 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
-- **Decision: Option C (Replacement Client Updates System)** (1 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
-- **Phase 1: C1 – Event-sourced derivation (client)** (1 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
-- **Phase 2: C2 – Single source per entity (server + client)** (1 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
-- **Phase 3: C3 – Request/response for critical handoffs** (1 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
-- **Phase 4: Cleanup** (1 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
+- **test_broadcast_combat_attack_with_attacker_id()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test broadcast_combat_attack sends personal message to attacker.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Database Pool Configuration](Database_Pool_Configuration.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
+- `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

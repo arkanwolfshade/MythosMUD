@@ -1,50 +1,49 @@
 # Subzone Schema Definition
 
-> 40 nodes · cohesion 0.05
+> 23 nodes
 
 ## Key Concepts
 
-- **subzone_schema.json** (7 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **properties** (6 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **special_rules** (5 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **properties** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **access_requirements** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **description** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **lucidity_drain_rate** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **npc_spawn_modifier** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **combat_modifier** (3 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **exploration_bonus** (3 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **items** (2 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **enum** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- *... and 15 more nodes in this community*
+- **GameTerminalContext.test.tsx** (18 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **useGameTerminalContext.ts** (9 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
+- **GameTerminalContext.tsx** (8 connections) — `client/src/contexts/GameTerminalContext.tsx`
+- **useGameTerminalContext()** (7 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
+- **ErrorBoundary** (4 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **useConnectionState()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
+- **useSessionState()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
+- **useGameState()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
+- **useGameActions()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
+- **GameTerminalProvider()** (3 connections) — `client/src/contexts/GameTerminalContext.tsx`
+- **GameTerminalContextType** (2 connections) — `client/src/contexts/GameTerminalContext.tsx`
+- **GameTerminalContext** (2 connections) — `client/src/contexts/GameTerminalContext.tsx`
+- **TestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **ConnectionTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **SessionTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **GameStateTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **GameActionsTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **GameTerminalProviderProps** (1 connections) — `client/src/contexts/GameTerminalContext.tsx`
+- **createDefaultGameTerminalState()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **useGameTerminalMock** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **.constructor()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **.getDerivedStateFromError()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **.render()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Combat Attack Handler](Combat_Attack_Handler.md) (5 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- `client/src/contexts/GameTerminalContext.tsx`
+- `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- `client/src/contexts/hooks/useGameTerminalContext.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 78 (100%)
+- EXTRACTED: 85 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

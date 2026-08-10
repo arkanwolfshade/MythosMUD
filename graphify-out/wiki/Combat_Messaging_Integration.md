@@ -1,50 +1,80 @@
 # Combat Messaging Integration
 
-> 61 nodes · cohesion 0.03
+> 82 nodes
 
 ## Key Concepts
 
-- **test_combat_messaging_integration.py** (32 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_error_send_error()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_send_dp_decay_message_error()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **messaging_integration()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_ended broadcasts combat ended event.** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_player_mortally_wounded with attacker name.** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test _resolve_connection_manager_from_container resolves manager.** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_attack()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_attack_no_attacker_id()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_attack_personal_message_error()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_attack_with_attacker_id()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_death()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_end()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_ended()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_error()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_start()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_player_death_personal_message_error()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_player_died()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_player_mortally_wounded()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_player_mortally_wounded_no_attacker()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_player_mortally_wounded_personal_message_error()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_player_mortally_wounded_with_attacker()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_player_respawn()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_player_respawn_personal_message_error()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- *... and 36 more nodes in this community*
+- **GameClientV2ContainerView.tsx** (25 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
+- **useGameClientV2ContainerRefsAndBootstrap.ts** (25 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
+- **useGameClientV2Container.ts** (22 connections) — `client/src/components/ui-v2/hooks/useGameClientV2Container.ts`
+- **useGameClientV2ContainerNetworkPhase.ts** (21 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerNetworkPhase.ts`
+- **useGameClientV2ContainerLifecycle.ts** (20 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerLifecycle.ts`
+- **gameClientV2ContainerTypes.ts** (17 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerTypes.ts`
+- **useGameClientV2ContainerState.ts** (17 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerState.ts`
+- **gameClientV2ContainerBuildReturn.ts** (16 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerBuildReturn.ts`
+- **GameClientV2MergedSlice** (13 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerTypes.ts`
+- **useGameClientV2ContainerLogoutAndRespawn.ts** (13 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerLogoutAndRespawn.ts`
+- **useGameClientV2Container()** (12 connections) — `client/src/components/ui-v2/hooks/useGameClientV2Container.ts`
+- **emptyOccupantsDiagnostics.ts** (11 connections) — `client/src/components/ui-v2/hooks/emptyOccupantsDiagnostics.ts`
+- **gameClientV2ContainerReturnParts.ts** (11 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerReturnParts.ts`
+- **useCommandHandlers.ts** (10 connections) — `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
+- **useGameClientV2ContainerConnectionEffects.ts** (10 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerConnectionEffects.ts`
+- **useGameClientV2ContainerPlayerAndCommands.ts** (10 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerPlayerAndCommands.ts`
+- **GameClientV2NetworkPhase** (9 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerNetworkPhase.ts`
+- **ActiveEffectDisplay** (9 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
+- **GameClientV2ContainerProps** (8 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerTypes.ts`
+- **useGameClientV2ContainerLifecycle()** (8 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerLifecycle.ts`
+- **GameClientV2Container.tsx** (7 connections) — `client/src/components/ui-v2/GameClientV2Container.tsx`
+- **GameClientV2ContainerPublicApi** (7 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerBuildReturn.ts`
+- **useEventProcessing()** (7 connections) — `client/src/components/ui-v2/hooks/useEventProcessing.ts`
+- **useGameClientV2ContainerRefsAndBootstrap()** (7 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
+- **buildGameClientV2ContainerReturn()** (6 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerBuildReturn.ts`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [[Database Manager Tests]] (2 shared connections)
+- [Communication Command Handlers](Communication_Command_Handlers.md) (37 shared connections)
+- [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (9 shared connections)
+- [Game Terminal Container](Game_Terminal_Container.md) (7 shared connections)
+- [Draggable Panel UI](Draggable_Panel_UI.md) (7 shared connections)
+- [Character Stats Model](Character_Stats_Model.md) (7 shared connections)
+- [Magic System Feature Plan](Magic_System_Feature_Plan.md) (5 shared connections)
+- [Room Planning Archive](Room_Planning_Archive.md) (4 shared connections)
+- [Structured Error Logging Tasks](Structured_Error_Logging_Tasks.md) (3 shared connections)
+- [Connection Disconnection Cleanup](Connection_Disconnection_Cleanup.md) (3 shared connections)
+- [Active Lucidity Service](Active_Lucidity_Service.md) (3 shared connections)
+- [Plan Cursor Plans](Plan_Cursor_Plans.md) (2 shared connections)
+- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `client/src/components/DeathInterstitial.tsx`
+- `client/src/components/DeliriumInterstitial.tsx`
+- `client/src/components/MainMenuModal.tsx`
+- `client/src/components/__tests__/DeathInterstitial.test.tsx`
+- `client/src/components/__tests__/MainMenuModal.test.tsx`
+- `client/src/components/ui-v2/GameClientV2Container.tsx`
+- `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
+- `client/src/components/ui-v2/__tests__/GameClientV2Container.test.tsx`
+- `client/src/components/ui-v2/__tests__/GameClientV2ContainerView.test.tsx`
+- `client/src/components/ui-v2/hooks/__tests__/useCommandHandlers.test.ts`
+- `client/src/components/ui-v2/hooks/emptyOccupantsDiagnostics.ts`
+- `client/src/components/ui-v2/hooks/gameClientLogout.ts`
+- `client/src/components/ui-v2/hooks/gameClientV2ContainerActiveEffects.ts`
+- `client/src/components/ui-v2/hooks/gameClientV2ContainerBuildReturn.ts`
+- `client/src/components/ui-v2/hooks/gameClientV2ContainerReturnParts.ts`
+- `client/src/components/ui-v2/hooks/gameClientV2ContainerTypes.ts`
+- `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
+- `client/src/components/ui-v2/hooks/useEventProcessing.ts`
+- `client/src/components/ui-v2/hooks/useGameClientV2Container.ts`
+- `client/src/components/ui-v2/hooks/useGameClientV2ContainerConnectionEffects.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 126 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 509 (100%)
+- INFERRED: 2 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,35 +1,26 @@
 # Mythosmud Obsidian Raw
 
-> 11 nodes · cohesion 0.18
+> 2 nodes
 
 ## Key Concepts
 
-- **Cosmology & Planes of Existence #cosmology** (11 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Dreamlands Characteristics** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Earth Plane Characteristics** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Known Locations** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Limbo / Death Plane Characteristics** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Limbo / Death Plane #cosmology #death** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Other Planes and Dimensions** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **The Dreamlands #dreamlands #cosmology** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **The Earth Plane #geography #earth** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **The Structure of Reality** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **The Yeng Plane #cosmology #yeng** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
+- **test_create_quit_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_quit_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [[Mythosmud Obsidian Raw]] (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

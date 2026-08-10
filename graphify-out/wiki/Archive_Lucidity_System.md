@@ -1,50 +1,47 @@
 # Archive Lucidity System
 
-> 26 nodes · cohesion 0.08
+> 12 nodes
 
 ## Key Concepts
 
-- **MythosMUD lucidity System Specification** (8 connections) — `docs/archive/lucidity-system.md`
-- **4.1 Active LCD Loss Triggers** (5 connections) — `docs/archive/lucidity-system.md`
-- **5. Phenomenology and Fail-State Feedback** (5 connections) — `docs/archive/lucidity-system.md`
-- **2. lucidity Scale, Tiers, and Catatonia** (4 connections) — `docs/archive/lucidity-system.md`
-- **3. Passive lucidity Flux** (4 connections) — `docs/archive/lucidity-system.md`
-- **4. Active Interactions** (4 connections) — `docs/archive/lucidity-system.md`
-- **lucidity-system.md** (1 connections) — `docs/archive/lucidity-system.md`
-- **1. Overview** (1 connections) — `docs/archive/lucidity-system.md`
-- **2.1 LCD Track** (1 connections) — `docs/archive/lucidity-system.md`
-- **2.2 Tier Thresholds** (1 connections) — `docs/archive/lucidity-system.md`
-- **2.3 Catatonic Rescue Window** (1 connections) — `docs/archive/lucidity-system.md`
-- **3.1 Recovery Anchors** (1 connections) — `docs/archive/lucidity-system.md`
-- **3.2 Drain Zones** (1 connections) — `docs/archive/lucidity-system.md`
-- **3.3 Stabilizing Modifiers** (1 connections) — `docs/archive/lucidity-system.md`
-- **4.2 Active Recovery Actions** (1 connections) — `docs/archive/lucidity-system.md`
-- **4.3 Curses and Liabilities** (1 connections) — `docs/archive/lucidity-system.md`
-- **5.1 Hallucination & Phantom Event Tables** (1 connections) — `docs/archive/lucidity-system.md`
-- **5.2 Command Disruption & Involuntary Actions** (1 connections) — `docs/archive/lucidity-system.md`
-- **5.3 Communication Dampening** (1 connections) — `docs/archive/lucidity-system.md`
-- **5.4 Sanitarium Fail State** (1 connections) — `docs/archive/lucidity-system.md`
-- **6. Tracking & Implementation Notes** (1 connections) — `docs/archive/lucidity-system.md`
-- **7. Balancing & Playtesting Roadmap** (1 connections) — `docs/archive/lucidity-system.md`
-- **Encounter Shock Categories** (1 connections) — `docs/archive/lucidity-system.md`
-- **Environmental Events** (1 connections) — `docs/archive/lucidity-system.md`
-- **Mythos Knowledge Events** (1 connections) — `docs/archive/lucidity-system.md`
-- *... and 1 more nodes in this community*
+- **test_player_event_handlers_utils.py** (47 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_normalize_player_id_invalid_string()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_extract_name_from_occupant_dict_with_npc_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_extract_name_from_occupant_dict_with_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_count_occupants_by_type_mixed()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_is_player_disconnecting_false()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Unit tests for player event handler utilities.  Tests the PlayerEventHandlerUtil** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test normalize_player_id() with invalid string.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test _extract_name_from_occupant() with dict containing npc_name.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test _extract_name_from_occupant() with dict containing name.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test count_occupants_by_type() with mixed occupants.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test is_player_disconnecting() returns False when player is not disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Pydantic Error Handlers](Pydantic_Error_Handlers.md) (2 shared connections)
+- [mock_connection_manager](mock_connection_manager.md) (1 shared connections)
+- [mock_logger](mock_logger.md) (1 shared connections)
+- [mock_name_extractor](mock_name_extractor.md) (1 shared connections)
+- [player_event_handler_utils](player_event_handler_utils.md) (1 shared connections)
+- [test_add_valid_name_to_lists_invalid_name](test_add_valid_name_to_lists_invalid_name.md) (1 shared connections)
+- [test_add_valid_name_to_lists_none_name](test_add_valid_name_to_lists_none_name.md) (1 shared connections)
+- [test_add_valid_name_to_lists_npc](test_add_valid_name_to_lists_npc.md) (1 shared connections)
+- [test_add_valid_name_to_lists_player](test_add_valid_name_to_lists_player.md) (1 shared connections)
+- [test_build_occupants_snapshot_data_empty](test_build_occupants_snapshot_data_empty.md) (1 shared connections)
+- [test_build_occupants_snapshot_data_mixed](test_build_occupants_snapshot_data_mixed.md) (1 shared connections)
+- [test_build_occupants_snapshot_data_none](test_build_occupants_snapshot_data_none.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/lucidity-system.md`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (100%)
+- EXTRACTED: 63 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

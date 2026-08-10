@@ -1,66 +1,62 @@
 # FastAPI App Factory
 
-> 77 nodes · cohesion 0.03
+> 80 nodes
 
 ## Key Concepts
 
-- **factory.py** (36 connections) — `server/app/factory.py`
-- **main.py** (15 connections) — `server/main.py`
-- **SecurityHeadersMiddleware** (12 connections) — `server/middleware/security_headers.py`
-- **create_app()** (10 connections) — `server/app/factory.py`
-- **ComprehensiveLoggingMiddleware** (9 connections) — `server/middleware/comprehensive_logging.py`
-- **.__call__()** (8 connections) — `server/middleware/comprehensive_logging.py`
-- **.dispatch()** (7 connections) — `server/middleware/comprehensive_logging.py`
-- **_configure_cors()** (6 connections) — `server/app/factory.py`
-- **CORSConfigDict** (6 connections) — `server/app/factory.py`
-- **_get_cors_config_from_app_config()** (6 connections) — `server/app/factory.py`
-- **CorrelationMiddleware** (6 connections) — `server/middleware/correlation_middleware.py`
-- **._log_request_error()** (5 connections) — `server/middleware/comprehensive_logging.py`
-- **._log_request_start()** (5 connections) — `server/middleware/comprehensive_logging.py`
-- **._log_request_success_with_status()** (5 connections) — `server/middleware/comprehensive_logging.py`
-- **.__call__()** (5 connections) — `server/middleware/security_headers.py`
-- **.dispatch()** (5 connections) — `server/middleware/security_headers.py`
-- **_get_default_cors_config()** (4 connections) — `server/app/factory.py`
-- **_parse_cors_env_vars()** (4 connections) — `server/app/factory.py`
-- **create_correlation_middleware()** (4 connections) — `server/middleware/correlation_middleware.py`
-- **._add_security_headers_to_response()** (4 connections) — `server/middleware/security_headers.py`
-- **main()** (4 connections) — `scripts/generate_openapi_spec.py`
-- **_create_get_app()** (4 connections) — `server/main.py`
-- **main()** (4 connections) — `server/main.py`
-- **Request** (4 connections) — `server/middleware/comprehensive_logging.py`
-- **.__init__()** (3 connections) — `server/middleware/comprehensive_logging.py`
-- *... and 52 more nodes in this community*
+- **test_communication_commands_flows.py** (41 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
+- **SimpleNamespace** (38 connections)
+- **communication_commands_flows.py** (33 connections) — `server/commands/communication_commands_flows.py`
+- **ChatCommandsProtocol** (18 connections) — `server/commands/communication_commands_support.py`
+- **PlayerResolutionProtocol** (16 connections) — `server/commands/communication_commands_support.py`
+- **_chat_send_with_room_bundle()** (14 connections) — `server/commands/communication_commands_flows.py`
+- **flow_global_command()** (12 connections) — `server/commands/communication_commands_flows.py`
+- **_message_from_command()** (11 connections) — `server/commands/communication_commands_flows.py`
+- **_RoomChannelOutcomeConfig** (11 connections) — `server/commands/communication_commands_flows.py`
+- **message_id_from_result()** (11 connections) — `server/commands/communication_commands_support.py`
+- **_require_chat_pair()** (10 connections) — `server/commands/communication_commands_flows.py`
+- **flow_say_command()** (10 connections) — `server/commands/communication_commands_flows.py`
+- **flow_reply_command()** (10 connections) — `server/commands/communication_commands_flows.py`
+- **_str_error_from_chat_result()** (9 connections) — `server/commands/communication_commands_flows.py`
+- **_room_player_bundle()** (9 connections) — `server/commands/communication_commands_flows.py`
+- **_system_send_if_admin()** (9 connections) — `server/commands/communication_commands_flows.py`
+- **flow_system_command()** (9 connections) — `server/commands/communication_commands_flows.py`
+- **flow_whisper_command()** (9 connections) — `server/commands/communication_commands_flows.py`
+- **_global_player_bundle()** (8 connections) — `server/commands/communication_commands_flows.py`
+- **flow_local_command()** (8 connections) — `server/commands/communication_commands_flows.py`
+- **_whisper_id_pair_or_error()** (8 connections) — `server/commands/communication_commands_flows.py`
+- **_deliver_whisper_message()** (8 connections) — `server/commands/communication_commands_flows.py`
+- **_deliver_reply_to_last_whisper()** (8 connections) — `server/commands/communication_commands_flows.py`
+- **_system_services_triple()** (7 connections) — `server/commands/communication_commands_flows.py`
+- **_player_id_bundle()** (6 connections) — `server/commands/communication_commands_flows.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Admin API]] (22 shared connections)
-- [[Security Headers Middleware]] (5 shared connections)
-- [[Argon2 Password Hashing]] (4 shared connections)
-- [[Error Handling Middleware]] (3 shared connections)
-- [[App Lifespan Management]] (2 shared connections)
-- [[Logging Correct Patterns]] (2 shared connections)
-- [[NATS Metrics API]] (1 shared connections)
-- [[Monitoring API Endpoints]] (1 shared connections)
-- [[Players API Endpoints]] (1 shared connections)
-- [[Realtime WebSocket Auth]] (1 shared connections)
-- [[System Monitoring API]] (1 shared connections)
-- [[Alias Expansion Logic]] (1 shared connections)
+- [Quest Journal Commands](Quest_Journal_Commands.md) (36 shared connections)
+- [Client Event Store](Client_Event_Store.md) (12 shared connections)
+- [Container Inventory Finders](Container_Inventory_Finders.md) (6 shared connections)
+- [Grace Period Blocking Tests](Grace_Period_Blocking_Tests.md) (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (2 shared connections)
+- [Container Inventory Ops](Container_Inventory_Ops.md) (2 shared connections)
+- [Deprecated Logging Patterns](Deprecated_Logging_Patterns.md) (1 shared connections)
+- [Application DI Bundles](Application_DI_Bundles.md) (1 shared connections)
+- [Message Broker Errors](Message_Broker_Errors.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/generate_openapi_spec.py`
-- `server/app/factory.py`
-- `server/main.py`
-- `server/middleware/comprehensive_logging.py`
-- `server/middleware/correlation_middleware.py`
-- `server/middleware/security_headers.py`
+- `server/commands/communication_commands_flows.py`
+- `server/commands/communication_commands_support.py`
+- `server/tests/unit/commands/test_communication_commands_flows.py`
+- `server/tests/unit/commands/test_container_helpers_inventory_find.py`
 
 ## Audit Trail
 
-- EXTRACTED: 249 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 386 (86%)
+- INFERRED: 62 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

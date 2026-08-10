@@ -1,38 +1,26 @@
 # Game Inventory Item
 
-> 10 nodes · cohesion 0.27
+> 2 nodes
 
 ## Key Concepts
 
-- **InventoryItem** (17 connections) — `server/models/game.py`
-- **test_game_inventory_item.py** (5 connections) — `server/tests/unit/models/test_game_inventory_item.py`
-- **test_inventory_item_creation()** (3 connections) — `server/tests/unit/models/test_game_inventory_item.py`
-- **test_inventory_item_default_quantity()** (3 connections) — `server/tests/unit/models/test_game_inventory_item.py`
-- **test_inventory_item_quantity_validation_min()** (3 connections) — `server/tests/unit/models/test_game_inventory_item.py`
-- **Represents an item in a player's inventory.** (1 connections) — `server/models/game.py`
-- **Unit tests for InventoryItem model.** (1 connections) — `server/tests/unit/models/test_game_inventory_item.py`
-- **Test InventoryItem can be created with required fields.** (1 connections) — `server/tests/unit/models/test_game_inventory_item.py`
-- **Test InventoryItem defaults quantity to 1.** (1 connections) — `server/tests/unit/models/test_game_inventory_item.py`
-- **Test InventoryItem validates quantity is >= 1.** (1 connections) — `server/tests/unit/models/test_game_inventory_item.py`
+- **test_validate_target_exists_exact_match()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_target_exists with exact match.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [[Player Model Inventory]] (6 shared connections)
-- [[Admin NPC Schemas]] (2 shared connections)
-- [[NPC Admin API]] (2 shared connections)
-- [[Player Schema Converter]] (2 shared connections)
+- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
-- `server/tests/unit/models/test_game_inventory_item.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

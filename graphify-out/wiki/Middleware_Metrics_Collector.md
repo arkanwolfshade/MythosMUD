@@ -1,37 +1,37 @@
 # Middleware Metrics Collector
 
-> 23 nodes · cohesion 0.09
+> 23 nodes
 
 ## Key Concepts
 
 - **MetricsCollector** (12 connections) — `server/middleware/metrics_collector.py`
+- **.__init__()** (3 connections) — `server/middleware/metrics_collector.py`
 - **.get_metrics()** (3 connections) — `server/middleware/metrics_collector.py`
 - **.get_summary()** (3 connections) — `server/middleware/metrics_collector.py`
-- **.__init__()** (3 connections) — `server/middleware/metrics_collector.py`
-- **.record_circuit_state_change()** (2 connections) — `server/middleware/metrics_collector.py`
-- **.record_message_dlq()** (2 connections) — `server/middleware/metrics_collector.py`
-- **.record_message_failed()** (2 connections) — `server/middleware/metrics_collector.py`
 - **.record_message_processed()** (2 connections) — `server/middleware/metrics_collector.py`
+- **.record_message_failed()** (2 connections) — `server/middleware/metrics_collector.py`
 - **.record_message_retried()** (2 connections) — `server/middleware/metrics_collector.py`
+- **.record_message_dlq()** (2 connections) — `server/middleware/metrics_collector.py`
+- **.record_circuit_state_change()** (2 connections) — `server/middleware/metrics_collector.py`
 - **.record_processing_time()** (2 connections) — `server/middleware/metrics_collector.py`
+- **Any** (2 connections)
 - **.reset_metrics()** (2 connections) — `server/middleware/metrics_collector.py`
-- **Any** (2 connections) — `server/middleware/metrics_collector.py`
-- **Record a circuit breaker state change.          Args:             old_state: Pre** (1 connections) — `server/middleware/metrics_collector.py`
-- **Record message processing time.          Args:             duration_ms: Processi** (1 connections) — `server/middleware/metrics_collector.py`
-- **Get current metrics snapshot.          Returns:             Dictionary containin** (1 connections) — `server/middleware/metrics_collector.py`
-- **Reset all metrics counters.          Useful for clearing metrics after a deploym** (1 connections) — `server/middleware/metrics_collector.py`
 - **Simple metrics collector for NATS message delivery.      Thread-safe metrics col** (1 connections) — `server/middleware/metrics_collector.py`
-- **Get concise metrics summary.          Returns:             High-level metrics su** (1 connections) — `server/middleware/metrics_collector.py`
 - **Initialize metrics collector.          AI: Uses Lock for thread-safety in async** (1 connections) — `server/middleware/metrics_collector.py`
 - **Record a successfully processed message.          Args:             channel: Mes** (1 connections) — `server/middleware/metrics_collector.py`
 - **Record a failed message.          Args:             channel: Message channel** (1 connections) — `server/middleware/metrics_collector.py`
 - **Record a message retry attempt.          Args:             channel: Message chan** (1 connections) — `server/middleware/metrics_collector.py`
 - **Record a message added to dead letter queue.          Args:             channel:** (1 connections) — `server/middleware/metrics_collector.py`
+- **Record a circuit breaker state change.          Args:             old_state: Pre** (1 connections) — `server/middleware/metrics_collector.py`
+- **Record message processing time.          Args:             duration_ms: Processi** (1 connections) — `server/middleware/metrics_collector.py`
+- **Get current metrics snapshot.          Returns:             Dictionary containin** (1 connections) — `server/middleware/metrics_collector.py`
+- **Reset all metrics counters.          Useful for clearing metrics after a deploym** (1 connections) — `server/middleware/metrics_collector.py`
+- **Get concise metrics summary.          Returns:             High-level metrics su** (1 connections) — `server/middleware/metrics_collector.py`
 
 ## Relationships
 
-- [[NPC Admin API]] (1 shared connections)
-- [[Inventory Service Helpers]] (1 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Magic Command Handlers](Magic_Command_Handlers.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,4 +45,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

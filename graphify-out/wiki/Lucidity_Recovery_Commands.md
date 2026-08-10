@@ -1,62 +1,55 @@
 # Lucidity Recovery Commands
 
-> 74 nodes · cohesion 0.05
+> 78 nodes
 
 ## Key Concepts
 
-- **test_lucidity_recovery_commands.py** (32 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **lucidity_recovery_commands.py** (24 connections) — `server/commands/lucidity_recovery_commands.py`
-- **handle_pray_command()** (21 connections) — `server/commands/lucidity_recovery_commands.py`
-- **LucidityActionOnCooldownError** (16 connections) — `server/services/active_lucidity_service.py`
-- **_perform_recovery_action()** (15 connections) — `server/commands/lucidity_recovery_commands.py`
-- **handle_meditate_command()** (10 connections) — `server/commands/lucidity_recovery_commands.py`
-- **handle_group_solace_command()** (9 connections) — `server/commands/lucidity_recovery_commands.py`
-- **handle_folk_tonic_command()** (8 connections) — `server/commands/lucidity_recovery_commands.py`
-- **handle_therapy_command()** (8 connections) — `server/commands/lucidity_recovery_commands.py`
-- **Any** (8 connections) — `server/commands/lucidity_recovery_commands.py`
-- **AliasStorage** (6 connections) — `server/commands/lucidity_recovery_commands.py`
-- **_validate_recovery_context()** (5 connections) — `server/commands/lucidity_recovery_commands.py`
-- **_format_cooldown_message()** (4 connections) — `server/commands/lucidity_recovery_commands.py`
-- **_restore_mp_for_action()** (4 connections) — `server/commands/lucidity_recovery_commands.py`
-- **test_handle_group_solace_command_unknown_action()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **test_handle_meditate_command_cooldown()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **test_handle_pray_command_cooldown()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **test_handle_pray_command_cooldown_naive_datetime()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **test_handle_pray_command_cooldown_no_cooldown_object()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **test_handle_pray_command_cooldown_no_expiry()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **test_handle_pray_command_unknown_action()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **_format_recovery_success_message()** (3 connections) — `server/commands/lucidity_recovery_commands.py`
-- **test_handle_folk_tonic_command_delegates()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **test_handle_group_solace_command_delegates()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **test_handle_meditate_command_delegates()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- *... and 49 more nodes in this community*
+- **test_npc_utils.py** (30 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **get_zone_key_from_room_id()** (17 connections) — `server/npc/npc_utils.py`
+- **extract_npc_metadata()** (12 connections) — `server/npc/npc_utils.py`
+- **extract_definition_id_from_npc()** (12 connections) — `server/npc/npc_utils.py`
+- **extract_room_id_from_npc()** (11 connections) — `server/npc/npc_utils.py`
+- **npc_utils.py** (8 connections) — `server/npc/npc_utils.py`
+- **.despawn_npc()** (8 connections) — `server/npc/population_control.py`
+- **._get_active_npcs_from_lifecycle_manager()** (6 connections) — `server/npc/population_control.py`
+- **._get_zone_key_from_room_id()** (5 connections) — `server/npc/population_control.py`
+- **.cleanup_inactive_npcs()** (5 connections) — `server/npc/population_control.py`
+- **.is_required()** (4 connections) — `server/models/npc.py`
+- **._update_population_stats_for_despawn()** (4 connections) — `server/npc/population_control.py`
+- **Any** (3 connections)
+- **_stable_room_id_for_zone()** (3 connections) — `server/npc/npc_utils.py`
+- **.get_zone_population_summary()** (3 connections) — `server/npc/population_control.py`
+- **test_extract_room_id_from_npc_current_room()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_room_id_from_npc_current_room_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_room_id_from_npc_room_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_room_id_from_npc_not_found()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_room_id_from_npc_non_string()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_valid()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_non_string_type()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_truthy_required()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_none_required()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- *... and 53 more nodes in this community*
 
 ## Relationships
 
-- [[Active Lucidity Service]] (12 shared connections)
-- [[Alias Expansion Logic]] (10 shared connections)
-- [[NPC Admin API]] (5 shared connections)
-- [[Command Helper Utilities]] (1 shared connections)
-- [[Communication Command Handlers]] (1 shared connections)
-- [[Spellbook Read Command]] (1 shared connections)
-- [[Admin Status Commands]] (1 shared connections)
-- [[NPC Population Control]] (1 shared connections)
-- [[Inventory Service Helpers]] (1 shared connections)
-- [[Lucidity State Models]] (1 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (8 shared connections)
+- [LRU Cache Manager](LRU_Cache_Manager.md) (7 shared connections)
+- [Command Parser Tests](Command_Parser_Tests.md) (3 shared connections)
 
 ## Source Files
 
-- `server/commands/lucidity_recovery_commands.py`
-- `server/services/active_lucidity_service.py`
-- `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- `server/tests/unit/npc/test_population_control.py`
+- `server/models/npc.py`
+- `server/npc/npc_utils.py`
+- `server/npc/population_control.py`
+- `server/tests/unit/npc/test_npc_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 285 (99%)
+- EXTRACTED: 239 (99%)
 - INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

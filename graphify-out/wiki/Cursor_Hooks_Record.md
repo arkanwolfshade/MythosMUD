@@ -1,6 +1,6 @@
 # Cursor Hooks Record
 
-> 21 nodes · cohesion 0.15
+> 21 nodes
 
 ## Key Concepts
 
@@ -8,14 +8,14 @@
 - **_is_test_file()** (6 connections) — `.cursor/hooks/record_edited_file.py`
 - **main()** (6 connections) — `.cursor/hooks/record_edited_file.py`
 - **_should_skip_recording()** (5 connections) — `.cursor/hooks/record_edited_file.py`
-- **Path** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **_normalize_path()** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **_rel_path()** (4 connections) — `.cursor/hooks/record_edited_file.py`
 - **_is_client_test_path()** (4 connections) — `.cursor/hooks/record_edited_file.py`
 - **_load_payload()** (4 connections) — `.cursor/hooks/record_edited_file.py`
 - **_load_state()** (4 connections) — `.cursor/hooks/record_edited_file.py`
-- **_normalize_path()** (4 connections) — `.cursor/hooks/record_edited_file.py`
-- **_rel_path()** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **Path** (4 connections)
 - **_is_server_test_path()** (3 connections) — `.cursor/hooks/record_edited_file.py`
-- **Any** (2 connections) — `.cursor/hooks/record_edited_file.py`
+- **Any** (2 connections)
 - **Normalize path to forward slashes for consistent matching.** (1 connections) — `.cursor/hooks/record_edited_file.py`
 - **Return workspace-relative path for pattern matching.** (1 connections) — `.cursor/hooks/record_edited_file.py`
 - **True if path is under server/tests/.** (1 connections) — `.cursor/hooks/record_edited_file.py`
@@ -42,4 +42,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

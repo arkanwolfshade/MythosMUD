@@ -1,64 +1,56 @@
 # Container Data Models
 
-> 81 nodes · cohesion 0.06
+> 54 nodes
 
 ## Key Concepts
 
-- **ContainerData** (52 connections) — `server/persistence/container_data.py`
-- **ContainerDataCore** (43 connections) — `server/persistence/container_data.py`
-- **ContainerDataExtras** (37 connections) — `server/persistence/container_data.py`
-- **container_persistence_async.py** (32 connections) — `server/persistence/container_persistence_async.py`
-- **container_query_helpers_async.py** (22 connections) — `server/persistence/container_query_helpers_async.py`
-- **container_query_helpers.py** (21 connections) — `server/persistence/container_query_helpers.py`
-- **get_container_async()** (15 connections) — `server/persistence/container_persistence_async.py`
-- **_build_container_data_from_row_async()** (14 connections) — `server/persistence/container_query_helpers_async.py`
-- **Any** (14 connections) — `server/persistence/container_persistence_async.py`
-- **create_container_async()** (12 connections) — `server/persistence/container_persistence_async.py`
-- **_finalize_container_creation()** (11 connections) — `server/persistence/container_persistence_async.py`
-- **update_container_async()** (11 connections) — `server/persistence/container_persistence_async.py`
-- **AsyncSession** (11 connections) — `server/persistence/container_persistence_async.py`
-- **fetch_container_items_async()** (10 connections) — `server/persistence/container_persistence_async.py`
-- **container_data.py** (9 connections) — `server/persistence/container_data.py`
-- **get_containers_by_entity_id_async()** (9 connections) — `server/persistence/container_query_helpers_async.py`
-- **get_decayed_containers_async()** (9 connections) — `server/persistence/container_query_helpers_async.py`
-- **get_containers_by_room_id_async()** (8 connections) — `server/persistence/container_query_helpers_async.py`
-- **UUID** (8 connections) — `server/persistence/container_persistence_async.py`
-- **validate_lock_state()** (7 connections) — `server/persistence/container_helpers.py`
-- **_populate_container_items_async()** (7 connections) — `server/persistence/container_persistence_async.py`
-- **ContainerData** (7 connections) — `server/persistence/container_persistence_async.py`
-- **AsyncSession** (7 connections) — `server/persistence/container_query_helpers_async.py`
-- **ContainerData** (7 connections) — `server/persistence/container_query_helpers_async.py`
-- **_call_create_container_procedure()** (6 connections) — `server/persistence/container_persistence_async.py`
-- *... and 56 more nodes in this community*
+- **test_async_persistence_delegates.py** (35 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **reset_async_persistence()** (6 connections) — `server/async_persistence.py`
+- **test_validate_and_fix_player_room_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_apply_lucidity_loss_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_apply_fear_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_apply_corruption_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_heal_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_async_heal_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_damage_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_async_damage_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_async_persistence_creates_instance()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_async_persistence_returns_same_instance()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_reset_async_persistence()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_player_by_user_id_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_container_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_containers_by_room_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_containers_by_entity_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_update_container_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_decayed_containers_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_decayed_containers_none_time()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_delete_container_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_create_item_instance_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_ensure_item_instance_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_item_instance_exists_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_soft_delete_player_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [[Container Persistence Layer]] (41 shared connections)
-- [[NPC Admin API]] (27 shared connections)
-- [[Container Repository CRUD]] (25 shared connections)
-- [[Container Persistence Queries]] (21 shared connections)
-- [[JSONB Column Parsing]] (6 shared connections)
-- [[Persistence Item Instance]] (5 shared connections)
-- [[Persistence Container Extended]] (5 shared connections)
-- [[Container Persistence Ops]] (1 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (21 shared connections)
+- [Player Creation Service](Player_Creation_Service.md) (10 shared connections)
+- [WebSocket Initial State](WebSocket_Initial_State.md) (4 shared connections)
+- [Container System Architecture](Container_System_Architecture.md) (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/container_data.py`
-- `server/persistence/container_helpers.py`
-- `server/persistence/container_persistence.py`
-- `server/persistence/container_persistence_async.py`
-- `server/persistence/container_query_helpers.py`
-- `server/persistence/container_query_helpers_async.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- `server/async_persistence.py`
+- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 
 ## Audit Trail
 
-- EXTRACTED: 419 (79%)
-- INFERRED: 110 (21%)
+- EXTRACTED: 144 (94%)
+- INFERRED: 9 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

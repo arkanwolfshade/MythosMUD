@@ -1,34 +1,26 @@
 # Persistence Async Migration
 
-> 10 nodes · cohesion 0.20
+> 2 nodes
 
 ## Key Concepts
 
-- **Repository Responsibilities** (8 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
-- **What's Been Completed** (3 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
-- **ContainerRepository (Async Wrappers)** (1 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
-- **ExperienceRepository (Fully Async)** (1 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
-- **HealthRepository (Fully Async)** (1 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
-- **ItemRepository (Async Wrappers)** (1 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
-- **New Async Repository Architecture** (1 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
-- **PlayerRepository (Fully Async)** (1 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
-- **ProfessionRepository (Fully Async)** (1 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
-- **RoomRepository (Cache-Based)** (1 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
+- **test_broadcast_combat_ended()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test broadcast_combat_ended broadcasts combat ended event.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Relationships
 
-- [[Async Persistence Migration]] (1 shared connections)
+- [Database Pool Configuration](Database_Pool_Configuration.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
+- `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

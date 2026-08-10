@@ -1,59 +1,58 @@
 # Combat Death Handling
 
-> 59 nodes · cohesion 0.05
+> 34 nodes
 
 ## Key Concepts
 
-- **CorpseLifecycleService** (25 connections) — `server/services/corpse_lifecycle_service.py`
-- **CombatInstance** (11 connections) — `server/services/combat_death_handler.py`
-- **CombatParticipant** (10 connections) — `server/services/combat_death_handler.py`
-- **_CombatServiceDeps** (10 connections) — `server/services/combat_death_handler.py`
-- **_ConnectionManagerLike** (9 connections) — `server/services/combat_death_handler.py`
-- **._handle_npc_death()** (8 connections) — `server/services/combat_death_handler.py`
-- **_NPCCombatIntegrationLike** (8 connections) — `server/services/combat_death_handler.py`
-- **.cleanup_decayed_corpse()** (8 connections) — `server/services/corpse_lifecycle_service.py`
-- **._create_corpse_on_death()** (7 connections) — `server/services/combat_death_handler.py`
-- **._publish_npc_death_event()** (7 connections) — `server/services/combat_death_handler.py`
-- **._resolve_original_npc_id()** (7 connections) — `server/services/combat_death_handler.py`
-- **UUID** (6 connections) — `server/services/combat_death_handler.py`
-- **._handle_player_death_events()** (6 connections) — `server/services/combat_death_handler.py`
-- **.create_corpse_on_death()** (6 connections) — `server/services/corpse_lifecycle_service.py`
-- **.get_decayed_corpses_in_room()** (6 connections) — `server/services/corpse_lifecycle_service.py`
-- **_filter_container_data()** (6 connections) — `server/services/corpse_lifecycle_service.py`
-- **ContainerComponent** (5 connections) — `server/services/corpse_lifecycle_service.py`
-- **.handle_target_state_changes()** (5 connections) — `server/services/combat_death_handler.py`
-- **._log_room_subscribers_before_npc_death()** (5 connections) — `server/services/combat_death_handler.py`
-- **.get_all_decayed_corpses()** (5 connections) — `server/services/corpse_lifecycle_service.py`
-- **UUID** (4 connections) — `server/services/corpse_lifecycle_service.py`
-- **._resolve_connection_manager_for_corpse_creation()** (4 connections) — `server/services/combat_death_handler.py`
-- **.get_original_string_id()** (4 connections) — `server/services/combat_death_handler.py`
-- **.can_access_corpse()** (4 connections) — `server/services/corpse_lifecycle_service.py`
-- **.cleanup_all_decayed_corpses()** (4 connections) — `server/services/corpse_lifecycle_service.py`
-- *... and 34 more nodes in this community*
+- **quest_commands.py** (32 connections) — `server/commands/quest_commands.py`
+- **handle_quest_command()** (21 connections) — `server/commands/quest_commands.py`
+- **Any** (17 connections)
+- **handle_journal_command()** (15 connections) — `server/commands/quest_commands.py`
+- **_resolve_quest_command_context()** (10 connections) — `server/commands/quest_commands.py`
+- **_handle_quest_npc_sub()** (8 connections) — `server/commands/quest_commands.py`
+- **_get_quest_service()** (7 connections) — `server/commands/quest_commands.py`
+- **_resolve_player_id()** (6 connections) — `server/commands/quest_commands.py`
+- **UUID** (6 connections)
+- **_quest_command_ready()** (6 connections) — `server/commands/quest_commands.py`
+- **_get_container_and_persistence()** (5 connections) — `server/commands/quest_commands.py`
+- **_format_one_quest_entry()** (5 connections) — `server/commands/quest_commands.py`
+- **_format_quest_log()** (5 connections) — `server/commands/quest_commands.py`
+- **_handle_quest_abandon()** (5 connections) — `server/commands/quest_commands.py`
+- **_parse_quest_subcommand()** (4 connections) — `server/commands/quest_commands.py`
+- **_format_goal_line()** (4 connections) — `server/commands/quest_commands.py`
+- **_npc_definition_id()** (4 connections) — `server/commands/quest_commands.py`
+- **_format_quest_action_results()** (4 connections) — `server/commands/quest_commands.py`
+- **Quest commands: journal / quests (quest log), quest abandon/ask/turnin.  Returns** (1 connections) — `server/commands/quest_commands.py`
+- **Get QuestService from request app container, or None if unavailable.** (1 connections) — `server/commands/quest_commands.py`
+- **Get container and async_persistence from request, or None.** (1 connections) — `server/commands/quest_commands.py`
+- **Extract player_id from player object as UUID, or None.** (1 connections) — `server/commands/quest_commands.py`
+- **Parse quest subcommand args.      Returns (subcommand, remainder, error_message)** (1 connections) — `server/commands/quest_commands.py`
+- **Resolve player, player_id and QuestService from request and current_user.     Re** (1 connections) — `server/commands/quest_commands.py`
+- **Return a single goal progress line for the quest log.** (1 connections) — `server/commands/quest_commands.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [[Combat Service Bundle]] (18 shared connections)
-- [[Async Persistence Layer]] (6 shared connections)
-- [[Combat Domain Events]] (6 shared connections)
-- [[Container Component Capacity]] (6 shared connections)
-- [[Combat Taunt Tests]] (5 shared connections)
-- [[NPC Admin API]] (5 shared connections)
-- [[Player Combat XP]] (3 shared connections)
-- [[Game Tick Processing]] (2 shared connections)
+- [Server Config Loading](Server_Config_Loading.md) (16 shared connections)
+- [Client Event Store](Client_Event_Store.md) (12 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (6 shared connections)
+- [Quest Service Core](Quest_Service_Core.md) (3 shared connections)
+- [Container Repository CRUD](Container_Repository_CRUD.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Character Info Panel Fix](Character_Info_Panel_Fix.md) (1 shared connections)
+- [Logging System Planning](Logging_System_Planning.md) (1 shared connections)
+- [Chat Archive Advanced](Chat_Archive_Advanced.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_death_handler.py`
-- `server/services/combat_service.py`
-- `server/services/corpse_lifecycle_service.py`
+- `server/commands/quest_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 200 (87%)
-- INFERRED: 31 (13%)
+- EXTRACTED: 175 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

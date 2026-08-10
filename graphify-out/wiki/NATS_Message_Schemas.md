@@ -1,56 +1,59 @@
 # NATS Message Schemas
 
-> 51 nodes · cohesion 0.06
+> 54 nodes
 
 ## Key Concepts
 
-- **test_nats_messages.py** (21 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **test_nats_messages.py** (22 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **validate_message()** (14 connections) — `server/schemas/realtime/nats_messages.py`
+- **ChatMessageSchema** (12 connections) — `server/schemas/realtime/nats_messages.py`
 - **BaseMessageSchema** (11 connections) — `server/schemas/realtime/nats_messages.py`
-- **ChatMessageSchema** (10 connections) — `server/schemas/realtime/nats_messages.py`
-- **EventMessageSchema** (9 connections) — `server/schemas/realtime/nats_messages.py`
-- **nats_messages.py** (8 connections) — `server/schemas/realtime/nats_messages.py`
+- **EventMessageSchema** (11 connections) — `server/schemas/realtime/nats_messages.py`
+- **__init__.py** (9 connections) — `server/schemas/realtime/__init__.py`
+- **nats_messages.py** (9 connections) — `server/schemas/realtime/nats_messages.py`
 - **validate_chat_message()** (7 connections) — `server/schemas/realtime/nats_messages.py`
 - **validate_event_message()** (7 connections) — `server/schemas/realtime/nats_messages.py`
+- **test_base_message_schema_invalid_timestamp()** (4 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **test_chat_message_schema_invalid_channel()** (4 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **test_chat_message_schema_content_validation()** (4 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **test_event_message_schema_empty_event_type()** (4 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **test_validate_chat_message()** (4 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **test_validate_event_message()** (4 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **test_validate_message_chat()** (4 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **test_validate_message_event()** (4 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **Any** (3 connections)
 - **test_base_message_schema()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_base_message_schema_invalid_timestamp()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_base_message_schema_validate_timestamp()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_chat_message_schema()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_chat_message_schema_content_validation()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_chat_message_schema_invalid_channel()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_chat_message_schema_validate_channel()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_event_message_schema()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_event_message_schema_empty_event_type()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_event_message_schema_validate_event_type()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_validate_chat_message()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_validate_event_message()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_validate_message_chat()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_validate_message_event()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **Any** (3 connections) — `server/schemas/realtime/nats_messages.py`
 - **.validate_timestamp()** (2 connections) — `server/schemas/realtime/nats_messages.py`
-- **.validate_channel()** (2 connections) — `server/schemas/realtime/nats_messages.py`
-- *... and 26 more nodes in this community*
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [[Realtime Schemas Presence]] (2 shared connections)
-- [[Message Broker Errors]] (2 shared connections)
-- [[Admin NPC Schemas]] (1 shared connections)
-- [[WebSocket Message Schemas]] (1 shared connections)
-- [[NPC Admin API]] (1 shared connections)
-- [[NATS Chat Broadcasting]] (1 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (4 shared connections)
+- [Command Testing Guide](Command_Testing_Guide.md) (3 shared connections)
+- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (2 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
+- [Multiplayer Browser Helpers](Multiplayer_Browser_Helpers.md) (1 shared connections)
+- [Services Combat Persistence](Services_Combat_Persistence.md) (1 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [NATS Chat Broadcasting](NATS_Chat_Broadcasting.md) (1 shared connections)
 
 ## Source Files
 
+- `server/schemas/realtime/__init__.py`
 - `server/schemas/realtime/nats_messages.py`
 - `server/tests/unit/schemas/test_nats_messages.py`
 
 ## Audit Trail
 
-- EXTRACTED: 164 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 176 (94%)
+- INFERRED: 12 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

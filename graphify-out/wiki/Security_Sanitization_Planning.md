@@ -1,51 +1,42 @@
 # Security Sanitization Planning
 
-> 30 nodes · cohesion 0.07
+> 18 nodes
 
 ## Key Concepts
 
-- **Security Sanitization Enhancement Planning** (12 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Implementation Timeline** (5 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Success Criteria** (4 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Background** (3 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Libraries to Implement** (3 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Monitoring and Maintenance** (3 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Proposed Solution** (3 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Rollback Plan** (3 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Security Considerations** (3 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **1. ftfy (Fixes Text For You)** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **2. strip-ansi** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Attack Vectors Addressed** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Conclusion** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Current State** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Functional Requirements** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Input Philosophy: Sanitization Over Validation** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Maintenance Tasks** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Overview** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Post-Implementation Monitoring** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Potential Risks** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Problem Statement** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Quality Requirements** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Rollback Procedure** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Rollback Triggers** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- *... and 5 more nodes in this community*
+- **conftest.py** (9 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **temp_rooms_dir()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **sample_room_data()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **sample_room_database()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **invalid_room_data()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **room_with_new_exit_format()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **room_with_self_reference()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **dead_end_room()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **unreachable_room()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Pytest configuration and fixtures for room validator tests.  Provides test data** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Create a temporary directory with test room files.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Sample room data for testing.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Sample room database for testing.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Invalid room data for testing error conditions.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Room data using the new object format for exits.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Room data with self-reference exit.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Room data with no exits (dead end).** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Room data that would be unreachable from the starting room.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
 
 ## Relationships
 
-- [[Archive Security Sanitization]] (1 shared connections)
-- [[Archive Dual Connection]] (1 shared connections)
+- [Logging Path Utilities](Logging_Path_Utilities.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
+- `tools/room_toolkit/room_validator/tests/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 34 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

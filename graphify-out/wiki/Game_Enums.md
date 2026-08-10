@@ -1,38 +1,26 @@
 # Game Enums
 
-> 12 nodes · cohesion 0.20
+> 2 nodes
 
 ## Key Concepts
 
-- **test_game_enums.py** (10 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test AttributeType enum contains expected values.** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test StatusEffectType enum contains expected values.** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_attribute_type_enum_all_types()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_attribute_type_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_position_state_enum_all_states()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_position_state_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_status_effect_type_enum_all_types()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_status_effect_type_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Unit tests for game model enums.  Tests AttributeType, StatusEffectType, and Pos** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test PositionState enum contains all expected states.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test PositionState enum contains expected values.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
+- **test_broadcast_player_respawn_personal_message_error()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test broadcast_player_respawn handles personal message errors.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Relationships
 
-- [[NPC Admin API]] (1 shared connections)
-- [[Game Magic Spell]] (1 shared connections)
-- [[Player Domain Model]] (1 shared connections)
+- [Database Pool Configuration](Database_Pool_Configuration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_game_enums.py`
+- `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

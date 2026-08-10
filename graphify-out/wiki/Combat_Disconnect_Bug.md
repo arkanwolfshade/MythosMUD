@@ -1,52 +1,52 @@
 # Combat Disconnect Bug
 
-> 31 nodes · cohesion 0.06
+> 22 nodes
 
 ## Key Concepts
 
-- **Combat Disconnection Bug Investigation** (14 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Recommended Investigation Steps** (4 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Remediation Options** (4 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Timeline Analysis** (4 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Bug Description** (3 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Enhanced Logging and Defensive Exception Handling** (3 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Evidence Collection** (3 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Remediation Implemented** (3 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **System Impact** (3 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Connection Timeout** (2 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **2025-11-20_combat-disconnect-bug-investigation.md** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Broader Impact** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Changes Made** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Combat Progression** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Executive Summary** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Immediate Impact** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Implementation Details** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Key Improvements** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Key Log Entries** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Log Files Analyzed** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Next Steps** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Option 1: Defensive Exception Handling (Quick Fix)** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Option 2: Connection State Preservation (Recommended)** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Option 3: Combat State Recovery (Long-term)** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Priority 1: Code Review** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- *... and 6 more nodes in this community*
+- **hash_password()** (18 connections) — `server/auth_utils.py`
+- **test_hash_password_raises_on_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_hash_password_authentication_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_hash_password_value_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_hash_password_type_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_hash_password_runtime_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_hash_password_empty_string()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_verify_password_empty_string()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_hash_password_with_very_long_password()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_verify_password_with_very_long_password()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_hash_password_success()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Hash a plaintext password using Argon2id.      This function provides superior** (1 connections) — `server/auth_utils.py`
+- **Test successful password hashing.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Test that hash_password raises AuthenticationError on error.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Test hash_password raises AuthenticationError on AuthenticationError from argon2** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Test hash_password raises AuthenticationError on ValueError.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Test hash_password raises AuthenticationError on TypeError.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Test hash_password raises AuthenticationError on RuntimeError.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Test hashing empty string password raises AuthenticationError.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Test verifying empty string password - cannot hash empty password.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Test hashing a very long password raises AuthenticationError.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Test verifying a very long password - cannot hash password exceeding limit.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
 
 ## Relationships
 
-- [[Investigations Sessions Combat]] (3 shared connections)
-- [[Common Troubleshooting Guide]] (1 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (11 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (10 shared connections)
+- [Services Rescue Service](Services_Rescue_Service.md) (2 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (1 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/TROUBLESHOOTING_GUIDE.md`
-- `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
+- `server/auth_utils.py`
+- `server/tests/unit/auth/test_auth_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 64 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 59 (87%)
+- INFERRED: 9 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

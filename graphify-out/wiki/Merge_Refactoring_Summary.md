@@ -1,51 +1,60 @@
 # Merge Refactoring Summary
 
-> 47 nodes · cohesion 0.04
+> 59 nodes
 
 ## Key Concepts
 
-- **Test Suite Refactoring - Post-Merge Application** (11 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **New Files Migrated (9 files)** (7 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **Verification Report: UI Panel Autoscaling Fix** (7 connections) — `investigations/sessions/2025-01-XX_verification-ui-panel-resize-fix.md`
-- **Verification Tests** (5 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **Lessons Learned** (4 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **Changes Applied** (3 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **Files Processed** (3 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **New Test Files from Merge** (3 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **Next Steps** (3 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **Test Fixes** (3 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **Verification Results** (3 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **Detailed Analysis** (3 connections) — `investigations/sessions/2025-01-XX_verification-ui-panel-resize-fix.md`
-- **Verification Evidence** (3 connections) — `investigations/sessions/2025-01-XX_verification-ui-panel-resize-fix.md`
-- **MERGE_REFACTORING_SUMMARY.md** (1 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **1. Default Starting Room Update** (1 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **2. Lifespan Module Changes** (1 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **Benefits Achieved** (1 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **Code Changes from Main Branch** (1 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **Duplicate Files Removed (7 files)** (1 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **E2E Tests** (1 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **Executive Summary** (1 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **Future Considerations** (1 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **Immediate** (1 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **Import Updates** (1 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- **Merge-Induced Drift** (1 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- *... and 22 more nodes in this community*
+- **ExceptionTracker** (24 connections) — `server/monitoring/exception_tracker.py`
+- **exception_tracker.py** (20 connections) — `server/monitoring/exception_tracker.py`
+- **track_exception()** (14 connections) — `server/monitoring/exception_tracker.py`
+- **ExceptionRecord** (12 connections) — `server/monitoring/exception_tracker.py`
+- **create_enhanced_error_context()** (12 connections) — `server/utils/enhanced_error_logging.py`
+- **get_exception_tracker()** (10 connections) — `server/monitoring/exception_tracker.py`
+- **.track_exception()** (8 connections) — `server/monitoring/exception_tracker.py`
+- **Exception** (7 connections)
+- **track_exception_with_context()** (7 connections) — `server/monitoring/exception_tracker.py`
+- **ExceptionTrackInput** (6 connections) — `server/monitoring/exception_tracker.py`
+- **._create_and_store_record()** (6 connections) — `server/monitoring/exception_tracker.py`
+- **Any** (5 connections)
+- **._log_tracked_exception()** (5 connections) — `server/monitoring/exception_tracker.py`
+- **._call_handlers()** (5 connections) — `server/monitoring/exception_tracker.py`
+- **create_context_from_websocket()** (5 connections) — `server/utils/error_logging.py`
+- **ExceptionContextTrackInput** (4 connections) — `server/monitoring/exception_tracker.py`
+- **._parse_track_options()** (4 connections) — `server/monitoring/exception_tracker.py`
+- **.add_exception_handler()** (4 connections) — `server/monitoring/exception_tracker.py`
+- **._update_stats()** (4 connections) — `server/monitoring/exception_tracker.py`
+- **.__init__()** (3 connections) — `server/monitoring/exception_tracker.py`
+- **.get_exception_record()** (3 connections) — `server/monitoring/exception_tracker.py`
+- **.get_exceptions_by_type()** (3 connections) — `server/monitoring/exception_tracker.py`
+- **.get_exceptions_by_user()** (3 connections) — `server/monitoring/exception_tracker.py`
+- **.get_exceptions_by_correlation()** (3 connections) — `server/monitoring/exception_tracker.py`
+- **.get_unhandled_exceptions()** (3 connections) — `server/monitoring/exception_tracker.py`
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Memory Leak Metrics](Memory_Leak_Metrics.md) (11 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (10 shared connections)
+- [Player Movement Service](Player_Movement_Service.md) (3 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (3 shared connections)
+- [Test Migration Mapping](Test_Migration_Mapping.md) (3 shared connections)
+- [Mythos Time HUD](Mythos_Time_HUD.md) (3 shared connections)
+- [Active Lucidity Service](Active_Lucidity_Service.md) (3 shared connections)
+- [Test Optimization Insights](Test_Optimization_Insights.md) (2 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/MERGE_REFACTORING_SUMMARY.md`
-- `investigations/sessions/2025-01-XX_verification-ui-panel-resize-fix.md`
+- `server/monitoring/exception_tracker.py`
+- `server/utils/enhanced_error_logging.py`
+- `server/utils/error_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 92 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 223 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

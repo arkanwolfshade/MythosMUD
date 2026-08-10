@@ -1,49 +1,47 @@
 # Combat Services Messaging
 
-> 23 nodes · cohesion 0.13
+> 16 nodes
 
 ## Key Concepts
 
-- **CombatBroadcastMixin** (15 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **Any** (7 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **.broadcast_combat_attack()** (6 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **._build_combat_attack_event()** (5 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **.broadcast_combat_death()** (4 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **.broadcast_combat_end()** (4 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **.broadcast_combat_error()** (4 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **.broadcast_combat_start()** (4 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **.broadcast_combat_target_switch()** (4 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **._send_attacker_personal_combat_message()** (4 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **._send_attacker_personal_message_if_needed()** (4 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **._build_combat_attack_messages()** (3 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **Broadcast combat start message to all players in the room.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **Mixin for combat-related broadcast methods. Requires connection_manager on self.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **Broadcast combat attack to room. Excludes attacker from broadcast; sends them a** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **Broadcast NPC death message to all players in the room.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **Build perspective-specific attack messages.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **Broadcast combat end message to all players in the room.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **Broadcast combat error message to a specific player.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **Broadcast one short room message when an NPC switches aggro target (ADR-016).** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **Build combat_attack event payload.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **Send personal combat message to attacker. Logs warning on failure.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **Send personal combat message to attacker when attacker_id is present.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **reset_database()** (16 connections) — `server/database.py`
+- **test_reset_database_resets_singleton()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_reset_database()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **reset_db_state()** (3 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_reset_database_resets_module_url()** (3 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **reset_db_state()** (3 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **reset_db()** (3 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_reset_database_resets_module_url()** (3 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **Reset the database connection state (for testing).      This resets the Database** (1 connections) — `server/database.py`
+- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **Test reset_database resets singleton.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **Test reset_database resets module-level _database_url.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **Test reset_database resets both singleton and module-level URL.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **Test reset_database resets module-level _database_url.** (1 connections) — `server/tests/unit/infrastructure/test_database_init.py`
 
 ## Relationships
 
-- [[Combat Player Broadcasts]] (8 shared connections)
-- [[Services Combat Messaging]] (2 shared connections)
-- [[Combat Messaging Base]] (1 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (13 shared connections)
+- [Holiday Persistence Models](Holiday_Persistence_Models.md) (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Container Loot Helpers](Container_Loot_Helpers.md) (1 shared connections)
+- [NATS Subject Manager](NATS_Subject_Manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_messaging/combat_broadcasts.py`
+- `server/database.py`
+- `server/tests/unit/infrastructure/test_database_error_handling.py`
+- `server/tests/unit/infrastructure/test_database_extended.py`
+- `server/tests/unit/infrastructure/test_database_init.py`
 
 ## Audit Trail
 
-- EXTRACTED: 74 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 49 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

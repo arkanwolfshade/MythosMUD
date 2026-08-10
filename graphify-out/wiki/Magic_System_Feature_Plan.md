@@ -1,50 +1,64 @@
 # Magic System Feature Plan
 
-> 49 nodes · cohesion 0.04
+> 39 nodes
 
 ## Key Concepts
 
-- **Magic and Spellcasting System - Comprehensive Feature Plan** (12 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **Implementation Phases** (7 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **Key Design Decisions** (6 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **Phase 1: Core Infrastructure** (4 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **Phase 2: Magic Service Core** (4 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **Testing Strategy** (4 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **Architecture** (3 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **Database Schema Changes** (3 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **Dependencies** (3 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **Files to Create/Modify** (3 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **New Tables** (3 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **Phase 3: Commands and UI** (3 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **Phase 4: Spell Learning and Progression** (3 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **Phase 5: MP Regeneration** (2 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **Phase 6: Material Components** (2 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **MAGIC_SYSTEM_FEATURE_PLAN.md** (1 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **1.1 Add Power Stat and Magic Points** (1 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **1.2 Spell Registry** (1 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **1.3 Player Spell Storage** (1 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **2.1 Magic Service** (1 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **2.2 Spell Targeting** (1 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **2.3 Spell Effects Engine** (1 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **3.1 Magic Commands** (1 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **3.2 Chat Integration** (1 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **4.1 Spell Learning** (1 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- *... and 24 more nodes in this community*
+- **lucidity.ts** (29 connections) — `client/src/types/lucidity.ts`
+- **lucidityEventUtils.ts** (19 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **HallucinationMessage** (10 connections) — `client/src/types/lucidity.ts`
+- **buildLucidityStatus()** (10 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **HallucinationTicker.tsx** (9 connections) — `client/src/components/lucidity/HallucinationTicker.tsx`
+- **RescueStatusBanner.tsx** (9 connections) — `client/src/components/lucidity/RescueStatusBanner.tsx`
+- **lucidity.test.ts** (8 connections) — `client/src/types/__tests__/lucidity.test.ts`
+- **IncapacitatedBanner.tsx** (5 connections) — `client/src/components/health/IncapacitatedBanner.tsx`
+- **HallucinationTicker.test.tsx** (5 connections) — `client/src/components/lucidity/__tests__/HallucinationTicker.test.tsx`
+- **RescueStatusBanner.test.tsx** (5 connections) — `client/src/components/lucidity/__tests__/RescueStatusBanner.test.tsx`
+- **DismissButton.tsx** (5 connections) — `client/src/components/ui/DismissButton.tsx`
+- **lucidityEventUtils.test.ts** (5 connections) — `client/src/utils/__tests__/lucidityEventUtils.test.ts`
+- **parseNumber()** (5 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **DismissButton()** (4 connections) — `client/src/components/ui/DismissButton.tsx`
+- **resolveCurrentLucidity()** (4 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **HallucinationTicker** (3 connections) — `client/src/components/lucidity/HallucinationTicker.tsx`
+- **RescueStatusBanner** (3 connections) — `client/src/components/lucidity/RescueStatusBanner.tsx`
+- **LucidityTier** (3 connections) — `client/src/types/lucidity.ts`
+- **resolveMaxLucidity()** (3 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **createHallucinationEntry()** (3 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **createRescueState()** (3 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **IncapacitatedBanner** (2 connections) — `client/src/components/health/IncapacitatedBanner.tsx`
+- **HallucinationTickerProps** (2 connections) — `client/src/components/lucidity/HallucinationTicker.tsx`
+- **RescueStatusBannerProps** (2 connections) — `client/src/components/lucidity/RescueStatusBanner.tsx`
+- **LucidityChangeMeta** (2 connections) — `client/src/types/lucidity.ts`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Draggable Panel UI](Draggable_Panel_UI.md) (14 shared connections)
+- [Communication Command Handlers](Communication_Command_Handlers.md) (14 shared connections)
+- [Combat Messaging Integration](Combat_Messaging_Integration.md) (5 shared connections)
+- [Character Stats Model](Character_Stats_Model.md) (3 shared connections)
+- [Chat Channel Design Spec](Chat_Channel_Design_Spec.md) (1 shared connections)
+- [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
+- `client/src/components/health/IncapacitatedBanner.tsx`
+- `client/src/components/lucidity/HallucinationTicker.tsx`
+- `client/src/components/lucidity/RescueStatusBanner.tsx`
+- `client/src/components/lucidity/__tests__/HallucinationTicker.test.tsx`
+- `client/src/components/lucidity/__tests__/RescueStatusBanner.test.tsx`
+- `client/src/components/ui/DismissButton.tsx`
+- `client/src/types/__tests__/lucidity.test.ts`
+- `client/src/types/lucidity.ts`
+- `client/src/utils/__tests__/lucidityEventUtils.test.ts`
+- `client/src/utils/lucidityEventUtils.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 96 (100%)
+- EXTRACTED: 180 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,41 +1,39 @@
 # Realtime Message Builders
 
-> 17 nodes · cohesion 0.15
+> 9 nodes
 
 ## Key Concepts
 
-- **._get_next_sequence()** (8 connections) — `server/realtime/message_builders.py`
-- **Any** (6 connections) — `server/realtime/message_builders.py`
-- **.create_player_entered_message()** (5 connections) — `server/realtime/message_builders.py`
-- **.create_player_left_message()** (5 connections) — `server/realtime/message_builders.py`
-- **.build_occupants_update_message()** (4 connections) — `server/realtime/message_builders.py`
-- **.build_room_state_message()** (4 connections) — `server/realtime/message_builders.py`
-- **.build_room_update_message()** (4 connections) — `server/realtime/message_builders.py`
-- **.__init__()** (3 connections) — `server/realtime/message_builders.py`
-- **Create a real-time message for player entering a room.          Args:** (2 connections) — `server/realtime/message_builders.py`
-- **Build the room occupants update message.          Args:             room_id_str:** (1 connections) — `server/realtime/message_builders.py`
-- **Build a room update message.          Args:             room_id: The room ID** (1 connections) — `server/realtime/message_builders.py`
-- **Build a single authoritative room_state message (room metadata + occupants).** (1 connections) — `server/realtime/message_builders.py`
-- **Initialize the message builder.          Args:             sequence_counter: Cal** (1 connections) — `server/realtime/message_builders.py`
-- **Get the next sequence number.** (1 connections) — `server/realtime/message_builders.py`
-- **Get the next sequence number (public API).          Returns:             The nex** (1 connections) — `server/realtime/message_builders.py`
-- **PlayerEnteredRoom** (1 connections) — `server/realtime/message_builders.py`
-- **PlayerLeftRoom** (1 connections) — `server/realtime/message_builders.py`
+- **validate_shutdown_admin_permission()** (9 connections) — `server/commands/admin_shutdown_command.py`
+- **.is_admin()** (4 connections) — `server/commands/communication_commands_support.py`
+- **test_validate_shutdown_admin_permission_no_player()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_validate_shutdown_admin_permission_not_admin()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_validate_shutdown_admin_permission_admin()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Validate that a player has admin permissions for server shutdown.      Args:** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Test validate_shutdown_admin_permission() returns False when player is None.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test validate_shutdown_admin_permission() returns False when player is not admin** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test validate_shutdown_admin_permission() returns True when player is admin.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Relationships
 
-- [[Player Respawn Events]] (7 shared connections)
+- [Playwright Remediation Plan](Playwright_Remediation_Plan.md) (4 shared connections)
+- [Room Drop Renderer](Room_Drop_Renderer.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Quest Journal Commands](Quest_Journal_Commands.md) (1 shared connections)
+- [Container Repository CRUD](Container_Repository_CRUD.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_builders.py`
+- `server/commands/admin_shutdown_command.py`
+- `server/commands/communication_commands_support.py`
+- `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 22 (85%)
+- INFERRED: 4 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

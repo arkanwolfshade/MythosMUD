@@ -1,55 +1,50 @@
 # Profession Model Tests
 
-> 51 nodes · cohesion 0.07
+> 46 nodes
 
 ## Key Concepts
 
-- **Profession** (53 connections) — `server/models/profession.py`
-- **test_profession.py** (29 connections) — `server/tests/unit/models/test_profession.py`
-- **Test meets_stat_requirements returns True when all requirements are met.** (5 connections) — `server/tests/unit/models/test_profession.py`
-- **Test get_mechanical_effects returns dict for valid JSON.** (4 connections) — `server/tests/unit/models/test_profession.py`
-- **Test get_stat_requirements returns empty dict for invalid JSON.** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_mechanical_effects_empty_string()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_mechanical_effects_invalid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_mechanical_effects_none()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_mechanical_effects_valid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_requirement_display_text_capitalizes_stat_names()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_requirement_display_text_multiple_requirements()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_requirement_display_text_no_requirements()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_requirement_display_text_single_requirement()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_stat_requirements_empty_string()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_stat_requirements_invalid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_stat_requirements_none()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_stat_requirements_valid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_is_available_for_selection_false()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_is_available_for_selection_true()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_meets_stat_requirements_all_met()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_meets_stat_requirements_empty_requirements()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_meets_stat_requirements_exact_match()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_meets_stat_requirements_extra_stats()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_meets_stat_requirements_invalid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_meets_stat_requirements_missing_stat()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- *... and 26 more nodes in this community*
+- **Test Suite Refactoring Plan** (14 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Migration Strategy** (7 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Testing Standards and Best Practices** (6 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Test Organization Principles** (5 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Current State Analysis** (4 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Success Criteria** (4 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Appendix B: Test Categories Reference** (4 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Tooling Updates** (3 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Risk Mitigation** (3 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Proposed Structure** (2 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Migration File Mapping** (2 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Timeline and Milestones** (2 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **TEST_SUITE_REFACTORING_PLAN.md** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Executive Summary** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Test Distribution by Category** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Test Type Distribution** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Current Issues** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Directory Hierarchy** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Phase 1: Preparation (Week 1)** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Phase 2: Core Infrastructure (Week 2)** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Phase 3: Feature Domains (Week 3)** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Phase 4: Integration and Specialized Tests (Week 4)** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Phase 5: Coverage and Bug Fixes (Week 5)** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Phase 6: Validation and Cleanup (Week 6)** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Naming Conventions** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [[Profession Get Mechanical Effects]] (10 shared connections)
-- [[NPC Admin API]] (8 shared connections)
-- [[SQLAlchemy Model Base]] (3 shared connections)
-- [[Async Persistence Core]] (1 shared connections)
-- [[Validation Rule Base]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/models/profession.py`
-- `server/tests/unit/models/test_profession.py`
+- `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 191 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 90 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

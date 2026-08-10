@@ -1,77 +1,58 @@
 # Game Terminal Panels
 
-> 99 nodes · cohesion 0.03
+> 98 nodes
 
 ## Key Concepts
 
-- **GameLogPanel.tsx** (18 connections) — `client/src/components/panels/GameLogPanel.tsx`
-- **GameTerminalPresentation.tsx** (16 connections) — `client/src/components/GameTerminalPresentation.tsx`
-- **GameLogMessagesList.tsx** (16 connections) — `client/src/components/panels/GameLogMessagesList.tsx`
-- **GameLogPanelSections.tsx** (16 connections) — `client/src/components/panels/GameLogPanelSections.tsx`
-- **performance.test.tsx** (15 connections) — `client/src/components/__tests__/performance.test.tsx`
-- **PerformanceTester** (12 connections) — `client/src/utils/performanceTester.ts`
-- **ChatPanel()** (11 connections) — `client/src/components/panels/ChatPanelRuntime.tsx`
-- **RoomInfoPanel.tsx** (10 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **ChatPanel.tsx** (9 connections) — `client/src/components/panels/ChatPanel.tsx`
-- **GameLogPanel()** (9 connections) — `client/src/components/panels/GameLogPanel.tsx`
-- **gameLogPanelUtils.ts** (9 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
-- **ChatMessage** (9 connections) — `client/src/stores/gameStore.ts`
-- **chat-panel.spec.tsx** (9 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
-- **performanceTester.ts** (8 connections) — `client/src/utils/performanceTester.ts`
-- **chat-panel.test.tsx** (7 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
-- **ChatPanel.test.tsx** (7 connections) — `client/src/components/__tests__/ChatPanel.test.tsx`
-- **gameLogPanelUtils.test.ts** (7 connections) — `client/src/components/panels/__tests__/gameLogPanelUtils.test.ts`
-- **gameLogFilter.ts** (7 connections) — `client/src/utils/gameLogFilter.ts`
-- **RoomInfoPanel()** (6 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **useGameLogPanelState.ts** (6 connections) — `client/src/components/panels/useGameLogPanelState.ts`
-- **ChatPanel.edgeCases.test.tsx** (6 connections) — `client/src/components/__tests__/ChatPanel.edgeCases.test.tsx`
-- **game-log-panel.test.tsx** (5 connections) — `client/src/components/panels/__tests__/game-log-panel.test.tsx`
-- **GameLogPanelFilterBar()** (5 connections) — `client/src/components/panels/GameLogPanelSections.tsx`
-- **chatPanelTestHelpers.ts** (5 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
-- **game-log-panel.spec.tsx** (5 connections) — `client/src/components/panels/__tests__/game-log-panel.spec.tsx`
-- *... and 74 more nodes in this community*
+- **test_command_admin.py** (42 connections) — `server/tests/unit/models/test_command_admin.py`
+- **SummonCommand** (21 connections) — `server/models/command_admin.py`
+- **TeleportCommand** (18 connections) — `server/models/command_admin.py`
+- **command_admin.py** (14 connections) — `server/models/command_admin.py`
+- **NPCCommand** (13 connections) — `server/models/command_admin.py`
+- **GotoCommand** (13 connections) — `server/models/command_admin.py`
+- **ShutdownCommand** (12 connections) — `server/models/command_admin.py`
+- **.create_npc_command()** (5 connections) — `server/utils/command_factories_utility.py`
+- **.create_shutdown_command()** (5 connections) — `server/utils/command_factories_utility.py`
+- **test_npc_command_subcommand_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_npc_command_subcommand_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_validate_prototype_id_invalid_characters()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_quantity_validation_min()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_quantity_validation_max()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_prototype_id_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_prototype_id_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_teleport_command_validate_direction_invalid()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_teleport_command_player_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_teleport_command_player_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_goto_command_player_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_goto_command_player_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **.validate_player_name_field()** (3 connections) — `server/models/command_admin.py`
+- **.validate_player_name_field()** (3 connections) — `server/models/command_admin.py`
+- **test_npc_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_npc_command_with_subcommand()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- *... and 73 more nodes in this community*
 
 ## Relationships
 
-- [[Chat Panel Components]] (16 shared connections)
-- [[Draggable Panel UI]] (9 shared connections)
-- [[Room Map Viewer UI]] (6 shared connections)
-- [[Chat Panel Filtering]] (4 shared connections)
-- [[Game Terminal Container]] (3 shared connections)
-- [[Debuglogger Constructor Debug Logger]] (2 shared connections)
-- [[Client Event Store]] (2 shared connections)
-- [[Components Panels Chat]] (2 shared connections)
-- [[Components Panels Chatpanelrefactoredderived]] (1 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (21 shared connections)
+- [Emote Schema Validator](Emote_Schema_Validator.md) (16 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (6 shared connections)
+- [Communication Command Models](Communication_Command_Models.md) (3 shared connections)
+- [Chat Panel Components](Chat_Panel_Components.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/GameTerminalPresentation.tsx`
-- `client/src/components/RoomInfoPanel.test.tsx`
-- `client/src/components/RoomInfoPanel.tsx`
-- `client/src/components/__tests__/ChatPanel.edgeCases.test.tsx`
-- `client/src/components/__tests__/ChatPanel.test.tsx`
-- `client/src/components/__tests__/GameTerminalPresentation.test.tsx`
-- `client/src/components/__tests__/RoomInfoPanel.test.tsx`
-- `client/src/components/__tests__/chatPanelTestHelpers.ts`
-- `client/src/components/__tests__/chatPanelTestSetup.tsx`
-- `client/src/components/__tests__/game-log-panel.test.tsx`
-- `client/src/components/__tests__/performance.test.tsx`
-- `client/src/components/panels/ChatPanel.tsx`
-- `client/src/components/panels/ChatPanelCore.tsx`
-- `client/src/components/panels/ChatPanelRuntime.tsx`
-- `client/src/components/panels/GameLogMessagesList.tsx`
-- `client/src/components/panels/GameLogPanel.tsx`
-- `client/src/components/panels/GameLogPanelSections.tsx`
-- `client/src/components/panels/__tests__/GameLogPanel.test.tsx`
-- `client/src/components/panels/__tests__/chat-panel.spec.tsx`
-- `client/src/components/panels/__tests__/chat-panel.test.tsx`
+- `server/models/command_admin.py`
+- `server/tests/unit/models/test_command_admin.py`
+- `server/tests/unit/utils/test_command_factories_utility.py`
+- `server/utils/command_factories_utility.py`
 
 ## Audit Trail
 
-- EXTRACTED: 377 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 296 (92%)
+- INFERRED: 27 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

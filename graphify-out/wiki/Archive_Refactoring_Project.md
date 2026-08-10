@@ -1,37 +1,29 @@
 # Archive Refactoring Project
 
-> 13 nodes · cohesion 0.18
+> 4 nodes
 
 ## Key Concepts
 
-- **Project Completion Checklist** (7 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Deliverables** (6 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Final Numbers** (4 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Documentation** (3 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Automation ✅** (2 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Configuration ✅** (2 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Execution ✅** (1 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **File Statistics** (1 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Planning ✅** (1 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Structure ✅** (1 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Test Content** (1 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Tests ✅** (1 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Validation ✅** (1 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
+- **TestGetProfessionService** (4 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_profession_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_profession_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_profession_service creates service with persistence.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [[Test Refactoring Complete]] (3 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (2 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 31 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 8 (89%)
+- INFERRED: 1 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

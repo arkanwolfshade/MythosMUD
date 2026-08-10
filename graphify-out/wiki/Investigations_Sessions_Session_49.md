@@ -1,28 +1,26 @@
 # Investigations Sessions Session
 
-> 4 nodes · cohesion 0.50
+> 2 nodes
 
 ## Key Concepts
 
-- **EVIDENCE DOCUMENTATION** (4 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **Code Evidence** (1 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **Data Flow Evidence** (1 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **Log Evidence** (1 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
+- **Create New Character Rendering Gap** (1 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
+- **showProfessionSelection With Existing Characters** (1 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
 
 ## Relationships
 
-- [[Investigations Sessions Session]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
+- `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

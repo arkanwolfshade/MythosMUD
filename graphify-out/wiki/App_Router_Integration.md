@@ -1,72 +1,50 @@
 # App Router Integration
 
-> 54 nodes · cohesion 0.10
+> 52 nodes
 
 ## Key Concepts
 
-- **App.tsx** (23 connections) — `client/src/App.tsx`
-- **App()** (23 connections) — `client/src/App.tsx`
-- **app.test.helpers.ts** (19 connections) — `client/src/__tests__/app.test.helpers.ts`
-- **ProfessionSystemErrorHandling.test.tsx** (14 connections) — `client/src/__tests__/ProfessionSystemErrorHandling.test.tsx`
-- **app.test.mocks.tsx** (12 connections) — `client/src/__tests__/app.test.mocks.tsx`
-- **professionSystemErrorHandling.test.helpers.ts** (12 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
-- **createMockLoginResponse()** (12 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
-- **registerAppTestHooks()** (11 connections) — `client/src/__tests__/app.test.helpers.ts`
-- **fetchSpy** (10 connections) — `client/src/__tests__/app.test.mocks.tsx`
-- **AppRouter.tsx** (8 connections) — `client/src/AppRouter.tsx`
-- **App.keyboard.test.tsx** (7 connections) — `client/src/__tests__/App.keyboard.test.tsx`
-- **App.loading.test.tsx** (7 connections) — `client/src/__tests__/App.loading.test.tsx`
-- **App.login.test.tsx** (7 connections) — `client/src/__tests__/App.login.test.tsx`
-- **App.logoutError.test.tsx** (7 connections) — `client/src/__tests__/App.logoutError.test.tsx`
-- **App.motd.test.tsx** (7 connections) — `client/src/__tests__/App.motd.test.tsx`
-- **App.registration.test.tsx** (7 connections) — `client/src/__tests__/App.registration.test.tsx`
-- **App.statsRolling.test.tsx** (7 connections) — `client/src/__tests__/App.statsRolling.test.tsx`
-- **App.tokenValidation.test.tsx** (7 connections) — `client/src/__tests__/App.tokenValidation.test.tsx`
-- **App.demo.test.tsx** (5 connections) — `client/src/__tests__/App.demo.test.tsx`
-- **App.formState.test.tsx** (5 connections) — `client/src/__tests__/App.formState.test.tsx`
-- **createMockProfessions()** (5 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
-- **setupBasicMocks()** (5 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
-- **StatRollingWithProfessionRequirements.test.tsx** (5 connections) — `client/src/__tests__/StatRollingWithProfessionRequirements.test.tsx`
-- **createMockProfessionsFetchResponse()** (4 connections) — `client/src/__tests__/app.test.helpers.ts`
-- **LogoutFlow.integration.test.tsx** (3 connections) — `client/src/components/__tests__/LogoutFlow.integration.test.tsx`
-- *... and 29 more nodes in this community*
+- **test_room_subscription_manager.py** (28 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **subscription_manager()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_room_subscription_manager_init()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_set_async_persistence()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_subscribe_to_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_subscribe_to_room_multiple_players()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_unsubscribe_from_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_unsubscribe_from_room_not_subscribed()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_unsubscribe_from_room_removes_empty_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_subscribe_to_room_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_unsubscribe_from_room_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_room_subscribers()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_room_subscribers_empty()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_room_subscribers_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_add_room_occupant()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_add_room_occupant_multiple()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_add_room_occupant_new_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_add_room_occupant_existing_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_remove_room_occupant()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_remove_room_occupant_not_occupant()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_remove_room_occupant_removes_empty_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_add_room_occupant_error_handling()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_remove_room_occupant_error_handling()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_room_occupants()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_room_occupants_empty()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [[Logout Session Chrome Hooks]] (4 shared connections)
-- [[Character Creation Screens]] (2 shared connections)
-- [[App Creation Flow Screens]] (2 shared connections)
-- [[Client App State Hooks]] (2 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (3 shared connections)
 
 ## Source Files
 
-- `client/src/App.integration.test.tsx`
-- `client/src/App.tsx`
-- `client/src/AppRouter.tsx`
-- `client/src/__tests__/App.demo.test.tsx`
-- `client/src/__tests__/App.formState.test.tsx`
-- `client/src/__tests__/App.keyboard.test.tsx`
-- `client/src/__tests__/App.loading.test.tsx`
-- `client/src/__tests__/App.login.test.tsx`
-- `client/src/__tests__/App.logoutError.test.tsx`
-- `client/src/__tests__/App.motd.test.tsx`
-- `client/src/__tests__/App.registration.test.tsx`
-- `client/src/__tests__/App.statsRolling.test.tsx`
-- `client/src/__tests__/App.tokenValidation.test.tsx`
-- `client/src/__tests__/AppRouter.test.tsx`
-- `client/src/__tests__/CharacterCreationNavigation.test.tsx`
-- `client/src/__tests__/ProfessionPersistence.test.tsx`
-- `client/src/__tests__/ProfessionSelectionVariants.test.tsx`
-- `client/src/__tests__/ProfessionSystemErrorHandling.test.tsx`
-- `client/src/__tests__/StatRollingWithProfessionRequirements.test.tsx`
-- `client/src/__tests__/app.test.helpers.ts`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 286 (100%)
+- EXTRACTED: 105 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

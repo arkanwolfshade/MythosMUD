@@ -1,58 +1,55 @@
 # Command Alias Handling
 
-> 47 nodes · cohesion 0.06
+> 28 nodes
 
 ## Key Concepts
 
-- **TestHelperFunctions** (33 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **_process_alias_expansion()** (19 connections) — `server/command_handler_unified.py`
-- **_ensure_alias_storage()** (14 connections) — `server/command_handler_unified.py`
-- **test_command_handler_unified_helpers.py** (13 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **test_command_aliases.py** (8 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **TestProcessAliasExpansion** (6 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **TestEnsureAliasStorage** (5 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion returns error for invalid expanded command.** (4 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_ensure_alias_storage_handles_error()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_ensure_alias_storage_initializes_new()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_ensure_alias_storage_returns_existing()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_process_alias_expansion_invalid_expanded()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_process_alias_expansion_no_alias()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_process_alias_expansion_no_alias_storage()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_process_alias_expansion_unsafe_alias()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_check_rate_limit_allowed()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_check_rate_limit_blocked()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_ensure_alias_storage_creates_new()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_ensure_alias_storage_handles_error()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_ensure_alias_storage_provided()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_prepare_command_for_processing_empty_after_cleaning()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_prepare_command_for_processing_rate_limited()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_prepare_command_for_processing_success()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_prepare_command_for_processing_validation_failed()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_process_alias_expansion_invalid_expanded()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- *... and 22 more nodes in this community*
+- **WearableContainerServiceError** (25 connections) — `server/services/wearable_container_service.py`
+- **test_handle_equip_wearable_container_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_container_overflow_player_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_equip_wearable_container_creation_error()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_wrong_player()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_wrong_source_type()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_update_fails()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_update_wearable_container_items_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_update_wearable_container_items_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_update_wearable_container_items_update_fails()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_update_wearable_container_items_wrong_player()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_update_wearable_container_items_wrong_source_type()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Base exception for wearable container service operations.** (1 connections) — `server/services/wearable_container_service.py`
+- **Test handle_equip_wearable_container raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test add_items_to_wearable_container raises error when container not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test add_items_to_wearable_container raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_container_overflow raises error when player not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_equip_wearable_container handles container creation error.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test add_items_to_wearable_container raises error when container belongs to diff** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test add_items_to_wearable_container raises error when container is not equipmen** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test add_items_to_wearable_container raises error when update fails.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test update_wearable_container_items raises error when container not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test update_wearable_container_items raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [[Unified Command Handler]] (16 shared connections)
-- [[Alias Expansion Logic]] (9 shared connections)
-- [[Command Commands Validation]] (9 shared connections)
-- [[Grace Period Blocking Tests]] (6 shared connections)
-- [[Command Request App State]] (6 shared connections)
-- [[Commands Command Handler]] (2 shared connections)
-- [[NPC Admin API]] (1 shared connections)
+- [Exploration Command Factories](Exploration_Command_Factories.md) (14 shared connections)
+- [NATS Subject Patterns](NATS_Subject_Patterns.md) (7 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
+- [Application Container Analysis](Application_Container_Analysis.md) (1 shared connections)
 
 ## Source Files
 
-- `server/command_handler_unified.py`
-- `server/tests/unit/commands/test_command_aliases.py`
-- `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- `server/services/wearable_container_service.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 184 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 45 (58%)
+- INFERRED: 33 (42%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

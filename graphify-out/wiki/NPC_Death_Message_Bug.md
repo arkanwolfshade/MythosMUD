@@ -1,50 +1,41 @@
 # NPC Death Message Bug
 
-> 29 nodes · cohesion 0.07
+> 14 nodes
 
 ## Key Concepts
 
-- **BUG INVESTIGATION REPORT: NPC Death Messages Not Displaying in Game Info Panel** (8 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **DETAILED FINDINGS** (6 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **INVESTIGATION RECOMMENDATIONS** (4 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **Phase 3: Code Analysis** (4 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **Phase 4: Evidence Collection** (4 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **Phase 5: Root Cause Analysis** (4 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **SYSTEM IMPACT ASSESSMENT** (4 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **EVIDENCE DOCUMENTATION** (3 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **Client-Side Evidence** (2 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **Server-Side Evidence** (2 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **2025-12-01_session-npc-death-messages-not-displaying.md** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **Client-Side Event Processing** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **Client-Side Message Display** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **Code References** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **Dependencies** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **EXECUTIVE SUMMARY** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **Impact** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **INVESTIGATION COMPLETION CHECKLIST** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **Phase 1: Bug Report Analysis** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **Phase 2: System State Investigation** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **Priority 1: Implement Missing Event Handlers (CRITICAL)** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **Priority 2: Verify Event Data Structure (HIGH)** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **Priority 3: Testing Requirements (MEDIUM)** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **Related Systems** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- **REMEDIATION PROMPT** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
-- *... and 4 more nodes in this community*
+- **Test Server Remediation Prompt - Cursor Executable Version** (17 connections) — `.cursor/commands/server-test-remediation.md`
+- **server-test-remediation.md** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **CRITICAL: EXECUTION REQUIREMENTS** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Project Test Configuration** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **DECISION TREE - START HERE** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **MANDATORY VERIFICATION CHECKPOINTS** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **COMPLETION VERIFICATION** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **MANDATORY PROGRESS TRACKING** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **ERROR HANDLING PROTOCOL** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **CRITICAL "DO NOT" INSTRUCTIONS** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **TOOL USAGE EXAMPLES** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Best Practices** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Troubleshooting** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Success Criteria** (1 connections) — `.cursor/commands/server-test-remediation.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Services Combat Messaging](Services_Combat_Messaging.md) (1 shared connections)
+- [Commands Emote](Commands_Emote.md) (1 shared connections)
+- [E 2 E Scenario Whisper](E_2_E_Scenario_Whisper.md) (1 shared connections)
+- [E 2 E Execution Status](E_2_E_Execution_Status.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
+- `.cursor/commands/server-test-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (100%)
+- EXTRACTED: 30 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

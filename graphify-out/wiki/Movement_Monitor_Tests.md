@@ -1,50 +1,60 @@
 # Movement Monitor Tests
 
-> 51 nodes · cohesion 0.04
+> 46 nodes
 
 ## Key Concepts
 
-- **test_movement_monitor.py** (32 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **Test record_integrity_check() records check without violation.** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **sample_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_alerts_high_concurrent()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_alerts_high_failure_rate()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_alerts_no_alerts()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_alerts_slow_movement_time()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_metrics_empty()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_metrics_integrity_rate()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_metrics_with_data()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_log_performance_summary()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_movement_monitor_init()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_concurrent_movement()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_concurrent_movement_updates_max()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_integrity_check_no_violation()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_integrity_check_with_violation()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_movement_attempt_failure()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_movement_attempt_multiple_players()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_movement_attempt_string_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_movement_attempt_success()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_movement_attempt_uuid_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_reset_metrics()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_validate_room_integrity_calculates_occupancy()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_validate_room_integrity_duplicate_players()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_validate_room_integrity_empty_rooms()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- *... and 26 more nodes in this community*
+- **useDraggablePanelInteractions.ts** (27 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **useDraggablePanelLayout.ts** (11 connections) — `client/src/components/useDraggablePanelLayout.ts`
+- **useDraggablePanelLayout()** (10 connections) — `client/src/components/useDraggablePanelLayout.ts`
+- **DraggablePanelCore.tsx** (9 connections) — `client/src/components/DraggablePanelCore.tsx`
+- **DraggablePanel()** (9 connections) — `client/src/components/DraggablePanelCore.tsx`
+- **draggablePanelPositionFix.ts** (9 connections) — `client/src/components/draggablePanelPositionFix.ts`
+- **DraggablePanel.tsx** (8 connections) — `client/src/components/DraggablePanel.tsx`
+- **draggablePanelUtils.ts** (8 connections) — `client/src/components/draggablePanelUtils.ts`
+- **computeInitialPanelState()** (7 connections) — `client/src/components/draggablePanelPositionFix.ts`
+- **relativeToAbsolute()** (7 connections) — `client/src/components/draggablePanelUtils.ts`
+- **relativeSizeToAbsolute()** (7 connections) — `client/src/components/draggablePanelUtils.ts`
+- **computeFallbackPanelState()** (6 connections) — `client/src/components/draggablePanelPositionFix.ts`
+- **computeSafePanelState()** (6 connections) — `client/src/components/draggablePanelPositionFix.ts`
+- **useDraggablePanelInteractionCore()** (6 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **updateResizePosition()** (5 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **applyKeyboardResizeDelta()** (5 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **beginHeaderDrag()** (5 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **getViewportDimensions()** (4 connections) — `client/src/components/draggablePanelPositionFix.ts`
+- **clampPanelPosition()** (4 connections) — `client/src/components/draggablePanelPositionFix.ts`
+- **DragMoveContext** (4 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **handlePanelPointerMove()** (4 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **useDraggablePanelInteractions()** (4 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **isPanelDragBlockedTarget()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
+- **isMouseEventOnHeader()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
+- **createResizeKeyHandlers()** (3 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [[Movement Performance Monitor]] (6 shared connections)
+- [Command Input Validator](Command_Input_Validator.md) (4 shared connections)
+- [Draggable Panel UI](Draggable_Panel_UI.md) (2 shared connections)
+- [Memory Leak Metrics Tests](Memory_Leak_Metrics_Tests.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_monitor.py`
+- `client/src/components/DraggablePanel.tsx`
+- `client/src/components/DraggablePanelCore.tsx`
+- `client/src/components/DraggablePanelView.tsx`
+- `client/src/components/__tests__/DraggablePanel.grid-positioning.test.tsx`
+- `client/src/components/__tests__/DraggablePanel.test.tsx`
+- `client/src/components/draggablePanelPositionFix.ts`
+- `client/src/components/draggablePanelUtils.ts`
+- `client/src/components/useDraggablePanelInteractions.ts`
+- `client/src/components/useDraggablePanelLayout.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 108 (100%)
+- EXTRACTED: 212 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

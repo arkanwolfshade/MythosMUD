@@ -1,52 +1,60 @@
 # Async Task Registry
 
-> 31 nodes · cohesion 0.09
+> 99 nodes
 
 ## Key Concepts
 
-- **Any** (10 connections) — `server/app/task_registry.py`
-- **._setup_task_tracking()** (9 connections) — `server/app/task_registry.py`
-- **.register_task()** (8 connections) — `server/app/task_registry.py`
-- **Task** (8 connections) — `server/app/task_registry.py`
-- **TaskMetadata** (7 connections) — `server/app/task_registry.py`
-- **._create_task_completion_callback()** (5 connections) — `server/app/task_registry.py`
-- **unregister_task()** (5 connections) — `server/app/task_registry.py`
-- **register_task()** (4 connections) — `server/app/task_registry.py`
-- **.__init__()** (4 connections) — `server/app/task_registry.py`
-- **.cancel_task()** (4 connections) — `server/app/task_registry.py`
-- **.unregister_task()** (4 connections) — `server/app/task_registry.py`
-- **._ensure_unique_task_name()** (3 connections) — `server/app/task_registry.py`
-- **._extract_service_name()** (3 connections) — `server/app/task_registry.py`
-- **.get_registry_info()** (3 connections) — `server/app/task_registry.py`
-- **.list_active_tasks()** (3 connections) — `server/app/task_registry.py`
-- **._track_task_creation_metrics()** (3 connections) — `server/app/task_registry.py`
-- **Convenience function for registering tasks with global registry.** (2 connections) — `server/app/task_registry.py`
-- **.__repr__()** (2 connections) — `server/app/task_registry.py`
-- **Create callback function for task completion cleanup.** (1 connections) — `server/app/task_registry.py`
-- **Set up tracking for a newly created task.** (1 connections) — `server/app/task_registry.py`
-- **Register and create a tracked asyncio.Task.          Args:             coro: The** (1 connections) — `server/app/task_registry.py`
-- **Unregister task from tracking, optionally force-cancelling.          Args:** (1 connections) — `server/app/task_registry.py`
-- **Cancel specific task with logical timeout boundaries.          Args:** (1 connections) — `server/app/task_registry.py`
-- **Metadata for tracked asyncio.Tasks.** (1 connections) — `server/app/task_registry.py`
-- **Initialize task metadata.          Args:             task: The asyncio.Task inst** (1 connections) — `server/app/task_registry.py`
-- *... and 6 more nodes in this community*
+- **test_inventory_helpers.py** (38 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **equipment_helpers.py** (28 connections) — `server/commands/equipment_helpers.py`
+- **inventory_item_matching.py** (22 connections) — `server/commands/inventory_item_matching.py`
+- **match_room_drop_by_name()** (19 connections) — `server/commands/inventory_item_matching.py`
+- **normalize_slot_name()** (19 connections) — `server/commands/inventory_item_matching.py`
+- **match_equipped_item_by_name()** (18 connections) — `server/commands/inventory_item_matching.py`
+- **match_inventory_item_by_name()** (16 connections) — `server/commands/inventory_item_matching.py`
+- **test_inventory_commands_helpers.py** (13 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **resolve_unequip_slot()** (8 connections) — `server/commands/equipment_helpers.py`
+- **build_equipped_candidates()** (5 connections) — `server/commands/inventory_item_matching.py`
+- **extract_item_identifier()** (4 connections) — `server/commands/inventory_item_matching.py`
+- **build_drop_candidates()** (4 connections) — `server/commands/inventory_item_matching.py`
+- **match_exact_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
+- **match_prefix_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
+- **match_substring_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
+- **build_inventory_candidates()** (4 connections) — `server/commands/inventory_item_matching.py`
+- **_try_resolve_unequip_by_search()** (3 connections) — `server/commands/equipment_helpers.py`
+- **clean_item_value()** (3 connections) — `server/commands/inventory_item_matching.py`
+- **search_exact_match()** (3 connections) — `server/commands/inventory_item_matching.py`
+- **search_prefix_match()** (3 connections) — `server/commands/inventory_item_matching.py`
+- **search_substring_match()** (3 connections) — `server/commands/inventory_item_matching.py`
+- **test_match_room_drop_by_name_exact()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **test_match_room_drop_by_name_not_found()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **test_match_inventory_item_by_name_exact()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **test_match_inventory_item_by_name_not_found()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- *... and 74 more nodes in this community*
 
 ## Relationships
 
-- [[Async Task Registry]] (12 shared connections)
-- [[NPC Admin API]] (3 shared connections)
-- [[Database Manager Tests]] (1 shared connections)
+- [Character Creation Service](Character_Creation_Service.md) (23 shared connections)
+- [NPC Room Event Handlers](NPC_Room_Event_Handlers.md) (6 shared connections)
+- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (5 shared connections)
+- [NPC Database Sessions](NPC_Database_Sessions.md) (4 shared connections)
+- [Chat Service Whispers](Chat_Service_Whispers.md) (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
+- [Player Creation Service](Player_Creation_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/task_registry.py`
+- `server/commands/equipment_helpers.py`
+- `server/commands/inventory_item_matching.py`
+- `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- `server/tests/unit/commands/test_inventory_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 99 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 361 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

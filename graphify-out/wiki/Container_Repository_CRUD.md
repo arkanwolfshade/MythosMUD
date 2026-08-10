@@ -1,58 +1,59 @@
 # Container Repository CRUD
 
-> 33 nodes · cohesion 0.11
+> 23 nodes
 
 ## Key Concepts
 
-- **ContainerCreateParams** (29 connections) — `server/persistence/container_create_params.py`
-- **container_repository.py** (18 connections) — `server/persistence/repositories/container_repository.py`
-- **ContainerRepository** (16 connections) — `server/persistence/repositories/container_repository.py`
-- **_container_data_to_dict()** (10 connections) — `server/persistence/repositories/container_repository.py`
-- **Any** (9 connections) — `server/persistence/repositories/container_repository.py`
-- **delete_container_async()** (7 connections) — `server/persistence/container_persistence_async.py`
-- **.create_container()** (7 connections) — `server/persistence/repositories/container_repository.py`
-- **.get_container()** (7 connections) — `server/persistence/repositories/container_repository.py`
-- **.get_containers_by_entity_id()** (7 connections) — `server/persistence/repositories/container_repository.py`
-- **.get_decayed_containers()** (7 connections) — `server/persistence/repositories/container_repository.py`
-- **.update_container()** (7 connections) — `server/persistence/repositories/container_repository.py`
-- **UUID** (7 connections) — `server/persistence/repositories/container_repository.py`
-- **.get_containers_by_room_id()** (6 connections) — `server/persistence/repositories/container_repository.py`
-- **.delete_container()** (5 connections) — `server/persistence/repositories/container_repository.py`
-- **test_create_container_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **datetime** (4 connections) — `server/persistence/repositories/container_repository.py`
-- **.__init__()** (3 connections) — `server/persistence/repositories/container_repository.py`
-- **ContainerCreateParams** (3 connections) — `server/persistence/repositories/container_repository.py`
-- **ContainerData** (3 connections) — `server/persistence/repositories/container_repository.py`
-- **Optional fields for creating a container row (beyond source_type).** (1 connections) — `server/persistence/container_create_params.py`
-- **Delete a container (async) via delete_container procedure. Returns True if delet** (1 connections) — `server/persistence/container_persistence_async.py`
-- **Test create_container successfully creates container.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **Container repository for async persistence operations.  This module provides asy** (1 connections) — `server/persistence/repositories/container_repository.py`
-- **Update a container (async).** (1 connections) — `server/persistence/repositories/container_repository.py`
-- **Get decayed containers (async).** (1 connections) — `server/persistence/repositories/container_repository.py`
-- *... and 8 more nodes in this community*
+- **look_npc.py** (25 connections) — `server/commands/look_npc.py`
+- **Any** (14 connections)
+- **_format_npc_stats_for_admin()** (12 connections) — `server/commands/look_npc.py`
+- **_try_lookup_npc_implicit()** (12 connections) — `server/commands/look_npc.py`
+- **_find_matching_npcs()** (11 connections) — `server/commands/look_npc.py`
+- **_format_lifecycle_info()** (11 connections) — `server/commands/look_npc.py`
+- **_format_core_attributes()** (10 connections) — `server/commands/look_npc.py`
+- **_format_other_stats()** (10 connections) — `server/commands/look_npc.py`
+- **_format_single_npc_result()** (10 connections) — `server/commands/look_npc.py`
+- **_format_multiple_npcs_result()** (6 connections) — `server/commands/look_npc.py`
+- **test_format_core_attributes_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_single_npc_result_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **NPC look functionality for MythosMUD.  This module handles looking at NPCs, incl** (1 connections) — `server/commands/look_npc.py`
+- **Find NPCs matching the target name.** (1 connections) — `server/commands/look_npc.py`
+- **Format core attributes section.** (1 connections) — `server/commands/look_npc.py`
+- **Format other stats section (excluding core attributes).** (1 connections) — `server/commands/look_npc.py`
+- **Format lifecycle information section.** (1 connections) — `server/commands/look_npc.py`
+- **Format NPC stats for admin display.** (1 connections) — `server/commands/look_npc.py`
+- **Format result for a single matching NPC.** (1 connections) — `server/commands/look_npc.py`
+- **Format result for multiple matching NPCs.** (1 connections) — `server/commands/look_npc.py`
+- **Try to find and display an NPC in implicit lookup.** (1 connections) — `server/commands/look_npc.py`
+- **Test formatting core attributes.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test formatting single NPC result successfully.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
 
 ## Relationships
 
-- [[Container Data Models]] (25 shared connections)
-- [[NPC Admin API]] (17 shared connections)
-- [[Container Persistence Layer]] (11 shared connections)
-- [[Persistence Item Instance]] (3 shared connections)
-- [[Async Persistence Delegates]] (3 shared connections)
-- [[Container Persistence Queries]] (2 shared connections)
+- [Look NPC Command](Look_NPC_Command.md) (26 shared connections)
+- [Player State Command Factory](Player_State_Command_Factory.md) (13 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (4 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (4 shared connections)
+- [Commands Command Look](Commands_Command_Look.md) (3 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (3 shared connections)
+- [Ground and Rescue Commands](Ground_and_Rescue_Commands.md) (3 shared connections)
+- [Character Info Panel Fix](Character_Info_Panel_Fix.md) (2 shared connections)
+- [Logging System Planning](Logging_System_Planning.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Combat Death Handling](Combat_Death_Handling.md) (2 shared connections)
+- [Room Look Formatting](Room_Look_Formatting.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/container_create_params.py`
-- `server/persistence/container_persistence_async.py`
-- `server/persistence/repositories/container_repository.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- `server/commands/look_npc.py`
+- `server/tests/unit/commands/test_look_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 146 (84%)
-- INFERRED: 27 (16%)
+- EXTRACTED: 137 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

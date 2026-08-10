@@ -1,32 +1,25 @@
 # Command Reference
 
-> 8 nodes · cohesion 0.25
+> 1 nodes
 
 ## Key Concepts
 
-- **🐙 MythosMUD Command Models Reference** (11 connections) — `docs/COMMAND_MODELS_REFERENCE.md`
-- **Base Command Structure** (2 connections) — `docs/COMMAND_MODELS_REFERENCE.md`
-- **Overview** (2 connections) — `docs/COMMAND_MODELS_REFERENCE.md`
-- **COMMAND_MODELS_REFERENCE.md** (1 connections) — `docs/COMMAND_MODELS_REFERENCE.md`
-- **Configuration Options** (1 connections) — `docs/COMMAND_MODELS_REFERENCE.md`
-- **Example: Complete Command Model** (1 connections) — `docs/COMMAND_MODELS_REFERENCE.md`
-- **Key Benefits** (1 connections) — `docs/COMMAND_MODELS_REFERENCE.md`
-- **Table of Contents** (1 connections) — `docs/COMMAND_MODELS_REFERENCE.md`
+- **run_invite_tools.ps1** (0 connections) — `tools/invite_tools/run_invite_tools.ps1`
 
 ## Relationships
 
-- [[Command Reference]] (6 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/COMMAND_MODELS_REFERENCE.md`
+- `tools/invite_tools/run_invite_tools.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

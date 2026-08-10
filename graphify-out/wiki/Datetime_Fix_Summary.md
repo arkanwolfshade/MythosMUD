@@ -1,50 +1,56 @@
 # Datetime Fix Summary
 
-> 40 nodes · cohesion 0.05
+> 37 nodes
 
 ## Key Concepts
 
-- **datetime.utcnow() Deprecation Fix - Summary Report** (11 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **Test Code** (9 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **Impact Analysis** (4 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **Production Code** (4 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **Detailed Changes** (3 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **Lessons Learned** (3 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **Python Compatibility** (3 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **Recommendations** (3 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **References** (3 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **Verification** (3 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **Changes Applied** (2 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **Technical Details** (2 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **DATETIME_FIX_SUMMARY.md** (1 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **10. `server/tests/unit/test_health_tracking_system.py`** (1 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **11. `server/tests/unit/test_auto_progression_integration.py`** (1 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **1. `server/logging/combat_audit.py`** (1 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **2. `server/services/player_combat_service.py`** (1 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **3. `server/services/combat_service.py`** (1 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **4. `server/tests/test_combat_system.py`** (1 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **5. `server/tests/test_player_combat_integration.py`** (1 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **6. `server/tests/unit/services/test_player_combat_service.py`** (1 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **7. `server/tests/unit/services/test_combat_service.py`** (1 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **8. `server/tests/unit/test_combat_auto_progression_system.py`** (1 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **9. `server/tests/unit/test_npc_passive_behavior_system.py`** (1 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- **Best Practices Established** (1 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
-- *... and 15 more nodes in this community*
+- **layout.ts** (41 connections) — `client/src/components/map/utils/layout.ts`
+- **runForceSimulationStep()** (7 connections) — `client/src/components/map/utils/layout.ts`
+- **applyForceLayout()** (7 connections) — `client/src/components/map/utils/layout.ts`
+- **applyForceLayout.test.ts** (6 connections) — `client/src/components/map/utils/__tests__/applyForceLayout.test.ts`
+- **applyGridLayout.test.ts** (6 connections) — `client/src/components/map/utils/__tests__/applyGridLayout.test.ts`
+- **calculateGridPosition.test.ts** (6 connections) — `client/src/components/map/utils/__tests__/calculateGridPosition.test.ts`
+- **GridLayoutConfig** (6 connections) — `client/src/components/map/utils/layout.ts`
+- **calculateGridPosition()** (6 connections) — `client/src/components/map/utils/layout.ts`
+- **defaultGridLayoutConfig** (5 connections) — `client/src/components/map/utils/layout.ts`
+- **applyStandardLinkAttraction()** (5 connections) — `client/src/components/map/utils/layout.ts`
+- **applyCardinalLinkForce()** (5 connections) — `client/src/components/map/utils/layout.ts`
+- **applyCrossingMinimizationForces()** (5 connections) — `client/src/components/map/utils/layout.ts`
+- **UseMapLayoutOptions** (4 connections) — `client/src/components/map/hooks/useMapLayout.ts`
+- **ForceLayoutConfig** (4 connections) — `client/src/components/map/utils/layout.ts`
+- **defaultForceLayoutConfig** (4 connections) — `client/src/components/map/utils/layout.ts`
+- **applyLinkForces()** (4 connections) — `client/src/components/map/utils/layout.ts`
+- **layout-config.test.ts** (3 connections) — `client/src/components/map/utils/__tests__/layout-config.test.ts`
+- **gridPositionForIndex()** (3 connections) — `client/src/components/map/utils/layout.ts`
+- **groupedGridPosition()** (3 connections) — `client/src/components/map/utils/layout.ts`
+- **linkForceReduction()** (3 connections) — `client/src/components/map/utils/layout.ts`
+- **applyMutualForce()** (3 connections) — `client/src/components/map/utils/layout.ts`
+- **applyChargeForces()** (3 connections) — `client/src/components/map/utils/layout.ts`
+- **doLineSegmentsIntersect()** (3 connections) — `client/src/components/map/utils/layout.ts`
+- **doesEdgeCrossNode()** (3 connections) — `client/src/components/map/utils/layout.ts`
+- **repelCrossingEdgePair()** (3 connections) — `client/src/components/map/utils/layout.ts`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Command Input Utilities](Command_Input_Utilities.md) (13 shared connections)
+- [Player Death Service Tests](Player_Death_Service_Tests.md) (10 shared connections)
 
 ## Source Files
 
-- `docs/archive/DATETIME_FIX_SUMMARY.md`
+- `client/src/components/map/hooks/useMapLayout.ts`
+- `client/src/components/map/utils/__tests__/applyForceLayout.test.ts`
+- `client/src/components/map/utils/__tests__/applyGridLayout.test.ts`
+- `client/src/components/map/utils/__tests__/calculateGridPosition.test.ts`
+- `client/src/components/map/utils/__tests__/layout-config.test.ts`
+- `client/src/components/map/utils/layout.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 78 (100%)
+- EXTRACTED: 169 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

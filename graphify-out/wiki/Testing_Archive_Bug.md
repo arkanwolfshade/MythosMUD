@@ -1,45 +1,29 @@
 # Testing Archive Bug
 
-> 19 nodes · cohesion 0.11
+> 5 nodes
 
 ## Key Concepts
 
-- **bcrypt PyO3 Limitation - Technical Details** (8 connections) — `docs/TESTING.md`
-- **Common Issues** (5 connections) — `docs/TESTING.md`
-- **Testing Guide for MythosMUD** (5 connections) — `docs/TESTING.md`
-- **Root Cause Analysis** (4 connections) — `docs/archive/BUG_FIX_CHAT_MESSAGE_ROUTING.md`
-- **Why This Happens** (2 connections) — `docs/TESTING.md`
-- **Message Categorization Verification** (1 connections) — `docs/archive/BUG_FIX_CHAT_MESSAGE_ROUTING.md`
-- **The Problem** (1 connections) — `docs/archive/BUG_FIX_CHAT_MESSAGE_ROUTING.md`
-- **TESTING.md** (1 connections) — `docs/TESTING.md`
-- **Issue: Database connection errors** (1 connections) — `docs/TESTING.md`
-- **Issue: Import errors** (1 connections) — `docs/TESTING.md`
-- **Issue: Slow test runs** (1 connections) — `docs/TESTING.md`
-- **Issue: Tests hang indefinitely** (1 connections) — `docs/TESTING.md`
-- **Option 1: Fresh Terminal (Simplest)** (1 connections) — `docs/TESTING.md`
-- **Option 2: Run Specific Tests First (In New Session)** (1 connections) — `docs/TESTING.md`
-- **Option 3: Use Docker (Most Isolated)** (1 connections) — `docs/TESTING.md`
-- **Option 4: Pytest-xdist with Forked Mode (Linux/Mac only)** (1 connections) — `docs/TESTING.md`
-- **Prevention During Development** (1 connections) — `docs/TESTING.md`
-- **Test Organization** (1 connections) — `docs/TESTING.md`
-- **Workarounds** (1 connections) — `docs/TESTING.md`
+- **2026_02_18_add_player_skills_table.py** (2 connections) — `server/alembic/versions/2026_02_18_add_player_skills_table.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2026_02_18_add_player_skills_table.py`
+- **downgrade()** (2 connections) — `server/alembic/versions/2026_02_18_add_player_skills_table.py`
+- **Create player_skills table if not exists (matches db/migrations/025).** (1 connections) — `server/alembic/versions/2026_02_18_add_player_skills_table.py`
+- **Drop player_skills table.** (1 connections) — `server/alembic/versions/2026_02_18_add_player_skills_table.py`
 
 ## Relationships
 
-- [[Archive Bug Fix]] (1 shared connections)
-- [[Testing Error Handling]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/TESTING.md`
-- `docs/archive/BUG_FIX_CHAT_MESSAGE_ROUTING.md`
+- `server/alembic/versions/2026_02_18_add_player_skills_table.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

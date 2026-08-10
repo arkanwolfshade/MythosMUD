@@ -1,28 +1,27 @@
 # Archive Combat Health
 
-> 4 nodes · cohesion 0.50
+> 2 nodes
 
 ## Key Concepts
 
-- **Risk Assessment** (4 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_REMEDIATION_PLAN.md`
-- **Current Risk Level: 🔴 CRITICAL** (1 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_REMEDIATION_PLAN.md`
-- **Post-Phase-2A Risk Level: 🟡 MEDIUM** (1 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_REMEDIATION_PLAN.md`
-- **Post-Phase-2B Risk Level: 🟢 LOW** (1 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_REMEDIATION_PLAN.md`
+- **Combat Health Persistence Bug** (1 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md`
+- **Combat Health Persistence Remediation** (1 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_REMEDIATION_PLAN.md`
 
 ## Relationships
 
-- [[Archive Combat Health]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
+- `docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md`
 - `docs/archive/COMBAT_HEALTH_PERSISTENCE_REMEDIATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

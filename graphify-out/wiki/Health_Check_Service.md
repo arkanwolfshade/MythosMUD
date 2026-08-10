@@ -1,53 +1,52 @@
 # Health Check Service
 
-> 41 nodes · cohesion 0.07
+> 32 nodes
 
 ## Key Concepts
 
-- **HealthService** (20 connections) — `server/services/health_service.py`
-- **.get_health_status()** (10 connections) — `server/services/health_service.py`
-- **.get_server_component_health()** (7 connections) — `server/services/health_service.py`
-- **Any** (5 connections) — `server/services/health_service.py`
-- **.check_connections_health()** (5 connections) — `server/services/health_service.py`
-- **.check_database_health_async()** (5 connections) — `server/services/health_service.py`
-- **._create_health_response()** (5 connections) — `server/services/health_service.py`
-- **.determine_overall_status()** (5 connections) — `server/services/health_service.py`
-- **.get_connections_component_health()** (5 connections) — `server/services/health_service.py`
-- **.get_database_component_health()** (5 connections) — `server/services/health_service.py`
-- **.check_database_health()** (4 connections) — `server/services/health_service.py`
-- **.generate_alerts()** (4 connections) — `server/services/health_service.py`
-- **.get_database_component_health_async()** (4 connections) — `server/services/health_service.py`
-- **.get_server_uptime()** (4 connections) — `server/services/health_service.py`
-- **HealthComponents** (3 connections) — `server/services/health_service.py`
-- **.get_cpu_usage()** (3 connections) — `server/services/health_service.py`
-- **.get_memory_usage()** (3 connections) — `server/services/health_service.py`
-- **.__init__()** (3 connections) — `server/services/health_service.py`
-- **health_service()** (3 connections) — `server/tests/unit/services/test_health_service.py`
-- **DatabaseComponent** (2 connections) — `server/services/health_service.py`
-- **HealthStatus** (2 connections) — `server/services/health_service.py`
-- **ConnectionsComponent** (1 connections) — `server/services/health_service.py`
-- **HealthResponse** (1 connections) — `server/services/health_service.py`
-- **ServerComponent** (1 connections) — `server/services/health_service.py`
-- **Check database connectivity and health with actual query validation.          Th** (1 connections) — `server/services/health_service.py`
-- *... and 16 more nodes in this community*
+- **CommandRequest** (11 connections) — `server/command_handler_unified.py`
+- **handle_command()** (10 connections) — `server/command_handler_unified.py`
+- **test_command_handler_unified.py** (10 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **TestProcessCommandUnified** (7 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **TestLegacyFunctions** (6 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **TestHandleCommand** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_handle_command_unauthorized()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_handle_command_success()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_process_command_legacy()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_get_help_content()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_get_help_content_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_process_command_unified_rate_limited()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_process_command_unified_blocked()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_process_command_unified_special_routing()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_process_command_unified_normal_processing()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Request** (2 connections)
+- **BaseModel** (1 connections)
+- **Request model for command processing.** (1 connections) — `server/command_handler_unified.py`
+- **Handle incoming HTTP command requests.** (1 connections) — `server/command_handler_unified.py`
+- **Unit tests for unified command handler.  Tests core command processing, HTTP end** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test legacy compatibility functions.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test process_command() legacy function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test get_help_content() delegates to help system.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test get_help_content() with None command.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test process_command_unified function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [[Health Service Tests]] (3 shared connections)
-- [[Health Check Models]] (1 shared connections)
-- [[Combat Player Broadcasts]] (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (9 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (9 shared connections)
 
 ## Source Files
 
-- `server/services/health_service.py`
-- `server/tests/unit/services/test_health_service.py`
+- `server/command_handler_unified.py`
+- `server/tests/unit/commands/test_command_handler_unified.py`
 
 ## Audit Trail
 
-- EXTRACTED: 126 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 87 (91%)
+- INFERRED: 9 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

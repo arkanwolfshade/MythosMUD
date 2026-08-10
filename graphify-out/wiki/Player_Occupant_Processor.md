@@ -1,53 +1,55 @@
 # Player Occupant Processor
 
-> 45 nodes · cohesion 0.05
+> 35 nodes
 
 ## Key Concepts
 
-- **test_player_occupant_processor.py** (25 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **processor()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **Test _create_player_occupant_info adds (linkdead) indicator.** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **mock_name_extractor()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a mock name extractor.** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **mock_name_extractor()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_convert_player_ids_to_uuids()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_convert_player_ids_to_uuids_already_uuid()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_convert_player_ids_to_uuids_mixed_types()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_convert_player_ids_to_uuids_value_error()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_create_player_occupant_info()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_create_player_occupant_info_both_indicators()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_create_player_occupant_info_default_level()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_create_player_occupant_info_invalid_name()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_create_player_occupant_info_linkdead()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_create_player_occupant_info_online()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_create_player_occupant_info_warded()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_ensure_player_included_in_list()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_ensure_player_included_in_list_already_present()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_ensure_player_included_in_list_none()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_process_players_for_occupants()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_process_players_for_occupants_with_invalid_name()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_process_players_for_occupants_with_player_not_found()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_process_players_for_occupants_with_uuid_ensure_player()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- *... and 20 more nodes in this community*
+- **CombatEventPublisher** (30 connections) — `server/services/combat_event_publisher.py`
+- **._publish_combat_payload()** (14 connections) — `server/services/combat_event_publisher.py`
+- **_CombatPublishJob** (13 connections) — `server/services/combat_event_publisher.py`
+- **.publish_combat_started()** (5 connections) — `server/services/combat_event_publisher.py`
+- **.publish_combat_ended()** (5 connections) — `server/services/combat_event_publisher.py`
+- **.publish_player_attacked()** (5 connections) — `server/services/combat_event_publisher.py`
+- **.publish_npc_attacked()** (5 connections) — `server/services/combat_event_publisher.py`
+- **.publish_npc_took_damage()** (5 connections) — `server/services/combat_event_publisher.py`
+- **.publish_npc_died()** (5 connections) — `server/services/combat_event_publisher.py`
+- **.publish_combat_turn_advanced()** (5 connections) — `server/services/combat_event_publisher.py`
+- **.publish_combat_timeout()** (5 connections) — `server/services/combat_event_publisher.py`
+- **._create_event_message()** (4 connections) — `server/services/combat_event_publisher.py`
+- **.__init__()** (3 connections) — `server/services/combat_event_publisher.py`
+- **._nats_ready()** (3 connections) — `server/services/combat_event_publisher.py`
+- **combat_event_publisher()** (3 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
+- **test_combat_event_publisher_initialization_with_nats_service()** (3 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
+- **test_combat_event_publisher_initialization_with_subject_manager()** (3 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
+- **Any** (2 connections)
+- **._build_combat_subject()** (2 connections) — `server/services/combat_event_publisher.py`
+- **Bundled NATS publish inputs (keeps helper parameter count under gate).** (1 connections) — `server/services/combat_event_publisher.py`
+- **Service for publishing combat events to NATS for real-time distribution.** (1 connections) — `server/services/combat_event_publisher.py`
+- **Initialize combat event publisher.          Args:             nats_service: N** (1 connections) — `server/services/combat_event_publisher.py`
+- **Create a standardized event message structure matching EventMessageSchema.** (1 connections) — `server/services/combat_event_publisher.py`
+- **Shared NATS publish path for combat events.** (1 connections) — `server/services/combat_event_publisher.py`
+- **Publish combat started event to NATS.** (1 connections) — `server/services/combat_event_publisher.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Occupant Processor]] (2 shared connections)
-- [[Realtime Conftest Mocks]] (1 shared connections)
-- [[Services Service Room]] (1 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (21 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (3 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (2 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (1 shared connections)
+- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/conftest.py`
-- `server/tests/unit/realtime/test_player_occupant_processor.py`
+- `server/services/combat_event_publisher.py`
+- `server/tests/unit/services/test_combat_event_publisher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 96 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 130 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

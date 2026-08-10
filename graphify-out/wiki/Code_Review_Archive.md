@@ -1,51 +1,45 @@
 # Code Review Archive
 
-> 25 nodes · cohesion 0.08
+> 18 nodes
 
 ## Key Concepts
 
-- **Critical Issues** (9 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **PostgreSQL Code Review - feature/sqlite-to-postgresql Branch** (9 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **Code Quality Issues** (4 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **Summary of Recommendations** (4 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **Code Quality Issues** (3 connections) — `docs/NATS_CODE_REVIEW.md`
-- **10. **Inconsistent Error Handling**** (2 connections) — `docs/NATS_CODE_REVIEW.md`
-- **POSTGRESQL_CODE_REVIEW.md** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **12. **Missing Query Comments**** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **13. **No Prepared Statement Caching**** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **1. ⚠️ **SELECT * Anti-Pattern (Multiple Files)**** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **2. 🔴 **Missing Index on Frequently Queried Column**** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **3. 🔴 **Inefficient Connection Management in AsyncPersistenceLayer**** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **4. ⚠️ **Transaction Management Issues**** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **5. ⚠️ **Missing Index on respawn_room_id**** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **6. ⚠️ **Potential N+1 Query Problem**** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **7. ⚠️ **No Query Performance Monitoring**** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **8. ⚠️ **Missing Foreign Key Indexes**** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **Executive Summary** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **Files Requiring Changes** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **High Priority** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **Immediate Actions (Critical)** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **Medium Priority** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **References** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **Testing Recommendations** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **11. **Missing Input Validation**** (1 connections) — `docs/NATS_CODE_REVIEW.md`
+- **test_level_service.py** (16 connections) — `server/tests/unit/game/test_level_service.py`
+- **level_service()** (3 connections) — `server/tests/unit/game/test_level_service.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_level_service.py`
+- **sample_player()** (2 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_grant_xp_zero_no_op()** (2 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_grant_xp_negative_raises()** (2 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_grant_xp_player_not_found_raises()** (2 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_grant_xp_increases_xp_and_persists()** (2 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_check_level_up_player_not_found_raises()** (2 connections) — `server/tests/unit/game/test_level_service.py`
+- **Unit tests for LevelService: grant_xp, check_level_up, level-up hook.  Character** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **Mock async persistence with get_player_by_id and save_player.** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **LevelService with mocked persistence.** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **Player-like object with experience_points and level.** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **grant_xp(amount=0) does not load or save.** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **grant_xp(amount < 0) raises ValueError.** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **grant_xp when player not found raises ValueError.** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **grant_xp adds amount to experience_points and saves (level unchanged).** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **check_level_up when player not found raises ValueError.** (1 connections) — `server/tests/unit/game/test_level_service.py`
 
 ## Relationships
 
-- [[Review Code Postgresql]] (1 shared connections)
-- [[Nats Code Review]] (1 shared connections)
+- [Game Level Service](Game_Level_Service.md) (3 shared connections)
+- [Cursor Commands Remediation](Cursor_Commands_Remediation.md) (2 shared connections)
+- [Cache and NPC Cache](Cache_and_NPC_Cache.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/NATS_CODE_REVIEW.md`
-- `docs/archive/POSTGRESQL_CODE_REVIEW.md`
+- `server/tests/unit/game/test_level_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (100%)
+- EXTRACTED: 42 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,38 +1,31 @@
 # Archive Npc Duplication
 
-> 14 nodes · cohesion 0.14
+> 6 nodes
 
 ## Key Concepts
 
-- **Solution Strategy** (5 connections) — `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
-- **Phase 4: Testing & Validation (MEDIUM - 2 hours)** (4 connections) — `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
-- **Phase 1: Immediate Fix (CRITICAL - 1 hour)** (3 connections) — `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
-- **Phase 2: Population Tracking Fix (HIGH - 2 hours)** (3 connections) — `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
-- **Phase 3: Architectural Cleanup (MEDIUM - 3 hours)** (3 connections) — `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
-- **1.1 Remove Duplicate Event Subscription** (1 connections) — `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
-- **1.2 Verify Population Controller Authority** (1 connections) — `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
-- **2.1 Atomic Population Updates** (1 connections) — `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
-- **2.2 Add Spawn Validation Lock** (1 connections) — `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
-- **3.1 Consolidate Spawn Logic** (1 connections) — `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
-- **3.2 Improve Service Integration** (1 connections) — `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
-- **4.1 Unit Tests** (1 connections) — `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
-- **4.2 Integration Tests** (1 connections) — `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
-- **4.3 Manual Testing** (1 connections) — `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
+- **TestGetPlayerDeathService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_player_death_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_player_death_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_player_death_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_player_death_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_player_death_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [[Archive Npc Duplication]] (1 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

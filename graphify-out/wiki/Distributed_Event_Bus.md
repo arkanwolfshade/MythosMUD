@@ -1,77 +1,75 @@
 # Distributed Event Bus
 
-> 245 nodes · cohesion 0.02
+> 389 nodes
 
 ## Key Concepts
 
-- **EventBus** (203 connections) — `server/events/event_bus.py`
-- **PlayerEnteredRoom** (86 connections) — `server/events/event_types.py`
-- **NPCEnteredRoom** (85 connections) — `server/events/event_types.py`
-- **MovementService** (67 connections) — `server/game/movement_service.py`
-- **BaseEvent** (64 connections) — `server/events/event_types.py`
-- **event_types.py** (44 connections) — `server/events/event_types.py`
-- **FollowService** (40 connections) — `server/game/follow_service.py`
-- **npc_base.py** (38 connections) — `server/npc/npc_base.py`
-- **population_control.py** (32 connections) — `server/npc/population_control.py`
-- **event_reaction_system.py** (26 connections) — `server/npc/event_reaction_system.py`
-- **room.py** (24 connections) — `server/models/room.py`
-- **UUID** (21 connections) — `server/game/follow_service.py`
-- **movement_integration.py** (18 connections) — `server/npc/movement_integration.py`
-- **follow_service.py** (15 connections) — `server/game/follow_service.py`
-- **DistributedEventBus** (14 connections) — `server/events/distributed_event_bus.py`
-- **Any** (14 connections) — `server/game/follow_service.py`
-- **_str_id()** (13 connections) — `server/game/follow_service.py`
-- **_PopulationLifecycleManager** (13 connections) — `server/npc/population_control.py`
-- **NPCDefinition** (13 connections) — `server/npc/population_control.py`
-- **nats_event_bridge.py** (12 connections) — `server/events/nats_event_bridge.py`
-- **communication_integration.py** (11 connections) — `server/npc/communication_integration.py`
-- **shopkeeper_npc.py** (11 connections) — `server/npc/shopkeeper_npc.py`
-- **Any** (11 connections) — `server/events/event_bus.py`
-- **__init__.py** (11 connections) — `server/events/__init__.py`
-- **distributed_event_bus.py** (10 connections) — `server/events/distributed_event_bus.py`
-- *... and 220 more nodes in this community*
+- **ConnectionManager** (170 connections) — `server/realtime/connection_manager.py`
+- **build_event()** (117 connections) — `server/realtime/envelope.py`
+- **UUID** (41 connections)
+- **Any** (40 connections)
+- **nats_message_handler.py** (39 connections) — `server/realtime/nats_message_handler.py`
+- **AttributeError** (38 connections)
+- **websocket_room_updates.py** (32 connections) — `server/realtime/websocket_room_updates.py`
+- **test_websocket_room_updates.py** (32 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **envelope.py** (28 connections) — `server/realtime/envelope.py`
+- **test_envelope.py** (28 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **event_handlers.py** (23 connections) — `server/realtime/event_handlers.py`
+- **broadcast_room_update()** (23 connections) — `server/realtime/websocket_room_updates.py`
+- **EventHandler** (22 connections) — `server/realtime/event_handlers.py`
+- **websocket_handler_connection.py** (17 connections) — `server/realtime/websocket_handler_connection.py`
+- **build_room_update_event()** (13 connections) — `server/realtime/websocket_room_updates.py`
+- **get_player_occupants()** (11 connections) — `server/realtime/websocket_room_updates.py`
+- **get_npc_occupants_from_lifecycle_manager()** (11 connections) — `server/realtime/websocket_room_updates.py`
+- **get_npc_occupants_fallback()** (9 connections) — `server/realtime/websocket_room_updates.py`
+- **UUIDEncoder** (8 connections) — `server/realtime/envelope.py`
+- **_send_combat_participant_updates()** (8 connections) — `server/realtime/event_handlers.py`
+- **get_next_sequence_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
+- **_EventBusPublishPort** (7 connections) — `server/realtime/event_handlers.py`
+- **_publish_npc_died_to_event_bus()** (7 connections) — `server/realtime/event_handlers.py`
+- **_npc_died_broadcast_and_bridge()** (7 connections) — `server/realtime/event_handlers.py`
+- **cleanup_websocket_connection()** (7 connections) — `server/realtime/websocket_handler_connection.py`
+- *... and 364 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Services Bundle]] (135 shared connections)
-- [[NPC Death Lifecycle]] (55 shared connections)
-- [[NPC Admin API]] (51 shared connections)
-- [[Combat Service Bundle]] (24 shared connections)
-- [[Aggressive Mob NPC]] (22 shared connections)
-- [[Event Bus Serialization]] (20 shared connections)
-- [[Player Movement Service]] (19 shared connections)
-- [[Player Respawn Events]] (18 shared connections)
-- [[Combat Command Handler]] (16 shared connections)
-- [[Room Occupant Events]] (15 shared connections)
-- [[Game Service Bundle]] (15 shared connections)
-- [[NPC Combat Events]] (14 shared connections)
+- [Room Occupant Events](Room_Occupant_Events.md) (77 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (23 shared connections)
+- [Pydantic Error Handlers](Pydantic_Error_Handlers.md) (13 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (13 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (11 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (10 shared connections)
+- [NATS Message Broker](NATS_Message_Broker.md) (10 shared connections)
+- [Combat Command Helpers](Combat_Command_Helpers.md) (10 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (9 shared connections)
+- [WebSocket Initial State](WebSocket_Initial_State.md) (9 shared connections)
+- [Combat Turn Processor](Combat_Turn_Processor.md) (8 shared connections)
+- [Message Broadcaster Core](Message_Broadcaster_Core.md) (8 shared connections)
 
 ## Source Files
 
-- `server/events/__init__.py`
-- `server/events/distributed_event_bus.py`
-- `server/events/event_bus.py`
-- `server/events/event_types.py`
-- `server/events/nats_event_bridge.py`
-- `server/game/follow_service.py`
-- `server/game/movement_service.py`
-- `server/models/room.py`
-- `server/npc/communication_integration.py`
-- `server/npc/event_reaction_system.py`
-- `server/npc/movement_integration.py`
-- `server/npc/npc_base.py`
-- `server/npc/npc_default_reactions.py`
-- `server/npc/population_control.py`
-- `server/npc/population_stats.py`
-- `server/npc/shopkeeper_npc.py`
-- `server/tests/integration/test_follow_flow.py`
+- `server/realtime/connection_manager.py`
+- `server/realtime/connection_manager_methods.py`
+- `server/realtime/envelope.py`
+- `server/realtime/event_handlers.py`
+- `server/realtime/nats_message_handler.py`
+- `server/realtime/websocket_handler_connection.py`
+- `server/realtime/websocket_room_updates.py`
+- `server/tests/unit/realtime/test_envelope.py`
+- `server/tests/unit/realtime/test_event_handlers_combat.py`
+- `server/tests/unit/realtime/test_room_occupant_manager.py`
+- `server/tests/unit/realtime/test_websocket_room_updates.py`
+- `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
+- `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- `server/tests/unit/services/test_npc_instance_service.py`
+- `server/tests/unit/services/test_room_sync_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1138 (71%)
-- INFERRED: 467 (29%)
+- EXTRACTED: 1469 (94%)
+- INFERRED: 100 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

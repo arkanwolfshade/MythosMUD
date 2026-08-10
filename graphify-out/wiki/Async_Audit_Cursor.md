@@ -1,47 +1,42 @@
 # Async Audit Cursor
 
-> 21 nodes · cohesion 0.10
+> 13 nodes
 
 ## Key Concepts
 
-- **Phase 2: High Priority Fixes (Week 2-3) - PERFORMANCE** (10 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
-- **Phase 1: Critical Fixes (Week 1) - BLOCKING ISSUES** (7 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
-- **📋 REMEDIATION PLAN** (4 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
-- **📋 REMEDIATION PLAN** (4 connections) — `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
-- **Phase 3: Medium Priority Improvements (Week 4) - POLISH** (3 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
-- **Task 1.1: Fix Synchronous Blocking in Passive Lucidity Flux Service** (1 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
-- **Task 1.2: Eliminate asyncio.run() from Library Code** (1 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
-- **Task 1.3: Ensure Connection Pool Cleanup** (1 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
-- **Task 1.4: Add Exception Handling to Pool Creation** (1 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
-- **Task 1.5: Fix Blocking Operations in NATS Message Handlers** (1 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
-- **Task 1.6: Audit and Fix F-String Logging** (1 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.1: Add Room Lookup Caching** (1 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.2: Complete Async Persistence Migration** (1 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.3: Optimize Database Flush Operations** (1 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.4: Load Only Active Players** (1 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.5: Use NATS Connection Pool by Default** (1 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.6: Add TLS Configuration** (1 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.7: Improve Event Loop Change Detection** (1 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.8: Review Transaction Error Handling** (1 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
-- **Tasks 3.1-3.7: Medium Priority Fixes** (1 connections) — `docs/ASYNC_AUDIT_2025-12-03.md`
-- **Phase 1: Critical Fixes (Weeks 1-2)** (1 connections) — `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
+- **.is_security_sensitive()** (9 connections) — `server/validators/command_validator.py`
+- **_handle_validation_error()** (5 connections) — `server/command_handler/processing.py`
+- **test_command_validator_is_security_sensitive_admin()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_is_security_sensitive_case_insensitive()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_is_security_sensitive_non_sensitive()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_is_security_sensitive_empty()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **ValidationError** (2 connections)
+- **Handle a validation error during command processing.** (1 connections) — `server/command_handler/processing.py`
+- **Test CommandValidator.is_security_sensitive detects admin commands.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.is_security_sensitive is case-insensitive.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.is_security_sensitive returns False for non-sensitive comm** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.is_security_sensitive returns False for empty command.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Check if command requires audit logging.          Identifies commands that shoul** (1 connections) — `server/validators/command_validator.py`
 
 ## Relationships
 
-- [[Async Code Audit]] (1 shared connections)
-- [[Cursor Plans Uvicorn]] (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Persistence Container Extended](Persistence_Container_Extended.md) (4 shared connections)
+- [Catatonia Check Logic](Catatonia_Check_Logic.md) (1 shared connections)
+- [Manager Services Nats](Manager_Services_Nats.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
-- `docs/ASYNC_AUDIT_2025-12-03.md`
+- `server/command_handler/processing.py`
+- `server/tests/unit/validators/test_command_validator.py`
+- `server/validators/command_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 33 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

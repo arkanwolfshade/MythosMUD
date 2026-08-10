@@ -1,23 +1,13 @@
 # Cursor Skills Frontend
 
-> 14 nodes · cohesion 0.14
+> 4 nodes
 
 ## Key Concepts
 
-- **Frontend Aesthetics Guidelines** (9 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **SKILL.md** (5 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **Color & Theme** (1 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **Context Gathering Protocol** (1 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **Design Direction** (1 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **Implementation Principles** (1 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **Interaction** (1 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **Layout & Space** (1 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **Motion** (1 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **Responsive** (1 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **The AI Slop Test** (1 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **Typography** (1 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **UX Writing** (1 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **Visual Details** (1 connections) — `.cursor/skills/frontend-design/SKILL.md`
+- **test_asyncio_run_guardrails.py** (2 connections) — `server/tests/unit/test_asyncio_run_guardrails.py`
+- **test_no_asyncio_run_in_server_library_code()** (2 connections) — `server/tests/unit/test_asyncio_run_guardrails.py`
+- **Test that server library code does not use asyncio.run() (AnyIO best practice).** (1 connections) — `server/tests/unit/test_asyncio_run_guardrails.py`
+- **Assert server/ has no asyncio.run() in library code (use anyio.run() at entry po** (1 connections) — `server/tests/unit/test_asyncio_run_guardrails.py`
 
 ## Relationships
 
@@ -25,14 +15,14 @@
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/SKILL.md`
+- `server/tests/unit/test_asyncio_run_guardrails.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

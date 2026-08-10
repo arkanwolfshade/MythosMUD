@@ -1,53 +1,37 @@
 # Manager Services Nats
 
-> 21 nodes · cohesion 0.10
+> 9 nodes
 
 ## Key Concepts
 
-- **SubjectManagerMetrics** (17 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.__init__()** (5 connections) — `server/services/nats_subject_manager/manager.py`
-- **.get_metrics()** (4 connections) — `server/services/nats_subject_manager/metrics.py`
-- **._calculate_percentile()** (3 connections) — `server/services/nats_subject_manager/metrics.py`
-- **metrics()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_subject_manager_metrics_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **.record_build()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.record_error()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.record_validation()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.reset()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
-- **Initialize NATS Subject Manager.          Args:             enable_cache: Enable** (1 connections) — `server/services/nats_subject_manager/manager.py`
-- **Get current metrics summary.          Returns:             Dictionary containing** (1 connections) — `server/services/nats_subject_manager/metrics.py`
-- **Calculate percentile from list of times.          Args:             times: List** (1 connections) — `server/services/nats_subject_manager/metrics.py`
-- **Reset all metrics to zero.** (1 connections) — `server/services/nats_subject_manager/metrics.py`
-- **Performance metrics for NATS Subject Manager operations.      Tracks validation** (1 connections) — `server/services/nats_subject_manager/metrics.py`
-- **Record a validation operation.          Args:             duration: Time taken i** (1 connections) — `server/services/nats_subject_manager/metrics.py`
-- **Record a build operation.          Args:             duration: Time taken in sec** (1 connections) — `server/services/nats_subject_manager/metrics.py`
-- **Record an error occurrence.          Args:             error_type: Type of error** (1 connections) — `server/services/nats_subject_manager/metrics.py`
-- **Create SubjectManagerMetrics instance.** (1 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **Test SubjectManagerMetrics initialization.** (1 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **Any** (1 connections) — `server/services/nats_subject_manager/metrics.py`
+- **_run_command_service_for_validated()** (6 connections) — `server/command_handler/processing.py`
+- **_dispatch_parsed_command()** (6 connections) — `server/command_handler/processing.py`
+- **_log_security_sensitive_command()** (6 connections) — `server/command_handler/processing.py`
+- **CommandExecutionRequest** (5 connections)
+- **_parse_command_line_or_client_error()** (3 connections) — `server/command_handler/processing.py`
+- **Validate the raw command string via CommandProcessor.      Returns:         (** (1 connections) — `server/command_handler/processing.py`
+- **Extract structured command data, dispatch to CommandService, audit if needed.** (1 connections) — `server/command_handler/processing.py`
+- **Parse the command line; on success run CommandService (see ``_parse_command_line** (1 connections) — `server/command_handler/processing.py`
+- **Log a security-sensitive command for auditing.** (1 connections) — `server/command_handler/processing.py`
 
 ## Relationships
 
-- [[NATS Subject Exceptions]] (3 shared connections)
-- [[NATS Subject Metrics]] (3 shared connections)
-- [[NATS Subject Manager]] (2 shared connections)
-- [[NATS Pattern Matcher]] (1 shared connections)
-- [[NATS Subject Validator Tests]] (1 shared connections)
-- [[Manager Services Nats]] (1 shared connections)
-- [[Message Queue Cleanup]] (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (6 shared connections)
+- [Async Audit Cursor](Async_Audit_Cursor.md) (1 shared connections)
+- [Catatonia Check Logic](Catatonia_Check_Logic.md) (1 shared connections)
+- [Game State Provider](Game_State_Provider.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_subject_manager/manager.py`
-- `server/services/nats_subject_manager/metrics.py`
-- `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- `server/command_handler/processing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 28 (93%)
+- INFERRED: 2 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

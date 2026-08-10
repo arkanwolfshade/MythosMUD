@@ -1,13 +1,13 @@
 # Batch Fix Suppressions
 
-> 5 nodes · cohesion 0.60
+> 5 nodes
 
 ## Key Concepts
 
 - **fix_file()** (4 connections) — `scripts/batch_fix_suppressions.py`
 - **main()** (3 connections) — `scripts/batch_fix_suppressions.py`
 - **batch_fix_suppressions.py** (2 connections) — `scripts/batch_fix_suppressions.py`
-- **Path** (2 connections) — `scripts/batch_fix_suppressions.py`
+- **Path** (2 connections)
 - **Fix suppressions in a file.      Returns:         (number_fixed, list of changes** (1 connections) — `scripts/batch_fix_suppressions.py`
 
 ## Relationships
@@ -26,4 +26,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

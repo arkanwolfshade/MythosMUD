@@ -1,48 +1,38 @@
 # App Game Tick
 
-> 20 nodes · cohesion 0.16
+> 12 nodes
 
 ## Key Concepts
 
-- **test_game_tick_processing.py** (14 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **_validate_app_state_for_status_effects()** (12 connections) — `server/app/game_tick_processing.py`
-- **reset_current_tick()** (6 connections) — `server/app/game_tick_processing.py`
-- **Test _validate_app_state_for_status_effects returns False when no container.** (4 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_get_current_tick()** (4 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_reset_current_tick()** (4 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_get_tick_interval()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_validate_app_state_for_status_effects_connection_manager_is_none()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_validate_app_state_for_status_effects_container_is_none()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_validate_app_state_for_status_effects_no_async_persistence()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_validate_app_state_for_status_effects_no_connection_manager()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_validate_app_state_for_status_effects_no_container()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_validate_app_state_for_status_effects_valid()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **Reset the current tick for testing.** (1 connections) — `server/app/game_tick_processing.py`
-- **Validate app state has required components for status effect processing.      Re** (1 connections) — `server/app/game_tick_processing.py`
-- **Test get_current_tick returns the current tick value.** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **Test reset_current_tick resets the tick counter.** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **Test get_tick_interval returns tick interval from config.** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **Test _validate_app_state_for_status_effects returns False when no async_persiste** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **Test _validate_app_state_for_status_effects returns True when all required compo** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **_find_dead_connections()** (11 connections) — `server/realtime/connection_establishment.py`
+- **test_find_dead_connections_no_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_find_dead_connections_all_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_find_dead_connections_not_in_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_find_dead_connections_none_websocket()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_find_dead_connections_not_connected()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Find dead WebSocket connections for a player before acquiring lock.      Args:** (1 connections) — `server/realtime/connection_establishment.py`
+- **Test _find_dead_connections() returns empty list when player not found.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _find_dead_connections() returns empty list when all connections are active** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _find_dead_connections() skips connections not in active_websockets.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _find_dead_connections() raises ConnectionError when websocket is None.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _find_dead_connections() finds dead connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Relationships
 
-- [[Game Tick Processing]] (7 shared connections)
-- [[Combat Attack Service]] (3 shared connections)
-- [[App Lifespan Management]] (1 shared connections)
-- [[Status Effect Tick Tests]] (1 shared connections)
+- [WebSocket Connection Setup](WebSocket_Connection_Setup.md) (6 shared connections)
+- [Logging Structured Setup](Logging_Structured_Setup.md) (4 shared connections)
 
 ## Source Files
 
-- `server/app/game_tick_processing.py`
-- `server/tests/unit/app/test_game_tick_processing.py`
+- `server/realtime/connection_establishment.py`
+- `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Audit Trail
 
-- EXTRACTED: 72 (100%)
+- EXTRACTED: 32 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,55 +1,50 @@
 # Health Service Tests
 
-> 49 nodes · cohesion 0.05
+> 44 nodes
 
 ## Key Concepts
 
-- **test_health_service.py** (40 connections) — `server/tests/unit/services/test_health_service.py`
-- **get_health_service()** (9 connections) — `server/services/health_service.py`
-- **test_get_health_service_creates_instance()** (3 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_health_service_returns_singleton()** (3 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_health_service_updates_connection_manager()** (3 connections) — `server/tests/unit/services/test_health_service.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **Test check_connections_health returns healthy status.** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **Test get_server_component_health returns healthy status.** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **Test check_database_health returns healthy status.** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_connections_health_degraded()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_connections_health_healthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_connections_health_no_manager()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_connections_health_unhealthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_database_health_degraded()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_database_health_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_database_health_healthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_database_health_unhealthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_connections_component_health()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_cpu_usage_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_cpu_usage_success()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_database_component_health()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_health_status_success()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_memory_usage_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_memory_usage_success()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_server_component_health_degraded()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- *... and 24 more nodes in this community*
+- **subzone_schema.json** (7 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **properties** (6 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **special_rules** (5 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **properties** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **enum** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **description** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **lucidity_drain_rate** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **npc_spawn_modifier** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **access_requirements** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **combat_modifier** (3 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **exploration_bonus** (3 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **required** (2 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **items** (2 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **$schema** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **title** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **environment** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [[Health Check Models]] (11 shared connections)
-- [[Health Check Service]] (3 shared connections)
-- [[Monitoring API Endpoints]] (2 shared connections)
-- [[Memory Profiler Tools]] (1 shared connections)
-- [[Command Request App State]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/health_service.py`
-- `server/tests/unit/services/test_health_service.py`
+- `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 126 (100%)
+- EXTRACTED: 86 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

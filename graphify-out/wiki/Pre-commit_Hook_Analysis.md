@@ -1,51 +1,55 @@
 # Pre-commit Hook Analysis
 
-> 41 nodes · cohesion 0.05
+> 32 nodes
 
 ## Key Concepts
 
-- **Pre-Commit Hook Analysis: Why F-String Violations Weren't Caught** (12 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- **Pre-Commit Hook Fix: F-String Logging Detection** (10 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-fix.md`
-- **Hook Script Analysis** (4 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- **Root Causes** (4 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- **Solutions** (4 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- **Impact** (3 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- **Violations Analysis** (3 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- **Problem Identified** (3 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-fix.md`
-- **Changes Made** (2 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-fix.md`
-- **Solution Implemented** (2 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-fix.md`
-- **Testing Results** (2 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-fix.md`
-- **What It Missed** (2 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-fix.md`
-- **2025-01-28_session-pre-commit-hook-analysis.md** (1 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- **1. Incomplete Regex Pattern** (1 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- **2. Line-by-Line Processing** (1 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- **3. Only Staged Files** (1 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- **Comparison with Working Verification Script** (1 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- **Conclusion** (1 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- **Current Hook Configuration** (1 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- **Current Implementation (`scripts/check_logging_patterns.py`)** (1 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- **Example from `server/commands/communication_commands.py:77`** (1 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- **Example from `server/realtime/connection_manager.py:421`** (1 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- **Executive Summary** (1 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- **Next Steps** (1 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- **Option 1: Fix the Hook Script (Recommended)** (1 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- *... and 16 more nodes in this community*
+- **_NPCCombatIntegrationValidationDeps** (19 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.store_npc_xp_mapping_for_mixin()** (10 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_base_stats()** (6 connections) — `server/models/npc.py`
+- **.get_data_provider()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_uuid_mapping()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **UUID** (6 connections)
+- **._setup_combat_uuids_and_mappings()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._validate_and_get_npc_instance()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._validate_combat_location()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._end_combat_if_participant_in_combat()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._setup_combat_uuids_npc_attacker()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_combat_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_lucidity_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **_coerce_xp_mapping_value()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **_warn_attacked_dead_npc()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.store_npc_xp_mapping_for_mixin()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Get base stats as dictionary.** (1 connections) — `server/models/npc.py`
+- **Protocol** (1 connections)
+- **Parse xp_value from NPC base_stats JSON; bool maps to 0 (avoid True -> 1).** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Log when a player targets an NPC that exists but is not alive.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Attributes supplied by NPCCombatIntegrationService (mixin cannot initialize them** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Return combat service dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Return data provider dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Return UUID mapping dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Return lucidity dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Magic Service Bundle](Magic_Service_Bundle.md) (15 shared connections)
+- [Command Parser Tests](Command_Parser_Tests.md) (3 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (2 shared connections)
+- [Alias Storage Layer](Alias_Storage_Layer.md) (2 shared connections)
+- [Async Persistence Core](Async_Persistence_Core.md) (2 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- `investigations/sessions/2025-01-28_session-pre-commit-hook-fix.md`
+- `server/models/npc.py`
+- `server/services/npc_combat_integration_validation_mixin.py`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 104 (93%)
+- INFERRED: 8 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

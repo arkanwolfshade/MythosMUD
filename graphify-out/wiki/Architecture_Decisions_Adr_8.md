@@ -1,17 +1,19 @@
 # Architecture Decisions Adr
 
-> 8 nodes · cohesion 0.25
+> 10 nodes
 
 ## Key Concepts
 
-- **ADR-005: Repository Pattern for Data Access** (7 connections) — `docs/architecture/decisions/ADR-005-repository-pattern-data-access.md`
-- **ADR-005-repository-pattern-data-access.md** (1 connections) — `docs/architecture/decisions/ADR-005-repository-pattern-data-access.md`
-- **Alternatives Considered** (1 connections) — `docs/architecture/decisions/ADR-005-repository-pattern-data-access.md`
-- **Consequences** (1 connections) — `docs/architecture/decisions/ADR-005-repository-pattern-data-access.md`
-- **Context** (1 connections) — `docs/architecture/decisions/ADR-005-repository-pattern-data-access.md`
-- **Decision** (1 connections) — `docs/architecture/decisions/ADR-005-repository-pattern-data-access.md`
-- **References** (1 connections) — `docs/architecture/decisions/ADR-005-repository-pattern-data-access.md`
-- **Related ADRs** (1 connections) — `docs/architecture/decisions/ADR-005-repository-pattern-data-access.md`
+- **Architecture Decision Records Index** (5 connections) — `docs/architecture/decisions/README.md`
+- **ADR-013 Pydantic BaseSettings Configuration** (2 connections) — `docs/architecture/decisions/ADR-013-pydantic-configuration.md`
+- **ADR-014 NATS Circuit Breaker and DLQ** (2 connections) — `docs/architecture/decisions/ADR-014-nats-error-boundaries.md`
+- **ADR-015 PostgreSQL Procedures Migration** (2 connections) — `docs/architecture/decisions/ADR-015-postgresql-procedures-migration.md`
+- **ADR-016 Aggro Threat Management** (2 connections) — `docs/architecture/decisions/ADR-016-aggro-threat-management.md`
+- **Dead Letter Queue** (1 connections) — `docs/architecture/decisions/ADR-014-nats-error-boundaries.md`
+- **db/procedures Stored Functions** (1 connections) — `docs/architecture/decisions/ADR-015-postgresql-procedures-migration.md`
+- **Room-Based Combat Aggro** (1 connections) — `docs/architecture/decisions/ADR-016-aggro-threat-management.md`
+- **ADR-017 AST Console Pruning** (1 connections) — `docs/architecture/decisions/ADR-017-ast-console-pruning-client-build.md`
+- **.env and YAML Config Split** (1 connections) — `docs/archive/.ENV_REFACTORING_SUMMARY.md`
 
 ## Relationships
 
@@ -19,14 +21,20 @@
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-005-repository-pattern-data-access.md`
+- `docs/architecture/decisions/ADR-013-pydantic-configuration.md`
+- `docs/architecture/decisions/ADR-014-nats-error-boundaries.md`
+- `docs/architecture/decisions/ADR-015-postgresql-procedures-migration.md`
+- `docs/architecture/decisions/ADR-016-aggro-threat-management.md`
+- `docs/architecture/decisions/ADR-017-ast-console-pruning-client-build.md`
+- `docs/architecture/decisions/README.md`
+- `docs/archive/.ENV_REFACTORING_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 16 (89%)
+- INFERRED: 2 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

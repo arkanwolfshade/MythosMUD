@@ -1,62 +1,68 @@
 # Combat Command Helpers
 
-> 38 nodes · cohesion 0.10
+> 69 nodes
 
 ## Key Concepts
 
-- **combat_loader.py** (19 connections) — `server/commands/combat_loader.py`
-- **combat.py** (14 connections) — `server/commands/combat.py`
-- **get_combat_command_handler()** (14 connections) — `server/commands/combat_loader.py`
-- **AliasStorage** (14 connections) — `server/commands/combat_loader.py`
-- **handle_attack_command()** (9 connections) — `server/commands/combat_loader.py`
-- **_app_from_request()** (8 connections) — `server/commands/combat_loader.py`
-- **handle_kick_command()** (7 connections) — `server/commands/combat_loader.py`
-- **handle_punch_command()** (7 connections) — `server/commands/combat_loader.py`
-- **handle_strike_command()** (7 connections) — `server/commands/combat_loader.py`
-- **format_combat_status()** (6 connections) — `server/commands/combat_helpers.py`
-- **get_combat_target()** (6 connections) — `server/commands/combat_helpers.py`
-- **handle_flee_command()** (6 connections) — `server/commands/combat_loader.py`
-- **handle_taunt_command()** (6 connections) — `server/commands/combat_loader.py`
-- **test_combat_helpers.py** (5 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **combat_helpers.py** (4 connections) — `server/commands/combat_helpers.py`
-- **test_format_combat_status_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **test_format_combat_status_not_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **test_get_combat_target()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **test_get_combat_target_not_found()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **Any** (2 connections) — `server/commands/combat_helpers.py`
-- **Shared helpers and exceptions for combat commands.  Extracted from combat.py to** (1 connections) — `server/commands/combat_helpers.py`
-- **Produce a human-readable combat status string.      This helper is retained for** (1 connections) — `server/commands/combat_helpers.py`
-- **Resolve a combat target by name.      The current implementation is intentionall** (1 connections) — `server/commands/combat_helpers.py`
-- **Combat command handler singleton and public async command entry points.  Extract** (1 connections) — `server/commands/combat_loader.py`
-- **Handle kick command (alias for attack).** (1 connections) — `server/commands/combat_loader.py`
-- *... and 13 more nodes in this community*
+- **websocket_handler.py** (64 connections) — `server/realtime/websocket_handler.py`
+- **websocket_handler_message_loop.py** (25 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **handle_message_loop_exception()** (10 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **test_websocket_handler_error_handling.py** (9 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **send_websocket_error_response()** (7 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **WebSocket** (7 connections)
+- **test_websocket_handler_rate_limit.py** (7 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **handle_json_decode_error()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **UUID** (6 connections)
+- **handle_websocket_runtime_error()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **handle_websocket_generic_exception()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **process_exception_in_message_loop()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **handle_websocket_message_loop()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **is_websocket_disconnect_message()** (6 connections) — `server/realtime/websocket_helpers.py`
+- **process_websocket_inbound_message()** (5 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **handle_websocket_disconnect()** (4 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **test_websocket_handler_disconnect.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- **test_websocket_handler_helpers.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **test_websocket_handler_json_error.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **Exception** (3 connections)
+- **test_handle_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- **test_handle_websocket_disconnect_no_connection_id()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **test_send_error_response_success()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **test_send_error_response_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [[Combat Command Handler]] (9 shared connections)
-- [[Alias Expansion Logic]] (4 shared connections)
-- [[Combat Service Bundle]] (4 shared connections)
-- [[Combat Flee Command]] (2 shared connections)
-- [[Async Persistence Layer]] (2 shared connections)
-- [[Distributed Event Bus]] (2 shared connections)
-- [[Room Occupant Events]] (2 shared connections)
-- [[NPC Admin API]] (1 shared connections)
-- [[Database Manager Tests]] (1 shared connections)
-- [[Flee Command Tests]] (1 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (12 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (12 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (10 shared connections)
+- [Database Helper Tests](Database_Helper_Tests.md) (8 shared connections)
+- [Logout and Quit Commands](Logout_and_Quit_Commands.md) (6 shared connections)
+- [WebSocket Initial State](WebSocket_Initial_State.md) (4 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
+- [Async Persistence Layer](Async_Persistence_Layer.md) (3 shared connections)
+- [Room Occupant Events](Room_Occupant_Events.md) (2 shared connections)
+- [Combat Aggro Threat](Combat_Aggro_Threat.md) (2 shared connections)
+- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (1 shared connections)
+- [Combat Feature Flags](Combat_Feature_Flags.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/combat.py`
-- `server/commands/combat_helpers.py`
-- `server/commands/combat_loader.py`
-- `server/tests/unit/commands/test_combat_helpers.py`
+- `server/realtime/websocket_handler.py`
+- `server/realtime/websocket_handler_message_loop.py`
+- `server/realtime/websocket_helpers.py`
+- `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
 
 ## Audit Trail
 
-- EXTRACTED: 146 (89%)
-- INFERRED: 18 (11%)
+- EXTRACTED: 260 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

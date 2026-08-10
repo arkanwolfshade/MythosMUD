@@ -1,34 +1,32 @@
 # Investigations Sessions Session
 
-> 10 nodes · cohesion 0.20
+> 7 nodes
 
 ## Key Concepts
 
-- **REMEDIATION IMPLEMENTATION: NPCs Not Updating in Occupants List** (9 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
-- **TESTING RECOMMENDATIONS** (4 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
-- **Error Indicators** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
-- **EXPECTED BEHAVIOR AFTER FIX** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
-- **FILES MODIFIED** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
-- **Log Verification** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
-- **NEXT STEPS** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
-- **RELATED INVESTIGATIONS** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
-- **SUMMARY OF FIXES** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
-- **Test Scenarios** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
+- **MythosMUD** (4 connections) — `data/MythosMUD-Obsidian/wiki/world/MythosMUD.md`
+- **Geography Overview.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Geography Overview.md`
+- **MythosMUD.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/MythosMUD.md`
+- **Geography Overview** (1 connections) — `data/MythosMUD-Obsidian/wiki/world/Geography Overview.md`
+- **World** (1 connections) — `data/MythosMUD-Obsidian/wiki/world/MythosMUD.md`
+- **Engineering memory** (1 connections) — `data/MythosMUD-Obsidian/wiki/world/MythosMUD.md`
+- **Sources** (1 connections) — `data/MythosMUD-Obsidian/wiki/world/MythosMUD.md`
 
 ## Relationships
 
-- [[Investigations Sessions Session]] (3 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
+- `data/MythosMUD-Obsidian/wiki/world/Geography Overview.md`
+- `data/MythosMUD-Obsidian/wiki/world/MythosMUD.md`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

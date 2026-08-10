@@ -1,65 +1,41 @@
 # Logout Session Chrome Hooks
 
-> 30 nodes · cohesion 0.12
+> 17 nodes
 
 ## Key Concepts
 
-- **logoutHandler.ts** (26 connections) — `client/src/utils/logoutHandler.ts`
-- **secureTokenStorage** (13 connections) — `client/src/utils/security.ts`
-- **useMythosSessionChrome.ts** (11 connections) — `client/src/mythosApp/useMythosSessionChrome.ts`
-- **LogoutFlow.integration.test.tsx** (8 connections) — `client/src/__tests__/LogoutFlow.integration.test.tsx`
-- **App.logout.test.tsx** (8 connections) — `client/src/__tests__/App.logout.test.tsx`
-- **logoutHandler()** (8 connections) — `client/src/utils/logoutHandler.ts`
-- **readLogoutErrorMessage()** (5 connections) — `client/src/utils/logoutHandler.ts`
-- **sendLogoutCommandToServer()** (5 connections) — `client/src/utils/logoutHandler.ts`
-- **logoutHandler.test.ts** (4 connections) — `client/src/utils/__tests__/logoutHandler.test.ts`
-- **processLogoutHttpResponse()** (4 connections) — `client/src/utils/logoutHandler.ts`
-- **runLogoutServerPipeline()** (4 connections) — `client/src/utils/logoutHandler.ts`
-- **isGracePeriodServerUnavailableError()** (3 connections) — `client/src/mythosApp/motdContinueFlow.ts`
-- **useMythosSessionChrome.test.ts** (3 connections) — `client/src/mythosApp/__tests__/useMythosSessionChrome.test.ts`
-- **asRecordUnknown()** (3 connections) — `client/src/utils/logoutHandler.ts`
-- **logSuccessfulLogoutResponse()** (3 connections) — `client/src/utils/logoutHandler.ts`
-- **useMythosSessionChrome()** (2 connections) — `client/src/mythosApp/useMythosSessionChrome.ts`
-- **createLogoutAbortTimer()** (2 connections) — `client/src/utils/logoutHandler.ts`
-- **createLogoutHandler()** (2 connections) — `client/src/utils/logoutHandler.ts`
-- **logServerLogoutCommandError()** (2 connections) — `client/src/utils/logoutHandler.ts`
-- **nestedErrorMessage()** (2 connections) — `client/src/utils/logoutHandler.ts`
-- **performClientSideCleanup()** (2 connections) — `client/src/utils/logoutHandler.ts`
-- **postLogoutCommandRequest()** (2 connections) — `client/src/utils/logoutHandler.ts`
-- **stringDetail()** (2 connections) — `client/src/utils/logoutHandler.ts`
-- **fetchSpy** (1 connections) — `client/src/__tests__/LogoutFlow.integration.test.tsx`
-- **fetchSpy** (1 connections) — `client/src/__tests__/App.logout.test.tsx`
-- *... and 5 more nodes in this community*
+- **Execution Steps** (10 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Scenario 6: Admin Teleportation **[REQUIRES MULTI-PLAYER]**** (5 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **scenario-06-admin-teleportation.md** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 1: Verify Admin Status** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 2: AW Teleports Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 3: Verify Ithaqua Sees Teleportation Message** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 4: Verify AW Sees Ithaqua Leave** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 5: Test Non-Admin Teleportation Attempt** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 6: AW Teleports Ithaqua Back** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 7: Verify Return Teleportation** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 8: Verify AW Sees Ithaqua Return** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 9: Test Invalid Teleportation Target** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
 
 ## Relationships
 
-- [[Client App State Hooks]] (7 shared connections)
-- [[Client Security Utilities]] (6 shared connections)
-- [[App Router Integration]] (4 shared connections)
-- [[App Creation Flow Screens]] (4 shared connections)
-- [[Character Selection Screens]] (3 shared connections)
-- [[Client Event Store]] (2 shared connections)
-- [[Character Creation Screens]] (1 shared connections)
-- [[Mythosapp Submitauth Applyauthenticatedsession]] (1 shared connections)
-- [[Pages Mappagerenderer Mappagestate]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/src/__tests__/App.logout.test.tsx`
-- `client/src/__tests__/LogoutFlow.integration.test.tsx`
-- `client/src/mythosApp/__tests__/useMythosSessionChrome.test.ts`
-- `client/src/mythosApp/motdContinueFlow.ts`
-- `client/src/mythosApp/useMythosSessionChrome.ts`
-- `client/src/utils/__tests__/logoutHandler.test.ts`
-- `client/src/utils/logoutHandler.ts`
-- `client/src/utils/security.ts`
+- `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 131 (100%)
+- EXTRACTED: 32 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

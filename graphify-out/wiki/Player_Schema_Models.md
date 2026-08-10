@@ -1,57 +1,43 @@
 # Player Schema Models
 
-> 31 nodes · cohesion 0.08
+> 19 nodes
 
 ## Key Concepts
 
-- **test_player_schemas.py** (20 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **PlayerBase** (11 connections) — `server/schemas/players/player.py`
-- **PlayerCreate** (10 connections) — `server/schemas/players/player.py`
-- **PlayerUpdate** (9 connections) — `server/schemas/players/player.py`
-- **test_player_create_custom_stats()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **test_player_read()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **test_player_read_defaults()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **test_character_info()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **test_character_info_defaults()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **test_player_base()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **test_player_base_rejects_extra_fields()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **test_player_base_validation()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **test_player_create()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **test_player_create_rejects_extra_fields()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **test_player_update()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **test_player_update_all_optional()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **test_user_base()** (3 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **Base user schema with common fields.** (2 connections) — `server/schemas/auth/user.py`
-- **Schema for creating a new user.** (2 connections) — `server/schemas/auth/user.py`
-- **Test UserBase can be instantiated.** (2 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **Schema for updating player data.** (1 connections) — `server/schemas/players/player.py`
-- **Unit tests for player schemas.  Tests the Pydantic models in player.py module.** (1 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **Test CharacterInfo can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **Test CharacterInfo has correct default values.** (1 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **Test PlayerBase rejects extra fields (extra='forbid').** (1 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- *... and 6 more nodes in this community*
+- **ADR-012: python-statemachine for Backend Connection FSM** (10 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Considered Options** (4 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Consequences** (4 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Implementation Details** (3 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **ADR-012-python-statemachine-backend.md** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Context and Problem Statement** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Decision Drivers** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Option 1: python-statemachine** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Option 2: transitions** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Option 3: Manual Implementation** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Decision Outcome** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **State Machine Definition** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Integration with NATS Service** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Positive** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Negative** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Neutral** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Validation** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **References** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Related ADRs** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
 
 ## Relationships
 
-- [[Admin NPC Schemas]] (17 shared connections)
-- [[Invite and User Schemas]] (6 shared connections)
-- [[Character Stats Model]] (4 shared connections)
-- [[Players API Endpoints]] (3 shared connections)
-- [[Player Domain Model]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/schemas/auth/user.py`
-- `server/schemas/players/player.py`
-- `server/tests/unit/schemas/test_player_schemas.py`
-- `server/tests/unit/schemas/test_user_schemas.py`
+- `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
 
 ## Audit Trail
 
-- EXTRACTED: 106 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 36 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

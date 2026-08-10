@@ -1,29 +1,26 @@
 # Archive Temporal Npc
 
-> 5 nodes · cohesion 0.40
+> 2 nodes
 
 ## Key Concepts
 
-- **Required Implementation** (5 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
-- **1. NPC Schedule State Access** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
-- **2. Shopkeeper Open/Close State** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
-- **3. Schedule Effect Processing** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
-- **4. NPC Update Cycle** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
+- **High-Risk Major Package Updates** (1 connections) — `scripts/dependency_upgrade_report.md`
+- **pytest-asyncio Major Upgrade** (1 connections) — `scripts/dependency_upgrade_report.md`
 
 ## Relationships
 
-- [[Archive Temporal Npc]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/temporal-npc-schedule-integration-status.md`
+- `scripts/dependency_upgrade_report.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

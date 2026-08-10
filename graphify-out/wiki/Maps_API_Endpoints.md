@@ -1,64 +1,62 @@
 # Maps API Endpoints
 
-> 69 nodes · cohesion 0.05
+> 56 nodes
 
 ## Key Concepts
 
-- **RoomService** (64 connections) — `server/game/room_service.py`
-- **test_maps.py** (27 connections) — `server/tests/unit/api/test_maps.py`
-- **.get_room()** (11 connections) — `server/game/room_service.py`
-- **Any** (10 connections) — `server/game/room_service.py`
-- **_get_current_room_id()** (9 connections) — `server/api/maps.py`
-- **UUID** (9 connections) — `server/tests/unit/api/test_maps.py`
-- **_ensure_coords_stub()** (8 connections) — `server/tests/unit/api/test_maps.py`
-- **_needs_coordinate_generation()** (7 connections) — `server/api/maps.py`
-- **.get_room_info()** (7 connections) — `server/game/room_service.py`
-- **_MapRooms** (7 connections) — `server/tests/unit/api/test_maps.py`
-- **MapZoneContext** (7 connections) — `server/tests/unit/api/test_maps.py`
-- **_two_rooms()** (6 connections) — `server/tests/unit/api/test_maps.py`
-- **.get_adjacent_rooms()** (6 connections) — `server/game/room_service.py`
-- **AsyncSession** (6 connections) — `server/tests/unit/api/test_maps.py`
-- **ExplorationService** (6 connections) — `server/tests/unit/api/test_maps.py`
-- **RoomService** (6 connections) — `server/tests/unit/api/test_maps.py`
-- **User** (6 connections) — `server/tests/unit/api/test_maps.py`
-- **test_prepare_ascii_map_context_applies_exploration_filter()** (5 connections) — `server/tests/unit/api/test_maps.py`
-- **.filter_rooms_by_exploration()** (5 connections) — `server/game/room_service.py`
-- **.get_local_chat_scope()** (4 connections) — `server/game/room_service.py`
-- **.get_room_exits()** (4 connections) — `server/game/room_service.py`
-- **.get_room_occupants()** (4 connections) — `server/game/room_service.py`
-- **test_apply_exploration_filter_if_needed_calls_for_normal_user()** (3 connections) — `server/tests/unit/api/test_maps.py`
-- **test_apply_exploration_filter_if_needed_skips_for_superuser()** (3 connections) — `server/tests/unit/api/test_maps.py`
-- **test_filter_explored_rooms_calls_room_service()** (3 connections) — `server/tests/unit/api/test_maps.py`
-- *... and 44 more nodes in this community*
+- **container_persistence.py** (54 connections) — `server/persistence/container_persistence.py`
+- **test_container_persistence_extended_row_helpers.py** (53 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- **update_container()** (26 connections) — `server/persistence/container_persistence.py`
+- **_container_data_from_row()** (20 connections) — `server/persistence/container_persistence.py`
+- **create_container()** (19 connections) — `server/persistence/container_persistence.py`
+- **get_container()** (19 connections) — `server/persistence/container_persistence.py`
+- **parse_jsonb_column()** (11 connections) — `server/persistence/container_helpers.py`
+- **_InsertBindSource** (11 connections) — `server/persistence/container_persistence.py`
+- **_insert_container_row()** (11 connections) — `server/persistence/container_persistence.py`
+- **PsycopgConnection** (11 connections)
+- **_seed_new_container_items()** (11 connections) — `server/persistence/container_persistence.py`
+- **UUID** (10 connections)
+- **_after_container_insert()** (10 connections) — `server/persistence/container_persistence.py`
+- **_run_container_update_execute()** (9 connections) — `server/persistence/container_persistence.py`
+- **_as_uuid()** (6 connections) — `server/persistence/container_persistence.py`
+- **_as_opt_datetime()** (6 connections) — `server/persistence/container_persistence.py`
+- **_metadata_from_row()** (6 connections) — `server/persistence/container_persistence.py`
+- **_validate_new_container_params()** (6 connections) — `server/persistence/container_persistence.py`
+- **ContainerData** (6 connections)
+- **_as_opt_uuid()** (5 connections) — `server/persistence/container_persistence.py`
+- **datetime** (5 connections)
+- **_allowed_roles_from_row()** (5 connections) — `server/persistence/container_persistence.py`
+- **_insert_bind_tuple()** (5 connections) — `server/persistence/container_persistence.py`
+- **_fetch_container_row_dict()** (5 connections) — `server/persistence/container_persistence.py`
+- **test_insert_container_row_raises_when_no_row_returned()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [[ASCII Map API]] (25 shared connections)
-- [[NPC Admin API]] (15 shared connections)
-- [[Time Event Consumer]] (9 shared connections)
-- [[API Test Fixtures]] (8 shared connections)
-- [[Services Exploration Service]] (8 shared connections)
-- [[Game Service Bundle]] (7 shared connections)
-- [[Room Exploration API]] (3 shared connections)
-- [[Minimap Fallback Helpers]] (3 shared connections)
-- [[Room Service Tests]] (2 shared connections)
-- [[Dependency Injection Tests]] (2 shared connections)
-- [[Dependency Injection Dependencies]] (2 shared connections)
-- [[Character Stats Generator]] (2 shared connections)
+- [Combat Command Models](Combat_Command_Models.md) (23 shared connections)
+- [JSONB Column Parsing](JSONB_Column_Parsing.md) (23 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (17 shared connections)
+- [Container System Architecture](Container_System_Architecture.md) (14 shared connections)
+- [Feature Implementation Phases](Feature_Implementation_Phases.md) (11 shared connections)
+- [Api Player Respawn](Api_Player_Respawn.md) (6 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (5 shared connections)
+- [Player Save Preparer](Player_Save_Preparer.md) (4 shared connections)
+- [Container Persistence Ops](Container_Persistence_Ops.md) (1 shared connections)
+- [Archive Optimization Summary](Archive_Optimization_Summary.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/maps.py`
-- `server/api/rooms.py`
-- `server/game/room_service.py`
-- `server/tests/unit/api/test_maps.py`
+- `server/persistence/container_helpers.py`
+- `server/persistence/container_persistence.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 244 (79%)
-- INFERRED: 64 (21%)
+- EXTRACTED: 389 (96%)
+- INFERRED: 15 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

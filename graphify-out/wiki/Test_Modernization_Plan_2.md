@@ -1,50 +1,61 @@
 # Test Modernization Plan
 
-> 46 nodes · cohesion 0.04
+> 40 nodes
 
 ## Key Concepts
 
-- **Uplift Strategy** (33 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Files to Update** (4 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **AFTER** (2 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Category D: API Endpoint Tests (App State)** (2 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Critical Discovery & Fix** (2 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Files Affected** (2 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **New Tests to Add** (2 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Phase 1: Fix Failing Integration Tests (Week 1-2) 🚧 **IN PROGRESS**** (2 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Phase 2: Modernize Unit Test Patterns (Week 3-4)** (2 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Phase 3: Modernize Test Patterns (Week 5)** (2 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Phase 4: Add Container Integration Tests (Week 6)** (2 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Success Criteria:**✅**ALL MET** (2 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **0.1 Create Container Test Fixtures ✅** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **0.2 Update conftest.py ✅** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **1.1 Identify All Failing Tests ✅** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **1.2 Fix Integration Test Fixtures ✅ **INFRASTRUCTURE COMPLETE**** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **2.1 Categorize Unit Tests by Dependency Pattern** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **2.2 Update Category B: Service Layer Tests** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **2.3 Update Category C: Infrastructure Tests** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **2.4 Update Category D: API Tests** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **3.1 Adopt Modern pytest Patterns** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **3.2 Eliminate Global State Dependencies** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **3.3 Consolidate Duplicate Test Fixtures** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **4.1 Test ApplicationContainer Itself** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **4.2 Test Dependency Injection** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- *... and 21 more nodes in this community*
+- **test_look_item.py** (55 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_equipped_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_get_item_description_from_prototype_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_get_item_description_from_prototype_fallback()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_check_item_in_location_with_location_name()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_check_item_in_location_no_prototype()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_check_equipped_item_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_in_inventory()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_in_equipped()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_in_room_drops()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_get_item_description_from_prototype_with_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_get_item_description_from_prototype_exception_handling()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_check_item_in_location_fallback_name()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_in_equipped()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_player_no_get_equipped_items()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **mock_prototype_registry()** (2 connections) — `server/tests/unit/commands/test_look_item.py`
+- **sample_room_drop()** (2 connections) — `server/tests/unit/commands/test_look_item.py`
+- **sample_inventory_item()** (2 connections) — `server/tests/unit/commands/test_look_item.py`
+- **sample_equipped_item()** (2 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Unit tests for item look functionality.  Tests the helper functions for looking** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Create a mock prototype registry.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Create a sample room drop item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Create a sample inventory item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Create a sample equipped item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [[Test Modernization Plan]] (1 shared connections)
+- [Archive Circuit Breaker](Archive_Circuit_Breaker.md) (27 shared connections)
+- [E2E Suite Overview](E2E_Suite_Overview.md) (8 shared connections)
+- [Nats Anti Patterns](Nats_Anti_Patterns.md) (5 shared connections)
+- [Archive Combat Health](Archive_Combat_Health.md) (2 shared connections)
+- [CleanupContext](CleanupContext.md) (1 shared connections)
+- [Cursor Agents Readme](Cursor_Agents_Readme.md) (1 shared connections)
+- [test_setup_session_tracking_no_session_id](test_setup_session_tracking_no_session_id.md) (1 shared connections)
+- [test_setup_connection_metadata_no_session_token](test_setup_connection_metadata_no_session_token.md) (1 shared connections)
+- [test_setup_player_and_room_no_player](test_setup_player_and_room_no_player.md) (1 shared connections)
+- [.check_and_cleanup](check_and_cleanup.md) (1 shared connections)
+- [.get_strategy](get_strategy.md) (1 shared connections)
+- [.prune_stale_players](prune_stale_players.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/TEST_MODERNIZATION_PLAN.md`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 91 (100%)
+- EXTRACTED: 128 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

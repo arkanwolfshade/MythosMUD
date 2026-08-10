@@ -1,80 +1,80 @@
 # Client Event Store
 
-> 87 nodes · cohesion 0.05
+> 706 nodes
 
 ## Key Concepts
 
-- **stateUpdateUtils.ts** (40 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **logger.ts** (35 connections) — `client/src/utils/logger.ts`
-- **logger** (32 connections) — `client/src/utils/logger.ts`
-- **projectorHandlersMessages.ts** (26 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
-- **GameState** (25 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **projectorHandlersState.ts** (23 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
-- **useRespawnHandlers.ts** (21 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
-- **GameEvent** (18 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
-- **projector.ts** (18 connections) — `client/src/components/ui-v2/eventLog/projector.ts`
-- **projectorRoom.ts** (18 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **useGameConnectionManagement.ts** (15 connections) — `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
-- **stateUpdateUtils.test.ts** (14 connections) — `client/src/components/ui-v2/utils/__tests__/stateUpdateUtils.test.ts`
-- **useEventProcessing.ts** (13 connections) — `client/src/components/ui-v2/hooks/useEventProcessing.ts`
-- **projector.test.ts** (12 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.test.ts`
-- **index.ts** (11 connections) — `client/src/components/ui-v2/eventLog/index.ts`
-- **projectorMessageUtils.ts** (11 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- **roomMergeUtils.ts** (10 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **eventStore.ts** (9 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
-- **EventStore** (9 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
-- **types.ts** (9 connections) — `client/src/components/ui-v2/eventLog/types.ts`
-- **messageMapper.ts** (8 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- **logger.test.ts** (8 connections) — `client/src/utils/logger.test.ts`
-- **messageMapper.test.ts** (7 connections) — `client/src/components/ui-v2/eventLog/__tests__/messageMapper.test.ts`
-- **deriveRoomFromRoomUpdate()** (6 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **EventLog** (6 connections) — `client/src/components/ui-v2/eventLog/types.ts`
-- *... and 62 more nodes in this community*
+- **AliasStorage** (230 connections) — `server/alias_storage.py`
+- **command_service.py** (92 connections) — `server/commands/command_service.py`
+- **.__init__()** (71 connections) — `server/commands/command_service.py`
+- **alias_storage.py** (64 connections) — `server/alias_storage.py`
+- **command_handler_unified.py** (52 connections) — `server/command_handler_unified.py`
+- **get_username_from_user()** (50 connections) — `server/utils/command_helpers.py`
+- **command_parser.py** (45 connections) — `server/utils/command_parser.py`
+- **test_rest_command.py** (38 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_admin_commands.py** (37 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **MagicCommandHandler** (34 connections) — `server/commands/magic_commands.py`
+- **test_lucidity_recovery_commands.py** (34 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **admin_commands.py** (33 connections) — `server/commands/admin_commands.py`
+- **communication_commands.py** (31 connections) — `server/commands/communication_commands.py`
+- **test_alias_commands.py** (30 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **__init__.py** (29 connections) — `server/commands/__init__.py`
+- **admin_mute_commands.py** (29 connections) — `server/commands/admin_mute_commands.py`
+- **test_command_helpers.py** (27 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **lucidity_recovery_commands.py** (26 connections) — `server/commands/lucidity_recovery_commands.py`
+- **magic_commands.py** (26 connections) — `server/commands/magic_commands.py`
+- **rest_command.py** (26 connections) — `server/commands/rest_command.py`
+- **processing.py** (25 connections) — `server/command_handler/processing.py`
+- **handle_alias_command()** (25 connections) — `server/commands/alias_commands.py`
+- **debrief_command.py** (25 connections) — `server/commands/debrief_command.py`
+- **ActiveLucidityService** (24 connections) — `server/services/active_lucidity_service.py`
+- **handle_pray_command()** (22 connections) — `server/commands/lucidity_recovery_commands.py`
+- *... and 681 more nodes in this community*
 
 ## Relationships
 
-- [[UI Player Event Handlers]] (69 shared connections)
-- [[Game Client Container]] (23 shared connections)
-- [[Mythos Time HUD]] (22 shared connections)
-- [[Character Creation Screens]] (12 shared connections)
-- [[Connection State Hooks]] (10 shared connections)
-- [[Components Ui V 2]] (6 shared connections)
-- [[App Creation Flow Screens]] (4 shared connections)
-- [[API Type Guards]] (3 shared connections)
-- [[Chat Panel Filtering]] (2 shared connections)
-- [[Character Selection Screens]] (2 shared connections)
-- [[Game Terminal Panels]] (2 shared connections)
-- [[Death Delirium UI Modals]] (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (89 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (34 shared connections)
+- [Client Security Utilities](Client_Security_Utilities.md) (31 shared connections)
+- [Disconnect Grace Period](Disconnect_Grace_Period.md) (28 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (26 shared connections)
+- [Player Death Service](Player_Death_Service.md) (20 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (17 shared connections)
+- [Player Event Handler Tests](Player_Event_Handler_Tests.md) (17 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (17 shared connections)
+- [NPC Service Tests](NPC_Service_Tests.md) (17 shared connections)
+- [WebSocket Handler Helpers](WebSocket_Handler_Helpers.md) (16 shared connections)
+- [Container Sync Remediation](Container_Sync_Remediation.md) (14 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/eventHandlers/types.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/eventStore.test.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/messageMapper.test.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/projector.test.ts`
-- `client/src/components/ui-v2/eventLog/eventStore.ts`
-- `client/src/components/ui-v2/eventLog/index.ts`
-- `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- `client/src/components/ui-v2/eventLog/projector.ts`
-- `client/src/components/ui-v2/eventLog/projectorConstants.ts`
-- `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
-- `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
-- `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- `client/src/components/ui-v2/eventLog/types.ts`
-- `client/src/components/ui-v2/hooks/useEventProcessing.ts`
-- `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
-- `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
-- `client/src/components/ui-v2/utils/__tests__/roomMergeUtils.test.ts`
-- `client/src/components/ui-v2/utils/__tests__/stateUpdateUtils.test.ts`
-- `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- `server/alias_storage.py`
+- `server/command_handler/__init__.py`
+- `server/command_handler/alias_expansion.py`
+- `server/command_handler/processing.py`
+- `server/command_handler_unified.py`
+- `server/commands/__init__.py`
+- `server/commands/admin_commands.py`
+- `server/commands/admin_mute_commands.py`
+- `server/commands/admin_teleport_commands.py`
+- `server/commands/alias_commands.py`
+- `server/commands/channel_commands.py`
+- `server/commands/combat_handler.py`
+- `server/commands/command_service.py`
+- `server/commands/communication_commands.py`
+- `server/commands/debrief_command.py`
+- `server/commands/exploration_commands.py`
+- `server/commands/follow_commands.py`
+- `server/commands/help_commands.py`
+- `server/commands/inventory_commands.py`
+- `server/commands/lucidity_recovery_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 563 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3189 (92%)
+- INFERRED: 272 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

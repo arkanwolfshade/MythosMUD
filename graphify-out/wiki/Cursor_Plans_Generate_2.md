@@ -1,11 +1,11 @@
 # Cursor Plans Generate
 
-> 2 nodes · cohesion 1.00
+> 2 nodes
 
 ## Key Concepts
 
-- **authoritative_schema.sql** (1 connections) — `.cursor/plans/generate-authoritative-database-schema-from-mythos-dev-8db3cde5.plan.md`
 - **Authoritative Database Schema from mythos_dev** (1 connections) — `.cursor/plans/generate-authoritative-database-schema-from-mythos-dev-8db3cde5.plan.md`
+- **authoritative_schema.sql** (1 connections) — `.cursor/plans/generate-authoritative-database-schema-from-mythos-dev-8db3cde5.plan.md`
 
 ## Relationships
 
@@ -23,4 +23,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

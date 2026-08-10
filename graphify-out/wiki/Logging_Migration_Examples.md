@@ -1,54 +1,56 @@
 # Logging Migration Examples
 
-> 50 nodes · cohesion 0.04
+> 113 nodes
 
 ## Key Concepts
 
-- **migration_examples.py** (20 connections) — `docs/examples/logging/migration_examples.py`
-- **Result** (5 connections) — `scripts/run_test_ci.py`
-- **database** (4 connections) — `docs/examples/logging/migration_examples.py`
-- **.execute()** (4 connections) — `docs/examples/logging/migration_examples.py`
-- **migration_example_4()** (4 connections) — `docs/examples/logging/migration_examples.py`
-- **process_item()** (4 connections) — `docs/examples/logging/migration_examples.py`
-- **risky_operation()** (4 connections) — `docs/examples/logging/migration_examples.py`
-- **run_test_ci.py** (4 connections) — `scripts/run_test_ci.py`
-- **expensive_operation()** (3 connections) — `docs/examples/logging/migration_examples.py`
-- **migration_example_10()** (3 connections) — `docs/examples/logging/migration_examples.py`
-- **migration_example_11()** (3 connections) — `docs/examples/logging/migration_examples.py`
-- **migration_example_14()** (3 connections) — `docs/examples/logging/migration_examples.py`
-- **migration_example_3()** (3 connections) — `docs/examples/logging/migration_examples.py`
-- **migration_example_5()** (3 connections) — `docs/examples/logging/migration_examples.py`
-- **migration_example_7()** (3 connections) — `docs/examples/logging/migration_examples.py`
-- **.create_user()** (2 connections) — `docs/examples/logging/migration_examples.py`
-- **migration_example_1()** (2 connections) — `docs/examples/logging/migration_examples.py`
-- **migration_example_12()** (2 connections) — `docs/examples/logging/migration_examples.py`
-- **migration_example_13()** (2 connections) — `docs/examples/logging/migration_examples.py`
-- **migration_example_15()** (2 connections) — `docs/examples/logging/migration_examples.py`
-- **migration_example_2()** (2 connections) — `docs/examples/logging/migration_examples.py`
-- **migration_example_6()** (2 connections) — `docs/examples/logging/migration_examples.py`
-- **migration_example_8()** (2 connections) — `docs/examples/logging/migration_examples.py`
-- **migration_example_9()** (2 connections) — `docs/examples/logging/migration_examples.py`
-- **read_output()** (2 connections) — `scripts/run_test_ci.py`
-- *... and 25 more nodes in this community*
+- **test_logout_commands.py** (42 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **logout_commands.py** (26 connections) — `server/commands/logout_commands.py`
+- **handle_logout_command()** (24 connections) — `server/commands/logout_commands.py`
+- **test_logout_commands_helpers.py** (15 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **_get_player_position_from_connection_manager()** (14 connections) — `server/commands/logout_commands.py`
+- **Any** (13 connections)
+- **_get_player_for_logout()** (13 connections) — `server/commands/logout_commands.py`
+- **handle_quit_command()** (13 connections) — `server/commands/logout_commands.py`
+- **_clear_corrupted_cache_entry()** (12 connections) — `server/commands/logout_commands.py`
+- **_sync_player_position()** (12 connections) — `server/commands/logout_commands.py`
+- **_disconnect_player_connections()** (9 connections) — `server/commands/logout_commands.py`
+- **_prepare_player_for_logout()** (8 connections) — `server/commands/logout_commands.py`
+- **_update_and_save_player_last_active()** (7 connections) — `server/commands/logout_commands.py`
+- **_get_app_services()** (4 connections) — `server/commands/logout_commands.py`
+- **_resolve_disconnect_player_id()** (4 connections) — `server/commands/logout_commands.py`
+- **UUID** (4 connections)
+- **_force_disconnect_player()** (4 connections) — `server/commands/logout_commands.py`
+- **_mark_quit_intentional()** (4 connections) — `server/commands/logout_commands.py`
+- **test_clear_corrupted_cache_entry_with_cache()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_clear_corrupted_cache_entry_no_cache()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_clear_corrupted_cache_entry_no_request()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_get_player_for_logout_from_cache()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_get_player_for_logout_from_persistence()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_get_player_for_logout_corrupted_cache()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_get_player_for_logout_persistence_error()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- *... and 88 more nodes in this community*
 
 ## Relationships
 
-- [[Logging Correct Patterns]] (2 shared connections)
-- [[FastAPI Auth Integration]] (1 shared connections)
-- [[Logging File Setup]] (1 shared connections)
-- [[CI Quality Scripts]] (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (9 shared connections)
+- [Logout Command Tests](Logout_Command_Tests.md) (8 shared connections)
+- [Test Refactoring Summary](Test_Refactoring_Summary.md) (5 shared connections)
+- [Commands System Help](Commands_System_Help.md) (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/migration_examples.py`
-- `scripts/run_test_ci.py`
+- `server/commands/logout_commands.py`
+- `server/tests/unit/commands/test_logout_commands.py`
+- `server/tests/unit/commands/test_logout_commands_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 110 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 391 (97%)
+- INFERRED: 12 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

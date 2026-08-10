@@ -1,14 +1,14 @@
 # Subsystems Subsystem Design
 
-> 7 nodes · cohesion 0.33
+> 7 nodes
 
 ## Key Concepts
 
 - **Respawn Subsystem** (3 connections) — `docs/subsystems/SUBSYSTEM_RESPAWN_DESIGN.md`
 - **Determination Points (DP)** (3 connections) — `docs/subsystems/SUBSYSTEM_STATUS_EFFECTS_DESIGN.md`
 - **Limbo Room Death State** (2 connections) — `docs/subsystems/SUBSYSTEM_RESPAWN_DESIGN.md`
-- **Incapacitation (DP 0 to -9)** (2 connections) — `docs/subsystems/SUBSYSTEM_STATUS_EFFECTS_DESIGN.md`
 - **Status Effects Subsystem** (2 connections) — `docs/subsystems/SUBSYSTEM_STATUS_EFFECTS_DESIGN.md`
+- **Incapacitation (DP 0 to -9)** (2 connections) — `docs/subsystems/SUBSYSTEM_STATUS_EFFECTS_DESIGN.md`
 - **PlayerRespawnService** (1 connections) — `docs/subsystems/SUBSYSTEM_RESPAWN_DESIGN.md`
 - **no_death Rooms (ADR-009)** (1 connections) — `docs/subsystems/SUBSYSTEM_STATUS_EFFECTS_DESIGN.md`
 
@@ -29,4 +29,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

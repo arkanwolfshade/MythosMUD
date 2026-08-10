@@ -1,35 +1,32 @@
 # Comprehensive System Audit
 
-> 34 nodes · cohesion 0.06
+> 23 nodes
 
 ## Key Concepts
 
-- **MythosMUD Comprehensive System Audit** (7 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- **Recommended Fixes** (7 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- **Critical Issues Identified** (6 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- **Audit Progress** (5 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- **Root Cause Analysis Results** (5 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- ****VALIDATION SCENARIOS**** (5 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- **Testing Validation Plan** (4 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- **COMPREHENSIVE_SYSTEM_AUDIT.md** (1 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- **1. Stale Message Persistence** (1 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- **2. Duplicate Event Broadcasting** (1 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- **3. Self-Movement Messages** (1 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- **4. Mute Command Failure** (1 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- **5. Event Ordering Issues** (1 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- ****CRITICAL ISSUE 1: Duplicate Event Systems**** (1 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- ****CRITICAL ISSUE 2: Missing App State Services**** (1 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- ****CRITICAL ISSUE 3: Stale Message Persistence**** (1 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- ****CRITICAL ISSUE 4: Event Ordering and Duplication**** (1 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- ****FIX 1: Consolidate Event Systems** ✅ IMPLEMENTED** (1 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- ****FIX 2: Add Missing App State Services**** (1 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- ****FIX 3: Fix Stale Message Persistence**** (1 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- ****FIX 4: Fix Race Condition in SSE Connection** ✅ IMPLEMENTED** (1 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- ****FIX 5: Implement Event Deduplication**** (1 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- **Overview** (1 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- **Phase 1: Event Broadcasting System Audit** (1 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- **Phase 2: Player Service Integration Investigation** (1 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- *... and 9 more nodes in this community*
+- **MythosMUD Dependency Upgrade Strategy - Implementation Summary** (8 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **What Has Been Accomplished** (5 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **Implementation Strategy** (4 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **Next Steps** (4 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **Critical Findings** (3 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **Risk Mitigation** (3 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **DEPENDENCY_UPGRADE_SUMMARY.md** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **Overview** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **🔍 Dependency Analysis** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **📊 Risk Assessment** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **🛠️ Tools Created** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **📋 Documentation Generated** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **⚠️ Breaking Changes Detected** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **🎯 Priority Recommendations** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **🚀 Ready-to-Execute Phase 1** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **📚 Migration Guides Available** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **🔄 Safety Measures** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **Immediate Actions (Today)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **Short-term Planning (This Week)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **Long-term Planning (Next 2-3 Weeks)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **🛡️ Safety Measures in Place** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **📞 Support Resources** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **Conclusion** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
 
 ## Relationships
 
@@ -37,14 +34,14 @@
 
 ## Source Files
 
-- `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
+- `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (100%)
+- EXTRACTED: 44 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

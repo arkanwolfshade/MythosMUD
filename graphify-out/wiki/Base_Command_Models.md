@@ -1,79 +1,62 @@
 # Base Command Models
 
-> 163 nodes · cohesion 0.03
+> 48 nodes
 
 ## Key Concepts
 
-- **command.py** (91 connections) — `server/models/command.py`
-- **BaseCommand** (87 connections) — `server/models/command_base.py`
-- **CommandType** (84 connections) — `server/models/command_base.py`
-- **BaseCommand** (63 connections)
-- **test_command_magic.py** (26 connections) — `server/tests/unit/models/test_command_magic.py`
-- **command_base.py** (20 connections) — `server/models/command_base.py`
-- **CastCommand** (19 connections) — `server/models/command_magic.py`
-- **test_command_utility.py** (19 connections) — `server/tests/unit/models/test_command_utility.py`
-- **AliasCommand** (17 connections) — `server/models/command_alias.py`
-- **command_utility.py** (17 connections) — `server/models/command_utility.py`
-- **command_player_state.py** (14 connections) — `server/models/command_player_state.py`
-- **command_admin.py** (13 connections) — `server/models/command_admin.py`
-- **command_combat.py** (13 connections) — `server/models/command_combat.py`
-- **PoseCommand** (13 connections) — `server/models/command_communication.py`
-- **LearnCommand** (13 connections) — `server/models/command_magic.py`
-- **SpellCommand** (13 connections) — `server/models/command_magic.py`
-- **HelpCommand** (13 connections) — `server/models/command_utility.py`
-- **WhoCommand** (13 connections) — `server/models/command_utility.py`
-- **GetCommand** (12 connections) — `server/models/command_inventory.py`
-- **PutCommand** (12 connections) — `server/models/command_inventory.py`
-- **command_alias.py** (11 connections) — `server/models/command_alias.py`
-- **command_magic.py** (9 connections) — `server/models/command_magic.py`
-- **AliasesCommand** (8 connections) — `server/models/command_alias.py`
-- **command_follow.py** (8 connections) — `server/models/command_follow.py`
-- **SpellsCommand** (8 connections) — `server/models/command_magic.py`
-- *... and 138 more nodes in this community*
+- **test_command_factories_inventory.py** (48 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **.create_pickup_command()** (19 connections) — `server/utils/command_factories_inventory.py`
+- **InventoryCommandFactory** (16 connections) — `server/utils/command_factories_inventory.py`
+- **.create_equip_command()** (16 connections) — `server/utils/command_factories_inventory.py`
+- **test_create_pickup_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_equip_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_pickup_command_quantity_zero()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_pickup_command_quantity_negative()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_pickup_command_index_zero()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_pickup_command_index_negative()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_pickup_command_index_with_extra_tokens()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_pickup_command_empty_search_term()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_equip_command_index_zero()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_equip_command_index_negative()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_equip_command_empty_search_term()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **._parse_quantity_from_args()** (4 connections) — `server/utils/command_factories_inventory.py`
+- **._parse_index_or_search_term()** (4 connections) — `server/utils/command_factories_inventory.py`
+- **test_create_pickup_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_equip_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_pickup_command_quantity_only()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_equip_command_index_with_slot()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_equip_command_search_term_with_slot()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_equip_command_inferred_slot()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **_normalize_equip_slot_tokens()** (3 connections) — `server/utils/command_factories_inventory.py`
+- **Unit tests for inventory command factories.  Tests the InventoryCommandFactory c** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [[Inventory Command Models]] (38 shared connections)
-- [[Communication Command Models]] (34 shared connections)
-- [[Moderation Command Models]] (33 shared connections)
-- [[Admin Command Models]] (26 shared connections)
-- [[Combat Command Models]] (24 shared connections)
-- [[Exploration Command Models]] (20 shared connections)
-- [[Lie Ground Commands]] (19 shared connections)
-- [[Command Field Validators]] (19 shared connections)
-- [[Alias Command Models]] (18 shared connections)
-- [[NPC Admin API]] (8 shared connections)
-- [[Base Command Models]] (5 shared connections)
-- [[Communication Command Classes]] (3 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (12 shared connections)
+- [Chat Rate Limiter](Chat_Rate_Limiter.md) (9 shared connections)
+- [Architecture Review Plan](Architecture_Review_Plan.md) (8 shared connections)
+- [NATS Subject Admin API](NATS_Subject_Admin_API.md) (8 shared connections)
+- [Test Refactoring Status](Test_Refactoring_Status.md) (8 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
+- [Calendar NPC Schedule](Calendar_NPC_Schedule.md) (5 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (5 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (1 shared connections)
+- [WebSocket Command Handler](WebSocket_Command_Handler.md) (1 shared connections)
+- [Admin Summon Command](Admin_Summon_Command.md) (1 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command.py`
-- `server/models/command_admin.py`
-- `server/models/command_alias.py`
-- `server/models/command_base.py`
-- `server/models/command_channel.py`
-- `server/models/command_combat.py`
-- `server/models/command_communication.py`
-- `server/models/command_follow.py`
-- `server/models/command_inventory.py`
-- `server/models/command_magic.py`
-- `server/models/command_moderation.py`
-- `server/models/command_party.py`
-- `server/models/command_player_state.py`
-- `server/models/command_utility.py`
-- `server/tests/unit/models/test_command_admin.py`
-- `server/tests/unit/models/test_command_magic.py`
-- `server/tests/unit/models/test_command_moderation.py`
-- `server/tests/unit/models/test_command_player_state.py`
-- `server/tests/unit/models/test_command_utility.py`
+- `server/tests/unit/utils/test_command_factories_inventory.py`
+- `server/utils/command_factories_inventory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 776 (80%)
-- INFERRED: 192 (20%)
+- EXTRACTED: 184 (94%)
+- INFERRED: 12 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

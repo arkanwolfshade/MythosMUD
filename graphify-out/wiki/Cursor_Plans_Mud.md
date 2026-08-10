@@ -1,36 +1,26 @@
 # Cursor Plans Mud
 
-> 12 nodes · cohesion 0.17
+> 2 nodes
 
 ## Key Concepts
 
-- **Major Subsystems Not Implemented (or Stub-Only)** (7 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- **MythosMUD Subsystems Gap Analysis** (5 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- **mud_subsystems_gap_analysis_a72a4468.plan.md** (1 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- **1. Quest System** (1 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- **2. Crafting System** (1 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- **3. Economy / Currency / Player Trading** (1 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- **4. Skills (Beyond Profession)** (1 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- **5. Friends List / Social Graph** (1 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- **6. Moderation Tooling** (1 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- **Implemented Subsystems (Confirmed in Codebase)** (1 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- **References** (1 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- **Summary Table (High Level)** (1 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
+- **test_broadcast_player_mortally_wounded_personal_message_error()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test broadcast_player_mortally_wounded handles personal message errors.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Database Pool Configuration](Database_Pool_Configuration.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
+- `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

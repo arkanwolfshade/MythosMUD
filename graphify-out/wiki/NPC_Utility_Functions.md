@@ -1,53 +1,63 @@
 # NPC Utility Functions
 
-> 70 nodes · cohesion 0.04
+> 132 nodes
 
 ## Key Concepts
 
-- **test_npc_utils.py** (29 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **get_zone_key_from_room_id()** (17 connections) — `server/npc/npc_utils.py`
-- **extract_definition_id_from_npc()** (12 connections) — `server/npc/npc_utils.py`
-- **extract_npc_metadata()** (11 connections) — `server/npc/npc_utils.py`
-- **extract_room_id_from_npc()** (11 connections) — `server/npc/npc_utils.py`
-- **.despawn_npc()** (8 connections) — `server/npc/population_control.py`
-- **npc_utils.py** (7 connections) — `server/npc/npc_utils.py`
-- **._get_active_npcs_from_lifecycle_manager()** (6 connections) — `server/npc/population_control.py`
-- **.cleanup_inactive_npcs()** (5 connections) — `server/npc/population_control.py`
-- **._should_remove_inactive_npc()** (4 connections) — `server/npc/population_control.py`
-- **._update_population_stats_for_despawn()** (4 connections) — `server/npc/population_control.py`
-- **_stable_room_id_for_zone()** (3 connections) — `server/npc/npc_utils.py`
-- **.get_zone_population_summary()** (3 connections) — `server/npc/population_control.py`
-- **Test extract_room_id_from_npc() extracts from current_room.** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_definition_id_from_npc_from_lifecycle_manager()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_definition_id_from_npc_has_definition_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_definition_id_from_npc_lifecycle_manager_no_definition()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_definition_id_from_npc_lifecycle_manager_no_record()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_definition_id_from_npc_no_manager()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_definition_id_from_npc_non_int()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_npc_metadata_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_npc_metadata_non_string_type()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_npc_metadata_none_required()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_npc_metadata_truthy_required()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_npc_metadata_valid()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- *... and 45 more nodes in this community*
+- **test_follow_service.py** (38 connections) — `server/tests/unit/game/test_follow_service.py`
+- **FollowService** (36 connections) — `server/game/follow_service.py`
+- **follow_service.py** (24 connections) — `server/game/follow_service.py`
+- **UUID** (14 connections)
+- **_str_id()** (13 connections) — `server/game/follow_service.py`
+- **test_follow_flow.py** (13 connections) — `server/tests/integration/test_follow_flow.py`
+- **.__init__()** (10 connections) — `server/game/follow_service.py`
+- **.request_follow()** (9 connections) — `server/game/follow_service.py`
+- **._handle_player_follower_move()** (9 connections) — `server/game/follow_service.py`
+- **._handle_npc_follower_move()** (9 connections) — `server/game/follow_service.py`
+- **._send_result_to_player()** (8 connections) — `server/game/follow_service.py`
+- **._send_follow_state_to_player()** (8 connections) — `server/game/follow_service.py`
+- **.unfollow()** (8 connections) — `server/game/follow_service.py`
+- **Any** (7 connections)
+- **._expire_pending_requests()** (7 connections) — `server/game/follow_service.py`
+- **.accept_follow()** (7 connections) — `server/game/follow_service.py`
+- **.decline_follow()** (7 connections) — `server/game/follow_service.py`
+- **_is_npc_follow_value()** (6 connections) — `server/game/follow_service.py`
+- **.get_followers()** (6 connections) — `server/game/follow_service.py`
+- **.get_following_display()** (6 connections) — `server/game/follow_service.py`
+- **._ensure_follower_standing()** (6 connections) — `server/game/follow_service.py`
+- **._on_player_entered_room()** (6 connections) — `server/game/follow_service.py`
+- **._send_follow_request_to_target()** (5 connections) — `server/game/follow_service.py`
+- **.get_following()** (5 connections) — `server/game/follow_service.py`
+- **.get_following_display_name()** (5 connections) — `server/game/follow_service.py`
+- *... and 107 more nodes in this community*
 
 ## Relationships
 
-- [[Distributed Event Bus]] (8 shared connections)
-- [[NPC Services Bundle]] (8 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (17 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (11 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (5 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
+- [Combat Turn Processor](Combat_Turn_Processor.md) (4 shared connections)
+- [Combat Client Crash Report](Combat_Client_Crash_Report.md) (3 shared connections)
+- [NPC Event Handler Tests](NPC_Event_Handler_Tests.md) (3 shared connections)
+- [Logging Correct Patterns](Logging_Correct_Patterns.md) (3 shared connections)
+- [Player Mute Persistence](Player_Mute_Persistence.md) (2 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (1 shared connections)
+- [Room Occupant Events](Room_Occupant_Events.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/npc_utils.py`
-- `server/npc/population_control.py`
-- `server/tests/unit/npc/test_npc_utils.py`
+- `server/game/follow_service.py`
+- `server/tests/integration/test_follow_flow.py`
+- `server/tests/unit/game/test_follow_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 232 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 424 (97%)
+- INFERRED: 11 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

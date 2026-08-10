@@ -1,57 +1,50 @@
 # NATS Subject Admin API
 
-> 29 nodes · cohesion 0.09
+> 20 nodes
 
 ## Key Concepts
 
-- **subject_controller.py** (25 connections) — `server/api/admin/subject_controller.py`
-- **register_pattern()** (7 connections) — `server/api/admin/subject_controller.py`
-- **validate_subject()** (7 connections) — `server/api/admin/subject_controller.py`
-- **get_patterns()** (6 connections) — `server/api/admin/subject_controller.py`
-- **get_subject_statistics()** (6 connections) — `server/api/admin/subject_controller.py`
-- **NATSSubjectManager** (5 connections) — `server/api/admin/subject_controller.py`
-- **PatternsResponse** (4 connections) — `server/api/admin/subject_controller.py`
-- **RegisterPatternRequest** (4 connections) — `server/api/admin/subject_controller.py`
-- **RegisterPatternResponse** (4 connections) — `server/api/admin/subject_controller.py`
-- **require_admin_user()** (4 connections) — `server/api/admin/subject_controller.py`
-- **SubjectStatisticsResponse** (4 connections) — `server/api/admin/subject_controller.py`
-- **ValidateSubjectRequest** (4 connections) — `server/api/admin/subject_controller.py`
-- **ValidateSubjectResponse** (4 connections) — `server/api/admin/subject_controller.py`
-- **get_subject_manager_dependency()** (3 connections) — `server/api/admin/subject_controller.py`
-- **__init__.py** (3 connections) — `server/api/admin/__init__.py`
-- **NATS Subject Management API Controller for MythosMUD.  This module provides REST** (1 connections) — `server/api/admin/subject_controller.py`
-- **Dependency to require admin permissions.      Args:         current_user: Curren** (1 connections) — `server/api/admin/subject_controller.py`
-- **Get NATS subject management statistics and health status.      This endpoint pro** (1 connections) — `server/api/admin/subject_controller.py`
-- **Validate a NATS subject against registered patterns.      This endpoint allows a** (1 connections) — `server/api/admin/subject_controller.py`
-- **Get all registered subject patterns.      This endpoint allows administrators to** (1 connections) — `server/api/admin/subject_controller.py`
-- **Register a new subject pattern.      This endpoint allows administrators to dyna** (1 connections) — `server/api/admin/subject_controller.py`
-- **Request model for subject validation.** (1 connections) — `server/api/admin/subject_controller.py`
-- **Response model for subject validation.** (1 connections) — `server/api/admin/subject_controller.py`
-- **Request model for pattern registration.** (1 connections) — `server/api/admin/subject_controller.py`
-- **Response model for pattern registration.** (1 connections) — `server/api/admin/subject_controller.py`
-- *... and 4 more nodes in this community*
+- **.create_put_command()** (14 connections) — `server/utils/command_factories_inventory.py`
+- **test_create_put_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_put_command_only_item()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_put_command_quantity_zero()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_put_command_quantity_negative()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_put_command_with_in_keyword()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_put_command_multi_word_container()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_put_command_multi_word_container_no_quantity()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_put_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **test_create_put_command_with_in()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **Test create_put_command() raises error with no args.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_put_command() raises error with only item.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_put_command() handles 'in' keyword.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_put_command() raises error when quantity is zero.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_put_command() raises error when quantity is negative.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_put_command() handles multi-word container.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_put_command() handles multi-word container without quantity.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_put_command() creates PutCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **Test create_put_command() handles optional 'in' keyword.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **Create put command.          Supports: put <item> [in] <container> [quantity]** (1 connections) — `server/utils/command_factories_inventory.py`
 
 ## Relationships
 
-- [[NPC Admin API]] (6 shared connections)
-- [[Standardized Error Responses]] (6 shared connections)
-- [[Container Exception Handlers]] (6 shared connections)
-- [[Admin NPC Schemas]] (6 shared connections)
-- [[NATS Subject Exceptions]] (2 shared connections)
-- [[API Test Fixtures]] (1 shared connections)
-- [[NATS Subject Manager]] (1 shared connections)
+- [Base Command Models](Base_Command_Models.md) (8 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (4 shared connections)
+- [Test Refactoring Status](Test_Refactoring_Status.md) (3 shared connections)
+- [Admin Summon Command](Admin_Summon_Command.md) (1 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/admin/__init__.py`
-- `server/api/admin/subject_controller.py`
+- `server/tests/unit/utils/test_command_factories_inventory.py`
+- `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- `server/utils/command_factories_inventory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 104 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 51 (93%)
+- INFERRED: 4 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

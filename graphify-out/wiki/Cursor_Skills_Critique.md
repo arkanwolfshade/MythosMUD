@@ -1,44 +1,42 @@
 # Cursor Skills Critique
 
-> 20 nodes · cohesion 0.10
+> 12 nodes
 
 ## Key Concepts
 
-- **Design Critique** (11 connections) — `.cursor/skills/critique/SKILL.md`
-- **Generate Critique Report** (7 connections) — `.cursor/skills/critique/SKILL.md`
-- **SKILL.md** (3 connections) — `.cursor/skills/critique/SKILL.md`
-- **10. Microcopy & Voice** (1 connections) — `.cursor/skills/critique/SKILL.md`
-- **1. AI Slop Detection (CRITICAL)** (1 connections) — `.cursor/skills/critique/SKILL.md`
-- **2. Visual Hierarchy** (1 connections) — `.cursor/skills/critique/SKILL.md`
-- **3. Information Architecture** (1 connections) — `.cursor/skills/critique/SKILL.md`
-- **4. Emotional Resonance** (1 connections) — `.cursor/skills/critique/SKILL.md`
-- **5. Discoverability & Affordance** (1 connections) — `.cursor/skills/critique/SKILL.md`
-- **6. Composition & Balance** (1 connections) — `.cursor/skills/critique/SKILL.md`
-- **7. Typography as Communication** (1 connections) — `.cursor/skills/critique/SKILL.md`
-- **8. Color with Purpose** (1 connections) — `.cursor/skills/critique/SKILL.md`
-- **9. States & Edge Cases** (1 connections) — `.cursor/skills/critique/SKILL.md`
-- **Anti-Patterns Verdict** (1 connections) — `.cursor/skills/critique/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.cursor/skills/critique/SKILL.md`
-- **Minor Observations** (1 connections) — `.cursor/skills/critique/SKILL.md`
-- **Overall Impression** (1 connections) — `.cursor/skills/critique/SKILL.md`
-- **Priority Issues** (1 connections) — `.cursor/skills/critique/SKILL.md`
-- **Questions to Consider** (1 connections) — `.cursor/skills/critique/SKILL.md`
-- **What's Working** (1 connections) — `.cursor/skills/critique/SKILL.md`
+- **DropCommand** (12 connections) — `server/models/command_inventory.py`
+- **test_drop_command_index_validation_min()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_drop_command_quantity_validation_min()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_drop_command_missing_index()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_drop_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_drop_command_with_quantity()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **Command for dropping items from inventory into the room.** (1 connections) — `server/models/command_inventory.py`
+- **Test DropCommand requires index.** (1 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **Test DropCommand can have optional quantity.** (1 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **Test DropCommand validates index is >= 1.** (1 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **Test DropCommand validates quantity is >= 1.** (1 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **Test DropCommand requires index.** (1 connections) — `server/tests/unit/models/test_command_inventory.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Admin Summon Command](Admin_Summon_Command.md) (7 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Emote Schema Validator](Emote_Schema_Validator.md) (1 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (1 shared connections)
+- [Calendar NPC Schedule](Calendar_NPC_Schedule.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/critique/SKILL.md`
+- `server/models/command_inventory.py`
+- `server/tests/unit/models/test_command_inventory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 31 (86%)
+- INFERRED: 5 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

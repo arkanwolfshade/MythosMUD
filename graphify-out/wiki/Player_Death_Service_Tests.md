@@ -1,56 +1,77 @@
 # Player Death Service Tests
 
-> 85 nodes · cohesion 0.02
+> 70 nodes
 
 ## Key Concepts
 
-- **test_player_death_service.py** (48 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_player_service_init()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **player_death_service()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **player_death_service_no_dependencies()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test PlayerService initialization.** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- **mock_event_bus()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **mock_player()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **mock_player_combat_service()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **mock_session()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test get_mortally_wounded_players() excludes healthy players.** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test process_mortally_wounded_tick() returns False when player not found.** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test _clear_player_combat_state() clears combat state.** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **sample_player_id()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_clear_player_combat_state_handles_error()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_clear_player_combat_state_no_service()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_clear_player_combat_state_success()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_ensure_player_posture_lying_already_lying()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_ensure_player_posture_lying_changes_posture()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_get_dead_players_empty()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_get_dead_players_excludes_alive()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_get_dead_players_finds_dead()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_get_dead_players_handles_error()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_get_mortally_wounded_players_empty()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_get_mortally_wounded_players_excludes_dead()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_get_mortally_wounded_players_excludes_healthy()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- *... and 60 more nodes in this community*
+- **RoomMapEditorRuntime.hooks.ts** (38 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **types.ts** (36 connections) — `client/src/components/map/types.ts`
+- **RoomMapEditorRuntime.tsx** (34 connections) — `client/src/components/map/RoomMapEditorRuntime.tsx`
+- **RoomNodeData** (33 connections) — `client/src/components/map/types.ts`
+- **ExitEdgeData** (21 connections) — `client/src/components/map/types.ts`
+- **useMapEditing.ts** (20 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **saveMapChanges.ts** (16 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **getVersionedApiBaseUrl()** (15 connections) — `client/src/utils/config.ts`
+- **EdgeCreationModal.tsx** (13 connections) — `client/src/components/map/EdgeCreationModal.tsx`
+- **EdgeDetailsPanel.tsx** (9 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeDetailsPanelFields.tsx** (8 connections) — `client/src/components/map/EdgeDetailsPanelFields.tsx`
+- **EdgeValidationResult** (8 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **useRoomMapEditorEditing()** (7 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **RoomMapEditorEditingApi** (7 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **useRoomMapEditorModalHandlers()** (7 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **EdgeCreationModal.test.tsx** (7 connections) — `client/src/components/map/__tests__/EdgeCreationModal.test.tsx`
+- **EdgeCreationData** (7 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **saveMapChanges()** (7 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **useMapEditing()** (6 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **EdgeCreationModalProps** (5 connections) — `client/src/components/map/EdgeCreationModal.tsx`
+- **useRoomMapEditorModals()** (5 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **useMapEditing.test.ts** (5 connections) — `client/src/components/map/hooks/__tests__/useMapEditing.test.ts`
+- **MapEditingChanges** (5 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **saveMapChanges.test.ts** (5 connections) — `client/src/components/map/utils/__tests__/saveMapChanges.test.ts`
+- **EdgeCreationModal()** (4 connections) — `client/src/components/map/EdgeCreationModal.tsx`
+- *... and 45 more nodes in this community*
 
 ## Relationships
 
-- [[Combat Service Bundle]] (3 shared connections)
-- [[Player Death Service]] (2 shared connections)
-- [[Player Domain Model]] (2 shared connections)
-- [[Combat Command Handler]] (1 shared connections)
-- [[Player Service Tests]] (1 shared connections)
-- [[Player Combat XP]] (1 shared connections)
+- [Command Input Utilities](Command_Input_Utilities.md) (29 shared connections)
+- [Player GUID Formatter](Player_GUID_Formatter.md) (17 shared connections)
+- [Character Selection Screens](Character_Selection_Screens.md) (11 shared connections)
+- [Datetime Fix Summary](Datetime_Fix_Summary.md) (10 shared connections)
+- [Player Cache](Player_Cache.md) (7 shared connections)
+- [Lie Ground Commands](Lie_Ground_Commands.md) (7 shared connections)
+- [Realtime Event Handlers](Realtime_Event_Handlers.md) (5 shared connections)
+- [PostgreSQL Audit Report](PostgreSQL_Audit_Report.md) (5 shared connections)
+- [WebSocket Message Schemas](WebSocket_Message_Schemas.md) (2 shared connections)
+- [Game Terminal Container](Game_Terminal_Container.md) (2 shared connections)
+- [NPC Combat Handler Tests](NPC_Combat_Handler_Tests.md) (2 shared connections)
+- [Combat Attack Handler](Combat_Attack_Handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service.py`
-- `server/tests/unit/services/test_player_death_service.py`
+- `client/src/components/map/EdgeCreationModal.tsx`
+- `client/src/components/map/EdgeDetailsPanel.tsx`
+- `client/src/components/map/EdgeDetailsPanelFields.tsx`
+- `client/src/components/map/MapEditToolbar.tsx`
+- `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- `client/src/components/map/RoomMapEditorRuntime.tsx`
+- `client/src/components/map/__tests__/EdgeCreationModal.test.tsx`
+- `client/src/components/map/__tests__/EdgeDetailsPanel.test.tsx`
+- `client/src/components/map/hooks/__tests__/useMapEditing.test.ts`
+- `client/src/components/map/hooks/useMapEditing.ts`
+- `client/src/components/map/hooks/useMapLayout.ts`
+- `client/src/components/map/types.ts`
+- `client/src/components/map/utils/__tests__/layout.test-fixtures.ts`
+- `client/src/components/map/utils/__tests__/saveMapChanges.test.ts`
+- `client/src/components/map/utils/mapUtils.ts`
+- `client/src/components/map/utils/saveMapChanges.ts`
+- `client/src/utils/config.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 182 (100%)
+- EXTRACTED: 416 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

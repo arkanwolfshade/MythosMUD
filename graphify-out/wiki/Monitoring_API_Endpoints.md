@@ -1,63 +1,61 @@
 # Monitoring API Endpoints
 
-> 71 nodes · cohesion 0.06
+> 59 nodes
 
 ## Key Concepts
 
-- **monitoring.py** (60 connections) — `server/api/monitoring.py`
-- **test_monitoring_endpoints.py** (53 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
-- **Request** (33 connections) — `server/api/monitoring.py`
-- **_resolve_connection_manager_from_request()** (15 connections) — `server/api/monitoring.py`
-- **get_health_status()** (12 connections) — `server/api/monitoring.py`
-- **_resolve_event_bus_from_request()** (11 connections) — `server/api/monitoring.py`
-- **_request_with_container()** (11 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
-- **get_memory_stats()** (10 connections) — `server/api/monitoring.py`
-- **_resolve_memory_leak_collector()** (10 connections) — `server/api/monitoring.py`
-- **get_connection_health_stats()** (9 connections) — `server/api/monitoring.py`
-- **get_dual_connection_stats()** (9 connections) — `server/api/monitoring.py`
-- **get_movement_metrics()** (9 connections) — `server/api/monitoring.py`
-- **_resolve_cache_manager_from_request()** (9 connections) — `server/api/monitoring.py`
-- **validate_room_integrity()** (9 connections) — `server/api/monitoring.py`
-- **force_memory_cleanup()** (8 connections) — `server/api/monitoring.py`
-- **get_cache_metrics()** (8 connections) — `server/api/monitoring.py`
-- **get_eventbus_metrics()** (8 connections) — `server/api/monitoring.py`
-- **get_memory_alerts()** (8 connections) — `server/api/monitoring.py`
-- **get_memory_leak_metrics()** (8 connections) — `server/api/monitoring.py`
-- **get_performance_stats()** (8 connections) — `server/api/monitoring.py`
-- **get_performance_summary()** (8 connections) — `server/api/monitoring.py`
-- **get_system_alerts()** (8 connections) — `server/api/monitoring.py`
-- **get_task_metrics()** (8 connections) — `server/api/monitoring.py`
-- **reset_metrics()** (8 connections) — `server/api/monitoring.py`
-- **get_registry()** (7 connections) — `server/app/task_registry.py`
-- *... and 46 more nodes in this community*
+- **test_room_utils.py** (22 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **chat_nats_publisher.py** (21 connections) — `server/game/chat_nats_publisher.py`
+- **extract_subzone_from_room_id()** (15 connections) — `server/utils/room_utils.py`
+- **room_utils.py** (9 connections) — `server/utils/room_utils.py`
+- **_build_standardized_subject()** (8 connections) — `server/game/chat_nats_publisher.py`
+- **build_nats_subject()** (6 connections) — `server/game/chat_nats_publisher.py`
+- **get_zone_from_room_id()** (6 connections) — `server/utils/room_utils.py`
+- **get_plane_from_room_id()** (6 connections) — `server/utils/room_utils.py`
+- **get_local_channel_subject()** (6 connections) — `server/utils/room_utils.py`
+- **get_subzone_local_channel_subject()** (6 connections) — `server/utils/room_utils.py`
+- **_extract_subzone_from_room()** (5 connections) — `server/game/chat_nats_publisher.py`
+- **Any** (5 connections)
+- **is_valid_room_id_format()** (5 connections) — `server/utils/room_utils.py`
+- **_subject_whisper_standardized()** (4 connections) — `server/game/chat_nats_publisher.py`
+- **_subject_party_standardized()** (4 connections) — `server/game/chat_nats_publisher.py`
+- **_build_legacy_subject()** (4 connections) — `server/game/chat_nats_publisher.py`
+- **test_extract_subzone_from_room_id()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_extract_subzone_from_room_id_downtown()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_extract_subzone_from_room_id_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_zone_from_room_id()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_zone_from_room_id_innsmouth()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_zone_from_room_id_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_plane_from_room_id()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_plane_from_room_id_dream()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_plane_from_room_id_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [[Monitoring Response Models]] (52 shared connections)
-- [[Container Exception Handlers]] (18 shared connections)
-- [[Health Check Models]] (14 shared connections)
-- [[Movement Performance Monitor]] (12 shared connections)
-- [[NPC Admin API]] (8 shared connections)
-- [[Memory Leak Metrics]] (4 shared connections)
-- [[Database Manager Tests]] (3 shared connections)
-- [[Cache and NPC Cache]] (2 shared connections)
-- [[Memory Profiler Tools]] (2 shared connections)
-- [[Room Occupant Events]] (2 shared connections)
-- [[Health Service Tests]] (2 shared connections)
-- [[System Monitoring API]] (2 shared connections)
+- [Chat Message Helpers](Chat_Message_Helpers.md) (7 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (3 shared connections)
+- [E 2 E Timeout Analysis](E_2_E_Timeout_Analysis.md) (2 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (2 shared connections)
+- [Cursor Rules Docker](Cursor_Rules_Docker.md) (2 shared connections)
+- [Player Effects API](Player_Effects_API.md) (1 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [NATS Chat Broadcasting](NATS_Chat_Broadcasting.md) (1 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/monitoring.py`
-- `server/app/task_registry.py`
-- `server/tests/unit/api/test_monitoring_endpoints.py`
+- `server/game/chat_nats_publisher.py`
+- `server/tests/unit/utils/test_room_utils.py`
+- `server/utils/room_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 428 (96%)
-- INFERRED: 18 (4%)
+- EXTRACTED: 202 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

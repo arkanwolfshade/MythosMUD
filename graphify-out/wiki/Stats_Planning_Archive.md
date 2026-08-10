@@ -1,50 +1,55 @@
 # Stats Planning Archive
 
-> 44 nodes · cohesion 0.05
+> 38 nodes
 
 ## Key Concepts
 
-- **PLANNING: Random Stats Generator Implementation** (12 connections) — `docs/archive/PLANNING_stats.md`
-- **Key Implementation Decisions** (5 connections) — `docs/archive/PLANNING_stats.md`
-- **✅ IMPLEMENTATION COMPLETED** (4 connections) — `docs/archive/PLANNING_stats.md`
-- **Implementation Strategy** (4 connections) — `docs/archive/PLANNING_stats.md`
-- **✅ Phase 1: Core Stats Rolling (Week 1) - COMPLETED** (4 connections) — `docs/archive/PLANNING_stats.md`
-- **✅ Phase 2: Error Handling & Polish (Week 2) - COMPLETED** (4 connections) — `docs/archive/PLANNING_stats.md`
-- **Success Criteria** (4 connections) — `docs/archive/PLANNING_stats.md`
-- **Technical Architecture** (4 connections) — `docs/archive/PLANNING_stats.md`
-- **Timeline** (4 connections) — `docs/archive/PLANNING_stats.md`
-- **Dependencies** (3 connections) — `docs/archive/PLANNING_stats.md`
-- **✅ Phase 3: Testing & Validation (Week 3) - COMPLETED** (3 connections) — `docs/archive/PLANNING_stats.md`
-- **Risk Mitigation** (3 connections) — `docs/archive/PLANNING_stats.md`
-- **PLANNING_stats.md** (1 connections) — `docs/archive/PLANNING_stats.md`
-- **✅ 1. Rate Limiting Strategy - IMPLEMENTED** (1 connections) — `docs/archive/PLANNING_stats.md`
-- **✅ 2. State Management - IMPLEMENTED** (1 connections) — `docs/archive/PLANNING_stats.md`
-- **✅ 3. Error Handling Strategy - IMPLEMENTED** (1 connections) — `docs/archive/PLANNING_stats.md`
-- **✅ 4. UI/UX Decisions - IMPLEMENTED** (1 connections) — `docs/archive/PLANNING_stats.md`
-- **✅ Backend Architecture - IMPLEMENTED** (1 connections) — `docs/archive/PLANNING_stats.md`
-- **✅ Backend Tasks - COMPLETED** (1 connections) — `docs/archive/PLANNING_stats.md`
-- **Completed Work Summary** (1 connections) — `docs/archive/PLANNING_stats.md`
-- **Conclusion** (1 connections) — `docs/archive/PLANNING_stats.md`
-- **✅ Data Flow - IMPLEMENTED** (1 connections) — `docs/archive/PLANNING_stats.md`
-- **✅ Error Handling - COMPLETED** (1 connections) — `docs/archive/PLANNING_stats.md`
-- **✅ External Dependencies - RESOLVED** (1 connections) — `docs/archive/PLANNING_stats.md`
-- **Files Modified/Created** (1 connections) — `docs/archive/PLANNING_stats.md`
-- *... and 19 more nodes in this community*
+- **character-cleanup.ts** (19 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **revised-character-creation.spec.ts** (18 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **index.ts** (10 connections) — `client/tests/e2e/runtime/pages/index.ts`
+- **LoginPage** (8 connections) — `client/tests/e2e/runtime/pages/LoginPage.ts`
+- **MotdPage** (7 connections) — `client/tests/e2e/runtime/pages/MotdPage.ts`
+- **tryDeleteOneTestCharacter()** (6 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **.login()** (6 connections) — `client/tests/e2e/runtime/pages/LoginPage.ts`
+- **CharacterCardLocator** (5 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **deleteCharacterFromCard()** (5 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **cleanupE2ECharacters()** (5 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **recoverCharacterSelectionAfterCreation()** (4 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **pollUntilCharacterListed()** (4 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **isDeletableTestCharacter()** (4 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **domClick()** (4 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **loginToCharacterSelection()** (4 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **.navigate()** (4 connections) — `client/tests/e2e/runtime/pages/LoginPage.ts`
+- **loginAsIthaqua()** (3 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **assertCharacterVisibleOnList()** (3 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **isProtected()** (3 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **getCharacterNameFromCard()** (3 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **confirmCharacterDeletion()** (3 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **LoginPage.ts** (3 connections) — `client/tests/e2e/runtime/pages/LoginPage.ts`
+- **deleteRevisedTestCharacterToMakeRoom()** (2 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **openStatsRollingFromLogin()** (2 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **needsRecoveryFromWrongCreationScreen()** (2 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Room Sync Service](Room_Sync_Service.md) (14 shared connections)
+- [Lifespan Startup Hooks](Lifespan_Startup_Hooks.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/PLANNING_stats.md`
+- `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- `client/tests/e2e/runtime/pages/LoginPage.ts`
+- `client/tests/e2e/runtime/pages/MotdPage.ts`
+- `client/tests/e2e/runtime/pages/index.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 86 (100%)
+- EXTRACTED: 156 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

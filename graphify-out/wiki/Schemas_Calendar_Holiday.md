@@ -1,33 +1,25 @@
 # Schemas Calendar Holiday
 
-> 9 nodes · cohesion 0.22
+> 1 nodes
 
 ## Key Concepts
 
-- **properties** (10 connections) — `schemas/calendar/holiday.schema.json`
-- **name** (3 connections) — `schemas/calendar/holiday.schema.json`
-- **tradition** (3 connections) — `schemas/calendar/holiday.schema.json`
-- **notes** (2 connections) — `schemas/calendar/holiday.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **enum** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **__init__.py** (0 connections) — `server/tests/unit/realtime/__init__.py`
 
 ## Relationships
 
-- [[Schemas Calendar Holiday]] (7 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `server/tests/unit/realtime/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

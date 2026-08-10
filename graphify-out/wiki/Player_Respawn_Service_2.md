@@ -1,63 +1,63 @@
 # Player Respawn Service
 
-> 52 nodes · cohesion 0.07
+> 45 nodes
 
 ## Key Concepts
 
-- **PlayerRespawnService** (51 connections) — `server/services/player_respawn_service.py`
-- **UUID** (17 connections) — `server/services/player_respawn_service.py`
-- **._prepare_sanitarium_respawn()** (11 connections) — `server/services/player_respawn_service.py`
-- **Player** (9 connections) — `server/services/player_respawn_service.py`
-- **.respawn_player()** (9 connections) — `server/services/player_respawn_service.py`
-- **AsyncSession** (8 connections) — `server/services/player_respawn_service.py`
-- **._publish_standard_respawn_event()** (8 connections) — `server/services/player_respawn_service.py`
-- **.respawn_player_from_delirium()** (8 connections) — `server/services/player_respawn_service.py`
-- **.respawn_player_from_sanitarium()** (8 connections) — `server/services/player_respawn_service.py`
-- **._clear_respawn_combat_state()** (7 connections) — `server/services/player_respawn_service.py`
-- **._prepare_delirium_respawn()** (7 connections) — `server/services/player_respawn_service.py`
-- **_PlayerCombatClearing** (6 connections) — `server/services/player_respawn_service.py`
-- **._publish_delirium_respawn_event()** (6 connections) — `server/services/player_respawn_service.py`
-- **_RespawnEventPublisher** (6 connections) — `server/services/player_respawn_service.py`
-- **._apply_standard_respawn_state()** (5 connections) — `server/services/player_respawn_service.py`
-- **._can_move_to_limbo()** (5 connections) — `server/services/player_respawn_service.py`
-- **.get_respawn_room()** (5 connections) — `server/services/player_respawn_service.py`
-- **._log_delirium_respawn()** (5 connections) — `server/services/player_respawn_service.py`
-- **._log_sanitarium_respawn()** (5 connections) — `server/services/player_respawn_service.py`
-- **._log_standard_respawn()** (5 connections) — `server/services/player_respawn_service.py`
-- **.move_player_to_limbo()** (5 connections) — `server/services/player_respawn_service.py`
-- **.publish()** (5 connections) — `server/services/player_respawn_service.py`
-- **.clear_player_combat_state()** (4 connections) — `server/services/player_respawn_service.py`
-- **._apply_sanitarium_player_state()** (4 connections) — `server/services/player_respawn_service.py`
-- **.__init__()** (4 connections) — `server/services/player_respawn_service.py`
-- *... and 27 more nodes in this community*
+- **HolidayService** (41 connections) — `server/services/holiday_service.py`
+- **HolidayEntry** (31 connections) — `server/schemas/calendar/calendar.py`
+- **holiday_service.py** (24 connections) — `server/services/holiday_service.py`
+- **.get_upcoming_holidays()** (8 connections) — `server/services/holiday_service.py`
+- **datetime** (7 connections)
+- **.refresh_active()** (7 connections) — `server/services/holiday_service.py`
+- **_holiday_entry_from_row()** (6 connections) — `server/services/holiday_service.py`
+- **._async_load_from_database()** (6 connections) — `server/services/holiday_service.py`
+- **test_holiday_service.py** (6 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **_HolidayLoadResult** (5 connections) — `server/services/holiday_service.py`
+- **.get_active_holidays()** (5 connections) — `server/services/holiday_service.py`
+- **.get_serialized_active_holidays()** (5 connections) — `server/services/holiday_service.py`
+- **.test_init_loads_from_database()** (5 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **_ensure_utc()** (4 connections) — `server/services/holiday_service.py`
+- **.get_serialized_upcoming_holidays()** (4 connections) — `server/services/holiday_service.py`
+- **_string_list_from_row()** (3 connections) — `server/services/holiday_service.py`
+- **.get_active_holiday_names()** (3 connections) — `server/services/holiday_service.py`
+- **.get_upcoming_summary()** (3 connections) — `server/services/holiday_service.py`
+- **._day_ordinal()** (3 connections) — `server/services/holiday_service.py`
+- **.last_refresh()** (3 connections) — `server/services/holiday_service.py`
+- **.validate_tradition()** (2 connections) — `server/schemas/calendar/calendar.py`
+- **.validate_season()** (2 connections) — `server/schemas/calendar/calendar.py`
+- **.validate_bonus_tags()** (2 connections) — `server/schemas/calendar/calendar.py`
+- **Record** (2 connections)
+- **Single holiday definition loaded from data/<env>/calendar/holidays.json.** (1 connections) — `server/schemas/calendar/calendar.py`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [[Combat Service Bundle]] (20 shared connections)
-- [[NPC Admin API]] (8 shared connections)
-- [[Lucidity State Models]] (7 shared connections)
-- [[Player Respawn Service]] (5 shared connections)
-- [[Services Player Respawn]] (4 shared connections)
-- [[Player Combat XP]] (2 shared connections)
-- [[Lifespan Startup Hooks]] (2 shared connections)
-- [[Integer Coercion Utils]] (2 shared connections)
-- [[Player Respawn Events]] (2 shared connections)
-- [[Combat Command Handler]] (1 shared connections)
-- [[Player Service Tests]] (1 shared connections)
-- [[Services Hallucination Frequency]] (1 shared connections)
+- [Admin Command Models](Admin_Command_Models.md) (18 shared connections)
+- [Player Command Developer Guide](Player_Command_Developer_Guide.md) (11 shared connections)
+- [WebSocket Code Review](WebSocket_Code_Review.md) (7 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
+- [ASCII Map API](ASCII_Map_API.md) (6 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (5 shared connections)
+- [Real-Time Architecture Docs](Real-Time_Architecture_Docs.md) (5 shared connections)
+- [Chat Panel Filtering](Chat_Panel_Filtering.md) (2 shared connections)
+- [Test Migration Report](Test_Migration_Report.md) (2 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (2 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (2 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/player_respawn_service.py`
-- `server/tests/unit/game/test_player_service.py`
-- `server/tests/unit/services/test_player_respawn_service.py`
+- `server/schemas/calendar/calendar.py`
+- `server/services/holiday_service.py`
+- `server/tests/unit/services/test_holiday_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 224 (90%)
-- INFERRED: 24 (10%)
+- EXTRACTED: 197 (95%)
+- INFERRED: 11 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

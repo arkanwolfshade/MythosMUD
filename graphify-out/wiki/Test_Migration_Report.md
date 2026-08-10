@@ -1,52 +1,59 @@
 # Test Migration Report
 
-> 38 nodes · cohesion 0.05
+> 38 nodes
 
 ## Key Concepts
 
-- **Test Suite Migration - Completion Report** (19 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **Key Achievements** (5 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **Impact Assessment** (4 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **Lessons Learned** (4 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **Outstanding Work** (4 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **Validation Checklist** (4 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **Next Steps** (3 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **Success Metrics** (3 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **Executive Summary** (2 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **Files Requiring Consolidation** (2 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **TEST_MIGRATION_COMPLETION_REPORT.md** (1 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **1. Legacy File Consolidation (35 files)** (1 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **2. Test Validation** (1 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **3. Documentation Finalization** (1 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **Acknowledgments** (1 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **📊 Better Test Management** (1 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **Challenges Overcome** (1 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **Code Quality** (1 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **Conclusion** (1 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **Developer Productivity** (1 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **Directory Structure Created** (1 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **🚀 Enhanced Developer Experience** (1 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **Final Statistics** (1 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **Future Enhancements** (1 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **Immediate (Phase 5)** (1 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
+- **get_asyncpg_server_settings_for_database_url()** (19 connections) — `server/database_config_helpers.py`
+- **rate_overrides.py** (18 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
+- **_process_override_row()** (11 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
+- **test_database_config_helpers_asyncpg_settings.py** (9 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **_async_load_lucidity_rate_overrides()** (6 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
+- **build_override_key()** (5 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
+- **_LucidityRateLoadResult** (4 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
+- **test_respects_postgres_search_path_when_matches_db_name()** (4 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **test_unknown_database_uses_postgres_search_path_when_set()** (4 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **rate_to_flux()** (3 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
+- **extract_lucidity_rate()** (3 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
+- **_normalize_database_url()** (3 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
+- **_parse_zone_stable_id()** (3 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
+- **_parse_special_rules_from_raw()** (3 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
+- **clear_postgres_search_path()** (3 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **MonkeyPatch** (3 connections)
+- **test_mythos_unit_defaults_search_path_to_db_name()** (3 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **test_unknown_database_empty_when_no_env()** (3 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **_warn_if_rate_exceeds_threshold()** (2 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
+- **test_mythos_e2e_defaults_search_path_to_db_name()** (2 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **Build asyncpg ``server_settings`` so unqualified table names resolve like SQLAlc** (1 connections) — `server/database_config_helpers.py`
+- **TypedDict** (1 connections)
+- **Record** (1 connections)
+- **Load lucidity rate overrides from PostgreSQL zones/subzones.** (1 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
+- **Build override key from plane/zone/subzone hierarchy.** (1 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
 - *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [[Migration Testing Strategy]] (2 shared connections)
-- [[Nats Subject Patterns]] (1 shared connections)
-- [[Archive Migration Completion]] (1 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
+- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (4 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (2 shared connections)
+- [NPC Admin API](NPC_Admin_API.md) (2 shared connections)
+- [Player Respawn Service](Player_Respawn_Service.md) (2 shared connections)
+- [WebSocket Code Review](WebSocket_Code_Review.md) (2 shared connections)
+- [Container Persistence Layer](Container_Persistence_Layer.md) (1 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
+- `server/database_config_helpers.py`
+- `server/services/passive_lucidity_flux/rate_overrides.py`
+- `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
 
 ## Audit Trail
 
-- EXTRACTED: 78 (100%)
+- EXTRACTED: 129 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

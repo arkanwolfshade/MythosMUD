@@ -1,51 +1,45 @@
 # Room Data Fixer Tests
 
-> 33 nodes · cohesion 0.06
+> 21 nodes
 
 ## Key Concepts
 
-- **TestRoomDataFixer** (20 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **Test fix_occupant_count_mismatch fixes count.** (2 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_apply_room_data_fixes_all_fixes()** (2 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_apply_room_data_fixes_invalid_input()** (2 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_apply_room_data_fixes_no_errors()** (2 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_apply_room_data_fixes_preserves_original()** (2 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_count_applied_fixes()** (2 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_count_applied_fixes_no_fixable()** (2 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_description()** (2 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_description_no_error()** (2 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_name()** (2 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_name_no_error()** (2 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_name_unknown_id()** (2 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_timestamp()** (2 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_timestamp_existing()** (2 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_occupant_count_mismatch()** (2 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_occupant_count_mismatch_no_error()** (2 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_occupant_count_mismatch_no_occupants()** (2 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **Test count_applied_fixes with no fixable errors.** (1 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **Test apply_room_data_fixes applies all fixes.** (1 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **Test suite for RoomDataFixer class.** (1 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **Test apply_room_data_fixes with no errors.** (1 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **Test apply_room_data_fixes does not modify original data.** (1 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **Test apply_room_data_fixes handles invalid input.** (1 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **Test fix_missing_name adds default name.** (1 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- *... and 8 more nodes in this community*
+- **Execution Steps** (14 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Scenario 17: Whisper Integration **[REQUIRES MULTI-PLAYER]**** (5 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **scenario-17-whisper-integration.md** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 1: Both Players in Same Room** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 2: Test Whisper with Player Management Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 3: Test Whisper with Location Tracking Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 4: Test Whisper with Message Broadcasting Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 5: Test Whisper with Movement System Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 6: Test Whisper with Session Management Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 7: Test Whisper with Database Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 8: Test Whisper with Authentication Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 9: Test Whisper with Error Handling Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 10: Test Whisper with Performance Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 11: Test Whisper with Logging Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 12: Test Whisper with Rate Limiting Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 13: Verify System Integration Summary** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
 
 ## Relationships
 
-- [[Room Data Fixer]] (2 shared connections)
-- [[Services Service Room]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_room_data_fixer.py`
+- `e2e-tests/scenarios/scenario-17-whisper-integration.md`
 
 ## Audit Trail
 
-- EXTRACTED: 68 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 40 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

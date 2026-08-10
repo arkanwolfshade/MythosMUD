@@ -1,52 +1,41 @@
 # Services Rescue Service
 
-> 20 nodes · cohesion 0.13
+> 12 nodes
 
 ## Key Concepts
 
-- **RescueService** (11 connections) — `server/services/rescue_service.py`
-- **rescue_service.py** (10 connections) — `server/services/rescue_service.py`
-- **Any** (6 connections) — `server/services/rescue_service.py`
-- **.__init__()** (6 connections) — `server/services/rescue_service.py`
-- **.rescue()** (6 connections) — `server/services/rescue_service.py`
-- **_ensure_uuid()** (5 connections) — `server/services/rescue_service.py`
-- **UUID** (4 connections) — `server/services/rescue_service.py`
-- **_maybe_await()** (4 connections) — `server/services/rescue_service.py`
-- **AsyncSessionFactory** (3 connections) — `server/services/rescue_service.py`
-- **EventDispatcher** (3 connections) — `server/services/rescue_service.py`
-- **LucidityServiceFactory** (3 connections) — `server/services/rescue_service.py`
-- **rescue_service()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_no_persistence()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **Rescue service encapsulating rescue flows with injectable dependencies.  This is** (1 connections) — `server/services/rescue_service.py`
-- **Convert value to UUID, raising ValueError if invalid.** (1 connections) — `server/services/rescue_service.py`
-- **Await the value if it is awaitable.** (1 connections) — `server/services/rescue_service.py`
-- **Service for performing rescue operations.** (1 connections) — `server/services/rescue_service.py`
-- **Perform a rescue for the given target.          Returns:             dict contai** (1 connections) — `server/services/rescue_service.py`
-- **Test rescue() returns error when persistence is not available.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **Create a RescueService instance.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **verify_password()** (9 connections) — `server/auth_utils.py`
+- **test_verify_password_success()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_verify_password_failure()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_verify_password_attribute_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_verify_password_returns_false_on_error()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_verify_password_runtime_error()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Verify a plaintext password against a hash.      This function safely handles** (1 connections) — `server/auth_utils.py`
+- **Test successful password verification.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Test password verification with wrong password.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Test that verify_password returns False on error.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Test verify_password handles AttributeError and returns False.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Test verify_password handles RuntimeError and returns False.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
 
 ## Relationships
 
-- [[Lucidity State Models]] (8 shared connections)
-- [[Lucidity Database Models]] (7 shared connections)
-- [[Rescue Service Tests]] (3 shared connections)
-- [[Alias Expansion Logic]] (2 shared connections)
-- [[Lucidity Rescue Helpers]] (1 shared connections)
-- [[NPC Admin API]] (1 shared connections)
-- [[Ground and Rescue Commands]] (1 shared connections)
-- [[Command Helper Utilities]] (1 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (6 shared connections)
+- [Combat Disconnect Bug](Combat_Disconnect_Bug.md) (2 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (1 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/rescue_service.py`
-- `server/tests/unit/services/test_rescue_service.py`
+- `server/auth_utils.py`
+- `server/tests/unit/auth/test_auth_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (82%)
-- INFERRED: 13 (18%)
+- EXTRACTED: 32 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

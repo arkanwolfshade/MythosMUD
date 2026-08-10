@@ -1,80 +1,54 @@
 # SQLAlchemy Model Base
 
-> 141 nodes · cohesion 0.03
+> 124 nodes
 
 ## Key Concepts
 
-- **__init__.py** (70 connections) — `server/models/__init__.py`
-- **Base** (65 connections) — `server/models/base.py`
-- **player.py** (58 connections) — `server/models/player.py`
-- **Base** (32 connections)
-- **test_world.py** (26 connections) — `server/tests/unit/models/test_world.py`
-- **PlayerSpell** (21 connections) — `server/models/player_spells.py`
-- **base.py** (20 connections) — `server/models/base.py`
-- **PlayerSkill** (19 connections) — `server/models/player_skill.py`
-- **PlayerEffect** (18 connections) — `server/models/player_effect.py`
-- **PlayerExploration** (18 connections) — `server/models/player.py`
-- **test_emote.py** (12 connections) — `server/tests/unit/models/test_emote.py`
-- **ItemInstance** (11 connections) — `server/models/item.py`
-- **EmoteAlias** (10 connections) — `server/models/emote.py`
-- **SpellDB** (10 connections) — `server/models/spell_db.py`
-- **RoomLink** (10 connections) — `server/models/world.py`
-- **HolidayModel** (9 connections) — `server/models/calendar.py`
-- **Emote** (9 connections) — `server/models/emote.py`
-- **player_skill.py** (9 connections) — `server/models/player_skill.py`
-- **player_spells.py** (9 connections) — `server/models/player_spells.py`
-- **world.py** (9 connections) — `server/models/world.py`
-- **RoomModel** (9 connections) — `server/models/world.py`
-- **Subzone** (9 connections) — `server/models/world.py`
-- **Zone** (9 connections) — `server/models/world.py`
-- **invite.py** (8 connections) — `server/models/invite.py`
-- **ZoneConfigurationMapping** (8 connections) — `server/models/world.py`
-- *... and 116 more nodes in this community*
+- **test_nats_message_handler.py** (72 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_nats_message_handler_init()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_start_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_stop_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_standardized_chat_subjects_partial_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_subject_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_unsubscribe_from_subject_not_found()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_unsubscribe_from_subject_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_dlq_on_final_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_event_subjects_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_standardized_chat_subjects_nats_subscribe_error_handled()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_standardized_chat_subjects_nats_error_handled()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_subject_nats_error_returns_false()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_connection_manager_resolution_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_attribute_error_handled()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_connection_manager_property_injected()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_connection_manager_property_fallback()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_connection_manager_setter()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_start_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_start_without_event_subscriptions()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_stop_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_chat_subjects_no_subject_manager()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_standardized_chat_subjects_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_subject_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_unsubscribe_from_subject_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- *... and 99 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Admin API]] (32 shared connections)
-- [[Lucidity Database Models]] (25 shared connections)
-- [[Player Domain Model]] (22 shared connections)
-- [[Game Service Bundle]] (15 shared connections)
-- [[Player Related Models]] (10 shared connections)
-- [[Calendar NPC Schedule]] (8 shared connections)
-- [[Admin Summon Command]] (8 shared connections)
-- [[Invite Registration Model]] (6 shared connections)
-- [[Quest Flow Integration]] (6 shared connections)
-- [[API Test Fixtures]] (6 shared connections)
-- [[Item Model Unit Tests]] (6 shared connections)
-- [[Spell Registry Costs]] (6 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (15 shared connections)
+- [CircuitBreakerOpen](CircuitBreakerOpen.md) (3 shared connections)
+- [Vim Editor Guidelines](Vim_Editor_Guidelines.md) (3 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
+- [Commands Rest Countdown](Commands_Rest_Countdown.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/__init__.py`
-- `server/models/base.py`
-- `server/models/calendar.py`
-- `server/models/emote.py`
-- `server/models/invite.py`
-- `server/models/item.py`
-- `server/models/player.py`
-- `server/models/player_effect.py`
-- `server/models/player_skill.py`
-- `server/models/player_spells.py`
-- `server/models/profession.py`
-- `server/models/quest.py`
-- `server/models/skill.py`
-- `server/models/skill_use_log.py`
-- `server/models/spell_db.py`
-- `server/models/world.py`
-- `server/tests/unit/models/test_emote.py`
-- `server/tests/unit/models/test_player_spells.py`
-- `server/tests/unit/models/test_spell_db.py`
-- `server/tests/unit/models/test_world.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 638 (87%)
-- INFERRED: 97 (13%)
+- EXTRACTED: 266 (99%)
+- INFERRED: 4 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,50 +1,52 @@
 # Cursor Workflows Docs
 
-> 29 nodes · cohesion 0.07
+> 16 nodes
 
 ## Key Concepts
 
-- **Cursor Workflows Documentation** (10 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Workflow Examples** (7 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Combining Components** (5 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Workflow Components** (5 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Best Practices** (3 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Integration Examples** (3 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **CURSOR_WORKFLOWS.md** (1 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **CLI** (1 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Commands** (1 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Decision Tree** (1 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Example 1: Full Development Cycle** (1 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Example 2: Bug Fix Workflow** (1 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Notes** (1 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Overview** (1 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Pattern 1: Command → Subagent** (1 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Pattern 2: CLI → Agent → Subagent** (1 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Pattern 3: Direct Subagent Invocation** (1 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Pattern 4: Rules Guide All** (1 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **References** (1 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Rules** (1 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Subagents** (1 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **When to Use Each Component** (1 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Workflow 1: Bug Investigation** (1 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Workflow 2: Test Coverage Analysis** (1 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Workflow 3: Security Audit via CLI** (1 connections) — `docs/CURSOR_WORKFLOWS.md`
-- *... and 4 more nodes in this community*
+- **optimized_security_validator.py** (21 connections) — `server/validators/optimized_security_validator.py`
+- **optimized_strip_ansi_codes()** (8 connections) — `server/validators/optimized_security_validator.py`
+- **benchmark_validation_performance()** (5 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_strip_ansi_codes_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_strip_ansi_codes_no_ansi()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_strip_ansi_codes_with_ansi()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_benchmark_validation_performance()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **_cached_strip_ansi()** (3 connections) — `server/validators/optimized_security_validator.py`
+- **Test stripping ANSI codes from empty string.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test stripping ANSI codes from text without ANSI.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test stripping ANSI codes from text with ANSI.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test benchmark function runs without errors.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Optimized security validation functions for MythosMUD.  This module provides per** (1 connections) — `server/validators/optimized_security_validator.py`
+- **Cached version of strip_ansi for repeated inputs.** (1 connections) — `server/validators/optimized_security_validator.py`
+- **Optimized ANSI code removal with caching.      Args:         text: Input text th** (1 connections) — `server/validators/optimized_security_validator.py`
+- **Benchmark the performance of optimized vs original validation functions.** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [WebSocket Handler Tests](WebSocket_Handler_Tests.md) (9 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Services Combat Initialization](Services_Combat_Initialization.md) (2 shared connections)
+- [Persistence Player Effect](Persistence_Player_Effect.md) (1 shared connections)
+- [Plan Cursor Plans](Plan_Cursor_Plans.md) (1 shared connections)
+- [Command Factories Inventory](Command_Factories_Inventory.md) (1 shared connections)
+- [Cursor Plans Uvicorn](Cursor_Plans_Uvicorn.md) (1 shared connections)
+- [Realtime Player Event](Realtime_Player_Event.md) (1 shared connections)
+- [Async Anti-Pattern Guide](Async_Anti-Pattern_Guide.md) (1 shared connections)
+- [Game Instance Manager](Game_Instance_Manager.md) (1 shared connections)
+- [E 2 E Whisper System](E_2_E_Whisper_System.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/CURSOR_WORKFLOWS.md`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 56 (100%)
+- EXTRACTED: 57 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

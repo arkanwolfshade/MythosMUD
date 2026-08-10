@@ -1,55 +1,70 @@
 # Room Sync Service
 
-> 57 nodes · cohesion 0.04
+> 55 nodes
 
 ## Key Concepts
 
-- **test_room_sync_service.py** (37 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_get_room_sync_service_returns_singleton()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **Test clear_cache clears all rooms when room_id is None.** (2 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **mock_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **Test _process_room_update_with_validation() processes valid room data.** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **sample_event()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_clear_cache_all()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_clear_cache_specific_room()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_fetch_fresh_room_data_no_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_fetch_fresh_room_data_not_found()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_fetch_fresh_room_data_success()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_get_room_data_cache_stats()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_get_room_data_cache_stats_with_events()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_handle_stale_room_data_invalid_room_id()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_handle_stale_room_data_no_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_handle_stale_room_data_success()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_invalidate_stale_cache_no_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_invalidate_stale_cache_success()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_event_with_ordering()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_event_with_ordering_handles_error()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_event_with_ordering_increments_counter()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_event_with_ordering_tracks_last_processed()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_room_transition_handles_error()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_room_transition_missing_data()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_room_transition_success()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- *... and 32 more nodes in this community*
+- **auth.ts** (76 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **loginPlayer()** (32 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **test-data.ts** (20 connections) — `client/tests/e2e/runtime/fixtures/test-data.ts`
+- **waitForPlayableSession()** (15 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **assertCommandChannelReady()** (11 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **recoverPlayableSession()** (11 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **resyncE2ePlayersAfterDatabaseReset()** (10 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
+- **TEST_TIMEOUTS** (10 connections) — `client/tests/e2e/runtime/fixtures/test-data.ts`
+- **clickWithoutStability()** (9 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **executeCommandWithoutRecovery()** (8 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **skills-visibility.spec.ts** (7 connections) — `client/tests/e2e/runtime/character/skills-visibility.spec.ts`
+- **logoutPlayer()** (7 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **recoverPlayableViaSpaNavigation()** (7 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **ensureMultiplayerReadyForCoLocate()** (7 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
+- **runCoLocateTeleportAttempt()** (7 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
+- **panel-minimize-dock.spec.ts** (7 connections) — `client/tests/e2e/runtime/ui/panel-minimize-dock.spec.ts`
+- **reconnectPlayableSession()** (6 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **linkdead-recovery.ts** (6 connections) — `client/tests/e2e/runtime/fixtures/linkdead-recovery.ts`
+- **CharacterSelectionPage** (6 connections) — `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
+- **restorePlayableAfterLogin()** (5 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **tryInPlacePlayableRecovery()** (5 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **refreshPlayableSession()** (5 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **executeCommandTrusted()** (5 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **CharacterSelectionPage.ts** (5 connections) — `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
+- **login-bootstrap.spec.ts** (4 connections) — `client/tests/e2e/runtime/connection/login-bootstrap.spec.ts`
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [[Room Data Fixer]] (3 shared connections)
-- [[Services Service Room]] (3 shared connections)
-- [[Player Respawn Events]] (2 shared connections)
-- [[Room Data Cache]] (1 shared connections)
-- [[Distributed Event Bus]] (1 shared connections)
+- [Lifespan Startup Hooks](Lifespan_Startup_Hooks.md) (72 shared connections)
+- [Logging Best Practices](Logging_Best_Practices.md) (23 shared connections)
+- [Stats Planning Archive](Stats_Planning_Archive.md) (14 shared connections)
+- [Command Security Guide](Command_Security_Guide.md) (4 shared connections)
+- [Whisper Reply Command Tests](Whisper_Reply_Command_Tests.md) (4 shared connections)
+- [API Test Fixtures](API_Test_Fixtures.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_room_data_cache.py`
-- `server/tests/unit/services/test_room_sync_service.py`
+- `client/tests/e2e/runtime/character/character-deletion.spec.ts`
+- `client/tests/e2e/runtime/character/character-name-uniqueness.spec.ts`
+- `client/tests/e2e/runtime/character/character-selection.spec.ts`
+- `client/tests/e2e/runtime/character/multi-character-creation.spec.ts`
+- `client/tests/e2e/runtime/character/skills-visibility.spec.ts`
+- `client/tests/e2e/runtime/connection/basic-connection.spec.ts`
+- `client/tests/e2e/runtime/connection/login-bootstrap.spec.ts`
+- `client/tests/e2e/runtime/fixtures/auth.ts`
+- `client/tests/e2e/runtime/fixtures/linkdead-recovery.ts`
+- `client/tests/e2e/runtime/fixtures/multiplayer-browser-window.d.ts`
+- `client/tests/e2e/runtime/fixtures/multiplayer.ts`
+- `client/tests/e2e/runtime/fixtures/test-data.ts`
+- `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
+- `client/tests/e2e/runtime/pages/MotdPage.ts`
+- `client/tests/e2e/runtime/quest/quest-log-visible.spec.ts`
+- `client/tests/e2e/runtime/ui/panel-minimize-dock.spec.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 124 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 357 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

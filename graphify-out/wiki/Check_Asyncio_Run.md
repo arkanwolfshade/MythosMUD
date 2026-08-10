@@ -1,15 +1,15 @@
 # Check Asyncio Run
 
-> 10 nodes · cohesion 0.27
+> 10 nodes
 
 ## Key Concepts
 
 - **check_file()** (6 connections) — `scripts/check_asyncio_run_guardrails.py`
 - **check_asyncio_run_guardrails.py** (4 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **main()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **_strip_string_literals()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
 - **_strip_triple_quoted_blocks()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **Path** (1 connections) — `scripts/check_asyncio_run_guardrails.py`
+- **_strip_string_literals()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
+- **main()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
+- **Path** (1 connections)
 - **Remove triple-quoted string blocks from file content.** (1 connections) — `scripts/check_asyncio_run_guardrails.py`
 - **Remove string literals from line to avoid false positives inside docs/strings.** (1 connections) — `scripts/check_asyncio_run_guardrails.py`
 - **Return list of (line_no, line) where asyncio.run( appears in code.** (1 connections) — `scripts/check_asyncio_run_guardrails.py`
@@ -31,4 +31,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

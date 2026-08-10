@@ -1,50 +1,56 @@
 # PostgreSQL Audit Report
 
-> 37 nodes · cohesion 0.05
+> 31 nodes
 
 ## Key Concepts
 
-- **PostgreSQL & SQL Audit Report** (13 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **3. Anti-patterns and Semantic Problems** (5 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **4. Data Types** (5 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **10. Prioritized Fixes** (4 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **7. Security / Prepared Statements** (4 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **1. Naming Conventions** (3 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **5. Time Handling** (3 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **9. Broader Risk Areas** (3 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **2. SQL Formatting (Keywords Lowercase)** (2 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **6. Legacy Constructs** (2 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **8. Tests and Fixtures** (2 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **POSTGRESQL_AUDIT_REPORT_2026.md** (1 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **11. Summary Table** (1 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **1.1. Snake_case (GOOD)** (1 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **1.2. Quoted Identifier** (1 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **2.1. Uppercase SQL Keywords** (1 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **3.1. Explicit Joins (GOOD)** (1 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **3.2. `NOT IN` Avoidance** (1 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **3.3. `SELECT *` in Non-Test, Non-Migration Code** (1 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **3.4. `SELECT *` in Test and Documentation** (1 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **4.1. IDs: `serial` / `bigserial` (GOOD)** (1 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **4.2. `char(n)` (GOOD)** (1 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **4.3. `money` (GOOD)** (1 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **4.4. Unnecessary `varchar(n)` / `character varying(n)`** (1 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **5.1. `timestamp with time zone` (GOOD)** (1 connections) — `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
-- *... and 12 more nodes in this community*
+- **useRoomEditModal.ts** (18 connections) — `client/src/components/map/useRoomEditModal.ts`
+- **RoomEditModal.tsx** (13 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **RoomEditModalForm.tsx** (11 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **RoomEditModalParts.tsx** (7 connections) — `client/src/components/map/RoomEditModalParts.tsx`
+- **RoomEditModal()** (5 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **RoomEditModal.test.tsx** (4 connections) — `client/src/components/map/__tests__/RoomEditModal.test.tsx`
+- **RoomEditModalProps** (4 connections) — `client/src/components/map/useRoomEditModal.ts`
+- **useRoomEditModal()** (4 connections) — `client/src/components/map/useRoomEditModal.ts`
+- **RoomEditModalForm()** (3 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **RoomEditModalTabs()** (3 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **buildInitialFormData()** (3 connections) — `client/src/components/map/useRoomEditModal.ts`
+- **ENVIRONMENT_OPTIONS** (2 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **RoomEditFormData** (2 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **RoomEditModalFormProps** (2 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **RoomEditModalContent()** (2 connections) — `client/src/components/map/RoomEditModalParts.tsx`
+- **toFormValue()** (2 connections) — `client/src/components/map/useRoomEditModal.ts`
+- **EnvironmentOption** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **RoomEditModalShell()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **EnvironmentOption** (1 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **RoomEditBasicTab()** (1 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **RoomEditLocationTab()** (1 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **RoomEditPropertiesTab()** (1 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **RoomEditModalHeader()** (1 connections) — `client/src/components/map/RoomEditModalParts.tsx`
+- **RoomEditModalFooter()** (1 connections) — `client/src/components/map/RoomEditModalParts.tsx`
+- **EditableRoomField** (1 connections) — `client/src/components/map/useRoomEditModal.ts`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Player Death Service Tests](Player_Death_Service_Tests.md) (5 shared connections)
+- [Command Input Utilities](Command_Input_Utilities.md) (3 shared connections)
+- [Combat Attack Handler](Combat_Attack_Handler.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/POSTGRESQL_AUDIT_REPORT_2026.md`
+- `client/src/components/map/RoomEditModal.tsx`
+- `client/src/components/map/RoomEditModalForm.tsx`
+- `client/src/components/map/RoomEditModalParts.tsx`
+- `client/src/components/map/__tests__/RoomEditModal.test.tsx`
+- `client/src/components/map/useRoomEditModal.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 72 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 90 (90%)
+- INFERRED: 10 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

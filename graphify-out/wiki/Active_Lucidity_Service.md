@@ -1,51 +1,55 @@
 # Active Lucidity Service
 
-> 57 nodes · cohesion 0.04
+> 53 nodes
 
 ## Key Concepts
 
-- **test_active_lucidity_service.py** (33 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **active_lucidity_service()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_active_lucidity_service_init()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_active_lucidity_service_init_with_now_provider()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_naive_datetime_cooldown()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **mock_session()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test apply_encounter_lucidity_loss() for repeat encounter.** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **sample_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_acclimated()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_cosmic_category()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_first_encounter()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_horrific_category()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_invalid_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_repeat_encounter()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_unknown_category()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_with_location()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_get_action_cooldown_invalid_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_get_action_cooldown_lowercases_action_code()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_get_action_cooldown_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_get_action_cooldown_success()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_all_actions()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_cooldown_expired()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_invalid_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_on_cooldown()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- *... and 32 more nodes in this community*
+- **MemoryMonitor** (26 connections) — `client/src/utils/memoryMonitor.ts`
+- **MemoryLeakDetector** (16 connections) — `client/src/utils/memoryLeakDetector.ts`
+- **memoryMonitor.ts** (11 connections) — `client/src/utils/memoryMonitor.ts`
+- **memoryLeakDetector.ts** (8 connections) — `client/src/utils/memoryLeakDetector.ts`
+- **useMemoryMonitor()** (8 connections) — `client/src/utils/memoryMonitor.ts`
+- **memoryLeakDetector.test.ts** (7 connections) — `client/src/utils/__tests__/memoryLeakDetector.test.ts`
+- **memoryMonitor.test.ts** (7 connections) — `client/src/utils/__tests__/memoryMonitor.test.ts`
+- **MemorySnapshot** (7 connections) — `client/src/utils/memoryLeakDetector.ts`
+- **useMemoryLeakDetector()** (7 connections) — `client/src/utils/memoryLeakDetector.ts`
+- **.generateReport()** (7 connections) — `client/src/utils/memoryMonitor.ts`
+- **.registerComponent()** (6 connections) — `client/src/utils/memoryMonitor.ts`
+- **.constructor()** (4 connections) — `client/src/utils/memoryMonitor.ts`
+- **.start()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
+- **.setCallbacks()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
+- **.checkMemory()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
+- **.detectMemoryLeak()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
+- **.calculateGrowthRate()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
+- **.getMemoryStats()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
+- **.unregisterComponent()** (3 connections) — `client/src/utils/memoryMonitor.ts`
+- **.getComponentStats()** (3 connections) — `client/src/utils/memoryMonitor.ts`
+- **.getOverallStats()** (3 connections) — `client/src/utils/memoryMonitor.ts`
+- **.startReporting()** (3 connections) — `client/src/utils/memoryMonitor.ts`
+- **.handleMemoryWarning()** (3 connections) — `client/src/utils/memoryMonitor.ts`
+- **.handleMemoryCritical()** (3 connections) — `client/src/utils/memoryMonitor.ts`
+- **.handleComponentMemoryWarning()** (3 connections) — `client/src/utils/memoryMonitor.ts`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [[Active Lucidity Service]] (7 shared connections)
-- [[Lucidity Recovery Commands]] (1 shared connections)
+- [Combat Messaging Integration](Combat_Messaging_Integration.md) (3 shared connections)
+- [Chat Panel Separation](Chat_Panel_Separation.md) (2 shared connections)
+- [WebSocket Player Helpers](WebSocket_Player_Helpers.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `client/src/utils/__tests__/memoryLeakDetector.test.ts`
+- `client/src/utils/__tests__/memoryMonitor.test.ts`
+- `client/src/utils/memoryLeakDetector.ts`
+- `client/src/utils/memoryMonitor.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 122 (100%)
+- EXTRACTED: 189 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

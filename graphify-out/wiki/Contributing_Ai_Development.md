@@ -1,50 +1,33 @@
 # Contributing Ai Development
 
-> 22 nodes · cohesion 0.09
+> 6 nodes
 
 ## Key Concepts
 
-- **Development Workflow** (7 connections) — `CONTRIBUTING.md`
-- **Making Changes** (6 connections) — `CONTRIBUTING.md`
-- **Best Practices** (6 connections) — `docs/AI_DEVELOPMENT_WORKFLOW.md`
-- **Core Logging Principles** (6 connections) — `docs/LOGGING_BEST_PRACTICES.md`
-- **1. **Security First**** (3 connections) — `CONTRIBUTING.md`
-- **2. **Write Tests First (TDD)**** (1 connections) — `CONTRIBUTING.md`
-- **3. **Follow Coding Standards**** (1 connections) — `CONTRIBUTING.md`
-- **4. **Use Enhanced Logging**** (1 connections) — `CONTRIBUTING.md`
-- **5. **Keep Changes Focused**** (1 connections) — `CONTRIBUTING.md`
-- **Committing Your Work** (1 connections) — `CONTRIBUTING.md`
-- **Creating a Branch** (1 connections) — `CONTRIBUTING.md`
-- **Finding Tasks** (1 connections) — `CONTRIBUTING.md`
-- **Submitting a Pull Request** (1 connections) — `CONTRIBUTING.md`
-- **Testing Your Changes** (1 connections) — `CONTRIBUTING.md`
-- **1. Iterative Development** (1 connections) — `docs/AI_DEVELOPMENT_WORKFLOW.md`
-- **2. Context Preservation** (1 connections) — `docs/AI_DEVELOPMENT_WORKFLOW.md`
-- **3. Validation and Review** (1 connections) — `docs/AI_DEVELOPMENT_WORKFLOW.md`
-- **4. Learning and Improvement** (1 connections) — `docs/AI_DEVELOPMENT_WORKFLOW.md`
-- **1. **Structured Logging**** (1 connections) — `docs/LOGGING_BEST_PRACTICES.md`
-- **2. **Context is Everything**** (1 connections) — `docs/LOGGING_BEST_PRACTICES.md`
-- **4. **Performance Aware**** (1 connections) — `docs/LOGGING_BEST_PRACTICES.md`
-- **5. **Actionable Information**** (1 connections) — `docs/LOGGING_BEST_PRACTICES.md`
+- **items** (5 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **schedules** (4 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **properties** (2 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **additionalProperties** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
 
 ## Relationships
 
-- [[Contributing Guidelines]] (1 shared connections)
-- [[AI Development Workflow]] (1 shared connections)
-- [[Logging Best Practices]] (1 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
+- [Security Additional Resources](Security_Additional_Resources.md) (1 shared connections)
+- [Commands Admin Shutdown](Commands_Admin_Shutdown.md) (1 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (1 shared connections)
 
 ## Source Files
 
-- `CONTRIBUTING.md`
-- `docs/AI_DEVELOPMENT_WORKFLOW.md`
-- `docs/LOGGING_BEST_PRACTICES.md`
+- `db/static/schemas/npc_schedules.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

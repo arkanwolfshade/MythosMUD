@@ -1,46 +1,36 @@
 # Cursor Commands Remediation
 
-> 20 nodes · cohesion 0.10
+> 8 nodes
 
 ## Key Concepts
 
-- **🎯 MANDATORY AI EXECUTION PROTOCOL** (8 connections) — `.cursor/commands/client-test-remediation.md`
-- **Phase 2: Categorize and Prioritize Failures** (6 connections) — `.cursor/commands/client-test-remediation.md`
-- **Phase 4: Tool Selection Guide** (5 connections) — `.cursor/commands/client-test-remediation.md`
-- **Phase 5: Fix Implementation Patterns** (4 connections) — `.cursor/commands/client-test-remediation.md`
-- **🟢 MEDIUM PRIORITY FIXES - Style Issues** (2 connections) — `.cursor/commands/lint-remediation.md`
-- **Component Rendering Issues** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **🔴 CRITICAL (Fix First - Blocking Issues)** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **🔴 CRITICAL FIXES - TypeScript Errors** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **For Each Failure Category** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **🟡 HIGH PRIORITY (Fix Second - Core Functionality)** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **🟡 HIGH PRIORITY FIXES - Component Issues** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **Hook Issues** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **🔵 LOW PRIORITY (Fix Last - Polish)** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **🟢 MEDIUM PRIORITY (Fix Third - Enhancement)** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **Phase 1: Initial Assessment (REQUIRED FIRST)** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **Phase 3: Systematic Fixing Process** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **Phase 6: Verification Protocol** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **Phase 7: Success Validation** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **Testing Library Issues** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **TypeScript/Compilation Issues** (1 connections) — `.cursor/commands/client-test-remediation.md`
+- **properties** (6 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **enum** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Relationships
 
-- [[Cursor Commands Remediation]] (1 shared connections)
-- [[Cursor Commands Lint]] (1 shared connections)
+- [Realtime Statistics Aggregator](Realtime_Statistics_Aggregator.md) (1 shared connections)
+- [Logging Quick Reference](Logging_Quick_Reference.md) (1 shared connections)
+- [Archive Combat Health](Archive_Combat_Health.md) (1 shared connections)
+- [Archive Bug Prevention](Archive_Bug_Prevention.md) (1 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/client-test-remediation.md`
-- `.cursor/commands/lint-remediation.md`
+- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

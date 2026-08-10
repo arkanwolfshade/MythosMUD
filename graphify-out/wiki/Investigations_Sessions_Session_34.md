@@ -1,33 +1,34 @@
 # Investigations Sessions Session
 
-> 9 nodes · cohesion 0.22
+> 7 nodes
 
 ## Key Concepts
 
-- **BUG INVESTIGATION REPORT: NPCs Not Updating in Occupants List When Player Moves** (9 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
-- **EVIDENCE DOCUMENTATION** (3 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
-- **2025-01-30_session-001_npcs-not-updating-on-player-movement.md** (2 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
-- **Code References** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
-- **EXECUTIVE SUMMARY** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
-- **INVESTIGATION COMPLETION CHECKLIST** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
-- **Log Analysis** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
-- **REMEDIATION PROMPT** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
-- **SYSTEM IMPACT ASSESSMENT** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
+- **Attack Command Not Starting Combat** (2 connections) — `investigations/sessions/2025-01-28_session-attack-command-not-starting-combat.md`
+- **Target Resolution via Lifecycle Manager** (2 connections) — `investigations/sessions/2025-01-28_session-attack-command-not-starting-combat.md`
+- **NPC Dual Tracking System Issue** (2 connections) — `investigations/sessions/2025-01-29_session-001_npc-occupants-display-issue.md`
+- **Stale Room.get_npcs After Persistence Reload** (2 connections) — `investigations/sessions/2025-01-29_session-001_npc-occupants-display-issue.md`
+- **NPC Spawning vs Occupants Display Issue** (2 connections) — `investigations/sessions/2025-01-XX_session-npc-spawning-occupants-issue.md`
+- **CommandType Enum vs String Comparison** (1 connections) — `investigations/sessions/2025-01-28_session-attack-command-not-starting-combat.md`
+- **Flattened Occupants Losing Player NPC Distinction** (1 connections) — `investigations/sessions/2025-01-XX_session-occupants-npc-display.md`
 
 ## Relationships
 
-- [[Investigations Sessions Session]] (4 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
+- `investigations/sessions/2025-01-28_session-attack-command-not-starting-combat.md`
+- `investigations/sessions/2025-01-29_session-001_npc-occupants-display-issue.md`
+- `investigations/sessions/2025-01-XX_session-npc-spawning-occupants-issue.md`
+- `investigations/sessions/2025-01-XX_session-occupants-npc-display.md`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (50%)
+- INFERRED: 6 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

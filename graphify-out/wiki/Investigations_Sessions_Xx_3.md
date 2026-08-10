@@ -1,43 +1,37 @@
 # Investigations Sessions Xx
 
-> 19 nodes · cohesion 0.11
+> 9 nodes
 
 ## Key Concepts
 
-- **Wireframe Layout Verification Report** (10 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
-- **Verification Results** (4 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
-- **Panel Position Analysis** (3 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
-- **Scaling System Verification** (3 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
-- **Issues Identified** (2 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
-- **2025-01-XX_verification-wireframe-match.md** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
-- **Column Structure Verification** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
-- **Conclusion** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
-- **Executive Summary** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
-- **Issue 1: localStorage Override** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
-- **Proportional Scaling Implementation** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
-- **Proportional Scaling Verification** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
-- **Scaling Behavior** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
-- **Screenshots** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
-- **Test 1: Default Layout (1920x1080) - After localStorage Reset** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
-- **Test 2: Scaled Layout (1600x900)** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
-- **Test 3: Initial State (1920x1080) - With localStorage** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
-- **Wireframe Compliance Checklist** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
-- **Wireframe Specification** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
+- **PlayerRespawnWrapper** (8 connections) — `server/game/player_respawn_wrapper.py`
+- **.respawn_player_from_delirium_by_user_id()** (7 connections) — `server/game/player_respawn_wrapper.py`
+- **.respawn_player_by_user_id()** (6 connections) — `server/game/player_respawn_wrapper.py`
+- **.__init__()** (3 connections) — `server/game/player_respawn_wrapper.py`
+- **Any** (3 connections)
+- **Wrapper service for player respawn operations.** (1 connections) — `server/game/player_respawn_wrapper.py`
+- **Initialize with a persistence layer.** (1 connections) — `server/game/player_respawn_wrapper.py`
+- **Respawn a dead player by user ID.          This method handles the complete resp** (1 connections) — `server/game/player_respawn_wrapper.py`
+- **Respawn a delirious player by user ID.          This method handles the complete** (1 connections) — `server/game/player_respawn_wrapper.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (5 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (2 shared connections)
+- [Player Creation Service](Player_Creation_Service.md) (2 shared connections)
+- [Panel Layout Libraries Spec](Panel_Layout_Libraries_Spec.md) (1 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
+- `server/game/player_respawn_wrapper.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 25 (81%)
+- INFERRED: 6 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

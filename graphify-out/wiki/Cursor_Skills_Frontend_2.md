@@ -1,40 +1,33 @@
 # Cursor Skills Frontend
 
-> 16 nodes · cohesion 0.12
+> 8 nodes
 
 ## Key Concepts
 
-- **Color & Contrast** (6 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
-- **Contrast & Accessibility** (5 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
-- **Building Functional Palettes** (4 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
-- **Theming: Light & Dark Mode** (3 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
-- **color-and-contrast.md** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
-- **Alpha Is A Design Smell** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
-- **Color Spaces: Use OKLCH** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
-- **Dangerous Color Combinations** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
-- **Dark Mode Is Not Inverted Light Mode** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
-- **Never Use Pure Gray or Pure Black** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
-- **Palette Structure** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
-- **Testing** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
-- **The 60-30-10 Rule (Applied Correctly)** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
-- **The Tinted Neutral Trap** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
-- **Token Hierarchy** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
-- **WCAG Requirements** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
+- **TestGetContainer** (6 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_container_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_container_missing_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_container_no_state_attribute()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_container dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_container returns container when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_container raises RuntimeError when container not in app.state.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_container raises RuntimeError when app.state doesn't exist.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Player Domain Model](Player_Domain_Model.md) (4 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/reference/color-and-contrast.md`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 18 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

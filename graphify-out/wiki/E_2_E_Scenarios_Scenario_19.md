@@ -1,43 +1,37 @@
 # E 2 E Scenarios Scenario
 
-> 18 nodes · cohesion 0.11
+> 10 nodes
 
 ## Key Concepts
 
-- **Execution Steps** (10 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Scenario 6: Admin Teleportation **[REQUIRES MULTI-PLAYER]**** (5 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **scenario-06-admin-teleportation.md** (2 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Step 1: Verify Admin Status** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Step 2: AW Teleports Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Step 3: Verify Ithaqua Sees Teleportation Message** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Step 4: Verify AW Sees Ithaqua Leave** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Step 5: Test Non-Admin Teleportation Attempt** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Step 6: AW Teleports Ithaqua Back** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Step 7: Verify Return Teleportation** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Step 8: Verify AW Sees Ithaqua Return** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Step 9: Test Invalid Teleportation Target** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Scenario 22 Administrative Summon** (1 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
+- **optimized_sanitize_unicode_input()** (8 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_sanitize_unicode_input_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_sanitize_unicode_input_normal_text()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_sanitize_unicode_input_unicode()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **_cached_ftfy_fix()** (3 connections) — `server/validators/optimized_security_validator.py`
+- **Test sanitizing empty string.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test sanitizing normal text (no changes expected).** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test sanitizing text with Unicode issues.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Cached version of ftfy.fix_text for repeated inputs.** (1 connections) — `server/validators/optimized_security_validator.py`
+- **Optimized Unicode sanitization with caching.      Args:         text: Raw input** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [WebSocket Handler Tests](WebSocket_Handler_Tests.md) (4 shared connections)
+- [Cursor Workflows Docs](Cursor_Workflows_Docs.md) (2 shared connections)
+- [Services Combat Initialization](Services_Combat_Initialization.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- `e2e-tests/scenarios/scenario-22-summon-command.md`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (94%)
-- INFERRED: 2 (6%)
+- EXTRACTED: 25 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

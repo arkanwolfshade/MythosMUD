@@ -1,56 +1,49 @@
 # NATS Message Handler Tests
 
-> 113 nodes · cohesion 0.02
+> 14 nodes
 
 ## Key Concepts
 
-- **test_nats_message_handler.py** (69 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _subscribe_to_standardized_chat_subjects handles NATSSubscribeError and con** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _process_single_message raises exception when event handler fails.** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_nats_message_attribute_error_handled()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_nats_message_circuit_breaker_open()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_nats_message_connection_manager_resolution_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_nats_message_dlq_on_final_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_nats_message_runtime_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_nats_message_unknown_message_id_defaults()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_process_single_message_broadcast_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_process_single_message_event_handler_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_start_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_stop_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_subscribe_to_event_subjects_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_subscribe_to_standardized_chat_subjects_nats_error_handled()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_subscribe_to_standardized_chat_subjects_nats_subscribe_error_handled()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_subscribe_to_standardized_chat_subjects_partial_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_subscribe_to_standardized_chat_subjects_runtime_error_handled()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_subscribe_to_subject_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_subscribe_to_subject_nats_error_returns_false()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_subscribe_to_subject_runtime_error_returns_false()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_unsubscribe_from_subject_not_found()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _subscribe_to_chat_subjects() raises error when subject manager not availab** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _process_single_message processes chat message.** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _handle_nats_message handles RuntimeError and adds to DLQ.** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- *... and 88 more nodes in this community*
+- **test_command_factories.py** (59 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_command_factory_create_nonexistent_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_pose_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_reply_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_stand_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_cast_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_spells_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Unit tests for command factories.  Tests the CommandFactory class.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test CommandFactory.create_*() methods exist for all command types.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_pose_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_reply_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_stand_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_cast_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_spells_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [[Combat Domain Events]] (15 shared connections)
-- [[Database Manager Tests]] (6 shared connections)
-- [[NATS Chat Broadcasting]] (3 shared connections)
-- [[Services Service Room]] (2 shared connections)
-- [[NATS Retry Handler]] (1 shared connections)
-- [[Realtime Nats Message]] (1 shared connections)
+- [Investigations Sessions Xx](Investigations_Sessions_Xx.md) (2 shared connections)
+- [Migration Verification](Migration_Verification.md) (2 shared connections)
+- [Mythosmud Obsidian Raw](Mythosmud_Obsidian_Raw.md) (2 shared connections)
+- [Commands Go Command](Commands_Go_Command.md) (2 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (2 shared connections)
+- [Message Queue Cleanup](Message_Queue_Cleanup.md) (1 shared connections)
+- [E 2 E Whisper System](E_2_E_Whisper_System.md) (1 shared connections)
+- [Services Player Respawn](Services_Player_Respawn.md) (1 shared connections)
+- [test_should_idle_move_true_when_not_in_combat_and_probability_succeeds](test_should_idle_move_true_when_not_in_combat_and_probability_succeeds.md) (1 shared connections)
+- [test_get_valid_exits_empty_room](test_get_valid_exits_empty_room.md) (1 shared connections)
+- [Nats Subject Patterns](Nats_Subject_Patterns_2.md) (1 shared connections)
+- [Archive Migration Completion](Archive_Migration_Completion.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
-- `server/tests/unit/services/test_nats_service.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 265 (97%)
-- INFERRED: 7 (3%)
+- EXTRACTED: 78 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

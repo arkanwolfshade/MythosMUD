@@ -1,40 +1,28 @@
 # Validators Optimized Security
 
-> 14 nodes · cohesion 0.14
+> 4 nodes
 
 ## Key Concepts
 
-- **optimized_validate_player_name()** (10 connections) — `server/validators/optimized_security_validator.py`
-- **test_optimized_validate_player_name_special_chars()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_player_name_starts_with_number()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_player_name_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_player_name_with_hyphen()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_player_name_with_numbers()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_player_name_with_underscore()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Optimized validation for player name fields.      Args:         value: The playe** (2 connections) — `server/validators/optimized_security_validator.py`
-- **Test validating valid player name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating player name with underscore.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating player name with hyphen.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating player name with numbers.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating player name starting with number (invalid).** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating player name with special characters (invalid).** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **plane** (4 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [[Optimized Security Validator Tests]] (7 shared connections)
-- [[Validators Optimized Security]] (3 shared connections)
+- [Chat Panel Separation Spec](Chat_Panel_Separation_Spec.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_optimized_security_validator.py`
-- `server/validators/optimized_security_validator.py`
+- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

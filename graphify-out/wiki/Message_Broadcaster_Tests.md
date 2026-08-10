@@ -1,52 +1,44 @@
 # Message Broadcaster Tests
 
-> 32 nodes · cohesion 0.06
+> 20 nodes
 
 ## Key Concepts
 
-- **test_message_broadcaster.py** (16 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **message_broadcaster()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_global_exclude_player()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_global_event_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_broadcast_room_event_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **mock_send_personal_message()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Test broadcast_global() when no players online.** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Test broadcast_room_event() broadcasts room event.** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Test broadcast_global_event() broadcasts global event.** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_global()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_global_empty()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_global_event()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_room_event()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_to_room()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_to_room_delivery_failure()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_to_room_empty()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_to_room_exclude_player()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_to_room_with_uuid_exclude()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_message_broadcaster_init()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Unit tests for message broadcaster.  Tests the MessageBroadcaster class.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Test broadcast_global() excludes specified player.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Create a mock send_personal_message callback.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Create a MessageBroadcaster instance.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- *... and 7 more nodes in this community*
+- **TestVerificationSqlUsersPlayers** (6 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **TestNpcNameConstraintScript** (5 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **test_postgres_sql_scripts.py** (3 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_verification_sql_file_exists()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_verification_sql_uses_live_tables_only()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_verification_sql_uses_explicit_joins()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_verification_sql_references_users_and_players()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_npc_constraint_script_exists()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_npc_constraint_script_no_sqlite_pragma()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_npc_constraint_script_uses_postgresql_constraint()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **PostgreSQL-focused tests for verification and maintenance SQL scripts.  Validate** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Tests for db/verification/users_players.sql alignment with current schema.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Verification SQL file must exist.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Verification SQL must not reference staging tables or select obsolete columns.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Verification SQL must use explicit join syntax for multi-table queries.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Verification SQL must reference users and players tables.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Tests for server/scripts/add_npc_name_constraint.sql (PostgreSQL-only).** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **NPC name constraint script must exist.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Script must not contain SQLite-specific pragma.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Script must use PostgreSQL constraint (CHECK or ALTER TABLE).** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
 
 ## Relationships
 
-- [[Realtime Connection Impl]] (4 shared connections)
-- [[Message Broadcaster Core]] (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
 
 ## Audit Trail
 
-- EXTRACTED: 70 (100%)
+- EXTRACTED: 38 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

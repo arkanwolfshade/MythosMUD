@@ -1,63 +1,51 @@
 # Admin Teleport Commands
 
-> 67 nodes · cohesion 0.07
+> 60 nodes
 
 ## Key Concepts
 
-- **admin_teleport_commands.py** (36 connections) — `server/commands/admin_teleport_commands.py`
-- **get_admin_actions_logger()** (25 connections) — `server/structured_logging/admin_actions_logger.py`
-- **teleport_helpers.py** (23 connections) — `server/commands/teleport_helpers.py`
-- **goto_helpers.py** (20 connections) — `server/commands/goto_helpers.py`
-- **handle_teleport_command()** (18 connections) — `server/commands/admin_teleport_commands.py`
-- **validate_admin_permission()** (13 connections) — `server/commands/admin_permission_utils.py`
-- **handle_goto_command()** (13 connections) — `server/commands/admin_teleport_commands.py`
-- **admin_teleport_utils.py** (12 connections) — `server/commands/admin_teleport_utils.py`
-- **broadcast_teleport_effects()** (11 connections) — `server/commands/admin_teleport_utils.py`
-- **notify_player_of_teleport()** (11 connections) — `server/commands/admin_teleport_utils.py`
-- **get_online_player_by_display_name()** (10 connections) — `server/commands/admin_teleport_utils.py`
-- **execute_goto_teleport()** (9 connections) — `server/commands/goto_helpers.py`
-- **execute_confirm_teleport()** (9 connections) — `server/commands/teleport_helpers.py`
-- **Any** (9 connections) — `server/commands/teleport_helpers.py`
-- **handle_confirm_goto_command()** (8 connections) — `server/commands/admin_teleport_commands.py`
-- **handle_confirm_teleport_command()** (8 connections) — `server/commands/admin_teleport_commands.py`
-- **execute_confirm_goto()** (8 connections) — `server/commands/goto_helpers.py`
-- **update_player_room_location()** (8 connections) — `server/commands/teleport_helpers.py`
-- **log_goto_failure()** (7 connections) — `server/commands/goto_helpers.py`
-- **broadcast_teleport_updates()** (7 connections) — `server/commands/teleport_helpers.py`
-- **Any** (7 connections) — `server/commands/goto_helpers.py`
-- **resolve_goto_target()** (6 connections) — `server/commands/goto_helpers.py`
-- **resolve_target_player_for_goto()** (6 connections) — `server/commands/goto_helpers.py`
-- **validate_confirm_goto_context()** (6 connections) — `server/commands/goto_helpers.py`
-- **validate_goto_context()** (6 connections) — `server/commands/goto_helpers.py`
-- *... and 42 more nodes in this community*
+- **TestHelperFunctions** (33 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_rate_limit_allowed()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_rate_limit_blocked()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_validate_command_basics_empty()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_validate_command_basics_too_long()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_validate_command_basics_invalid_content()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_validate_command_basics_valid()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_ensure_alias_storage_creates_new()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_ensure_alias_storage_handles_error()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_grace_period_block_no_connection_manager()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_grace_period_block_not_in_grace_period()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_prepare_command_for_processing_rate_limited()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_prepare_command_for_processing_validation_failed()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_prepare_command_for_processing_empty_after_cleaning()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_prepare_command_for_processing_success()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_casting_state_allowed_commands()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_casting_state_not_casting()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_casting_state_is_casting()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_casting_state_no_magic_service()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_casting_state_error_handling()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_process_alias_expansion_no_storage()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_process_alias_expansion_no_alias()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_process_alias_expansion_unsafe_alias()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_process_alias_expansion_invalid_expanded()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_all_command_blocks_catatonia()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Admin API]] (17 shared connections)
-- [[Alias Expansion Logic]] (10 shared connections)
-- [[Admin Status Commands]] (7 shared connections)
-- [[Combat Player Broadcasts]] (7 shared connections)
-- [[Admin Summon Command]] (4 shared connections)
-- [[Admin Set Lucidity Command]] (3 shared connections)
-- [[Commands Admin Teleport]] (2 shared connections)
-- [[Commands Npc Admin]] (1 shared connections)
-- [[Structured Logging Admin]] (1 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (24 shared connections)
+- [Client Event Store](Client_Event_Store.md) (8 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_permission_utils.py`
-- `server/commands/admin_teleport_commands.py`
-- `server/commands/admin_teleport_utils.py`
-- `server/commands/goto_helpers.py`
-- `server/commands/teleport_helpers.py`
-- `server/structured_logging/admin_actions_logger.py`
+- `server/tests/unit/commands/test_command_handler_unified_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 382 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 149 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

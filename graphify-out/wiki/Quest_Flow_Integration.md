@@ -1,62 +1,59 @@
 # Quest Flow Integration
 
-> 52 nodes · cohesion 0.06
+> 49 nodes
 
 ## Key Concepts
 
-- **QuestDefinitionRepository** (21 connections) — `server/persistence/repositories/quest_definition_repository.py`
-- **test_quest_definition_repository.py** (18 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_quest_flow.py** (12 connections) — `server/tests/integration/test_quest_flow.py`
-- **QuestDefinition** (12 connections) — `server/models/quest.py`
-- **_make_session_context()** (11 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_quest_start_by_trigger_then_abandon()** (7 connections) — `server/tests/integration/test_quest_flow.py`
-- **test_quest_start_log_abandon_flow()** (7 connections) — `server/tests/integration/test_quest_flow.py`
-- **_row_to_quest_definition()** (7 connections) — `server/persistence/repositories/quest_definition_repository.py`
-- **.get_by_id()** (6 connections) — `server/persistence/repositories/quest_definition_repository.py`
-- **.get_by_name()** (6 connections) — `server/persistence/repositories/quest_definition_repository.py`
-- **QuestDefinition** (5 connections) — `server/persistence/repositories/quest_definition_repository.py`
-- **_make_shared_session_factory()** (4 connections) — `server/tests/integration/test_quest_flow.py`
-- **_row_for_quest_definition()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_id_success()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_name_success()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **.list_quest_ids_offered_by()** (4 connections) — `server/persistence/repositories/quest_definition_repository.py`
-- **quest_definition_repository()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_id_database_error()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_id_not_found()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_name_database_error()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_name_not_found()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_list_quest_ids_offered_by_database_error()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_list_quest_ids_offered_by_empty()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_list_quest_ids_offered_by_success()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Any** (3 connections) — `server/persistence/repositories/quest_definition_repository.py`
-- *... and 27 more nodes in this community*
+- **apiTypeGuards.ts** (73 connections) — `client/src/utils/apiTypeGuards.ts`
+- **characterSessionApi.ts** (18 connections) — `client/src/mythosApp/characterSessionApi.ts`
+- **apiTypeGuards.test.ts** (15 connections) — `client/src/utils/__tests__/apiTypeGuards.test.ts`
+- **isObject()** (13 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isString()** (12 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isNumber()** (9 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isServerCharacterResponse()** (8 connections) — `client/src/utils/apiTypeGuards.ts`
+- **parseSelectCharacterResult()** (7 connections) — `client/src/mythosApp/characterSessionApi.ts`
+- **isArray()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
+- **hasSharedCharacterRecordCoreFields()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isCharacterInfo()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isServerCharacterResponseArray()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isLoginResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isStatsRollResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isProfession()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isRefreshTokenResponse()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isCharacterInfoArray()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isStatRequirement()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isMechanicalEffect()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isProfessionCoreFields()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isProfessionArray()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
+- **hasValidStatsObject()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isValidAsciiViewport()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isCharacterInfoCoreFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
+- **hasServerCharacterIdentifierFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Admin API]] (17 shared connections)
-- [[Game Service Bundle]] (7 shared connections)
-- [[SQLAlchemy Model Base]] (6 shared connections)
-- [[Quest Service Core]] (3 shared connections)
-- [[Quest Instance Repository]] (3 shared connections)
-- [[Integration DB Fixtures]] (3 shared connections)
-- [[Game State Provider Tests]] (1 shared connections)
-- [[NPC Definition CRUD]] (1 shared connections)
+- [Map Editing Hooks](Map_Editing_Hooks.md) (24 shared connections)
+- [Warning Remediation Plan](Warning_Remediation_Plan.md) (10 shared connections)
+- [WebSocket Message Schemas](WebSocket_Message_Schemas.md) (6 shared connections)
+- [Chat Panel Separation](Chat_Panel_Separation.md) (4 shared connections)
+- [Realtime Event Handlers](Realtime_Event_Handlers.md) (3 shared connections)
+- [Room Planning Archive](Room_Planning_Archive.md) (3 shared connections)
+- [Connection Disconnection Cleanup](Connection_Disconnection_Cleanup.md) (2 shared connections)
+- [Command Input Utilities](Command_Input_Utilities.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/quest.py`
-- `server/persistence/repositories/quest_definition_repository.py`
-- `server/services/npc_service_models.py`
-- `server/tests/integration/test_quest_flow.py`
-- `server/tests/unit/persistence/test_quest_definition_repository.py`
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `client/src/mythosApp/characterSessionApi.ts`
+- `client/src/utils/__tests__/apiTypeGuards.test.ts`
+- `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 174 (91%)
-- INFERRED: 17 (9%)
+- EXTRACTED: 312 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

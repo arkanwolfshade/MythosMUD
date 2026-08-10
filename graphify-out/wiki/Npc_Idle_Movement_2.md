@@ -1,35 +1,27 @@
 # Npc Idle Movement
 
-> 10 nodes · cohesion 0.22
+> 2 nodes
 
 ## Key Concepts
 
-- **IdleMovementHandler** (31 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_idle_movement_handler_init_no_persistence()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **idle_movement_handler()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_calculate_distance_to_room_different_rooms()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_calculate_distance_to_room_different_subzone()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_select_exit_single_exit()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test _calculate_distance_to_room() with different rooms.** (2 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test select_exit() with single exit.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Create an IdleMovementHandler instance.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test IdleMovementHandler initialization fails without persistence.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **combat_validator()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Create a CombatValidator instance.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [[Npc Idle Movement]] (30 shared connections)
-- [[Aggressive Mob NPC]] (2 shared connections)
+- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 51 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

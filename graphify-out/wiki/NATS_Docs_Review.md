@@ -1,50 +1,53 @@
 # NATS Docs Review
 
-> 34 nodes · cohesion 0.06
+> 58 nodes
 
 ## Key Concepts
 
-- **Phase 3, Task 3.3: NATS Subject Pattern Documentation Review** (11 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **Content Verification** (8 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **✅ Pattern Documentation Completeness** (4 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **Recommendations** (4 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **Recommended Documentation Updates** (4 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **Documentation Quality Assessment** (3 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **Validation Against Actual Implementation** (3 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **Additional Documentation Found** (2 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **Documentation Analysis** (2 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md** (1 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **1. Add Troubleshooting Section for Whisper Pattern Bug** (1 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **2. Add Testing Section** (1 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **3. Update Whisper Pattern Description** (1 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **Chat Patterns (Line 108-117)** (1 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **Combat Patterns (Line 131-140)** (1 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **Conclusion** (1 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **✅ Configuration Documentation** (1 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **Documentation Coverage Matrix** (1 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **Enhancement Opportunities** (1 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **✅ Error Handling Documentation** (1 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **Event Patterns (Line 119-129)** (1 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **Executive Summary** (1 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **Immediate Action (Priority: 🟡 MEDIUM)** (1 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **Long-Term Action (Priority: 🔵 LOW)** (1 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- **✅ Migration Guide** (1 connections) — `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
-- *... and 9 more nodes in this community*
+- **test_npc_combat_integration_service_player_attacks.py** (22 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_npc_combat_integration_service_npc_aggro.py** (19 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **mock_combat_service()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **mock_connection_manager()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **mock_async_persistence()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_handle_npc_attack_on_player_happy_path()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_grace_period_blocked()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_npc_not_found()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_npc_dead()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_invalid_location()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_no_combat_service()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_existing_combat_with_same_npc()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_existing_combat_with_other_npc()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_skips_already_dead_target()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_setup_combat_uuids_npc_attacker_valid()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_setup_combat_uuids_npc_attacker_value_error()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_player_attack_on_npc_with_existing_combat()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_handle_player_attack_on_npc_login_grace_period_blocked()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_handle_player_attack_on_npc_npc_not_found()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_handle_player_attack_on_npc_error_handling()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_setup_combat_uuids_and_mappings_value_error()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_setup_combat_uuids_and_mappings_valid_uuid()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_store_npc_xp_mapping_no_definition()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_store_npc_xp_mapping_non_dict_base_stats()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_store_npc_xp_mapping_first_engagement()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Magic Service Bundle](Magic_Service_Bundle.md) (11 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
+- `server/tests/unit/services/test_npc_combat_integration_service.py`
+- `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (100%)
+- EXTRACTED: 130 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

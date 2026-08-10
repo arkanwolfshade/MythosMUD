@@ -1,58 +1,49 @@
 # Lucidity Event Dispatcher
 
-> 60 nodes · cohesion 0.06
+> 25 nodes
 
 ## Key Concepts
 
-- **test_lucidity_event_dispatcher.py** (33 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **LucidityChangeEventExtras** (24 connections) — `server/services/lucidity_event_dispatcher.py`
-- **lucidity_event_dispatcher.py** (17 connections) — `server/services/lucidity_event_dispatcher.py`
-- **send_lucidity_change_event()** (17 connections) — `server/services/lucidity_event_dispatcher.py`
-- **send_catatonia_event()** (12 connections) — `server/services/lucidity_event_dispatcher.py`
-- **_dispatch_player_event()** (11 connections) — `server/services/lucidity_event_dispatcher.py`
-- **_lucidity_change_payload_with_liabilities()** (11 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **send_hallucination_event()** (7 connections) — `server/services/lucidity_event_dispatcher.py`
-- **UUID** (6 connections) — `server/services/lucidity_event_dispatcher.py`
-- **LiabilityStackEntry** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **_format_liabilities()** (4 connections) — `server/services/lucidity_event_dispatcher.py`
-- **test_send_lucidity_change_event_with_liabilities()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_lucidity_change_event_with_max_lcd()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_lucidity_change_event_with_metadata()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_lucidity_change_event_with_reason_and_source()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **Test send_lucidity_change_event with basic parameters.** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_dispatch_player_event_import_error()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_dispatch_player_event_uuid_conversion()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_format_liabilities_empty()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_format_liabilities_empty_code()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_format_liabilities_invalid_stacks()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_format_liabilities_multiple_entries()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_format_liabilities_multiple_stacks()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_format_liabilities_single()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_catatonia_event_basic()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- *... and 35 more nodes in this community*
+- **test_player_effect_repository.py** (17 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **_make_effect()** (6 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **_row_from_effect()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_get_active_effects_for_player_filters_by_remaining()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_has_effect_true()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_get_effect_remaining_ticks()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **repo()** (3 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_add_effect_returns_id()** (2 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_delete_effect()** (2 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_has_effect_false()** (2 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_get_effect_remaining_ticks_none()** (2 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_expire_effects_for_tick_returns_expired_and_deletes()** (2 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **player_id()** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **Unit tests for PlayerEffectRepository (ADR-009 effects system).  Tests add_effec** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **Create PlayerEffectRepository instance.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **Build a mock PlayerEffect with given fields.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **Build a procedure result row (mappings().all() item) from effect mock.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **add_effect persists effect and returns effect id (via add_player_effect procedur** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **delete_effect removes effect by id.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **get_active_effects_for_player returns only effects with remaining_ticks > 0 (pro** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **has_effect returns True when player has active effect of type.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **has_effect returns False when no active effect of type.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **get_effect_remaining_ticks returns duration - (current_tick - applied_at_tick).** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **get_effect_remaining_ticks returns None when no matching effect.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **expire_effects_for_tick returns (player_id, effect_type) and deletes rows via pr** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
 
 ## Relationships
 
-- [[Lucidity Rescue Helpers]] (14 shared connections)
-- [[Lucidity State Models]] (13 shared connections)
-- [[Hallucination Trigger Service]] (3 shared connections)
-- [[Liability . Call ()]] (2 shared connections)
-- [[Combat Player Broadcasts]] (2 shared connections)
-- [[NPC Admin API]] (2 shared connections)
-- [[Alias Expansion Logic]] (1 shared connections)
-- [[Active Lucidity Service]] (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (6 shared connections)
 
 ## Source Files
 
-- `server/services/lucidity_event_dispatcher.py`
-- `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- `server/tests/unit/persistence/test_player_effect_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 229 (94%)
-- INFERRED: 15 (6%)
+- EXTRACTED: 65 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

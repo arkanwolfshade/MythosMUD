@@ -1,37 +1,27 @@
 # Cursor Skills Distill
 
-> 13 nodes · cohesion 0.15
+> 3 nodes
 
 ## Key Concepts
 
-- **Simplify the Design** (7 connections) — `.cursor/skills/distill/SKILL.md`
-- **SKILL.md** (6 connections) — `.cursor/skills/distill/SKILL.md`
-- **Assess Current State** (1 connections) — `.cursor/skills/distill/SKILL.md`
-- **Code Simplification** (1 connections) — `.cursor/skills/distill/SKILL.md`
-- **Content Simplification** (1 connections) — `.cursor/skills/distill/SKILL.md`
-- **Document Removed Complexity** (1 connections) — `.cursor/skills/distill/SKILL.md`
-- **Information Architecture** (1 connections) — `.cursor/skills/distill/SKILL.md`
-- **Interaction Simplification** (1 connections) — `.cursor/skills/distill/SKILL.md`
-- **Layout Simplification** (1 connections) — `.cursor/skills/distill/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.cursor/skills/distill/SKILL.md`
-- **Plan Simplification** (1 connections) — `.cursor/skills/distill/SKILL.md`
-- **Verify Simplification** (1 connections) — `.cursor/skills/distill/SKILL.md`
-- **Visual Simplification** (1 connections) — `.cursor/skills/distill/SKILL.md`
+- **.__init__()** (3 connections) — `server/services/coordinate_generator.py`
+- **AsyncSession** (1 connections)
+- **Initialize coordinate generator.          Args:             session: Database se** (1 connections) — `server/services/coordinate_generator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Zone Coordinate Generator](Zone_Coordinate_Generator.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/distill/SKILL.md`
+- `server/services/coordinate_generator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,51 +1,64 @@
 # Panel Layout Libraries Spec
 
-> 31 nodes · cohesion 0.06
+> 76 nodes
 
 ## Key Concepts
 
-- **Panel Layout & Positioning Libraries Implementation Specification** (13 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Dependencies & Requirements** (4 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **File Modifications Required** (4 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Risk Assessment** (4 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Technical Implementation Details** (4 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Testing Strategy** (4 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Timeline & Milestones** (4 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Current Issues Analysis** (3 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **PANEL_LAYOUT_LIBRARIES_SPEC.md** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Browser Support** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Conclusion** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Critical Problems Identified** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **CSS Files** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **CSS Grid Fallback** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Development Dependencies** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Font Size Resolution Strategy** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **High Risk** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Integration Testing** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Medium Risk** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Mitigation Strategies** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **New Dependencies** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **New Files** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Overview** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Primary Files** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **React Grid Layout Configuration** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- *... and 6 more nodes in this community*
+- **player_respawn_service.py** (41 connections) — `server/services/player_respawn_service.py`
+- **PlayerRespawnService** (40 connections) — `server/services/player_respawn_service.py`
+- **UUID** (16 connections)
+- **._prepare_sanitarium_respawn()** (16 connections) — `server/services/player_respawn_service.py`
+- **player_respawn_wrapper.py** (14 connections) — `server/game/player_respawn_wrapper.py`
+- **._apply_sanitarium_liability_update()** (12 connections) — `server/services/player_respawn_service.py`
+- **.respawn_player()** (11 connections) — `server/services/player_respawn_service.py`
+- **.respawn_player_from_delirium()** (10 connections) — `server/services/player_respawn_service.py`
+- **.respawn_player_from_sanitarium()** (10 connections) — `server/services/player_respawn_service.py`
+- **Player** (8 connections)
+- **._clear_respawn_combat_state()** (8 connections) — `server/services/player_respawn_service.py`
+- **._publish_standard_respawn_event()** (8 connections) — `server/services/player_respawn_service.py`
+- **._prepare_delirium_respawn()** (8 connections) — `server/services/player_respawn_service.py`
+- **.initialize()** (7 connections) — `server/container/bundles/combat.py`
+- **_utc_now()** (7 connections) — `server/services/player_respawn_service.py`
+- **AsyncSession** (7 connections)
+- **.move_player_to_limbo()** (7 connections) — `server/services/player_respawn_service.py`
+- **.get_respawn_room()** (7 connections) — `server/services/player_respawn_service.py`
+- **DecodeLiabilitiesFn** (7 connections) — `server/utils/liability_types.py`
+- **EncodeLiabilitiesFn** (7 connections) — `server/utils/liability_types.py`
+- **_RespawnEventPublisher** (6 connections) — `server/services/player_respawn_service.py`
+- **_PlayerCombatClearing** (6 connections) — `server/services/player_respawn_service.py`
+- **_RandomChoiceSource** (6 connections) — `server/services/player_respawn_service.py`
+- **._publish_delirium_respawn_event()** (6 connections) — `server/services/player_respawn_service.py`
+- **.publish()** (5 connections) — `server/services/player_respawn_service.py`
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [[Archive Panel Layout]] (2 shared connections)
-- [[Documentation Updates Archive]] (1 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (18 shared connections)
+- [Player Creation Service](Player_Creation_Service.md) (12 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (10 shared connections)
+- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (8 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (7 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (6 shared connections)
+- [Application Config Settings](Application_Config_Settings.md) (6 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (4 shared connections)
+- [MP Regeneration Service](MP_Regeneration_Service.md) (3 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
+- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (2 shared connections)
+- [Invite and User Schemas](Invite_and_User_Schemas.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
+- `server/container/bundles/combat.py`
+- `server/game/player_respawn_wrapper.py`
+- `server/services/player_respawn_service.py`
+- `server/utils/liability_types.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 343 (92%)
+- INFERRED: 31 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

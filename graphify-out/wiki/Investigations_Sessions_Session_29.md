@@ -1,35 +1,28 @@
 # Investigations Sessions Session
 
-> 11 nodes · cohesion 0.18
+> 4 nodes
 
 ## Key Concepts
 
-- **BUG INVESTIGATION REPORT: NPCs Not Displaying in Occupants List** (9 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **ROOT CAUSE ANALYSIS** (3 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **SYSTEM IMPACT ASSESSMENT** (3 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **2025-11-30_session-002_npcs-not-displaying-occupants.md** (1 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **EXECUTIVE SUMMARY** (1 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **INVESTIGATION COMPLETION CHECKLIST** (1 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **Primary Root Cause** (1 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **REMEDIATION PROMPT** (1 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **Scope** (1 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **Secondary Issues** (1 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **Severity** (1 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
+- **Code Graph Entry** (3 connections) — `data/MythosMUD-Obsidian/wiki/code/Code Graph Entry.md`
+- **Code Graph Entry.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/code/Code Graph Entry.md`
+- **Live exploration (preferred for "how does X work?")** (1 connections) — `data/MythosMUD-Obsidian/wiki/code/Code Graph Entry.md`
+- **Synced community wiki (read-only dump)** (1 connections) — `data/MythosMUD-Obsidian/wiki/code/Code Graph Entry.md`
 
 ## Relationships
 
-- [[Investigations Sessions Session]] (3 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
+- `data/MythosMUD-Obsidian/wiki/code/Code Graph Entry.md`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

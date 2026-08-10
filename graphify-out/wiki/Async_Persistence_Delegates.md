@@ -1,56 +1,61 @@
 # Async Persistence Delegates
 
-> 55 nodes · cohesion 0.05
+> 54 nodes
 
 ## Key Concepts
 
-- **test_async_persistence_delegates.py** (34 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **AsyncPersistenceLayer** (25 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **reset_async_persistence()** (6 connections) — `server/async_persistence.py`
-- **test_create_container_with_params()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_async_persistence_creates_instance()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_async_persistence_returns_same_instance()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_reset_async_persistence()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_apply_corruption_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_apply_fear_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_apply_lucidity_loss_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_async_damage_player_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_async_heal_player_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_create_container_with_kwargs()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_create_item_instance_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_damage_player_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_delete_container_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_ensure_item_instance_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_container_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_containers_by_entity_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_containers_by_room_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_decayed_containers_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_decayed_containers_none_time()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_player_by_user_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_heal_player_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_item_instance_exists_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- *... and 30 more nodes in this community*
+- **test_player_preferences_service.py** (59 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **preferences_service()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_player_preferences_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_update_default_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_mute_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_muted_channels_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_channel_muted_false()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_delete_player_preferences_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_mute_channel_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_mute_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_channel_muted_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **mock_session()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **sample_player_id()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_preferences_service_initialization()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_valid_player_id_uuid()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_valid_player_id_string()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_valid_channel_valid()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_valid_json_array_valid()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_valid_json_array_invalid()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_create_player_preferences_invalid_id()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_channel_muted_invalid_channel()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_invalid_id()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_muted_channels_invalid_id()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_channel_muted_invalid_id()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [[Realtime WebSocket Auth]] (4 shared connections)
-- [[Container Repository CRUD]] (3 shared connections)
-- [[NPC Admin API]] (2 shared connections)
-- [[Async Persistence Layer]] (2 shared connections)
-- [[Player Domain Model]] (2 shared connections)
-- [[Async Persistence Core]] (1 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (11 shared connections)
+- [Client ASCII Map API](Client_ASCII_Map_API.md) (3 shared connections)
+- [Quality Audit Report](Quality_Audit_Report.md) (2 shared connections)
+- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
+- [test_create_player_preferences_already_exists](test_create_player_preferences_already_exists.md) (1 shared connections)
+- [test_create_player_preferences_success](test_create_player_preferences_success.md) (1 shared connections)
+- [test_create_player_preferences_with_string_id](test_create_player_preferences_with_string_id.md) (1 shared connections)
+- [test_delete_player_preferences_database_error](test_delete_player_preferences_database_error.md) (1 shared connections)
+- [test_delete_player_preferences_invalid_id](test_delete_player_preferences_invalid_id.md) (1 shared connections)
+- [test_delete_player_preferences_success](test_delete_player_preferences_success.md) (1 shared connections)
+- [test_get_muted_channels_not_found](test_get_muted_channels_not_found.md) (1 shared connections)
+- [test_get_player_preferences_database_error](test_get_player_preferences_database_error.md) (1 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
-- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 173 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 139 (93%)
+- INFERRED: 10 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

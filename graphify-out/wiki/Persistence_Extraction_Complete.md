@@ -1,44 +1,38 @@
 # Persistence Extraction Complete
 
-> 19 nodes · cohesion 0.11
+> 11 nodes
 
 ## Key Concepts
 
-- **Persistence Layer Extraction - COMPLETE ✅** (12 connections) — `docs/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Next Steps** (5 connections) — `docs/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Results** (3 connections) — `docs/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Cleanup** (2 connections) — `docs/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Implementation Pattern** (2 connections) — `docs/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **PERSISTENCE_EXTRACTION_COMPLETE.md** (1 connections) — `docs/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Architecture Changes** (1 connections) — `docs/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Benefits** (1 connections) — `docs/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Conclusion** (1 connections) — `docs/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **File Size Reduction** (1 connections) — `docs/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Files Modified** (1 connections) — `docs/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Phase 2: API Endpoints (6 files)** (1 connections) — `docs/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Phase 3: Real-time Handlers (8 files)** (1 connections) — `docs/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Phase 4: Services (15 files)** (1 connections) — `docs/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Phase 5-7: Game, NPC, and Test files** (1 connections) — `docs/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Removed Deprecated Code** (1 connections) — `docs/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Summary** (1 connections) — `docs/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Sync-to-Async Delegation** (1 connections) — `docs/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Validation** (1 connections) — `docs/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **handle_system_command()** (10 connections) — `server/commands/system_commands.py`
+- **test_system_commands.py** (6 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **test_handle_system_command()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **test_handle_system_command_no_message()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **test_handle_system_command_no_chat_service()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **Any** (2 connections)
+- **Broadcast a system-level message via the chat service if available.** (1 connections) — `server/commands/system_commands.py`
+- **Unit tests for system command handlers.  Tests the system command functionality.** (1 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **Test handle_system_command() broadcasts system message.** (1 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **Test handle_system_command() handles missing message.** (1 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **Test handle_system_command() handles missing chat service.** (1 connections) — `server/tests/unit/commands/test_system_commands.py`
 
 ## Relationships
 
-- [[Persistence Extraction Complete]] (1 shared connections)
-- [[Persistence Async Migration]] (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Mythos Time HUD](Mythos_Time_HUD.md) (1 shared connections)
+- [Game State Provider](Game_State_Provider.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- `server/commands/system_commands.py`
+- `server/tests/unit/commands/test_system_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 30 (94%)
+- INFERRED: 2 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

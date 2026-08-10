@@ -1,67 +1,60 @@
 # Spell Registry Costs
 
-> 117 nodes · cohesion 0.03
+> 121 nodes
 
 ## Key Concepts
 
-- **Spell** (98 connections) — `server/models/spell.py`
-- **test_spell.py** (29 connections) — `server/tests/unit/models/test_spell.py`
-- **StrEnum** (17 connections)
-- **SpellMaterial** (16 connections) — `server/models/spell.py`
-- **SpellTargetType** (15 connections) — `server/models/spell.py`
-- **spell_targeting.py** (13 connections) — `server/game/magic/spell_targeting.py`
-- **test_spell_targeting.py** (13 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
-- **UUID** (12 connections) — `server/game/magic/spell_targeting.py`
-- **SpellSchool** (10 connections) — `server/models/spell.py`
-- **TargetMatch** (10 connections) — `server/game/magic/spell_targeting.py`
-- **spell_registry.py** (9 connections) — `server/game/magic/spell_registry.py`
-- **.resolve_spell_target()** (9 connections) — `server/game/magic/spell_targeting.py`
-- **spell.py** (9 connections) — `server/models/spell.py`
-- **Spell** (8 connections) — `server/game/magic/spell_registry.py`
-- **._get_player()** (7 connections) — `server/game/magic/spell_targeting.py`
-- **Spell** (7 connections) — `server/game/magic/spell_targeting.py`
-- **._get_combat_target()** (6 connections) — `server/game/magic/spell_targeting.py`
-- **._resolve_area_target()** (6 connections) — `server/game/magic/spell_targeting.py`
-- **._resolve_entity_target()** (6 connections) — `server/game/magic/spell_targeting.py`
-- **._resolve_self_target()** (6 connections) — `server/game/magic/spell_targeting.py`
-- **SpellRangeType** (6 connections) — `server/models/spell.py`
-- **Any** (6 connections) — `server/game/magic/spell_targeting.py`
-- **.apply_costs()** (5 connections) — `server/game/magic/spell_costs.py`
-- **UUID** (5 connections) — `server/game/magic/spell_costs.py`
-- **SpellRepository** (5 connections) — `server/game/magic/spell_registry.py`
-- *... and 92 more nodes in this community*
+- **.get_instance()** (88 connections) — `server/database.py`
+- **.reset_instance()** (87 connections) — `server/database.py`
+- **test_database_error_handling.py** (41 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_database_init.py** (36 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_database_manager_init_raises_when_instance_exists()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_config_validation_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_config_runtime_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_none_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_unsupported_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_value_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_type_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_connection_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_os_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_generic_exception()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_get_database_path_unsupported_raises()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_get_database_path_none_url_raises()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_close_handles_attribute_error_during_dispose()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_import_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_config_validation_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_config_runtime_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_none_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_unsupported_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_value_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_type_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_connection_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- *... and 96 more nodes in this community*
 
 ## Relationships
 
-- [[Magic Service Bundle]] (47 shared connections)
-- [[Spell Effect Protocols]] (23 shared connections)
-- [[Game Magic Spell]] (19 shared connections)
-- [[Combat Service Bundle]] (16 shared connections)
-- [[Combat Command Handler]] (15 shared connections)
-- [[NPC Admin API]] (7 shared connections)
-- [[SQLAlchemy Model Base]] (6 shared connections)
-- [[Combat Player Broadcasts]] (3 shared connections)
-- [[Magic Game Healing]] (3 shared connections)
-- [[Magic Lifespan Initialization]] (2 shared connections)
-- [[Admin NPC Schemas]] (2 shared connections)
-- [[Inventory Service Helpers]] (2 shared connections)
+- [Holiday Persistence Models](Holiday_Persistence_Models.md) (39 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (18 shared connections)
+- [Container Loot Helpers](Container_Loot_Helpers.md) (13 shared connections)
+- [Combat Services Messaging](Combat_Services_Messaging.md) (13 shared connections)
+- [Rate Limiter Utilities](Rate_Limiter_Utilities.md) (12 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (9 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_costs.py`
-- `server/game/magic/spell_materials.py`
-- `server/game/magic/spell_registry.py`
-- `server/game/magic/spell_targeting.py`
-- `server/models/spell.py`
-- `server/tests/unit/game/magic/test_spell_targeting.py`
-- `server/tests/unit/models/test_spell.py`
+- `server/database.py`
+- `server/services/exploration_service.py`
+- `server/tests/unit/infrastructure/test_database_error_handling.py`
+- `server/tests/unit/infrastructure/test_database_init.py`
 
 ## Audit Trail
 
-- EXTRACTED: 382 (75%)
-- INFERRED: 126 (25%)
+- EXTRACTED: 539 (96%)
+- INFERRED: 24 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

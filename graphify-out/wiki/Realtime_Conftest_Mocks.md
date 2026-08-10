@@ -1,52 +1,44 @@
 # Realtime Conftest Mocks
 
-> 28 nodes · cohesion 0.07
+> 12 nodes
 
 ## Key Concepts
 
-- **conftest.py** (19 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_utils()** (3 connections) — `server/tests/unit/realtime/conftest.py`
-- **nats_message_handler()** (3 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_chat_logger()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_logger()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_message_builder()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_nats_service()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_occupant_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_room_sync_service()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_subject_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_user_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_ws_connection_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **Shared fixtures for realtime unit tests.  Provides fixtures used by NATS message** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a mock occupant manager.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a mock PlayerEventHandlerUtils.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a mock logger.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a mock NATS service.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a mock subject manager.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a mock connection manager (NATS / general).** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create mock WebSocket for handler tests.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create mock connection manager for WebSocket handler tests.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a mock user manager.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a NATSMessageHandler instance.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- *... and 3 more nodes in this community*
+- **party_service.py** (16 connections) — `server/game/party_service.py`
+- **Party** (12 connections) — `server/game/party_service.py`
+- **.get_party()** (3 connections) — `server/game/party_service.py`
+- **test_party_post_init_includes_leader_in_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_party_post_init_preserves_other_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **.__post_init__()** (2 connections) — `server/game/party_service.py`
+- **Party service for MythosMUD.  In-memory ephemeral party state: parties exist onl** (1 connections) — `server/game/party_service.py`
+- **In-memory party model.      Ephemeral: not persisted. party_id and member_ids ar** (1 connections) — `server/game/party_service.py`
+- **Ensure leader is in member set.** (1 connections) — `server/game/party_service.py`
+- **Return the party by id, or None.** (1 connections) — `server/game/party_service.py`
+- **Party __post_init__ ensures leader is in member_ids.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **Party __post_init__ keeps existing members and adds leader.** (1 connections) — `server/tests/unit/game/test_party_service.py`
 
 ## Relationships
 
-- [[Player Respawn Events]] (4 shared connections)
-- [[NATS Chat Broadcasting]] (2 shared connections)
-- [[Player Occupant Processor]] (1 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (6 shared connections)
+- [Command Alias Model](Command_Alias_Model.md) (4 shared connections)
+- [Combat DP Persistence Tests](Combat_DP_Persistence_Tests.md) (3 shared connections)
+- [Commands Npc Admin](Commands_Npc_Admin.md) (3 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Room Occupant Events](Room_Occupant_Events.md) (1 shared connections)
+- [Combat Turn Processor](Combat_Turn_Processor.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/conftest.py`
+- `server/game/party_service.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 42 (93%)
+- INFERRED: 3 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

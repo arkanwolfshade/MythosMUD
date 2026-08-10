@@ -1,50 +1,50 @@
 # Pydantic Code Review
 
-> 31 nodes · cohesion 0.06
+> 19 nodes
 
 ## Key Concepts
 
-- **Pydantic Code Review - feature/sqlite-to-postgresql Branch** (11 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **Specific File Reviews** (9 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **Medium Priority Issues** (4 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **Recommendations Summary** (4 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **Code Quality Observations** (3 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **High Priority Issues** (3 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **Critical Issues** (2 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **PYDANTIC_CODE_REVIEW.md** (1 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **⚠️ Areas for Improvement** (1 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **🟡 Business Logic in Models - Stats.**init**** (1 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **Conclusion** (1 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **🔴 CRITICAL: Security Vulnerability - `extra="allow"` in Stats Model** (1 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **Executive Summary** (1 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **🟢 Field Validator Organization** (1 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **✅ Good Practices Found** (1 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **Immediate Actions (High Priority)** (1 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **Long-term Improvements (Low Priority)** (1 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **🟢 Missing `model_rebuild()` Usage** (1 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **🟢 Optional Fields Without Explicit Defaults** (1 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **🟡 Performance: Missing `__slots__` in Frequently Used Models** (1 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **References** (1 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **`server/api/players.py`** (1 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **`server/auth/endpoints.py`** (1 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **`server/config/models.py`** (1 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **`server/models/command.py`** (1 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- *... and 6 more nodes in this community*
+- **properties** (16 connections) — `schemas/items/item_prototype.schema.json`
+- **name** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **base_value** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **durability** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **usage_restrictions** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **stacking_rules** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **integer** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **null** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Admin Auth Service](Admin_Auth_Service.md) (4 shared connections)
+- [Services Npc Combat](Services_Npc_Combat.md) (1 shared connections)
+- [Stores Statenormalization Basic](Stores_Statenormalization_Basic.md) (1 shared connections)
+- [Contexts Panelcontext Hooks](Contexts_Panelcontext_Hooks.md) (1 shared connections)
+- [Commands Go Command](Commands_Go_Command.md) (1 shared connections)
+- [Dependency Upgrade Spec](Dependency_Upgrade_Spec.md) (1 shared connections)
+- [Asyncio Code Review](Asyncio_Code_Review.md) (1 shared connections)
+- [Cursor Plans Suite](Cursor_Plans_Suite.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/PYDANTIC_CODE_REVIEW.md`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (100%)
+- EXTRACTED: 47 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

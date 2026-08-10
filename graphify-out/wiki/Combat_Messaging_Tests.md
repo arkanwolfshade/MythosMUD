@@ -1,50 +1,63 @@
 # Combat Messaging Tests
 
-> 32 nodes · cohesion 0.07
+> 76 nodes
 
 ## Key Concepts
 
-- **TestCombatMessagingService** (21 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **Test get_combat_end_messages from winner perspective.** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **Test get_attack_message from attacker perspective.** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_attacker_perspective()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_custom_action_type()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_custom_npc_messages()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_defender_perspective()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_fallback_to_default()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_high_damage()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_other_perspective()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_attack_message_zero_damage()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_combat_end_messages()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_combat_end_messages_empty_occupants()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_combat_end_messages_loser_perspective()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_combat_end_messages_winner_perspective()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_combat_start_messages()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_combat_start_messages_single_occupant()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_death_message_custom()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.test_get_death_message_default()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **Test get_death_message with custom template.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **Test get_combat_start_messages generates messages for all occupants.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **Test get_combat_start_messages with single occupant.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **Test get_combat_end_messages generates messages for all occupants.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **Test suite for CombatMessagingService class.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **Test get_combat_end_messages with empty occupants list.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- *... and 7 more nodes in this community*
+- **lucidity.py** (33 connections) — `server/models/lucidity.py`
+- **test_lucidity_models.py** (28 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **LucidityAdjustmentLog** (23 connections) — `server/models/lucidity.py`
+- **LucidityExposureState** (23 connections) — `server/models/lucidity.py`
+- **_utc_now()** (8 connections) — `server/models/lucidity.py`
+- **LucidityActionCode** (8 connections) — `server/models/lucidity.py`
+- **test_lucidity_utils.py** (7 connections) — `server/tests/unit/models/test_lucidity_utils.py`
+- **.__init__()** (5 connections) — `server/models/lucidity.py`
+- **Base** (4 connections)
+- **.__init__()** (4 connections) — `server/models/lucidity.py`
+- **.__init__()** (4 connections) — `server/models/lucidity.py`
+- **Any** (3 connections)
+- **test_player_lucidity_creation()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_player_lucidity_defaults()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_player_lucidity_with_catatonia()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_player_lucidity_repr()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_player_lucidity_tiers()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_adjustment_log_creation()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_adjustment_log_with_location()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_adjustment_log_default_metadata()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_adjustment_log_repr()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_adjustment_log_positive_delta()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_adjustment_log_negative_delta()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_exposure_state_creation()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_exposure_state_default_encounter_count()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [[Combat Messaging Base]] (4 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (29 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (8 shared connections)
+- [Client Event Store](Client_Event_Store.md) (6 shared connections)
+- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (4 shared connections)
+- [Player Creation Service](Player_Creation_Service.md) (4 shared connections)
+- [Dependency Upgrade Report](Dependency_Upgrade_Report.md) (4 shared connections)
+- [Follow Service Tests](Follow_Service_Tests.md) (2 shared connections)
+- [Hallucination Trigger Service](Hallucination_Trigger_Service.md) (2 shared connections)
+- [Panel Layout Libraries Spec](Panel_Layout_Libraries_Spec.md) (2 shared connections)
+- [Message Queue Cleanup](Message_Queue_Cleanup.md) (2 shared connections)
+- [Container Loot Helpers](Container_Loot_Helpers.md) (2 shared connections)
+- [Quality Audit Report](Quality_Audit_Report.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_service.py`
+- `server/models/lucidity.py`
+- `server/tests/unit/models/test_lucidity_models.py`
+- `server/tests/unit/models/test_lucidity_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 69 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 250 (95%)
+- INFERRED: 13 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

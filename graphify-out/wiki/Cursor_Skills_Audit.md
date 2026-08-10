@@ -1,38 +1,30 @@
 # Cursor Skills Audit
 
-> 14 nodes · cohesion 0.14
+> 6 nodes
 
 ## Key Concepts
 
-- **Generate Comprehensive Report** (8 connections) — `.cursor/skills/audit/SKILL.md`
-- **Detailed Findings by Severity** (5 connections) — `.cursor/skills/audit/SKILL.md`
-- **SKILL.md** (2 connections) — `.cursor/skills/audit/SKILL.md`
-- **Anti-Patterns Verdict** (1 connections) — `.cursor/skills/audit/SKILL.md`
-- **Critical Issues** (1 connections) — `.cursor/skills/audit/SKILL.md`
-- **Diagnostic Scan** (1 connections) — `.cursor/skills/audit/SKILL.md`
-- **Executive Summary** (1 connections) — `.cursor/skills/audit/SKILL.md`
-- **High-Severity Issues** (1 connections) — `.cursor/skills/audit/SKILL.md`
-- **Low-Severity Issues** (1 connections) — `.cursor/skills/audit/SKILL.md`
-- **Medium-Severity Issues** (1 connections) — `.cursor/skills/audit/SKILL.md`
-- **Patterns & Systemic Issues** (1 connections) — `.cursor/skills/audit/SKILL.md`
-- **Positive Findings** (1 connections) — `.cursor/skills/audit/SKILL.md`
-- **Recommendations by Priority** (1 connections) — `.cursor/skills/audit/SKILL.md`
-- **Suggested Commands for Fixes** (1 connections) — `.cursor/skills/audit/SKILL.md`
+- **test_inventory_service_helpers.py** (6 connections) — `server/tests/unit/commands/test_inventory_service_helpers.py`
+- **_request_with_persistence()** (3 connections) — `server/tests/unit/commands/test_inventory_service_helpers.py`
+- **test_get_shared_services_raises_without_async_persistence()** (2 connections) — `server/tests/unit/commands/test_inventory_service_helpers.py`
+- **test_get_shared_services_initializes_and_reuses_singletons()** (2 connections) — `server/tests/unit/commands/test_inventory_service_helpers.py`
+- **reset_shared_inventory_services_autouse()** (1 connections) — `server/tests/unit/commands/test_inventory_service_helpers.py`
+- **Unit tests for inventory_service_helpers.get_shared_services.** (1 connections) — `server/tests/unit/commands/test_inventory_service_helpers.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Chat Service Whispers](Chat_Service_Whispers.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/audit/SKILL.md`
+- `server/tests/unit/commands/test_inventory_service_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

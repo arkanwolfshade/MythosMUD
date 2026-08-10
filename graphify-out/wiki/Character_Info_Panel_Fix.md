@@ -1,50 +1,44 @@
 # Character Info Panel Fix
 
-> 31 nodes · cohesion 0.06
+> 14 nodes
 
 ## Key Concepts
 
-- **Investigation Report: Character Info Panel Not Populated** (12 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Investigation Methodology** (4 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Bug Description** (3 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Fix Implementation** (3 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Impact Assessment** (3 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Lessons Learned** (3 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Recommendations** (3 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Root Cause Analysis** (3 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Technical Details** (3 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Verification Results** (2 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **2025-12-03_session-001_character-info-panel.md** (1 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **After Fix** (1 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Before Fix** (1 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Code Quality Review** (1 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Data Flow (Fixed)** (1 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Evidence from Runtime Logs** (1 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Executive Summary** (1 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Expected Behavior** (1 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Files Modified** (1 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Future Improvements** (1 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Immediate** (1 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Investigation Conclusion** (1 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Pattern Duplication Risk** (1 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Phase 1: Hypothesis Generation** (1 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- **Phase 2: Client-Side Instrumentation** (1 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- *... and 6 more nodes in this community*
+- **_get_npc_room_id()** (14 connections) — `server/commands/look_npc.py`
+- **test_get_npc_room_id_from_current_room_id()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_get_npc_room_id_from_current_room()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_get_npc_room_id_none()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_get_npc_room_id_from_current_room_id()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_get_npc_room_id_from_current_room()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_get_npc_room_id_none()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Get the room ID from an NPC instance, checking both current_room and current_roo** (1 connections) — `server/commands/look_npc.py`
+- **Test getting NPC room ID from current_room_id.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test getting NPC room ID from current_room when current_room_id is None.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test getting NPC room ID when both are None.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test _get_npc_room_id() returns current_room_id when available.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _get_npc_room_id() returns current_room when current_room_id is None.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _get_npc_room_id() returns None when both are None.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Look NPC Command](Look_NPC_Command.md) (4 shared connections)
+- [Player State Command Factory](Player_State_Command_Factory.md) (4 shared connections)
+- [Container Repository CRUD](Container_Repository_CRUD.md) (2 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (2 shared connections)
+- [Combat Death Handling](Combat_Death_Handling.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
+- `server/commands/look_npc.py`
+- `server/tests/unit/commands/test_look_npc.py`
+- `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

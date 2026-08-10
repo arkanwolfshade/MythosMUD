@@ -1,21 +1,12 @@
 # Archive Fixture Optimization
 
-> 12 nodes · cohesion 0.17
+> 3 nodes
 
 ## Key Concepts
 
-- **Fixture Optimization Summary** (5 connections) — `docs/archive/fixture-optimization-summary.md`
-- **Changes Made** (4 connections) — `docs/archive/fixture-optimization-summary.md`
-- **Expected Performance Impact** (4 connections) — `docs/archive/fixture-optimization-summary.md`
-- **fixture-optimization-summary.md** (1 connections) — `docs/archive/fixture-optimization-summary.md`
-- **1. Created Class-Scoped Fixture** (1 connections) — `docs/archive/fixture-optimization-summary.md`
-- **2. Updated Test Classes to Use Class-Scoped Fixture** (1 connections) — `docs/archive/fixture-optimization-summary.md`
-- **3. Marked Test Classes as Slow** (1 connections) — `docs/archive/fixture-optimization-summary.md`
-- **Additional Optimization Opportunities (Future)** (1 connections) — `docs/archive/fixture-optimization-summary.md`
-- **After Optimization (Class-Scoped Fixture)** (1 connections) — `docs/archive/fixture-optimization-summary.md`
-- **Before Optimization** (1 connections) — `docs/archive/fixture-optimization-summary.md`
-- **Savings** (1 connections) — `docs/archive/fixture-optimization-summary.md`
-- **Verification Needed** (1 connections) — `docs/archive/fixture-optimization-summary.md`
+- **Fixture Optimization Complete** (2 connections) — `docs/archive/FIXTURE_OPTIMIZATION_COMPLETE.md`
+- **E2E Testing Setup Status** (1 connections) — `docs/archive/E2E_TESTING_SETUP_STATUS.md`
+- **Test Suite Post-Merge Refactoring** (1 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
 
 ## Relationships
 
@@ -23,14 +14,16 @@
 
 ## Source Files
 
-- `docs/archive/fixture-optimization-summary.md`
+- `docs/archive/E2E_TESTING_SETUP_STATUS.md`
+- `docs/archive/FIXTURE_OPTIMIZATION_COMPLETE.md`
+- `docs/archive/MERGE_REFACTORING_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 4 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

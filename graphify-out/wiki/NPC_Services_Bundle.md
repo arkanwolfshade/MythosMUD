@@ -1,76 +1,66 @@
 # NPC Services Bundle
 
-> 263 nodes · cohesion 0.02
+> 138 nodes
 
 ## Key Concepts
 
-- **NPCPopulationController** (93 connections) — `server/npc/population_control.py`
-- **NPCLeftRoom** (71 connections) — `server/events/event_types.py`
-- **NPCCombatIntegration** (68 connections) — `server/npc/combat_integration.py`
-- **PopulationStats** (64 connections) — `server/npc/population_stats.py`
-- **PlayerLeftRoom** (61 connections) — `server/events/event_types.py`
-- **NPCSpawningService** (53 connections) — `server/npc/spawning_service.py`
-- **SimpleNPCDefinition** (36 connections) — `server/npc/spawning_models.py`
-- **NPCSpawnResult** (32 connections) — `server/npc/spawning_models.py`
-- **NPCSpawnRequest** (31 connections) — `server/npc/spawning_models.py`
-- **ZoneConfiguration** (28 connections) — `server/npc/population_control.py`
-- **spawning_service.py** (25 connections) — `server/npc/spawning_service.py`
-- **test_population_stats.py** (21 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **combat_integration.py** (20 connections) — `server/npc/combat_integration.py`
-- **NPCDefinition** (19 connections) — `server/npc/spawning_service.py`
-- **NPCSpawnRequest** (18 connections) — `server/npc/spawning_service.py`
-- **NPCSpawnStatistics** (17 connections) — `server/npc/spawning_service.py`
-- **NPCSpawnResult** (17 connections) — `server/npc/spawning_service.py`
-- **ZoneConfiguration** (17 connections) — `server/npc/spawning_service.py`
-- **spawning_instance_factory.py** (16 connections) — `server/npc/spawning_instance_factory.py`
-- **PopulationStats** (15 connections) — `server/npc/spawning_service.py`
-- **spawning_request_execution.py** (14 connections) — `server/npc/spawning_request_execution.py`
-- **EventBus** (14 connections) — `server/npc/spawning_service.py`
-- **NPCBase** (14 connections) — `server/npc/spawning_service.py`
-- **NPCCombatIntegration** (14 connections) — `server/npc/spawning_service.py`
-- **NPCCombatIntegrationService** (14 connections) — `server/npc/spawning_service.py`
-- *... and 238 more nodes in this community*
+- **TargetResolutionService** (53 connections) — `server/services/target_resolution_service.py`
+- **TargetResolutionResult** (39 connections) — `server/schemas/shared/target_resolution.py`
+- **target_resolution_service.py** (27 connections) — `server/services/target_resolution_service.py`
+- **test_target_resolution_service.py** (27 connections) — `server/tests/unit/services/test_target_resolution_service.py`
+- **test_target_resolution.py** (16 connections) — `server/tests/unit/schemas/test_target_resolution.py`
+- **TargetMetadata** (12 connections) — `server/schemas/shared/target_metadata.py`
+- **.resolve_target()** (9 connections) — `server/services/target_resolution_service.py`
+- **._search_npcs_in_room()** (8 connections) — `server/services/target_resolution_service.py`
+- **PersistenceProtocol** (7 connections) — `server/services/target_resolution_service.py`
+- **._gather_room_target_matches()** (7 connections) — `server/services/target_resolution_service.py`
+- **._search_players_in_room()** (7 connections) — `server/services/target_resolution_service.py`
+- **._match_npcs_by_name()** (7 connections) — `server/services/target_resolution_service.py`
+- **UUID** (6 connections)
+- **.get_room_by_id()** (6 connections) — `server/services/target_resolution_service.py`
+- **._get_player_from_persistence()** (6 connections) — `server/services/target_resolution_service.py`
+- **._validate_player_and_room()** (6 connections) — `server/services/target_resolution_service.py`
+- **._load_npc_ids_with_room_fallback()** (6 connections) — `server/services/target_resolution_service.py`
+- **.__init__()** (5 connections) — `server/game/magic/spell_targeting.py`
+- **target_metadata.py** (5 connections) — `server/schemas/shared/target_metadata.py`
+- **.get_player_by_id()** (5 connections) — `server/services/target_resolution_service.py`
+- **Player** (5 connections)
+- **PlayerServiceProtocol** (5 connections) — `server/services/target_resolution_service.py`
+- **._build_target_result()** (5 connections) — `server/services/target_resolution_service.py`
+- **._fetch_players_in_room()** (5 connections) — `server/services/target_resolution_service.py`
+- **._add_disambiguation_suffixes()** (5 connections) — `server/services/target_resolution_service.py`
+- *... and 113 more nodes in this community*
 
 ## Relationships
 
-- [[Distributed Event Bus]] (135 shared connections)
-- [[NPC Death Lifecycle]] (56 shared connections)
-- [[Combat Command Handler]] (26 shared connections)
-- [[NPC Admin API]] (18 shared connections)
-- [[NPC Population Control]] (14 shared connections)
-- [[Lifespan Startup Hooks]] (11 shared connections)
-- [[NPC Occupant Verification]] (11 shared connections)
-- [[Aggressive Mob NPC]] (10 shared connections)
-- [[Room Occupancy Class]] (9 shared connections)
-- [[Game Mechanics Service]] (8 shared connections)
-- [[NPC Utility Functions]] (8 shared connections)
-- [[Application DI Bundles]] (7 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (20 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (13 shared connections)
+- [NPC Service Tests](NPC_Service_Tests.md) (10 shared connections)
+- [Logging Correct Patterns](Logging_Correct_Patterns.md) (7 shared connections)
+- [Player Position Service](Player_Position_Service.md) (7 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (7 shared connections)
+- [Player Event Handler Tests](Player_Event_Handler_Tests.md) (6 shared connections)
+- [Client Event Store](Client_Event_Store.md) (5 shared connections)
+- [Cursor Skills Harden](Cursor_Skills_Harden.md) (4 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (3 shared connections)
+- [Dependency Injection Tests](Dependency_Injection_Tests.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan_startup.py`
-- `server/container/bundles/npc.py`
-- `server/events/event_types.py`
-- `server/models/room.py`
-- `server/models/spell_db.py`
-- `server/npc/combat_integration.py`
-- `server/npc/combat_integration_protocols.py`
-- `server/npc/population_control.py`
-- `server/npc/population_stats.py`
-- `server/npc/spawning_instance_factory.py`
-- `server/npc/spawning_models.py`
-- `server/npc/spawning_request_execution.py`
-- `server/npc/spawning_service.py`
-- `server/services/npc_instance_service.py`
-- `server/tests/unit/npc/test_population_stats.py`
-- `server/tests/unit/services/test_damage_grace_period.py`
+- `server/game/magic/spell_targeting.py`
+- `server/schemas/shared/target_metadata.py`
+- `server/schemas/shared/target_resolution.py`
+- `server/services/target_resolution_service.py`
+- `server/tests/unit/schemas/test_target_resolution.py`
+- `server/tests/unit/services/test_target_resolution_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 990 (60%)
-- INFERRED: 652 (40%)
+- EXTRACTED: 459 (93%)
+- INFERRED: 34 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,63 +1,55 @@
 # Command Field Validators
 
-> 162 nodes · cohesion 0.02
+> 79 nodes
 
 ## Key Concepts
 
-- **test_security_validator.py** (95 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **security_validator.py** (32 connections) — `server/validators/security_validator.py`
-- **comprehensive_sanitize_input()** (20 connections) — `server/validators/security_validator.py`
-- **validate_message_content()** (20 connections) — `server/validators/security_validator.py`
-- **command_communication.py** (18 connections) — `server/models/command_communication.py`
-- **strip_ansi_codes()** (13 connections) — `server/validators/security_validator.py`
-- **validate_action_content()** (11 connections) — `server/validators/security_validator.py`
-- **validate_alias_name()** (10 connections) — `server/validators/security_validator.py`
-- **validate_reason_content()** (10 connections) — `server/validators/security_validator.py`
-- **__init__.py** (9 connections) — `server/validators/__init__.py`
-- **clean_command_input()** (9 connections) — `server/validators/command_validator.py`
-- **sanitize_unicode_input()** (9 connections) — `server/validators/security_validator.py`
-- **validate_command_content()** (9 connections) — `server/validators/security_validator.py`
-- **validate_pose_content()** (9 connections) — `server/validators/security_validator.py`
-- **validate_filter_name()** (8 connections) — `server/validators/security_validator.py`
-- **validate_help_topic()** (8 connections) — `server/validators/security_validator.py`
-- **validate_target_player()** (8 connections) — `server/validators/security_validator.py`
-- **validate_security_comprehensive()** (7 connections) — `server/validators/security_validator.py`
-- **check_dangerous_characters()** (6 connections) — `server/validators/security_validator.py`
-- **check_injection_patterns()** (6 connections) — `server/validators/security_validator.py`
-- **Test that validate_message_content rejects angle brackets.** (6 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **get_dangerous_characters()** (5 connections) — `server/validators/security_validator.py`
-- **get_injection_patterns()** (5 connections) — `server/validators/security_validator.py`
-- **Centralized validation for message content fields.      This function provides c** (5 connections) — `server/validators/security_validator.py`
-- **Centralized validation for player name fields.      This function provides consi** (5 connections) — `server/validators/security_validator.py`
-- *... and 137 more nodes in this community*
+- **test_connection_helpers_impl.py** (35 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **convert_uuids_to_strings()** (18 connections) — `server/realtime/connection_helpers.py`
+- **send_personal_message_old_impl()** (13 connections) — `server/realtime/connection_helpers.py`
+- **_optimize_payload()** (11 connections) — `server/realtime/connection_helpers.py`
+- **_send_to_websockets()** (11 connections) — `server/realtime/connection_helpers.py`
+- **Any** (10 connections)
+- **test_connection_helpers.py** (9 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
+- **_update_delivery_status()** (8 connections) — `server/realtime/connection_helpers.py`
+- **_queue_message_if_needed()** (6 connections) — `server/realtime/connection_helpers.py`
+- **broadcast_room_event_impl()** (6 connections) — `server/realtime/connection_helpers.py`
+- **broadcast_global_event_impl()** (6 connections) — `server/realtime/connection_helpers.py`
+- **test_send_to_websockets_websocket_error()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_optimize_payload_optimization_failure()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_convert_uuids_to_strings_uuid()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
+- **test_convert_uuids_to_strings_dict()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
+- **test_convert_uuids_to_strings_list()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
+- **test_convert_uuids_to_strings_nested()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
+- **test_convert_uuids_to_strings_string()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
+- **test_convert_uuids_to_strings_int()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
+- **test_optimize_payload()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_send_to_websockets()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_send_to_websockets_no_connections()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_queue_message_if_needed()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_update_delivery_status_success()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **test_update_delivery_status_failed()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- *... and 54 more nodes in this community*
 
 ## Relationships
 
-- [[Base Command Models]] (19 shared connections)
-- [[Communication Command Models]] (15 shared connections)
-- [[Moderation Command Models]] (14 shared connections)
-- [[Alias Expansion Logic]] (10 shared connections)
-- [[Command Input Validator]] (7 shared connections)
-- [[Combat Command Models]] (7 shared connections)
-- [[Validators Security Validator]] (2 shared connections)
-- [[Alias Command Models]] (1 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (17 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (5 shared connections)
+- [Room Occupant Events](Room_Occupant_Events.md) (3 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
 
 ## Source Files
 
-- `server/models/command_alias.py`
-- `server/models/command_communication.py`
-- `server/models/command_utility.py`
-- `server/tests/unit/validators/test_security_validator.py`
-- `server/validators/__init__.py`
-- `server/validators/command_validator.py`
-- `server/validators/security_validator.py`
+- `server/realtime/connection_helpers.py`
+- `server/tests/unit/realtime/test_connection_helpers.py`
+- `server/tests/unit/realtime/test_connection_helpers_impl.py`
 
 ## Audit Trail
 
-- EXTRACTED: 623 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 255 (98%)
+- INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

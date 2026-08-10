@@ -1,39 +1,29 @@
 # Commands Admin Shutdown
 
-> 13 nodes · cohesion 0.17
+> 4 nodes
 
 ## Key Concepts
 
-- **parse_shutdown_parameters()** (11 connections) — `server/commands/admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_cancel()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_invalid_negative()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_invalid_string()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_invalid_zero()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_no_args()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_seconds()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test parse_shutdown_parameters() with cancel action.** (2 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Parse shutdown command parameters.      Args:         command_data: Command data** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Test parse_shutdown_parameters() with no args defaults to 10 seconds.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test parse_shutdown_parameters() with negative seconds.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test parse_shutdown_parameters() with zero seconds.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test parse_shutdown_parameters() with invalid string.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **mock_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
+- **_passthrough_room_data()** (3 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
+- **Return room data unchanged for convert_room_players_uuids_to_names mocks.** (1 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
 
 ## Relationships
 
-- [[Admin Shutdown Command]] (7 shared connections)
-- [[Admin Shutdown Commands]] (3 shared connections)
+- [WebSocket Initial State](WebSocket_Initial_State.md) (2 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_shutdown_command.py`
-- `server/tests/unit/commands/test_admin_shutdown_command.py`
+- `server/tests/unit/realtime/test_websocket_initial_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (67%)
+- INFERRED: 3 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

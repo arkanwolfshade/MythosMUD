@@ -1,50 +1,37 @@
 # Item System Design
 
-> 27 nodes · cohesion 0.07
+> 13 nodes
 
 ## Key Concepts
 
-- **MythosMUD Item System Blueprint** (20 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Service Responsibilities (Technical Blueprint)** (7 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **ITEM_SYSTEM_DESIGN.md** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Administrative Interfaces** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **API Surface (Draft)** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Audience & Scope** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Component Library (Initial Set)** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Core Attribute Matrix** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Data Model Proposal** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Document Purpose** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Flag & Enumeration Strategy** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Foundational Design Principles** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Implementation Phases** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Inventory Integration** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Item Factory & Instance Service** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Item Lifecycle Overview** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Item Taxonomy (Stakeholder View)** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Lore Alignment** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Next Steps** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Observability & Monitoring** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Open Questions** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Persistence Layer** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Persistence & Migration Plan** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Prototype Registry Service** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- **Scripting & Event Hooks** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
-- *... and 2 more nodes in this community*
+- **properties** (7 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **north** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **south** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **east** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **west** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **up** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **down** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
+- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (100%)
+- EXTRACTED: 25 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

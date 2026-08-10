@@ -1,57 +1,55 @@
 # Whisper Reply Command Tests
 
-> 38 nodes · cohesion 0.08
+> 29 nodes
 
 ## Key Concepts
 
-- **handle_whisper_command()** (20 connections) — `server/commands/communication_commands.py`
-- **test_communication_commands_whisper_reply.py** (16 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_whisper_command.py** (12 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_handle_whisper_command_chat_service_failure()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_target_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_whisper_to_self()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_reply_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_no_target()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_whisper_command_missing_message()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_missing_target()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_no_player_service()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_sender_not_found()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_success()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_target_not_found()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_whisper_to_self()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **Test handle_whisper_command with no target.** (2 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **mock_request()** (2 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **mock_sender()** (2 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **mock_target()** (2 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **Test whisper command with missing target.** (2 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **Unit tests for who commands.** (2 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Unit tests for whisper and reply communication command handlers.** (1 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- *... and 13 more nodes in this community*
+- **e2e-bootstrap.ts** (18 connections) — `client/src/test/e2e-bootstrap.ts`
+- **collect-n-daisy-quest.spec.ts** (16 connections) — `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
+- **global-setup.ts** (15 connections) — `client/tests/e2e/runtime/global-setup.ts`
+- **loadE2eEnv()** (12 connections) — `client/src/test/e2e-bootstrap.ts`
+- **failBootstrap()** (11 connections) — `client/src/test/e2e-bootstrap.ts`
+- **verifyServerBootstrap()** (7 connections) — `client/tests/e2e/runtime/global-setup.ts`
+- **globalSetup()** (7 connections) — `client/tests/e2e/runtime/global-setup.ts`
+- **spawnOutputDetail()** (6 connections) — `client/src/test/e2e-bootstrap.ts`
+- **e2e-bootstrap.test.ts** (5 connections) — `client/src/test/e2e-bootstrap.test.ts`
+- **formatLoginFailure()** (5 connections) — `client/src/test/e2e-bootstrap.ts`
+- **runE2ePlayerRoomReset()** (5 connections) — `client/tests/e2e/runtime/global-setup.ts`
+- **runE2eSeed()** (5 connections) — `client/tests/e2e/runtime/global-setup.ts`
+- **verifyE2eUsersInDatabase()** (5 connections) — `client/tests/e2e/runtime/global-setup.ts`
+- **E2E_PROJECT_ROOT** (4 connections) — `client/src/test/e2e-bootstrap.ts`
+- **redactDatabaseUrl()** (4 connections) — `client/src/test/e2e-bootstrap.ts`
+- **runEnsureE2eDatabase()** (4 connections) — `client/tests/e2e/runtime/global-setup.ts`
+- **spawnMorgan()** (4 connections) — `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
+- **parseE2eEnvContent()** (3 connections) — `client/src/test/e2e-bootstrap.ts`
+- **countProfessionsPayload()** (3 connections) — `client/src/test/e2e-bootstrap.ts`
+- **verifyClientAccessible()** (3 connections) — `client/tests/e2e/runtime/global-setup.ts`
+- **E2E_ENV_DEFAULTS** (2 connections) — `client/src/test/e2e-bootstrap.ts`
+- **appendBootstrapFailureLog()** (2 connections) — `client/src/test/e2e-bootstrap.ts`
+- **fetchResponseBodyText()** (2 connections) — `client/tests/e2e/runtime/global-setup.ts`
+- **resetDaisyQuestInstances()** (2 connections) — `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
+- **assertMorganVisible()** (2 connections) — `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [[Communication Command Handlers]] (12 shared connections)
-- [[Communication Command Flows]] (2 shared connections)
-- [[Alias Expansion Logic]] (1 shared connections)
-- [[Admin Status Commands]] (1 shared connections)
-- [[Who Command Tests]] (1 shared connections)
+- [Lifespan Startup Hooks](Lifespan_Startup_Hooks.md) (7 shared connections)
+- [Logging Best Practices](Logging_Best_Practices.md) (5 shared connections)
+- [Room Sync Service](Room_Sync_Service.md) (4 shared connections)
 
 ## Source Files
 
-- `server/commands/communication_commands.py`
-- `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- `server/tests/unit/commands/test_whisper_command.py`
-- `server/tests/unit/commands/test_who_commands.py`
+- `client/src/test/e2e-bootstrap.test.ts`
+- `client/src/test/e2e-bootstrap.ts`
+- `client/tests/e2e/runtime/global-setup.ts`
+- `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 123 (100%)
+- EXTRACTED: 156 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

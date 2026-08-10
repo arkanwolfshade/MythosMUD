@@ -1,58 +1,43 @@
 # Message Broker Errors
 
-> 60 nodes · cohesion 0.08
+> 17 nodes
 
 ## Key Concepts
 
-- **NATSMessageBroker** (31 connections) — `server/infrastructure/nats_broker.py`
-- **MessageBrokerError** (17 connections) — `server/infrastructure/message_broker.py`
-- **nats_broker.py** (17 connections) — `server/infrastructure/nats_broker.py`
-- **MessageBrokerConnectionError** (12 connections) — `server/infrastructure/message_broker.py`
-- **PublishError** (12 connections) — `server/infrastructure/message_broker.py`
-- **RequestError** (12 connections) — `server/infrastructure/message_broker.py`
-- **SubscribeError** (12 connections) — `server/infrastructure/message_broker.py`
-- **UnsubscribeError** (12 connections) — `server/infrastructure/message_broker.py`
-- **message_broker.py** (10 connections) — `server/infrastructure/message_broker.py`
-- **Any** (10 connections) — `server/infrastructure/nats_broker.py`
-- **Exception** (9 connections) — `server/infrastructure/nats_broker.py`
-- **MessageHandler** (9 connections) — `server/infrastructure/nats_broker.py`
-- **NATSConfig** (8 connections) — `server/infrastructure/nats_broker.py`
-- **NATSSubjectManager** (8 connections) — `server/infrastructure/nats_broker.py`
-- **MessageHandler** (7 connections) — `server/infrastructure/message_broker.py`
-- **.publish()** (6 connections) — `server/infrastructure/nats_broker.py`
-- **.connect()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **.disconnect()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **.__init__()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **.is_connected()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **.request()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **._start_health_monitoring()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **.subscribe()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **._configure_tls()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **._error_callback()** (4 connections) — `server/infrastructure/nats_broker.py`
-- *... and 35 more nodes in this community*
+- **__init__.py** (8 connections) — `server/tests/fixtures/unit/__init__.py`
+- **strict_mocker()** (5 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **dummy_request()** (4 connections) — `server/tests/fixtures/unit/__init__.py`
+- **mock_helpers.py** (4 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **strict_patch()** (4 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **test_container()** (3 connections) — `server/tests/fixtures/unit/__init__.py`
+- **fakerandom()** (3 connections) — `server/tests/fixtures/unit/__init__.py`
+- **MockerFixture** (2 connections)
+- **Any** (2 connections)
+- **Any** (1 connections)
+- **Unit-tier fixtures with strict mocking and in-memory fakes.** (1 connections) — `server/tests/fixtures/unit/__init__.py`
+- **Provide a minimal request object for testing with container support.** (1 connections) — `server/tests/fixtures/unit/__init__.py`
+- **Provide a mock ApplicationContainer for testing.      This fixture creates a pro** (1 connections) — `server/tests/fixtures/unit/__init__.py`
+- **Provide deterministic random seed for unit tests.** (1 connections) — `server/tests/fixtures/unit/__init__.py`
+- **Strict mocking helpers for unit tests.  Provides fixtures and helpers that defau** (1 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **Return a patch helper that enables autospec by default.      Usage:         patc** (1 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **Convenience helper for direct calls with autospec=True by default.** (1 connections) — `server/tests/fixtures/unit/mock_helpers.py`
 
 ## Relationships
 
-- [[NATS Message Broker]] (9 shared connections)
-- [[Infrastructure Message Broker]] (3 shared connections)
-- [[NPC Admin API]] (3 shared connections)
-- [[Combat Domain Events]] (2 shared connections)
-- [[NATS Message Schemas]] (2 shared connections)
-- [[Application Config Settings]] (1 shared connections)
-- [[NATS Subject Exceptions]] (1 shared connections)
-- [[NATS Subject Manager]] (1 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (4 shared connections)
+- [FastAPI App Factory](FastAPI_App_Factory.md) (1 shared connections)
 
 ## Source Files
 
-- `server/infrastructure/message_broker.py`
-- `server/infrastructure/nats_broker.py`
+- `server/tests/fixtures/unit/__init__.py`
+- `server/tests/fixtures/unit/mock_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 210 (71%)
-- INFERRED: 84 (29%)
+- EXTRACTED: 41 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

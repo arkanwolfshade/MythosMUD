@@ -1,62 +1,63 @@
 # NATS Chat Broadcasting
 
-> 128 nodes · cohesion 0.02
+> 135 nodes
 
 ## Key Concepts
 
-- **NATSMessageHandler** (79 connections) — `server/realtime/nats_message_handler.py`
-- **Any** (36 connections) — `server/realtime/nats_message_handler.py`
-- **UUID** (15 connections) — `server/realtime/nats_message_handler.py`
-- **CircuitBreakerOpen** (13 connections) — `server/realtime/circuit_breaker.py`
-- **._broadcast_to_room_with_filtering()** (11 connections) — `server/realtime/nats_message_handler.py`
+- **NATSMessageHandler** (77 connections) — `server/realtime/nats_message_handler.py`
+- **Any** (28 connections)
+- **._broadcast_to_room_with_filtering()** (12 connections) — `server/realtime/nats_message_handler.py`
 - **._process_single_message()** (9 connections) — `server/realtime/nats_message_handler.py`
 - **._send_messages_to_players()** (8 connections) — `server/realtime/nats_message_handler.py`
+- **apply_communication_dampening()** (8 connections) — `server/services/lucidity_communication_dampening.py`
+- **._subscribe_to_subject()** (7 connections) — `server/realtime/nats_message_handler.py`
+- **._unsubscribe_from_subject()** (7 connections) — `server/realtime/nats_message_handler.py`
+- **UUID** (7 connections)
 - **._apply_dampening_and_send_message()** (7 connections) — `server/realtime/nats_message_handler.py`
 - **._get_player_lucidity_tier()** (7 connections) — `server/realtime/nats_message_handler.py`
+- **lucidity_communication_dampening.py** (7 connections) — `server/services/lucidity_communication_dampening.py`
+- **._handle_nats_message()** (6 connections) — `server/realtime/nats_message_handler.py`
+- **._broadcast_by_channel_type()** (6 connections) — `server/realtime/nats_message_handler.py`
+- **._echo_message_to_sender()** (6 connections) — `server/realtime/nats_message_handler.py`
 - **.handle_player_movement()** (6 connections) — `server/realtime/nats_message_handler.py`
-- **._subscribe_to_subject()** (6 connections) — `server/realtime/nats_message_handler.py`
-- **._unsubscribe_from_subject()** (6 connections) — `server/realtime/nats_message_handler.py`
-- **.unsubscribe_from_subzone()** (6 connections) — `server/realtime/nats_message_handler.py`
-- **._broadcast_by_channel_type()** (5 connections) — `server/realtime/nats_message_handler.py`
-- **._build_chat_event()** (5 connections) — `server/realtime/nats_message_handler.py`
-- **._echo_message_to_sender()** (5 connections) — `server/realtime/nats_message_handler.py`
-- **._format_message_for_receiver()** (5 connections) — `server/realtime/nats_message_handler.py`
-- **._handle_nats_message()** (5 connections) — `server/realtime/nats_message_handler.py`
-- **._subscribe_to_chat_subjects()** (5 connections) — `server/realtime/nats_message_handler.py`
-- **.subscribe_to_event_subjects()** (5 connections) — `server/realtime/nats_message_handler.py`
+- **.start()** (5 connections) — `server/realtime/nats_message_handler.py`
 - **._subscribe_to_standardized_chat_subjects()** (5 connections) — `server/realtime/nats_message_handler.py`
-- **.subscribe_to_subzone()** (5 connections) — `server/realtime/nats_message_handler.py`
-- **.cleanup_empty_subzone_subscriptions()** (4 connections) — `server/realtime/nats_message_handler.py`
-- **._convert_ids_to_uuids()** (4 connections) — `server/realtime/nats_message_handler.py`
-- **._extract_chat_event_info()** (4 connections) — `server/realtime/nats_message_handler.py`
-- *... and 103 more nodes in this community*
+- **._build_chat_event()** (5 connections) — `server/realtime/nats_message_handler.py`
+- **._format_message_for_receiver()** (5 connections) — `server/realtime/nats_message_handler.py`
+- **.unsubscribe_from_subzone()** (5 connections) — `server/realtime/nats_message_handler.py`
+- **.stop()** (4 connections) — `server/realtime/nats_message_handler.py`
+- **._subscribe_to_chat_subjects()** (4 connections) — `server/realtime/nats_message_handler.py`
+- **._process_message_with_retry()** (4 connections) — `server/realtime/nats_message_handler.py`
+- **._extract_chat_message_fields()** (4 connections) — `server/realtime/nats_message_handler.py`
+- *... and 110 more nodes in this community*
 
 ## Relationships
 
-- [[Database Manager Tests]] (9 shared connections)
-- [[Dead Letter Queue]] (8 shared connections)
-- [[NPC Admin API]] (7 shared connections)
-- [[Circuit Breaker Core]] (7 shared connections)
-- [[Realtime Service Bundle]] (5 shared connections)
-- [[NATS Message Handler Tests]] (3 shared connections)
-- [[Room Occupant Events]] (3 shared connections)
-- [[Realtime Event Handlers]] (3 shared connections)
-- [[Chat Message Filtering]] (3 shared connections)
-- [[NATS Retry Handler]] (3 shared connections)
-- [[Realtime Conftest Mocks]] (2 shared connections)
-- [[Realtime Message Formatters]] (2 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (9 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (7 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
+- [Dead Letter Queue](Dead_Letter_Queue.md) (4 shared connections)
+- [Chat Message Filtering](Chat_Message_Filtering.md) (3 shared connections)
+- [Game State Provider](Game_State_Provider.md) (2 shared connections)
+- [Pydantic Error Handlers](Pydantic_Error_Handlers.md) (2 shared connections)
+- [Game State Provider Tests](Game_State_Provider_Tests.md) (2 shared connections)
+- [CircuitBreakerOpen](CircuitBreakerOpen.md) (1 shared connections)
+- [Performance Optimization Summary](Performance_Optimization_Summary.md) (1 shared connections)
+- [Vim Editor Guidelines](Vim_Editor_Guidelines.md) (1 shared connections)
+- [NATS Message Schemas](NATS_Message_Schemas.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/circuit_breaker.py`
 - `server/realtime/nats_message_handler.py`
+- `server/services/lucidity_communication_dampening.py`
+- `server/tests/unit/realtime/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 408 (91%)
-- INFERRED: 38 (9%)
+- EXTRACTED: 427 (96%)
+- INFERRED: 18 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

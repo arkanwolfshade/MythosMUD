@@ -1,54 +1,38 @@
 # System Audit Status
 
-> 27 nodes · cohesion 0.07
+> 10 nodes
 
 ## Key Concepts
 
-- **✅ Completed Systems** (7 connections) — `PLANNING.md`
-- **Game Systems** (7 connections) — `PLANNING.md`
-- **Critical System Fixes** (6 connections) — `PLANNING.md`
-- **Development Infrastructure** (5 connections) — `PLANNING.md`
-- **Low Priority (Nice to Have)** (5 connections) — `PLANNING.md`
-- **🔧 **Configuration**** (4 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
-- **Enhanced Logging System ✅** (2 connections) — `PLANNING.md`
-- ****Logging Exceptions Only Once**** (1 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
-- ****Monitoring Dashboard**** (1 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
-- **Advanced Game Systems ⏳** (1 connections) — `PLANNING.md`
-- **Alias System ✅** (1 connections) — `PLANNING.md`
-- **Alias System Security Enhancements ⏳** (1 connections) — `PLANNING.md`
-- **API Consistency Improvements ⏳** (1 connections) — `PLANNING.md`
-- **Chat System (NATS-based) ✅** (1 connections) — `PLANNING.md`
-- **Code Quality Tools ✅** (1 connections) — `PLANNING.md`
-- **Command Processing ✅** (1 connections) — `PLANNING.md`
-- **Comprehensive System Audit ✅** (1 connections) — `PLANNING.md`
-- **Dead Code Cleanup ✅** (1 connections) — `PLANNING.md`
-- **Documentation Improvements ⏳** (1 connections) — `PLANNING.md`
-- **Enhanced Multiplayer Features ⏳** (1 connections) — `PLANNING.md`
-- **Error Handling Standardization ⏳** (1 connections) — `PLANNING.md`
-- **Help System ✅** (1 connections) — `PLANNING.md`
-- **Performance Monitoring ⏳** (1 connections) — `PLANNING.md`
-- **Performance Optimization ⏳** (1 connections) — `PLANNING.md`
-- **Security Implementation ✅** (1 connections) — `PLANNING.md`
-- *... and 2 more nodes in this community*
+- **RoomBasedChannelStrategy** (10 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **test_channel_broadcasting_strategy_factory_get_strategy_known()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_room_based_channel_strategy_broadcast()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_room_based_channel_strategy_broadcast_no_room_id()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **.__init__()** (2 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Strategy for room-based channels (say, local, emote, pose).** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Initialize room-based channel strategy.          Args:             channel_type:** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Test RoomBasedChannelStrategy.broadcast() broadcasts to room.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test RoomBasedChannelStrategy.broadcast() handles missing room_id.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test ChannelBroadcastingStrategyFactory.get_strategy() returns known strategy.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- [[Enhanced Logging Guide]] (1 shared connections)
-- [[Planning Contingency Plans]] (1 shared connections)
-- [[Subsystems Subsystem Design]] (1 shared connections)
-- [[Plan Modernization Archive]] (1 shared connections)
+- [Channel Broadcast Strategies](Channel_Broadcast_Strategies.md) (4 shared connections)
+- [Respawn Persistence Bug](Respawn_Persistence_Bug.md) (3 shared connections)
+- [Transaction Boundaries Audit](Transaction_Boundaries_Audit.md) (1 shared connections)
+- [Emotes JSON Schema](Emotes_JSON_Schema.md) (1 shared connections)
 
 ## Source Files
 
-- `PLANNING.md`
-- `docs/ENHANCED_LOGGING_GUIDE.md`
+- `server/realtime/channel_broadcasting_strategies.py`
+- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 56 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 25 (93%)
+- INFERRED: 2 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

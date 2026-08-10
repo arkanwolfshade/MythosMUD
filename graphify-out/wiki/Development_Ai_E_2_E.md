@@ -1,33 +1,25 @@
 # Development Ai E 2 E
 
-> 7 nodes · cohesion 0.29
+> 1 nodes
 
 ## Key Concepts
 
-- **=�Ļ AI Agent Success Metrics** (4 connections) — `docs/DEVELOPMENT_AI.md`
-- **Scenario Classifications** (4 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- ****Functionality**** (2 connections) — `docs/DEVELOPMENT_AI.md`
-- ****Code Quality**** (1 connections) — `docs/DEVELOPMENT_AI.md`
-- ****Documentation**** (1 connections) — `docs/DEVELOPMENT_AI.md`
-- **By Complexity** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **By Testing Focus** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
+- **jsonschema dependency** (0 connections) — `tools/room_toolkit/room_validator/requirements.txt`
 
 ## Relationships
 
-- [[AI Agent Development Docs]] (1 shared connections)
-- [[E2E Suite Overview]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/DEVELOPMENT_AI.md`
-- `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
+- `tools/room_toolkit/room_validator/requirements.txt`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

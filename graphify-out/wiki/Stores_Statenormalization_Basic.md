@@ -1,53 +1,35 @@
 # Stores Statenormalization Basic
 
-> 24 nodes · cohesion 0.16
+> 10 nodes
 
 ## Key Concepts
 
-- **stateNormalization.ts** (24 connections) — `client/src/stores/stateNormalization.ts`
-- **stateNormalization.basic.test.ts** (7 connections) — `client/src/stores/__tests__/stateNormalization.basic.test.ts`
-- **normalizeGameData()** (6 connections) — `client/src/stores/stateNormalization.ts`
-- **denormalizeGameData()** (5 connections) — `client/src/stores/stateNormalization.ts`
-- **NormalizedGameData** (5 connections) — `client/src/stores/stateNormalization.ts`
-- **stateNormalization.edgeCases.test.ts** (4 connections) — `client/src/stores/__tests__/stateNormalization.edgeCases.test.ts`
-- **stateNormalization.normalize.test.ts** (4 connections) — `client/src/stores/__tests__/stateNormalization.normalize.test.ts`
-- **stateNormalization.query.test.ts** (4 connections) — `client/src/stores/__tests__/stateNormalization.query.test.ts`
-- **stateNormalization.update.test.ts** (4 connections) — `client/src/stores/__tests__/stateNormalization.update.test.ts`
-- **mergeEntityMaps()** (3 connections) — `client/src/stores/stateNormalization.ts`
-- **updateNormalizedData()** (3 connections) — `client/src/stores/stateNormalization.ts`
-- **createEntityMap()** (2 connections) — `client/src/stores/stateNormalization.ts`
-- **Entity** (2 connections) — `client/src/stores/stateNormalization.ts`
-- **extractEntities()** (2 connections) — `client/src/stores/stateNormalization.ts`
-- **getEntitiesByIds()** (2 connections) — `client/src/stores/stateNormalization.ts`
-- **getEntitiesByType()** (2 connections) — `client/src/stores/stateNormalization.ts`
-- **getEntityById()** (2 connections) — `client/src/stores/stateNormalization.ts`
-- **removeEntitiesFromNormalizedData()** (2 connections) — `client/src/stores/stateNormalization.ts`
-- **removeEntityFromMap()** (2 connections) — `client/src/stores/stateNormalization.ts`
-- **replaceEntitiesWithIds()** (2 connections) — `client/src/stores/stateNormalization.ts`
-- **restoreEntityReferences()** (2 connections) — `client/src/stores/stateNormalization.ts`
-- **updateEntityInMap()** (2 connections) — `client/src/stores/stateNormalization.ts`
-- **EntityMap** (1 connections) — `client/src/stores/stateNormalization.ts`
-- **GameData** (1 connections) — `client/src/stores/stateNormalization.ts`
+- **enum** (8 connections) — `schemas/items/item_prototype.schema.json`
+- **item_type** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **consumable** (2 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **equipment** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **artifact** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **container** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **quest** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **environment** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **currency** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- [[Game Terminal Container]] (3 shared connections)
+- [Pydantic Code Review](Pydantic_Code_Review.md) (1 shared connections)
+- [Look Item Command Tests](Look_Item_Command_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/stores/__tests__/stateNormalization.basic.test.ts`
-- `client/src/stores/__tests__/stateNormalization.edgeCases.test.ts`
-- `client/src/stores/__tests__/stateNormalization.normalize.test.ts`
-- `client/src/stores/__tests__/stateNormalization.query.test.ts`
-- `client/src/stores/__tests__/stateNormalization.update.test.ts`
-- `client/src/stores/stateNormalization.ts`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 93 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,51 +1,60 @@
 # Player Command Developer Guide
 
-> 27 nodes · cohesion 0.07
+> 56 nodes
 
 ## Key Concepts
 
-- **🐙 MythosMUD Player Command Developer's Guide** (14 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Common Patterns** (6 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Command Anatomy** (5 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **AI-Assisted Development** (4 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Command System Overview** (4 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Introduction** (3 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **PLAYER_COMMAND_DEVELOPER_GUIDE.md** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **1. Command Model (Pydantic)** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **1. Room-Based Commands** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **2. Command Handler Function** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **2. Player-Targeted Commands** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **3. Admin-Only Commands** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **3. Command Registration** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **4. Command Parsing** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **4. Event-Driven Commands** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **5. Parameter Validation** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **AI Code Review Checklist** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Architecture Layers** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Command Flow** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Conclusion** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Example AI Prompt** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Key Components** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Prerequisites** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Reference Documents** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Table of Contents** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- *... and 2 more nodes in this community*
+- **ScheduleEntry** (28 connections) — `server/schemas/calendar/calendar.py`
+- **test_calendar_schemas.py** (21 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **ScheduleCollection** (12 connections) — `server/schemas/calendar/calendar.py`
+- **__init__.py** (10 connections) — `server/schemas/calendar/__init__.py`
+- **calendar.py** (9 connections) — `server/schemas/calendar/calendar.py`
+- **extract_observance_ids()** (8 connections) — `server/schemas/calendar/calendar.py`
+- **slugify_observance()** (6 connections) — `server/schemas/calendar/calendar.py`
+- **BaseModel** (4 connections)
+- **._load_from_database()** (4 connections) — `server/services/schedule_service.py`
+- **test_holiday_entry_validation_tradition()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **test_holiday_entry_validation_season()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **test_holiday_entry_validation_bonus_tags()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **test_holiday_collection()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **test_holiday_collection_id_map()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **test_holiday_collection_ensure_unique_ids()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **test_schedule_entry_validation_days()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **test_schedule_collection()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **.apply_schedule_state()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **.validate_duration()** (3 connections) — `server/schemas/calendar/calendar.py`
+- **.entries()** (3 connections) — `server/services/schedule_service.py`
+- **test_holiday_entry()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **test_holiday_collection_load_file()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **test_schedule_entry()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **test_schedule_collection_load_file()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **test_slugify_observance()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [[Player Command Developer]] (4 shared connections)
-- [[Guide Player Command]] (1 shared connections)
+- [WebSocket Code Review](WebSocket_Code_Review.md) (16 shared connections)
+- [ASCII Map API](ASCII_Map_API.md) (15 shared connections)
+- [Player Respawn Service](Player_Respawn_Service.md) (11 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (4 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (3 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (2 shared connections)
+- [Real-Time Architecture Docs](Real-Time_Architecture_Docs.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
+- `server/npc/lifecycle_manager.py`
+- `server/schemas/calendar/__init__.py`
+- `server/schemas/calendar/calendar.py`
+- `server/services/schedule_service.py`
+- `server/tests/unit/schemas/test_calendar_schemas.py`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 189 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

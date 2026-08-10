@@ -1,62 +1,40 @@
 # Player Effects API
 
-> 100 nodes · cohesion 0.04
+> 14 nodes
 
 ## Key Concepts
 
-- **player_effects.py** (29 connections) — `server/api/player_effects.py`
-- **test_player_requests.py** (29 connections) — `server/tests/unit/schemas/test_player_requests.py`
-- **test_player_effects_endpoints.py** (26 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
-- **RollStatsRequest** (16 connections) — `server/schemas/players/player_requests.py`
-- **CreateCharacterRequest** (15 connections) — `server/schemas/players/player_requests.py`
-- **player_requests.py** (13 connections) — `server/schemas/players/player_requests.py`
-- **apply_lucidity_loss()** (12 connections) — `server/api/player_effects.py`
-- **apply_corruption()** (11 connections) — `server/api/player_effects.py`
-- **apply_fear()** (11 connections) — `server/api/player_effects.py`
-- **damage_player()** (11 connections) — `server/api/player_effects.py`
-- **gain_occult_knowledge()** (11 connections) — `server/api/player_effects.py`
-- **heal_player()** (11 connections) — `server/api/player_effects.py`
-- **DamageRequest** (11 connections) — `server/schemas/players/player_requests.py`
-- **LucidityLossRequest** (11 connections) — `server/schemas/players/player_requests.py`
-- **CorruptionRequest** (10 connections) — `server/schemas/players/player_requests.py`
-- **FearRequest** (10 connections) — `server/schemas/players/player_requests.py`
-- **HealRequest** (10 connections) — `server/schemas/players/player_requests.py`
-- **OccultKnowledgeRequest** (10 connections) — `server/schemas/players/player_requests.py`
-- **_user()** (8 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
-- **SelectCharacterRequest** (7 connections) — `server/schemas/players/player_requests.py`
-- **UUID** (7 connections) — `server/api/player_effects.py`
-- **EffectResponse** (6 connections) — `server/api/player_effects.py`
-- **FastAPIRequest** (6 connections) — `server/api/player_effects.py`
-- **PlayerService** (6 connections) — `server/api/player_effects.py`
-- **User** (6 connections) — `server/api/player_effects.py`
-- *... and 75 more nodes in this community*
+- **chat_pose_helpers.py** (14 connections) — `server/game/chat_pose_helpers.py`
+- **set_player_pose()** (8 connections) — `server/game/chat_pose_helpers.py`
+- **Any** (5 connections)
+- **get_player_pose()** (5 connections) — `server/game/chat_pose_helpers.py`
+- **clear_player_pose()** (5 connections) — `server/game/chat_pose_helpers.py`
+- **normalize_player_id()** (4 connections) — `server/game/chat_pose_helpers.py`
+- **UUID** (4 connections)
+- **get_room_poses()** (4 connections) — `server/game/chat_pose_helpers.py`
+- **Pose management helpers for chat service.** (1 connections) — `server/game/chat_pose_helpers.py`
+- **Normalize player identifiers to string form.** (1 connections) — `server/game/chat_pose_helpers.py`
+- **Set a player's pose (temporary, in-memory only).      Args:         player_id: I** (1 connections) — `server/game/chat_pose_helpers.py`
+- **Get a player's current pose.      Args:         player_id: ID of the player** (1 connections) — `server/game/chat_pose_helpers.py`
+- **Clear a player's pose.      Args:         player_id: ID of the player         po** (1 connections) — `server/game/chat_pose_helpers.py`
+- **Get all poses for players in a room.      Args:         room_id: ID of the room** (1 connections) — `server/game/chat_pose_helpers.py`
 
 ## Relationships
 
-- [[Admin NPC Schemas]] (23 shared connections)
-- [[Character Creation API]] (16 shared connections)
-- [[NPC Admin API]] (11 shared connections)
-- [[Container Exception Handlers]] (8 shared connections)
-- [[Players API Endpoints]] (2 shared connections)
-- [[Pydantic Error Handlers]] (2 shared connections)
-- [[Standardized Error Responses]] (2 shared connections)
-- [[Combat Command Handler]] (1 shared connections)
-- [[API Test Fixtures]] (1 shared connections)
+- [Chat Message Helpers](Chat_Message_Helpers.md) (10 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Monitoring API Endpoints](Monitoring_API_Endpoints.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/player_effects.py`
-- `server/schemas/players/player_requests.py`
-- `server/tests/unit/api/test_character_creation.py`
-- `server/tests/unit/api/test_player_effects_endpoints.py`
-- `server/tests/unit/schemas/test_player_requests.py`
+- `server/game/chat_pose_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 450 (100%)
+- EXTRACTED: 55 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

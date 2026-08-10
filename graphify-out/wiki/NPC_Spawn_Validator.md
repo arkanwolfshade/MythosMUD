@@ -1,54 +1,50 @@
 # NPC Spawn Validator
 
-> 39 nodes · cohesion 0.07
+> 34 nodes
 
 ## Key Concepts
 
-- **should_spawn_npc()** (22 connections) — `server/npc/spawn_validator.py`
-- **test_spawn_validator.py** (21 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_multiple_rules_first_passes()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_multiple_rules_second_passes()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_no_population_stats()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_not_required_no_rules()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_population_limit_exceeded()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_population_limit_ok()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_population_stats_npcs_by_definition()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_required_npc_spawns()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_spawn_rule_fails_conditions()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_spawn_rule_fails_population()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_spawn_rule_fails_probability()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_spawn_rule_passes()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_uses_zone_effective_probability()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **mock_npc_definition()** (2 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **mock_population_stats()** (2 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **mock_zone_config()** (2 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **Test should_spawn_npc() returns True when spawn rule passes.** (2 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **Any** (2 connections) — `server/npc/spawn_validator.py`
-- **NPCDefinition** (2 connections) — `server/npc/spawn_validator.py`
-- **NPCSpawnRule** (2 connections) — `server/npc/spawn_validator.py`
-- **ZoneConfiguration** (2 connections) — `server/npc/spawn_validator.py`
-- **Determine if an NPC should spawn based on conditions.      Args:         definit** (1 connections) — `server/npc/spawn_validator.py`
-- **Unit tests for spawn validator.  Tests the should_spawn_npc function.** (1 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- *... and 14 more nodes in this community*
+- **test_event_publisher.py** (19 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **event_publisher()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_event_publisher_init_without_subject_manager()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_event_publisher_init_with_initial_sequence()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **mock_nats_service()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **mock_subject_manager()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_event_publisher_init()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_entered_event_success()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_entered_event_not_connected()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_left_event_success()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_game_tick_event_success()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_entered_event_with_metadata()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_entered_event_nats_error()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_left_event_not_connected()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_game_tick_event_not_connected()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_get_next_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_reset_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Unit tests for event publisher.  Tests the EventPublisher class.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Create a mock NATS service.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Create a mock subject manager.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Create an EventPublisher instance.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Test EventPublisher initialization.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Test publish_player_entered_event() successfully publishes.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Test publish_player_entered_event() when NATS is not connected.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Test publish_player_left_event() successfully publishes.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [[Zone Config Loader]] (6 shared connections)
-- [[NPC Definition Schemas]] (2 shared connections)
-- [[Distributed Event Bus]] (1 shared connections)
-- [[NPC Services Bundle]] (1 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
 
 ## Source Files
 
-- `server/npc/spawn_validator.py`
-- `server/tests/unit/npc/test_spawn_validator.py`
+- `server/tests/unit/realtime/test_event_publisher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 110 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 71 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

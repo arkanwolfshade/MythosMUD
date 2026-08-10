@@ -1,55 +1,57 @@
 # Schedule Service Loader
 
-> 43 nodes · cohesion 0.05
+> 34 nodes
 
 ## Key Concepts
 
-- **TestScheduleService** (14 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **_schedule_entry_from_row()** (9 connections) — `server/services/schedule_service.py`
-- **ScheduleEntry** (6 connections) — `server/services/schedule_service.py`
-- **_fetch_schedule_entries()** (6 connections) — `server/services/schedule_service.py`
-- **normalize_weekday_names()** (5 connections) — `server/services/schedule_service.py`
-- **_lower_string_list_from_row()** (4 connections) — `server/services/schedule_service.py`
-- **.get_active_entries()** (4 connections) — `server/services/schedule_service.py`
-- **_string_list_from_row()** (4 connections) — `server/services/schedule_service.py`
-- **.test_entries_property()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_entry_count_property()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_boundary_conditions()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_with_matches()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_wrong_day()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_init_loads_from_database()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_normalize_weekday_names_latin_to_standard()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **datetime** (3 connections) — `server/services/schedule_service.py`
-- **.entries()** (3 connections) — `server/services/schedule_service.py`
-- **.test_async_load_from_database_passes_search_path_for_mythos_e2e()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_no_matches()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_init_with_collections()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_init_without_persistence_raises()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **Connection** (2 connections) — `server/services/schedule_service.py`
-- **Record** (2 connections) — `server/services/schedule_service.py`
-- **MonkeyPatch** (2 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **Load and normalize schedule rows from PostgreSQL.** (1 connections) — `server/services/schedule_service.py`
-- *... and 18 more nodes in this community*
+- **parse_command()** (24 connections) — `server/utils/command_parser.py`
+- **test_command_parser_smoke.py** (8 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **test_parse_command_basic()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **test_parse_command_with_args()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **test_parse_command_with_pipes()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **test_parse_command_empty_string()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_whitespace_only()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_too_long()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_unknown_command()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_valid_look()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_valid_go()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_with_slash_prefix()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_spawn_alias()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_alias_l()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_alias_g()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_global_function()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_global_function_with_args()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **Smoke test for command parser.** (1 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **Test basic command parsing.** (1 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **Test command parsing with arguments.** (1 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **Test command parsing with pipes.** (1 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **Test parse_command raises error for empty string.** (1 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **Test parse_command raises error for whitespace-only string.** (1 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **Test parse_command raises error for command exceeding max length.** (1 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **Test parse_command raises error for unknown command.** (1 connections) — `server/tests/unit/utils/test_command_parser.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [[Game Service Bundle]] (14 shared connections)
-- [[Calendar Holiday Schemas]] (10 shared connections)
-- [[NPC Admin API]] (6 shared connections)
-- [[Async Persistence Layer]] (4 shared connections)
-- [[Lucidity Rate Overrides]] (1 shared connections)
+- [Command Parser](Command_Parser.md) (13 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Emote Schema Validator](Emote_Schema_Validator.md) (2 shared connections)
+- [Cursor Plans Login](Cursor_Plans_Login.md) (1 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Async Room Loading Tests](Async_Room_Loading_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/schedule_service.py`
-- `server/tests/unit/services/test_schedule_service.py`
+- `server/tests/unit/test_command_parser_smoke.py`
+- `server/tests/unit/utils/test_command_parser.py`
+- `server/utils/command_parser.py`
 
 ## Audit Trail
 
-- EXTRACTED: 117 (95%)
-- INFERRED: 6 (5%)
+- EXTRACTED: 94 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

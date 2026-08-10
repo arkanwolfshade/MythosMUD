@@ -1,37 +1,35 @@
 # E 2 E Whisper System
 
-> 10 nodes · cohesion 0.20
+> 8 nodes
 
 ## Key Concepts
 
-- **Secondary Issues Discovered** (7 connections) — `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
-- **1. Review Summary** (4 connections) — `docs/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Impact** (2 connections) — `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
-- **Recommendation** (2 connections) — `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
-- **1.1 Current Architecture** (1 connections) — `docs/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **1.2 Impact of Current Wrappers** (1 connections) — `docs/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Investigation Needed** (1 connections) — `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
-- **Issue #1: Generic Error Message** (1 connections) — `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
-- **Issue #2: Missing NATS Health Check Endpoint** (1 connections) — `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
-- **Issue #3: Local Channel Message Format Discrepancy** (1 connections) — `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
+- **optimized_validate_reason_content()** (7 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_validate_reason_content_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_reason_content_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_reason_content_injection()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating empty reason content.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating valid reason content.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating reason content with injection pattern.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Optimized validation for reason content fields.      Args:         value: The re** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- [[Container Item Repository]] (1 shared connections)
-- [[Whisper Remediation Plan]] (1 shared connections)
-- [[E 2 E Whisper System]] (1 shared connections)
+- [WebSocket Handler Tests](WebSocket_Handler_Tests.md) (4 shared connections)
+- [Cursor Workflows Docs](Cursor_Workflows_Docs.md) (1 shared connections)
+- [Services Combat Initialization](Services_Combat_Initialization.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

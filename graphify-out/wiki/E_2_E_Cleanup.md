@@ -1,11 +1,11 @@
 # E 2 E Cleanup
 
-> 2 nodes · cohesion 1.00
+> 2 nodes
 
 ## Key Concepts
 
-- **mythos_e2e Database** (1 connections) — `e2e-tests/CLEANUP.md`
 - **Post-Scenario Cleanup** (1 connections) — `e2e-tests/CLEANUP.md`
+- **mythos_e2e Database** (1 connections) — `e2e-tests/CLEANUP.md`
 
 ## Relationships
 
@@ -23,4 +23,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

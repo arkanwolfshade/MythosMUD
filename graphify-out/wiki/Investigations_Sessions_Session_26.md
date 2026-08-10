@@ -1,39 +1,29 @@
 # Investigations Sessions Session
 
-> 15 nodes · cohesion 0.13
+> 4 nodes
 
 ## Key Concepts
 
-- **NPC Display Fix - Final Summary** (8 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
-- **BUGS FIXED** (5 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
-- **VERIFICATION EVIDENCE** (3 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
-- **2025-01-28_session-npc-display-final-fixes.md** (1 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
-- **Bug 1: UUID Handling Error** (1 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
-- **Bug 2: Snapshot Format Mismatch** (1 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
-- **Bug 3: Room Update Overwriting NPC Data** (1 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
-- **Bug 4: NPC Command Not Registered** (1 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
-- **EXECUTIVE SUMMARY** (1 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
-- **Expected Behavior After Fixes** (1 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
-- **FILES MODIFIED** (1 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
-- **NEXT STEPS** (1 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
-- **NOTES** (1 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
-- **Server Logs Show NPCs Are Being Sent** (1 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
-- **TESTING STATUS** (1 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
+- **exits** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Chat Panel Separation Spec](Chat_Panel_Separation_Spec.md) (1 shared connections)
+- [NATS Subject Validator Tests](NATS_Subject_Validator_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
+- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

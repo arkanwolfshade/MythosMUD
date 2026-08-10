@@ -1,6 +1,6 @@
 # Visualize Arkham Rooms
 
-> 12 nodes · cohesion 0.24
+> 12 nodes
 
 ## Key Concepts
 
@@ -10,12 +10,12 @@
 - **visualize_graph()** (4 connections) — `scripts/visualize_arkham_rooms_simple.py`
 - **load_room_data()** (3 connections) — `scripts/visualize_arkham_rooms_simple.py`
 - **print_statistics()** (3 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **Graph** (2 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **Graph** (2 connections)
+- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **Create a NetworkX graph from the room data.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
 - **Create a visual representation of the graph.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
 - **Print statistics about the room data.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
 - **Main function to generate the visualization.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **Create a NetworkX graph from the room data.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
 
 ## Relationships
 
@@ -33,4 +33,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

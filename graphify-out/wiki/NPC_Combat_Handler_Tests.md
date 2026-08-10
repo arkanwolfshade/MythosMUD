@@ -1,52 +1,55 @@
 # NPC Combat Handler Tests
 
-> 38 nodes · cohesion 0.05
+> 28 nodes
 
 ## Key Concepts
 
-- **test_npc_combat_handlers.py** (20 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **npc_combat_handlers()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **mock_lifecycle_manager()** (2 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Create a mock lifecycle manager.** (2 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **mock_combat_memory()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **mock_combat_result()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **mock_data_provider()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **mock_lifecycle()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **mock_messaging_integration()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **mock_npc_instance()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **mock_rewards()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **Test handle_combat_result handles successful attack.** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **test_handle_combat_result_broadcast_error()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **test_handle_combat_result_combat_ended()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **test_handle_combat_result_success()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **test_handle_combat_result_unsuccessful()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **test_handle_npc_death()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **test_handle_npc_death_error()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **test_handle_npc_death_no_npc()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **test_handle_npc_death_on_combat_end()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **test_handle_npc_death_on_combat_end_error()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **test_is_valid_uuid()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **Unit tests for NPC combat handlers.  Tests the NPCCombatHandlers class for comba** (1 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **Test handle_combat_result handles broadcast errors gracefully.** (1 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **Test _handle_npc_death_on_combat_end handles NPC death.** (1 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- *... and 13 more nodes in this community*
+- **MonitoringPanel.tsx** (19 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **MonitoringPanel.test.tsx** (11 connections) — `client/src/components/panels/__tests__/MonitoringPanel.test.tsx`
+- **monitoringPanelTestFixtures.ts** (11 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **mockOkJsonResponse()** (5 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **MonitoringPanel()** (4 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **formatNumber()** (3 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **formatPercentage()** (3 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **ConnectionHealthStats()** (3 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **useMonitoringPanel()** (3 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **setupSequentialMonitoringFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **setupRoundRobinMonitoringFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **setupDualConnectionsUrlFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **setupTimestampMonitoringFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **loadMonitoringSnapshot()** (2 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **formatTime()** (2 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **DualConnectionStats()** (2 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **PerformanceStats()** (2 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **SessionStats()** (2 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **SAMPLE_MONITORING_MOCKS** (2 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **EMPTY_MONITORING_MOCKS** (2 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **MonitoringData** (1 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **MonitoringPanelProps** (1 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **MonitoringPanelShell()** (1 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **MonitoringStatsBody()** (1 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **fetchSpy** (1 connections) — `client/src/components/panels/__tests__/MonitoringPanel.test.tsx`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Combat Lifecycle]] (2 shared connections)
-- [[Look NPC Command]] (1 shared connections)
+- [Command Input Validator](Command_Input_Validator.md) (2 shared connections)
+- [Player Death Service Tests](Player_Death_Service_Tests.md) (2 shared connections)
+- [Realtime Event Handlers](Realtime_Event_Handlers.md) (1 shared connections)
+- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_npc.py`
-- `server/tests/unit/services/test_npc_combat_handlers.py`
+- `client/src/components/panels/MonitoringPanel.tsx`
+- `client/src/components/panels/__tests__/MonitoringPanel.test.tsx`
+- `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 79 (100%)
+- EXTRACTED: 96 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

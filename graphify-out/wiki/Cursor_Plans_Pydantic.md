@@ -1,48 +1,43 @@
 # Cursor Plans Pydantic
 
-> 24 nodes · cohesion 0.08
+> 15 nodes
 
 ## Key Concepts
 
-- **File-by-File Changes** (11 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Pydantic Anti-Patterns Remediation Plan** (8 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Critical Issues Identified** (6 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Implementation Details** (2 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **pydantic_anti-patterns_remediation_5139237e.plan.md** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **1. Mutable Default Values (Rule 3 Violation)** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **2. Unsafe `dict[str, Any]` Types (Rule 2 Violation)** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **3. Old-Style model_config (Rule 1 Violation)** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **4. Missing Security Configuration** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **5. Missing model_config Entirely** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Executive Summary** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Risk Assessment** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **`server/api/admin/npc.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **`server/models/alias.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **`server/models/command_base.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **`server/models/container.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **`server/models/game.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **`server/schemas/calendar.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **`server/schemas/nats_messages.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **`server/schemas/player.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **`server/schemas/profession.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **`server/schemas/websocket_messages.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Success Criteria** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Testing Strategy** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **handle_time_command()** (14 connections) — `server/commands/time_commands.py`
+- **test_time_commands.py** (8 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_success()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_with_holidays()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_no_holidays()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_holiday_service_error()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_no_holiday_service()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Any** (1 connections)
+- **Handle the time command, exposing the current Mythos time and active holidays.** (1 connections) — `server/commands/time_commands.py`
+- **Unit tests for time command handlers.  Tests the time command functionality.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Test handle_time_command() returns time information.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Test handle_time_command() includes active holidays.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Test handle_time_command() handles no active holidays.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Test handle_time_command() handles holiday service errors.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Test handle_time_command() handles missing holiday service.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
 
 ## Relationships
 
-- [[Cursor Plans Plan]] (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Game State Provider](Game_State_Provider.md) (1 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
+- [Commands System Help](Commands_System_Help.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- `server/commands/time_commands.py`
+- `server/tests/unit/commands/test_time_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 43 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

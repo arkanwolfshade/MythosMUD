@@ -1,6 +1,6 @@
 # Archive Lucidity System
 
-> 5 nodes · cohesion 0.60
+> 5 nodes
 
 ## Key Concepts
 
@@ -28,4 +28,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

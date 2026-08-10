@@ -1,36 +1,26 @@
 # Cursor Skills Bolder
 
-> 12 nodes · cohesion 0.17
+> 2 nodes
 
 ## Key Concepts
 
-- **Amplify the Design** (7 connections) — `.cursor/skills/bolder/SKILL.md`
-- **SKILL.md** (5 connections) — `.cursor/skills/bolder/SKILL.md`
-- **Assess Current State** (1 connections) — `.cursor/skills/bolder/SKILL.md`
-- **Color Intensification** (1 connections) — `.cursor/skills/bolder/SKILL.md`
-- **Composition Boldness** (1 connections) — `.cursor/skills/bolder/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.cursor/skills/bolder/SKILL.md`
-- **Motion & Animation** (1 connections) — `.cursor/skills/bolder/SKILL.md`
-- **Plan Amplification** (1 connections) — `.cursor/skills/bolder/SKILL.md`
-- **Spatial Drama** (1 connections) — `.cursor/skills/bolder/SKILL.md`
-- **Typography Amplification** (1 connections) — `.cursor/skills/bolder/SKILL.md`
-- **Verify Quality** (1 connections) — `.cursor/skills/bolder/SKILL.md`
-- **Visual Effects** (1 connections) — `.cursor/skills/bolder/SKILL.md`
+- **test_handle_learn_command_success()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test learn command success.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/bolder/SKILL.md`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

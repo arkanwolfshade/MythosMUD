@@ -1,16 +1,10 @@
 # Local Readme
 
-> 7 nodes · cohesion 0.29
+> 1 nodes
 
 ## Key Concepts
 
-- **MythosMUD Data Directory** (4 connections) — `data/local/README.md`
-- **Database** (3 connections) — `data/local/README.md`
-- **README.md** (1 connections) — `data/local/README.md`
-- **Configuration** (1 connections) — `data/local/README.md`
-- **Data Files** (1 connections) — `data/local/README.md`
-- **Database Configuration** (1 connections) — `data/local/README.md`
-- **Test Databases** (1 connections) — `data/local/README.md`
+- **MythosMUD Local Data Directory** (0 connections) — `data/local/README.md`
 
 ## Relationships
 
@@ -22,10 +16,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

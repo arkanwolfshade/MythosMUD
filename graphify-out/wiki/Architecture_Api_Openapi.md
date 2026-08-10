@@ -1,38 +1,35 @@
 # Architecture Api Openapi
 
-> 14 nodes · cohesion 0.14
+> 11 nodes
 
 ## Key Concepts
 
-- **API OpenAPI Specification** (9 connections) — `docs/architecture/API_OPENAPI_SPECIFICATION.md`
-- **5. Using the Specification** (4 connections) — `docs/architecture/API_OPENAPI_SPECIFICATION.md`
-- **1. Overview** (3 connections) — `docs/architecture/API_OPENAPI_SPECIFICATION.md`
-- **API_OPENAPI_SPECIFICATION.md** (1 connections) — `docs/architecture/API_OPENAPI_SPECIFICATION.md`
-- **1.1 OpenAPI Specification** (1 connections) — `docs/architecture/API_OPENAPI_SPECIFICATION.md`
-- **1.2 Interactive Documentation** (1 connections) — `docs/architecture/API_OPENAPI_SPECIFICATION.md`
-- **2. Generating the OpenAPI Spec** (1 connections) — `docs/architecture/API_OPENAPI_SPECIFICATION.md`
-- **3. API Tag Organization** (1 connections) — `docs/architecture/API_OPENAPI_SPECIFICATION.md`
-- **4. Service Interfaces (Internal)** (1 connections) — `docs/architecture/API_OPENAPI_SPECIFICATION.md`
-- **5.1 Client Generation** (1 connections) — `docs/architecture/API_OPENAPI_SPECIFICATION.md`
-- **5.2 Contract Testing** (1 connections) — `docs/architecture/API_OPENAPI_SPECIFICATION.md`
-- **5.3 CI/CD** (1 connections) — `docs/architecture/API_OPENAPI_SPECIFICATION.md`
-- **6. Related Documentation** (1 connections) — `docs/architecture/API_OPENAPI_SPECIFICATION.md`
-- **FastAPI-Generated OpenAPI 3.1** (1 connections) — `docs/architecture/API_OPENAPI_SPECIFICATION.md`
+- **MockPersistence** (7 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **.get_player_by_name()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **.get_room_by_id()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **.__setattr__()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **.__init__()** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Mock persistence layer with async methods.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Mock async method that uses configured mock.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Mock method that uses configured mock.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Allow setting get_player_by_name and get_room_by_id to mocks.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
 
 ## Relationships
 
-- [[Architecture Decision Records]] (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/architecture/API_OPENAPI_SPECIFICATION.md`
+- `server/tests/unit/commands/test_rest_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 22 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

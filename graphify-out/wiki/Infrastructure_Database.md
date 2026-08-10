@@ -1,34 +1,26 @@
 # Infrastructure Database
 
-> 10 nodes · cohesion 0.20
+> 2 nodes
 
 ## Key Concepts
 
-- **test_database.py** (7 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **test_database_manager_direct_init_raises()** (3 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **test_database_manager_initial_state()** (2 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **test_database_manager_reset_instance()** (2 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **test_database_manager_singleton()** (2 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **Unit tests for database initialization.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **Test that DatabaseManager is a singleton.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **Test resetting the singleton instance.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **Test that direct initialization raises RuntimeError when instance exists.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **Test initial state of database manager.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **test_validate_combat_command_target_too_long()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_combat_command with target name too long.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [[NPC Admin API]] (3 shared connections)
+- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_database.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

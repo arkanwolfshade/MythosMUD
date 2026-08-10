@@ -1,70 +1,55 @@
 # Death Delirium UI Modals
 
-> 35 nodes · cohesion 0.09
+> 27 nodes
 
 ## Key Concepts
 
-- **GameClientV2ContainerView.tsx** (22 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
-- **MapView.tsx** (10 connections) — `client/src/components/MapView.tsx`
-- **TabbedInterface.tsx** (8 connections) — `client/src/components/ui-v2/TabbedInterface.tsx`
-- **TabbedInterfaceOverlay.tsx** (7 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
-- **Tab** (6 connections) — `client/src/components/ui-v2/TabbedInterface.tsx`
-- **ModalContainer.tsx** (5 connections) — `client/src/components/ui/ModalContainer.tsx`
-- **DeathInterstitial.tsx** (4 connections) — `client/src/components/DeathInterstitial.tsx`
-- **MainMenuModal.tsx** (4 connections) — `client/src/components/MainMenuModal.tsx`
-- **MapView()** (4 connections) — `client/src/components/MapView.tsx`
-- **GameClientV2ContainerView.test.tsx** (4 connections) — `client/src/components/ui-v2/__tests__/GameClientV2ContainerView.test.tsx`
-- **TabbedInterfaceOverlay.test.tsx** (4 connections) — `client/src/components/ui-v2/components/__tests__/TabbedInterfaceOverlay.test.tsx`
-- **DeathInterstitial()** (3 connections) — `client/src/components/DeathInterstitial.tsx`
-- **DeliriumInterstitial.tsx** (3 connections) — `client/src/components/DeliriumInterstitial.tsx`
-- **MainMenuModal()** (3 connections) — `client/src/components/MainMenuModal.tsx`
-- **TabbedInterfaceOverlay()** (3 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
-- **layout.ts** (3 connections) — `client/src/constants/layout.ts`
-- **ModalContainer()** (3 connections) — `client/src/components/ui/ModalContainer.tsx`
-- **GameClientV2ContainerView()** (3 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
-- **DeliriumInterstitial()** (2 connections) — `client/src/components/DeliriumInterstitial.tsx`
-- **TabbedInterfaceOverlayProps** (2 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
-- **DeathInterstitial.test.tsx** (2 connections) — `client/src/components/__tests__/DeathInterstitial.test.tsx`
-- **MainMenuModal.test.tsx** (2 connections) — `client/src/components/__tests__/MainMenuModal.test.tsx`
-- **MapView.test.tsx** (2 connections) — `client/src/components/map/__tests__/MapView.test.tsx`
-- **TabbedInterface.test.tsx** (2 connections) — `client/src/components/ui-v2/__tests__/TabbedInterface.test.tsx`
-- **GameClientV2ContainerViewProps** (2 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
-- *... and 10 more nodes in this community*
+- **instance.py** (22 connections) — `server/commands/npc_admin/instance.py`
+- **handle_npc_spawn_command()** (13 connections) — `server/commands/npc_admin/instance.py`
+- **handle_npc_despawn_command()** (10 connections) — `server/commands/npc_admin/instance.py`
+- **handle_npc_move_command()** (10 connections) — `server/commands/npc_admin/instance.py`
+- **handle_npc_stats_command()** (10 connections) — `server/commands/npc_admin/instance.py`
+- **_resolve_spawn_params()** (7 connections) — `server/commands/npc_admin/instance.py`
+- **Any** (6 connections)
+- **_parse_npc_spawn_args()** (5 connections) — `server/commands/npc_admin/instance.py`
+- **_normalize_spawn_room_id()** (4 connections) — `server/commands/npc_admin/instance.py`
+- **_parse_npc_spawn_numeric()** (4 connections) — `server/commands/npc_admin/instance.py`
+- **_parse_npc_spawn_name()** (4 connections) — `server/commands/npc_admin/instance.py`
+- **_resolve_definition_id_from_name()** (4 connections) — `server/commands/npc_admin/instance.py`
+- **_resolve_spawn_room_id()** (4 connections) — `server/commands/npc_admin/instance.py`
+- **_execute_spawn_loop()** (4 connections) — `server/commands/npc_admin/instance.py`
+- **NPC instance management commands (spawn, despawn, move, stats).** (1 connections) — `server/commands/npc_admin/instance.py`
+- **npc' means current location; return None to resolve from player.** (1 connections) — `server/commands/npc_admin/instance.py`
+- **Parse numeric definition_id case. Returns (definition_id, room_id) or None if no** (1 connections) — `server/commands/npc_admin/instance.py`
+- **Parse name-based spawn. Returns (npc_name, quantity, room_id).** (1 connections) — `server/commands/npc_admin/instance.py`
+- **Parse args for npc spawn. Returns (definition_id, npc_name, quantity, room_id, e** (1 connections) — `server/commands/npc_admin/instance.py`
+- **Resolve NPC definition ID by name. Returns None if not found.** (1 connections) — `server/commands/npc_admin/instance.py`
+- **Resolve room_id from player's current room when room_id is None. Returns (room_i** (1 connections) — `server/commands/npc_admin/instance.py`
+- **Resolve definition_id, room_id, and quantity for spawn. Returns (definition_id,** (1 connections) — `server/commands/npc_admin/instance.py`
+- **Run the spawn loop and return result message or error.** (1 connections) — `server/commands/npc_admin/instance.py`
+- **Handle NPC spawning command. Supports definition_id or name; room_id defaults to** (1 connections) — `server/commands/npc_admin/instance.py`
+- **Handle NPC despawning command.** (1 connections) — `server/commands/npc_admin/instance.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [[Game Client Container]] (8 shared connections)
-- [[App Creation Flow Screens]] (3 shared connections)
-- [[Client ASCII Map API]] (2 shared connections)
-- [[Chat Panel Components]] (2 shared connections)
-- [[UI Player Event Handlers]] (2 shared connections)
-- [[Client Event Store]] (2 shared connections)
-- [[Components Panels Chat]] (1 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (17 shared connections)
+- [Client Event Store](Client_Event_Store.md) (6 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (6 shared connections)
+- [Player Respawn Handlers](Player_Respawn_Handlers.md) (6 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
+- [Realtime Errors Error](Realtime_Errors_Error.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/components/DeathInterstitial.tsx`
-- `client/src/components/DeliriumInterstitial.tsx`
-- `client/src/components/MainMenuModal.tsx`
-- `client/src/components/MapView.tsx`
-- `client/src/components/__tests__/DeathInterstitial.test.tsx`
-- `client/src/components/__tests__/MainMenuModal.test.tsx`
-- `client/src/components/map/__tests__/MapView.test.tsx`
-- `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
-- `client/src/components/ui-v2/TabbedInterface.tsx`
-- `client/src/components/ui-v2/__tests__/GameClientV2ContainerView.test.tsx`
-- `client/src/components/ui-v2/__tests__/TabbedInterface.test.tsx`
-- `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
-- `client/src/components/ui-v2/components/__tests__/TabbedInterfaceOverlay.test.tsx`
-- `client/src/components/ui/ModalContainer.tsx`
-- `client/src/constants/layout.ts`
+- `server/commands/npc_admin/instance.py`
 
 ## Audit Trail
 
-- EXTRACTED: 124 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 110 (92%)
+- INFERRED: 10 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

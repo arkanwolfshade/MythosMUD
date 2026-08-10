@@ -1,19 +1,12 @@
 # Archive Party System
 
-> 10 nodes · cohesion 0.20
+> 3 nodes
 
 ## Key Concepts
 
-- **MythosMUD Party System Reference** (7 connections) — `docs/archive/PARTY_SYSTEM_REFERENCE.md`
-- **Commands** (2 connections) — `docs/archive/PARTY_SYSTEM_REFERENCE.md`
-- **Overview** (2 connections) — `docs/archive/PARTY_SYSTEM_REFERENCE.md`
-- **PARTY_SYSTEM_REFERENCE.md** (1 connections) — `docs/archive/PARTY_SYSTEM_REFERENCE.md`
-- **Example flow** (1 connections) — `docs/archive/PARTY_SYSTEM_REFERENCE.md`
-- **Integration Hooks** (1 connections) — `docs/archive/PARTY_SYSTEM_REFERENCE.md`
-- **Key properties** (1 connections) — `docs/archive/PARTY_SYSTEM_REFERENCE.md`
-- **Party Chat** (1 connections) — `docs/archive/PARTY_SYSTEM_REFERENCE.md`
-- **References** (1 connections) — `docs/archive/PARTY_SYSTEM_REFERENCE.md`
-- **Table of Contents** (1 connections) — `docs/archive/PARTY_SYSTEM_REFERENCE.md`
+- **Party System Reference** (2 connections) — `docs/archive/PARTY_SYSTEM_REFERENCE.md`
+- **Party Invite Command** (1 connections) — `docs/archive/PARTY_SYSTEM_REFERENCE.md`
+- **Ephemeral Grouping Party Planning** (1 connections) — `docs/archive/PLANNING_ephemeral_grouping.md`
 
 ## Relationships
 
@@ -22,13 +15,14 @@
 ## Source Files
 
 - `docs/archive/PARTY_SYSTEM_REFERENCE.md`
+- `docs/archive/PLANNING_ephemeral_grouping.md`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (50%)
+- INFERRED: 2 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,11 +1,15 @@
 # Cursor Plans Plan
 
-> 2 nodes · cohesion 1.00
+> 6 nodes
 
 ## Key Concepts
 
-- **Critical File Coverage Improvement** (1 connections) — `.cursor/plans/critical_file_coverage_improvement_0129c9ac.plan.md`
-- **Dead Code Analysis and Removal** (1 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
+- **WebSocket-Only Migration** (3 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
+- **Unify Client Message Handling** (2 connections) — `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
+- **WebSocket-Only Architecture** (2 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
+- **WebSocket Best-Practices Remediation** (1 connections) — `.cursor/plans/websocket_best-practices_remediation.plan.md`
+- **SSE Connection Removal** (1 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
+- **Unified Client Message Pipeline** (1 connections) — `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
 
 ## Relationships
 
@@ -13,15 +17,16 @@
 
 ## Source Files
 
-- `.cursor/plans/critical_file_coverage_improvement_0129c9ac.plan.md`
-- `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
+- `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
+- `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
+- `.cursor/plans/websocket_best-practices_remediation.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- EXTRACTED: 6 (60%)
+- INFERRED: 4 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

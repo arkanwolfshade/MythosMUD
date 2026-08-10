@@ -1,49 +1,43 @@
 # Transaction Boundaries Audit
 
-> 23 nodes · cohesion 0.09
+> 16 nodes
 
 ## Key Concepts
 
-- **Transaction Boundaries Audit** (12 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Accessing Game Systems** (4 connections) — `docs/COMMAND_HANDLER_PATTERNS.md`
-- **Transaction Management Patterns** (4 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Audited Operations** (3 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Recommendations** (3 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Persistence Layer** (2 connections) — `docs/COMMAND_HANDLER_PATTERNS.md`
-- **Multi-Step Operations** (2 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Event System** (1 connections) — `docs/COMMAND_HANDLER_PATTERNS.md`
-- **Movement Service** (1 connections) — `docs/COMMAND_HANDLER_PATTERNS.md`
-- **TRANSACTION_BOUNDARIES_AUDIT.md** (1 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **✅ AsyncPersistenceLayer (Async)** (1 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Audit Date** (1 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Current State: ✅ GOOD** (1 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Future Improvements** (1 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Notes** (1 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Pattern 1: Connection Context Manager (PersistenceLayer)** (1 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Pattern 2: Explicit Transaction (AsyncPersistenceLayer)** (1 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Pattern 3: SQLAlchemy Session (ORM)** (1 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Player Save with Inventory** (1 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **PostgresConnection Context Manager** (1 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **References** (1 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Summary** (1 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Verification Checklist** (1 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **UUID** (8 connections)
+- **Any** (7 connections)
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast message according to channel strategy.          Args:             chat** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast room-based message with server-side filtering.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast global message to all connected players.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast party message to party members only, with dampening and mute checks.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Send whisper message to specific player with communication dampening.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast system/admin message to all players.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Handle unknown channel type.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- [[Command Handler Patterns]] (1 shared connections)
-- [[Architecture Decision Records]] (1 shared connections)
+- [Respawn Persistence Bug](Respawn_Persistence_Bug.md) (5 shared connections)
+- [System Audit Status](System_Audit_Status.md) (1 shared connections)
+- [Channel Broadcast Strategies](Channel_Broadcast_Strategies.md) (1 shared connections)
+- [Error Monitor Service](Error_Monitor_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/COMMAND_HANDLER_PATTERNS.md`
-- `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
+- `server/realtime/channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (100%)
+- EXTRACTED: 50 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

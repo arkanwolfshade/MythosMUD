@@ -1,66 +1,53 @@
 # Help and WebSocket Core
 
-> 58 nodes · cohesion 0.04
+> 38 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_core.py** (40 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **process_websocket_command()** (19 connections) — `server/realtime/websocket_handler_commands.py`
-- **get_help_content()** (14 connections) — `server/help/help_content.py`
-- **handle_websocket_message()** (10 connections) — `server/realtime/websocket_handler.py`
-- **test_websocket_handler_help.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
-- **_get_general_help()** (3 connections) — `server/help/help_content.py`
-- **__init__.py** (3 connections) — `server/help/__init__.py`
-- **Test handle_websocket_message routes message.** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_get_help_content()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_get_help_content_with_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_generic_exception()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_generic_exception_should_break()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_websocket_message()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_websocket_message_chat()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_websocket_message_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command_no_aliases_dir()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command_no_app_in_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command_no_app_state()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command_no_player()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command_type_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_get_help_content_general()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
-- **test_get_help_content_specific()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
-- **test_handle_json_decode_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_message()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- *... and 33 more nodes in this community*
+- **npc_config_parsing.py** (14 connections) — `server/npc/npc_config_parsing.py`
+- **.__init__()** (11 connections) — `server/npc/npc_base.py`
+- **to_int_or_default()** (7 connections) — `server/npc/npc_config_parsing.py`
+- **get_combat_stats_dict()** (7 connections) — `server/npc/npc_config_parsing.py`
+- **normalize_determination_points()** (5 connections) — `server/npc/npc_config_parsing.py`
+- **parse_behavior_config()** (5 connections) — `server/npc/npc_config_parsing.py`
+- **_safe_stat_int()** (5 connections) — `server/npc/npc_config_parsing.py`
+- **._safe_get()** (4 connections) — `server/npc/npc_base.py`
+- **._apply_definition_attributes()** (4 connections) — `server/npc/npc_base.py`
+- **.heal()** (4 connections) — `server/npc/npc_base.py`
+- **parse_stats()** (4 connections) — `server/npc/npc_config_parsing.py`
+- **parse_ai_config()** (4 connections) — `server/npc/npc_config_parsing.py`
+- **_compute_max_dp()** (4 connections) — `server/npc/npc_config_parsing.py`
+- **._setup_base_behavior_rules()** (3 connections) — `server/npc/npc_base.py`
+- **._safe_stat_int()** (3 connections) — `server/npc/npc_base.py`
+- **.get_combat_stats()** (3 connections) — `server/npc/npc_base.py`
+- **._sync_dp_stats()** (3 connections) — `server/npc/npc_base.py`
+- **apply_dp_from_source()** (3 connections) — `server/npc/npc_config_parsing.py`
+- **apply_idle_movement_defaults()** (3 connections) — `server/npc/npc_config_parsing.py`
+- **Initialize the NPC base class.** (1 connections) — `server/npc/npc_base.py`
+- **Get attribute from obj with default to avoid lazy-loading issues.** (1 connections) — `server/npc/npc_base.py`
+- **Set npc_type, name, current_room, spawn_room_id from definition.** (1 connections) — `server/npc/npc_base.py`
+- **Setup base behavior rules common to all NPCs.** (1 connections) — `server/npc/npc_base.py`
+- **Return stats[key] as int, or default if missing/None.** (1 connections) — `server/npc/npc_base.py`
+- **Return current_dp, max_dp, dexterity for CombatParticipantData.** (1 connections) — `server/npc/npc_base.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [[WebSocket Command Handler]] (14 shared connections)
-- [[Alias Expansion Logic]] (5 shared connections)
-- [[Pydantic Error Handlers]] (4 shared connections)
-- [[Database Manager Tests]] (3 shared connections)
-- [[WebSocket Handler Helpers]] (3 shared connections)
-- [[WebSocket Message Validator]] (2 shared connections)
-- [[Realtime Websocket Handler]] (2 shared connections)
-- [[WebSocket Handler Tests]] (2 shared connections)
-- [[WebSocket Message Validation]] (2 shared connections)
-- [[Unified Command Handler]] (1 shared connections)
-- [[Commands System Help]] (1 shared connections)
-- [[Standardized Error Responses]] (1 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (16 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [WebSocket Message Handlers](WebSocket_Message_Handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/help/__init__.py`
-- `server/help/help_content.py`
-- `server/realtime/websocket_handler.py`
-- `server/realtime/websocket_handler_commands.py`
-- `server/tests/unit/realtime/test_websocket_handler_core.py`
-- `server/tests/unit/realtime/test_websocket_handler_help.py`
+- `server/npc/npc_base.py`
+- `server/npc/npc_config_parsing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 170 (91%)
-- INFERRED: 16 (9%)
+- EXTRACTED: 115 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,51 +1,52 @@
 # E2E Playwright Conversion Plan
 
-> 31 nodes · cohesion 0.06
+> 22 nodes
 
 ## Key Concepts
 
-- **Convert All E2E Scenarios to Playwright CLI Tests** (13 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Scenario Mapping** (12 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Conversion Strategy** (4 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Key Technical Decisions** (4 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Infrastructure Setup** (3 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **1. Verify/Create Test Infrastructure** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **2. Create Multi-Context Helper** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Accessibility (Already Converted - 1)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Admin Scenarios (4)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Character Scenarios (4)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Command Scenarios (3)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Communication Scenarios (7)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Connection Scenarios (2)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Container Scenarios (4)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Current State** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Dependencies** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Error Handling (Already Converted - 4)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Estimated Timeline** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Example Conversion Pattern** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Lucidity Scenarios (2)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Message Verification** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Movement Scenarios (2)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Multi-Context Pattern** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Muting Scenarios (1)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- *... and 6 more nodes in this community*
+- **_NPCCombatIntegrationDeps** (14 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **._process_combat_attack()** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.start_new_combat_for_mixin()** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **._apply_npc_attack_damage_for_npc_initiated_combat()** (7 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **._broadcast_room_after_npc_death()** (7 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.get_combat_service()** (6 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **UUID** (6 connections)
+- **.get_data_provider()** (5 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.get_messaging_integration()** (4 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.start_new_combat_for_mixin()** (4 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **._broadcast_npc_attack_on_player_started()** (3 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Protocol** (1 connections)
+- **Attributes supplied by NPCCombatIntegrationService (mixin cannot initialize them** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Return combat service dependency.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Return data provider dependency.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Return messaging integration dependency.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Start a new combat from mixin combat pipeline.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Resolve participant combat data and apply the initial attack damage through Comb** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Structured logging / observability trail when NPC-initiated combat begins.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Process combat attack, starting new combat or continuing existing one.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Start a new combat and process initial attack.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Broadcast room occupants update to killer's room after NPC death. Swallows error** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
 
 ## Relationships
 
-- [[E 2 E Di Migration]] (1 shared connections)
-- [[Cursor Plans Convert]] (1 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (9 shared connections)
+- [Health Check Models](Health_Check_Models.md) (3 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (2 shared connections)
+- [Invite and User Schemas](Invite_and_User_Schemas.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
+- `server/services/npc_combat_integration_combat_mixin.py`
 
 ## Audit Trail
 
-- EXTRACTED: 62 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 78 (94%)
+- INFERRED: 5 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

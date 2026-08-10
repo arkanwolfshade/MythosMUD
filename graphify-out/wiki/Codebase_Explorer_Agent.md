@@ -1,57 +1,50 @@
 # Codebase Explorer Agent
 
-> 35 nodes · cohesion 0.06
+> 25 nodes
 
 ## Key Concepts
 
-- **Codebase Explorer Subagent** (13 connections) — `.cursor/agents/codebase-explorer.md`
-- **multiplayer-playwright-testing.md** (10 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
-- **🤖 CRITICAL AI EXECUTOR REQUIREMENTS 🤖** (9 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Cursor Subagents Overview** (6 connections) — `.cursor/agents/README.md`
-- **Capabilities** (5 connections) — `.cursor/agents/codebase-explorer.md`
-- **Example Scenarios** (4 connections) — `.cursor/agents/codebase-explorer.md`
-- **Architecture Analysis** (2 connections) — `.cursor/agents/codebase-explorer.md`
-- **Dependency Research** (2 connections) — `.cursor/agents/codebase-explorer.md`
-- **MANDATORY EXECUTION GUARDS** (2 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **codebase-explorer.md** (1 connections) — `.cursor/agents/codebase-explorer.md`
-- **Best Practices** (1 connections) — `.cursor/agents/codebase-explorer.md`
-- **Finding All Implementations** (1 connections) — `.cursor/agents/codebase-explorer.md`
-- **Integration** (1 connections) — `.cursor/agents/codebase-explorer.md`
-- **Methodology** (1 connections) — `.cursor/agents/codebase-explorer.md`
-- **Notes** (1 connections) — `.cursor/agents/codebase-explorer.md`
-- **Output Format** (1 connections) — `.cursor/agents/codebase-explorer.md`
-- **Parallel Exploration** (1 connections) — `.cursor/agents/codebase-explorer.md`
-- **Pattern Discovery** (1 connections) — `.cursor/agents/codebase-explorer.md`
-- **Performance Considerations** (1 connections) — `.cursor/agents/codebase-explorer.md`
-- **Purpose** (1 connections) — `.cursor/agents/codebase-explorer.md`
-- **Usage** (1 connections) — `.cursor/agents/codebase-explorer.md`
-- **🎯 AVAILABLE SCENARIOS** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
-- **🔄 BACKWARD COMPATIBILITY** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
-- **🚨 CRITICAL AI EXECUTOR REQUIREMENTS 🚨** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
-- **📋 EXECUTION OPTIONS** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
-- *... and 10 more nodes in this community*
+- **FeedbackManager** (21 connections) — `client/src/utils/feedbackManager.ts`
+- **useFeedbackManager()** (13 connections) — `client/src/utils/feedbackManager.ts`
+- **.saveFeedback()** (6 connections) — `client/src/utils/feedbackManager.ts`
+- **feedbackManager.ts** (5 connections) — `client/src/utils/feedbackManager.ts`
+- **feedbackManager.test.ts** (4 connections) — `client/src/utils/__tests__/feedbackManager.test.ts`
+- **.addFeedback()** (4 connections) — `client/src/utils/feedbackManager.ts`
+- **.updateFeedback()** (3 connections) — `client/src/utils/feedbackManager.ts`
+- **.deleteFeedback()** (3 connections) — `client/src/utils/feedbackManager.ts`
+- **.importFeedback()** (3 connections) — `client/src/utils/feedbackManager.ts`
+- **.clearFeedback()** (3 connections) — `client/src/utils/feedbackManager.ts`
+- **FeedbackData** (2 connections) — `client/src/utils/feedbackManager.ts`
+- **.constructor()** (2 connections) — `client/src/utils/feedbackManager.ts`
+- **.generateId()** (2 connections) — `client/src/utils/feedbackManager.ts`
+- **.loadFeedback()** (2 connections) — `client/src/utils/feedbackManager.ts`
+- **.getAllFeedback()** (2 connections) — `client/src/utils/feedbackManager.ts`
+- **.getFeedbackByType()** (2 connections) — `client/src/utils/feedbackManager.ts`
+- **.getFeedbackByComponent()** (2 connections) — `client/src/utils/feedbackManager.ts`
+- **.searchFeedback()** (2 connections) — `client/src/utils/feedbackManager.ts`
+- **.getStats()** (2 connections) — `client/src/utils/feedbackManager.ts`
+- **.exportFeedback()** (2 connections) — `client/src/utils/feedbackManager.ts`
+- **FeedbackStats** (1 connections) — `client/src/utils/feedbackManager.ts`
+- **.getFeedback()** (1 connections) — `client/src/utils/feedbackManager.ts`
+- **.getFeedbackByPriority()** (1 connections) — `client/src/utils/feedbackManager.ts`
+- **.getFeedbackByStatus()** (1 connections) — `client/src/utils/feedbackManager.ts`
+- **.getTrends()** (1 connections) — `client/src/utils/feedbackManager.ts`
 
 ## Relationships
 
-- [[Cursor Bug Agents]] (1 shared connections)
-- [[Cursor Agents Performance]] (1 shared connections)
-- [[Security Auditor Agent]] (1 shared connections)
-- [[Cursor Agents Analyzer]] (1 shared connections)
-- [[Multiplayer Test Rules]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.cursor/agents/README.md`
-- `.cursor/agents/codebase-explorer.md`
-- `.cursor/commands/multiplayer-playwright-testing.md`
-- `e2e-tests/MULTIPLAYER_TEST_RULES.md`
+- `client/src/utils/__tests__/feedbackManager.test.ts`
+- `client/src/utils/feedbackManager.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 79 (100%)
+- EXTRACTED: 90 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

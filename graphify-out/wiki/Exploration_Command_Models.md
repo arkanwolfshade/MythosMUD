@@ -1,55 +1,51 @@
 # Exploration Command Models
 
-> 41 nodes · cohesion 0.08
+> 36 nodes
 
 ## Key Concepts
 
-- **Direction** (18 connections) — `server/models/command_base.py`
-- **LookCommand** (18 connections) — `server/models/command_exploration.py`
-- **test_command_exploration.py** (18 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **GoCommand** (14 connections) — `server/models/command_exploration.py`
-- **command_exploration.py** (8 connections) — `server/models/command_exploration.py`
-- **Direction** (5 connections) — `server/models/command_exploration.py`
-- **Direction** (4 connections) — `server/models/command_admin.py`
-- **.validate_direction_field()** (3 connections) — `server/models/command_admin.py`
-- **.validate_direction()** (3 connections) — `server/models/command_exploration.py`
-- **.validate_direction()** (3 connections) — `server/models/command_exploration.py`
-- **test_go_command_all_directions()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_go_command_missing_direction()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_go_command_required_direction()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_go_command_validate_direction_invalid()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_go_command_validate_direction_valid()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_instance_number_validation_min()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_validate_direction_invalid()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_validate_direction_none()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_validate_direction_valid()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_with_direction()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_with_instance_number()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_with_look_in()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **Validate direction is one of the allowed values.** (2 connections) — `server/models/command_exploration.py`
-- *... and 16 more nodes in this community*
+- **TestNPCCombatRewards** (19 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **test_npc_combat_rewards.py** (4 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **.rewards_service()** (3 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **.mock_persistence()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **.mock_game_mechanics()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **.test_calculate_xp_reward_with_npc_definition()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **.test_calculate_xp_reward_no_xp_value()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **.test_calculate_xp_reward_none_npc()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **.test_calculate_xp_reward_non_dict_stats()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **.test_is_valid_uuid_valid()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **.test_is_valid_uuid_invalid()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **.test_check_player_connection_state_with_connection_manager()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **.test_check_player_connection_state_no_container()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **.test_award_xp_to_killer_success()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **.test_award_xp_to_killer_failure()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **.test_award_xp_to_killer_exception()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **.test_award_xp_to_killer_zero_xp()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **Unit tests for NPC combat rewards.  Tests the NPCCombatRewards class for XP calc** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **Test suite for NPCCombatRewards class.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **Create a mock game mechanics service.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **Create a NPCCombatRewards instance for testing.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **Test NPCCombatRewards initialization.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **Test calculate_xp_reward returns XP from NPC definition.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [[Base Command Models]] (21 shared connections)
-- [[Admin Command Models]] (7 shared connections)
-- [[Spell Registry Costs]] (1 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (4 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_admin.py`
-- `server/models/command_base.py`
-- `server/models/command_exploration.py`
-- `server/tests/unit/models/test_command_exploration.py`
+- `server/tests/unit/services/test_npc_combat_rewards.py`
 
 ## Audit Trail
 
-- EXTRACTED: 136 (87%)
-- INFERRED: 21 (13%)
+- EXTRACTED: 74 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

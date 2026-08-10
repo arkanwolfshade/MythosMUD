@@ -1,0 +1,28 @@
+# admin_auth_service
+
+> 2 nodes
+
+## Key Concepts
+
+- **admin_auth_service()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **Create an AdminAuthService instance.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+
+## Relationships
+
+- [Health Endpoint Spec](Health_Endpoint_Spec.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Player Model Inventory](Player_Model_Inventory.md) (1 shared connections)
+
+## Source Files
+
+- `server/tests/unit/services/test_admin_auth_service.py`
+
+## Audit Trail
+
+- EXTRACTED: 4 (80%)
+- INFERRED: 1 (20%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

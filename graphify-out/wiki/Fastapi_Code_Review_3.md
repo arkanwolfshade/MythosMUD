@@ -1,12 +1,12 @@
 # Fastapi Code Review
 
-> 3 nodes · cohesion 0.67
+> 3 nodes
 
 ## Key Concepts
 
 - **FastAPI Code Review** (2 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **FastAPI Dependency Injection** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
 - **FastAPI Response Models** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
+- **FastAPI Dependency Injection** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
 
 ## Relationships
 
@@ -24,4 +24,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

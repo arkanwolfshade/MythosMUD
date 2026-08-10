@@ -1,51 +1,59 @@
 # Rooms List SQL Bug
 
-> 41 nodes · cohesion 0.05
+> 52 nodes
 
 ## Key Concepts
 
-- **Detailed Findings** (9 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **BUG INVESTIGATION REPORT: Create New Character Button Bug** (9 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
-- **DETAILED FINDINGS** (6 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
-- **Bug Investigation Report: SQL Syntax Error in Rooms List API** (5 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **INVESTIGATION RECOMMENDATIONS** (4 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
-- **ROOT CAUSE ANALYSIS** (4 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
-- **SYSTEM IMPACT ASSESSMENT** (4 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
-- **2. Code Analysis** (3 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
-- **EVIDENCE DOCUMENTATION** (3 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
-- **5. Related Code Patterns** (2 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
-- **2025-12-07_session-sql-syntax-error-rooms-list.md** (1 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **1. Error Log Analysis** (1 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **2. Code Analysis** (1 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **3. Root Cause Analysis** (1 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **4. System Impact Assessment** (1 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **5. Evidence Documentation** (1 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **7. Investigation Recommendations** (1 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **8. Technical Analysis** (1 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **Executive Summary** (1 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **Investigation Completion Checklist** (1 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **Remediation Prompt** (1 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **2025-12-17_session-001_create-character-bug.md** (1 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
-- **1. Bug Behavior Analysis** (1 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
-- **3. State Flow Analysis** (1 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
-- **4. Component Dependencies** (1 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
-- *... and 16 more nodes in this community*
+- **StyleGuideSections.tsx** (37 connections) — `client/src/components/ui/StyleGuideSections.tsx`
+- **StatusPanel.tsx** (26 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **StyleGuide.tsx** (14 connections) — `client/src/components/ui/StyleGuide.tsx`
+- **StatusPanel.test.tsx** (12 connections) — `client/src/components/ui/__tests__/StatusPanel.test.tsx`
+- **useStatusPanel()** (10 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **StyleGuideInputsSection.tsx** (9 connections) — `client/src/components/ui/StyleGuideInputsSection.tsx`
+- **StyleGuideInputBlocks.tsx** (6 connections) — `client/src/components/ui/StyleGuideInputBlocks.tsx`
+- **ConnectionStatus()** (5 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **TerminalCard.tsx** (5 connections) — `client/src/components/ui/TerminalCard.tsx`
+- **PlayerName()** (4 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **HealthStat()** (4 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **LucidityStat()** (4 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **MessagesCount()** (4 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **TerminalCard()** (4 connections) — `client/src/components/ui/TerminalCard.tsx`
+- **PlayerStats** (3 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **StatusPanel()** (3 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **StatGroup()** (3 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **CoreAttributes()** (3 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **HorrorStats()** (3 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **CommandsCount()** (3 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **AllStats()** (3 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **StyleGuideInputsSection()** (3 connections) — `client/src/components/ui/StyleGuideInputsSection.tsx`
+- **getConnectionStatus()** (2 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **hasStat()** (2 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **getStatValue()** (2 connections) — `client/src/components/ui/StatusPanel.tsx`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Command Input Validator](Command_Input_Validator.md) (15 shared connections)
+- [Room Occupant Manager Tests](Room_Occupant_Manager_Tests.md) (4 shared connections)
+- [WebSocket Message Validation](WebSocket_Message_Validation.md) (2 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
+- `client/src/components/ui/StatusPanel.tsx`
+- `client/src/components/ui/StyleGuide.tsx`
+- `client/src/components/ui/StyleGuideInputBlocks.tsx`
+- `client/src/components/ui/StyleGuideInputsSection.tsx`
+- `client/src/components/ui/StyleGuideSections.tsx`
+- `client/src/components/ui/TerminalCard.tsx`
+- `client/src/components/ui/__tests__/StatusPanel.test.tsx`
+- `client/src/components/ui/__tests__/TerminalCard.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (100%)
+- EXTRACTED: 213 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

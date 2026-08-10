@@ -1,37 +1,27 @@
 # Components Map Performance
 
-> 12 nodes · cohesion 0.23
+> 3 nodes
 
 ## Key Concepts
 
-- **MapPerformanceMonitor** (8 connections) — `client/src/components/map/utils/performance.ts`
-- **performance.ts** (6 connections) — `client/src/components/map/utils/performance.ts`
-- **performance.test.ts** (4 connections) — `client/src/components/map/__tests__/performance.test.ts`
-- **debounce()** (3 connections) — `client/src/components/map/utils/performance.ts`
-- **.getAverageRenderTime()** (2 connections) — `client/src/components/map/utils/performance.ts`
-- **.getStats()** (2 connections) — `client/src/components/map/utils/performance.ts`
-- **throttle()** (2 connections) — `client/src/components/map/utils/performance.ts`
-- **isInViewport()** (1 connections) — `client/src/components/map/utils/performance.ts`
-- **.endRender()** (1 connections) — `client/src/components/map/utils/performance.ts`
-- **.getFps()** (1 connections) — `client/src/components/map/utils/performance.ts`
-- **.reset()** (1 connections) — `client/src/components/map/utils/performance.ts`
-- **.startRender()** (1 connections) — `client/src/components/map/utils/performance.ts`
+- **id** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
 
 ## Relationships
 
-- [[Components Map Layout]] (2 shared connections)
+- [Edge Creation Modal](Edge_Creation_Modal.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/__tests__/performance.test.ts`
-- `client/src/components/map/utils/performance.ts`
+- `db/static/schemas/room.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

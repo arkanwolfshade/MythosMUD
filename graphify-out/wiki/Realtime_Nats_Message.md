@@ -1,35 +1,27 @@
 # Realtime Nats Message
 
-> 10 nodes · cohesion 0.20
+> 2 nodes
 
 ## Key Concepts
 
-- **test_nats_message_handler_subzone_events.py** (35 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_cleanup_empty_subzone_subscriptions_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_handle_combat_ended_event()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_handle_npc_took_damage_event()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_unsubscribe_from_subzone_decrease_count()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Unit tests for NATS message handler subzone and event handling.  Tests subzone s** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test unsubscribe_from_subzone decreases count when > 1.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test cleanup_empty_subzone_subscriptions handles NATSError.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test _handle_combat_ended_event delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test _handle_npc_took_damage_event delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **.test_stop_task_already_done()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test stop handles task that's already done.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
 
 ## Relationships
 
-- [[Realtime Nats Message]] (28 shared connections)
-- [[Combat Domain Events]] (3 shared connections)
+- [Combat Health Persistence Fix](Combat_Health_Persistence_Fix.md) (1 shared connections)
+- [AnyIO Code Review](AnyIO_Code_Review.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/services/test_game_tick_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

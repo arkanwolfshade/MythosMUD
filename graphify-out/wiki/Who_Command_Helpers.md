@@ -1,54 +1,52 @@
 # Who Command Helpers
 
-> 46 nodes · cohesion 0.05
+> 25 nodes
 
 ## Key Concepts
 
-- **filter_players_by_name()** (14 connections) — `server/commands/who_commands.py`
-- **format_player_entry()** (13 connections) — `server/commands/who_commands.py`
-- **format_player_location()** (13 connections) — `server/commands/who_commands.py`
-- **test_who_commands_helpers.py** (11 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_entry_error_handling()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_filter_players_by_name_empty_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_filter_players_by_name_found()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_filter_players_by_name_not_found()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_entry()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_entry_admin()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_location_invalid()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_location_valid()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_filter_players_by_name_case_insensitive()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_filter_players_by_name_exact_match()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_filter_players_by_name_no_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_filter_players_by_name_partial_match()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_entry_admin()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_entry_basic()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_entry_missing_attributes()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_invalid()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_non_string()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_none()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_short_format()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_valid()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test filtering players with exact match.** (2 connections) — `server/tests/unit/commands/test_who_commands.py`
-- *... and 21 more nodes in this community*
+- **HealthRepository** (20 connections) — `server/persistence/repositories/health_repository.py`
+- **.update_player_health()** (8 connections) — `server/persistence/repositories/health_repository.py`
+- **._damage_player_inner()** (7 connections) — `server/persistence/repositories/health_repository.py`
+- **Player** (6 connections)
+- **._heal_player_inner()** (6 connections) — `server/persistence/repositories/health_repository.py`
+- **._log_damage_error()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **._update_player_health_inner()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **.damage_player()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **_stats_int()** (4 connections) — `server/persistence/repositories/health_repository.py`
+- **UUID** (4 connections)
+- **.heal_player()** (4 connections) — `server/persistence/repositories/health_repository.py`
+- **.__init__()** (3 connections) — `server/persistence/repositories/health_repository.py`
+- **._calculate_effective_damage()** (3 connections) — `server/persistence/repositories/health_repository.py`
+- **Exception** (2 connections)
+- **Convert stat values to int with a safe fallback.** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Repository for player health persistence operations.      Handles damage, heal** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Initialize the health repository.          Args:             event_bus: Optio** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Calculate effective damage after applying simple resistance rules.          Cu** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Core damage logic without error handling wrapper.** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Log critical damage persistence failure.** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Execute atomic health update via update_player_health procedure.** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Damage a player and persist health changes atomically.          Args:** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Heal a player and persist health changes atomically.** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Core heal logic without error handling wrapper.** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Update player current_dp field atomically.          Args:             player_** (1 connections) — `server/persistence/repositories/health_repository.py`
 
 ## Relationships
 
-- [[Who Command Tests]] (22 shared connections)
-- [[Alias Expansion Logic]] (3 shared connections)
-- [[Services Service Room]] (1 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (7 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (7 shared connections)
+- [Player Creation Service](Player_Creation_Service.md) (4 shared connections)
+- [Container System Architecture](Container_System_Architecture.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/who_commands.py`
-- `server/tests/unit/commands/test_who_commands.py`
-- `server/tests/unit/commands/test_who_commands_helpers.py`
+- `server/persistence/repositories/health_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 135 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 87 (94%)
+- INFERRED: 6 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

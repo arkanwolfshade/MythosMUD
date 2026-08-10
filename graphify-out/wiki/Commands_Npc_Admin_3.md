@@ -1,54 +1,44 @@
 # Commands Npc Admin
 
-> 22 nodes · cohesion 0.13
+> 17 nodes
 
 ## Key Concepts
 
-- **router.py** (30 connections) — `server/commands/npc_admin/router.py`
-- **handle_npc_command()** (16 connections) — `server/commands/npc_admin/router.py`
-- **_extract_npc_subcommand()** (5 connections) — `server/commands/npc_admin/router.py`
-- **_invoke_npc_handler()** (5 connections) — `server/commands/npc_admin/router.py`
-- **_resolve_npc_command_player()** (5 connections) — `server/commands/npc_admin/router.py`
-- **Any** (5 connections) — `server/commands/npc_admin/router.py`
-- **_build_subcommand_map()** (4 connections) — `server/commands/npc_admin/router.py`
-- **test_handle_npc_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_handle_npc_command_unknown_subcommand()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_spawn_command_regression_routing_via_npc_command()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **_get_npc_help()** (3 connections) — `server/commands/npc_admin/router.py`
-- **Test handle_npc_command() when player is not found.** (2 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **AliasStorage** (2 connections) — `server/commands/npc_admin/router.py`
-- **Regression: Ensure /spawn (npc spawn) command is reachable and not removed.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **Test handle_npc_command() with unknown subcommand.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **NPC admin command router and permission validation.** (1 connections) — `server/commands/npc_admin/router.py`
-- **Extract subcommand and normalize args. Returns (subcommand, args, help_result).** (1 connections) — `server/commands/npc_admin/router.py`
-- **Build subcommand to handler mapping. Lazy imports avoid circular dependencies.** (1 connections) — `server/commands/npc_admin/router.py`
-- **Invoke the handler for the given subcommand.** (1 connections) — `server/commands/npc_admin/router.py`
-- **Handle the main NPC admin command with subcommand routing.      Args:         co** (1 connections) — `server/commands/npc_admin/router.py`
-- **Resolve player for NPC command. Returns (player_obj, error).     If error is set** (1 connections) — `server/commands/npc_admin/router.py`
-- **Get NPC admin command help text.** (1 connections) — `server/commands/npc_admin/router.py`
+- **UUID** (17 connections)
+- **_str_id()** (16 connections) — `server/game/party_service.py`
+- **.get_party_for_player()** (8 connections) — `server/game/party_service.py`
+- **.request_party_invite()** (7 connections) — `server/game/party_service.py`
+- **.on_player_disconnect()** (6 connections) — `server/game/party_service.py`
+- **._send_party_invite_to_target()** (5 connections) — `server/game/party_service.py`
+- **.is_leader()** (5 connections) — `server/game/party_service.py`
+- **.is_in_same_party()** (5 connections) — `server/game/party_service.py`
+- **.get_party_members()** (4 connections) — `server/game/party_service.py`
+- **Normalize ID to string for dict keys and membership sets.** (1 connections) — `server/game/party_service.py`
+- **Send party_invite event to the target player only.** (1 connections) — `server/game/party_service.py`
+- **Create a pending party invite and send party_invite event to target.         Tar** (1 connections) — `server/game/party_service.py`
+- **Return the party the player is in, or None.** (1 connections) — `server/game/party_service.py`
+- **Return True if the player is the leader of their current party.** (1 connections) — `server/game/party_service.py`
+- **Return list of party member IDs for the given player (including themselves).** (1 connections) — `server/game/party_service.py`
+- **Return True if both players are in the same party. For combat/validator hook:** (1 connections) — `server/game/party_service.py`
+- **Remove player from any party and disband if they were leader.         Cancel any** (1 connections) — `server/game/party_service.py`
 
 ## Relationships
 
-- [[NPC Admin Commands]] (13 shared connections)
-- [[Commands Npc Admin]] (12 shared connections)
-- [[Alias Expansion Logic]] (2 shared connections)
-- [[NPC Admin API]] (2 shared connections)
-- [[Communication Command Handlers]] (1 shared connections)
-- [[SQLAlchemy Model Base]] (1 shared connections)
-- [[Player Domain Model]] (1 shared connections)
-- [[Commands Admin Shutdown]] (1 shared connections)
+- [Combat DP Persistence Tests](Combat_DP_Persistence_Tests.md) (20 shared connections)
+- [Invite Generate Invites](Invite_Generate_Invites.md) (7 shared connections)
+- [Realtime Conftest Mocks](Realtime_Conftest_Mocks.md) (3 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/npc_admin/router.py`
-- `server/tests/unit/commands/test_npc_admin_commands.py`
+- `server/game/party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 86 (91%)
-- INFERRED: 9 (9%)
+- EXTRACTED: 81 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

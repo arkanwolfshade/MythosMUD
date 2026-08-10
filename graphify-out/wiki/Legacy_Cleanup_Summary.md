@@ -1,50 +1,44 @@
 # Legacy Cleanup Summary
 
-> 31 nodes · cohesion 0.07
+> 20 nodes
 
 ## Key Concepts
 
-- **Cleanup Summary - Legacy Files Removed** (8 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **Files Updated (40+ files)** (7 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **Files Updated (36 files total)** (5 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **📁 Production Data Migration (2025-10-08)** (5 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **📁 Test Data Migration (2025-10-08)** (5 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **Files Deleted** (4 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **Why These Deletions Matter** (4 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **Configuration Files (After Cleanup)** (3 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **Benefits** (2 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **Critical Configuration Files ✅** (2 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **Documentation ✅** (2 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **Rationale** (2 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **CLEANUP_SUMMARY.md** (1 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **1. `server/server_config.yaml` ❌** (1 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **2. `scripts/start_dev.ps1` ❌** (1 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **3. `start_server.py` ❌** (1 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **Clarity ✅** (1 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **Committed to Git ✅** (1 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **Current Startup Scripts (After Cleanup)** (1 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **Invite Tools ✅** (1 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **Maintainability ✅** (1 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **New Production Data Structure** (1 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **New Test Data Structure** (1 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **NOT Committed (User Creates) ❌** (1 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **NPC & Server Files ✅** (1 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- *... and 6 more nodes in this community*
+- **TestPathValidator** (11 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.validator()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **test_path_validator.py** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.zone_transition_rooms()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.test_zone_transition_detection()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.test_broken_zone_transition()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.test_get_room_zone()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.test_missing_zone_info()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.test_one_way_zone_transition()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.test_mismatched_return_path()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Tests for path validator functionality.  Validates room connectivity analysis wi** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test suite for path validation functionality.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Create a path validator instance.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Sample rooms with zone transitions.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test detection of zone transitions in room connections.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test detection of broken zone transitions.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test extraction of zone information from room data.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test handling of rooms with missing zone information.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test one-way exits across zone boundaries.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test detection of mismatched return paths across zones.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Admin Set Stat Command](Admin_Set_Stat_Command.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/CLEANUP_SUMMARY.md`
+- `tools/room_toolkit/room_validator/tests/test_path_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 68 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 38 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

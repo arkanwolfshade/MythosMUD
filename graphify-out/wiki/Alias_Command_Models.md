@@ -1,55 +1,46 @@
 # Alias Command Models
 
-> 30 nodes · cohesion 0.08
+> 20 nodes
 
 ## Key Concepts
 
-- **test_command_alias.py** (17 connections) — `server/tests/unit/models/test_command_alias.py`
-- **UnaliasCommand** (12 connections) — `server/models/command_alias.py`
-- **test_alias_command_alias_name_max_length()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_alias_name_min_length()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_command_max_length()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_validate_command_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_validate_command_none()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_with_command()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_aliases_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_unalias_command_alias_name_max_length()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_unalias_command_alias_name_min_length()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_unalias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_unalias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_cast_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **Unit tests for admin command models.  Tests the admin command models and their v** (2 connections) — `server/tests/unit/models/test_command_admin.py`
-- **Test UnaliasCommand validates alias_name min length.** (2 connections) — `server/tests/unit/models/test_command_alias.py`
-- **Test AliasCommand can have optional command.** (2 connections) — `server/tests/unit/models/test_command_alias.py`
-- **Command for removing an alias.** (1 connections) — `server/models/command_alias.py`
-- **Test UnaliasCommand requires alias_name.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
-- **Test UnaliasCommand calls validate_alias_name.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
-- **Test AliasCommand requires alias_name.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
-- **Test AliasCommand calls validate_alias_name.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
-- **Test AliasCommand calls validate_command_content when command provided.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
-- *... and 5 more nodes in this community*
+- **.get_player_aliases()** (8 connections) — `server/alias_storage.py`
+- **.save_player_aliases()** (7 connections) — `server/alias_storage.py`
+- **.create_alias()** (7 connections) — `server/alias_storage.py`
+- **.add_alias()** (6 connections) — `server/alias_storage.py`
+- **.remove_alias()** (4 connections) — `server/alias_storage.py`
+- **.get_alias()** (4 connections) — `server/alias_storage.py`
+- **.get_alias_count()** (4 connections) — `server/alias_storage.py`
+- **.clear_aliases()** (3 connections) — `server/alias_storage.py`
+- **.validate_alias_name()** (3 connections) — `server/alias_storage.py`
+- **.validate_alias_command()** (3 connections) — `server/alias_storage.py`
+- **Get all aliases for a player.** (1 connections) — `server/alias_storage.py`
+- **Save aliases for a player.** (1 connections) — `server/alias_storage.py`
+- **Add or update an alias for a player.** (1 connections) — `server/alias_storage.py`
+- **Remove an alias for a player.** (1 connections) — `server/alias_storage.py`
+- **Get a specific alias for a player.** (1 connections) — `server/alias_storage.py`
+- **Clear all aliases for a player.** (1 connections) — `server/alias_storage.py`
+- **Get the number of aliases for a player.** (1 connections) — `server/alias_storage.py`
+- **Validate alias name format.** (1 connections) — `server/alias_storage.py`
+- **Validate alias command.** (1 connections) — `server/alias_storage.py`
+- **Create and save a new alias for a player.** (1 connections) — `server/alias_storage.py`
 
 ## Relationships
 
-- [[Base Command Models]] (18 shared connections)
-- [[Command Field Validators]] (1 shared connections)
-- [[Admin Command Models]] (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (10 shared connections)
+- [Alias Expansion Logic](Alias_Expansion_Logic.md) (5 shared connections)
+- [Fastapi Code Review](Fastapi_Code_Review.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/command_alias.py`
-- `server/tests/unit/models/test_command_admin.py`
-- `server/tests/unit/models/test_command_alias.py`
-- `server/tests/unit/models/test_command_magic.py`
+- `server/alias_storage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 86 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 59 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

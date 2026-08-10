@@ -1,37 +1,33 @@
 # Cursor Plans Plan
 
-> 11 nodes · cohesion 0.18
+> 6 nodes
 
 ## Key Concepts
 
-- **Phase 1: Critical Security Issues (High Priority)** (5 connections) — `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
-- **Remediation Strategy** (4 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Phase 2: Type Safety Improvements (Medium Priority)** (3 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Phase 3: Code Organization (Low Priority)** (3 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Task 1.1: Fix Mutable Default Values** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Task 1.2: Standardize model_config Usage** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Task 1.3: Add Security Configuration to All Models** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Task 2.1: Replace dict[str, Any] with Typed Models** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Task 2.2: Add Field Validators Where Needed** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Task 3.1: Create Base Model Classes** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Task 3.2: Consolidate Duplicate Patterns** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Round-Based Combat** (3 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
+- **Combat Bugs Investigation and Fixes** (2 connections) — `.cursor/plans/combat-bugs-investigation-and-fixes_47c9cae4.plan.md`
+- **Combat Round System Refactor** (2 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
+- **First Weapon Switchblade** (1 connections) — `.cursor/plans/first_weapon_switchblade_85972031.plan.md`
+- **Flee Command and Effect** (1 connections) — `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
+- **Combat Action Queue** (1 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
 
 ## Relationships
 
-- [[Cursor Plans Plan]] (1 shared connections)
-- [[Cursor Plans Pydantic]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
-- `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- `.cursor/plans/combat-bugs-investigation-and-fixes_47c9cae4.plan.md`
+- `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
+- `.cursor/plans/first_weapon_switchblade_85972031.plan.md`
+- `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 4 (40%)
+- INFERRED: 6 (60%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

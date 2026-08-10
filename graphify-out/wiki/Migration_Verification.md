@@ -1,35 +1,26 @@
 # Migration Verification
 
-> 10 nodes · cohesion 0.20
+> 2 nodes
 
 ## Key Concepts
 
-- **Migration 019 Verification Report** (7 connections) — `docs/MIGRATION_019_VERIFICATION.md`
-- **Risk Assessment** (4 connections) — `docs/MIGRATION_019_VERIFICATION.md`
-- **Next Steps** (2 connections) — `docs/MIGRATION_019_VERIFICATION.md`
-- **MIGRATION_019_VERIFICATION.md** (1 connections) — `docs/MIGRATION_019_VERIFICATION.md`
-- **Before Production Deployment** (1 connections) — `docs/MIGRATION_019_VERIFICATION.md`
-- **Conclusion** (1 connections) — `docs/MIGRATION_019_VERIFICATION.md`
-- **Low Risk ✅** (1 connections) — `docs/MIGRATION_019_VERIFICATION.md`
-- **Medium Risk ⚠️** (1 connections) — `docs/MIGRATION_019_VERIFICATION.md`
-- **Mitigation** (1 connections) — `docs/MIGRATION_019_VERIFICATION.md`
-- **Verification Summary** (1 connections) — `docs/MIGRATION_019_VERIFICATION.md`
+- **test_create_say_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_say_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [[Migration Verification Complete]] (1 shared connections)
-- [[Migration Verification]] (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/MIGRATION_019_VERIFICATION.md`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

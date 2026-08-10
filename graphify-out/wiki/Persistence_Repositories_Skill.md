@@ -1,35 +1,27 @@
 # Persistence Repositories Skill
 
-> 10 nodes · cohesion 0.27
+> 2 nodes
 
 ## Key Concepts
 
-- **_row_to_skill()** (8 connections) — `server/persistence/repositories/skill_repository.py`
-- **.get_all_skills()** (6 connections) — `server/persistence/repositories/skill_repository.py`
-- **.get_skill_by_id()** (6 connections) — `server/persistence/repositories/skill_repository.py`
-- **.get_skill_by_key()** (6 connections) — `server/persistence/repositories/skill_repository.py`
-- **Skill** (6 connections) — `server/persistence/repositories/skill_repository.py`
-- **Any** (3 connections) — `server/persistence/repositories/skill_repository.py`
-- **Get a skill by key (e.g. accounting, cthulhu_mythos).          Args:** (1 connections) — `server/persistence/repositories/skill_repository.py`
-- **Map procedure result row to Skill model.** (1 connections) — `server/persistence/repositories/skill_repository.py`
-- **Get all skills in the catalog.          Returns:             list[Skill]: All sk** (1 connections) — `server/persistence/repositories/skill_repository.py`
-- **Get a skill by ID.          Args:             skill_id: Skill primary key.** (1 connections) — `server/persistence/repositories/skill_repository.py`
+- **.test_tick_loop_handles_cancellation()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test _tick_loop handles cancellation gracefully.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
 
 ## Relationships
 
-- [[NPC Admin API]] (9 shared connections)
-- [[Game Service Bundle]] (6 shared connections)
+- [Combat Health Persistence Fix](Combat_Health_Persistence_Fix.md) (1 shared connections)
+- [AnyIO Code Review](AnyIO_Code_Review.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/repositories/skill_repository.py`
+- `server/tests/unit/services/test_game_tick_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (90%)
-- INFERRED: 4 (10%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

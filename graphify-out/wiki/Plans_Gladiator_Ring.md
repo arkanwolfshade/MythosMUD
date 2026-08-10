@@ -1,42 +1,34 @@
 # Plans Gladiator Ring
 
-> 17 nodes · cohesion 0.12
+> 9 nodes
 
 ## Key Concepts
 
-- **Gladiator Ring (Arena) Implementation Plan** (12 connections) — `docs/plans/gladiator_ring_arena_plan.md`
-- **Todos (detailed)** (5 connections) — `docs/plans/gladiator-ring-arena-implementation-todos.md`
-- **gladiator-ring-arena-implementation-todos.md** (1 connections) — `docs/plans/gladiator-ring-arena-implementation-todos.md`
-- **Phase 1: Schema and world data (Codebase Explorer for DML/schema pattern discovery) — DONE** (1 connections) — `docs/plans/gladiator-ring-arena-implementation-todos.md`
-- **Phase 2: Tutorial exit and respawn (main agent)** (1 connections) — `docs/plans/gladiator-ring-arena-implementation-todos.md`
-- **Phase 3: NPC startup — also spawn in arena (main agent) — DONE** (1 connections) — `docs/plans/gladiator-ring-arena-implementation-todos.md`
-- **Phase 4: Tests and validation (main agent / Test Suite Analyzer) — DONE** (1 connections) — `docs/plans/gladiator-ring-arena-implementation-todos.md`
-- **Plan frontmatter todos (for Cursor plan file)** (1 connections) — `docs/plans/gladiator-ring-arena-implementation-todos.md`
-- **Subagent usage** (1 connections) — `docs/plans/gladiator-ring-arena-implementation-todos.md`
-- **gladiator_ring_arena_plan.md** (1 connections) — `docs/plans/gladiator_ring_arena_plan.md`
-- **1. Schema and data: zone, subzone, rooms, links** (1 connections) — `docs/plans/gladiator_ring_arena_plan.md`
-- **2. Tutorial exit and respawn** (1 connections) — `docs/plans/gladiator_ring_arena_plan.md`
-- **3. NPCs also spawn in arena** (1 connections) — `docs/plans/gladiator_ring_arena_plan.md`
-- **4. Tests and validation** (1 connections) — `docs/plans/gladiator_ring_arena_plan.md`
-- **Frontmatter todos (for Cursor plan file)** (1 connections) — `docs/plans/gladiator_ring_arena_plan.md`
-- **Implementation references** (1 connections) — `docs/plans/gladiator_ring_arena_plan.md`
-- **Plan summary** (1 connections) — `docs/plans/gladiator_ring_arena_plan.md`
+- **populate_test_npc_databases.py** (6 connections) — `scripts/populate_test_npc_databases.py`
+- **main()** (5 connections) — `scripts/populate_test_npc_databases.py`
+- **get_npc_data_from_source()** (4 connections) — `scripts/populate_test_npc_databases.py`
+- **populate_database()** (4 connections) — `scripts/populate_test_npc_databases.py`
+- **get_npc_database_url()** (3 connections) — `scripts/populate_test_npc_databases.py`
+- **Get NPC database URL for the specified environment.      Args:         environme** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **Extract NPC data from the source PostgreSQL database.      Args:         source_** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **Populate a PostgreSQL database with NPC data.      Args:         target_url: Pos** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **Main function to populate test NPC databases.** (1 connections) — `scripts/populate_test_npc_databases.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/plans/gladiator-ring-arena-implementation-todos.md`
-- `docs/plans/gladiator_ring_arena_plan.md`
+- `scripts/populate_test_npc_databases.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 24 (92%)
+- INFERRED: 2 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

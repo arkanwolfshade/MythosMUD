@@ -1,35 +1,26 @@
 # Cursor Plans Convert
 
-> 11 nodes · cohesion 0.18
+> 2 nodes
 
 ## Key Concepts
 
-- **Implementation Steps** (11 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Phase 10: Integration & Testing (2-3 hours)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Phase 1: Infrastructure Verification (1-2 hours)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Phase 2: Single-Player Scenarios (2-3 hours)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Phase 3: Connection & Movement (3-4 hours)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Phase 4: Communication Scenarios (4-5 hours)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Phase 5: Admin Scenarios (3-4 hours)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Phase 6: Character Management (3-4 hours)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Phase 7: Container Scenarios (4-5 hours)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Phase 8: Commands & Muting (2-3 hours)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Phase 9: Lucidity System (2-3 hours)** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
+- **Temporal System 4:1 Calendar Conversion** (1 connections) — `.cursor/plans/convert_temporal_system_to_4_1_ratio_with_real-world_calendar_f530d460.plan.md`
+- **4:1 Temporal Compression Ratio** (1 connections) — `.cursor/plans/convert_temporal_system_to_4_1_ratio_with_real-world_calendar_f530d460.plan.md`
 
 ## Relationships
 
-- [[E2E Playwright Conversion Plan]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
+- `.cursor/plans/convert_temporal_system_to_4_1_ratio_with_real-world_calendar_f530d460.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

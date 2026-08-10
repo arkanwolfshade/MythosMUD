@@ -1,43 +1,35 @@
 # Memory Leak Audit
 
-> 16 nodes · cohesion 0.12
+> 8 nodes
 
 ## Key Concepts
 
-- **Memory Leak Audit Report** (11 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **Recommendations** (4 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **Common Patterns Identified** (3 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
+- **Event Ownership Matrix** (2 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
+- **Event Subscription Cleanup Patterns** (2 connections) — `docs/EVENT_SUBSCRIPTION_CLEANUP_PATTERNS.md`
+- **Memory Leak Audit Report** (2 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
+- **Memory Leak Metrics Usage Guide** (2 connections) — `docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md`
 - **Event Subscription service_id Tracking** (2 connections) — `docs/EVENT_SUBSCRIPTION_CLEANUP_PATTERNS.md`
 - **Memory Leak Audit Categories** (2 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **MEMORY_LEAK_AUDIT_REPORT.md** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **Audit Completion Summary** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **Audit Methodology** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **Executive Summary** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **✅ Good Patterns (No Leaks)** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **High Priority Fixes** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **Low Priority Improvements** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **Medium Priority Fixes** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **Monitoring Recommendations** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **⚠️ Patterns to Watch** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **Risk Assessment Summary** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
+- **Event Publishing Layers** (1 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
+- **Memory Leak Monitoring Endpoints** (1 connections) — `docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md`
 
 ## Relationships
 
-- [[Event Subscription Cleanup]] (1 shared connections)
-- [[Memory Leak Audit]] (1 shared connections)
-- [[Memory Leak Metrics]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
+- `docs/EVENT_OWNERSHIP_MATRIX.md`
 - `docs/EVENT_SUBSCRIPTION_CLEANUP_PATTERNS.md`
 - `docs/MEMORY_LEAK_AUDIT_REPORT.md`
+- `docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (91%)
-- INFERRED: 3 (9%)
+- EXTRACTED: 8 (57%)
+- INFERRED: 6 (43%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

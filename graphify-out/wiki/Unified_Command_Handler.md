@@ -1,63 +1,56 @@
 # Unified Command Handler
 
-> 61 nodes · cohesion 0.05
+> 82 nodes
 
 ## Key Concepts
 
-- **_prepare_command_for_processing()** (21 connections) — `server/command_handler_unified.py`
-- **process_command_unified()** (19 connections) — `server/command_handler_unified.py`
-- **_handle_special_command_routing()** (18 connections) — `server/command_handler_unified.py`
-- **Any** (14 connections) — `server/command_handler_unified.py`
-- **CommandRequest** (11 connections) — `server/command_handler_unified.py`
-- **CommandExecutionRequest** (11 connections) — `server/command_handler_unified.py`
-- **test_command_handler_unified.py** (10 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **_check_rate_limit()** (10 connections) — `server/command_handler_unified.py`
-- **handle_command()** (10 connections) — `server/command_handler_unified.py`
-- **process_command()** (9 connections) — `server/command_handler_unified.py`
-- **TestProcessCommandUnified** (7 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **TestPrepareCommandForProcessing** (7 connections) — `server/tests/unit/commands/test_command_preparation.py`
-- **_get_grace_check_context()** (7 connections) — `server/command_handler_unified.py`
-- **AliasStorage** (7 connections) — `server/command_handler_unified.py`
-- **TestLegacyFunctions** (6 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **get_help_content()** (6 connections) — `server/command_handler_unified.py`
-- **TestHandleCommand** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_handle_command_success()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_handle_command_unauthorized()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **test_command_preparation.py** (4 connections) — `server/tests/unit/commands/test_command_preparation.py`
-- **.test_get_help_content()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_get_help_content_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_process_command_legacy()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_process_command_unified_blocked()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_process_command_unified_normal_processing()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- *... and 36 more nodes in this community*
+- **ConnectionCleaner** (28 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **test_connection_cleaner.py** (22 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **Any** (15 connections)
+- **UUID** (12 connections)
+- **.cleanup_ghost_players()** (9 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.prune_stale_players()** (8 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.cleanup_orphaned_data()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.cleanup_dead_connections()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._close_and_remove_stale_websocket()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._cleanup_dead_connections_for_player()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.check_and_cleanup()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._remove_stale_player_data()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_online_player_ids()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._filter_actual_ghost_players()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.force_cleanup()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **_stale_prune_max_age_seconds()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.__init__()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._identify_stale_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_player_id_from_metadata()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_players_to_check()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_potential_ghost_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._remove_ghost_players_from_room()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **__init__.py** (3 connections) — `server/realtime/maintenance/__init__.py`
+- **._identify_stale_connections()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._is_websocket_dead()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [[Alias Expansion Logic]] (19 shared connections)
-- [[Command Alias Handling]] (16 shared connections)
-- [[Commands Command Handler]] (7 shared connections)
-- [[Command Request App State]] (5 shared connections)
-- [[Command Commands Validation]] (5 shared connections)
-- [[Grace Period Blocking Tests]] (3 shared connections)
-- [[Command Input Utilities]] (3 shared connections)
-- [[Commands Command Validation]] (2 shared connections)
-- [[Command Helper Utilities]] (2 shared connections)
-- [[WebSocket Command Handler]] (2 shared connections)
-- [[Catatonia Check Logic]] (1 shared connections)
-- [[Admin NPC Schemas]] (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (9 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (5 shared connections)
+- [Room Occupant Events](Room_Occupant_Events.md) (4 shared connections)
+- [Message Broadcaster Core](Message_Broadcaster_Core.md) (2 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
 
 ## Source Files
 
-- `server/command_handler_unified.py`
-- `server/tests/unit/commands/test_command_handler_unified.py`
-- `server/tests/unit/commands/test_command_preparation.py`
+- `server/realtime/maintenance/__init__.py`
+- `server/realtime/maintenance/connection_cleaner.py`
+- `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 244 (95%)
-- INFERRED: 13 (5%)
+- EXTRACTED: 250 (97%)
+- INFERRED: 9 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

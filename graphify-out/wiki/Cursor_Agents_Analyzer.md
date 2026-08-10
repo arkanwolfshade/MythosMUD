@@ -1,52 +1,55 @@
 # Cursor Agents Analyzer
 
-> 26 nodes · cohesion 0.08
+> 58 nodes
 
 ## Key Concepts
 
-- **Test Suite Analyzer Subagent** (16 connections) — `.cursor/agents/test-analyzer.md`
-- **Capabilities** (5 connections) — `.cursor/agents/test-analyzer.md`
-- **Example Scenarios** (4 connections) — `.cursor/agents/test-analyzer.md`
-- **Coverage Requirements** (3 connections) — `.cursor/agents/test-analyzer.md`
-- **Test Quality Standards** (3 connections) — `.cursor/agents/test-analyzer.md`
-- **server-test-remediation.md** (2 connections) — `.cursor/commands/server-test-remediation.md`
-- **test-analyzer.md** (1 connections) — `.cursor/agents/test-analyzer.md`
-- **Best Practices** (1 connections) — `.cursor/agents/test-analyzer.md`
-- **Coverage Analysis** (1 connections) — `.cursor/agents/test-analyzer.md`
-- **Coverage Gap Analysis** (1 connections) — `.cursor/agents/test-analyzer.md`
-- **Critical Files Requiring High Coverage** (1 connections) — `.cursor/agents/test-analyzer.md`
-- **Critical Path Coverage** (1 connections) — `.cursor/agents/test-analyzer.md`
-- **Forbidden Test Patterns** (1 connections) — `.cursor/agents/test-analyzer.md`
-- **Gap Identification** (1 connections) — `.cursor/agents/test-analyzer.md`
-- **Integration** (1 connections) — `.cursor/agents/test-analyzer.md`
-- **Methodology** (1 connections) — `.cursor/agents/test-analyzer.md`
-- **Notes** (1 connections) — `.cursor/agents/test-analyzer.md`
-- **Output Format** (1 connections) — `.cursor/agents/test-analyzer.md`
-- **Overall Coverage** (1 connections) — `.cursor/agents/test-analyzer.md`
-- **Performance Considerations** (1 connections) — `.cursor/agents/test-analyzer.md`
-- **Purpose** (1 connections) — `.cursor/agents/test-analyzer.md`
-- **Recommendations** (1 connections) — `.cursor/agents/test-analyzer.md`
-- **Required Test Patterns** (1 connections) — `.cursor/agents/test-analyzer.md`
-- **Test Quality Assessment** (1 connections) — `.cursor/agents/test-analyzer.md`
-- **Test Quality Review** (1 connections) — `.cursor/agents/test-analyzer.md`
-- *... and 1 more nodes in this community*
+- **test_command_processor.py** (39 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_process_command_string_attribute_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_get_command_help_attribute_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_command_processor_initialization()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_process_command_string_success()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_process_command_string_value_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_process_command_string_type_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_process_command_string_key_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_process_command_string_runtime_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_extract_attributes_basic()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_extract_attributes_missing_attribute()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_is_combat_command_attack()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_is_combat_command_punch()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_is_combat_command_kick()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_is_combat_command_strike()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_is_combat_command_non_combat()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_extract_command_data_basic()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_extract_command_data_with_target()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_extract_command_data_combat_target()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_extract_command_data_player_name()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_extract_command_data_multiple_attributes()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_validate_command_safety_safe()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_validate_command_safety_unsafe()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_get_command_help_success()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_get_command_help_none()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [[Cursor Commands Remediation]] (2 shared connections)
-- [[Codebase Explorer Agent]] (1 shared connections)
+- [Async Room Loading Tests](Async_Room_Loading_Tests.md) (4 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
+- [Cursor Skills Delight](Cursor_Skills_Delight.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/agents/test-analyzer.md`
-- `.cursor/commands/server-test-remediation.md`
+- `server/tests/unit/utils/test_command_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 124 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

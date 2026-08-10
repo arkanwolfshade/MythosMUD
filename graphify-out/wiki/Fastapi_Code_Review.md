@@ -1,47 +1,42 @@
 # Fastapi Code Review
 
-> 22 nodes · cohesion 0.09
+> 15 nodes
 
 ## Key Concepts
 
-- **FastAPI Code Review - Anti-Patterns and Best Practices** (9 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **Medium Priority Issues** (9 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **Critical Issues** (4 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **Summary of Recommendations** (4 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **FASTAPI_CODE_REVIEW.md** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **1. ✅ **Inconsistent Response Models** - **RESOLVED**** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **2. 🟡 **Fat Endpoints with Business Logic** - **IN PROGRESS**** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **3. ✅ **Direct app.state Access Instead of Dependency Injection** - **RESOLVED**** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **4. ⚠️ **Inconsistent Router Prefix Patterns**** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **5. ✅ **Monitoring Endpoints in main.py Instead of Router** - **RESOLVED**** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **6. ✅ **Missing Type Hints in Some Endpoints** - **RESOLVED**** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **7. ✅ **Inconsistent Error Handling** - **RESOLVED**** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **Executive Summary** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **Immediate Actions (Critical)** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **Long-term (Low Priority)** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **Next Steps** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **Other routers** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **Positive Aspects** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **Routers with `/api/` prefix defined in router** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **Routers without `/api/` prefix (added in factory)** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **Routers without `/api/` prefix (root-level or special)** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **Short-term (Medium Priority)** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
+- **._get_alias_file_path()** (7 connections) — `server/alias_storage.py`
+- **._validate_alias_payload()** (7 connections) — `server/alias_storage.py`
+- **._load_alias_data()** (6 connections) — `server/alias_storage.py`
+- **._save_alias_data()** (6 connections) — `server/alias_storage.py`
+- **Path** (5 connections)
+- **Any** (4 connections)
+- **.backup_aliases()** (4 connections) — `server/alias_storage.py`
+- **.delete_player_aliases()** (3 connections) — `server/alias_storage.py`
+- **.__init__()** (2 connections) — `server/alias_storage.py`
+- **Get the file path for a player's aliases.** (1 connections) — `server/alias_storage.py`
+- **Load alias data from JSON file.** (1 connections) — `server/alias_storage.py`
+- **Save alias data to JSON file.** (1 connections) — `server/alias_storage.py`
+- **Delete a player's alias file.** (1 connections) — `server/alias_storage.py`
+- **Create a backup of a player's aliases.** (1 connections) — `server/alias_storage.py`
+- **Validate alias payload against the shared schema when available.          Args:** (1 connections) — `server/alias_storage.py`
 
 ## Relationships
 
-- [[Fastapi Code Review]] (1 shared connections)
-- [[Logging MDC Code Review]] (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (7 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (2 shared connections)
+- [Alias Command Models](Alias_Command_Models.md) (2 shared connections)
+- [E 2 E Ai Execution](E_2_E_Ai_Execution.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/FASTAPI_CODE_REVIEW.md`
+- `server/alias_storage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 48 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

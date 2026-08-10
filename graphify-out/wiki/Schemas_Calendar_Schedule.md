@@ -1,34 +1,25 @@
 # Schemas Calendar Schedule
 
-> 10 nodes · cohesion 0.20
+> 1 nodes
 
 ## Key Concepts
 
-- **properties** (10 connections) — `schemas/calendar/schedule.schema.json`
-- **id** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **name** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **notes** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **pattern** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **__init__.py** (0 connections) — `server/tests/unit/schemas/__init__.py`
 
 ## Relationships
 
-- [[Schemas Calendar Schedule]] (7 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `server/tests/unit/schemas/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

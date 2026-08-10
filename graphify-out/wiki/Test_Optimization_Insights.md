@@ -1,52 +1,66 @@
 # Test Optimization Insights
 
-> 36 nodes · cohesion 0.06
+> 42 nodes
 
 ## Key Concepts
 
-- **Test Suite Quality Audit - Executive Summary** (13 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Critical Insights** (12 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Recommended Decision** (7 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Financial Impact (If You're Tracking Dev Time)** (5 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Final Recommendation** (3 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Answer to Original Question** (2 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Key Findings** (2 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Test Value Distribution** (2 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **TL;DR - Answer to Your Question** (2 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **"What percentage of tests provide critical coverage?"** (2 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **1. Infrastructure Tests are the Main Optimization Target** (1 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **2. Regression Tests are 100% High-Value** (1 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **3. Coverage Tests Written for Metrics, Not Quality** (1 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **4. No Parametrized Tests (Major Opportunity)** (1 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **5. Critical Gaps in New Architecture** (1 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **By Category** (1 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **CI/CD Time Saved** (1 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Commit to full 2-month optimization plan** (1 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Comparison to Industry Benchmarks** (1 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Developer Time Saved** (1 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Example** (1 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Example Low-Value Test** (1 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Examples** (1 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Finding** (1 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Implement gap filling only (skip pruning)** (1 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- *... and 11 more nodes in this community*
+- **lifespan.py** (42 connections) — `server/app/lifespan.py`
+- **lifespan()** (15 connections) — `server/app/lifespan.py`
+- **_startup_application()** (13 connections) — `server/app/lifespan.py`
+- **lifespan_event_subscriptions.py** (11 connections) — `server/app/lifespan_event_subscriptions.py`
+- **setup_connection_manager()** (11 connections) — `server/app/lifespan_startup.py`
+- **_shutdown_with_error_handling()** (10 connections) — `server/app/lifespan.py`
+- **subscribe_quest_events()** (9 connections) — `server/app/lifespan_event_subscriptions.py`
+- **update_logging_with_player_service()** (8 connections) — `server/structured_logging/enhanced_logging_config.py`
+- **subscribe_room_occupants_refresh()** (7 connections) — `server/app/lifespan_event_subscriptions.py`
+- **TestLifespan** (6 connections) — `server/tests/unit/test_main.py`
+- **_cleanup_container_on_error()** (5 connections) — `server/app/lifespan.py`
+- **_calculate_metrics_delta()** (4 connections) — `server/app/lifespan.py`
+- **_persist_metrics_to_file()** (4 connections) — `server/app/lifespan.py`
+- **_log_memory_metrics_periodically()** (4 connections) — `server/app/lifespan.py`
+- **FastAPI** (4 connections)
+- **_persist_mythos_state_on_error()** (4 connections) — `server/app/lifespan.py`
+- **.test_lifespan_success()** (4 connections) — `server/tests/unit/test_main.py`
+- **.test_lifespan_shutdown()** (4 connections) — `server/tests/unit/test_main.py`
+- **Any** (3 connections)
+- **test_setup_connection_manager()** (3 connections) — `server/tests/unit/app/test_lifespan_startup.py`
+- **test_setup_connection_manager_no_manager()** (3 connections) — `server/tests/unit/app/test_lifespan_startup.py`
+- **.test_lifespan_initialization_failure()** (3 connections) — `server/tests/unit/test_main.py`
+- **Application lifecycle management for MythosMUD server.  This module handles appl** (1 connections) — `server/app/lifespan.py`
+- **Calculate metrics delta between startup and shutdown.** (1 connections) — `server/app/lifespan.py`
+- **Persist metrics to file in JSON format.** (1 connections) — `server/app/lifespan.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [[Audit Executive Summary]] (2 shared connections)
-- [[Summary Archive Architecture]] (1 shared connections)
-- [[Test Quality Audit]] (1 shared connections)
+- [MP Regeneration Service](MP_Regeneration_Service.md) (12 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (10 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (9 shared connections)
+- [Memory Leak Metrics](Memory_Leak_Metrics.md) (7 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (7 shared connections)
+- [Invite and User Schemas](Invite_and_User_Schemas.md) (5 shared connections)
+- [Monitoring Response Models](Monitoring_Response_Models.md) (4 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (4 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (3 shared connections)
+- [Party Service Management](Party_Service_Management.md) (3 shared connections)
+- [Who Command Tests](Who_Command_Tests.md) (3 shared connections)
+- [Merge Refactoring Summary](Merge_Refactoring_Summary.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- `server/app/lifespan.py`
+- `server/app/lifespan_event_subscriptions.py`
+- `server/app/lifespan_startup.py`
+- `server/structured_logging/enhanced_logging_config.py`
+- `server/tests/unit/app/test_lifespan_startup.py`
+- `server/tests/unit/test_main.py`
 
 ## Audit Trail
 
-- EXTRACTED: 76 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 188 (95%)
+- INFERRED: 9 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

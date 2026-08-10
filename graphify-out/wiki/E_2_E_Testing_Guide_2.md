@@ -1,33 +1,25 @@
 # E 2 E Testing Guide
 
-> 9 nodes · cohesion 0.22
+> 1 nodes
 
 ## Key Concepts
 
-- **Common Issues** (6 connections) — `docs/E2E_TESTING_GUIDE.md`
-- **Troubleshooting** (4 connections) — `docs/E2E_TESTING_GUIDE.md`
-- **Debug Mode Usage** (1 connections) — `docs/E2E_TESTING_GUIDE.md`
-- **Issue: "Cannot find module" or dependency errors** (1 connections) — `docs/E2E_TESTING_GUIDE.md`
-- **Issue: "Login failed - username field not found"** (1 connections) — `docs/E2E_TESTING_GUIDE.md`
-- **Issue: "Test database not found"** (1 connections) — `docs/E2E_TESTING_GUIDE.md`
-- **Issue: "Tests fail in CI but pass locally"** (1 connections) — `docs/E2E_TESTING_GUIDE.md`
-- **Issue: "Timeout waiting for message"** (1 connections) — `docs/E2E_TESTING_GUIDE.md`
-- **Viewing Test Reports** (1 connections) — `docs/E2E_TESTING_GUIDE.md`
+- **Zustand Stores** (0 connections) — `client/README.md`
 
 ## Relationships
 
-- [[E 2 E Testing Guide]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/E2E_TESTING_GUIDE.md`
+- `client/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

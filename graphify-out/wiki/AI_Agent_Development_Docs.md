@@ -1,53 +1,55 @@
 # AI Agent Development Docs
 
-> 53 nodes · cohesion 0.04
+> 49 nodes
 
 ## Key Concepts
 
-- **=��� MythosMUD G�� AI Agent Development Guide** (21 connections) — `docs/DEVELOPMENT_AI.md`
-- **=��� AI Agent DevelopmentRules** (6 connections) — `docs/DEVELOPMENT_AI.md`
-- ****GitHub Issues Workflow**** (5 connections) — `docs/DEVELOPMENT_AI.md`
-- **=��� Common AI Agent Tasks** (4 connections) — `docs/DEVELOPMENT_AI.md`
-- **=��� Future Considerations for AI Agents** (4 connections) — `docs/DEVELOPMENT_AI.md`
-- **=���n+� Project Architecture for AI Understanding** (4 connections) — `docs/DEVELOPMENT_AI.md`
-- **=��� Security Considerations for AI Agents** (4 connections) — `docs/DEVELOPMENT_AI.md`
-- **=�ī Game Mechanics for AI Understanding** (4 connections) — `docs/DEVELOPMENT_AI.md`
-- **=�ܿ Common Pitfalls for AI Agents** (3 connections) — `docs/DEVELOPMENT_AI.md`
-- **=��� Essential Reading for AI Agents** (3 connections) — `docs/DEVELOPMENT_AI.md`
-- **=���n+� Development Environment for AI Agents** (3 connections) — `docs/DEVELOPMENT_AI.md`
-- **=��P AI Agent Communication** (3 connections) — `docs/DEVELOPMENT_AI.md`
-- **=��� Testing Patterns for AI Agents** (3 connections) — `docs/DEVELOPMENT_AI.md`
-- **🏗️ CRITICAL ARCHITECTURE UPDATES (December 2025)** (2 connections) — `docs/DEVELOPMENT_AI.md`
-- **=��� Task Tracking with GitHub Issues** (2 connections) — `docs/DEVELOPMENT_AI.md`
-- **=�Ļ AI Agent Context & Personality** (2 connections) — `docs/DEVELOPMENT_AI.md`
-- ****Adding New Features**** (1 connections) — `docs/DEVELOPMENT_AI.md`
-- ****AI-Specific Enhancements**** (1 connections) — `docs/DEVELOPMENT_AI.md`
-- ****Architecture Evolution**** (1 connections) — `docs/DEVELOPMENT_AI.md`
-- ****Avoid These Patterns**** (1 connections) — `docs/DEVELOPMENT_AI.md`
-- ****Backend (Python/FastAPI)**** (1 connections) — `docs/DEVELOPMENT_AI.md`
-- ****Code Review Patterns**** (1 connections) — `docs/DEVELOPMENT_AI.md`
-- ****Common Pitfalls to Avoid**** (1 connections) — `docs/DEVELOPMENT_AI.md`
-- ****Communication Protocol**** (1 connections) — `docs/DEVELOPMENT_AI.md`
-- ****Completing Work**** (1 connections) — `docs/DEVELOPMENT_AI.md`
-- *... and 28 more nodes in this community*
+- **collect_inventory.py** (17 connections) — `server/game/quest/collect_inventory.py`
+- **Any** (14 connections)
+- **consume_prototype_from_player()** (13 connections) — `server/game/quest/collect_inventory.py`
+- **count_prototype_in_stacks()** (12 connections) — `server/game/quest/collect_inventory.py`
+- **collect_player_stacks()** (10 connections) — `server/game/quest/collect_inventory.py`
+- **test_collect_inventory.py** (10 connections) — `server/tests/unit/game/test_collect_inventory.py`
+- **_consume_from_stack_list()** (8 connections) — `server/game/quest/collect_inventory.py`
+- **_snapshot_holdings()** (7 connections) — `server/game/quest/collect_inventory.py`
+- **_apply_holdings()** (6 connections) — `server/game/quest/collect_inventory.py`
+- **_stack_prototype_id()** (5 connections) — `server/game/quest/collect_inventory.py`
+- **_stack_quantity()** (5 connections) — `server/game/quest/collect_inventory.py`
+- **_nested_item_dicts()** (5 connections) — `server/game/quest/collect_inventory.py`
+- **_consume_from_equipped()** (5 connections) — `server/game/quest/collect_inventory.py`
+- **.get_equipped_items()** (5 connections) — `server/models/player.py`
+- **_dict_stacks_from_callable()** (4 connections) — `server/game/quest/collect_inventory.py`
+- **_dict_stacks_from_equipped()** (4 connections) — `server/game/quest/collect_inventory.py`
+- **_deepcopy_dict_stacks()** (4 connections) — `server/game/quest/collect_inventory.py`
+- **_deepcopy_equipped_map()** (4 connections) — `server/game/quest/collect_inventory.py`
+- **.set_inventory()** (3 connections) — `server/models/player.py`
+- **.set_equipped_items()** (3 connections) — `server/models/player.py`
+- **test_count_prototype_in_stacks_top_level()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
+- **test_count_prototype_in_stacks_nested_container()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
+- **test_consume_prototype_from_player_partial_stack()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
+- **test_consume_prototype_from_player_insufficient_returns_false()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
+- **test_collect_player_stacks_merges_inventory_and_equipped()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [[Development Ai]] (3 shared connections)
-- [[Development Ai Agents]] (1 shared connections)
-- [[Documentation Updates Archive]] (1 shared connections)
-- [[Development Ai E 2 E]] (1 shared connections)
+- [E2E Suite Spec Helpers](E2E_Suite_Spec_Helpers.md) (6 shared connections)
+- [Player Creation Service](Player_Creation_Service.md) (3 shared connections)
+- [Quest Service Core](Quest_Service_Core.md) (1 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/DEVELOPMENT_AI.md`
+- `server/game/quest/collect_inventory.py`
+- `server/models/player.py`
+- `server/tests/unit/game/test_collect_inventory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 110 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 174 (95%)
+- INFERRED: 9 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

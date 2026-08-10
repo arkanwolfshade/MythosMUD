@@ -1,16 +1,15 @@
 # Cursor Skills Mythosmud
 
-> 7 nodes · cohesion 0.29
+> 6 nodes
 
 ## Key Concepts
 
-- **MythosMUD ADR Authoring** (6 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
-- **SKILL.md** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
-- **Index Update** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
-- **Location** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
-- **Reference** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
-- **Structure** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
-- **Template** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
+- **MythosMUD Full-Stack Feature Skill** (4 connections) — `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
+- **MythosMUD Database Placement Skill** (2 connections) — `.cursor/skills/mythosmud-database-placement/SKILL.md`
+- **MythosMUD COPPA Checklist Skill** (1 connections) — `.cursor/skills/mythosmud-coppa-checklist/SKILL.md`
+- **MythosMUD OpenAPI Workflow Skill** (1 connections) — `.cursor/skills/mythosmud-openapi-workflow/SKILL.md`
+- **player_id is UUID** (1 connections) — `.cursor/skills/mythosmud-database-placement/SKILL.md`
+- **Server Authority over Client** (1 connections) — `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
 
 ## Relationships
 
@@ -18,14 +17,17 @@
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
+- `.cursor/skills/mythosmud-coppa-checklist/SKILL.md`
+- `.cursor/skills/mythosmud-database-placement/SKILL.md`
+- `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
+- `.cursor/skills/mythosmud-openapi-workflow/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (60%)
+- INFERRED: 4 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

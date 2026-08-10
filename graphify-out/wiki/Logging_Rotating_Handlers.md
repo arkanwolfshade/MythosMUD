@@ -1,55 +1,74 @@
 # Logging Rotating Handlers
 
-> 50 nodes · cohesion 0.06
+> 41 nodes
 
 ## Key Concepts
 
-- **test_logging_handlers.py** (25 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **create_aggregator_handler()** (19 connections) — `server/structured_logging/logging_handlers.py`
-- **WarningOnlyFilter** (11 connections) — `server/structured_logging/logging_handlers.py`
-- **logging_handlers.py** (9 connections) — `server/structured_logging/logging_handlers.py`
-- **_aggregator_handler_class_for_windows()** (5 connections) — `server/structured_logging/logging_handlers.py`
-- **_make_exec_for_aggregator()** (5 connections) — `server/structured_logging/logging_handlers.py`
-- **Test WarningOnlyFilter blocks ERROR level logs.** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_create_aggregator_handler_error_level()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_create_aggregator_handler_non_windows_platform()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_create_aggregator_handler_retries_on_error()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_create_aggregator_handler_warning_level()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_create_aggregator_handler_windows_platform()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_create_aggregator_handler_with_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_create_aggregator_handler_without_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_safe_rotating_file_handler_init()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_safe_rotating_file_handler_open_no_base_filename()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_safe_rotating_file_handler_open_returns_stringio_on_final_failure()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_safe_rotating_file_handler_open_success()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_safe_rotating_file_handler_should_rollover_false()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_safe_rotating_file_handler_should_rollover_no_base_filename()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_safe_rotating_file_handler_should_rollover_retries_on_error()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_warning_only_filter_critical_level()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_warning_only_filter_debug_level()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_warning_only_filter_error_level()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_warning_only_filter_info_level()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- *... and 25 more nodes in this community*
+- **GameLogPanel.tsx** (18 connections) — `client/src/components/panels/GameLogPanel.tsx`
+- **GameLogMessagesList.tsx** (16 connections) — `client/src/components/panels/GameLogMessagesList.tsx`
+- **GameLogPanelSections.tsx** (16 connections) — `client/src/components/panels/GameLogPanelSections.tsx`
+- **@testing-library/jest-dom/vitest** (12 connections) — `client/tsconfig.test.json`
+- **GameLogPanel()** (9 connections) — `client/src/components/panels/GameLogPanel.tsx`
+- **gameLogPanelUtils.ts** (9 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
+- **ChatMessage** (9 connections) — `client/src/stores/gameStore.ts`
+- **gameLogPanelUtils.test.ts** (7 connections) — `client/src/components/panels/__tests__/gameLogPanelUtils.test.ts`
+- **gameLogFilter.ts** (7 connections) — `client/src/utils/gameLogFilter.ts`
+- **GameLogMessagesList()** (6 connections) — `client/src/components/panels/GameLogMessagesList.tsx`
+- **game-log-panel.spec.tsx** (6 connections) — `client/src/components/panels/__tests__/game-log-panel.spec.tsx`
+- **game-log-panel.test.tsx** (6 connections) — `client/src/components/panels/__tests__/game-log-panel.test.tsx`
+- **useGameLogPanelState.ts** (6 connections) — `client/src/components/panels/useGameLogPanelState.ts`
+- **GameLogPanelFilterBar()** (5 connections) — `client/src/components/panels/GameLogPanelSections.tsx`
+- **filterGameLogMessages()** (5 connections) — `client/src/utils/gameLogFilter.ts`
+- **game-log-panel.test.tsx** (4 connections) — `client/src/components/__tests__/game-log-panel.test.tsx`
+- **GameLogListMessage** (4 connections) — `client/src/components/panels/GameLogMessagesList.tsx`
+- **getGameLogMessageClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
+- **getGameLogMessageRowClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
+- **getGameLogMessageFilterSelectClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
+- **getGameLogTimeFilterSelectClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
+- **getGameLogSearchInputClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
+- **formatGameLogTimestamp()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
+- **useGameLogPanelState()** (4 connections) — `client/src/components/panels/useGameLogPanelState.ts`
+- **gameLogFilter.test.ts** (4 connections) — `client/src/utils/__tests__/gameLogFilter.test.ts`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [[Logging File Setup]] (16 shared connections)
-- [[Logging Path Utilities]] (3 shared connections)
-- [[Logging Structured Player]] (2 shared connections)
-- [[Logging Structured Handlers]] (2 shared connections)
-- [[NPC Admin API]] (1 shared connections)
+- [Command Input Validator](Command_Input_Validator.md) (8 shared connections)
+- [Memory Leak Metrics Tests](Memory_Leak_Metrics_Tests.md) (5 shared connections)
+- [Combat Attack Handler](Combat_Attack_Handler.md) (4 shared connections)
+- [Holidays JSON Schema](Holidays_JSON_Schema.md) (3 shared connections)
+- [Draggable Panel UI](Draggable_Panel_UI.md) (3 shared connections)
+- [Client App State Hooks](Client_App_State_Hooks.md) (2 shared connections)
+- [NPC Combat Rewards Tests](NPC_Combat_Rewards_Tests.md) (2 shared connections)
+- [Warning Remediation Plan](Warning_Remediation_Plan.md) (2 shared connections)
+- [Rescue Service Tests](Rescue_Service_Tests.md) (1 shared connections)
+- [Character Creation Screens](Character_Creation_Screens.md) (1 shared connections)
+- [NPC Combat Handler Tests](NPC_Combat_Handler_Tests.md) (1 shared connections)
+- [API Test Fixtures](API_Test_Fixtures.md) (1 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/logging_handlers.py`
-- `server/tests/unit/structured_logging/test_logging_handlers.py`
+- `client/src/components/__tests__/game-log-panel.test.tsx`
+- `client/src/components/panels/GameLogMessagesList.tsx`
+- `client/src/components/panels/GameLogPanel.tsx`
+- `client/src/components/panels/GameLogPanelSections.tsx`
+- `client/src/components/panels/__tests__/GameLogPanel.test.tsx`
+- `client/src/components/panels/__tests__/game-log-panel.spec.tsx`
+- `client/src/components/panels/__tests__/game-log-panel.test.tsx`
+- `client/src/components/panels/__tests__/gameLogPanelUtils.test.ts`
+- `client/src/components/panels/gameLogPanelUtils.ts`
+- `client/src/components/panels/useGameLogPanelState.ts`
+- `client/src/stores/gameStore.ts`
+- `client/src/utils/__tests__/gameLogFilter.test.ts`
+- `client/src/utils/gameLogFilter.ts`
+- `client/tsconfig.test.json`
 
 ## Audit Trail
 
-- EXTRACTED: 161 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 201 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

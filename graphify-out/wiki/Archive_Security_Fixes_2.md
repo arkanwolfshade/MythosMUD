@@ -1,11 +1,11 @@
 # Archive Security Fixes
 
-> 2 nodes · cohesion 1.00
+> 2 nodes
 
 ## Key Concepts
 
-- **CWE-209 Information Exposure** (1 connections) — `docs/archive/SECURITY_FIXES.md`
 - **Stack Trace Sanitization** (1 connections) — `docs/archive/SECURITY_FIXES.md`
+- **CWE-209 Information Exposure** (1 connections) — `docs/archive/SECURITY_FIXES.md`
 
 ## Relationships
 
@@ -23,4 +23,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,57 +1,62 @@
 # Status Effect Model
 
-> 28 nodes · cohesion 0.10
+> 54 nodes
 
 ## Key Concepts
 
-- **StatusEffect** (31 connections) — `server/models/game.py`
-- **test_game_status_effect.py** (12 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **.get_active_status_effects()** (4 connections) — `server/models/game.py`
-- **.add_status_effect()** (3 connections) — `server/models/game.py`
-- **.is_active()** (3 connections) — `server/models/game.py`
-- **test_status_effect_creation()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **test_status_effect_duration_validation_min()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **test_status_effect_intensity_validation_max()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **test_status_effect_intensity_validation_min()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **test_status_effect_is_active_at_duration()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **test_status_effect_is_active_before_duration()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **test_status_effect_is_active_permanent()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **test_status_effect_rejects_extra_fields()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **test_status_effect_with_source()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **Check if the status effect is still active.** (1 connections) — `server/models/game.py`
-- **Add a status effect to the player.          Args:             effect: StatusEffe** (1 connections) — `server/models/game.py`
-- **Get all currently active status effects.          Args:             current_tick** (1 connections) — `server/models/game.py`
-- **Represents a status effect applied to a character.** (1 connections) — `server/models/game.py`
-- **Unit tests for StatusEffect model.** (1 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **Test StatusEffect can be created with required fields.** (1 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **Test StatusEffect can have optional source.** (1 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **Test is_active returns True for permanent effects (duration=0).** (1 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **Test is_active returns True when current_tick < duration.** (1 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **Test is_active returns False when current_tick >= duration.** (1 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **Test StatusEffect validates duration is >= 0.** (1 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- *... and 3 more nodes in this community*
+- **InstanceManager** (19 connections) — `server/game/instance_manager.py`
+- **test_instance_manager.py** (15 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **._init_movement_layer()** (11 connections) — `server/container/bundles/game.py`
+- **.create_instance()** (7 connections) — `server/game/instance_manager.py`
+- **._build_instance_rooms()** (6 connections) — `server/game/instance_manager.py`
+- **.__init__()** (5 connections) — `server/game/instance_manager.py`
+- **Room** (5 connections)
+- **._stable_id_from_room()** (5 connections) — `server/game/instance_manager.py`
+- **Instance** (4 connections) — `server/game/instance_manager.py`
+- **._get_template_rooms()** (4 connections) — `server/game/instance_manager.py`
+- **._remap_exits()** (4 connections) — `server/game/instance_manager.py`
+- **instance_manager()** (4 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **._stable_id_from_target()** (3 connections) — `server/game/instance_manager.py`
+- **.get_instance()** (3 connections) — `server/game/instance_manager.py`
+- **.get_room_by_id()** (3 connections) — `server/game/instance_manager.py`
+- **tutorial_room()** (3 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **UUID** (2 connections)
+- **.destroy_instance()** (2 connections) — `server/game/instance_manager.py`
+- **.get_first_room_id()** (2 connections) — `server/game/instance_manager.py`
+- **.get_exit_room_id()** (2 connections) — `server/game/instance_manager.py`
+- **room_cache()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **test_create_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **test_create_instance_raises_when_no_templates()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **test_destroy_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **test_get_first_room_id()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [[Player Model Inventory]] (7 shared connections)
-- [[Game Magic Spell]] (5 shared connections)
-- [[Admin NPC Schemas]] (2 shared connections)
-- [[NPC Admin API]] (2 shared connections)
-- [[Player Schema Converter]] (2 shared connections)
-- [[SQLAlchemy Model Base]] (1 shared connections)
-- [[Memory Profiler Tools]] (1 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (6 shared connections)
+- [Cache and NPC Cache](Cache_and_NPC_Cache.md) (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
+- [Dependency Injection Tests](Dependency_Injection_Tests.md) (2 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
+- [NPC Utility Functions](NPC_Utility_Functions.md) (1 shared connections)
+- [Combat Client Crash Report](Combat_Client_Crash_Report.md) (1 shared connections)
+- [Combat DP Persistence Tests](Combat_DP_Persistence_Tests.md) (1 shared connections)
+- [NPC Event Handler Tests](NPC_Event_Handler_Tests.md) (1 shared connections)
+- [Commands Container Inventory](Commands_Container_Inventory.md) (1 shared connections)
+- [NATS Message Broker](NATS_Message_Broker.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
-- `server/tests/unit/models/test_game_status_effect.py`
+- `server/container/bundles/game.py`
+- `server/game/instance_manager.py`
+- `server/tests/unit/game/test_instance_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 94 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 148 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

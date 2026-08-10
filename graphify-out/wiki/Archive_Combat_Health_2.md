@@ -1,36 +1,27 @@
 # Archive Combat Health
 
-> 10 nodes · cohesion 0.20
+> 2 nodes
 
 ## Key Concepts
 
-- **Missing Persistence Methods** (5 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md`
-- **Root Cause Analysis** (4 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md`
-- **Error Handling Patterns** (4 connections) — `docs/COMMAND_HANDLER_PATTERNS.md`
-- **1. `damage_player(player, amount, damage_type)` - **MISSING**** (1 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md`
-- **2. `heal_player(player, amount)` - **MISSING**** (1 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md`
-- **3. `async_damage_player(player, amount, damage_type)` - **MISSING**** (1 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md`
-- **4. `async_heal_player(player, amount)` - **MISSING**** (1 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md`
-- **Why the Client Shows Updated Health** (1 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md`
-- **Graceful Degradation** (1 connections) — `docs/COMMAND_HANDLER_PATTERNS.md`
-- **Specific Error Handling** (1 connections) — `docs/COMMAND_HANDLER_PATTERNS.md`
+- **test_check_equipped_item_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test checking equipped item when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [[Combat Health Persistence Fix]] (1 shared connections)
-- [[Command Handler Patterns]] (1 shared connections)
+- [Archive Circuit Breaker](Archive_Circuit_Breaker.md) (1 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/COMMAND_HANDLER_PATTERNS.md`
-- `docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

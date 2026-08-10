@@ -1,10 +1,10 @@
 # Playwright Config
 
-> 1 nodes · cohesion 1.00
+> 1 nodes
 
 ## Key Concepts
 
-- **playwright.config.d.ts** (0 connections) — `client/playwright.config.d.ts`
+- **playwright.config.ts** (0 connections) — `client/playwright.config.ts`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `client/playwright.config.d.ts`
+- `client/playwright.config.ts`
 
 ## Audit Trail
 
@@ -22,4 +22,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

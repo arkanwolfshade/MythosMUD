@@ -1,35 +1,22 @@
 # Security Issues And Fixes
 
-> 27 nodes · cohesion 0.07
+> 13 nodes
 
 ## Key Concepts
 
-- **Security Documentation for MythosMUD** (10 connections) — `docs/archive/SECURITY.md`
-- **Critical Security Issues and Fixes** (5 connections) — `docs/archive/SECURITY.md`
-- **Security Best Practices** (5 connections) — `docs/archive/SECURITY.md`
-- **Additional Security Features** (4 connections) — `docs/archive/SECURITY.md`
-- **✅ SECURITY IMPLEMENTATION COMPLETED** (4 connections) — `docs/archive/SECURITY.md`
-- **Security Checklist** (3 connections) — `docs/archive/SECURITY.md`
-- **SECURITY.md** (1 connections) — `docs/archive/SECURITY.md`
-- **✅ 1. Hardcoded Secret Keys (FIXED) - COMPLETED** (1 connections) — `docs/archive/SECURITY.md`
-- **✅ 2. Path Injection Vulnerabilities (FIXED) - COMPLETED** (1 connections) — `docs/archive/SECURITY.md`
-- **✅ 3. Client-Side XSS Vulnerability (FIXED) - COMPLETED** (1 connections) — `docs/archive/SECURITY.md`
-- **✅ 4. File-based User Storage (MIGRATION COMPLETED) - COMPLETED** (1 connections) — `docs/archive/SECURITY.md`
-- **✅ Authentication - IMPLEMENTED** (1 connections) — `docs/archive/SECURITY.md`
-- **✅ Before Production Deployment - COMPLETED** (1 connections) — `docs/archive/SECURITY.md`
-- **Completed Security Work Summary** (1 connections) — `docs/archive/SECURITY.md`
-- **Conclusion** (1 connections) — `docs/archive/SECURITY.md`
-- **✅ Database Security** (1 connections) — `docs/archive/SECURITY.md`
-- **✅ Environment Variables - IMPLEMENTED** (1 connections) — `docs/archive/SECURITY.md`
-- **Files Modified/Created** (1 connections) — `docs/archive/SECURITY.md`
-- **✅ Input Validation - IMPLEMENTED** (1 connections) — `docs/archive/SECURITY.md`
-- **✅ Ongoing Security - IMPLEMENTED** (1 connections) — `docs/archive/SECURITY.md`
-- **✅ Path Validation - IMPLEMENTED** (1 connections) — `docs/archive/SECURITY.md`
-- **✅ Rate Limiting Implementation** (1 connections) — `docs/archive/SECURITY.md`
-- **References** (1 connections) — `docs/archive/SECURITY.md`
-- **✅ Security Headers** (1 connections) — `docs/archive/SECURITY.md`
-- **Security Tools** (1 connections) — `docs/archive/SECURITY.md`
-- *... and 2 more nodes in this community*
+- **_safe_extract.py** (8 connections) — `docs/investigations/_safe_extract.py`
+- **find_func()** (6 connections) — `docs/investigations/_safe_extract.py`
+- **process_file()** (6 connections) — `docs/investigations/_safe_extract.py`
+- **lizard_warns()** (4 connections) — `docs/investigations/_safe_extract.py`
+- **split_long_impl()** (4 connections) — `docs/investigations/_safe_extract.py`
+- **main()** (4 connections) — `docs/investigations/_safe_extract.py`
+- **Path** (3 connections)
+- **wrap_once()** (3 connections) — `docs/investigations/_safe_extract.py`
+- **AST** (2 connections)
+- **FunctionDef** (1 connections)
+- **AsyncFunctionDef** (1 connections)
+- **One-shot body extract: wrap long funcs; never nest; split long impls by mid stat** (1 connections) — `docs/investigations/_safe_extract.py`
+- **Move a middle chunk of statements into a sibling helper.** (1 connections) — `docs/investigations/_safe_extract.py`
 
 ## Relationships
 
@@ -37,14 +24,14 @@
 
 ## Source Files
 
-- `docs/archive/SECURITY.md`
+- `docs/investigations/_safe_extract.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (100%)
+- EXTRACTED: 44 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

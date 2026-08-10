@@ -1,39 +1,27 @@
 # Manual Dependency Analysis
 
-> 15 nodes · cohesion 0.23
+> 2 nodes
 
 ## Key Concepts
 
-- **manual_dependency_analysis.py** (16 connections) — `scripts/manual_dependency_analysis.py`
-- **.generate_report()** (10 connections) — `scripts/manual_dependency_analysis.py`
-- **main()** (5 connections) — `scripts/manual_dependency_analysis.py`
-- **_report_priority_block()** (5 connections) — `scripts/manual_dependency_analysis.py`
-- **_report_upgrade_commands()** (5 connections) — `scripts/manual_dependency_analysis.py`
-- **_npm_upgrade_block()** (3 connections) — `scripts/manual_dependency_analysis.py`
-- **_pip_upgrade_block()** (3 connections) — `scripts/manual_dependency_analysis.py`
-- **_report_breaking_section()** (3 connections) — `scripts/manual_dependency_analysis.py`
-- **_report_executive_and_stats()** (3 connections) — `scripts/manual_dependency_analysis.py`
-- **_report_strategy_block()** (2 connections) — `scripts/manual_dependency_analysis.py`
-- **_report_testing_section()** (2 connections) — `scripts/manual_dependency_analysis.py`
-- **_risk_label()** (2 connections) — `scripts/manual_dependency_analysis.py`
-- **_update_label()** (2 connections) — `scripts/manual_dependency_analysis.py`
-- **Generate comprehensive upgrade report** (1 connections) — `scripts/manual_dependency_analysis.py`
-- **Main execution function** (1 connections) — `scripts/manual_dependency_analysis.py`
+- **test_occupant_formatter_process_string_occupant_for_update_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._process_string_occupant_for_update() skips UUID string.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Relationships
 
-- [[Dependency Risk Analyzer]] (15 shared connections)
+- [Contexts Themecontext Hooks](Contexts_Themecontext_Hooks.md) (1 shared connections)
+- [Room Occupant Formatter](Room_Occupant_Formatter.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/manual_dependency_analysis.py`
+- `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

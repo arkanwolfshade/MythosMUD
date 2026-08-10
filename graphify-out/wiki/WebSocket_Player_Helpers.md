@@ -1,62 +1,58 @@
 # WebSocket Player Helpers
 
-> 58 nodes · cohesion 0.06
+> 25 nodes
 
 ## Key Concepts
 
-- **websocket_helpers.py** (35 connections) — `server/realtime/websocket_helpers.py`
-- **test_websocket_helpers_player.py** (22 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **get_player_and_room()** (14 connections) — `server/realtime/websocket_helpers.py`
-- **check_shutdown_and_reject()** (12 connections) — `server/realtime/websocket_helpers.py`
-- **prepare_player_data()** (12 connections) — `server/realtime/websocket_helpers.py`
-- **get_player_stats_data()** (8 connections) — `server/realtime/websocket_helpers.py`
-- **build_basic_player_data()** (7 connections) — `server/realtime/websocket_helpers.py`
-- **convert_schema_to_dict()** (7 connections) — `server/realtime/websocket_helpers.py`
-- **get_player_service_from_connection_manager()** (7 connections) — `server/realtime/websocket_helpers.py`
-- **UUID** (6 connections) — `server/realtime/websocket_helpers.py`
-- **test_prepare_player_data_service_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **_ensure_player_in_room_occupancy()** (4 connections) — `server/realtime/websocket_helpers.py`
-- **_get_tracked_player_from_connection_manager()** (4 connections) — `server/realtime/websocket_helpers.py`
-- **test_build_basic_player_data()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_build_basic_player_data_defaults()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_and_room_adds_player_to_room()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_and_room_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_and_room_room_not_found()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_and_room_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_service_from_connection_manager_no_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_service_from_connection_manager_no_state()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_service_from_connection_manager_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_stats_data_adds_health()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_stats_data_no_get_stats()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_stats_data_string_stats()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- *... and 33 more nodes in this community*
+- **useMythosAppState.ts** (32 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **mythosAppViewModelFactory.ts** (12 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
+- **useMythosApp.tsx** (9 connections) — `client/src/mythosApp/useMythosApp.tsx`
+- **useMythosAppState()** (9 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **useMythosApp()** (6 connections) — `client/src/mythosApp/useMythosApp.tsx`
+- **useReducerStateSlices()** (6 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **buildMythosAppViewModel()** (5 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
+- **CreationSlice** (4 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **useMythosAppState.test.ts** (3 connections) — `client/src/mythosApp/__tests__/useMythosAppState.test.ts`
+- **resolveNextState()** (3 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **makeAuthSetter()** (3 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **makeCreationSetter()** (3 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **useAuthSliceSetters()** (3 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **useCreationSliceSetters()** (3 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **buildStateViewModel()** (2 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
+- **buildActionViewModel()** (2 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
+- **AuthSlice** (2 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **authSliceReducer()** (2 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **creationSliceReducer()** (2 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **hoisted** (1 connections) — `client/src/mythosApp/__tests__/useMythosAppState.test.ts`
+- **AppState** (1 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
+- **AppActions** (1 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
+- **PendingSkillsPayload** (1 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **INITIAL_AUTH_SLICE** (1 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **INITIAL_CREATION_SLICE** (1 connections) — `client/src/mythosApp/useMythosAppState.ts`
 
 ## Relationships
 
-- [[WebSocket Helper Utilities]] (11 shared connections)
-- [[WebSocket Initial State]] (7 shared connections)
-- [[WebSocket Message Validation]] (4 shared connections)
-- [[Realtime WebSocket Auth]] (3 shared connections)
-- [[Admin Shutdown Command]] (2 shared connections)
-- [[Character Creation API]] (2 shared connections)
-- [[WebSocket Command Handler]] (2 shared connections)
-- [[NPC Admin API]] (2 shared connections)
-- [[Player Combat XP]] (2 shared connections)
-- [[Database Manager Tests]] (1 shared connections)
-- [[SQLAlchemy Model Base]] (1 shared connections)
-- [[Player Domain Model]] (1 shared connections)
+- [Map Editing Hooks](Map_Editing_Hooks.md) (10 shared connections)
+- [Bug Investigation Guide](Bug_Investigation_Guide.md) (7 shared connections)
+- [Warning Remediation Plan](Warning_Remediation_Plan.md) (6 shared connections)
+- [Realtime Event Handlers](Realtime_Event_Handlers.md) (3 shared connections)
+- [Chat Panel Separation](Chat_Panel_Separation.md) (3 shared connections)
+- [Character Creation Screens](Character_Creation_Screens.md) (2 shared connections)
+- [Active Lucidity Service](Active_Lucidity_Service.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_helpers.py`
-- `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- `client/src/mythosApp/__tests__/useMythosAppState.test.ts`
+- `client/src/mythosApp/mythosAppViewModelFactory.ts`
+- `client/src/mythosApp/useMythosApp.tsx`
+- `client/src/mythosApp/useMythosAppState.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 221 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 113 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,56 +1,54 @@
 # NPC Population Control
 
-> 93 nodes · cohesion 0.02
+> 60 nodes
 
 ## Key Concepts
 
-- **test_population_control.py** (59 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_should_spawn_npc()** (4 connections) — `server/tests/unit/npc/test_population_control.py`
-- **population_controller()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **Test _get_active_npcs_from_lifecycle_manager() returns active NPCs.** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **Test _spawn_npc() successfully spawns NPC.** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_check_spawn_requirements_for_room_with_definitions()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_clear_population_stats()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_despawn_npc_success()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_get_population_stats_existing()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_get_zone_configuration_exact_match()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_get_zone_configuration_no_slash()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_get_zone_configuration_zone_fallback()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_get_zone_population_summary_with_stats()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_handle_npc_entered_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_handle_npc_left_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_handle_player_entered_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_handle_player_left_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_population_controller_init()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_population_controller_init_requires_async_persistence()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **mock_event_bus()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
-- **mock_lifecycle_manager()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
-- **Test _handle_npc_entered_room() processes event.** (2 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_check_spawn_requirements_for_room_no_config()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_cleanup_inactive_npcs_empty()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_cleanup_inactive_npcs_invalid_spawned_at()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
-- *... and 68 more nodes in this community*
+- **test_command_service.py** (36 connections) — `server/tests/unit/commands/test_command_service.py`
+- **command_service()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_extract_parsed_fields_handles_missing_attributes()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **mock_request()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **mock_user()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_success()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_no_command_type()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_unknown_command()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_handler_error()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_logging_error()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_parse_command_string_success()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_parse_command_string_with_subcommand()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_parse_command_string_unexpected_error()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_prepare_command_data_basic()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_prepare_command_data_with_pipe_target()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_extract_parsed_fields_basic()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_extract_parsed_fields_with_pipe_target()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_execute_command_handler_success()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_execute_command_handler_error()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_command_success()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_command_parse_error()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_command_no_handler()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_get_available_commands()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_register_command_handler()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_register_command_handler_overwrites_existing()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Services Bundle]] (14 shared connections)
-- [[Zone Config Loader]] (6 shared connections)
-- [[Distributed Event Bus]] (5 shared connections)
-- [[NPC Definition Schemas]] (2 shared connections)
-- [[Lucidity Recovery Commands]] (1 shared connections)
-- [[Services Npc Combat]] (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Cursor Skills Delight](Cursor_Skills_Delight.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_population_control.py`
-- `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- `server/tests/unit/commands/test_command_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 221 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 125 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,30 +1,30 @@
 # Schemas Unified Room
 
-> 6 nodes · cohesion 0.33
+> 5 nodes
 
 ## Key Concepts
 
-- **capacity_slots** (6 connections) — `schemas/unified_room_schema.json`
-- **default** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **maximum** (1 connections) — `schemas/unified_room_schema.json`
-- **minimum** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **.record_movement_attempt()** (4 connections) — `server/game/movement_monitor.py`
+- **._check_alerts()** (4 connections) — `server/game/movement_monitor.py`
+- **UUID** (2 connections)
+- **Record a movement attempt with metrics.** (1 connections) — `server/game/movement_monitor.py`
+- **Check for alerts and log them.** (1 connections) — `server/game/movement_monitor.py`
 
 ## Relationships
 
-- [[Schemas Unified Room]] (1 shared connections)
+- [Movement Performance Monitor](Movement_Performance_Monitor.md) (3 shared connections)
+- [Monitoring Response Models](Monitoring_Response_Models.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `server/game/movement_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

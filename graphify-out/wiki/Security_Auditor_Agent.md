@@ -1,54 +1,43 @@
 # Security Auditor Agent
 
-> 30 nodes · cohesion 0.07
+> 10 nodes
 
 ## Key Concepts
 
-- **Security Auditor Subagent** (15 connections) — `.cursor/agents/security-auditor.md`
-- **Capabilities** (6 connections) — `.cursor/agents/security-auditor.md`
-- **4. Security Best Practices ✅** (6 connections) — `.cursor/websocket-compliance-verification.md`
-- **Example Scenarios** (4 connections) — `.cursor/agents/security-auditor.md`
-- **Security Requirements** (3 connections) — `.cursor/agents/security-auditor.md`
-- **Authentication & Authorization** (2 connections) — `.cursor/agents/security-auditor.md`
-- **COPPA Compliance** (2 connections) — `.cursor/agents/security-auditor.md`
+- **Cursor Subagents Overview** (5 connections) — `.cursor/agents/README.md`
+- **Bug Investigator Subagent** (3 connections) — `.cursor/agents/bug-investigator.md`
+- **Security Auditor Subagent** (2 connections) — `.cursor/agents/security-auditor.md`
 - **Address Semgrep Security Findings Plan** (2 connections) — `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
-- **security-auditor.md** (1 connections) — `.cursor/agents/security-auditor.md`
-- **Authentication Security Review** (1 connections) — `.cursor/agents/security-auditor.md`
-- **COPPA Compliance (Critical)** (1 connections) — `.cursor/agents/security-auditor.md`
-- **COPPA Compliance Verification** (1 connections) — `.cursor/agents/security-auditor.md`
-- **Input Validation** (1 connections) — `.cursor/agents/security-auditor.md`
-- **Input Validation Review** (1 connections) — `.cursor/agents/security-auditor.md`
-- **Integration** (1 connections) — `.cursor/agents/security-auditor.md`
-- **Methodology** (1 connections) — `.cursor/agents/security-auditor.md`
-- **Notes** (1 connections) — `.cursor/agents/security-auditor.md`
-- **Output Format** (1 connections) — `.cursor/agents/security-auditor.md`
-- **Performance Considerations** (1 connections) — `.cursor/agents/security-auditor.md`
-- **Purpose** (1 connections) — `.cursor/agents/security-auditor.md`
-- **Security Best Practices** (1 connections) — `.cursor/agents/security-auditor.md`
-- **Security Headers & Configuration** (1 connections) — `.cursor/agents/security-auditor.md`
-- **Security Implementation Standards** (1 connections) — `.cursor/agents/security-auditor.md`
-- **Usage** (1 connections) — `.cursor/agents/security-auditor.md`
-- **Vulnerability Scanning** (1 connections) — `.cursor/agents/security-auditor.md`
-- *... and 5 more nodes in this community*
+- **Subagent Automatic Discovery** (1 connections) — `.cursor/agents/QUICK_START.md`
+- **Codebase Explorer Subagent** (1 connections) — `.cursor/agents/codebase-explorer.md`
+- **Performance Profiler Subagent** (1 connections) — `.cursor/agents/performance-profiler.md`
+- **Test Suite Analyzer Subagent** (1 connections) — `.cursor/agents/test-analyzer.md`
+- **Official Test Credentials** (1 connections) — `.cursor/commands/investigate-bug.md`
+- **Codacy High/Critical Issues Remediation** (1 connections) — `.cursor/plans/codacy-high-critical-issues-remediation_f14ea647.plan.md`
 
 ## Relationships
 
-- [[Codebase Explorer Agent]] (1 shared connections)
-- [[WebSocket Compliance Review]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
+- `.cursor/agents/QUICK_START.md`
+- `.cursor/agents/README.md`
+- `.cursor/agents/bug-investigator.md`
+- `.cursor/agents/codebase-explorer.md`
+- `.cursor/agents/performance-profiler.md`
 - `.cursor/agents/security-auditor.md`
+- `.cursor/agents/test-analyzer.md`
+- `.cursor/commands/investigate-bug.md`
 - `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
 - `.cursor/plans/codacy-high-critical-issues-remediation_f14ea647.plan.md`
-- `.cursor/websocket-compliance-verification.md`
 
 ## Audit Trail
 
-- EXTRACTED: 58 (94%)
-- INFERRED: 4 (6%)
+- EXTRACTED: 14 (78%)
+- INFERRED: 4 (22%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

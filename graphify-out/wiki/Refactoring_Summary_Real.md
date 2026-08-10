@@ -1,46 +1,32 @@
 # Refactoring Summary Real
 
-> 19 nodes · cohesion 0.11
+> 6 nodes
 
 ## Key Concepts
 
-- **ConnectionManager Refactoring Summary** (11 connections) — `docs/REFACTORING_SUMMARY.md`
-- **Connection Management** (7 connections) — `docs/REAL_TIME_ARCHITECTURE.md`
-- **Real-Time Architecture** (4 connections) — `docs/REAL_TIME_ARCHITECTURE.md`
-- **Architecture Improvements** (3 connections) — `docs/REFACTORING_SUMMARY.md`
-- **ConnectionManager Modular Split** (2 connections) — `docs/REFACTORING_SUMMARY.md`
-- ****Connection States**** (1 connections) — `docs/REAL_TIME_ARCHITECTURE.md`
-- ****Error Handling**** (1 connections) — `docs/REAL_TIME_ARCHITECTURE.md`
-- ****Modular Architecture (Refactored December 2025)**** (1 connections) — `docs/REAL_TIME_ARCHITECTURE.md`
-- ****Reconnection Strategy**** (1 connections) — `docs/REAL_TIME_ARCHITECTURE.md`
+- **Real-Time Architecture** (3 connections) — `docs/REAL_TIME_ARCHITECTURE.md`
+- **ConnectionManager Refactoring Summary** (2 connections) — `docs/REFACTORING_SUMMARY.md`
+- **Structured Concurrency Patterns** (2 connections) — `docs/STRUCTURED_CONCURRENCY_PATTERNS.md`
 - **WebSocket and NATS Realtime Stack** (1 connections) — `docs/REAL_TIME_ARCHITECTURE.md`
-- **REFACTORING_SUMMARY.md** (1 connections) — `docs/REFACTORING_SUMMARY.md`
-- **After** (1 connections) — `docs/REFACTORING_SUMMARY.md`
-- **Before** (1 connections) — `docs/REFACTORING_SUMMARY.md`
-- **Benefits Achieved** (1 connections) — `docs/REFACTORING_SUMMARY.md`
-- **Conclusion** (1 connections) — `docs/REFACTORING_SUMMARY.md`
-- **Future Refactoring Opportunities** (1 connections) — `docs/REFACTORING_SUMMARY.md`
-- **Overview** (1 connections) — `docs/REFACTORING_SUMMARY.md`
-- **Remaining Core Responsibilities** (1 connections) — `docs/REFACTORING_SUMMARY.md`
-- **Test Coverage** (1 connections) — `docs/REFACTORING_SUMMARY.md`
+- **ConnectionManager Modular Split** (1 connections) — `docs/REFACTORING_SUMMARY.md`
+- **Structured Concurrency Task Tracking** (1 connections) — `docs/STRUCTURED_CONCURRENCY_PATTERNS.md`
 
 ## Relationships
 
-- [[Real-Time Architecture Docs]] (1 shared connections)
-- [[Structured Concurrency Patterns]] (1 shared connections)
-- [[Refactoring Summary]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
 - `docs/REAL_TIME_ARCHITECTURE.md`
 - `docs/REFACTORING_SUMMARY.md`
+- `docs/STRUCTURED_CONCURRENCY_PATTERNS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (88%)
-- INFERRED: 5 (12%)
+- EXTRACTED: 6 (60%)
+- INFERRED: 4 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

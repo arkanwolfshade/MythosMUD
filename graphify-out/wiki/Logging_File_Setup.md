@@ -1,61 +1,60 @@
 # Logging File Setup
 
-> 56 nodes · cohesion 0.07
+> 76 nodes
 
 ## Key Concepts
 
-- **WindowsSafeRotatingFileHandler** (31 connections) — `server/structured_logging/windows_safe_rotation.py`
-- **logging_file_setup.py** (30 connections) — `server/structured_logging/logging_file_setup.py`
-- **SafeRotatingFileHandler** (25 connections) — `server/structured_logging/logging_handlers.py`
+- **logging_file_setup.py** (35 connections) — `server/structured_logging/logging_file_setup.py`
 - **setup_enhanced_file_logging()** (20 connections) — `server/structured_logging/logging_file_setup.py`
-- **Queue** (9 connections) — `server/structured_logging/logging_file_setup.py`
-- **_prepare_log_environment()** (9 connections) — `server/structured_logging/logging_file_setup.py`
+- **test_logging_file_setup.py** (14 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **load_player_guid_formatter_class()** (11 connections) — `server/structured_logging/logging_utilities.py`
 - **_setup_aggregator_handlers()** (9 connections) — `server/structured_logging/logging_file_setup.py`
-- **Handler** (8 connections) — `server/structured_logging/logging_file_setup.py`
-- **RotatingFileHandler** (8 connections) — `server/structured_logging/logging_file_setup.py`
-- **_create_handler_for_category()** (8 connections) — `server/structured_logging/logging_file_setup.py`
-- **LoggerNameFilter** (8 connections) — `server/structured_logging/logging_file_setup.py`
+- **_setup_console_handler()** (9 connections) — `server/structured_logging/logging_file_setup.py`
+- **_prepare_log_environment()** (9 connections) — `server/structured_logging/logging_file_setup.py`
 - **_setup_category_handlers()** (8 connections) — `server/structured_logging/logging_file_setup.py`
-- **_setup_console_handler()** (8 connections) — `server/structured_logging/logging_file_setup.py`
+- **LoggerNameFilter** (8 connections) — `server/structured_logging/logging_file_setup.py`
+- **_create_handler_for_category()** (8 connections) — `server/structured_logging/logging_file_setup.py`
+- **Queue** (7 connections)
+- **test_queue_listener_has_aggregator_handlers()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **test_warning_and_error_reach_aggregator_files()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **get_queue_listener()** (6 connections) — `server/structured_logging/logging_file_setup.py`
+- **stop_queue_listener()** (6 connections) — `server/structured_logging/logging_file_setup.py`
 - **_CategoryHandlerConfig** (6 connections) — `server/structured_logging/logging_file_setup.py`
+- **Handler** (6 connections)
 - **_ConsoleHandlerConfig** (6 connections) — `server/structured_logging/logging_file_setup.py`
 - **_setup_async_logging_queue()** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **LogRecord** (5 connections) — `server/structured_logging/logging_file_setup.py`
-- **Path** (5 connections) — `server/structured_logging/logging_file_setup.py`
-- **_add_handler_to_loggers()** (5 connections) — `server/structured_logging/logging_file_setup.py`
-- **_create_formatter()** (5 connections) — `server/structured_logging/logging_file_setup.py`
-- **_get_handler_class()** (5 connections) — `server/structured_logging/logging_file_setup.py`
+- **_create_formatter()** (6 connections) — `server/structured_logging/logging_file_setup.py`
+- **_root_handlers_snapshot()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **_restore_root_handlers()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **test_aggregator_handlers_on_root_when_async()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
 - **_get_or_create_log_queue()** (5 connections) — `server/structured_logging/logging_file_setup.py`
-- **Formatter** (4 connections) — `server/structured_logging/logging_file_setup.py`
-- **QueueListener** (4 connections) — `server/structured_logging/logging_file_setup.py`
-- **_get_handler_classes()** (4 connections) — `server/structured_logging/logging_file_setup.py`
-- *... and 31 more nodes in this community*
+- **_get_handler_class()** (5 connections) — `server/structured_logging/logging_file_setup.py`
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [[Logging Rotating Handlers]] (16 shared connections)
-- [[Windows Log Rotation]] (10 shared connections)
-- [[Logging Path Utilities]] (9 shared connections)
-- [[Logging Structured Setup]] (8 shared connections)
-- [[Logging Structured Handlers]] (5 shared connections)
-- [[NPC Admin API]] (3 shared connections)
-- [[Logging Structured Player]] (3 shared connections)
-- [[Logging Migration Examples]] (1 shared connections)
-- [[Monitoring Bundle Services]] (1 shared connections)
-- [[Structured Logging Windows]] (1 shared connections)
+- [Logging Path Utilities](Logging_Path_Utilities.md) (11 shared connections)
+- [Logging Structured Handlers](Logging_Structured_Handlers.md) (10 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
+- [Windows Log Rotation](Windows_Log_Rotation.md) (4 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (3 shared connections)
+- [Logging Structured Player](Logging_Structured_Player.md) (3 shared connections)
+- [Monitoring Bundle Services](Monitoring_Bundle_Services.md) (1 shared connections)
+- [Logging Structured Processors](Logging_Structured_Processors.md) (1 shared connections)
+- [Test Optimization Insights](Test_Optimization_Insights.md) (1 shared connections)
 
 ## Source Files
 
 - `server/structured_logging/logging_file_setup.py`
-- `server/structured_logging/logging_handlers.py`
-- `server/structured_logging/windows_safe_rotation.py`
+- `server/structured_logging/logging_utilities.py`
+- `server/tests/unit/structured_logging/test_logging_file_setup.py`
 
 ## Audit Trail
 
-- EXTRACTED: 236 (83%)
-- INFERRED: 47 (17%)
+- EXTRACTED: 294 (97%)
+- INFERRED: 10 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

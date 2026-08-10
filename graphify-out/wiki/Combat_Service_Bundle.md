@@ -1,80 +1,64 @@
 # Combat Service Bundle
 
-> 324 nodes · cohesion 0.01
+> 161 nodes
 
 ## Key Concepts
 
-- **CombatService** (232 connections) — `server/services/combat_service.py`
-- **PlayerCombatService** (87 connections) — `server/services/player_combat_service.py`
-- **combat_service.py** (60 connections) — `server/services/combat_service.py`
-- **CombatEventPublisher** (50 connections) — `server/services/combat_event_publisher.py`
-- **CombatParticipantData** (48 connections) — `server/services/combat_types.py`
-- **UUID** (41 connections) — `server/services/combat_service.py`
-- **PlayerDeathService** (40 connections) — `server/services/player_death_service.py`
-- **CombatInstance** (38 connections) — `server/services/combat_service.py`
-- **test_combat_event_publisher.py** (36 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
-- **NPCDiedEvent** (34 connections) — `server/events/combat_events.py`
-- **CombatParticipant** (34 connections) — `server/services/combat_service.py`
-- **CombatPersistenceHandler** (34 connections) — `server/services/combat_persistence_handler.py`
-- **NPCTookDamageEvent** (32 connections) — `server/events/combat_events.py`
-- **CombatStartedEvent** (30 connections) — `server/events/combat_events.py`
-- **CombatDeathHandler** (30 connections) — `server/services/combat_death_handler.py`
-- **CombatAttackHandler** (29 connections) — `server/services/combat_attack_handler.py`
-- **CombatEventHandler** (29 connections) — `server/services/combat_event_handler.py`
-- **CombatResult** (25 connections) — `server/services/combat_service.py`
-- **CombatCleanupHandler** (24 connections) — `server/services/combat_cleanup_handler.py`
-- **PlayerCombatService** (23 connections) — `server/services/combat_service.py`
-- **CombatParticipantData** (22 connections) — `server/services/combat_service.py`
-- **CombatStartedEvent** (22 connections) — `server/services/combat_service.py`
-- **EventBus** (22 connections) — `server/services/combat_service.py`
-- **NATSService** (22 connections) — `server/services/combat_service.py`
-- **NATSSubjectManager** (22 connections) — `server/services/combat_service.py`
-- *... and 299 more nodes in this community*
+- **test_nats_service.py** (76 connections) — `server/tests/unit/services/test_nats_service.py`
+- **NATSMetrics** (31 connections) — `server/services/nats_metrics.py`
+- **NATSConfig** (22 connections) — `server/config/models/nats.py`
+- **.__init__()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **nats_service()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_with_config()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **nats_metrics.py** (4 connections) — `server/services/nats_metrics.py`
+- **test_nats_service_init_with_dict()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_with_none()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_with_subject_manager()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
+- **.validate_tls_files()** (3 connections) — `server/config/models/nats.py`
+- **.validate_tls_config()** (3 connections) — `server/config/models/nats.py`
+- **.get_metrics()** (3 connections) — `server/services/nats_metrics.py`
+- **nats_config()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_init()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_publish_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_publish_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_subscribe_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_subscribe_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_batch_flush_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_batch_flush_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_connection_health()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_connection_health_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_pool_utilization()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_pool_utilization_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- *... and 136 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Combat Lifecycle]] (72 shared connections)
-- [[Combat Command Handler]] (58 shared connections)
-- [[Combat Domain Events]] (52 shared connections)
-- [[Magic Service Bundle]] (28 shared connections)
-- [[Distributed Event Bus]] (24 shared connections)
-- [[Spell Effect Protocols]] (23 shared connections)
-- [[Player Combat XP]] (21 shared connections)
-- [[Combat Taunt Tests]] (21 shared connections)
-- [[Player Respawn Service]] (20 shared connections)
-- [[Combat Turn Processor]] (20 shared connections)
-- [[Combat Attack Service]] (20 shared connections)
-- [[NPC Admin API]] (18 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (18 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (11 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
+- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (3 shared connections)
+- [Archive Frd Random](Archive_Frd_Random.md) (2 shared connections)
+- [Combat Monitoring Service](Combat_Monitoring_Service.md) (2 shared connections)
+- [Realtime Event Delegation](Realtime_Event_Delegation.md) (2 shared connections)
+- [Room Subscription Helpers](Room_Subscription_Helpers.md) (2 shared connections)
+- [Multiplayer Browser Helpers](Multiplayer_Browser_Helpers.md) (1 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
+- [Realtime Connection](Realtime_Connection.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/combat.py`
-- `server/events/combat_events.py`
-- `server/game/magic/spell_targeting.py`
-- `server/services/combat_attack_handler.py`
-- `server/services/combat_cleanup_handler.py`
-- `server/services/combat_death_handler.py`
-- `server/services/combat_event_handler.py`
-- `server/services/combat_event_publisher.py`
-- `server/services/combat_initialization.py`
-- `server/services/combat_persistence_handler.py`
-- `server/services/combat_service.py`
-- `server/services/combat_service_events.py`
-- `server/services/combat_service_start.py`
-- `server/services/combat_service_state.py`
-- `server/services/combat_service_types.py`
-- `server/services/combat_types.py`
-- `server/services/player_combat_service.py`
-- `server/services/player_death_service.py`
-- `server/tests/unit/services/test_combat_event_publisher.py`
-- `server/tests/unit/services/test_combat_initialization.py`
+- `server/config/models/nats.py`
+- `server/infrastructure/nats_broker.py`
+- `server/services/nats_metrics.py`
+- `server/tests/unit/services/test_nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1268 (61%)
-- INFERRED: 811 (39%)
+- EXTRACTED: 389 (95%)
+- INFERRED: 20 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

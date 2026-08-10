@@ -1,45 +1,41 @@
 # Archive Environment Contamination
 
-> 21 nodes · cohesion 0.10
+> 14 nodes
 
 ## Key Concepts
 
-- **Environment Contamination Audit Report** (9 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **2. **ACCEPTABLE PATTERNS: Environment Variable Usage**** (5 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Remediation Plan** (4 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Analysis** (3 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Critical Violations Found** (3 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Phase 1: Critical Fix (Immediate)** (2 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **ENVIRONMENT_CONTAMINATION_AUDIT.md** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **1. **CRITICAL VIOLATION: `server/logging_config.py`**** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Compliance Status** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Conclusion** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Executive Summary** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Phase 2: Configuration Standardization** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Phase 3: Testing Strategy Update** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Recommendations** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **Security Implications** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **`server/alias_storage.py` (Line 29)** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **`server/auth/users.py` (Line 42)** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **`server/config_loader.py` (Lines 236, 242)** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **`server/persistence.py` (Line 68)** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **What Constitutes Environment Contamination** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
-- **What Is Acceptable** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **.send_message()** (8 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **UUID** (7 connections)
+- **._prepare_payload()** (7 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Any** (6 connections)
+- **._queue_message_if_needed()** (6 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **._send_to_websocket()** (5 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **.__init__()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **.get_delivery_stats()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Initialize the personal message sender.          Args:             message_queue** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Prepare and optimize the payload for sending.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Send message to a single WebSocket connection. Returns True if successful.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Queue message if no active connections.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Send a personal message to a player via WebSocket.          Args:             pl** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Get message delivery statistics for a player.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
 
 ## Relationships
 
-- [[Plan Cursor Plans]] (1 shared connections)
+- [Message Broadcaster Core](Message_Broadcaster_Core.md) (7 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- `server/realtime/messaging/personal_message_sender.py`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 50 (94%)
+- INFERRED: 3 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

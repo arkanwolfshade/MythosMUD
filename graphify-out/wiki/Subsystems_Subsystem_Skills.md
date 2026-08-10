@@ -1,19 +1,12 @@
 # Subsystems Subsystem Skills
 
-> 10 nodes · cohesion 0.20
+> 3 nodes
 
 ## Key Concepts
 
-- **Skills / Level Subsystem Design** (9 connections) — `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
-- **SUBSYSTEM_SKILLS_LEVEL_DESIGN.md** (1 connections) — `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
-- **Architecture** (1 connections) — `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
-- **Component interactions** (1 connections) — `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
-- **Constraints** (1 connections) — `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
-- **Developer guide** (1 connections) — `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
-- **Key design decisions** (1 connections) — `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
-- **Overview** (1 connections) — `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
-- **Related docs** (1 connections) — `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
-- **Troubleshooting** (1 connections) — `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
+- **Skills / Level Subsystem** (2 connections) — `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
+- **SkillService** (2 connections) — `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
+- **LevelService** (2 connections) — `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
 
 ## Relationships
 
@@ -25,10 +18,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

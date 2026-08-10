@@ -1,50 +1,53 @@
 # NPC Combat Rewards Tests
 
-> 36 nodes · cohesion 0.06
+> 25 nodes
 
 ## Key Concepts
 
-- **TestNPCCombatRewards** (19 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **test_npc_combat_rewards.py** (3 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.rewards_service()** (3 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.mock_game_mechanics()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.mock_persistence()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_award_xp_to_killer_exception()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_award_xp_to_killer_failure()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_award_xp_to_killer_success()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_award_xp_to_killer_zero_xp()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_calculate_xp_reward_no_xp_value()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_calculate_xp_reward_non_dict_stats()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_calculate_xp_reward_none_npc()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_calculate_xp_reward_with_npc_definition()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_check_player_connection_state_no_container()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_check_player_connection_state_with_connection_manager()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_is_valid_uuid_invalid()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_is_valid_uuid_valid()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **Unit tests for NPC combat rewards.  Tests the NPCCombatRewards class for XP calc** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **Test check_player_connection_state handles missing container.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **Test award_xp_to_killer successfully awards XP.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **Test award_xp_to_killer handles failure gracefully.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **Test award_xp_to_killer handles exceptions gracefully.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **Test suite for NPCCombatRewards class.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **Test award_xp_to_killer handles zero XP.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- *... and 11 more nodes in this community*
+- **performance.test.tsx** (15 connections) — `client/src/components/__tests__/performance.test.tsx`
+- **PerformanceTester** (12 connections) — `client/src/utils/performanceTester.ts`
+- **performanceTester.ts** (8 connections) — `client/src/utils/performanceTester.ts`
+- **usePerformanceTester()** (7 connections) — `client/src/utils/performanceTester.ts`
+- **performanceTester.test.ts** (4 connections) — `client/src/utils/__tests__/performanceTester.test.ts`
+- **.runTest()** (4 connections) — `client/src/utils/performanceTester.ts`
+- **.generateReport()** (4 connections) — `client/src/utils/performanceTester.ts`
+- **.runComponentRenderTest()** (3 connections) — `client/src/utils/performanceTester.ts`
+- **.runMemoryTest()** (3 connections) — `client/src/utils/performanceTester.ts`
+- **.getResults()** (3 connections) — `client/src/utils/performanceTester.ts`
+- **PerformanceTestResult** (2 connections) — `client/src/utils/performanceTester.ts`
+- **.getAverageResults()** (2 connections) — `client/src/utils/performanceTester.ts`
+- **TerminalButtonProps** (1 connections) — `client/src/components/__tests__/performance.test.tsx`
+- **PerformanceChartProps** (1 connections) — `client/src/components/__tests__/performance.test.tsx`
+- **MemoryUsageDisplayProps** (1 connections) — `client/src/components/__tests__/performance.test.tsx`
+- **TerminalInputProps** (1 connections) — `client/src/components/__tests__/performance.test.tsx`
+- **Channel** (1 connections) — `client/src/components/__tests__/performance.test.tsx`
+- **ChannelSelectorProps** (1 connections) — `client/src/components/__tests__/performance.test.tsx`
+- **ExtendedPerformance** (1 connections) — `client/src/utils/__tests__/performanceTester.test.ts`
+- **PerformanceTestConfig** (1 connections) — `client/src/utils/performanceTester.ts`
+- **PerformanceMemory** (1 connections) — `client/src/utils/performanceTester.ts`
+- **ExtendedPerformance** (1 connections) — `client/src/utils/performanceTester.ts`
+- **.getResultsByName()** (1 connections) — `client/src/utils/performanceTester.ts`
+- **.clearResults()** (1 connections) — `client/src/utils/performanceTester.ts`
+- **.exportResults()** (1 connections) — `client/src/utils/performanceTester.ts`
 
 ## Relationships
 
-- [[NPC Combat Lifecycle]] (4 shared connections)
+- [Memory Leak Metrics Tests](Memory_Leak_Metrics_Tests.md) (2 shared connections)
+- [Lucidity Rate Overrides](Lucidity_Rate_Overrides.md) (2 shared connections)
+- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_combat_rewards.py`
+- `client/src/components/__tests__/performance.test.tsx`
+- `client/src/utils/__tests__/performanceTester.test.ts`
+- `client/src/utils/performanceTester.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 73 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 80 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

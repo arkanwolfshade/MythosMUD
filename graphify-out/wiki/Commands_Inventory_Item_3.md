@@ -1,48 +1,53 @@
 # Commands Inventory Item
 
-> 18 nodes · cohesion 0.17
+> 64 nodes
 
 ## Key Concepts
 
-- **test_inventory_helpers.py** (35 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **match_inventory_item_by_name()** (16 connections) — `server/commands/inventory_item_matching.py`
-- **Test _match_inventory_item_by_name with exact match.** (5 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_inventory_item_by_name_exact()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
-- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_inventory_item_by_name_exact_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_inventory_item_by_name_no_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_inventory_item_by_name_prefix_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_inventory_item_by_name_substring_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_normalize_slot_name_empty_string()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_normalize_slot_name_none()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_normalize_slot_name_valid()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_normalize_slot_name_whitespace()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Test _normalize_slot_name with None.** (2 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Resolve an inventory index from a fuzzy name search.      Human scholars: this m** (1 connections) — `server/commands/inventory_item_matching.py`
-- **Test format_metadata with simple metadata.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Test _normalize_slot_name with valid slot name.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Test _normalize_slot_name with empty string.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_skill_service.py** (36 connections) — `server/tests/unit/game/test_skill_service.py`
+- **_occupation_slots_9()** (11 connections) — `server/tests/unit/game/test_skill_service.py`
+- **_personal_interest_4()** (8 connections) — `server/tests/unit/game/test_skill_service.py`
+- **skill_service()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_valid_creates_rows()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_own_language_not_allocated_equals_edu()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_cthulhu_mythos_in_occupation_rejected()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_wrong_occupation_values_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_duplicate_occupation_skill_ids_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **catalog_with_own_language_and_mythos()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_cthulhu_mythos_in_personal_rejected()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_wrong_occupation_count_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_personal_interest_not_four_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_duplicate_personal_skill_ids_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_overlap_occupation_and_personal_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **mock_skill_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **mock_player_skill_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **mock_skill_use_log_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_get_skills_catalog_returns_list()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_get_player_skills_owner_returns_list()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_get_player_skills_non_owner_returns_none()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_record_successful_skill_use_calls_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_get_skills_used_this_level_returns_repo_result()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_run_improvement_rolls_previous_level_under_1_no_op()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [[Commands Inventory Item]] (19 shared connections)
-- [[Admin Summon Command]] (12 shared connections)
-- [[Commands Inventory Display]] (5 shared connections)
-- [[Commands Inventory]] (3 shared connections)
-- [[Inventory Command Factories]] (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
+- [Game Mechanics Service](Game_Mechanics_Service.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_item_matching.py`
-- `server/tests/unit/commands/test_inventory_commands_helpers.py`
-- `server/tests/unit/commands/test_inventory_helpers.py`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 92 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 162 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

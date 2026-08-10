@@ -1,6 +1,6 @@
 # Github Workflows Ci
 
-> 11 nodes · cohesion 0.25
+> 11 nodes
 
 ## Key Concepts
 
@@ -11,9 +11,9 @@
 - **CodeQL Configuration** (2 connections) — `.github/codeql/codeql-config.yml`
 - **CodeQL Test Credential Exclusions** (2 connections) — `.github/codeql/codeql-config.yml`
 - **CI React Client Job** (2 connections) — `.github/workflows/ci.yml`
-- **step-security Harden Runner** (2 connections) — `.github/workflows/ci.yml`
 - **CodeQL Workflow** (2 connections) — `.github/workflows/codeql.yml`
 - **OpenSSF Scorecard Workflow** (2 connections) — `.github/workflows/scorecards.yml`
+- **step-security Harden Runner** (2 connections) — `.github/workflows/ci.yml`
 - **mythos_unit CI Database Bootstrap** (1 connections) — `.github/workflows/ci.yml`
 
 ## Relationships
@@ -35,4 +35,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,14 +1,12 @@
 # Cursor Plans Plan
 
-> 5 nodes · cohesion 0.40
+> 3 nodes
 
 ## Key Concepts
 
-- **Quest System Gap** (2 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- **Quest Subsystem Implementation** (2 connections) — `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
-- **Quest System** (2 connections) — `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
-- **MUD Subsystems Gap Analysis** (1 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- **Player Skills and Profession Modifiers** (1 connections) — `.cursor/plans/player_skills_and_profession_modifiers_dff11b8d.plan.md`
+- **Cursor Rules as Canonical Config** (2 connections) — `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
+- **Cursor-Centric AI Config** (1 connections) — `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
+- **GitHub Worktrees Cursor Setup** (1 connections) — `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
 
 ## Relationships
 
@@ -16,16 +14,15 @@
 
 ## Source Files
 
-- `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- `.cursor/plans/player_skills_and_profession_modifiers_dff11b8d.plan.md`
-- `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
+- `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
+- `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (75%)
-- INFERRED: 2 (25%)
+- EXTRACTED: 2 (50%)
+- INFERRED: 2 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

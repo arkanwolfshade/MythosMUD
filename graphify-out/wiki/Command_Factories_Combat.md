@@ -1,47 +1,38 @@
 # Command Factories Combat
 
-> 23 nodes · cohesion 0.09
+> 7 nodes
 
 ## Key Concepts
 
-- **test_command_factories_combat.py** (13 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **Test create_attack_command() allows None target (validation happens later).** (2 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_attack_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_attack_command_no_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_flee_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_kick_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_kick_command_no_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_punch_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_punch_command_no_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_strike_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_strike_command_no_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_taunt_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_taunt_command_no_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **Unit tests for combat command factories.  Tests the CombatCommandFactory class m** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **Test create_attack_command() creates AttackCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **Test create_punch_command() creates PunchCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **Test create_punch_command() allows None target (validation happens later).** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **Test create_kick_command() creates KickCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **Test create_kick_command() allows None target (validation happens later).** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **Test create_strike_command() creates StrikeCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **Test create_strike_command() allows None target (validation happens later).** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **Test create_flee_command() creates FleeCommand (no arguments).** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **Test create_taunt_command() creates TauntCommand with target.** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Chat Panel Separation Specification** (12 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Current State Analysis** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **CHAT_PANEL_SEPARATION_SPEC.md** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Overview** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Existing Structure** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Current Integration Points** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Conclusion** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Relationships
 
-- [[Communication Command Classes]] (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
+- [E 2 E Readme](E_2_E_Readme.md) (1 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
+- [Game Quest Service](Game_Quest_Service.md) (1 shared connections)
+- [E 2 E Troubleshooting](E_2_E_Troubleshooting.md) (1 shared connections)
+- [Contexts Gameterminalcontext Hooks](Contexts_Gameterminalcontext_Hooks.md) (1 shared connections)
+- [E 2 E Load Tsconfig](E_2_E_Load_Tsconfig.md) (1 shared connections)
+- [Game Magic Casting](Game_Magic_Casting.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories_combat.py`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,26 +1,20 @@
 # Schemas Room Schema
 
-> 13 nodes · cohesion 0.15
+> 6 nodes
 
 ## Key Concepts
 
-- **properties** (7 connections) — `schemas/room_schema.json`
-- **down** (2 connections) — `schemas/room_schema.json`
-- **east** (2 connections) — `schemas/room_schema.json`
-- **north** (2 connections) — `schemas/room_schema.json`
-- **south** (2 connections) — `schemas/room_schema.json`
-- **up** (2 connections) — `schemas/room_schema.json`
-- **west** (2 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
+- **room_schema.json** (7 connections) — `schemas/room_schema.json`
+- **$schema** (1 connections) — `schemas/room_schema.json`
+- **title** (1 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
+- **type** (1 connections) — `schemas/room_schema.json`
+- **additionalProperties** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
-- [[Schemas Room Schema]] (1 shared connections)
+- [Schemas Room Schema](Schemas_Room_Schema.md) (1 shared connections)
+- [Archive Planning Redis](Archive_Planning_Redis.md) (1 shared connections)
 
 ## Source Files
 
@@ -28,10 +22,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

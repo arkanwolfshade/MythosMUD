@@ -1,60 +1,51 @@
 # API Type Guards
 
-> 50 nodes · cohesion 0.09
+> 48 nodes
 
 ## Key Concepts
 
-- **apiTypeGuards.ts** (73 connections) — `client/src/utils/apiTypeGuards.ts`
-- **apiTypeGuards.test.ts** (15 connections) — `client/src/utils/__tests__/apiTypeGuards.test.ts`
-- **isObject()** (14 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isString()** (11 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isArray()** (9 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isNumber()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isStatsRollResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isLoginResponse()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isRefreshTokenResponse()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isServerCharacterResponseArray()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isCharacterInfo()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isProfession()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isProfessionCoreFields()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **assertProfessionArray()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- **hasOptionalString()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- **hasServerCharacterCoreFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- **hasServerCharacterIdentifierFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- **hasValidOptionalRollFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- **hasValidStatSummary()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isCharacterInfoArray()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isCharacterInfoCoreFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isMechanicalEffect()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isProfessionArray()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isStatRequirement()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isValidAsciiViewport()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- *... and 25 more nodes in this community*
+- **test_player_occupant_processor.py** (26 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **processor()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_grace_period_exception()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **mock_name_extractor()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_processor_init()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_ensure_player_included_in_list()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_ensure_player_included_in_list_already_present()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_convert_player_ids_to_uuids()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_process_players_for_occupants()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_ensure_player_included_in_list_none()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_convert_player_ids_to_uuids_value_error()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_convert_player_ids_to_uuids_mixed_types()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_convert_player_ids_to_uuids_already_uuid()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_invalid_name()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_linkdead()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_warded()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_both_indicators()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_online()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_default_level()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_process_players_for_occupants_with_player_not_found()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_process_players_for_occupants_with_invalid_name()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_process_players_for_occupants_with_uuid_ensure_player()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **Unit tests for player occupant processor.  Tests the PlayerOccupantProcessor cla** (1 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [[Client App State Hooks]] (15 shared connections)
-- [[Character Creation Screens]] (8 shared connections)
-- [[Client ASCII Map API]] (6 shared connections)
-- [[Character Selection Screens]] (5 shared connections)
-- [[Mythosapp Submitauth Applyauthenticatedsession]] (4 shared connections)
-- [[Room Map Viewer UI]] (3 shared connections)
-- [[Client Event Store]] (3 shared connections)
-- [[Chat Panel Components]] (2 shared connections)
+- [Spell Effects Tests](Spell_Effects_Tests.md) (3 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/mythosApp/characterSessionApi.ts`
-- `client/src/types/auth.ts`
-- `client/src/utils/__tests__/apiTypeGuards.test.ts`
-- `client/src/utils/apiTypeGuards.ts`
+- `server/tests/unit/realtime/test_player_occupant_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 270 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 97 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

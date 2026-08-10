@@ -1,49 +1,34 @@
 # Npc Behavior Engine
 
-> 25 nodes · cohesion 0.09
+> 10 nodes
 
 ## Key Concepts
 
-- **test_behavior_engine.py** (53 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_numeric_comparison() handles > operator.** (4 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_add_rule_success()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_evaluate_boolean_condition_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_evaluate_boolean_condition_variable_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_evaluate_equality_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_evaluate_inequality_true()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_evaluate_numeric_comparison_greater_equal()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_evaluate_numeric_comparison_greater_than()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_evaluate_numeric_comparison_less_equal()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_evaluate_numeric_comparison_less_than()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_evaluate_numeric_comparison_non_numeric()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_execute_applicable_rules_executes_highest_priority()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_execute_applicable_rules_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_remove_rule_not_found()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Unit tests for behavior engine.  Tests the BehaviorEngine class.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_equality() returns False for non-matching condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_inequality() returns True for non-matching condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test add_rule() successfully adds rule.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_numeric_comparison() raises ValueError for non-numeric values.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test execute_applicable_rules() executes highest priority rule.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test execute_applicable_rules() handles exceptions.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_boolean_condition() handles 'false' literal.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_boolean_condition() returns False for missing variable.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test remove_rule() returns False when rule not found.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **TestCheckAllCommandBlocks** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_all_command_blocks_catatonia()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_all_command_blocks_grace_period()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_all_command_blocks_casting()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_all_command_blocks_no_blocks()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_all_command_blocks function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_all_command_blocks returns block result for catatonia.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_all_command_blocks returns block result for grace period.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_all_command_blocks returns block result for casting.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_all_command_blocks returns None when no blocks.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
 
 ## Relationships
 
-- [[Npc Behavior Engine]] (52 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (5 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 106 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,42 +1,29 @@
 # E 2 E Scenarios Scenario
 
-> 18 nodes · cohesion 0.11
+> 4 nodes
 
 ## Key Concepts
 
-- **Execution Steps** (9 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
-- **Scenario 22: Administrative Summon Command **[REQUIRES MULTI-PLAYER]**** (9 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
-- **scenario-22-summon-command.md** (1 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
-- **Cleanup** (1 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
-- **Expected Results** (1 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
-- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
-- **Prerequisites** (1 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
-- **Status** (1 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
-- **Step 1: Confirm Admin Status** (1 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
-- **Step 2: Summon Item Prototype** (1 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
-- **Step 3: Verify Room Drop Broadcast (Observer)** (1 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
-- **Step 4: Inspect Room Drops UI (Observer)** (1 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
-- **Step 5: Validate Inventory Mutation Guard** (1 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
-- **Step 6: Non-Admin Permission Check** (1 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
-- **Step 7: NPC Summon Placeholder** (1 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
-- **Step 8: Audit Log Verification (Optional but Recommended)** (1 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
-- **Success Criteria Checklist** (1 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
-- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
+- **exits** (5 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Npc Event Reaction](Npc_Event_Reaction.md) (1 shared connections)
+- [Item System Design](Item_System_Design.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-22-summon-command.md`
+- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

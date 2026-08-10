@@ -1,44 +1,37 @@
 # E 2 E Scenarios Scenario
 
-> 19 nodes · cohesion 0.11
+> 12 nodes
 
 ## Key Concepts
 
-- **Execution Steps** (10 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Scenario 3: Movement Between Rooms **[REQUIRES MULTI-PLAYER]**** (9 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Status** (2 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Step 8: Test Return Movement** (2 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Cleanup** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Expected Results** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **✅ READY FOR TESTING** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Step 1: Both Players in Main Foyer** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Step 2: AW Moves East** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Step 4: Verify AW Sees No Self-Movement Messages** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Step 5: Ithaqua Moves East to Join AW** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Step 6: Verify AW Sees Ithaqua Enter** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Step 7: Verify Ithaqua Sees No Self-Movement Messages** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Success Criteria Checklist** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
-- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **test_grace_period_blocking.py** (8 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_blocks_commands()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_allows_commands_when_not_in_grace_period()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_handles_missing_services()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_handles_player_not_found()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **mock_request()** (2 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Unit tests for grace period command blocking in unified command handler.  Tests** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Create a mock request.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Test _check_grace_period_block() blocks commands for grace period players.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Test _check_grace_period_block() allows commands when player not in grace period** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Test _check_grace_period_block() handles missing services gracefully.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Test _check_grace_period_block() handles player not found gracefully.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
 
 ## Relationships
 
-- [[E 2 E Scenarios Scenario]] (3 shared connections)
-- [[E2E Multiplayer Findings]] (1 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (5 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (100%)
+- EXTRACTED: 28 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

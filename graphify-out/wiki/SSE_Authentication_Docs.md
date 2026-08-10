@@ -1,50 +1,44 @@
 # SSE Authentication Docs
 
-> 32 nodes · cohesion 0.06
+> 20 nodes
 
 ## Key Concepts
 
-- **SSE Authentication System** (13 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Implementation Notes** (4 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Security Considerations** (4 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **API Endpoints** (3 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Architecture** (3 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Authentication Mechanisms** (3 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Error Handling** (3 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Security Features** (3 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Testing** (3 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Troubleshooting** (3 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **JWT Token Validation** (2 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **SSE_AUTHENTICATION.md** (1 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Authentication Errors** (1 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Authentication Flow** (1 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Best Practices** (1 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Common Issues** (1 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Components** (1 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Configuration** (1 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Connection Security** (1 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Debug Information** (1 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Dependencies** (1 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Future Enhancements** (1 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Overview** (1 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Rate Limiting** (1 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- **Rate Limiting Errors** (1 connections) — `docs/archive/SSE_AUTHENTICATION.md`
-- *... and 7 more nodes in this community*
+- **multiplayer-browser-helpers.bundle.js** (19 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **isElementVisible()** (10 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasLoginSubmitButtonInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasCommandInputInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasGameInfoPanelInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasPrimaryGameUiMarkersInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasGameInfoAnyMessageInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasUsernameInputInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **isLoginFormVisibleInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **elementTextIncludesGameInfo()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **isValidElement()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **computedStyleHidesElement()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **getBodyInnerText()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **buttonHasLoginSubmitLabel()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **fieldHasCommandPlaceholder()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasTickMessageInBrowser()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **isEmptyGameInfoPanelText()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasRoomStateIndicatorsInBrowser()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasBodyTextGameUiIndicators()** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **elementShowsConnectedStatus()** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
 
 ## Relationships
 
-- [[Archive Readme Planning]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/SSE_AUTHENTICATION.md`
+- `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (100%)
+- EXTRACTED: 76 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

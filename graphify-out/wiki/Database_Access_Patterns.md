@@ -1,52 +1,54 @@
 # Database Access Patterns
 
-> 27 nodes · cohesion 0.08
+> 22 nodes
 
 ## Key Concepts
 
-- **Database Access Patterns** (16 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **Common Patterns** (4 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
+- **Configuration Files Reference** (4 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
+- **Database Access Patterns** (4 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
+- **Documentation Audit** (4 connections) — `docs/DOCUMENTATION_AUDIT.md`
+- **Container System API Reference** (3 connections) — `docs/CONTAINER_SYSTEM_API_REFERENCE.md`
+- **Container System Architecture** (3 connections) — `docs/CONTAINER_SYSTEM_ARCHITECTURE.md`
+- **E2E Testing Guide** (3 connections) — `docs/E2E_TESTING_GUIDE.md`
 - **AsyncPersistenceLayer Pattern** (3 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **Error Handling Patterns** (3 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **Performance Considerations** (3 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
 - **SQLAlchemy ORM Pattern** (3 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **AsyncPG Connection Pool** (3 connections) — `docs/DATABASE_POOL_CONFIGURATION.md`
-- **SQLAlchemy Connection Pool** (3 connections) — `docs/DATABASE_POOL_CONFIGURATION.md`
-- **Migration Strategy** (2 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
+- **Container/Item Repository Async Migration Plan** (2 connections) — `docs/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
 - **Database Pool Configuration** (2 connections) — `docs/DATABASE_POOL_CONFIGURATION.md`
-- **DATABASE_ACCESS_PATTERNS.md** (1 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **AsyncPersistenceLayer (Async)** (1 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **AsyncPersistenceLayer (Pattern 1)** (1 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **Complex Query with Joins** (1 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **Decision Tree** (1 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
+- **Development Environment Setup** (2 connections) — `docs/DEVELOPMENT.md`
+- **SQLAlchemy Connection Pool** (2 connections) — `docs/DATABASE_POOL_CONFIGURATION.md`
+- **AsyncPG Connection Pool** (2 connections) — `docs/DATABASE_POOL_CONFIGURATION.md`
+- **Playwright CLI E2E Tests** (2 connections) — `docs/E2E_TESTING_GUIDE.md`
+- **Playwright MCP Multiplayer Scenarios** (2 connections) — `docs/E2E_TESTING_GUIDE.md`
+- **Configuration File Tuples** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
+- **.env.local Secrets Pattern** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
+- **Container Item System** (1 connections) — `docs/CONTAINER_SYSTEM_ARCHITECTURE.md`
+- **SQLAlchemy Async Migration Option** (1 connections) — `docs/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Container System API** (1 connections) — `docs/CONTAINER_SYSTEM_API_REFERENCE.md`
 - **Eager Loading Best Practices** (1 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **F-String SQL Migration Status** (1 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **From AsyncPersistenceLayer to SQLAlchemy ORM** (1 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **Future Migration Goals** (1 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **Getting a Single Player with User** (1 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **Listing Players with Eager Loading** (1 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **Overview** (1 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **Pattern 1: AsyncPersistenceLayer (Asynchronous asyncpg)** (1 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **Pattern 2: SQLAlchemy ORM (Asynchronous)** (1 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **References** (1 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- *... and 2 more nodes in this community*
+- **COPPA Compliance Checklist** (1 connections) — `docs/DEVELOPMENT.md`
 
 ## Relationships
 
-- [[Database Pool Configuration]] (2 shared connections)
-- [[E 2 E Cursor Skills]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
+- `docs/CONFIGURATION_FILES_REFERENCE.md`
+- `docs/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- `docs/CONTAINER_SYSTEM_API_REFERENCE.md`
+- `docs/CONTAINER_SYSTEM_ARCHITECTURE.md`
 - `docs/DATABASE_ACCESS_PATTERNS.md`
 - `docs/DATABASE_POOL_CONFIGURATION.md`
+- `docs/DEVELOPMENT.md`
+- `docs/DOCUMENTATION_AUDIT.md`
+- `docs/E2E_TESTING_GUIDE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (93%)
-- INFERRED: 4 (7%)
+- EXTRACTED: 38 (79%)
+- INFERRED: 10 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

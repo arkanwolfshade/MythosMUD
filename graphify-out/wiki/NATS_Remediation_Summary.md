@@ -1,45 +1,38 @@
 # Nats Remediation Summary
 
-> 21 nodes · cohesion 0.10
+> 13 nodes
 
 ## Key Concepts
 
-- **NATS Anti-Patterns Remediation Summary** (10 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Completed Fixes ✅** (6 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Code Quality Improvements** (4 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Impact Assessment** (3 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **NATS_REMEDIATION_SUMMARY_2026-01-13.md** (1 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **1. Fixed Synchronous Operation in WebSocket Helpers** (1 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **2. Standardized Error Handling** (1 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **3. Added Message Validation to NATSMessageBroker** (1 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **4. Improved Batch Flush Error Recovery** (1 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **5. Improved Connection Pool Error Handling** (1 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **After Remediation** (1 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Backward Compatibility** (1 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Before Remediation** (1 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Configuration Options** (1 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Exception Hierarchy** (1 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Executive Summary** (1 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Metrics & Observability** (1 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Next Steps (Optional)** (1 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Performance Impact** (1 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Remaining Medium-Priority Issues** (1 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Testing Status** (1 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **.broadcast_player_mortally_wounded()** (6 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **Any** (5 connections)
+- **._send_mortally_wounded_personal_message()** (4 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **.broadcast_player_death()** (4 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **.broadcast_player_respawn()** (4 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **.send_dp_decay_message()** (4 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **._build_mortally_wounded_messages()** (3 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **Build personal and room messages for mortally wounded broadcast.** (1 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **Send mortally wounded personal message. Logs warning on failure.** (1 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **Broadcast player mortally wounded to room. Sends personal message to wounded pla** (1 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **Broadcast player death message to all players in the room.** (1 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **Broadcast player respawn message to all players in the room.** (1 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **Send DP decay message to a specific mortally wounded player.** (1 connections) — `server/services/combat_messaging/player_broadcasts.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (4 shared connections)
 
 ## Source Files
 
-- `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- `server/services/combat_messaging/player_broadcasts.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

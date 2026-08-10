@@ -1,51 +1,51 @@
 # Mythos Map Builder
 
-> 47 nodes · cohesion 0.10
+> 28 nodes
 
 ## Key Concepts
 
-- **mythos_mud_mapbuilder.py** (22 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **Coord** (14 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **RoomID** (12 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **infer_coordinates()** (11 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **Room** (11 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_process_exit()** (10 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **main()** (9 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **render_with_tcod()** (9 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **build_tile_grid()** (7 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **compute_bounds()** (7 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **Any** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_check_disconnected_rooms()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **dump_ascii_to_file()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_handle_coordinate_conflict()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_handle_spatial_collision()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_handle_unknown_direction()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_initialize_bfs_queue()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_record_explicit_coords()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **render_text()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_select_start_room_if_needed()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **load_rooms_from_dir()** (5 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **run_validator_on_rooms()** (5 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_load_tileset()** (4 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **example_validator()** (3 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_handle_tcod_events()** (3 connections) — `data/local/mythos_mud_mapbuilder.py`
-- *... and 22 more nodes in this community*
+- **ErrorMonitor** (13 connections) — `scripts/error_monitoring.py`
+- **.calculate_error_rate()** (10 connections) — `scripts/error_monitoring.py`
+- **main()** (8 connections) — `scripts/error_monitoring.py`
+- **Any** (7 connections)
+- **.check_alerts()** (7 connections) — `scripts/error_monitoring.py`
+- **._parse_recent_errors()** (7 connections) — `scripts/error_monitoring.py`
+- **.detect_error_trends()** (6 connections) — `scripts/error_monitoring.py`
+- **.monitor_continuously()** (6 connections) — `scripts/error_monitoring.py`
+- **._find_recent_error_logs()** (5 connections) — `scripts/error_monitoring.py`
+- **error_monitoring.py** (4 connections) — `scripts/error_monitoring.py`
+- **.__init__()** (4 connections) — `scripts/error_monitoring.py`
+- **Path** (4 connections)
+- **._parse_log_line()** (4 connections) — `scripts/error_monitoring.py`
+- **._categorize_error()** (4 connections) — `scripts/error_monitoring.py`
+- **._determine_severity()** (4 connections) — `scripts/error_monitoring.py`
+- **datetime** (3 connections)
+- **Real-time error monitoring system for MythosMUD.      This monitor can track err** (1 connections) — `scripts/error_monitoring.py`
+- **Initialize the error monitor.          Args:             log_dir: Directory cont** (1 connections) — `scripts/error_monitoring.py`
+- **Calculate current error rate from log files.          Returns error rate statist** (1 connections) — `scripts/error_monitoring.py`
+- **Detect error trends over time.          Returns trend analysis results.** (1 connections) — `scripts/error_monitoring.py`
+- **Check for alert conditions.          Returns list of active alerts.** (1 connections) — `scripts/error_monitoring.py`
+- **Monitor errors continuously for a specified duration.          Args:** (1 connections) — `scripts/error_monitoring.py`
+- **Find error log files that have been modified since the given time.** (1 connections) — `scripts/error_monitoring.py`
+- **Parse recent errors from a log file.** (1 connections) — `scripts/error_monitoring.py`
+- **Parse a single log line and extract error information.** (1 connections) — `scripts/error_monitoring.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [[Message Queue Cleanup]] (5 shared connections)
-- [[Database Manager Tests]] (1 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
 
 ## Source Files
 
-- `data/local/mythos_mud_mapbuilder.py`
+- `scripts/error_monitoring.py`
 
 ## Audit Trail
 
-- EXTRACTED: 213 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 107 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

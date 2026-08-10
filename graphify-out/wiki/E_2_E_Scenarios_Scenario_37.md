@@ -1,21 +1,15 @@
 # E 2 E Scenarios Scenario
 
-> 12 nodes · cohesion 0.17
+> 6 nodes
 
 ## Key Concepts
 
-- **Scenario 40: /skills Command Returns Active Character's Skills (Plan 10.8 E3)** (8 connections) — `e2e-tests/scenarios/scenario-40-skills-command.md`
-- **Execution Steps** (4 connections) — `e2e-tests/scenarios/scenario-40-skills-command.md`
-- **scenario-40-skills-command.md** (1 connections) — `e2e-tests/scenarios/scenario-40-skills-command.md`
-- **Automated Implementation** (1 connections) — `e2e-tests/scenarios/scenario-40-skills-command.md`
-- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-40-skills-command.md`
-- **Prerequisites** (1 connections) — `e2e-tests/scenarios/scenario-40-skills-command.md`
-- **Status** (1 connections) — `e2e-tests/scenarios/scenario-40-skills-command.md`
-- **Step 1: Reach game** (1 connections) — `e2e-tests/scenarios/scenario-40-skills-command.md`
-- **Step 2: Send /skills command** (1 connections) — `e2e-tests/scenarios/scenario-40-skills-command.md`
-- **Step 3: Assert response in game log** (1 connections) — `e2e-tests/scenarios/scenario-40-skills-command.md`
-- **Success Criteria** (1 connections) — `e2e-tests/scenarios/scenario-40-skills-command.md`
-- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-40-skills-command.md`
+- **Whisper Channel System** (4 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
+- **Scenario 13 Whisper Basic** (2 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
+- **Scenario 16 Whisper Movement** (2 connections) — `e2e-tests/scenarios/scenario-16-whisper-movement.md`
+- **Scenario 18 Whisper Logging** (2 connections) — `e2e-tests/scenarios/scenario-18-whisper-logging.md`
+- **Scenario 14 Whisper Errors** (1 connections) — `e2e-tests/scenarios/scenario-14-whisper-errors.md`
+- **Whisper Moderation Logging** (1 connections) — `e2e-tests/scenarios/scenario-18-whisper-logging.md`
 
 ## Relationships
 
@@ -23,14 +17,17 @@
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-40-skills-command.md`
+- `e2e-tests/scenarios/scenario-13-whisper-basic.md`
+- `e2e-tests/scenarios/scenario-14-whisper-errors.md`
+- `e2e-tests/scenarios/scenario-16-whisper-movement.md`
+- `e2e-tests/scenarios/scenario-18-whisper-logging.md`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 10 (83%)
+- INFERRED: 2 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

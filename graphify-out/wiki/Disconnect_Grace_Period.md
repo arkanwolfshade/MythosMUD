@@ -1,72 +1,55 @@
 # Disconnect Grace Period
 
-> 224 nodes · cohesion 0.02
+> 36 nodes
 
 ## Key Concepts
 
-- **test_player_presence_tracker.py** (36 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **test_player_disconnect_handlers.py** (33 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **player_presence_tracker.py** (30 connections) — `server/realtime/player_presence_tracker.py`
-- **track_player_disconnected_impl()** (28 connections) — `server/realtime/player_presence_tracker.py`
-- **player_disconnect_handlers.py** (24 connections) — `server/realtime/player_disconnect_handlers.py`
-- **disconnect_grace_period.py** (23 connections) — `server/realtime/disconnect_grace_period.py`
-- **player_connection_setup.py** (23 connections) — `server/realtime/player_connection_setup.py`
-- **start_grace_period()** (20 connections) — `server/realtime/disconnect_grace_period.py`
-- **_collect_disconnect_keys()** (19 connections) — `server/realtime/player_disconnect_handlers.py`
-- **handle_new_connection_setup()** (17 connections) — `server/realtime/player_connection_setup.py`
-- **handle_player_disconnect_broadcast()** (17 connections) — `server/realtime/player_disconnect_handlers.py`
-- **player_presence_utils.py** (16 connections) — `server/realtime/player_presence_utils.py`
-- **extract_player_name()** (16 connections) — `server/realtime/player_presence_utils.py`
-- **test_disconnect_grace_period.py** (16 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **track_player_connected_impl()** (14 connections) — `server/realtime/player_presence_tracker.py`
-- **cancel_grace_period()** (12 connections) — `server/realtime/disconnect_grace_period.py`
-- **broadcast_connection_message_impl()** (12 connections) — `server/realtime/player_presence_tracker.py`
-- **age_off_disconnected_sessions()** (11 connections) — `server/realtime/player_disconnect_handlers.py`
-- **_cleanup_player_references()** (11 connections) — `server/realtime/player_disconnect_handlers.py`
-- **_broadcast_player_entered_game()** (10 connections) — `server/realtime/player_connection_setup.py`
-- **_remove_player_from_online_tracking()** (10 connections) — `server/realtime/player_disconnect_handlers.py`
-- **_build_player_info()** (10 connections) — `server/realtime/player_presence_tracker.py`
-- **_acquire_disconnect_lock()** (9 connections) — `server/realtime/player_presence_tracker.py`
-- **_resolve_room_id()** (9 connections) — `server/realtime/player_presence_tracker.py`
-- **_should_skip_disconnect()** (9 connections) — `server/realtime/player_presence_tracker.py`
-- *... and 199 more nodes in this community*
+- **request_with_app_container()** (28 connections) — `server/tests/unit/commands/communication_commands_mocks.py`
+- **test_communication_commands_say_me_pose.py** (22 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_delegates_broadcast_to_chat_service_with_ids()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_pose_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_pose_command_clear_pose()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_pose_command_set_pose()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_no_room()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_no_player_id()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_chat_service_failure()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_exception()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_reply_command_no_last_whisper_sender()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **test_handle_say_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_me_command_no_action()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_me_command_success()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_pose_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **Return (request, container) with request.app.state.container wired.      Typed M** (1 connections) — `server/tests/unit/commands/communication_commands_mocks.py`
+- **Unit tests for say, me, and pose communication command handlers.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **Test handle_say_command with no message.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **Test handle_say_command when services are not available.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **Test handle_say_command when player is not found.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **Test handle_say_command successful execution.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **Room say must call chat_service.send_say_message(player_id, message) for broadca** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Admin API]] (22 shared connections)
-- [[Look Command Helpers]] (18 shared connections)
-- [[Room Occupant Events]] (14 shared connections)
-- [[Rest Command Flow]] (5 shared connections)
-- [[Combat Player Broadcasts]] (5 shared connections)
-- [[SQLAlchemy Model Base]] (3 shared connections)
-- [[Player Respawn Events]] (2 shared connections)
-- [[Alias Expansion Logic]] (1 shared connections)
-- [[Async Persistence Layer]] (1 shared connections)
-- [[Distributed Event Bus]] (1 shared connections)
-- [[Room Occupancy Class]] (1 shared connections)
-- [[Database Manager Tests]] (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (28 shared connections)
+- [Caching Lru Cache](Caching_Lru_Cache.md) (7 shared connections)
+- [E 2 E Execution Guards](E_2_E_Execution_Guards.md) (1 shared connections)
+- [E 2 E Scenario Template](E_2_E_Scenario_Template.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_manager.py`
-- `server/realtime/disconnect_grace_period.py`
-- `server/realtime/player_connection_setup.py`
-- `server/realtime/player_disconnect_handlers.py`
-- `server/realtime/player_presence_tracker.py`
-- `server/realtime/player_presence_utils.py`
-- `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
-- `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
-- `server/tests/unit/realtime/test_player_presence_tracker.py`
-- `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
+- `server/tests/unit/commands/communication_commands_mocks.py`
+- `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
 
 ## Audit Trail
 
-- EXTRACTED: 882 (100%)
-- INFERRED: 3 (0%)
+- EXTRACTED: 127 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

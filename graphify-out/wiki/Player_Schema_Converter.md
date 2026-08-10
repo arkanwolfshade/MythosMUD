@@ -1,57 +1,62 @@
 # Player Schema Converter
 
-> 49 nodes · cohesion 0.07
+> 39 nodes
 
 ## Key Concepts
 
-- **PlayerSchemaConverter** (20 connections) — `server/game/player_schema_converter.py`
-- **test_player_schema_converter_weapon.py** (15 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
-- **_inventory_item_with_weapon()** (12 connections) — `server/game/player_schema_converter.py`
-- **.create_player_read_from_object()** (11 connections) — `server/game/player_schema_converter.py`
-- **_weapon_from_prototype_registry()** (11 connections) — `server/game/player_schema_converter.py`
-- **Any** (11 connections) — `server/game/player_schema_converter.py`
-- **.create_player_read_from_dict()** (9 connections) — `server/game/player_schema_converter.py`
-- **.convert_player_to_schema()** (8 connections) — `server/game/player_schema_converter.py`
-- **.get_position_state()** (6 connections) — `server/game/player_schema_converter.py`
-- **.check_player_combat_state()** (4 connections) — `server/game/player_schema_converter.py`
-- **.compute_derived_stats_fields()** (4 connections) — `server/game/player_schema_converter.py`
-- **.get_player_data_methods()** (4 connections) — `server/game/player_schema_converter.py`
-- **.get_profession_details()** (4 connections) — `server/game/player_schema_converter.py`
-- **test_weapon_from_prototype_registry_missing_prototype_returns_none()** (4 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
-- **.__init__()** (3 connections) — `server/game/player_schema_converter.py`
-- **test_create_player_read_from_object_enriches_inventory_weapon()** (3 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
-- **test_inventory_item_with_weapon_minimal_dict()** (3 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
-- **test_inventory_item_with_weapon_uses_prototype_id_for_lookup()** (3 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
-- **test_inventory_item_with_weapon_with_registry_weapon()** (3 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
-- **test_weapon_from_prototype_registry_empty_prototype_id_returns_none()** (3 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
-- **test_weapon_from_prototype_registry_no_metadata_returns_none()** (3 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
-- **test_weapon_from_prototype_registry_none_registry_returns_none()** (3 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
-- **test_weapon_from_prototype_registry_weapon_present_returns_dict()** (3 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
-- **PlayerRead** (3 connections) — `server/game/player_schema_converter.py`
-- **Get stats, inventory, and status_effects from player, handling async methods.** (1 connections) — `server/game/player_schema_converter.py`
-- *... and 24 more nodes in this community*
+- **router.py** (30 connections) — `server/commands/npc_admin/router.py`
+- **__init__.py** (24 connections) — `server/commands/npc_admin/__init__.py`
+- **npc_admin_commands.py** (21 connections) — `server/commands/npc_admin_commands.py`
+- **_build_subcommand_map()** (20 connections) — `server/commands/npc_admin/router.py`
+- **handle_npc_command()** (17 connections) — `server/commands/npc_admin/router.py`
+- **behavior.py** (11 connections) — `server/commands/npc_admin/behavior.py`
+- **monitoring.py** (11 connections) — `server/commands/npc_admin/monitoring.py`
+- **handle_npc_behavior_command()** (9 connections) — `server/commands/npc_admin/behavior.py`
+- **handle_npc_react_command()** (9 connections) — `server/commands/npc_admin/behavior.py`
+- **handle_npc_stop_command()** (9 connections) — `server/commands/npc_admin/behavior.py`
+- **handle_npc_population_command()** (9 connections) — `server/commands/npc_admin/monitoring.py`
+- **handle_npc_zone_command()** (9 connections) — `server/commands/npc_admin/monitoring.py`
+- **handle_npc_status_command()** (9 connections) — `server/commands/npc_admin/monitoring.py`
+- **validate_npc_admin_permission()** (9 connections) — `server/commands/npc_admin/router.py`
+- **_resolve_npc_command_player()** (5 connections) — `server/commands/npc_admin/router.py`
+- **Any** (5 connections)
+- **_extract_npc_subcommand()** (5 connections) — `server/commands/npc_admin/router.py`
+- **_invoke_npc_handler()** (5 connections) — `server/commands/npc_admin/router.py`
+- **_get_npc_help()** (4 connections) — `server/commands/npc_admin/router.py`
+- **Any** (3 connections)
+- **Any** (3 connections)
+- **NPC Admin Commands subpackage for MythosMUD.  Splits NPC admin functionality acr** (1 connections) — `server/commands/npc_admin/__init__.py`
+- **NPC behavior control commands (behavior, react, stop).** (1 connections) — `server/commands/npc_admin/behavior.py`
+- **Handle NPC behavior control command.** (1 connections) — `server/commands/npc_admin/behavior.py`
+- **Handle NPC reaction trigger command.** (1 connections) — `server/commands/npc_admin/behavior.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Admin API]] (4 shared connections)
-- [[Combat Command Handler]] (4 shared connections)
-- [[Game Inventory Item]] (2 shared connections)
-- [[Player Creation Service]] (2 shared connections)
-- [[Character Stats Model]] (2 shared connections)
-- [[Status Effect Model]] (2 shared connections)
-- [[Weapon Resolution Helpers]] (2 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (17 shared connections)
+- [Death Delirium UI Modals](Death_Delirium_UI_Modals.md) (17 shared connections)
+- [Client Event Store](Client_Event_Store.md) (17 shared connections)
+- [Player Respawn Handlers](Player_Respawn_Handlers.md) (11 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (10 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
+- [NPC Occupants Verification](NPC_Occupants_Verification.md) (5 shared connections)
+- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
+- [Player Creation Service](Player_Creation_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/player_schema_converter.py`
-- `server/tests/unit/game/test_player_schema_converter_weapon.py`
+- `server/commands/npc_admin/__init__.py`
+- `server/commands/npc_admin/behavior.py`
+- `server/commands/npc_admin/monitoring.py`
+- `server/commands/npc_admin/router.py`
+- `server/commands/npc_admin_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 173 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 211 (86%)
+- INFERRED: 34 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

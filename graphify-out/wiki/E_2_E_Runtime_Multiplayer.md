@@ -1,44 +1,42 @@
 # E 2 E Runtime Multiplayer
 
-> 20 nodes · cohesion 0.17
+> 12 nodes
 
 ## Key Concepts
 
-- **multiplayer-browser-helpers.bundle.js** (19 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **isElementVisible()** (7 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasCommandInputInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasGameInfoPanelInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasPrimaryGameUiMarkersInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasUsernameInputInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **isLoginFormVisibleInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **computedStyleHidesElement()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **elementTextIncludesGameInfo()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **fieldHasCommandPlaceholder()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **getBodyInnerText()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasGameInfoAnyMessageInBrowser()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasLoginSubmitButtonInBrowser()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasRoomStateIndicatorsInBrowser()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **isEmptyGameInfoPanelText()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **isValidElement()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **buttonHasLoginSubmitLabel()** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **elementShowsConnectedStatus()** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasBodyTextGameUiIndicators()** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasTickMessageInBrowser()** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **close_npc_db()** (9 connections) — `server/npc_database.py`
+- **TestCloseNpcDb** (6 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.shutdown()** (4 connections) — `server/container/bundles/core.py`
+- **.test_close_npc_db_disposes_engine()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_close_npc_db_handles_closed_loop()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_close_npc_db_handles_no_engine()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Shutdown core services.** (1 connections) — `server/container/bundles/core.py`
+- **Close NPC database connections.** (1 connections) — `server/npc_database.py`
+- **Test close_npc_db() function.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test close_npc_db() disposes engine.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test close_npc_db() handles closed event loop.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test close_npc_db() handles case when engine is None.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
+- [Combat Schema Validation](Combat_Schema_Validation.md) (2 shared connections)
+- [Realtime Errors Error](Realtime_Errors_Error.md) (2 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- `server/container/bundles/core.py`
+- `server/npc_database.py`
+- `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 34 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

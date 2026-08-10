@@ -1,50 +1,35 @@
 # Command Factories Inventory
 
-> 23 nodes · cohesion 0.09
+> 8 nodes
 
 ## Key Concepts
 
-- **InventoryCommandFactory** (17 connections) — `server/utils/command_factories_inventory.py`
-- **.create_pickup_command()** (6 connections) — `server/utils/command_factories_inventory.py`
-- **.create_get_command()** (4 connections) — `server/utils/command_factories_inventory.py`
-- **.create_inventory_command()** (4 connections) — `server/utils/command_factories_inventory.py`
-- **.create_put_command()** (4 connections) — `server/utils/command_factories_inventory.py`
-- **.create_unequip_command()** (4 connections) — `server/utils/command_factories_inventory.py`
-- **._parse_index_or_search_term()** (4 connections) — `server/utils/command_factories_inventory.py`
-- **._parse_quantity_from_args()** (4 connections) — `server/utils/command_factories_inventory.py`
-- **.create_drop_command()** (3 connections) — `server/utils/command_factories_inventory.py`
-- **DropCommand** (1 connections) — `server/utils/command_factories_inventory.py`
-- **GetCommand** (1 connections) — `server/utils/command_factories_inventory.py`
-- **InventoryCommand** (1 connections) — `server/utils/command_factories_inventory.py`
-- **PickupCommand** (1 connections) — `server/utils/command_factories_inventory.py`
-- **PutCommand** (1 connections) — `server/utils/command_factories_inventory.py`
-- **UnequipCommand** (1 connections) — `server/utils/command_factories_inventory.py`
-- **Factory class for creating inventory and item management command objects.** (1 connections) — `server/utils/command_factories_inventory.py`
-- **Create InventoryCommand from arguments.** (1 connections) — `server/utils/command_factories_inventory.py`
-- **Parse quantity from args if present.          Args:             args: Original a** (1 connections) — `server/utils/command_factories_inventory.py`
-- **Parse index or search term from selector tokens.          Args:             args** (1 connections) — `server/utils/command_factories_inventory.py`
-- **Create pickup command supporting numeric indices or fuzzy names.** (1 connections) — `server/utils/command_factories_inventory.py`
-- **Create put command.          Supports: put <item> [in] <container> [quantity]** (1 connections) — `server/utils/command_factories_inventory.py`
-- **Create get command.          Supports: get <item> [from] <container> [quantity]** (1 connections) — `server/utils/command_factories_inventory.py`
-- **Create unequip command.** (1 connections) — `server/utils/command_factories_inventory.py`
+- **optimized_validate_command_content()** (7 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_validate_command_content_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_command_content_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_command_content_injection()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating empty command content.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating valid command content.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating command content with injection pattern.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Optimized validation for command content fields.      Args:         value: The c** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- [[NPC Admin API]] (10 shared connections)
-- [[Inventory Command Factories]] (2 shared connections)
-- [[Communication Command Classes]] (2 shared connections)
-- [[Command Factory Creators]] (2 shared connections)
+- [WebSocket Handler Tests](WebSocket_Handler_Tests.md) (4 shared connections)
+- [Cursor Workflows Docs](Cursor_Workflows_Docs.md) (1 shared connections)
+- [Services Combat Initialization](Services_Combat_Initialization.md) (1 shared connections)
 
 ## Source Files
 
-- `server/utils/command_factories_inventory.py`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 62 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 20 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

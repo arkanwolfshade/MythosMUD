@@ -1,17 +1,17 @@
 # Components Ui V 2
 
-> 8 nodes · cohesion 0.25
+> 8 nodes
 
 ## Key Concepts
 
-- **Event Schema (Client Event Log)** (7 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
-- **EVENTS_SCHEMA.md** (1 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
-- **Combat events** (1 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
-- **Common event envelope** (1 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
-- **Message events** (1 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
-- **Player events** (1 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
-- **Room events** (1 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
-- **System events** (1 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
+- **Client Event Schema** (3 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
+- **Event-Sourced Projector** (3 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
+- **Critical State Handoffs** (3 connections) — `client/src/components/ui-v2/eventLog/HANDOFFS.md`
+- **Enter-Room Request/Response** (3 connections) — `client/src/components/ui-v2/eventLog/HANDOFFS.md`
+- **room_state Event** (2 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
+- **Server Authority Over Client** (2 connections) — `client/src/components/ui-v2/eventLog/HANDOFFS.md`
+- **game_state Event** (1 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
+- **GameState** (1 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
 
 ## Relationships
 
@@ -20,13 +20,14 @@
 ## Source Files
 
 - `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
+- `client/src/components/ui-v2/eventLog/HANDOFFS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 16 (89%)
+- INFERRED: 2 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

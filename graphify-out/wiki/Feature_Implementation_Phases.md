@@ -1,58 +1,52 @@
 # Feature Implementation Phases
 
-> 29 nodes · cohesion 0.07
+> 19 nodes
 
 ## Key Concepts
 
-- **GitHub Worktrees + Cursor Native Support** (11 connections) — `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
-- **Documentation** (8 connections) — `CONTRIBUTING.md`
-- **Future Bug Prevention** (5 connections) — `docs/archive/BUG_PREVENTION_TESTING_STRATEGY.md`
-- **Implementation Phases** (4 connections) — `docs/archive/PLANNING_aliases.md`
-- **Phase 1: MVP Core (Priority: High)** (4 connections) — `docs/archive/PLANNING_aliases.md`
-- **Phase 2: Security & Polish (Priority: Medium)** (3 connections) — `docs/archive/PLANNING_aliases.md`
-- **Phase 3: Testing & Documentation (Priority: Medium)** (3 connections) — `docs/archive/PLANNING_aliases.md`
-- **Core Documentation** (2 connections) — `README.md`
-- **1. **Continuous Integration**** (1 connections) — `docs/archive/BUG_PREVENTION_TESTING_STRATEGY.md`
-- **2. **Monitoring and Alerting**** (1 connections) — `docs/archive/BUG_PREVENTION_TESTING_STRATEGY.md`
-- **3. **Code Review Guidelines**** (1 connections) — `docs/archive/BUG_PREVENTION_TESTING_STRATEGY.md`
-- **1.1 Data Model and Storage** (1 connections) — `docs/archive/PLANNING_aliases.md`
-- **1.2 Command Integration** (1 connections) — `docs/archive/PLANNING_aliases.md`
-- **1.3 Client Integration** (1 connections) — `docs/archive/PLANNING_aliases.md`
-- **2.1 Security Implementation** (1 connections) — `docs/archive/PLANNING_aliases.md`
-- **2.2 User Experience** (1 connections) — `docs/archive/PLANNING_aliases.md`
-- **3.1 Testing** (1 connections) — `docs/archive/PLANNING_aliases.md`
-- **Mythos References** (1 connections) — `CONTRIBUTING.md`
-- **Project Documentation** (1 connections) — `CONTRIBUTING.md`
-- **github_worktrees_cursor_setup_ab66558e.plan.md** (1 connections) — `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
-- **1. Add `.cursor/worktrees.json`** (1 connections) — `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
-- **2. install.py behavior in a Cursor worktree** (1 connections) — `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
-- **3. Coexistence with worktree-manager.ps1 and worktree-ops.py** (1 connections) — `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
-- **4. Optional: script path vs array of commands** (1 connections) — `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
-- **6. Quickstart guide: using worktrees to improve development** (1 connections) — `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
-- *... and 4 more nodes in this community*
+- **container_helpers.py** (26 connections) — `server/persistence/container_helpers.py`
+- **update_container_items()** (10 connections) — `server/persistence/container_helpers.py`
+- **fetch_container_items()** (9 connections) — `server/persistence/container_helpers.py`
+- **_coerce_row_quantity()** (7 connections) — `server/persistence/container_helpers.py`
+- **build_update_query()** (6 connections) — `server/persistence/container_helpers.py`
+- **_item_dict_from_contents_row()** (5 connections) — `server/persistence/container_helpers.py`
+- **UUID** (3 connections)
+- **test_coerce_row_quantity()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- **_metadata_dict_from_cell()** (2 connections) — `server/persistence/container_helpers.py`
+- **PsycopgConnection** (2 connections)
+- **datetime** (2 connections)
+- **PsycopgCursor** (1 connections)
+- **Composed** (1 connections)
+- **Helper functions for container persistence operations.** (1 connections) — `server/persistence/container_helpers.py`
+- **Normalize quantity/position from DB row cells; bool -> 1 (not coerce_int(False)=** (1 connections) — `server/persistence/container_helpers.py`
+- **Fetch container items directly from normalized tables.      Queries container_** (1 connections) — `server/persistence/container_helpers.py`
+- **Update container items using stored procedures.      Args:         cursor: Da** (1 connections) — `server/persistence/container_helpers.py`
+- **Build SQL update query for container.      Args:         updates: List of upd** (1 connections) — `server/persistence/container_helpers.py`
+- **Row quantity/position coercion matches item quantity rules (PR #461 / int_coerci** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
 
 ## Relationships
 
-- [[Archive Bug Prevention]] (1 shared connections)
-- [[Archive Planning Aliases]] (1 shared connections)
-- [[Contributing Guidelines]] (1 shared connections)
-- [[Archive Planning Stats]] (1 shared connections)
-- [[Project README Overview]] (1 shared connections)
+- [Maps API Endpoints](Maps_API_Endpoints.md) (11 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
+- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (3 shared connections)
+- [Combat Command Models](Combat_Command_Models.md) (3 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (2 shared connections)
+- [Player Save Preparer](Player_Save_Preparer.md) (2 shared connections)
+- [Container System Architecture](Container_System_Architecture.md) (2 shared connections)
+- [JSONB Column Parsing](JSONB_Column_Parsing.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
-- `CONTRIBUTING.md`
-- `README.md`
-- `docs/archive/BUG_PREVENTION_TESTING_STRATEGY.md`
-- `docs/archive/PLANNING_aliases.md`
+- `server/persistence/container_helpers.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 81 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

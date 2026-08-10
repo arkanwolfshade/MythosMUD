@@ -1,63 +1,54 @@
 # Client ASCII Map API
 
-> 38 nodes · cohesion 0.09
+> 31 nodes
 
 ## Key Concepts
 
-- **AsciiMapViewer.tsx** (16 connections) — `client/src/components/map/AsciiMapViewer.tsx`
-- **maps.ts** (12 connections) — `client/src/api/maps.ts`
-- **AsciiMapViewerViews.tsx** (10 connections) — `client/src/components/map/AsciiMapViewerViews.tsx`
-- **useAsciiMap.ts** (10 connections) — `client/src/components/map/useAsciiMap.ts`
-- **fetchAsciiMap()** (9 connections) — `client/src/api/maps.ts`
-- **fetchAsciiMinimap()** (7 connections) — `client/src/api/maps.ts`
-- **isAsciiMapApiResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
-- **AsciiMapViewer()** (5 connections) — `client/src/components/map/AsciiMapViewer.tsx`
-- **buildMapUrl()** (4 connections) — `client/src/api/maps.ts`
-- **AsciiMapEditor.tsx** (4 connections) — `client/src/components/map/AsciiMapEditor.tsx`
-- **useAsciiMapViewerBindings()** (4 connections) — `client/src/components/map/AsciiMapViewer.tsx`
-- **asciiMapViewerUtils.ts** (4 connections) — `client/src/components/map/asciiMapViewerUtils.ts`
-- **createViewportKeyHandler()** (4 connections) — `client/src/components/map/asciiMapViewerUtils.ts`
-- **runFetchMap()** (4 connections) — `client/src/components/map/useAsciiMap.ts`
-- **useAsciiMap()** (4 connections) — `client/src/components/map/useAsciiMap.ts`
-- **buildHeaders()** (3 connections) — `client/src/api/maps.ts`
-- **formatMapErrorResponse()** (3 connections) — `client/src/api/maps.ts`
-- **useAsciiMap.test.ts** (3 connections) — `client/src/components/map/__tests__/useAsciiMap.test.ts`
-- **chooseMapView()** (2 connections) — `client/src/components/map/AsciiMapViewer.tsx`
-- **AsciiMapViewerContent()** (2 connections) — `client/src/components/map/AsciiMapViewerViews.tsx`
-- **AsciiMapViewerError()** (2 connections) — `client/src/components/map/AsciiMapViewerViews.tsx`
-- **AsciiMapViewerLoading()** (2 connections) — `client/src/components/map/AsciiMapViewerViews.tsx`
-- **applyViewportFromRaw()** (2 connections) — `client/src/components/map/useAsciiMap.ts`
-- **getMapErrorMessage()** (2 connections) — `client/src/components/map/useAsciiMap.ts`
-- **UseAsciiMapResult** (2 connections) — `client/src/components/map/useAsciiMap.ts`
-- *... and 13 more nodes in this community*
+- **PlayerPreferencesService** (19 connections) — `server/services/player_preferences_service.py`
+- **._is_valid_player_id()** (11 connections) — `server/services/player_preferences_service.py`
+- **UUID** (10 connections)
+- **player_preferences_service.py** (9 connections) — `server/services/player_preferences_service.py`
+- **AsyncSession** (8 connections)
+- **Any** (8 connections)
+- **.update_default_channel()** (8 connections) — `server/services/player_preferences_service.py`
+- **.mute_channel()** (8 connections) — `server/services/player_preferences_service.py`
+- **.unmute_channel()** (8 connections) — `server/services/player_preferences_service.py`
+- **.is_channel_muted()** (8 connections) — `server/services/player_preferences_service.py`
+- **.create_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
+- **.get_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
+- **.get_muted_channels()** (7 connections) — `server/services/player_preferences_service.py`
+- **.delete_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
+- **._is_valid_channel()** (6 connections) — `server/services/player_preferences_service.py`
+- **.__init__()** (2 connections) — `server/services/player_preferences_service.py`
+- **._is_valid_json_array()** (2 connections) — `server/services/player_preferences_service.py`
+- **Player Preferences Service for Advanced Chat Channels.  This module provides fun** (1 connections) — `server/services/player_preferences_service.py`
+- **Service for managing player channel preferences.      This service handles:** (1 connections) — `server/services/player_preferences_service.py`
+- **Initialize the PlayerPreferencesService.          Note: This service now uses Po** (1 connections) — `server/services/player_preferences_service.py`
+- **Create default preferences for a new player.          Args:             session:** (1 connections) — `server/services/player_preferences_service.py`
+- **Get preferences for a player.          Args:             session: Database sessi** (1 connections) — `server/services/player_preferences_service.py`
+- **Update a player's default channel.          Args:             session: Database** (1 connections) — `server/services/player_preferences_service.py`
+- **Mute a channel for a player.          Args:             session: Database sessio** (1 connections) — `server/services/player_preferences_service.py`
+- **Unmute a channel for a player.          Args:             session: Database sess** (1 connections) — `server/services/player_preferences_service.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [[API Type Guards]] (6 shared connections)
-- [[App Creation Flow Screens]] (3 shared connections)
-- [[Components Panels Chat]] (3 shared connections)
-- [[Death Delirium UI Modals]] (2 shared connections)
-- [[Room Map Viewer UI]] (2 shared connections)
+- [Quality Audit Report](Quality_Audit_Report.md) (10 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Async Persistence Delegates](Async_Persistence_Delegates.md) (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/api/__tests__/maps.test.ts`
-- `client/src/api/maps.ts`
-- `client/src/components/map/AsciiMapEditor.tsx`
-- `client/src/components/map/AsciiMapViewer.tsx`
-- `client/src/components/map/AsciiMapViewerViews.tsx`
-- `client/src/components/map/__tests__/asciiMapViewerUtils.test.ts`
-- `client/src/components/map/__tests__/useAsciiMap.test.ts`
-- `client/src/components/map/asciiMapViewerUtils.ts`
-- `client/src/components/map/useAsciiMap.ts`
-- `client/src/utils/apiTypeGuards.ts`
+- `server/services/player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 140 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 140 (94%)
+- INFERRED: 9 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

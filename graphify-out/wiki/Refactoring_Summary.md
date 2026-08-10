@@ -1,34 +1,26 @@
 # Refactoring Summary
 
-> 10 nodes · cohesion 0.20
+> 2 nodes
 
 ## Key Concepts
 
-- **Extracted Modules** (8 connections) — `docs/REFACTORING_SUMMARY.md`
-- **Refactoring Results** (3 connections) — `docs/REFACTORING_SUMMARY.md`
-- **1. Statistics & Monitoring (`realtime/monitoring/`)** (1 connections) — `docs/REFACTORING_SUMMARY.md`
-- **2. Error Handling (`realtime/errors/`)** (1 connections) — `docs/REFACTORING_SUMMARY.md`
-- **3. Health Monitoring (`realtime/monitoring/`)** (1 connections) — `docs/REFACTORING_SUMMARY.md`
-- **4. Cleanup & Maintenance (`realtime/maintenance/`)** (1 connections) — `docs/REFACTORING_SUMMARY.md`
-- **5. Game State Management (`realtime/integration/`)** (1 connections) — `docs/REFACTORING_SUMMARY.md`
-- **6. Room Event Integration (`realtime/integration/`)** (1 connections) — `docs/REFACTORING_SUMMARY.md`
-- **7. Message Broadcasting (`realtime/messaging/`)** (1 connections) — `docs/REFACTORING_SUMMARY.md`
-- **File Size Reduction** (1 connections) — `docs/REFACTORING_SUMMARY.md`
+- **test_create_emote_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_emote_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [[Refactoring Summary Real]] (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/REFACTORING_SUMMARY.md`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

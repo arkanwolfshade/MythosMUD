@@ -1,43 +1,44 @@
 # Cursor Skills Delight
 
-> 19 nodes · cohesion 0.11
+> 11 nodes
 
 ## Key Concepts
 
-- **Delight Techniques** (9 connections) — `.cursor/skills/delight/SKILL.md`
-- **SKILL.md** (6 connections) — `.cursor/skills/delight/SKILL.md`
-- **Delight Principles** (5 connections) — `.cursor/skills/delight/SKILL.md`
-- **Appropriate to Context** (1 connections) — `.cursor/skills/delight/SKILL.md`
-- **Assess Delight Opportunities** (1 connections) — `.cursor/skills/delight/SKILL.md`
-- **Celebration Moments** (1 connections) — `.cursor/skills/delight/SKILL.md`
-- **Compound Over Time** (1 connections) — `.cursor/skills/delight/SKILL.md`
-- **Delight Amplifies, Never Blocks** (1 connections) — `.cursor/skills/delight/SKILL.md`
-- **Easter Eggs & Hidden Delights** (1 connections) — `.cursor/skills/delight/SKILL.md`
-- **Illustrations & Visual Personality** (1 connections) — `.cursor/skills/delight/SKILL.md`
-- **Implementation Patterns** (1 connections) — `.cursor/skills/delight/SKILL.md`
-- **Loading & Waiting States** (1 connections) — `.cursor/skills/delight/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.cursor/skills/delight/SKILL.md`
-- **Micro-interactions & Animation** (1 connections) — `.cursor/skills/delight/SKILL.md`
-- **Personality in Copy** (1 connections) — `.cursor/skills/delight/SKILL.md`
-- **Satisfying Interactions** (1 connections) — `.cursor/skills/delight/SKILL.md`
-- **Sound Design** (1 connections) — `.cursor/skills/delight/SKILL.md`
-- **Surprise and Discovery** (1 connections) — `.cursor/skills/delight/SKILL.md`
-- **Verify Delight Quality** (1 connections) — `.cursor/skills/delight/SKILL.md`
+- **MythosValidationError** (8 connections)
+- **test_parse_command_string_validation_error()** (4 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_resolve_player_username_error()** (4 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **test_create_command_object_re_raises_mythos_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_process_command_string_mythos_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_process_validated_command_validation_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test process_validated_command handles ValidationError.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test _parse_command_string handles ValidationError.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test _resolve_player when username resolution fails.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **Test _create_command_object re-raises MythosValidationError without wrapping.** (1 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **Test process_command_string handles MythosMUD validation errors.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Room Service Tests](Room_Service_Tests.md) (3 shared connections)
+- [Container API Endpoints](Container_API_Endpoints.md) (2 shared connections)
+- [NPC Population Control](NPC_Population_Control.md) (2 shared connections)
+- [NPC Database Sessions](NPC_Database_Sessions.md) (2 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
+- [Command Parser](Command_Parser.md) (1 shared connections)
+- [Cursor Agents Analyzer](Cursor_Agents_Analyzer.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/delight/SKILL.md`
+- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- `server/tests/unit/utils/test_command_parser.py`
+- `server/tests/unit/utils/test_command_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 21 (66%)
+- INFERRED: 11 (34%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,72 +1,75 @@
 # API Test Fixtures
 
-> 94 nodes · cohesion 0.03
+> 105 nodes
 
 ## Key Concepts
 
-- **User** (184 connections) — `server/models/user.py`
-- **test_auth_dependencies.py** (22 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_skills.py** (12 connections) — `server/tests/unit/api/test_skills.py`
-- **conftest.py** (11 connections) — `server/tests/unit/api/conftest.py`
-- **get_skills_catalog()** (11 connections) — `server/api/skills.py`
-- **require_invite_code()** (11 connections) — `server/auth/dependencies.py`
-- **get_current_superuser()** (10 connections) — `server/auth/dependencies.py`
-- **test_user.py** (10 connections) — `server/tests/unit/models/test_user.py`
-- **get_current_verified_user()** (8 connections) — `server/auth/dependencies.py`
-- **get_optional_current_user()** (6 connections) — `server/auth/dependencies.py`
-- **SkillData** (5 connections) — `server/schemas/players/skill.py`
-- **test_get_current_superuser_failure()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_get_current_superuser_success()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_get_current_superuser_with_none_user()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_get_current_verified_user_failure()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_get_current_verified_user_success()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_get_current_verified_user_with_none_user()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_get_optional_current_user_with_user()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_require_invite_code_generic_exception()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_require_invite_code_logged_http_exception()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_db_connectivity_create_and_read_user()** (4 connections) — `server/tests/integration/test_db_connectivity.py`
-- **User** (4 connections) — `server/auth/dependencies.py`
-- **mock_user()** (3 connections) — `server/tests/unit/api/test_skills.py`
-- **test_get_skills_catalog_returns_list()** (3 connections) — `server/tests/unit/api/test_skills.py`
-- **test_get_skills_catalog_unauthorized()** (3 connections) — `server/tests/unit/api/test_skills.py`
-- *... and 69 more nodes in this community*
+- **PanelState** (25 connections) — `client/src/components/ui-v2/types.ts`
+- **panelReducerHandlers.ts** (24 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
+- **panelManagerReducer.ts** (20 connections) — `client/src/components/ui-v2/PanelSystem/panelManagerReducer.ts`
+- **panelReducerHandlers.test.ts** (19 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
+- **GameClientV2MinimapSection.tsx** (16 connections) — `client/src/components/ui-v2/GameClientV2MinimapSection.tsx`
+- **PanelContainerViews.tsx** (15 connections) — `client/src/components/ui-v2/PanelSystem/PanelContainerViews.tsx`
+- **PanelContainer.tsx** (13 connections) — `client/src/components/ui-v2/PanelSystem/PanelContainer.tsx`
+- **savePanelLayout()** (13 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
+- **panelMinimizeDock.ts** (13 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
+- **usePanelManagerProviderState.ts** (13 connections) — `client/src/components/ui-v2/PanelSystem/usePanelManagerProviderState.ts`
+- **PanelPosition** (13 connections) — `client/src/components/ui-v2/types.ts`
+- **PanelManagerContext.tsx** (12 connections) — `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
+- **panelLayoutBootstrap.ts** (12 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
+- **panelLayoutValidationTypeCheck.ts** (12 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheck.ts`
+- **PanelSize** (12 connections) — `client/src/components/ui-v2/types.ts`
+- **PanelManager.test.tsx** (11 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/PanelManager.test.tsx`
+- **panelLayoutValidation.ts** (11 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
+- **PanelManager.tsx** (10 connections) — `client/src/components/ui-v2/PanelSystem/PanelManager.tsx`
+- **PanelManagerContextValue** (10 connections) — `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
+- **panelLayoutClamp.ts** (10 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutClamp.ts`
+- **PanelContainerShared.tsx** (9 connections) — `client/src/components/ui-v2/PanelSystem/PanelContainerShared.tsx`
+- **panelMinimizeDock.test.ts** (9 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelMinimizeDock.test.ts`
+- **resolveInitialPanelLayout()** (9 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
+- **usePanelContainerBody.ts** (9 connections) — `client/src/components/ui-v2/PanelSystem/usePanelContainerBody.ts`
+- **relayoutMinimizedDock()** (8 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
+- *... and 80 more nodes in this community*
 
 ## Relationships
 
-- [[Container Exception Handlers]] (28 shared connections)
-- [[Argon2 Password Hashing]] (28 shared connections)
-- [[NPC Admin API]] (25 shared connections)
-- [[Container API Endpoints]] (17 shared connections)
-- [[Restart Invalidating JWT]] (13 shared connections)
-- [[Integration DB Fixtures]] (8 shared connections)
-- [[Maps API Endpoints]] (8 shared connections)
-- [[Game Status API]] (7 shared connections)
-- [[Character Creation API]] (6 shared connections)
-- [[SQLAlchemy Model Base]] (6 shared connections)
-- [[Lucidity Database Models]] (4 shared connections)
-- [[Container Loot Helpers]] (3 shared connections)
+- [Communication Command Handlers](Communication_Command_Handlers.md) (28 shared connections)
+- [Draggable Panel UI](Draggable_Panel_UI.md) (16 shared connections)
+- [Command Input Validator](Command_Input_Validator.md) (5 shared connections)
+- [WebSocket Message Schemas](WebSocket_Message_Schemas.md) (2 shared connections)
+- [Game Terminal Container](Game_Terminal_Container.md) (1 shared connections)
+- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (1 shared connections)
+- [Room Sync Service](Room_Sync_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/skills.py`
-- `server/auth/dependencies.py`
-- `server/models/user.py`
-- `server/schemas/players/skill.py`
-- `server/tests/integration/test_db_connectivity.py`
-- `server/tests/unit/api/conftest.py`
-- `server/tests/unit/api/test_character_creation.py`
-- `server/tests/unit/api/test_containers.py`
-- `server/tests/unit/api/test_skills.py`
-- `server/tests/unit/auth/test_auth_dependencies.py`
-- `server/tests/unit/auth/test_auth_utils.py`
-- `server/tests/unit/models/test_user.py`
+- `client/src/components/PanelManager.tsx`
+- `client/src/components/__tests__/PanelManager.test.tsx`
+- `client/src/components/ui-v2/GameClientV2Minimap.tsx`
+- `client/src/components/ui-v2/GameClientV2MinimapSection.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelContainer.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelContainerShared.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelContainerViews.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelManager.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
+- `client/src/components/ui-v2/PanelSystem/__tests__/PanelContainer.test.tsx`
+- `client/src/components/ui-v2/PanelSystem/__tests__/PanelManager.test.tsx`
+- `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutBootstrap.test.ts`
+- `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutClamp.test.ts`
+- `client/src/components/ui-v2/PanelSystem/__tests__/panelMinimizeDock.test.ts`
+- `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
+- `client/src/components/ui-v2/PanelSystem/__tests__/usePanelManager.test.ts`
+- `client/src/components/ui-v2/PanelSystem/__tests__/usePanelManagerProviderState.test.ts`
+- `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
+- `client/src/components/ui-v2/PanelSystem/panelLayoutClamp.ts`
+- `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 395 (86%)
-- INFERRED: 66 (14%)
+- EXTRACTED: 589 (99%)
+- INFERRED: 7 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

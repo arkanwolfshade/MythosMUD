@@ -1,50 +1,55 @@
 # Performance Optimization Summary
 
-> 28 nodes · cohesion 0.07
+> 19 nodes
 
 ## Key Concepts
 
-- **Performance Optimization Summary** (10 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **Performance Improvements Achieved** (6 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **Recommendations for Future Optimization** (5 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **Files Modified/Created** (4 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **Code Quality Improvements** (3 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **Performance Benchmarking Infrastructure** (3 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **Security Validation Enhancements** (3 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **PERFORMANCE_OPTIMIZATION_SUMMARY.md** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **1. Advanced Caching Strategies** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **1. Validation Performance Optimization** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **2. Memory Optimization** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **2. Memory Usage Optimization** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **3. Model Instantiation Performance** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **3. Validation Optimization** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **4. Lazy Loading Implementation** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **4. Performance Monitoring** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **5. Random Number Generation Fix** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **Benchmark Results Summary** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **Benchmark Tests Created** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **Centralized Security Patterns** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **Conclusion** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **Deleted Files** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **Error Handling** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **Model Configuration Consistency** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **Modified Files** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- *... and 3 more nodes in this community*
+- **CircuitBreaker** (41 connections) — `server/realtime/circuit_breaker.py`
+- **.__init__()** (3 connections) — `server/realtime/circuit_breaker.py`
+- **test_call_opens_circuit_after_threshold()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_closes_from_half_open_on_success()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_success_increments_success_count_half_open()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_should_attempt_reset_returns_false_before_timeout()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_get_state()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_get_stats()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **.reset()** (2 connections) — `server/realtime/circuit_breaker.py`
+- **timedelta** (1 connections)
+- **Circuit breaker for NATS message processing.      Implements Martin Fowler's cir** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Initialize circuit breaker.          Args:             failure_threshold: Number** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Manually reset circuit breaker to CLOSED state.          Clears all counters and** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Test call() opens circuit after failure threshold.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test call() closes circuit from HALF_OPEN after success threshold.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test _on_success() increments success count in HALF_OPEN state.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test _should_attempt_reset() returns False before timeout.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test get_state() returns current state.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test get_stats() returns comprehensive statistics.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Relationships
 
-- [[Chat System Planning]] (1 shared connections)
+- [Circuit Breaker Core](Circuit_Breaker_Core.md) (16 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (7 shared connections)
+- [Commands Rest Countdown](Commands_Rest_Countdown.md) (2 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [NATS Chat Broadcasting](NATS_Chat_Broadcasting.md) (1 shared connections)
+- [Chat Message Filtering](Chat_Message_Filtering.md) (1 shared connections)
+- [test_call_failure_closed_state](test_call_failure_closed_state.md) (1 shared connections)
+- [CircuitBreakerOpen](CircuitBreakerOpen.md) (1 shared connections)
+- [test_call_transitions_to_half_open_after_timeout](test_call_transitions_to_half_open_after_timeout.md) (1 shared connections)
+- [test_get_stats_with_failure_time](test_get_stats_with_failure_time.md) (1 shared connections)
+- [test_on_failure_opens_circuit_at_threshold](test_on_failure_opens_circuit_at_threshold.md) (1 shared connections)
+- [test_on_failure_resets_success_count](test_on_failure_resets_success_count.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
+- `server/realtime/circuit_breaker.py`
+- `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 54 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 73 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

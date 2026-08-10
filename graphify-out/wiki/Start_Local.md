@@ -1,12 +1,12 @@
 # Start Local
 
-> 3 nodes · cohesion 0.67
+> 3 nodes
 
 ## Key Concepts
 
 - **start_local.ps1** (2 connections) — `scripts/start_local.ps1`
-- **Start-Client()** (1 connections) — `scripts/start_local.ps1`
 - **Start-Server()** (1 connections) — `scripts/start_local.ps1`
+- **Start-Client()** (1 connections) — `scripts/start_local.ps1`
 
 ## Relationships
 
@@ -24,4 +24,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

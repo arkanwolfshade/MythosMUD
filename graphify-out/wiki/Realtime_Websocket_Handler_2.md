@@ -1,36 +1,27 @@
 # Realtime Websocket Handler
 
-> 12 nodes · cohesion 0.17
+> 2 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_rate_limit.py** (6 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **test_check_rate_limit_exceeded()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **test_check_rate_limit_no_connection_id()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **test_check_rate_limit_passed()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **Unit tests for websocket handler rate limiting.  Tests the rate limiting functio** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **Test _check_rate_limit() returns True when no connection_id.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **Test _check_rate_limit() returns True when rate limit check passes.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **Test _check_rate_limit() returns False when rate limit exceeded.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **.test_reset_tick_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test reset_tick_count resets count to zero.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Combat Health Persistence Fix](Combat_Health_Persistence_Fix.md) (1 shared connections)
+- [AnyIO Code Review](AnyIO_Code_Review.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- `server/tests/unit/services/test_game_tick_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

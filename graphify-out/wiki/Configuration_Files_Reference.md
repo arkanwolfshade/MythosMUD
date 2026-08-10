@@ -1,51 +1,35 @@
 # Configuration Files Reference
 
-> 24 nodes · cohesion 0.08
+> 9 nodes
 
 ## Key Concepts
 
-- **Configuration Files Reference** (11 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
-- **Configuration Files by Environment** (5 connections) — `docs/archive/ENVIRONMENT_CONFIGURATION_REFACTORING.md`
-- **Setup Instructions** (5 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
-- **Complete Configuration Architecture** (3 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
-- **Quick Reference** (3 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
-- **4. Production** (2 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
-- **Development Environment Setup** (2 connections) — `docs/DEVELOPMENT.md`
-- **E2E Testing (Playwright)** (1 connections) — `docs/archive/ENVIRONMENT_CONFIGURATION_REFACTORING.md`
-- **Local Development** (1 connections) — `docs/archive/ENVIRONMENT_CONFIGURATION_REFACTORING.md`
-- **Unit Testing (pytest)** (1 connections) — `docs/archive/ENVIRONMENT_CONFIGURATION_REFACTORING.md`
-- **CONFIGURATION_FILES_REFERENCE.md** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
-- **1. Local Development** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
-- **2. Unit Testing** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
-- **3. E2E Testing** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
-- **Complete Architecture Summary** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
-- **Complete File Matrix** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
-- **Configuration File Tuples** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
-- **Configuration Tuples** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
-- **.env.local Secrets Pattern** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
-- **Environment Variable Priority** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
-- **File Responsibilities** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
-- **To Run Tests** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
-- **To Start Server in Different Modes** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
-- **COPPA Compliance Checklist** (1 connections) — `docs/DEVELOPMENT.md`
+- **🎯 MANDATORY AI EXECUTION PROTOCOL** (8 connections) — `.cursor/commands/mypy-remediation.md`
+- **Phase 4: Tool Selection Guide** (3 connections) — `.cursor/commands/mypy-remediation.md`
+- **Phase 3: Systematic Fixing Process** (2 connections) — `.cursor/commands/mypy-remediation.md`
+- **Phase 1: Initial Assessment (REQUIRED FIRST)** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **For Each Issue Category** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **Mypy Type Checking** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **Understanding Mypy Error Codes** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **Phase 6: Verification Protocol** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **Phase 7: Success Validation** (1 connections) — `.cursor/commands/mypy-remediation.md`
 
 ## Relationships
 
-- [[Archive Configuration Environment]] (1 shared connections)
-- [[E 2 E Cursor Skills]] (1 shared connections)
+- [Realtime Connection State](Realtime_Connection_State.md) (1 shared connections)
+- [E 2 E Execution Validation](E_2_E_Execution_Validation.md) (1 shared connections)
+- [E 2 E Size Analysis](E_2_E_Size_Analysis.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/CONFIGURATION_FILES_REFERENCE.md`
-- `docs/DEVELOPMENT.md`
-- `docs/archive/ENVIRONMENT_CONFIGURATION_REFACTORING.md`
+- `.cursor/commands/mypy-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 19 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

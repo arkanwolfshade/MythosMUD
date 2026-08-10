@@ -1,34 +1,27 @@
 # Archive Room Hierarchy
 
-> 10 nodes · cohesion 0.20
+> 2 nodes
 
 ## Key Concepts
 
-- **Technical Specifications** (4 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **1. File Naming Conventions** (3 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **2. ID Generation Rules** (3 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **3. Environment Inheritance** (3 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **Configuration Files** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **Default Values** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **Priority Order (highest to lowest)** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **Room Files** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **Room IDs** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **Validation Rules** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
+- **messaging_integration()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Create CombatMessagingIntegration instance.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Relationships
 
-- [[Room Hierarchy FRD]] (1 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Database Pool Configuration](Database_Pool_Configuration.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ROOM_HIERARCHY_FRD.md`
+- `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,34 +1,26 @@
 # Cursor Plans Mythosmud
 
-> 10 nodes · cohesion 0.20
+> 2 nodes
 
 ## Key Concepts
 
-- **MythosMUD Codacy 8100+ High/Critical Remediation** (9 connections) — `.cursor/plans/mythosmud-codacy-8100-remediation_0edb4b92.plan.md`
-- **mythosmud-codacy-8100-remediation_0edb4b92.plan.md** (1 connections) — `.cursor/plans/mythosmud-codacy-8100-remediation_0edb4b92.plan.md`
-- **0. Scope and success criteria** (1 connections) — `.cursor/plans/mythosmud-codacy-8100-remediation_0edb4b92.plan.md`
-- **1. Baseline inventory and triage** (1 connections) — `.cursor/plans/mythosmud-codacy-8100-remediation_0edb4b92.plan.md`
-- **2. Configuration pass: eliminate systematic noise (Bucket C)** (1 connections) — `.cursor/plans/mythosmud-codacy-8100-remediation_0edb4b92.plan.md`
-- **3. Critical and localized fixes (Bucket A, small surface/huge impact)** (1 connections) — `.cursor/plans/mythosmud-codacy-8100-remediation_0edb4b92.plan.md`
-- **4. Iterative security remediation waves (Bucket A bulk)** (1 connections) — `.cursor/plans/mythosmud-codacy-8100-remediation_0edb4b92.plan.md`
-- **5. Complexity/design remediation (Bucket B) in parallel** (1 connections) — `.cursor/plans/mythosmud-codacy-8100-remediation_0edb4b92.plan.md`
-- **6. Governance, tracking, and completion** (1 connections) — `.cursor/plans/mythosmud-codacy-8100-remediation_0edb4b92.plan.md`
-- **7. Interaction with existing `codacy-high-critical-issues-remediation` plan** (1 connections) — `.cursor/plans/mythosmud-codacy-8100-remediation_0edb4b92.plan.md`
+- **test_validate_target_exists_no_match()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_target_exists with no match.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/mythosmud-codacy-8100-remediation_0edb4b92.plan.md`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

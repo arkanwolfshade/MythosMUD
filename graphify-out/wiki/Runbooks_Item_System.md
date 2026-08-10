@@ -1,39 +1,26 @@
 # Runbooks Item System
 
-> 12 nodes · cohesion 0.17
+> 2 nodes
 
 ## Key Concepts
 
-- **Purpose** (4 connections) — `docs/runbooks/item_system_observability.md`
-- **Disconnect Grace Period (linkdead)** (3 connections) — `docs/realtime.md`
-- **Item System Observability Runbook** (3 connections) — `docs/runbooks/item_system_observability.md`
-- **Gunicorn + Uvicorn Production** (2 connections) — `docs/deployment.md`
-- **HTTPS and WSS Requirement** (2 connections) — `docs/deployment.md`
-- **Login Grace Period (warded)** (2 connections) — `docs/realtime.md`
-- **WebSocket JWT in URL Query String** (2 connections) — `docs/realtime.md`
-- **Linkdead Grace Period** (1 connections) — `docs/debugging-mid-run-drops.md`
-- **item_system_observability.md** (1 connections) — `docs/runbooks/item_system_observability.md`
-- **Administrative Summon Etiquette** (1 connections) — `docs/runbooks/item_system_observability.md`
-- **Migration & Durability Recovery** (1 connections) — `docs/runbooks/item_system_observability.md`
-- **Seed Regeneration Checklist** (1 connections) — `docs/runbooks/item_system_observability.md`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Create mock connection manager.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Relationships
 
-- [[Subsystems Subsystem Design]] (1 shared connections)
+- [Database Pool Configuration](Database_Pool_Configuration.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/debugging-mid-run-drops.md`
-- `docs/deployment.md`
-- `docs/realtime.md`
-- `docs/runbooks/item_system_observability.md`
+- `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (74%)
-- INFERRED: 6 (26%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

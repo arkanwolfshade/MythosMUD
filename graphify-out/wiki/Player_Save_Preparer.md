@@ -1,57 +1,58 @@
 # Player Save Preparer
 
-> 50 nodes · cohesion 0.07
+> 37 nodes
 
 ## Key Concepts
 
-- **PlayerSavePreparer** (20 connections) — `server/persistence/repositories/player_repository_save.py`
-- **InventorySchemaValidationError** (16 connections) — `server/schemas/shared/inventory_schema.py`
-- **validate_inventory_payload()** (13 connections) — `server/schemas/shared/inventory_schema.py`
-- **.prepare()** (10 connections) — `server/persistence/repositories/player_repository_save.py`
-- **test_inventory_schema.py** (10 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Any** (9 connections) — `server/persistence/repositories/player_repository_save.py`
-- **Player** (9 connections) — `server/persistence/repositories/player_repository_save.py`
-- **validate_inventory_items()** (9 connections) — `server/schemas/shared/inventory_schema.py`
-- **._prepare_inventory_payload()** (7 connections) — `server/persistence/repositories/player_repository_save.py`
-- **inventory_schema.py** (6 connections) — `server/schemas/shared/inventory_schema.py`
-- **_parse_equipped_raw()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
-- **_parse_inventory_raw()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
-- **._ensure_inventory_record()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
-- **._normalize_timestamps()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
-- **._upsert_numeric_defaults()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
-- **._upsert_string_defaults()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
-- **_build_validator()** (5 connections) — `server/schemas/shared/inventory_schema.py`
-- **._normalize_is_admin()** (4 connections) — `server/persistence/repositories/player_repository_save.py`
-- **.execute()** (3 connections) — `server/persistence/repositories/player_repository_save.py`
-- **test_validate_inventory_items_invalid_quantity()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_items_missing_required()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_items_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_payload_invalid_inventory()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_payload_missing_required()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_payload_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- *... and 25 more nodes in this community*
+- **container_persistence_async.py** (34 connections) — `server/persistence/container_persistence_async.py`
+- **create_container_async()** (13 connections) — `server/persistence/container_persistence_async.py`
+- **Any** (12 connections)
+- **get_container_async()** (12 connections) — `server/persistence/container_persistence_async.py`
+- **_finalize_container_creation()** (11 connections) — `server/persistence/container_persistence_async.py`
+- **_container_data_from_row()** (11 connections) — `server/persistence/container_persistence_async.py`
+- **update_container_async()** (11 connections) — `server/persistence/container_persistence_async.py`
+- **fetch_container_items_async()** (10 connections) — `server/persistence/container_persistence_async.py`
+- **_populate_container_items_async()** (9 connections) — `server/persistence/container_persistence_async.py`
+- **AsyncSession** (9 connections)
+- **validate_lock_state()** (8 connections) — `server/persistence/container_helpers.py`
+- **delete_container_async()** (8 connections) — `server/persistence/container_persistence_async.py`
+- **_call_create_container_procedure()** (7 connections) — `server/persistence/container_persistence_async.py`
+- **UUID** (6 connections)
+- **_parse_jsonb()** (5 connections) — `server/persistence/container_persistence_async.py`
+- **_validate_container_create_params()** (5 connections) — `server/persistence/container_persistence_async.py`
+- **_build_item_dict()** (5 connections) — `server/persistence/container_persistence_async.py`
+- **ContainerData** (5 connections)
+- **_prepare_container_create_params()** (4 connections) — `server/persistence/container_persistence_async.py`
+- **_row_to_mapping()** (4 connections) — `server/persistence/container_persistence_async.py`
+- **_parse_item_metadata()** (4 connections) — `server/persistence/container_persistence_async.py`
+- **Validate lock_state parameter.      Args:         lock_state: Lock state to v** (1 connections) — `server/persistence/container_helpers.py`
+- **Async container persistence operations.  Provides async implementations using SQ** (1 connections) — `server/persistence/container_persistence_async.py`
+- **Parse JSONB value (same as container_helpers.parse_jsonb_column).** (1 connections) — `server/persistence/container_persistence_async.py`
+- **Prepare params dict for create_container procedure call.** (1 connections) — `server/persistence/container_persistence_async.py`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [[Player Domain Model]] (13 shared connections)
-- [[NPC Admin API]] (7 shared connections)
-- [[Admin Summon Command]] (7 shared connections)
-- [[Combat Command Handler]] (4 shared connections)
-- [[Combat Schema Validation]] (1 shared connections)
-- [[Combat Domain Events]] (1 shared connections)
+- [JSONB Column Parsing](JSONB_Column_Parsing.md) (18 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (13 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (4 shared connections)
+- [Maps API Endpoints](Maps_API_Endpoints.md) (4 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
+- [Redis to NATS Migration](Redis_to_NATS_Migration.md) (4 shared connections)
+- [Feature Implementation Phases](Feature_Implementation_Phases.md) (2 shared connections)
+- [Persistence Item Instance](Persistence_Item_Instance.md) (2 shared connections)
 
 ## Source Files
 
-- `server/persistence/repositories/player_repository_save.py`
-- `server/schemas/shared/inventory_schema.py`
-- `server/tests/unit/schemas/test_inventory_schema.py`
+- `server/persistence/container_helpers.py`
+- `server/persistence/container_persistence_async.py`
 
 ## Audit Trail
 
-- EXTRACTED: 186 (94%)
-- INFERRED: 11 (6%)
+- EXTRACTED: 201 (96%)
+- INFERRED: 8 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

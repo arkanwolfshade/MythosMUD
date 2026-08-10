@@ -1,53 +1,51 @@
 # Game Chat Moderation
 
-> 25 nodes · cohesion 0.08
+> 70 nodes
 
 ## Key Concepts
 
-- **UserManagerProtocol** (23 connections) — `server/game/chat_moderation.py`
-- **Mute a player for another player.** (2 connections) — `server/game/chat_moderation.py`
-- **Check if player is globally muted.** (2 connections) — `server/game/chat_moderation.py`
-- **.can_send_message()** (2 connections) — `server/game/chat_moderation.py`
-- **.get_player_mutes()** (2 connections) — `server/game/chat_moderation.py`
-- **.is_admin()** (2 connections) — `server/game/chat_moderation.py`
-- **.is_channel_muted()** (2 connections) — `server/game/chat_moderation.py`
-- **.is_globally_muted()** (2 connections) — `server/game/chat_moderation.py`
-- **.is_player_muted()** (2 connections) — `server/game/chat_moderation.py`
-- **.load_player_mutes()** (2 connections) — `server/game/chat_moderation.py`
-- **.mute_channel()** (2 connections) — `server/game/chat_moderation.py`
-- **.mute_player()** (2 connections) — `server/game/chat_moderation.py`
-- **.unmute_channel()** (2 connections) — `server/game/chat_moderation.py`
-- **.unmute_player()** (2 connections) — `server/game/chat_moderation.py`
-- **Protocol for user manager.** (1 connections) — `server/game/chat_moderation.py`
-- **Mute a channel for a player.** (1 connections) — `server/game/chat_moderation.py`
-- **Unmute a channel for a player.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if channel is muted.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if player is muted.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if player is admin.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if player can send message.** (1 connections) — `server/game/chat_moderation.py`
-- **.add_admin()** (1 connections) — `server/game/chat_moderation.py`
-- **.mute_global()** (1 connections) — `server/game/chat_moderation.py`
-- **.remove_admin()** (1 connections) — `server/game/chat_moderation.py`
-- **.unmute_global()** (1 connections) — `server/game/chat_moderation.py`
+- **test_player_event_handlers_room.py** (37 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_process_player_entered_event_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_process_player_entered_event_no_player_info()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_process_player_entered_event_no_room_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_handle_player_entered_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_handle_player_entered_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_handle_player_entered_no_player_info()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_handle_player_entered_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_player_room_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_log_player_movement_joined()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_log_player_movement_left()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_log_player_movement_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_log_player_movement_no_room()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_log_player_movement_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_broadcast_player_entered_message()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_broadcast_player_entered_message_no_room_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_subscribe_player_to_room_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_subscribe_player_to_room_invalid_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_subscribe_player_to_room_error()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_send_room_name_message()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_prepare_room_data_with_to_dict()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_prepare_room_data_without_to_dict()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_send_room_update_to_player_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_send_room_update_to_player_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_send_room_update_to_player_room_not_found()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- *... and 45 more nodes in this community*
 
 ## Relationships
 
-- [[Chat Moderation Service]] (5 shared connections)
-- [[Chat Mute Admin API]] (2 shared connections)
-- [[Player Combat XP]] (1 shared connections)
-- [[Chat Message Helpers]] (1 shared connections)
-- [[Chat Service Whispers]] (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (8 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_moderation.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 147 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

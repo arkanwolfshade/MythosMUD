@@ -1,64 +1,73 @@
 # Combat Attack Service
 
-> 54 nodes · cohesion 0.07
+> 257 nodes
 
 ## Key Concepts
 
-- **combat_service_attack.py** (21 connections) — `server/services/combat_service_attack.py`
-- **get_current_tick()** (14 connections) — `server/app/game_tick_processing.py`
-- **_NPCCombatIntegrationDeps** (14 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **CombatResult** (12 connections) — `server/models/combat.py`
-- **finalize_attack_result()** (12 connections) — `server/services/combat_service_attack.py`
-- **validate_melee_or_end_combat()** (11 connections) — `server/services/combat_service_attack.py`
-- **CombatService** (9 connections) — `server/services/combat_service_attack.py`
-- **apply_damage_and_check_involuntary_flee()** (9 connections) — `server/services/combat_service_attack.py`
-- **process_attack()** (9 connections) — `server/services/combat_service_attack.py`
-- **validate_melee_location()** (9 connections) — `server/services/combat_service_attack.py`
-- **CombatParticipant** (8 connections) — `server/services/combat_service_attack.py`
-- **UUID** (8 connections) — `server/services/combat_service_attack.py`
-- **UUID** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **._process_combat_attack()** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **.start_new_combat_for_mixin()** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **CombatInstance** (7 connections) — `server/services/combat_service_attack.py`
-- **handle_combat_completion()** (7 connections) — `server/services/combat_service_attack.py`
-- **._apply_npc_attack_damage_for_npc_initiated_combat()** (7 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **CombatResult** (6 connections) — `server/services/combat_service_attack.py`
-- **queue_combat_action()** (6 connections) — `server/services/combat_service_attack.py`
-- **._broadcast_room_after_npc_death()** (6 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **.get_combat_service()** (6 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **CombatResult** (5 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **_effective_room_for_melee()** (5 connections) — `server/services/combat_service_attack.py`
-- **.get_data_provider()** (5 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- *... and 29 more nodes in this community*
+- **CombatService** (182 connections) — `server/services/combat_service.py`
+- **TargetMatch** (121 connections) — `server/schemas/shared/target_resolution.py`
+- **spell_effects.py** (48 connections) — `server/game/magic/spell_effects.py`
+- **spell_effects_heal.py** (40 connections) — `server/game/magic/spell_effects_heal.py`
+- **combat_service_npc.py** (30 connections) — `server/services/combat_service_npc.py`
+- **spell_effects_support.py** (19 connections) — `server/game/magic/spell_effects_support.py`
+- **NpcSpellDamageTarget** (18 connections) — `server/game/magic/spell_effect_types.py`
+- **SpellEffectPlayer** (15 connections) — `server/game/magic/spell_effect_types.py`
+- **._dispatch_effect()** (15 connections) — `server/game/magic/spell_effects.py`
+- **run_heal_effect()** (15 connections) — `server/game/magic/spell_effects_heal.py`
+- **SpellEffectsEngineHealPort** (14 connections) — `server/game/magic/spell_effect_types.py`
+- **UUID** (13 connections)
+- **get_combat_id_for_npc()** (13 connections) — `server/services/combat_service_npc.py`
+- **UUID** (12 connections)
+- **spell_effect_types.py** (11 connections) — `server/game/magic/spell_effect_types.py`
+- **PlayerPersistenceSpellPort** (11 connections) — `server/game/magic/spell_effect_types.py`
+- **_steal_life_resolve_target_dp()** (11 connections) — `server/game/magic/spell_effects_heal.py`
+- **_steal_life_apply_target_damage()** (11 connections) — `server/game/magic/spell_effects_heal.py`
+- **_run_steal_life()** (11 connections) — `server/game/magic/spell_effects_heal.py`
+- **UUID** (11 connections)
+- **get_npc_participant_current_room()** (11 connections) — `server/services/combat_service_npc.py`
+- **_run_standard_heal_after_validation()** (10 connections) — `server/game/magic/spell_effects_heal.py`
+- **spell_effects_internal.py** (10 connections) — `server/game/magic/spell_effects_internal.py`
+- **_get_uuid_mapping()** (10 connections) — `server/services/combat_service_npc.py`
+- **find_participant_uuid_by_string_id()** (10 connections) — `server/services/combat_service_npc.py`
+- *... and 232 more nodes in this community*
 
 ## Relationships
 
-- [[Combat Service Bundle]] (20 shared connections)
-- [[NPC Combat Lifecycle]] (15 shared connections)
-- [[Combat Taunt Tests]] (9 shared connections)
-- [[Combat Domain Events]] (6 shared connections)
-- [[App Game Tick]] (3 shared connections)
-- [[Magic Service Bundle]] (2 shared connections)
-- [[Look Command Helpers]] (2 shared connections)
-- [[Combat Aggro Threat]] (2 shared connections)
-- [[Players API Endpoints]] (1 shared connections)
-- [[Game Tick Processing]] (1 shared connections)
-- [[App Lifespan Management]] (1 shared connections)
-- [[NPC Admin API]] (1 shared connections)
+- [NPC Service Tests](NPC_Service_Tests.md) (89 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (37 shared connections)
+- [Container Component Capacity](Container_Component_Capacity.md) (32 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (26 shared connections)
+- [Logging Correct Patterns](Logging_Correct_Patterns.md) (23 shared connections)
+- [NPC Services Bundle](NPC_Services_Bundle.md) (20 shared connections)
+- [test_profession_meets_stat_requirements_multiple_not_met](test_profession_meets_stat_requirements_multiple_not_met.md) (15 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (13 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (12 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (11 shared connections)
+- [Health Check Models](Health_Check_Models.md) (10 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (8 shared connections)
 
 ## Source Files
 
-- `server/app/game_tick_processing.py`
-- `server/models/combat.py`
-- `server/services/combat_service_attack.py`
-- `server/services/npc_combat_integration_combat_mixin.py`
+- `server/container/bundles/combat.py`
+- `server/game/magic/spell_effect_types.py`
+- `server/game/magic/spell_effects.py`
+- `server/game/magic/spell_effects_heal.py`
+- `server/game/magic/spell_effects_internal.py`
+- `server/game/magic/spell_effects_stats.py`
+- `server/game/magic/spell_effects_support.py`
+- `server/schemas/shared/target_resolution.py`
+- `server/services/combat_service.py`
+- `server/services/combat_service_npc.py`
+- `server/services/combat_service_state.py`
+- `server/services/npc_combat_integration_service.py`
+- `server/tests/unit/game/magic/test_spell_effects.py`
 
 ## Audit Trail
 
-- EXTRACTED: 239 (90%)
-- INFERRED: 27 (10%)
+- EXTRACTED: 1238 (93%)
+- INFERRED: 89 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

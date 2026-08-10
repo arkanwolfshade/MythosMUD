@@ -1,32 +1,26 @@
 # Persistence Async Migration
 
-> 8 nodes · cohesion 0.25
+> 2 nodes
 
 ## Key Concepts
 
-- **API Endpoints (Phase 2)** (4 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Detailed File Migration Instructions** (3 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Services (Phase 4)** (3 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **`server/api/containers.py`** (1 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **`server/api/players.py`** (1 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **`server/api/rooms.py`** (1 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **`server/services/combat_service.py`** (1 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **`server/services/user_manager.py`** (1 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **test_create_system_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_system_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [[Async Migration Gotchas]] (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

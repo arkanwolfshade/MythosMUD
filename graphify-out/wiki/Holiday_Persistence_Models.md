@@ -1,62 +1,64 @@
 # Holiday Persistence Models
 
-> 80 nodes · cohesion 0.04
+> 78 nodes
 
 ## Key Concepts
 
-- **HolidayService** (52 connections) — `server/services/holiday_service.py`
-- **HolidayCollection** (29 connections) — `server/schemas/calendar/calendar.py`
-- **TestHolidayService** (20 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.__init__()** (9 connections) — `server/services/holiday_service.py`
-- **HolidayEntry** (8 connections) — `server/services/holiday_service.py`
-- **datetime** (8 connections) — `server/services/holiday_service.py`
-- **.get_upcoming_holidays()** (8 connections) — `server/services/holiday_service.py`
-- **_holiday_entry_from_row()** (7 connections) — `server/services/holiday_service.py`
-- **.refresh_active()** (7 connections) — `server/services/holiday_service.py`
-- **HolidayCollection** (6 connections) — `server/services/holiday_service.py`
-- **._async_load_from_database()** (6 connections) — `server/services/holiday_service.py`
-- **_HolidayLoadResult** (5 connections) — `server/services/holiday_service.py`
-- **.get_active_holidays()** (5 connections) — `server/services/holiday_service.py`
-- **.get_serialized_active_holidays()** (5 connections) — `server/services/holiday_service.py`
-- **test_holiday_service.py** (5 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_init_loads_from_database()** (5 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **_ensure_utc()** (4 connections) — `server/services/holiday_service.py`
-- **.get_serialized_upcoming_holidays()** (4 connections) — `server/services/holiday_service.py`
-- **._load_from_database()** (4 connections) — `server/services/holiday_service.py`
-- **.test_collection_property()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_day_ordinal()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_get_active_holiday_names()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_get_active_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_get_upcoming_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_get_upcoming_holidays_wraps_around()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- *... and 55 more nodes in this community*
+- **test_database_extended.py** (43 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **.initialize()** (12 connections) — `server/container/bundles/core.py`
+- **get_database_path()** (12 connections) — `server/database.py`
+- **init_db()** (11 connections) — `server/database.py`
+- **close_db()** (9 connections) — `server/database.py`
+- **get_engine()** (8 connections) — `server/database.py`
+- **get_database_url()** (6 connections) — `server/database.py`
+- **test_get_engine_initializes_database()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_database_manager_get_database_path_unsupported()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_get_database_path_none_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_get_database_path_module_level_none()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_get_database_path_module_level_unsupported()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **.close()** (4 connections) — `server/database.py`
+- **ensure_database_directory()** (4 connections) — `server/database.py`
+- **test_get_session_maker_initializes_database()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_get_database_url_initializes_database()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_database_manager_get_engine_initializes()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_database_manager_get_engine_reinitializes_if_none()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_database_manager_get_session_maker_initializes()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_database_manager_get_database_url_initializes()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_database_manager_get_database_path_postgresql()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_database_manager_close_with_engine()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_database_manager_close_without_engine()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_database_manager_close_dispose_error()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_get_database_path_unsupported()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- *... and 53 more nodes in this community*
 
 ## Relationships
 
-- [[Time Event Consumer]] (18 shared connections)
-- [[Calendar Holiday Schemas]] (12 shared connections)
-- [[Async Persistence Layer]] (9 shared connections)
-- [[Game Service Bundle]] (9 shared connections)
-- [[NPC Admin API]] (8 shared connections)
-- [[Admin NPC Schemas]] (2 shared connections)
-- [[Validate Calendar]] (1 shared connections)
-- [[Dependency Risk Analyzer]] (1 shared connections)
-- [[Inventory Service Helpers]] (1 shared connections)
-- [[Lucidity Rate Overrides]] (1 shared connections)
-- [[Database Manager Tests]] (1 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (39 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (19 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (7 shared connections)
+- [Rate Limiter Utilities](Rate_Limiter_Utilities.md) (4 shared connections)
+- [Combat Services Messaging](Combat_Services_Messaging.md) (3 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (2 shared connections)
+- [Player Respawn Events](Player_Respawn_Events.md) (1 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (1 shared connections)
+- [Archive Frd Random](Archive_Frd_Random.md) (1 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Realtime Errors Error](Realtime_Errors_Error.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/calendar/calendar.py`
-- `server/services/holiday_service.py`
-- `server/tests/unit/services/test_holiday_service.py`
+- `server/container/bundles/core.py`
+- `server/database.py`
+- `server/tests/unit/infrastructure/test_database_extended.py`
+- `server/tests/unit/infrastructure/test_database_init.py`
 
 ## Audit Trail
 
-- EXTRACTED: 286 (89%)
-- INFERRED: 35 (11%)
+- EXTRACTED: 256 (98%)
+- INFERRED: 6 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

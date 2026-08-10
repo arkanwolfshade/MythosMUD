@@ -1,37 +1,31 @@
 # Cursor Skills Arrange
 
-> 13 nodes · cohesion 0.15
+> 6 nodes
 
 ## Key Concepts
 
-- **Improve Layout Systematically** (8 connections) — `.cursor/skills/arrange/SKILL.md`
-- **SKILL.md** (5 connections) — `.cursor/skills/arrange/SKILL.md`
-- **Assess Current Layout** (1 connections) — `.cursor/skills/arrange/SKILL.md`
-- **Break Card Grid Monotony** (1 connections) — `.cursor/skills/arrange/SKILL.md`
-- **Choose the Right Layout Tool** (1 connections) — `.cursor/skills/arrange/SKILL.md`
-- **Create Visual Rhythm** (1 connections) — `.cursor/skills/arrange/SKILL.md`
-- **Establish a Spacing System** (1 connections) — `.cursor/skills/arrange/SKILL.md`
-- **Manage Depth & Elevation** (1 connections) — `.cursor/skills/arrange/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.cursor/skills/arrange/SKILL.md`
-- **Optical Adjustments** (1 connections) — `.cursor/skills/arrange/SKILL.md`
-- **Plan Layout Improvements** (1 connections) — `.cursor/skills/arrange/SKILL.md`
-- **Strengthen Visual Hierarchy** (1 connections) — `.cursor/skills/arrange/SKILL.md`
-- **Verify Layout Improvements** (1 connections) — `.cursor/skills/arrange/SKILL.md`
+- **._calculate_exit_weights()** (5 connections) — `server/npc/idle_movement.py`
+- **._calculate_exit_weight()** (3 connections) — `server/npc/idle_movement.py`
+- **._calculate_distance_to_room()** (3 connections) — `server/npc/idle_movement.py`
+- **Calculate weight for an exit based on distance from spawn.          Args:** (1 connections) — `server/npc/idle_movement.py`
+- **Calculate weights for all exits.          Args:             valid_exits: Dict** (1 connections) — `server/npc/idle_movement.py`
+- **Calculate approximate distance between two rooms.          This is a simplifie** (1 connections) — `server/npc/idle_movement.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Cursor Bug Agents](Cursor_Bug_Agents.md) (3 shared connections)
+- [Dual Connection Monitoring Guide](Dual_Connection_Monitoring_Guide.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/arrange/SKILL.md`
+- `server/npc/idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,12 +1,12 @@
 # Plans Gladiator Ring
 
-> 3 nodes · cohesion 0.67
+> 3 nodes
 
 ## Key Concepts
 
 - **Gladiator Ring Arena** (2 connections) — `docs/plans/gladiator_ring_arena_plan.md`
-- **Arena Implementation Todos** (1 connections) — `docs/plans/gladiator-ring-arena-implementation-todos.md`
 - **Arena Center Tutorial Exit and Respawn** (1 connections) — `docs/plans/gladiator_ring_arena_plan.md`
+- **Arena Implementation Todos** (1 connections) — `docs/plans/gladiator-ring-arena-implementation-todos.md`
 
 ## Relationships
 
@@ -25,4 +25,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

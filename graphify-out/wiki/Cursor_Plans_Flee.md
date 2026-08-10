@@ -1,47 +1,29 @@
 # Cursor Plans Flee
 
-> 19 nodes · cohesion 0.11
+> 5 nodes
 
 ## Key Concepts
 
-- **Plan updates to make** (6 connections) — `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
-- **Requirements** (5 connections) — `.claude/agents/deps-upgrade.md`
-- **Flee plan addendum: flee effect vs lucidity-driven flee** (5 connections) — `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
-- **Dependency Upgrade Strategy** (4 connections) — `.claude/agents/deps-upgrade.md`
-- **Instructions** (4 connections) — `.claude/agents/deps-upgrade.md`
-- **flee_command_and_effect_85736dc2.plan.md** (2 connections) — `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
-- **1. Dependency Update Analysis** (1 connections) — `.claude/agents/deps-upgrade.md`
-- **2. Breaking Change Detection** (1 connections) — `.claude/agents/deps-upgrade.md`
-- **3. Migration Guide Generation** (1 connections) — `.claude/agents/deps-upgrade.md`
-- **Context** (1 connections) — `.claude/agents/deps-upgrade.md`
-- **Functional** (1 connections) — `docs/archive/PLANNING_ephemeral_grouping.md`
-- **Non-functional** (1 connections) — `docs/archive/PLANNING_ephemeral_grouping.md`
-- **1. Goal section** (1 connections) — `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
-- **2. New subsection: Flee effect (applied to player or NPC)** (1 connections) — `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
-- **3. Lucidity-driven flee (unchanged)** (1 connections) — `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
-- **4. Files to touch** (1 connections) — `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
-- **5. Testing** (1 connections) — `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
-- **Files to touch (summary)** (1 connections) — `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
-- **Order of operations (flee flow)** (1 connections) — `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
+- **2026_02_09_add_player_effects_table.py** (2 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+- **downgrade()** (2 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+- **Create player_effects table and indexes (ADR-009 effects system).** (1 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+- **Drop player_effects table and indexes.** (1 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
 
 ## Relationships
 
-- [[Claude Agents Deps]] (1 shared connections)
-- [[Archive Planning Ephemeral]] (1 shared connections)
-- [[Cursor Plans Flee]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/agents/deps-upgrade.md`
-- `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
-- `docs/archive/PLANNING_ephemeral_grouping.md`
+- `server/alembic/versions/2026_02_09_add_player_effects_table.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,50 +1,52 @@
 # Admin Teleport FRD
 
-> 34 nodes · cohesion 0.06
+> 28 nodes
 
 ## Key Concepts
 
-- **Functional Requirements** (12 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **Admin Teleport Feature Requirements Document** (11 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **Non-Functional Requirements** (4 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **Risk Assessment** (4 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **Technical Specifications** (4 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **User Stories** (4 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **ADMIN_TELEPORT_FRD.md** (1 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **API Endpoints** (1 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **Database Schema** (1 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **Feature Description** (1 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **FR-10: Visual Effects** (1 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **FR-11: Audit Logging** (1 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **FR-1: Authentication & Authorization** (1 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **FR-2: Command Interface** (1 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **FR-3: Target Selection** (1 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **FR-4: Confirmation System** (1 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **FR-5: Player Notification** (1 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **FR-6: Cross-Zone Teleportation** (1 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **FR-7: Error Handling** (1 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **FR-8: Restricted Area Access** (1 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **FR-9: Database Persistence** (1 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **Future Enhancements** (1 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **High Risk** (1 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **Low Risk** (1 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- **Medium Risk** (1 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
-- *... and 9 more nodes in this community*
+- **test_chat_logger.py** (17 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_chat_logger_initialization_with_directory()** (3 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **temp_log_dir()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_log_chat_message()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_log_moderation_event()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_log_system_event()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_shutdown()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_log_player_muted()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_log_player_unmuted()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_log_player_joined_room()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_log_rate_limit_violation()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_get_log_file_paths()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_get_log_stats()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_log_whisper_channel_message()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Unit tests for chat logger service.  Tests the ChatLogger class for structured c** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Create a temporary directory for chat logs.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Test ChatLogger initialization with explicit directory.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Test log_chat_message writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Test log_moderation_event writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Test log_system_event writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Test shutdown stops writer thread.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Test log_player_muted writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Test log_player_unmuted writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Test log_player_joined_room writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Test log_rate_limit_violation writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [[Archive Refactoring Project]] (1 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [chat_logger](chat_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ADMIN_TELEPORT_FRD.md`
+- `server/tests/unit/services/test_chat_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (100%)
+- EXTRACTED: 58 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,12 +1,11 @@
 # Archive Architecture Improvements
 
-> 3 nodes · cohesion 0.67
+> 2 nodes
 
 ## Key Concepts
 
-- **Spec Tasks** (2 connections) — `docs/archive/client_architecture_improvements_tasks.md`
-- **client_architecture_improvements_tasks.md** (1 connections) — `docs/archive/client_architecture_improvements_tasks.md`
-- **Tasks** (1 connections) — `docs/archive/client_architecture_improvements_tasks.md`
+- **Zustand State Management** (1 connections) — `docs/archive/client_architecture_improvements_tasks.md`
+- **httpOnly Cookie Token Storage** (1 connections) — `docs/archive/client_architecture_improvements_tasks.md`
 
 ## Relationships
 
@@ -18,10 +17,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

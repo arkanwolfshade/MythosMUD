@@ -1,38 +1,31 @@
 # Claude Agents Deps
 
-> 13 nodes · cohesion 0.15
+> 4 nodes
 
 ## Key Concepts
 
-- **deps-upgrade.md** (13 connections) — `.claude/agents/deps-upgrade.md`
-- **Or use the backup branch** (2 connections) — `.claude/agents/deps-upgrade.md`
-- **4. Incremental Upgrade Strategy** (1 connections) — `.claude/agents/deps-upgrade.md`
-- **Create a new branch** (1 connections) — `.claude/agents/deps-upgrade.md`
-- **Manual testing checklist** (1 connections) — `.claude/agents/deps-upgrade.md`
-- **Revert package version** (1 connections) — `.claude/agents/deps-upgrade.md`
-- **Run linter to catch issues** (1 connections) — `.claude/agents/deps-upgrade.md`
-- **Run tests** (1 connections) — `.claude/agents/deps-upgrade.md`
-- **Run type checking** (1 connections) — `.claude/agents/deps-upgrade.md`
-- **Test command** (1 connections) — `.claude/agents/deps-upgrade.md`
-- **Update package** (1 connections) — `.claude/agents/deps-upgrade.md`
-- **Update peer dependencies if needed** (1 connections) — `.claude/agents/deps-upgrade.md`
-- **Upgrade command** (1 connections) — `.claude/agents/deps-upgrade.md`
+- **._validate_remove_player_params()** (6 connections) — `server/game/movement_service.py`
+- **.remove_player_from_room()** (6 connections) — `server/game/movement_service.py`
+- **Validate parameters for remove_player_from_room operation.** (1 connections) — `server/game/movement_service.py`
+- **Remove a player from a room (for logout, teleportation, etc.).          Args:** (1 connections) — `server/game/movement_service.py`
 
 ## Relationships
 
-- [[Cursor Plans Flee]] (1 shared connections)
-- [[Playwright Remediation Plan]] (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
+- [Combat Client Crash Report](Combat_Client_Crash_Report.md) (2 shared connections)
+- [Room Map Viewer UI](Room_Map_Viewer_UI.md) (2 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/agents/deps-upgrade.md`
+- `server/game/movement_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 12 (86%)
+- INFERRED: 2 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

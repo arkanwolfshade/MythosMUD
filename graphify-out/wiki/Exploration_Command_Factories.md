@@ -1,58 +1,61 @@
 # Exploration Command Factories
 
-> 177 nodes · cohesion 0.01
+> 62 nodes
 
 ## Key Concepts
 
-- **Test create_alias_command() raises error with no args.** (54 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **test_command_factories_utility.py** (49 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **test_command_factories_exploration.py** (46 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **test_command_factories_moderation.py** (28 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **Test create_look_command() with explicit NPC target type.** (4 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **Test create_party_command() with leave subcommand.** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **Test create_party_command() with invite but no target raises.** (2 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **Test create_look_command() parses instance number with hyphen syntax.** (2 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **test_create_follow_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **test_create_follow_command_empty_target()** (2 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **test_create_follow_command_no_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **test_create_following_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **test_create_following_command_with_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **test_create_go_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **test_create_go_command_invalid_direction()** (2 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **test_create_go_command_no_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **test_create_ground_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **test_create_ground_command_empty_target()** (2 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **test_create_ground_command_no_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **test_create_lie_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **test_create_lie_command_with_down()** (2 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **test_create_lie_command_with_invalid_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **test_create_lie_command_with_multiple_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **test_create_look_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **test_create_look_command_with_direction()** (2 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- *... and 152 more nodes in this community*
+- **test_wearable_container_service.py** (62 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_wearable_container_service_init()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_equip_wearable_container_no_inner_container()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_equip_wearable_container_existing()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_equip_wearable_container_creates_new()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_unequip_wearable_container_no_item_instance()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_unequip_wearable_container_not_found()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_get_wearable_containers_for_player()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_get_wearable_containers_for_player_error()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_container_overflow()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_container_overflow_inventory_full()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_container_overflow_no_room_id()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_container_overflow_ground_container_error()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_equip_wearable_container_with_lock_state()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_unequip_wearable_container_with_allowed_roles()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_equip_wearable_container_filters_non_equipment()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_unequip_wearable_container_no_allowed_roles()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_non_dict_items()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_container_overflow_save_player_error()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_container_overflow_empty_overflow()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_get_wearable_containers_for_player_exception_in_validation()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_get_wearable_containers_for_player_multiple_containers()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_get_wearable_containers_for_player_filters_non_equipment()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [[Communication Command Factories]] (10 shared connections)
-- [[Inventory Command Factories]] (10 shared connections)
-- [[Player State Factories]] (7 shared connections)
-- [[NPC Admin API]] (6 shared connections)
-- [[Exploration Command Factory]] (1 shared connections)
-- [[Command Factories Moderation]] (1 shared connections)
-- [[Admin Command Models]] (1 shared connections)
+- [Command Alias Handling](Command_Alias_Handling.md) (14 shared connections)
+- [Application Container Analysis](Application_Container_Analysis.md) (4 shared connections)
+- [Archive Planning E 2 E](Archive_Planning_E_2_E.md) (2 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
+- [NATS Subject Patterns](NATS_Subject_Patterns.md) (1 shared connections)
+- [test_load_room_cache_async_success_with_rooms_logs_sample_ids](test_load_room_cache_async_success_with_rooms_logs_sample_ids.md) (1 shared connections)
+- [test_build_room_objects_without_environment_in_attributes](test_build_room_objects_without_environment_in_attributes.md) (1 shared connections)
+- [test_invite_use_invite](test_invite_use_invite.md) (1 shared connections)
+- [test_query_rooms_with_exits_async_other_error_raises](test_query_rooms_with_exits_async_other_error_raises.md) (1 shared connections)
+- [test_invite_repr](test_invite_repr.md) (1 shared connections)
+- [test_load_room_cache_async_warning_logging](test_load_room_cache_async_warning_logging.md) (1 shared connections)
+- [Commands Teach Command](Commands_Teach_Command.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories_exploration.py`
-- `server/tests/unit/utils/test_command_factories_moderation.py`
-- `server/tests/unit/utils/test_command_factories_utility.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 466 (100%)
+- EXTRACTED: 153 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

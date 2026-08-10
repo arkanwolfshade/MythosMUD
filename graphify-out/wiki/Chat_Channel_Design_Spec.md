@@ -1,54 +1,61 @@
 # Chat Channel Design Spec
 
-> 27 nodes · cohesion 0.08
+> 25 nodes
 
 ## Key Concepts
 
-- **Hypotheses (Remaining Todos)** (6 connections) — `.cursor/plans/logging_aggregator_verification.plan.md`
-- **3.2 Global Channel** (5 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- **3. Channel Specifications** (5 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- **Logging Aggregator Verification Plan** (5 connections) — `.cursor/plans/logging_aggregator_verification.plan.md`
-- **3.1 Local Channel** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- **3.3 Whisper Channel** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- **3.4 System Channel** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- **6.2 Implementation** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- **3. Rate Limiting** (4 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **3.1.1 Scope** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- **3.1.2 Implementation** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- **3.1.3 Commands** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- **3.2.1 Scope** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- **3.2.4 Commands** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- **3.3.1 Scope** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- **3.3.2 Implementation** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- **3.3.3 Commands** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- **3.4.1 Scope** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- **3.4.3 Commands** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- **logging_aggregator_verification.plan.md** (1 connections) — `.cursor/plans/logging_aggregator_verification.plan.md`
-- **H1: Aggregator handlers attached to root / listener** (1 connections) — `.cursor/plans/logging_aggregator_verification.plan.md`
-- **H2: Records at WARNING/ERROR propagate to root** (1 connections) — `.cursor/plans/logging_aggregator_verification.plan.md`
-- **H3: QueueListener started with aggregator handlers** (1 connections) — `.cursor/plans/logging_aggregator_verification.plan.md`
-- **H4: Log directory is the expected one (logs/local)** (1 connections) — `.cursor/plans/logging_aggregator_verification.plan.md`
-- **H5: Handlers receive records (level/filter not dropping all)** (1 connections) — `.cursor/plans/logging_aggregator_verification.plan.md`
-- *... and 2 more nodes in this community*
+- **messageHandlers.ts** (21 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- **messageHandlers.test-utils.ts** (15 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
+- **statusParser.ts** (11 connections) — `client/src/utils/statusParser.ts`
+- **handleCommandResponse()** (7 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- **handleChatMessage.test.ts** (5 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/handleChatMessage.test.ts`
+- **handleCommandResponse.test.ts** (5 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/handleCommandResponse.test.ts`
+- **handleRoomMessage.test.ts** (5 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/handleRoomMessage.test.ts`
+- **handleSystem.test.ts** (5 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/handleSystem.test.ts`
+- **createMockContext()** (5 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
+- **createMockAppendMessage()** (5 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
+- **resolveChatTypeFromChannel()** (4 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- **handleRoomMessage()** (4 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- **statusParser.test.ts** (4 connections) — `client/src/utils/__tests__/statusParser.test.ts`
+- **parseStatusResponse()** (4 connections) — `client/src/utils/statusParser.ts`
+- **convertToPlayerInterface()** (4 connections) — `client/src/utils/statusParser.ts`
+- **handleChatMessage()** (3 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- **handleSystem()** (2 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- **ParsedPlayerData** (2 connections) — `client/src/utils/statusParser.ts`
+- **CHANNEL_TO_TYPE_MAP** (1 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- **PlayerWithProfession** (1 connections) — `client/src/utils/statusParser.ts`
+- **parseSlashPair()** (1 connections) — `client/src/utils/statusParser.ts`
+- **parseIntField()** (1 connections) — `client/src/utils/statusParser.ts`
+- **ensureProfession()** (1 connections) — `client/src/utils/statusParser.ts`
+- **StatusLineHandler** (1 connections) — `client/src/utils/statusParser.ts`
+- **STATUS_LINE_HANDLERS** (1 connections) — `client/src/utils/statusParser.ts`
 
 ## Relationships
 
-- [[Archive Circuit Breaker]] (2 shared connections)
-- [[Advanced Chat Channels Spec]] (2 shared connections)
-- [[Player Command Developer]] (1 shared connections)
+- [Communication Command Handlers](Communication_Command_Handlers.md) (11 shared connections)
+- [Client App State Hooks](Client_App_State_Hooks.md) (4 shared connections)
+- [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (2 shared connections)
+- [Draggable Panel UI](Draggable_Panel_UI.md) (1 shared connections)
+- [Magic System Feature Plan](Magic_System_Feature_Plan.md) (1 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/logging_aggregator_verification.plan.md`
-- `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
+- `client/src/components/ui-v2/eventHandlers/__tests__/handleChatMessage.test.ts`
+- `client/src/components/ui-v2/eventHandlers/__tests__/handleCommandResponse.test.ts`
+- `client/src/components/ui-v2/eventHandlers/__tests__/handleRoomMessage.test.ts`
+- `client/src/components/ui-v2/eventHandlers/__tests__/handleSystem.test.ts`
+- `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
+- `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- `client/src/utils/__tests__/statusParser.test.ts`
+- `client/src/utils/statusParser.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 117 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

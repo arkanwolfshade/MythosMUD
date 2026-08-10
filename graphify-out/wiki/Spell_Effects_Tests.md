@@ -1,52 +1,63 @@
 # Spell Effects Tests
 
-> 55 nodes · cohesion 0.04
+> 38 nodes
 
 ## Key Concepts
 
-- **test_spell_effects.py** (35 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **Test process_effect() routes to heal handler.** (5 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_publish_npc_spell_damage_syncs_participant_when_npc_room_missing()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_spell_effects_init_with_repository()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **mock_target_match()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **spell_effects()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_process_corruption_adjust_invalid_target()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_process_create_object_invalid_target()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_process_damage_invalid_target()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_process_effect_flee_not_in_combat()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_process_heal_heal_other_rejects_self_target()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_process_heal_invalid_target()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_process_heal_steal_life_capped_by_target_dp()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_process_heal_steal_life_damages_target_and_heals_caster()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_process_heal_steal_life_target_zero_dp()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_process_lucidity_adjust_invalid_target()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_process_stat_modify_invalid_target()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_process_status_effect_invalid_target()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_process_teleport_invalid_target()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **mock_player_service()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_process_effect_corruption_adjust()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_process_effect_create_object()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_process_effect_damage()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_process_effect_flee_services_not_configured()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_process_effect_heal()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- *... and 30 more nodes in this community*
+- **test_login_grace_period_visual_indicator.py** (28 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **PlayerOccupantProcessor** (21 connections) — `server/realtime/player_occupant_processor.py`
+- **player_occupant_processor.py** (15 connections) — `server/realtime/player_occupant_processor.py`
+- **._create_player_occupant_info()** (7 connections) — `server/realtime/player_occupant_processor.py`
+- **.process_players_for_occupants()** (7 connections) — `server/realtime/player_occupant_processor.py`
+- **test_warded_indicator_removed_after_expiration()** (6 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **test_both_linkdead_and_warded_indicators()** (6 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **.__init__()** (5 connections) — `server/realtime/player_occupant_processor.py`
+- **UUID** (5 connections)
+- **test_warded_indicator_in_player_occupant_processor()** (5 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **._ensure_player_included_in_list()** (4 connections) — `server/realtime/player_occupant_processor.py`
+- **._convert_player_ids_to_uuids()** (4 connections) — `server/realtime/player_occupant_processor.py`
+- **test_warded_indicator_in_look_room()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **test_warded_indicator_in_look_player()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **test_warded_indicator_in_websocket_room_updates()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **test_warded_indicator_not_shown_for_reconnections()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **Any** (3 connections)
+- **test_player_occupant_processor_adds_linkdead_indicator()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
+- **test_player_occupant_processor_no_linkdead_when_not_in_grace_period()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **Player occupant processing utilities.  This module handles querying and processi** (1 connections) — `server/realtime/player_occupant_processor.py`
+- **Processes player occupants for rooms.** (1 connections) — `server/realtime/player_occupant_processor.py`
+- **Initialize player occupant processor.          Args:             connection_mana** (1 connections) — `server/realtime/player_occupant_processor.py`
+- **Ensure a player is included in the player ID strings list if specified.** (1 connections) — `server/realtime/player_occupant_processor.py`
+- **Convert player ID strings to UUIDs for batch loading.          Args:** (1 connections) — `server/realtime/player_occupant_processor.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [[Combat Command Handler]] (16 shared connections)
-- [[Spell Effect Protocols]] (6 shared connections)
-- [[Magic Service Bundle]] (2 shared connections)
+- [Player Respawn Events](Player_Respawn_Events.md) (15 shared connections)
+- [Character Stats Generator](Character_Stats_Generator.md) (8 shared connections)
+- [Look Player Command](Look_Player_Command.md) (7 shared connections)
+- [Realtime WebSocket Auth](Realtime_WebSocket_Auth.md) (5 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (5 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
+- [API Type Guards](API_Type_Guards.md) (3 shared connections)
+- [Room Look Formatting](Room_Look_Formatting.md) (3 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (3 shared connections)
+- [NATS Message Broker](NATS_Message_Broker.md) (2 shared connections)
+- [NATS Retry Handler](NATS_Retry_Handler.md) (1 shared connections)
+- [Game State Provider](Game_State_Provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_spell_effects.py`
+- `server/realtime/player_occupant_processor.py`
+- `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- `server/tests/unit/realtime/test_visual_indicator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 140 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 156 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

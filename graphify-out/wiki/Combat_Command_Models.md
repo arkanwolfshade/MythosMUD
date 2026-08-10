@@ -1,55 +1,58 @@
 # Combat Command Models
 
-> 68 nodes · cohesion 0.05
+> 69 nodes
 
 ## Key Concepts
 
-- **test_command_combat.py** (29 connections) — `server/tests/unit/models/test_command_combat.py`
-- **AttackCommand** (14 connections) — `server/models/command_combat.py`
-- **KickCommand** (14 connections) — `server/models/command_combat.py`
-- **PunchCommand** (14 connections) — `server/models/command_combat.py`
-- **StrikeCommand** (14 connections) — `server/models/command_combat.py`
-- **validate_combat_target()** (14 connections) — `server/validators/security_validator.py`
-- **Validate combat target name format using centralized validation.** (5 connections) — `server/models/command_combat.py`
-- **.validate_target()** (3 connections) — `server/models/command_combat.py`
-- **.validate_target()** (3 connections) — `server/models/command_combat.py`
-- **.validate_target()** (3 connections) — `server/models/command_combat.py`
-- **.validate_target()** (3 connections) — `server/models/command_combat.py`
-- **.validate_target()** (3 connections) — `server/models/command_combat.py`
-- **test_attack_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_attack_command_target_max_length()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_attack_command_target_min_length()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_attack_command_validate_target_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_attack_command_validate_target_none()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_attack_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_kick_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_kick_command_target_max_length()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_kick_command_target_min_length()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_kick_command_validate_target_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_kick_command_validate_target_none()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_kick_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_punch_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- *... and 43 more nodes in this community*
+- **test_container_persistence_extended_crud.py** (41 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **container_query_helpers.py** (21 connections) — `server/persistence/container_query_helpers.py`
+- **delete_container()** (14 connections) — `server/persistence/container_persistence.py`
+- **get_decayed_containers()** (13 connections) — `server/persistence/container_query_helpers.py`
+- **_build_container_data_from_row()** (12 connections) — `server/persistence/container_query_helpers.py`
+- **get_containers_by_room_id()** (12 connections) — `server/persistence/container_query_helpers.py`
+- **get_containers_by_entity_id()** (12 connections) — `server/persistence/container_query_helpers.py`
+- **test_create_container_success()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_update_container_uuid_string_conversion()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_update_container_items_missing_item_instance_id()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_update_container_items_only_prototype_id()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **Any** (4 connections)
+- **ContainerData** (4 connections)
+- **test_create_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_container_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_containers_by_room_id_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_containers_by_room_id_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_containers_by_entity_id_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_containers_by_entity_id_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_update_container_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_update_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_decayed_containers_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_decayed_containers_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_delete_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [[Base Command Models]] (24 shared connections)
-- [[Command Field Validators]] (7 shared connections)
-- [[Moderation Command Models]] (1 shared connections)
+- [Maps API Endpoints](Maps_API_Endpoints.md) (23 shared connections)
+- [JSONB Column Parsing](JSONB_Column_Parsing.md) (23 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (19 shared connections)
+- [Container System Architecture](Container_System_Architecture.md) (7 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
+- [Feature Implementation Phases](Feature_Implementation_Phases.md) (3 shared connections)
 
 ## Source Files
 
-- `server/models/command_combat.py`
-- `server/tests/unit/models/test_command_combat.py`
-- `server/tests/unit/validators/test_security_validator.py`
-- `server/validators/security_validator.py`
+- `server/persistence/container_persistence.py`
+- `server/persistence/container_query_helpers.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 232 (97%)
-- INFERRED: 8 (3%)
+- EXTRACTED: 248 (93%)
+- INFERRED: 19 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

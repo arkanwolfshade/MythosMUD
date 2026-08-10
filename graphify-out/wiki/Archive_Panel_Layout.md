@@ -1,32 +1,27 @@
 # Archive Panel Layout
 
-> 8 nodes · cohesion 0.25
+> 2 nodes
 
 ## Key Concepts
 
-- **Library Selection & Rationale** (4 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Primary Solution: React Grid Layout (react-grid-layout)** (3 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Enhancement: React DnD (react-dnd)** (2 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Secondary Solution: CSS Grid Layout** (2 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Technical Benefits** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Why CSS Grid?** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Why React DnD?** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Why React Grid Layout?** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
+- **Panel Layout Libraries Spec** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
+- **Client Architecture Improvements Plan** (1 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
 
 ## Relationships
 
-- [[Panel Layout Libraries Spec]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
 - `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
+- `docs/archive/PLANNING_client_architecture_improvements.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

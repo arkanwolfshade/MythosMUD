@@ -1,33 +1,18 @@
 # Archive Dead Code
 
-> 24 nodes · cohesion 0.08
+> 9 nodes
 
 ## Key Concepts
 
-- **Dead Code Cleanup - Implementation Completion** (9 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- **📊 **Impact Assessment**** (5 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- **✅ **Implementation Summary**** (5 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- **🧪 **Validation Results**** (5 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- **📁 **Files Modified**** (3 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- **DEAD_CODE_CLEANUP_COMPLETION.md** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- ****Code Maintainability** ✅ **IMPROVED**** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- ****Code Quality Results**** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- **🏆 **Conclusion**** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- ****Developer Experience** ✅ **IMPROVED**** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- ****Files Created**** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- ****Files Removed**** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- ****Functionality** ✅ **PRESERVED**** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- ****Multiplayer Validation**** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- ****Phase 1: Remove Completely Unused Files** ✅ **COMPLETED**** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- ****Phase 2: Extract Legacy Functions** ✅ **COMPLETED**** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- ****Phase 3: Remove Deprecated Classes** ✅ **COMPLETED**** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- ****Phase 4: Remove Unused Functions** ✅ **COMPLETED**** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- **🎯 **Project Overview**** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- ****Project Structure** ✅ **IMPROVED**** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- **📚 **Related Documentation**** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- ****Server Functionality**** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- **🎯 **Success Criteria Met**** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- ****Test Suite Results**** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
+- **run-playwright-tests.js** (8 connections) — `client/scripts/run-playwright-tests.js`
+- **__filename** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **__dirname** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **clientRoot** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **testsDir** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **E2E_BACKEND_BASE_URL** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **checkBackendServer()** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **env** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **playwright** (1 connections) — `client/scripts/run-playwright-tests.js`
 
 ## Relationships
 
@@ -35,14 +20,14 @@
 
 ## Source Files
 
-- `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
+- `client/scripts/run-playwright-tests.js`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,44 +1,29 @@
 # Investigations Sessions Final
 
-> 20 nodes · cohesion 0.10
+> 5 nodes
 
 ## Key Concepts
 
-- **Final Investigation Summary - December 3, 2025** (9 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- **🎓 **Lessons Learned**** (4 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- **🎯 **Bugs Fixed Today**** (3 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- **📝 **Files Modified (Final)**** (3 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- **✅ **Final Verification**** (3 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- **📊 **Code Quality Review**** (2 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- **🔍 **Investigation Methodology Success**** (2 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- **2025-12-03_FINAL_SUMMARY.md** (1 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- ****All Panels Working**** (1 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- ****Architecture Insights**** (1 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- ****Async Best Practices Reinforced**** (1 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- ****Async Migration Review** ✅ **100% COMPLIANT**** (1 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- ****Bug #1: Character Info Panel Not Populating** ✅ RESOLVED** (1 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- ****Bug #2: Room Occupants Panel Duplicates & Missing Player** ✅ RESOLVED** (1 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- ****Debug Mode Approach**** (1 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- ****Documentation Created**** (1 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- **🎓 **Final Notes**** (1 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- ****Investigation Practices**** (1 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- ****Production Code Changes**** (1 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- ****System Stability**** (1 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
+- **2025_11_25_normalize_container_schema.py** (2 connections) — `server/alembic/versions/2025_11_25_normalize_container_schema.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2025_11_25_normalize_container_schema.py`
+- **downgrade()** (2 connections) — `server/alembic/versions/2025_11_25_normalize_container_schema.py`
+- **Normalize container schema with proper relational structure.** (1 connections) — `server/alembic/versions/2025_11_25_normalize_container_schema.py`
+- **Revert to denormalized schema with items_json.** (1 connections) — `server/alembic/versions/2025_11_25_normalize_container_schema.py`
 
 ## Relationships
 
-- [[Agents Investigations Sessions]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
+- `server/alembic/versions/2025_11_25_normalize_container_schema.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

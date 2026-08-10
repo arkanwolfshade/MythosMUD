@@ -1,52 +1,51 @@
 # Legacy Error Sanitization
 
-> 50 nodes · cohesion 0.05
+> 28 nodes
 
 ## Key Concepts
 
-- **sanitize_detail_value()** (19 connections) — `server/legacy_error_sanitization.py`
-- **legacy_error_sanitization.py** (18 connections) — `server/legacy_error_sanitization.py`
-- **sanitize_context()** (11 connections) — `server/legacy_error_sanitization.py`
-- **sanitize_safe_details()** (6 connections) — `server/legacy_error_sanitization.py`
-- **_collect_safe_context_fields()** (5 connections) — `server/legacy_error_sanitization.py`
-- **_sanitize_context_metadata()** (5 connections) — `server/legacy_error_sanitization.py`
-- **_sanitize_detail_string()** (5 connections) — `server/legacy_error_sanitization.py`
-- **sanitize_html_content()** (5 connections) — `server/legacy_error_sanitization.py`
-- **sanitize_text_content()** (5 connections) — `server/legacy_error_sanitization.py`
-- **_sanitize_detail_dict()** (4 connections) — `server/legacy_error_sanitization.py`
-- **_truncate_detail_string()** (4 connections) — `server/legacy_error_sanitization.py`
-- **Test sanitize_detail_value with string.** (4 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **.test_sanitize_context_empty()** (4 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **.test_sanitize_context_with_safe_fields()** (4 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **_contains_sensitive_detail_pattern()** (3 connections) — `server/legacy_error_sanitization.py`
-- **ErrorContext** (3 connections) — `server/legacy_error_sanitization.py`
-- **_sanitize_detail_list()** (3 connections) — `server/legacy_error_sanitization.py`
-- **.test_sanitize_context_none()** (3 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **.test_sanitize_detail_value_dict()** (3 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **.test_sanitize_detail_value_int()** (3 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **.test_sanitize_detail_value_list()** (3 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **.test_sanitize_detail_value_long_string()** (3 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **.test_sanitize_detail_value_string()** (3 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **.test_sanitize_detail_value_traceback()** (3 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **.test_sanitize_html_content()** (3 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- *... and 25 more nodes in this community*
+- **CORSConfig** (19 connections) — `server/config/models/cors.py`
+- **._parse_csv()** (10 connections) — `server/config/models/cors.py`
+- **._validate_non_empty()** (5 connections) — `server/config/models/cors.py`
+- **._clean_list_items()** (5 connections) — `server/config/models/cors.py`
+- **._parse_json_array()** (5 connections) — `server/config/models/cors.py`
+- **._parse_comma_separated()** (4 connections) — `server/config/models/cors.py`
+- **.parse_allow_origins()** (3 connections) — `server/config/models/cors.py`
+- **.parse_allow_methods()** (3 connections) — `server/config/models/cors.py`
+- **.parse_allow_headers()** (3 connections) — `server/config/models/cors.py`
+- **.parse_expose_headers()** (3 connections) — `server/config/models/cors.py`
+- **._validate_and_warn_wildcards()** (2 connections) — `server/config/models/cors.py`
+- **.parse_max_age()** (2 connections) — `server/config/models/cors.py`
+- **.validate_max_age()** (2 connections) — `server/config/models/cors.py`
+- **BaseSettings** (1 connections)
+- **Any** (1 connections)
+- **Cross-origin resource sharing configuration.      Configuration precedence (high** (1 connections) — `server/config/models/cors.py`
+- **Validate CORS configuration and warn about wildcard origins.** (1 connections) — `server/config/models/cors.py`
+- **Validate that cleaned list is not empty if allow_empty is False.** (1 connections) — `server/config/models/cors.py`
+- **Clean and filter list items, removing empty strings.** (1 connections) — `server/config/models/cors.py`
+- **Parse JSON array string if it looks like one, otherwise return None.** (1 connections) — `server/config/models/cors.py`
+- **Parse comma-separated string into cleaned list.** (1 connections) — `server/config/models/cors.py`
+- **Parse comma separated strings or lists into a cleaned list of strings.** (1 connections) — `server/config/models/cors.py`
+- **Parse allowed origins from various input formats.** (1 connections) — `server/config/models/cors.py`
+- **Parse and validate CORS allowed methods. Converts all methods to uppercase.** (1 connections) — `server/config/models/cors.py`
+- **Parse and validate CORS allowed headers.** (1 connections) — `server/config/models/cors.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [[Standardized Error Responses]] (33 shared connections)
-- [[NPC Admin API]] (1 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
+- [Archive Frd Random](Archive_Frd_Random.md) (2 shared connections)
 
 ## Source Files
 
-- `server/legacy_error_sanitization.py`
-- `server/tests/unit/test_legacy_error_handlers.py`
+- `server/config/models/cors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 163 (99%)
+- EXTRACTED: 80 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

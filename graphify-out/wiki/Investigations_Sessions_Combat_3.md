@@ -1,32 +1,33 @@
 # Investigations Sessions Combat
 
-> 8 nodes · cohesion 0.25
+> 7 nodes
 
 ## Key Concepts
 
-- **Hypotheses** (5 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Root Cause Analysis** (4 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Evidence from Logs** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Hypothesis 1: Exception During NPC Death Handling** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Hypothesis 2: Connection Timeout/Health Check Failure** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Hypothesis 3: Async Operation Race Condition** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Hypothesis 4: WebSocket/SSE Connection Loss** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Key Finding: Connection Lost Before Combat Completion** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
+- **Second NPC Combat And Linkdead Findings** (4 connections) — `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
+- **Combat Start Missing Await get_player_by_name** (2 connections) — `investigations/sessions/2025-12-08_session-combat-start-failure.md`
+- **XP Award async_get_player Missing Method** (2 connections) — `investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md`
+- **Coroutine Object Has No current_room_id** (1 connections) — `investigations/sessions/2025-12-08_session-combat-start-failure.md`
+- **get_player_by_id vs async_get_player Mismatch** (1 connections) — `investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md`
+- **Stale Queued Attack Target Validation** (1 connections) — `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
+- **Linkdead WebSocket Grace Period** (1 connections) — `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
 
 ## Relationships
 
-- [[Combat Disconnect Bug]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
+- `investigations/sessions/2025-12-08_session-combat-start-failure.md`
+- `investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md`
+- `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 8 (67%)
+- INFERRED: 4 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

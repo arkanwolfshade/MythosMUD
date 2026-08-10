@@ -1,15 +1,11 @@
 # Cursor Plans Plan
 
-> 6 nodes · cohesion 0.33
+> 2 nodes
 
 ## Key Concepts
 
-- **Round-Based Combat** (3 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
-- **Combat Bugs Investigation and Fixes** (2 connections) — `.cursor/plans/combat-bugs-investigation-and-fixes_47c9cae4.plan.md`
-- **Combat Round System Refactor** (2 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
-- **Combat Action Queue** (1 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
-- **First Weapon Switchblade** (1 connections) — `.cursor/plans/first_weapon_switchblade_85972031.plan.md`
-- **Flee Command and Effect** (1 connections) — `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
+- **Critical File Coverage Improvement** (1 connections) — `.cursor/plans/critical_file_coverage_improvement_0129c9ac.plan.md`
+- **Dead Code Analysis and Removal** (1 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
 
 ## Relationships
 
@@ -17,17 +13,15 @@
 
 ## Source Files
 
-- `.cursor/plans/combat-bugs-investigation-and-fixes_47c9cae4.plan.md`
-- `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
-- `.cursor/plans/first_weapon_switchblade_85972031.plan.md`
-- `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
+- `.cursor/plans/critical_file_coverage_improvement_0129c9ac.plan.md`
+- `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (40%)
-- INFERRED: 6 (60%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

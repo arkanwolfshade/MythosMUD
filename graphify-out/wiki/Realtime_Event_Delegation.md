@@ -1,62 +1,56 @@
 # Realtime Event Delegation
 
-> 84 nodes · cohesion 0.03
+> 29 nodes
 
 ## Key Concepts
 
-- **RealTimeEventHandler** (49 connections) — `server/realtime/event_handler.py`
-- **test_event_handler.py** (38 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **Test RealTimeEventHandler._handle_player_entered() delegates to player_handler.** (8 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **_AppStateForEventHandler** (5 connections) — `server/realtime/websocket_initial_state.py`
-- **_AppStateWithNpcLifecycle** (5 connections) — `server/realtime/websocket_initial_state.py`
-- **_AppWithState** (5 connections) — `server/realtime/websocket_initial_state.py`
-- **_ContainerWithNpcLifecycle** (5 connections) — `server/realtime/websocket_initial_state.py`
-- **_NpcOccupantDisplay** (5 connections) — `server/realtime/websocket_initial_state.py`
-- **_RealTimeHandlerContainer** (5 connections) — `server/realtime/websocket_initial_state.py`
-- **Delegate player entered event to specialized handler.** (3 connections) — `server/realtime/event_handler.py`
-- **._get_room_occupants()** (3 connections) — `server/realtime/event_handler.py`
-- **._handle_npc_entered()** (3 connections) — `server/realtime/event_handler.py`
-- **._handle_npc_left()** (3 connections) — `server/realtime/event_handler.py`
-- **._handle_player_delirium_respawned()** (3 connections) — `server/realtime/event_handler.py`
-- **._handle_player_died()** (3 connections) — `server/realtime/event_handler.py`
-- **._handle_player_dp_decay()** (3 connections) — `server/realtime/event_handler.py`
-- **._handle_player_dp_updated()** (3 connections) — `server/realtime/event_handler.py`
-- **._handle_player_entered()** (3 connections) — `server/realtime/event_handler.py`
-- **._handle_player_left()** (3 connections) — `server/realtime/event_handler.py`
-- **._handle_player_respawned()** (3 connections) — `server/realtime/event_handler.py`
-- **._handle_player_xp_awarded()** (3 connections) — `server/realtime/event_handler.py`
-- **._send_occupants_snapshot_to_player()** (3 connections) — `server/realtime/event_handler.py`
-- **.send_room_occupants_update()** (3 connections) — `server/realtime/event_handler.py`
-- **._send_room_occupants_update_internal()** (3 connections) — `server/realtime/event_handler.py`
-- **._subscribe_to_events()** (3 connections) — `server/realtime/event_handler.py`
-- *... and 59 more nodes in this community*
+- **NATSMessageBroker** (32 connections) — `server/infrastructure/nats_broker.py`
+- **.connect()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **._start_health_monitoring()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **._configure_tls()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._error_callback()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._handle_error_async()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._handle_reconnect_async()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._health_check_loop()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **test_connect_with_tls_enabled_passes_tls_options()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **._disconnected_callback()** (3 connections) — `server/infrastructure/nats_broker.py`
+- **._handle_disconnect_async()** (3 connections) — `server/infrastructure/nats_broker.py`
+- **._reconnected_callback()** (3 connections) — `server/infrastructure/nats_broker.py`
+- **._perform_health_check()** (3 connections) — `server/infrastructure/nats_broker.py`
+- **nats_broker()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **Exception** (2 connections)
+- **NATS implementation of MessageBroker protocol.      This class wraps NATS clie** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Configure TLS settings for NATS connection (mirrors NATSService._configure_tls).** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Connect to NATS server.          Returns:             bool: True if connectio** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Handle NATS errors.          AI: Runs as fire-and-forget async task to prevent** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Async handler for NATS connection errors.** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Handle NATS disconnection.          AI: Runs as fire-and-forget async task to** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Async handler for NATS disconnection events.** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Handle NATS reconnection.          AI: Runs as fire-and-forget async task to p** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Async handler for NATS reconnection events.** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Start periodic health check monitoring task.** (1 connections) — `server/infrastructure/nats_broker.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [[Player Respawn Events]] (25 shared connections)
-- [[WebSocket Initial State]] (10 shared connections)
-- [[Room Occupant Events]] (7 shared connections)
-- [[Player Combat XP]] (7 shared connections)
-- [[Realtime Service Bundle]] (5 shared connections)
-- [[Distributed Event Bus]] (2 shared connections)
-- [[NPC Services Bundle]] (2 shared connections)
-- [[Player Event Handler Tests]] (2 shared connections)
-- [[Player Death Service]] (2 shared connections)
-- [[Respawn Occupant Enrichment]] (1 shared connections)
-- [[Movement Service Tests]] (1 shared connections)
+- [Services Combat Persistence](Services_Combat_Persistence.md) (8 shared connections)
+- [Multiplayer Browser Helpers](Multiplayer_Browser_Helpers.md) (6 shared connections)
+- [Cursor Skills Mythosmud](Cursor_Skills_Mythosmud.md) (3 shared connections)
+- [Combat Monitoring Service](Combat_Monitoring_Service.md) (3 shared connections)
+- [Combat Service Bundle](Combat_Service_Bundle.md) (2 shared connections)
+- [Realtime Maintenance Connection](Realtime_Maintenance_Connection.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/event_handler.py`
-- `server/realtime/websocket_initial_state.py`
-- `server/tests/unit/realtime/test_event_handler.py`
+- `server/infrastructure/nats_broker.py`
+- `server/tests/unit/infrastructure/test_nats_broker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 235 (88%)
-- INFERRED: 31 (12%)
+- EXTRACTED: 91 (94%)
+- INFERRED: 6 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

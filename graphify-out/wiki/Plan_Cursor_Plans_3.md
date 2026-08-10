@@ -1,47 +1,55 @@
 # Plan Cursor Plans
 
-> 20 nodes · cohesion 0.10
+> 98 nodes
 
 ## Key Concepts
 
-- **🎯 Test Categories** (8 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **Implementation Details** (8 connections) — `.cursor/plans/effects_system_implementation.plan.md`
-- **Effects System Implementation Plan** (7 connections) — `.cursor/plans/effects_system_implementation.plan.md`
-- **6. Game Tick Processing** (2 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **1. Application Startup & CORS (create_app)** (1 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **3. Room Operations** (1 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **4. Container Operations** (1 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **5. Player Respawn** (1 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **effects_system_implementation.plan.md** (1 connections) — `.cursor/plans/effects_system_implementation.plan.md`
-- **1. Models and enum** (1 connections) — `.cursor/plans/effects_system_implementation.plan.md`
-- **2. Database migration** (1 connections) — `.cursor/plans/effects_system_implementation.plan.md`
-- **3. PlayerEffectRepository** (1 connections) — `.cursor/plans/effects_system_implementation.plan.md`
-- **5. Login grace period migration** (1 connections) — `.cursor/plans/effects_system_implementation.plan.md`
-- **6. Optional: persist game tick** (1 connections) — `.cursor/plans/effects_system_implementation.plan.md`
-- **7. Client: effects in header bar (visualization)** (1 connections) — `.cursor/plans/effects_system_implementation.plan.md`
-- **Architecture** (1 connections) — `.cursor/plans/effects_system_implementation.plan.md`
-- **Optional / Follow-up** (1 connections) — `.cursor/plans/effects_system_implementation.plan.md`
-- **Overview** (1 connections) — `.cursor/plans/effects_system_implementation.plan.md`
-- **Reference** (1 connections) — `.cursor/plans/effects_system_implementation.plan.md`
-- **Testing** (1 connections) — `.cursor/plans/effects_system_implementation.plan.md`
+- **test_population_control.py** (65 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_should_spawn_npc()** (5 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_check_spawn_requirements_for_room_with_definitions()** (4 connections) — `server/tests/unit/npc/test_population_control.py`
+- **mock_event_bus()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **population_controller()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_population_controller_init()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_population_controller_init_requires_async_persistence()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_load_npc_definitions()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_load_npc_definitions_overwrites()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_load_spawn_rules()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_get_zone_configuration_exact_match()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_get_zone_configuration_zone_fallback()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_get_zone_configuration_no_slash()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_get_population_stats_existing()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_clear_population_stats()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_get_zone_population_summary_with_stats()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_handle_player_entered_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_handle_player_left_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_handle_npc_entered_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_handle_npc_left_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_spawn_npc_no_lifecycle_manager()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_spawn_npc_success()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_spawn_npc_spawn_fails()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_spawn_npc_handles_exception()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_spawn_npc_public_api()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- *... and 73 more nodes in this community*
 
 ## Relationships
 
-- [[Complexity Refactoring Plan]] (1 shared connections)
-- [[Common Troubleshooting Guide]] (1 shared connections)
-- [[Migration Testing Strategy]] (1 shared connections)
+- [Command Parser Tests](Command_Parser_Tests.md) (13 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (9 shared connections)
+- [Spell Effect Protocols](Spell_Effect_Protocols.md) (7 shared connections)
+- [NPC Admin API](NPC_Admin_API.md) (7 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (4 shared connections)
+- [LRU Cache Manager](LRU_Cache_Manager.md) (4 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/effects_system_implementation.plan.md`
-- `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- `server/tests/unit/npc/test_population_control.py`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 227 (95%)
+- INFERRED: 11 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

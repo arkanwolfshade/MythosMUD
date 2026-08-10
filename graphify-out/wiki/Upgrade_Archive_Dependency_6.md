@@ -1,32 +1,27 @@
 # Upgrade Archive Dependency
 
-> 8 nodes · cohesion 0.25
+> 2 nodes
 
 ## Key Concepts
 
-- **Rollback Procedures** (5 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/upgrade_implementation_plan.md`
-- **Phase-Specific Rollback** (4 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/upgrade_implementation_plan.md`
-- **Database Rollback (if needed)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/upgrade_implementation_plan.md`
-- **Emergency Rollback (Immediate)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/upgrade_implementation_plan.md`
-- **Phase 1 Rollback** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/upgrade_implementation_plan.md`
-- **Phase 2 Rollback** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/upgrade_implementation_plan.md`
-- **Phase 3 Rollback** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/upgrade_implementation_plan.md`
-- **Verification After Rollback** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/upgrade_implementation_plan.md`
+- **React Node Upgrade Summary** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/REACT_NODE_UPGRADE_SUMMARY.md`
+- **React Node Upgrade Plan** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/react_node_upgrade_plan.md`
 
 ## Relationships
 
-- [[Upgrade Archive Dependency]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/DEPENDENCY_UPGRADE_SPEC/upgrade_implementation_plan.md`
+- `docs/archive/DEPENDENCY_UPGRADE_SPEC/REACT_NODE_UPGRADE_SUMMARY.md`
+- `docs/archive/DEPENDENCY_UPGRADE_SPEC/react_node_upgrade_plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

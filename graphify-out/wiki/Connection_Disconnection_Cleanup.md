@@ -1,58 +1,70 @@
 # Connection Disconnection Cleanup
 
-> 80 nodes · cohesion 0.04
+> 86 nodes
 
 ## Key Concepts
 
-- **connection_disconnection.py** (28 connections) — `server/realtime/connection_disconnection.py`
-- **test_connection_disconnection.py** (28 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- **_DisconnectConnectionManager** (18 connections) — `server/realtime/connection_disconnection.py`
-- **UUID** (14 connections) — `server/realtime/connection_disconnection.py`
-- **cleanup_websocket_disconnect()** (13 connections) — `server/realtime/connection_disconnection.py`
-- **disconnect_all_websockets_impl()** (13 connections) — `server/realtime/connection_disconnection.py`
-- **disconnect_connection_by_id_impl()** (12 connections) — `server/realtime/connection_disconnection.py`
-- **test_connection_disconnection_websockets.py** (12 connections) — `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
-- **_cleanup_room_subscriptions()** (11 connections) — `server/realtime/connection_disconnection.py`
-- **_track_disconnect_if_needed()** (11 connections) — `server/realtime/connection_disconnection.py`
-- **_cleanup_player_data()** (10 connections) — `server/realtime/connection_disconnection.py`
-- **_cleanup_fully_disconnected_player()** (8 connections) — `server/realtime/connection_disconnection.py`
-- **_disconnect_single_websocket()** (7 connections) — `server/realtime/connection_disconnection.py`
-- **.has_websocket_connection()** (7 connections) — `server/realtime/connection_disconnection.py`
-- **_disconnect_websocket_by_connection_id()** (6 connections) — `server/realtime/connection_disconnection.py`
-- **_cleanup_connection_tracking()** (4 connections) — `server/realtime/connection_disconnection.py`
-- **.disconnect_connection_by_id()** (3 connections) — `server/realtime/connection_manager.py`
-- **test_cleanup_player_data()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- **test_cleanup_player_data_has_connection()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- **test_cleanup_room_subscriptions()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- **test_cleanup_room_subscriptions_force_disconnect()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- **test_cleanup_room_subscriptions_has_connection()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- **test_cleanup_websocket_disconnect()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- **test_cleanup_websocket_disconnect_when_mapping_cleared_during_close()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- **test_disconnect_all_websockets()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- *... and 55 more nodes in this community*
+- **containerStore.ts** (26 connections) — `client/src/stores/containerStore.ts`
+- **useContainerSplitPane.ts** (19 connections) — `client/src/components/containers/useContainerSplitPane.ts`
+- **CorpseOverlay.tsx** (17 connections) — `client/src/components/containers/CorpseOverlay.tsx`
+- **ContainerSplitPaneView.tsx** (16 connections) — `client/src/components/containers/ContainerSplitPaneView.tsx`
+- **CorpseCard.tsx** (15 connections) — `client/src/components/containers/CorpseCard.tsx`
+- **ContainerKeyboardAccessibility.test.tsx** (15 connections) — `client/src/components/containers/__tests__/ContainerKeyboardAccessibility.test.tsx`
+- **ContainerSplitPane.tsx** (13 connections) — `client/src/components/containers/ContainerSplitPane.tsx`
+- **BackpackTab.tsx** (12 connections) — `client/src/components/containers/BackpackTab.tsx`
+- **ContainerComponent** (12 connections) — `client/src/stores/containerStore.ts`
+- **InventoryStack** (11 connections) — `client/src/stores/containerStore.ts`
+- **ContainerItemRow.tsx** (10 connections) — `client/src/components/containers/ContainerItemRow.tsx`
+- **BackpackTab.test.tsx** (10 connections) — `client/src/components/containers/__tests__/BackpackTab.test.tsx`
+- **corpseOverlayUtils.ts** (10 connections) — `client/src/components/containers/corpseOverlayUtils.ts`
+- **useContainerStore** (10 connections) — `client/src/stores/containerStore.ts`
+- **ContainerDragAndDrop.test.tsx** (9 connections) — `client/src/components/containers/__tests__/ContainerDragAndDrop.test.tsx`
+- **useContainerSplitPane()** (9 connections) — `client/src/components/containers/useContainerSplitPane.ts`
+- **CorpseOverlay()** (7 connections) — `client/src/components/containers/CorpseOverlay.tsx`
+- **ContainerSplitPane.test.tsx** (7 connections) — `client/src/components/containers/__tests__/ContainerSplitPane.test.tsx`
+- **CorpseOverlay.test.tsx** (7 connections) — `client/src/components/containers/__tests__/CorpseOverlay.test.tsx`
+- **getCorpseTiming()** (6 connections) — `client/src/components/containers/corpseOverlayUtils.ts`
+- **BackpackTab()** (5 connections) — `client/src/components/containers/BackpackTab.tsx`
+- **ContainerSplitPane()** (5 connections) — `client/src/components/containers/ContainerSplitPane.tsx`
+- **useContainerDragHandlers()** (5 connections) — `client/src/components/containers/useContainerSplitPane.ts`
+- **containerStore.test.ts** (5 connections) — `client/src/stores/__tests__/containerStore.test.ts`
+- **ContainerItemRow()** (4 connections) — `client/src/components/containers/ContainerItemRow.tsx`
+- *... and 61 more nodes in this community*
 
 ## Relationships
 
-- [[Room Occupant Events]] (15 shared connections)
-- [[NPC Admin API]] (5 shared connections)
-- [[Message Queue Cleanup]] (5 shared connections)
-- [[Rate Limiter Service]] (5 shared connections)
-- [[Realtime Connection]] (4 shared connections)
-- [[Player Combat XP]] (1 shared connections)
+- [Command Input Validator](Command_Input_Validator.md) (12 shared connections)
+- [Combat Attack Handler](Combat_Attack_Handler.md) (9 shared connections)
+- [WebSocket Message Validation](WebSocket_Message_Validation.md) (4 shared connections)
+- [Combat Messaging Integration](Combat_Messaging_Integration.md) (3 shared connections)
+- [Quest Flow Integration](Quest_Flow_Integration.md) (2 shared connections)
+- [Realtime Event Handlers](Realtime_Event_Handlers.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_disconnection.py`
-- `server/realtime/connection_manager.py`
-- `server/tests/unit/realtime/test_connection_disconnection.py`
-- `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
+- `client/src/components/containers/BackpackTab.tsx`
+- `client/src/components/containers/ContainerItemRow.tsx`
+- `client/src/components/containers/ContainerSplitPane.tsx`
+- `client/src/components/containers/ContainerSplitPaneView.tsx`
+- `client/src/components/containers/CorpseCard.tsx`
+- `client/src/components/containers/CorpseOverlay.tsx`
+- `client/src/components/containers/__tests__/BackpackTab.test.tsx`
+- `client/src/components/containers/__tests__/ContainerDragAndDrop.test.tsx`
+- `client/src/components/containers/__tests__/ContainerKeyboardAccessibility.test.tsx`
+- `client/src/components/containers/__tests__/ContainerSplitPane.test.tsx`
+- `client/src/components/containers/__tests__/CorpseOverlay.test.tsx`
+- `client/src/components/containers/corpseOverlayUtils.ts`
+- `client/src/components/containers/useContainerSplitPane.ts`
+- `client/src/stores/__tests__/containerStore.test.ts`
+- `client/src/stores/containerStore.ts`
+- `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 307 (97%)
-- INFERRED: 8 (3%)
+- EXTRACTED: 360 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,56 +1,51 @@
 # Room Exploration API
 
-> 37 nodes · cohesion 0.12
+> 26 nodes
 
 ## Key Concepts
 
-- **update_room_position()** (14 connections) — `server/api/rooms.py`
-- **_apply_exploration_filter_if_needed()** (13 connections) — `server/api/rooms.py`
-- **list_rooms()** (10 connections) — `server/api/rooms.py`
-- **RoomListResponse** (10 connections) — `server/api/rooms.py`
-- **RoomPositionUpdateResponse** (10 connections) — `server/api/rooms.py`
-- **RoomResponse** (10 connections) — `server/api/rooms.py`
-- **test_rooms_exploration_filter.py** (9 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **Request** (8 connections) — `server/api/rooms.py`
-- **RoomService** (8 connections) — `server/api/rooms.py`
-- **get_room()** (7 connections) — `server/api/rooms.py`
-- **RoomPositionUpdate** (7 connections) — `server/api/rooms.py`
-- **_validate_room_position_update()** (7 connections) — `server/api/rooms.py`
-- **RoomDictList** (7 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **AsyncSession** (7 connections) — `server/api/rooms.py`
-- **User** (7 connections) — `server/api/rooms.py`
-- **_update_room_position_in_db()** (6 connections) — `server/api/rooms.py`
-- **ExplorationService** (5 connections) — `server/api/rooms.py`
-- **_invalidate_room_cache()** (4 connections) — `server/api/rooms.py`
-- **test_apply_exploration_filter_admin_sees_all_rooms_when_filter_requested()** (4 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **test_apply_exploration_filter_no_player_returns_unfiltered()** (4 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **test_apply_exploration_filter_non_admin_uses_room_service_intersection()** (4 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **test_apply_exploration_filter_superuser_bypasses_filter()** (4 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **Any** (4 connections) — `server/api/rooms.py`
-- **sample_rooms()** (3 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **Update room position in database and verify the update succeeded.** (1 connections) — `server/api/rooms.py`
-- *... and 12 more nodes in this community*
+- **test_room_occupant_manager.py** (16 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **occupant_manager()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_get_room_occupants_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_room_occupant_manager_init()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_get_room_occupants_no_persistence()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_get_room_occupants_no_room()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_get_room_occupants_success()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_get_room_occupants_error()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_separate_occupants_by_type()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_get_room_occupants_with_ensure_player()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_get_room_occupants_with_players_and_npcs()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_separate_occupants_by_type_empty_list()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **Unit tests for room occupant manager.  Tests the RoomOccupantManager class for q** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **Create mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **Create RoomOccupantManager instance.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **Test RoomOccupantManager initialization.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **Test get_room_occupants returns empty when no connection manager.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **Test get_room_occupants returns empty when no persistence.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **Test get_room_occupants returns empty when room not found.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **Test get_room_occupants returns occupants.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **Test get_room_occupants handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **Test separate_occupants_by_type separates occupants.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **Test get_room_occupants with ensure_player_included.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **Test get_room_occupants returns both players and NPCs.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Admin API]] (8 shared connections)
-- [[Container Exception Handlers]] (5 shared connections)
-- [[Maps API Endpoints]] (3 shared connections)
-- [[NPC Definition Admin API]] (2 shared connections)
-- [[Services Exploration Service]] (2 shared connections)
-- [[Admin NPC Schemas]] (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (4 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/rooms.py`
-- `server/tests/unit/api/test_rooms_exploration_filter.py`
+- `server/tests/unit/realtime/test_room_occupant_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 135 (73%)
-- INFERRED: 50 (27%)
+- EXTRACTED: 55 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

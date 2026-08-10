@@ -1,56 +1,61 @@
 # Event Bus Serialization
 
-> 52 nodes · cohesion 0.06
+> 49 nodes
 
 ## Key Concepts
 
-- **NATSEventBusBridge** (18 connections) — `server/events/nats_event_bridge.py`
-- **deserialize_event()** (14 connections) — `server/events/event_serialization.py`
-- **serialize_event()** (13 connections) — `server/events/event_serialization.py`
-- **test_event_serialization.py** (12 connections) — `server/tests/unit/events/test_event_serialization.py`
-- **event_serialization.py** (11 connections) — `server/events/event_serialization.py`
-- **._handle_nats_message_impl()** (5 connections) — `server/events/nats_event_bridge.py`
-- **.publish()** (5 connections) — `server/events/nats_event_bridge.py`
-- **test_serialize_deserialize_player_died_event()** (5 connections) — `server/tests/unit/events/test_event_serialization.py`
-- **test_serialize_deserialize_player_entered_room()** (5 connections) — `server/tests/unit/events/test_event_serialization.py`
-- **test_serialize_deserialize_player_xp_award_event()** (5 connections) — `server/tests/unit/events/test_event_serialization.py`
-- **test_nats_event_bridge.py** (5 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
-- **Any** (5 connections) — `server/events/event_serialization.py`
-- **_convert_value_for_json()** (4 connections) — `server/events/event_serialization.py`
-- **_convert_value_from_json()** (4 connections) — `server/events/event_serialization.py`
-- **_register_event_types()** (4 connections) — `server/events/event_serialization.py`
-- **.handle_nats_message()** (4 connections) — `server/events/nats_event_bridge.py`
-- **.__init__()** (4 connections) — `server/events/nats_event_bridge.py`
-- **._subject_for_event()** (4 connections) — `server/events/nats_event_bridge.py`
-- **Any** (4 connections) — `server/events/nats_event_bridge.py`
-- **test_deserialize_missing_event_type_raises()** (3 connections) — `server/tests/unit/events/test_event_serialization.py`
-- **test_deserialize_unknown_event_type_raises()** (3 connections) — `server/tests/unit/events/test_event_serialization.py`
-- **test_serialize_non_base_event_raises()** (3 connections) — `server/tests/unit/events/test_event_serialization.py`
-- **test_handle_nats_message_injects_remote_origin()** (3 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
-- **test_handle_nats_message_skips_own_origin()** (3 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
-- **BaseEvent** (3 connections) — `server/events/event_serialization.py`
-- *... and 27 more nodes in this community*
+- **NPCCombatIntegrationBase** (25 connections) — `server/npc/combat_integration_base.py`
+- **._perform_direct_npc_attack()** (10 connections) — `server/npc/combat_integration_base.py`
+- **.apply_combat_effects()** (8 connections) — `server/npc/combat_integration_base.py`
+- **._apply_player_combat_effects()** (8 connections) — `server/npc/combat_integration_base.py`
+- **._is_target_in_login_grace_period()** (7 connections) — `server/npc/combat_integration_base.py`
+- **._convert_target_id_to_uuid()** (6 connections) — `server/npc/combat_integration_base.py`
+- **._handle_npc_attack_core()** (6 connections) — `server/npc/combat_integration_base.py`
+- **NpcCombatServiceProtocol** (6 connections) — `server/npc/combat_integration_protocols.py`
+- **.__init__()** (5 connections) — `server/npc/combat_integration_base.py`
+- **._try_delegate_npc_attack_to_combat_service()** (5 connections) — `server/npc/combat_integration_base.py`
+- **._handle_attribute_error()** (4 connections) — `server/npc/combat_integration_base.py`
+- **._handle_validation_error()** (4 connections) — `server/npc/combat_integration_base.py`
+- **._handle_unexpected_error()** (4 connections) — `server/npc/combat_integration_base.py`
+- **.handle_npc_attack()** (4 connections) — `server/npc/combat_integration_base.py`
+- **._get_target_stats()** (4 connections) — `server/npc/combat_integration_base.py`
+- **.calculate_damage()** (3 connections) — `server/npc/combat_integration_base.py`
+- **UUID** (3 connections)
+- **._apply_mental_effects()** (3 connections) — `server/npc/combat_integration_base.py`
+- **._get_npc_stats()** (3 connections) — `server/npc/combat_integration_base.py`
+- **._publish_player_dp_updated_after_npc_damage()** (3 connections) — `server/npc/combat_integration_base.py`
+- **._publish_attack_event()** (3 connections) — `server/npc/combat_integration_base.py`
+- **._publish_npc_attack_to_nats()** (3 connections) — `server/npc/combat_integration_base.py`
+- **ABC** (2 connections)
+- **Protocol** (2 connections)
+- **.handle_npc_attack_on_player()** (2 connections) — `server/npc/combat_integration_protocols.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [[Distributed Event Bus]] (20 shared connections)
-- [[Player Combat XP]] (3 shared connections)
-- [[Player Death Service]] (2 shared connections)
-- [[Combat Service Bundle]] (1 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
+- [Archive Frd Random](Archive_Frd_Random.md) (3 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (2 shared connections)
+- [LRU Cache Manager](LRU_Cache_Manager.md) (2 shared connections)
+- [Game State Provider](Game_State_Provider.md) (2 shared connections)
+- [Player Respawn Events](Player_Respawn_Events.md) (2 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (1 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
+- [Database Error Handling](Database_Error_Handling.md) (1 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/events/event_serialization.py`
-- `server/events/nats_event_bridge.py`
-- `server/tests/unit/events/test_event_serialization.py`
-- `server/tests/unit/events/test_nats_event_bridge.py`
+- `server/npc/combat_integration_base.py`
+- `server/npc/combat_integration_protocols.py`
 
 ## Audit Trail
 
-- EXTRACTED: 173 (95%)
-- INFERRED: 9 (5%)
+- EXTRACTED: 151 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

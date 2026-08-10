@@ -1,66 +1,67 @@
 # Emote Schema Validator
 
-> 98 nodes · cohesion 0.03
+> 63 nodes
 
 ## Key Concepts
 
-- **SchemaValidator** (30 connections) — `schemas/validator.py`
-- **emote_service.py** (18 connections) — `server/game/emote_service.py`
-- **validate_room_data()** (15 connections) — `server/world_loader.py`
-- **world_loader.py** (14 connections) — `server/world_loader.py`
-- **get_room_environment()** (13 connections) — `server/world_loader.py`
-- **TestGetRoomEnvironment** (12 connections) — `server/tests/unit/test_world_loader.py`
-- **TestValidateRoomData** (11 connections) — `server/tests/unit/test_world_loader.py`
-- **create_validator()** (10 connections) — `schemas/validator.py`
-- **test_world_loader.py** (10 connections) — `server/tests/unit/test_world_loader.py`
-- **generate_room_id()** (9 connections) — `server/world_loader.py`
-- **schema_validator.py** (8 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **_get_alias_validator()** (8 connections) — `server/alias_storage.py`
-- **validator.py** (7 connections) — `schemas/validator.py`
-- **Any** (7 connections) — `schemas/validator.py`
-- **TestGenerateRoomId** (7 connections) — `server/tests/unit/test_world_loader.py`
-- **.validate_data()** (6 connections) — `schemas/validator.py`
-- **.validate_room()** (6 connections) — `schemas/validator.py`
-- **EmoteDefinition** (5 connections) — `server/game/emote_service.py`
-- **_EmoteLoadResult** (4 connections) — `server/game/emote_service.py`
-- **_get_emote_validator()** (4 connections) — `server/game/emote_service.py`
-- **.__init__()** (4 connections) — `schemas/validator.py`
-- **.validate_alias_bundle()** (4 connections) — `schemas/validator.py`
-- **.validate_emote_file()** (4 connections) — `schemas/validator.py`
-- **.validate_room_database()** (4 connections) — `schemas/validator.py`
-- **.validate_room_file()** (4 connections) — `schemas/validator.py`
-- *... and 73 more nodes in this community*
+- **CommandType** (84 connections) — `server/models/command_base.py`
+- **command_base.py** (23 connections) — `server/models/command_base.py`
+- **Direction** (22 connections) — `server/models/command_base.py`
+- **test_command_exploration.py** (20 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **LookCommand** (19 connections) — `server/models/command_exploration.py`
+- **GoCommand** (14 connections) — `server/models/command_exploration.py`
+- **command_exploration.py** (9 connections) — `server/models/command_exploration.py`
+- **command_follow.py** (8 connections) — `server/models/command_follow.py`
+- **FollowCommand** (6 connections) — `server/models/command_follow.py`
+- **UnfollowCommand** (6 connections) — `server/models/command_follow.py`
+- **FollowingCommand** (6 connections) — `server/models/command_follow.py`
+- **command_party.py** (6 connections) — `server/models/command_party.py`
+- **PartyCommand** (6 connections) — `server/models/command_party.py`
+- **test_look_command_validate_direction_invalid()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_instance_number_validation_min()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_validate_direction_invalid()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_missing_direction()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **.validate_direction_field()** (3 connections) — `server/models/command_admin.py`
+- **.validate_direction()** (3 connections) — `server/models/command_exploration.py`
+- **.validate_direction()** (3 connections) — `server/models/command_exploration.py`
+- **test_direction_enum_inheritance()** (3 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_look_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_direction()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_validate_direction_valid()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_validate_direction_none()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Admin API]] (22 shared connections)
-- [[Alias Expansion Logic]] (9 shared connections)
-- [[Room Schema Validator]] (5 shared connections)
-- [[Chat Message Helpers]] (3 shared connections)
-- [[Dependency Risk Analyzer]] (3 shared connections)
-- [[Alias Storage Layer]] (3 shared connections)
-- [[Room Fixer Toolkit]] (2 shared connections)
-- [[Lucidity Rate Overrides]] (2 shared connections)
-- [[Hierarchical Schema Tests]] (1 shared connections)
-- [[Command Input Utilities]] (1 shared connections)
-- [[Game Emote Service]] (1 shared connections)
-- [[Alias Storage]] (1 shared connections)
+- [Game Terminal Panels](Game_Terminal_Panels.md) (16 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (13 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (10 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (9 shared connections)
+- [NPC Occupant Processor](NPC_Occupant_Processor.md) (9 shared connections)
+- [Communication Command Models](Communication_Command_Models.md) (9 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (8 shared connections)
+- [Environmental Container Scenario](Environmental_Container_Scenario.md) (7 shared connections)
+- [Combat Configuration Service](Combat_Configuration_Service.md) (7 shared connections)
+- [Moderation Command Models](Moderation_Command_Models.md) (7 shared connections)
+- [Admin Summon Command](Admin_Summon_Command.md) (6 shared connections)
+- [Command Helper Utilities](Command_Helper_Utilities.md) (6 shared connections)
 
 ## Source Files
 
-- `schemas/validator.py`
-- `server/alias_storage.py`
-- `server/game/emote_service.py`
-- `server/tests/unit/test_world_loader.py`
-- `server/world_loader.py`
-- `tools/room_toolkit/room_validator/core/schema_validator.py`
+- `server/models/command_admin.py`
+- `server/models/command_base.py`
+- `server/models/command_exploration.py`
+- `server/models/command_follow.py`
+- `server/models/command_party.py`
+- `server/tests/unit/models/test_command_base.py`
+- `server/tests/unit/models/test_command_exploration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 336 (94%)
-- INFERRED: 22 (6%)
+- EXTRACTED: 226 (71%)
+- INFERRED: 94 (29%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

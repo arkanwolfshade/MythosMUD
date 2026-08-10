@@ -1,74 +1,63 @@
 # Combat Taunt Tests
 
-> 375 nodes · cohesion 0.01
+> 89 nodes
 
 ## Key Concepts
 
-- **CombatParticipant** (86 connections) — `server/models/combat.py`
-- **CombatInstance** (74 connections) — `server/models/combat.py`
-- **test_combat.py** (59 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_turn_processor.py** (34 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
-- **CombatParticipantType** (32 connections) — `server/models/combat.py`
-- **test_aggro_threat.py** (28 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **_make_combat()** (24 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **CombatTurnProcessor** (22 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
-- **test_combat_taunt.py** (18 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **combat.py** (16 connections) — `server/models/combat.py`
-- **combat_death_handler.py** (16 connections) — `server/services/combat_death_handler.py`
-- **test_combat_service.py** (16 connections) — `server/tests/unit/services/test_combat_service.py`
-- **combat_flee_handler.py** (15 connections) — `server/services/combat_flee_handler.py`
-- **combat_turn_processor.py** (15 connections) — `server/services/combat_turn_processor.py`
-- **test_combat_flee_handler.py** (15 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **CombatAction** (14 connections) — `server/models/combat.py`
-- **execute_voluntary_flee()** (14 connections) — `server/services/combat_flee_handler.py`
-- **_make_participant()** (14 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **test_aggro_flow.py** (13 connections) — `server/tests/integration/test_aggro_flow.py`
-- **_make_participant()** (12 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **CombatStatus** (11 connections) — `server/models/combat.py`
-- **CombatParticipant** (11 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
-- **combat_attack_handler.py** (11 connections) — `server/services/combat_attack_handler.py`
-- **try_voluntary_flee_roll()** (11 connections) — `server/services/combat_flee_handler.py`
-- **_make_participant()** (11 connections) — `server/tests/unit/services/test_combat_service.py`
-- *... and 350 more nodes in this community*
+- **test_combat_flee_helpers.py** (27 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
+- **combat_flee.py** (22 connections) — `server/commands/combat_flee.py`
+- **AppWithState** (17 connections) — `server/commands/combat_app_protocols.py`
+- **_FleeCommandHandlerLike** (17 connections) — `server/commands/combat_flee.py`
+- **_resolve_flee_preconditions()** (15 connections) — `server/commands/combat_flee.py`
+- **_validate_flee_combat_and_room()** (12 connections) — `server/commands/combat_flee.py`
+- **FleePreconditionError** (12 connections) — `server/commands/combat_helpers.py`
+- **_PlayerForFlee** (11 connections) — `server/commands/combat_flee.py`
+- **_ensure_flee_standing()** (11 connections) — `server/commands/combat_flee.py`
+- **_PlayerPositionServiceLike** (8 connections) — `server/commands/combat_flee.py`
+- **_get_flee_player_uuid()** (8 connections) — `server/commands/combat_flee.py`
+- **_get_flee_room_id()** (8 connections) — `server/commands/combat_flee.py`
+- **combat_helpers.py** (7 connections) — `server/commands/combat_helpers.py`
+- **combat_app_protocols.py** (6 connections) — `server/commands/combat_app_protocols.py`
+- **run_handle_flee_command()** (6 connections) — `server/commands/combat_flee.py`
+- **format_combat_status()** (6 connections) — `server/commands/combat_helpers.py`
+- **get_combat_target()** (6 connections) — `server/commands/combat_helpers.py`
+- **test_combat_helpers.py** (6 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **test_validate_flee_combat_and_room_success()** (5 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
+- **.check_and_interrupt_rest()** (4 connections) — `server/commands/combat_flee.py`
+- **.get_player_and_room()** (4 connections) — `server/commands/combat_flee.py`
+- **UUID** (4 connections)
+- **test_validate_flee_combat_and_room_no_movement_service()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
+- **test_resolve_flee_preconditions_player_error()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
+- **_participant()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
+- *... and 64 more nodes in this community*
 
 ## Relationships
 
-- [[Combat Service Bundle]] (21 shared connections)
-- [[Combat Command Handler]] (18 shared connections)
-- [[NPC Admin API]] (17 shared connections)
-- [[Combat Aggro Threat]] (11 shared connections)
-- [[Combat Attack Service]] (9 shared connections)
-- [[Combat Flee Command]] (9 shared connections)
-- [[Combat Turn Processor]] (8 shared connections)
-- [[Flee Command Tests]] (7 shared connections)
-- [[Combat Attack Handler]] (7 shared connections)
-- [[Lucidity State Models]] (7 shared connections)
-- [[NPC Combat Lifecycle]] (6 shared connections)
-- [[Combat Death Handling]] (5 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (11 shared connections)
+- [Container Component Capacity](Container_Component_Capacity.md) (8 shared connections)
+- [Player Position Service](Player_Position_Service.md) (5 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (5 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (4 shared connections)
+- [Logging Correct Patterns](Logging_Correct_Patterns.md) (3 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (1 shared connections)
+- [test_profession_meets_stat_requirements_multiple_not_met](test_profession_meets_stat_requirements_multiple_not_met.md) (1 shared connections)
+- [Player Creation Service](Player_Creation_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/combat.py`
-- `server/services/combat_attack_handler.py`
-- `server/services/combat_death_handler.py`
-- `server/services/combat_flee_handler.py`
-- `server/services/combat_turn_processor.py`
-- `server/services/lucidity_command_disruption.py`
-- `server/tests/integration/test_aggro_flow.py`
-- `server/tests/unit/commands/test_combat_taunt.py`
-- `server/tests/unit/models/test_combat.py`
-- `server/tests/unit/services/test_aggro_threat.py`
-- `server/tests/unit/services/test_combat_flee_handler.py`
-- `server/tests/unit/services/test_combat_service.py`
-- `server/tests/unit/services/test_combat_turn_participant_actions.py`
-- `server/tests/unit/services/test_combat_turn_processor.py`
+- `server/commands/combat_app_protocols.py`
+- `server/commands/combat_flee.py`
+- `server/commands/combat_helpers.py`
+- `server/tests/unit/commands/test_combat_flee_helpers.py`
+- `server/tests/unit/commands/test_combat_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1414 (99%)
-- INFERRED: 18 (1%)
+- EXTRACTED: 302 (90%)
+- INFERRED: 34 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

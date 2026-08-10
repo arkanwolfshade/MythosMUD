@@ -1,64 +1,54 @@
 # System Monitoring API
 
-> 59 nodes · cohesion 0.07
+> 38 nodes
 
 ## Key Concepts
 
-- **system_monitoring.py** (23 connections) — `server/api/system_monitoring.py`
-- **get_monitoring_dashboard()** (19 connections) — `server/monitoring/monitoring_dashboard.py`
-- **TestMonitoringEndpoints** (16 connections) — `server/tests/unit/test_main.py`
-- **test_main.py** (12 connections) — `server/tests/unit/test_main.py`
-- **get_system_metrics()** (11 connections) — `server/api/system_monitoring.py`
-- **AlertResolveResponse** (10 connections) — `server/api/monitoring_models.py`
-- **SystemAlertsResponse** (10 connections) — `server/api/monitoring_models.py`
-- **SystemHealthResponse** (10 connections) — `server/api/monitoring_models.py`
-- **SystemMetricsResponse** (10 connections) — `server/api/monitoring_models.py`
-- **SystemMonitoringSummaryResponse** (10 connections) — `server/api/monitoring_models.py`
-- **get_system_monitoring_summary()** (10 connections) — `server/api/system_monitoring.py`
-- **resolve_system_alert()** (10 connections) — `server/api/system_monitoring.py`
-- **Request** (10 connections) — `server/api/system_monitoring.py`
-- **get_system_health()** (9 connections) — `server/api/system_monitoring.py`
-- **get_system_monitoring_alerts()** (9 connections) — `server/api/system_monitoring.py`
-- **AlertResolveResponse** (6 connections) — `server/api/system_monitoring.py`
-- **SystemAlertsResponse** (6 connections) — `server/api/system_monitoring.py`
-- **SystemHealthResponse** (6 connections) — `server/api/system_monitoring.py`
-- **SystemMetricsResponse** (6 connections) — `server/api/system_monitoring.py`
-- **SystemMonitoringSummaryResponse** (6 connections) — `server/api/system_monitoring.py`
-- **.test_get_alerts_failure()** (3 connections) — `server/tests/unit/test_main.py`
-- **.test_get_alerts_success()** (3 connections) — `server/tests/unit/test_main.py`
-- **.test_get_metrics_failure()** (3 connections) — `server/tests/unit/test_main.py`
-- **.test_get_metrics_success()** (3 connections) — `server/tests/unit/test_main.py`
-- **.test_get_monitoring_summary_failure()** (3 connections) — `server/tests/unit/test_main.py`
-- *... and 34 more nodes in this community*
+- **format_player_location()** (13 connections) — `server/commands/who_commands.py`
+- **format_player_entry()** (13 connections) — `server/commands/who_commands.py`
+- **test_who_commands_helpers.py** (12 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_format_player_entry_error_handling()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_location_valid()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_location_invalid()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_location_none()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_entry_basic()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_entry_admin()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_entry_missing_attributes()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_location_short_format()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_location_non_string()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_filter_players_by_name_found()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_filter_players_by_name_not_found()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_filter_players_by_name_empty_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_format_player_location_valid()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_format_player_location_invalid()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_format_player_entry()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_format_player_entry_admin()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **Format player location as Zone: Sub-zone: Room from room ID.      Args:** (1 connections) — `server/commands/who_commands.py`
+- **Format a single player entry for the who command output.      Args:         play** (1 connections) — `server/commands/who_commands.py`
+- **Test formatting valid player location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test formatting invalid player location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test formatting None location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test formatting basic player entry.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [[Container Exception Handlers]] (8 shared connections)
-- [[Monitoring Response Models]] (7 shared connections)
-- [[App Lifespan Management]] (7 shared connections)
-- [[Admin NPC Schemas]] (5 shared connections)
-- [[NPC Admin API]] (5 shared connections)
-- [[Memory Leak Metrics]] (3 shared connections)
-- [[Inventory Service Helpers]] (3 shared connections)
-- [[Monitoring API Endpoints]] (2 shared connections)
-- [[Cache and NPC Cache]] (2 shared connections)
-- [[Admin Summon Command]] (2 shared connections)
-- [[Weapon Resolution Helpers]] (2 shared connections)
-- [[FastAPI App Factory]] (1 shared connections)
+- [Combat UUID Display Bug](Combat_UUID_Display_Bug.md) (19 shared connections)
+- [Commands System Help](Commands_System_Help.md) (2 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/monitoring_models.py`
-- `server/api/system_monitoring.py`
-- `server/monitoring/monitoring_dashboard.py`
-- `server/tests/unit/test_main.py`
+- `server/commands/who_commands.py`
+- `server/tests/unit/commands/test_who_commands.py`
+- `server/tests/unit/commands/test_who_commands_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 213 (78%)
-- INFERRED: 61 (22%)
+- EXTRACTED: 105 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

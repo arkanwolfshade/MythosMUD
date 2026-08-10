@@ -1,14 +1,14 @@
 # Codacy Instructions Review
 
-> 5 nodes · cohesion 0.40
+> 5 nodes
 
 ## Key Concepts
 
 - **AI PR Reviewer Instructions** (4 connections) — `.codacy/instructions/review.md`
+- **Server Authority Review Rule** (1 connections) — `.codacy/instructions/review.md`
 - **COPPA and Security Review Mandates** (1 connections) — `.codacy/instructions/review.md`
 - **Review Coverage Thresholds** (1 connections) — `.codacy/instructions/review.md`
 - **player_id UUID Type Rule** (1 connections) — `.codacy/instructions/review.md`
-- **Server Authority Review Rule** (1 connections) — `.codacy/instructions/review.md`
 
 ## Relationships
 
@@ -26,4 +26,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

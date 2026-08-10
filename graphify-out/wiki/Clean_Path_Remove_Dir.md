@@ -1,12 +1,12 @@
 # Clean Path Remove Dir
 
-> 3 nodes · cohesion 0.67
+> 3 nodes
 
 ## Key Concepts
 
 - **remove_dir()** (2 connections) — `scripts/clean.py`
 - **clean.py** (1 connections) — `scripts/clean.py`
-- **Path** (1 connections) — `scripts/clean.py`
+- **Path** (1 connections)
 
 ## Relationships
 
@@ -24,4 +24,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

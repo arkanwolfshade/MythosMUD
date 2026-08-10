@@ -1,74 +1,44 @@
 # Playwright E2E Specs
 
-> 87 nodes · cohesion 0.10
+> 11 nodes
 
 ## Key Concepts
 
-- **multiplayer.ts** (79 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
-- **executeCommand()** (56 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **ensurePlayerInGame()** (40 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
-- **createMultiPlayerContexts()** (36 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
-- **cleanupMultiPlayerContexts()** (34 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
-- **waitForAllPlayersInGame()** (32 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
-- **waitForMessage()** (31 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **local-channel-basic.spec.ts** (23 connections) — `client/tests/e2e/runtime/communication/local-channel-basic.spec.ts`
-- **chat-messages.spec.ts** (20 connections) — `client/tests/e2e/runtime/communication/chat-messages.spec.ts`
-- **local-channel-integration.spec.ts** (19 connections) — `client/tests/e2e/runtime/communication/local-channel-integration.spec.ts`
-- **local-channel-isolation.spec.ts** (19 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- **whisper-movement.spec.ts** (18 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **getPlayerMessages()** (18 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
-- **movement-between-rooms.spec.ts** (18 connections) — `client/tests/e2e/runtime/movement/movement-between-rooms.spec.ts`
-- **party-commands.spec.ts** (18 connections) — `client/tests/e2e/runtime/party/party-commands.spec.ts`
-- **whisper-basic.spec.ts** (17 connections) — `client/tests/e2e/runtime/communication/whisper-basic.spec.ts`
-- **getMessages()** (17 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **ensureMultiplayerCoLocated()** (16 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
-- **waitForCrossPlayerMessage()** (16 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
-- **whisper-integration.spec.ts** (15 connections) — `client/tests/e2e/runtime/communication/whisper-integration.spec.ts`
-- **basic-connection.spec.ts** (14 connections) — `client/tests/e2e/runtime/connection/basic-connection.spec.ts`
-- **local-channel-errors.spec.ts** (14 connections) — `client/tests/e2e/runtime/error-handling/local-channel-errors.spec.ts`
-- **PlayerContext** (14 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
-- **local-channel-movement.spec.ts** (14 connections) — `client/tests/e2e/runtime/movement/local-channel-movement.spec.ts`
-- **e2e-runtime-ready.ts** (13 connections) — `client/tests/e2e/runtime/fixtures/e2e-runtime-ready.ts`
-- *... and 62 more nodes in this community*
+- **npc_combat_grace.py** (13 connections) — `server/services/npc_combat_grace.py`
+- **_connection_manager_from_config_app()** (8 connections) — `server/services/npc_combat_grace.py`
+- **is_player_attack_blocked_by_login_grace_period()** (7 connections) — `server/services/npc_combat_grace.py`
+- **is_npc_attack_on_player_blocked_by_login_grace_period()** (7 connections) — `server/services/npc_combat_grace.py`
+- **get_app_instance()** (5 connections) — `server/config/__init__.py`
+- **UUID** (3 connections)
+- **Return the runtime app instance attached during lifespan startup.      This prov** (1 connections) — `server/config/__init__.py`
+- **Login grace-period checks for NPC combat integration (extracted to keep service** (1 connections) — `server/services/npc_combat_grace.py`
+- **Resolve connection_manager from the public config app accessor.      Uses geta** (1 connections) — `server/services/npc_combat_grace.py`
+- **True if the player should not attack (in login grace period). Fail-open on confi** (1 connections) — `server/services/npc_combat_grace.py`
+- **True if NPC attack on this player should be blocked (player in login grace perio** (1 connections) — `server/services/npc_combat_grace.py`
 
 ## Relationships
 
-- [[Character Selection E2E]] (57 shared connections)
-- [[E 2 E Runtime Combat]] (54 shared connections)
-- [[Character Creation E2E]] (4 shared connections)
-- [[E2E Global Setup Teardown]] (3 shared connections)
-- [[E 2 E Runtime Multiplayer]] (2 shared connections)
-- [[Multiplayer Browser Helpers]] (1 shared connections)
+- [Player Respawn Events](Player_Respawn_Events.md) (4 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (4 shared connections)
+- [Archive Frd Random](Archive_Frd_Random.md) (2 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Room Occupant Events](Room_Occupant_Events.md) (1 shared connections)
+- [Game State Provider](Game_State_Provider.md) (1 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
+- [Logging Correct Patterns](Logging_Correct_Patterns.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/accessibility/logout-accessibility.spec.ts`
-- `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
-- `client/tests/e2e/runtime/admin/admin-teleportation.spec.ts`
-- `client/tests/e2e/runtime/admin/summon-command.spec.ts`
-- `client/tests/e2e/runtime/admin/whisper-logging.spec.ts`
-- `client/tests/e2e/runtime/commands/disconnect-grace-period.spec.ts`
-- `client/tests/e2e/runtime/commands/rest-command.spec.ts`
-- `client/tests/e2e/runtime/commands/who-command.spec.ts`
-- `client/tests/e2e/runtime/communication/chat-messages.spec.ts`
-- `client/tests/e2e/runtime/communication/local-channel-basic.spec.ts`
-- `client/tests/e2e/runtime/communication/local-channel-integration.spec.ts`
-- `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- `client/tests/e2e/runtime/communication/whisper-basic.spec.ts`
-- `client/tests/e2e/runtime/communication/whisper-integration.spec.ts`
-- `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- `client/tests/e2e/runtime/connection/basic-connection.spec.ts`
-- `client/tests/e2e/runtime/connection/clean-game-state.spec.ts`
-- `client/tests/e2e/runtime/containers/container-corpse-looting.spec.ts`
-- `client/tests/e2e/runtime/containers/container-environmental-interactions.spec.ts`
-- `client/tests/e2e/runtime/containers/container-multi-user-looting.spec.ts`
+- `server/config/__init__.py`
+- `server/services/npc_combat_grace.py`
 
 ## Audit Trail
 
-- EXTRACTED: 901 (100%)
-- INFERRED: 2 (0%)
+- EXTRACTED: 46 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

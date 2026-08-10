@@ -1,68 +1,55 @@
 # Player Event Handler Tests
 
-> 122 nodes · cohesion 0.02
+> 35 nodes
 
 ## Key Concepts
 
-- **PlayerDPUpdated** (36 connections) — `server/events/event_types.py`
-- **test_player_event_handlers.py** (30 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
-- **test_player_event_handlers_state.py** (29 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **combat_hp_sync.py** (14 connections) — `server/services/combat_hp_sync.py`
-- **CombatDPSync** (11 connections) — `server/services/combat_hp_sync.py`
-- **UUID** (9 connections) — `server/services/combat_hp_sync.py`
-- **._persist_player_dp_sync()** (7 connections) — `server/services/combat_hp_sync.py`
-- **Test handle_player_entered() skips when connection manager not available.** (5 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test handle_player_entered() handles errors.** (5 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **._publish_player_dp_correction_event()** (5 connections) — `server/services/combat_hp_sync.py`
-- **._publish_player_dp_update_event()** (5 connections) — `server/services/combat_hp_sync.py`
-- **._update_and_save_player_dp()** (5 connections) — `server/services/combat_hp_sync.py`
-- **._get_persistence()** (4 connections) — `server/services/combat_hp_sync.py`
-- **._log_death_threshold_events()** (4 connections) — `server/services/combat_hp_sync.py`
-- **._verify_player_save()** (4 connections) — `server/services/combat_hp_sync.py`
-- **test_handle_player_left_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_handle_player_entered_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_handle_player_entered_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **mock_utils()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_player_no_get_stats()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_xp_awarded_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- *... and 97 more nodes in this community*
+- **test_follow_commands.py** (23 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **handle_follow_command()** (18 connections) — `server/commands/follow_commands.py`
+- **_make_container()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **_make_request()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_self_rejected()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_same_room_player_sends_request()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_same_room_npc_immediate()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_no_such_player_or_npc()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **_resolve_follow_target()** (5 connections) — `server/commands/follow_commands.py`
+- **test_handle_follow_no_persistence()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_no_target()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_player_not_in_game()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_unfollow_success()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_unfollow_was_not_following()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_following_display()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_unfollow_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_following_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **Handle /follow <target>. Target must be a player or NPC in the same room.** (1 connections) — `server/commands/follow_commands.py`
+- **Unit tests for follow command handlers.  Tests: follow (self rejected, same-room** (1 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **Build a mock container with optional follow_service, persistence, and player_ser** (1 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **Build request with app.state.container.** (1 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **Follow when container or follow_service missing returns not available.** (1 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **Follow when async_persistence missing returns not available.** (1 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **Follow with no target asks 'Follow who?'.** (1 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [[Distributed Event Bus]] (13 shared connections)
-- [[Player Combat XP]] (9 shared connections)
-- [[Player Respawn Events]] (8 shared connections)
-- [[NPC Services Bundle]] (6 shared connections)
-- [[Services Combat Persistence]] (6 shared connections)
-- [[Player Left Room Tests]] (5 shared connections)
-- [[NPC Admin API]] (5 shared connections)
-- [[Magic Game Healing]] (4 shared connections)
-- [[Realtime Player Event]] (2 shared connections)
-- [[Realtime Event Delegation]] (2 shared connections)
-- [[Game Tick Processing]] (1 shared connections)
-- [[App Game Tick]] (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (17 shared connections)
+- [NPC Services Bundle](NPC_Services_Bundle.md) (6 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (4 shared connections)
+- [Cursor Skills Harden](Cursor_Skills_Harden.md) (1 shared connections)
+- [Logging Correct Patterns](Logging_Correct_Patterns.md) (1 shared connections)
 
 ## Source Files
 
-- `server/events/event_types.py`
-- `server/services/combat_hp_sync.py`
-- `server/tests/unit/realtime/test_event_handler.py`
-- `server/tests/unit/realtime/test_player_event_handlers.py`
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- `server/commands/follow_commands.py`
+- `server/tests/unit/commands/test_follow_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 357 (98%)
-- INFERRED: 7 (2%)
+- EXTRACTED: 151 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

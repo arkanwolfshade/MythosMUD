@@ -1,49 +1,52 @@
 # Nats Anti Patterns
 
-> 25 nodes · cohesion 0.08
+> 24 nodes
 
 ## Key Concepts
 
-- **NATS Anti-Patterns and Best Practices Review** (10 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **High Priority Issues 🟡** (4 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Medium Priority Issues 🟢** (4 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Recommendations Summary** (4 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Code Quality Issues** (3 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Conclusion** (3 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Critical Anti-Patterns 🔴** (3 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md** (1 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **10. **Missing Connection Health Monitoring in Broker** (Observability)** (1 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **1. **Synchronous Operations in Non-Handler Context** (Low Priority)** (1 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **2. **Event Handler Callbacks May Block** (Anti-pattern)** (1 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **3. **Inconsistent Error Handling Patterns** (Code Quality)** (1 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **4. **Missing Input Validation in Some Methods** (Security/Reliability)** (1 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **5. **Subject Naming: Potential for Too Broad Wildcards** (Anti-pattern)** (1 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **6. **Connection Pool Error Handling** (Resilience)** (1 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **7. **Message Acknowledgment: Manual Ack Not Default** (Reliability)** (1 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **8. **Batch Flush Error Recovery** (Resilience)** (1 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **9. **Inconsistent Use of Subject Manager** (Maintainability)** (1 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **All Issues Completed ✅** (1 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Completed Improvements ✅** (1 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Executive Summary** (1 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Immediate Actions (High Priority) - COMPLETED ✅** (1 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Long-term (Low Priority) - COMPLETED ✅** (1 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Short-term (Medium Priority) - COMPLETED ✅** (1 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **Testing Recommendations** (1 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **_find_item_in_inventory()** (18 connections) — `server/commands/look_item.py`
+- **test_find_item_in_inventory_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_by_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_with_name_field()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Find an item in player inventory by name or prototype_id.      Args:         inv** (1 connections) — `server/commands/look_item.py`
+- **Test finding item in inventory by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in inventory when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in inventory by item_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in inventory using 'name' field.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _find_item_in_inventory() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with empty list.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Relationships
 
-- [[Nats Anti Patterns]] (1 shared connections)
+- [Services Lucidity Repository](Services_Lucidity_Repository.md) (8 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (5 shared connections)
+- [Archive Circuit Breaker](Archive_Circuit_Breaker.md) (4 shared connections)
 
 ## Source Files
 
-- `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- `server/commands/look_item.py`
+- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
+- EXTRACTED: 63 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

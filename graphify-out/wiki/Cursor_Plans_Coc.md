@@ -1,16 +1,11 @@
 # Cursor Plans Coc
 
-> 7 nodes · cohesion 0.29
+> 2 nodes
 
 ## Key Concepts
 
-- **Proposed Spells from Call of Cthulhu for MythosMUD** (6 connections) — `.cursor/plans/coc_spells_proposal_d3705253.plan.md`
-- **coc_spells_proposal_d3705253.plan.md** (1 connections) — `.cursor/plans/coc_spells_proposal_d3705253.plan.md`
-- **Gaps and extensions** (1 connections) — `.cursor/plans/coc_spells_proposal_d3705253.plan.md`
-- **How to add spells to the game** (1 connections) — `.cursor/plans/coc_spells_proposal_d3705253.plan.md`
-- **Proposed spell list (first batch)** (1 connections) — `.cursor/plans/coc_spells_proposal_d3705253.plan.md`
-- **Source and constraints** (1 connections) — `.cursor/plans/coc_spells_proposal_d3705253.plan.md`
-- **Summary** (1 connections) — `.cursor/plans/coc_spells_proposal_d3705253.plan.md`
+- **CoC Spells Proposal** (1 connections) — `.cursor/plans/coc_spells_proposal_d3705253.plan.md`
+- **MythosMUD Spell Model** (1 connections) — `.cursor/plans/coc_spells_proposal_d3705253.plan.md`
 
 ## Relationships
 
@@ -22,10 +17,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

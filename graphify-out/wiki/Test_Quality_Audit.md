@@ -1,52 +1,47 @@
 # Test Quality Audit
 
-> 34 nodes · cohesion 0.06
+> 23 nodes
 
 ## Key Concepts
 
-- **Test Suite Quality Audit Report** (9 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **Conclusion** (5 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **Phase 1: Quantitative Analysis Results** (5 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **Summary: Test Quality Metrics** (5 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **~25-30% (1,250-1,500 tests) provide CRITICAL protection** (4 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **3.3 Value Distribution Calculation** (4 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **Executive Summary** (4 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **Phase 3: Test Value Scoring** (4 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **Specific Actionable Recommendations** (4 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **Files** (2 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **Breakdown** (1 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Translation** (1 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **TEST_QUALITY_AUDIT_REPORT.md** (1 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **1.1 Test Distribution by Category** (1 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **1.2 Largest Test Files (Splitting/Pruning Candidates)** (1 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **1.3 Infrastructure Test Analysis** (1 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **3.1 Scoring Criteria Matrix** (1 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **3.2 Category Scores** (1 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **Answer to Your Question** (1 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **By removing 15% of tests, we** (1 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **🔴 CRITICAL VALUE TESTS (Score ≥75): **1,272 tests (25.6%)**** (1 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **Current State** (1 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **🟡 IMPORTANT (Medium-Value):**~2,500-3,000 tests (50-60%) —**~15-18 minutes** (1 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **🟡 IMPORTANT VALUE TESTS (Score 50-74): **2,943 tests (59.3%)**** (1 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **Key Findings** (1 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- *... and 9 more nodes in this community*
+- **Execution Steps** (11 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Scenario 4: Muting System and Emotes **[REQUIRES MULTI-PLAYER]**** (9 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Status** (2 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **scenario-04-muting-system-emotes.md** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 1: Both Players Connected** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 2: AW Mutes Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 3: Ithaqua Uses Dance Emote** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 4: Verify AW Does NOT See Ithaqua's Emote** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 5: Test Other Communication Still Works** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 6: AW Unmutes Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 7: Ithaqua Uses Dance Emote Again** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 8: Verify AW Now Sees Ithaqua's Emote** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 10: Complete Scenario and Proceed** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 9: Test Multiple Emotes** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Expected Results** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Success Criteria Checklist** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Cleanup** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **✅ FIXES IMPLEMENTED - Ready for Testing** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
 
 ## Relationships
 
-- [[Quality Audit Report]] (3 shared connections)
-- [[Test Optimization Insights]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- `docs/TEST_QUALITY_AUDIT_REPORT.md`
+- `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
 
 ## Audit Trail
 
-- EXTRACTED: 70 (100%)
+- EXTRACTED: 44 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

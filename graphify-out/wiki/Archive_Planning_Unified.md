@@ -1,40 +1,31 @@
 # Archive Planning Unified
 
-> 14 nodes · cohesion 0.14
+> 6 nodes
 
 ## Key Concepts
 
-- **Implementation Plan** (6 connections) — `docs/archive/PLANNING_unified_command_handler.md`
-- **Phase 1: Analysis and Preparation (1-2 days)** (4 connections) — `docs/archive/PLANNING_unified_command_handler.md`
-- **Phase 2: WebSocket Handler Refactoring (2-3 days)** (4 connections) — `docs/archive/PLANNING_unified_command_handler.md`
-- **Phase 3: Authentication Context (1-2 days)** (3 connections) — `docs/archive/PLANNING_unified_command_handler.md`
-- **Phase 5: Cleanup and Documentation (1 day)** (3 connections) — `docs/archive/PLANNING_unified_command_handler.md`
-- **1.1 Audit Current Command Handler** (1 connections) — `docs/archive/PLANNING_unified_command_handler.md`
-- **1.2 Analyze Request Context Requirements** (1 connections) — `docs/archive/PLANNING_unified_command_handler.md`
-- **1.3 Create Test Suite** (1 connections) — `docs/archive/PLANNING_unified_command_handler.md`
-- **2.1 Create Request Context Factory** (1 connections) — `docs/archive/PLANNING_unified_command_handler.md`
-- **2.2 Refactor Command Processing** (1 connections) — `docs/archive/PLANNING_unified_command_handler.md`
-- **2.3 Update Error Handling** (1 connections) — `docs/archive/PLANNING_unified_command_handler.md`
-- **3.1 User Context Management** (1 connections) — `docs/archive/PLANNING_unified_command_handler.md`
-- **3.2 Permission and Authorization** (1 connections) — `docs/archive/PLANNING_unified_command_handler.md`
-- **5.1 Code Cleanup** (1 connections) — `docs/archive/PLANNING_unified_command_handler.md`
+- **TestGetCombatService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_combat_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_combat_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_combat_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_combat_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_combat_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [[Unified Command Handler Plan]] (1 shared connections)
-- [[Archive Planning Cursor]] (1 shared connections)
-- [[Plan Archive Architecture]] (1 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PLANNING_unified_command_handler.md`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

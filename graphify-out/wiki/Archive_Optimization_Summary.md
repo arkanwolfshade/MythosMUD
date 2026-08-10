@@ -1,45 +1,39 @@
 # Archive Optimization Summary
 
-> 21 nodes · cohesion 0.10
+> 14 nodes
 
 ## Key Concepts
 
-- **Test Suite Optimization Summary** (7 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
-- **Current Metrics** (4 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
-- **Phase 1: Quick Wins ✅ COMPLETE** (4 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
-- **Recommendations** (4 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
-- **Work Completed** (3 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
-- **Deferred Work (Obsolete Tests)** (2 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
-- **Remaining Optimization Potential** (2 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
-- **TEST_OPTIMIZATION_SUMMARY.md** (1 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
-- **1.1 Placeholder Tests (14 tests)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
-- **1.2 Trivial Type Assertions (9 tests)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
-- **1.3 Duplicate Test Consolidation (21 tests)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
-- **Configuration Updates ✅ COMPLETE** (1 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
-- **Coverage** (1 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
-- **High-Impact Targets** (1 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
-- **Lifespan Tests (10 tests - OBSOLETE)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
-- **My Recommendation** (1 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
-- **Option A: Stop Here (Conservative)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
-- **Option B: Quick Cleanup (Recommended)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
-- **Option C: Continue Full Optimization** (1 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
-- **Test Count** (1 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
-- **Test Execution Time** (1 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
+- **test_persistence_container_persistence.py** (8 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_none()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_string()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_dict()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_empty_string()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_list()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_invalid_json()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Unit tests for persistence.container_persistence module.  This module tests the** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing None JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing string JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing dict JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing empty string JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing list JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing invalid JSON string.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
+- [Maps API Endpoints](Maps_API_Endpoints.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
+- `server/tests/unit/persistence/test_persistence_container_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 27 (82%)
+- INFERRED: 6 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

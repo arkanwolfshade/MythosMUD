@@ -1,58 +1,54 @@
 # Command Factory Creators
 
-> 93 nodes · cohesion 0.05
+> 92 nodes
 
 ## Key Concepts
 
-- **CommandFactory** (80 connections) — `server/utils/command_factories.py`
-- **BaseCommand** (71 connections) — `server/utils/command_factories.py`
-- **Create SayCommand from arguments.** (35 connections) — `server/utils/command_factories.py`
-- **.create_npc_command()** (4 connections) — `server/utils/command_factories.py`
-- **.create_spawn_command()** (4 connections) — `server/utils/command_factories.py`
-- **.create_add_admin_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_admin_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_alias_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_aliases_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_attack_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_cast_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_channel_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_drop_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_emote_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_equip_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_flee_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_follow_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_following_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_get_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_go_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_goto_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_ground_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_help_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_inventory_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_journal_command()** (3 connections) — `server/utils/command_factories.py`
-- *... and 68 more nodes in this community*
+- **test_player_service.py** (54 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_player_service_init()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_name_exists()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_with_stats_success()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_delete_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_update_player_location_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_soft_delete_character_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_soft_delete_character_wrong_user()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_delete_player_persistence_fails()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_soft_delete_character_persistence_fails()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_apply_lucidity_loss_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_apply_fear_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_apply_corruption_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_gain_occult_knowledge_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_heal_player_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_damage_player_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_success()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_player_by_id_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_player_by_id_not_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_player_by_name_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_player_by_name_not_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_list_players()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_resolve_player_name_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_resolve_player_name_not_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- *... and 67 more nodes in this community*
 
 ## Relationships
 
-- [[Communication Command Classes]] (6 shared connections)
-- [[Command Parser]] (3 shared connections)
-- [[Exploration Command Factory]] (2 shared connections)
-- [[Command Factories Inventory]] (2 shared connections)
-- [[Command Factories Moderation]] (2 shared connections)
-- [[Player State Command Factory]] (2 shared connections)
-- [[Admin Command Models]] (2 shared connections)
-- [[Command Factory Tests]] (2 shared connections)
-- [[Alias Expansion Logic]] (1 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (14 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (3 shared connections)
+- [Game Mechanics Service](Game_Mechanics_Service.md) (2 shared connections)
+- [NPC Occupants Verification](NPC_Occupants_Verification.md) (1 shared connections)
 
 ## Source Files
 
-- `server/utils/command_factories.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 393 (96%)
-- INFERRED: 17 (4%)
+- EXTRACTED: 192 (94%)
+- INFERRED: 13 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

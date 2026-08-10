@@ -1,34 +1,30 @@
 # E 2 E Scenarios Scenario
 
-> 10 nodes · cohesion 0.20
+> 4 nodes
 
 ## Key Concepts
 
-- **Scenario 38: Revised Character Creation (Stats → Profession → Skills → Name)** (8 connections) — `e2e-tests/scenarios/scenario-38-revised-character-creation.md`
-- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-38-revised-character-creation.md`
-- **scenario-38-revised-character-creation.md** (1 connections) — `e2e-tests/scenarios/scenario-38-revised-character-creation.md`
-- **Automated Implementation** (1 connections) — `e2e-tests/scenarios/scenario-38-revised-character-creation.md`
-- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-38-revised-character-creation.md`
-- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-38-revised-character-creation.md`
-- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-38-revised-character-creation.md`
-- **Status** (1 connections) — `e2e-tests/scenarios/scenario-38-revised-character-creation.md`
-- **Success Criteria** (1 connections) — `e2e-tests/scenarios/scenario-38-revised-character-creation.md`
-- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-38-revised-character-creation.md`
+- **Scenario 32 Disconnect Grace Period** (2 connections) — `e2e-tests/scenarios/scenario-32-disconnect-grace-period.md`
+- **Linkdead Zombie State** (2 connections) — `e2e-tests/scenarios/scenario-32-disconnect-grace-period.md`
+- **Scenario 33 Rest Command** (1 connections) — `e2e-tests/scenarios/scenario-33-rest-command.md`
+- **Scenario 35 Player Combat** (1 connections) — `e2e-tests/scenarios/scenario-35-player-combat.md`
 
 ## Relationships
 
-- [[E 2 E Scenario Template]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-38-revised-character-creation.md`
+- `e2e-tests/scenarios/scenario-32-disconnect-grace-period.md`
+- `e2e-tests/scenarios/scenario-33-rest-command.md`
+- `e2e-tests/scenarios/scenario-35-player-combat.md`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 4 (67%)
+- INFERRED: 2 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

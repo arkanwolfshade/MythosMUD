@@ -1,43 +1,29 @@
 # Static Schemas Room
 
-> 19 nodes · cohesion 0.11
+> 5 nodes
 
 ## Key Concepts
 
-- **properties** (11 connections) — `db/static/schemas/room.schema.json`
-- **down** (2 connections) — `db/static/schemas/room.schema.json`
-- **east** (2 connections) — `db/static/schemas/room.schema.json`
-- **north** (2 connections) — `db/static/schemas/room.schema.json`
-- **south** (2 connections) — `db/static/schemas/room.schema.json`
-- **west** (2 connections) — `db/static/schemas/room.schema.json`
-- **northeast** (2 connections) — `db/static/schemas/room.schema.json`
-- **northwest** (2 connections) — `db/static/schemas/room.schema.json`
-- **southeast** (2 connections) — `db/static/schemas/room.schema.json`
-- **southwest** (2 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **2026_02_26_add_arena_zone_type.py** (2 connections) — `server/alembic/versions/2026_02_26_add_arena_zone_type.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2026_02_26_add_arena_zone_type.py`
+- **downgrade()** (2 connections) — `server/alembic/versions/2026_02_26_add_arena_zone_type.py`
+- **Allow zone_type 'arena' in zones CHECK.** (1 connections) — `server/alembic/versions/2026_02_26_add_arena_zone_type.py`
+- **Remove 'arena' from zones.zone_type CHECK (fails if arena zone exists).** (1 connections) — `server/alembic/versions/2026_02_26_add_arena_zone_type.py`
 
 ## Relationships
 
-- [[Static Schemas Room]] (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/room.schema.json`
+- `server/alembic/versions/2026_02_26_add_arena_zone_type.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,50 +1,44 @@
 # Logging System Planning
 
-> 30 nodes · cohesion 0.07
+> 14 nodes
 
 ## Key Concepts
 
-- **PLANNING: Structlog Implementation for MythosMUD** (11 connections) — `docs/archive/PLANNING_logging.md`
-- **Implementation Plan** (6 connections) — `docs/archive/PLANNING_logging.md`
-- **Risk Assessment** (4 connections) — `docs/archive/PLANNING_logging.md`
-- **Current State Analysis** (3 connections) — `docs/archive/PLANNING_logging.md`
-- **Environment Separation Strategy** (3 connections) — `docs/archive/PLANNING_logging.md`
-- **Migration Strategy** (3 connections) — `docs/archive/PLANNING_logging.md`
-- **Proposed Logfile Structure** (3 connections) — `docs/archive/PLANNING_logging.md`
-- **Technical Implementation Details** (3 connections) — `docs/archive/PLANNING_logging.md`
-- **PLANNING_logging.md** (1 connections) — `docs/archive/PLANNING_logging.md`
-- **Backward Compatibility** (1 connections) — `docs/archive/PLANNING_logging.md`
-- **Configuration-Based Environment Detection** (1 connections) — `docs/archive/PLANNING_logging.md`
-- **Configuration Schema** (1 connections) — `docs/archive/PLANNING_logging.md`
-- **Current Logging Patterns Identified** (1 connections) — `docs/archive/PLANNING_logging.md`
-- **Environment-Based Logfile Organization** (1 connections) — `docs/archive/PLANNING_logging.md`
-- **Existing Logging Implementation to Remove** (1 connections) — `docs/archive/PLANNING_logging.md`
-- **High Risk** (1 connections) — `docs/archive/PLANNING_logging.md`
-- **Logfile Content Categories** (1 connections) — `docs/archive/PLANNING_logging.md`
-- **Low Risk** (1 connections) — `docs/archive/PLANNING_logging.md`
-- **Medium Risk** (1 connections) — `docs/archive/PLANNING_logging.md`
-- **Multi-Logfile Handler** (1 connections) — `docs/archive/PLANNING_logging.md`
-- **Next Steps** (1 connections) — `docs/archive/PLANNING_logging.md`
-- **Overview** (1 connections) — `docs/archive/PLANNING_logging.md`
-- **Phase 1: Remove Current Logging** (1 connections) — `docs/archive/PLANNING_logging.md`
-- **Phase 2: Install and Configure Structlog** (1 connections) — `docs/archive/PLANNING_logging.md`
-- **Phase 3: Implement Multi-Logfile System** (1 connections) — `docs/archive/PLANNING_logging.md`
-- *... and 5 more nodes in this community*
+- **_should_include_npc()** (14 connections) — `server/commands/look_npc.py`
+- **test_should_include_npc_alive_with_name()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_should_include_npc_dead()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_should_include_npc_no_name()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_should_include_npc()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_should_include_npc_no_name()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_should_include_npc_not_alive()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Check if an NPC should be included in the results (has name and is alive).** (1 connections) — `server/commands/look_npc.py`
+- **Test should_include_npc for alive NPC with name.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test should_include_npc for dead NPC.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test should_include_npc for NPC without name.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test _should_include_npc() returns True for valid NPC.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _should_include_npc() returns False when no name.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _should_include_npc() returns False when not alive.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Look NPC Command](Look_NPC_Command.md) (4 shared connections)
+- [Player State Command Factory](Player_State_Command_Factory.md) (4 shared connections)
+- [Container Repository CRUD](Container_Repository_CRUD.md) (2 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (2 shared connections)
+- [Combat Death Handling](Combat_Death_Handling.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PLANNING_logging.md`
+- `server/commands/look_npc.py`
+- `server/tests/unit/commands/test_look_npc.py`
+- `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 58 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

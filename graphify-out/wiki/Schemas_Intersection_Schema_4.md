@@ -1,18 +1,18 @@
 # Schemas Intersection Schema
 
-> 5 nodes · cohesion 0.40
+> 5 nodes
 
 ## Key Concepts
 
 - **description** (5 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **maxLength** (1 connections) — `schemas/intersection_schema.json`
-- **minLength** (1 connections) — `schemas/intersection_schema.json`
 - **type** (1 connections) — `schemas/intersection_schema.json`
+- **minLength** (1 connections) — `schemas/intersection_schema.json`
+- **maxLength** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
 
 ## Relationships
 
-- [[Schemas Intersection Schema]] (1 shared connections)
+- [Schemas Intersection Schema](Schemas_Intersection_Schema.md) (1 shared connections)
 
 ## Source Files
 
@@ -26,4 +26,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

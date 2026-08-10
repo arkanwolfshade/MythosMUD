@@ -1,11 +1,11 @@
 # Ensure Codacy Coverage
 
-> 2 nodes · cohesion 1.00
+> 2 nodes
 
 ## Key Concepts
 
-- **ensure_codacy_coverage_reporter_ci.sh script** (1 connections) — `scripts/ensure_codacy_coverage_reporter_ci.sh`
 - **ensure_codacy_coverage_reporter_ci.sh** (1 connections) — `scripts/ensure_codacy_coverage_reporter_ci.sh`
+- **ensure_codacy_coverage_reporter_ci.sh script** (1 connections) — `scripts/ensure_codacy_coverage_reporter_ci.sh`
 
 ## Relationships
 
@@ -23,4 +23,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

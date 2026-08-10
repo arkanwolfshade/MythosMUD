@@ -1,63 +1,62 @@
 # Quest Service Core
 
-> 60 nodes · cohesion 0.08
+> 73 nodes
 
 ## Key Concepts
 
-- **QuestService** (38 connections) — `server/game/quest/quest_service.py`
-- **UUID** (22 connections) — `server/game/quest/quest_service.py`
-- **Any** (18 connections) — `server/game/quest/quest_service.py`
-- **QuestCompleted** (13 connections) — `server/events/event_types.py`
-- **quest_service.py** (11 connections) — `server/game/quest/quest_service.py`
-- **_parse_definition()** (10 connections) — `server/game/quest/quest_service.py`
-- **._apply_activity_progress()** (10 connections) — `server/game/quest/quest_service.py`
-- **QuestDefinitionSchema** (10 connections) — `server/game/quest/quest_service.py`
-- **._complete_instance()** (9 connections) — `server/game/quest/quest_service.py`
+- **QuestService** (53 connections) — `server/game/quest/quest_service.py`
+- **Any** (27 connections)
+- **UUID** (26 connections)
+- **QuestDefinitionSchema** (18 connections) — `server/schemas/quest/quest.py`
+- **_parse_definition()** (12 connections) — `server/game/quest/quest_service.py`
+- **._apply_activity_progress()** (11 connections) — `server/game/quest/quest_service.py`
+- **._sync_collect_for_instance()** (11 connections) — `server/game/quest/quest_service.py`
+- **.turn_in()** (11 connections) — `server/game/quest/quest_service.py`
+- **._complete_instance()** (10 connections) — `server/game/quest/quest_service.py`
+- **._turn_in_validation_error()** (10 connections) — `server/game/quest/quest_service.py`
+- **._start_quest_validation_error()** (9 connections) — `server/game/quest/quest_service.py`
+- **.start_quest()** (9 connections) — `server/game/quest/quest_service.py`
+- **.sync_collect_progress()** (9 connections) — `server/game/quest/quest_service.py`
+- **._consume_collect_n_items()** (9 connections) — `server/game/quest/quest_service.py`
 - **._apply_rewards()** (8 connections) — `server/game/quest/quest_service.py`
-- **._start_quest_validation_error()** (8 connections) — `server/game/quest/quest_service.py`
-- **.turn_in()** (8 connections) — `server/game/quest/quest_service.py`
-- **._turn_in_validation_error()** (8 connections) — `server/game/quest/quest_service.py`
+- **_goals_met()** (7 connections) — `server/game/quest/quest_service.py`
 - **._check_prerequisites()** (7 connections) — `server/game/quest/quest_service.py`
-- **.start_quest()** (7 connections) — `server/game/quest/quest_service.py`
-- **_goals_met()** (6 connections) — `server/game/quest/quest_service.py`
-- **._apply_item_reward()** (6 connections) — `server/game/quest/quest_service.py`
+- **._apply_item_reward()** (7 connections) — `server/game/quest/quest_service.py`
+- **_has_collect_n_goals()** (6 connections) — `server/game/quest/quest_service.py`
 - **.start_quest_by_trigger()** (6 connections) — `server/game/quest/quest_service.py`
-- **QuestInstance** (6 connections) — `server/game/quest/quest_service.py`
+- **._load_player_for_collect()** (6 connections) — `server/game/quest/quest_service.py`
+- **._turn_in_inventory_full_error()** (6 connections) — `server/game/quest/quest_service.py`
+- **.turn_in_at_entity()** (6 connections) — `server/game/quest/quest_service.py`
 - **_call_add_item_to_inventory()** (5 connections) — `server/game/quest/quest_service.py`
-- **.abandon()** (5 connections) — `server/game/quest/quest_service.py`
-- **._apply_spell_reward()** (5 connections) — `server/game/quest/quest_service.py`
-- **._apply_xp_reward()** (5 connections) — `server/game/quest/quest_service.py`
-- **.get_quest_log()** (5 connections) — `server/game/quest/quest_service.py`
-- **.record_complete_activity()** (5 connections) — `server/game/quest/quest_service.py`
-- *... and 35 more nodes in this community*
+- **_definition_completion_mode_error()** (5 connections) — `server/game/quest/quest_service.py`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
-- [[Quest Instance Repository]] (6 shared connections)
-- [[NPC Admin API]] (3 shared connections)
-- [[Game Quest Service]] (3 shared connections)
-- [[Quest Flow Integration]] (3 shared connections)
-- [[Distributed Event Bus]] (2 shared connections)
-- [[Game Service Bundle]] (2 shared connections)
-- [[Lifespan Startup Hooks]] (1 shared connections)
-- [[NPC Combat Events]] (1 shared connections)
-- [[Quest Schemas]] (1 shared connections)
-- [[Players API Endpoints]] (1 shared connections)
-- [[Quest Journal Commands]] (1 shared connections)
-- [[Database Manager Tests]] (1 shared connections)
+- [E2E Suite Spec Helpers](E2E_Suite_Spec_Helpers.md) (20 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (9 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (5 shared connections)
+- [Whisper Testing Complete](Whisper_Testing_Complete.md) (4 shared connections)
+- [Combat Death Handling](Combat_Death_Handling.md) (3 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (2 shared connections)
+- [Command Service Tests](Command_Service_Tests.md) (2 shared connections)
+- [Chat Archive Advanced](Chat_Archive_Advanced.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Cache and NPC Cache](Cache_and_NPC_Cache.md) (1 shared connections)
+- [AI Agent Development Docs](AI_Agent_Development_Docs.md) (1 shared connections)
+- [Structured Concurrency Patterns](Structured_Concurrency_Patterns.md) (1 shared connections)
 
 ## Source Files
 
-- `server/events/event_types.py`
-- `server/game/quest/__init__.py`
 - `server/game/quest/quest_service.py`
+- `server/schemas/quest/quest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 280 (94%)
-- INFERRED: 17 (6%)
+- EXTRACTED: 379 (99%)
+- INFERRED: 5 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

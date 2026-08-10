@@ -1,63 +1,54 @@
 # Command Helper Utilities
 
-> 64 nodes · cohesion 0.05
+> 62 nodes
 
 ## Key Concepts
 
-- **get_username_from_user()** (50 connections) — `server/utils/command_helpers.py`
-- **test_command_helpers.py** (25 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **validate_command_safety()** (17 connections) — `server/utils/command_helpers.py`
-- **test_command_helpers_functions.py** (16 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
-- **_username_from_dict()** (4 connections) — `server/utils/command_helpers.py`
-- **Test validate_command_safety() returns False for SQL injection attempts.** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
-- **test_get_command_help_general()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
-- **test_get_command_help_specific_command()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
-- **test_get_username_from_user_dict()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
-- **test_get_username_from_user_with_name()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
-- **test_get_username_from_user_with_username()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
-- **test_validate_command_safety_format_string()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
-- **test_validate_command_safety_python_injection()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
-- **test_validate_command_safety_safe()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
-- **test_validate_command_safety_shell_metacharacters()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
-- **test_validate_command_safety_sql_injection()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
-- **test_validate_command_safety_xss()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
-- **test_get_command_help_case_insensitive()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_command_help_no_command()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_command_help_specific_commands()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_command_help_unknown_command()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_dict_name()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_dict_username()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_empty_dict()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_invalid()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- *... and 39 more nodes in this community*
+- **test_command_magic.py** (27 connections) — `server/tests/unit/models/test_command_magic.py`
+- **CastCommand** (20 connections) — `server/models/command_magic.py`
+- **SpellCommand** (13 connections) — `server/models/command_magic.py`
+- **LearnCommand** (13 connections) — `server/models/command_magic.py`
+- **command_magic.py** (10 connections) — `server/models/command_magic.py`
+- **SpellsCommand** (8 connections) — `server/models/command_magic.py`
+- **test_cast_command_validate_spell_name_empty()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_spell_name_whitespace_only()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_spell_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_target_max_length()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spell_command_validate_spell_name_empty()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spell_command_validate_spell_name_whitespace_only()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spell_command_spell_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_learn_command_validate_spell_name_empty()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_learn_command_validate_spell_name_whitespace_only()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_learn_command_spell_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_spell_name_valid()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_target_empty_string()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_target_whitespace()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_target_strips()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spell_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spell_command_validate_spell_name_valid()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spells_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [[Alias Expansion Logic]] (10 shared connections)
-- [[Command Parser Helpers]] (9 shared connections)
-- [[NPC Admin API]] (6 shared connections)
-- [[Combat Command Handler]] (4 shared connections)
-- [[Unified Command Handler]] (2 shared connections)
-- [[Logout and Quit Commands]] (2 shared connections)
-- [[Quest Journal Commands]] (2 shared connections)
-- [[Ground and Rescue Commands]] (2 shared connections)
-- [[Rest Command Flow]] (1 shared connections)
-- [[Communication Command Handlers]] (1 shared connections)
-- [[Commands Go Command]] (1 shared connections)
-- [[Admin Summon Command]] (1 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (15 shared connections)
+- [Emote Schema Validator](Emote_Schema_Validator.md) (6 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (5 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_helpers.py`
-- `server/tests/unit/utils/test_command_helpers_functions.py`
-- `server/utils/command_helpers.py`
+- `server/models/command_magic.py`
+- `server/tests/unit/models/test_command_magic.py`
 
 ## Audit Trail
 
-- EXTRACTED: 207 (87%)
-- INFERRED: 30 (13%)
+- EXTRACTED: 185 (91%)
+- INFERRED: 18 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,63 +1,56 @@
 # ASCII Map API
 
-> 44 nodes · cohesion 0.17
+> 34 nodes
 
 ## Key Concepts
 
-- **maps.py** (51 connections) — `server/api/maps.py`
-- **MapZoneContext** (39 connections) — `server/api/map_helpers.py`
-- **_prepare_ascii_map_context()** (17 connections) — `server/api/maps.py`
-- **AsciiMapResponse** (16 connections) — `server/api/maps.py`
-- **AsciiMinimapResponse** (16 connections) — `server/api/maps.py`
-- **CoordinateRecalculationResponse** (16 connections) — `server/api/maps.py`
-- **MapOriginSetResponse** (16 connections) — `server/api/maps.py`
-- **User** (15 connections) — `server/api/maps.py`
-- **_ensure_coordinates_generated()** (14 connections) — `server/api/maps.py`
-- **_apply_exploration_filter_if_needed()** (13 connections) — `server/api/maps.py`
-- **AsyncSession** (13 connections) — `server/api/maps.py`
-- **get_ascii_minimap()** (12 connections) — `server/api/maps.py`
-- **Any** (12 connections) — `server/api/maps.py`
-- **ExplorationService** (12 connections) — `server/api/maps.py`
-- **Request** (12 connections) — `server/api/maps.py`
-- **_filter_explored_rooms()** (11 connections) — `server/api/maps.py`
-- **get_ascii_map()** (11 connections) — `server/api/maps.py`
-- **RoomService** (11 connections) — `server/api/maps.py`
-- **UUID** (11 connections) — `server/api/maps.py`
-- **set_map_origin()** (10 connections) — `server/api/maps.py`
-- **_get_player_and_exploration_service()** (9 connections) — `server/api/maps.py`
-- **recalculate_coordinates()** (9 connections) — `server/api/maps.py`
-- **SetOriginRequest** (9 connections) — `server/api/maps.py`
-- **MapZoneContext** (9 connections) — `server/api/maps.py`
-- **_get_minimap_player_and_room_id()** (7 connections) — `server/api/maps.py`
-- *... and 19 more nodes in this community*
+- **HolidayCollection** (37 connections) — `server/schemas/calendar/calendar.py`
+- **validate_calendar.py** (17 connections) — `scripts/validate_calendar.py`
+- **run_validation()** (9 connections) — `scripts/validate_calendar.py`
+- **load_schedule_directory()** (8 connections) — `server/schemas/calendar/calendar.py`
+- **_get_calendar_paths()** (7 connections) — `scripts/validate_calendar.py`
+- **Path** (6 connections)
+- **_load_and_validate_holidays()** (6 connections) — `scripts/validate_calendar.py`
+- **_check_holiday_coverage()** (6 connections) — `scripts/validate_calendar.py`
+- **_validate_schedule_files()** (6 connections) — `scripts/validate_calendar.py`
+- **_print_success_message()** (5 connections) — `scripts/validate_calendar.py`
+- **.load_file()** (5 connections) — `server/schemas/calendar/calendar.py`
+- **.load_file()** (5 connections) — `server/schemas/calendar/calendar.py`
+- **parse_args()** (4 connections) — `scripts/validate_calendar.py`
+- **load_document_ids()** (4 connections) — `scripts/validate_calendar.py`
+- **Namespace** (3 connections)
+- **_print_errors()** (3 connections) — `scripts/validate_calendar.py`
+- **main()** (3 connections) — `scripts/validate_calendar.py`
+- **.id_map()** (3 connections) — `server/schemas/calendar/calendar.py`
+- **Path** (3 connections)
+- **.collection()** (3 connections) — `server/services/holiday_service.py`
+- **.ensure_unique_ids()** (2 connections) — `server/schemas/calendar/calendar.py`
+- **Get holidays and schedules paths.** (1 connections) — `scripts/validate_calendar.py`
+- **Load and validate holidays.** (1 connections) — `scripts/validate_calendar.py`
+- **Check if holidays cover documentation references.** (1 connections) — `scripts/validate_calendar.py`
+- **Load and validate schedule files.** (1 connections) — `scripts/validate_calendar.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [[Maps API Endpoints]] (25 shared connections)
-- [[NPC Admin API]] (17 shared connections)
-- [[Map Room Helpers]] (16 shared connections)
-- [[Minimap Fallback Helpers]] (5 shared connections)
-- [[Zone Coordinate Generator]] (5 shared connections)
-- [[Schemas Maps Map]] (4 shared connections)
-- [[Container Exception Handlers]] (3 shared connections)
-- [[NPC Definition Admin API]] (3 shared connections)
-- [[Migrate Async Persistence]] (1 shared connections)
-- [[Admin NPC Schemas]] (1 shared connections)
-- [[API Test Fixtures]] (1 shared connections)
-- [[Async Persistence Layer]] (1 shared connections)
+- [Player Command Developer Guide](Player_Command_Developer_Guide.md) (15 shared connections)
+- [Admin Command Models](Admin_Command_Models.md) (13 shared connections)
+- [Real-Time Architecture Docs](Real-Time_Architecture_Docs.md) (9 shared connections)
+- [Player Respawn Service](Player_Respawn_Service.md) (6 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/map_helpers.py`
-- `server/api/maps.py`
-- `server/services/coordinate_validator.py`
+- `scripts/validate_calendar.py`
+- `server/schemas/calendar/calendar.py`
+- `server/services/holiday_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 257 (63%)
-- INFERRED: 154 (37%)
+- EXTRACTED: 158 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,78 +1,77 @@
 # Client App State Hooks
 
-> 72 nodes · cohesion 0.07
+> 77 nodes
 
 ## Key Concepts
 
-- **useMythosAppState.ts** (28 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **useMythosAppActions.ts** (27 connections) — `client/src/mythosApp/useMythosAppActions.ts`
-- **1774539086359-useMythosAppState.ts** (24 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- **creationCompleteFlow.ts** (20 connections) — `client/src/mythosApp/creationCompleteFlow.ts`
-- **CharacterInfo** (20 connections) — `client/src/types/auth.ts`
-- **characterSessionApi.ts** (18 connections) — `client/src/mythosApp/characterSessionApi.ts`
-- **creationCompleteActions.ts** (16 connections) — `client/src/mythosApp/creationCompleteActions.ts`
-- **serverAvailability.ts** (16 connections) — `client/src/mythosApp/serverAvailability.ts`
-- **mythosAppViewModel.ts** (15 connections) — `client/src/mythosApp/mythosAppViewModel.ts`
-- **isServerUnavailable()** (15 connections) — `client/src/mythosApp/serverAvailability.ts`
-- **useAuthSessionRestore.ts** (15 connections) — `client/src/mythosApp/useAuthSessionRestore.ts`
-- **auth.ts** (15 connections) — `client/src/types/auth.ts`
-- **deleteCharacterActions.ts** (14 connections) — `client/src/mythosApp/deleteCharacterActions.ts`
-- **CreationStep** (13 connections) — `client/src/mythosApp/creationTypes.ts`
-- **selectCharacterFlow.ts** (13 connections) — `client/src/mythosApp/selectCharacterFlow.ts`
-- **mythosAppViewModelFactory.ts** (12 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
-- **MythosAppViewModel** (11 connections) — `client/src/mythosApp/mythosAppViewModel.ts`
-- **mapServerCharacters.ts** (10 connections) — `client/src/mythosApp/mapServerCharacters.ts`
-- **useMythosApp.tsx** (9 connections) — `client/src/mythosApp/useMythosApp.tsx`
-- **useMythosAppState()** (9 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **creationTypes.ts** (8 connections) — `client/src/mythosApp/creationTypes.ts`
-- **parseSelectCharacterResult()** (7 connections) — `client/src/mythosApp/characterSessionApi.ts`
-- **isServerCharacterResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
-- **runSelectCharacterFlow()** (6 connections) — `client/src/mythosApp/selectCharacterFlow.ts`
-- **useMythosApp()** (6 connections) — `client/src/mythosApp/useMythosApp.tsx`
-- *... and 47 more nodes in this community*
+- **chatPanelRuntimeUtils.ts** (31 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
+- **messageTypeUtils.ts** (24 connections) — `client/src/utils/messageTypeUtils.ts`
+- **ChatPanelMessagesLog.tsx** (21 connections) — `client/src/components/panels/ChatPanelMessagesLog.tsx`
+- **chatPanelRuntimeUtils.test.ts** (17 connections) — `client/src/components/panels/__tests__/chatPanelRuntimeUtils.test.ts`
+- **useChatPanelRuntime.ts** (17 connections) — `client/src/components/panels/useChatPanelRuntime.ts`
+- **SafeHtml.tsx** (14 connections) — `client/src/components/common/SafeHtml.tsx`
+- **chatPanelExportFormat.ts** (13 connections) — `client/src/components/panels/chatPanelExportFormat.ts`
+- **extractChannelFromMessage()** (13 connections) — `client/src/utils/messageTypeUtils.ts`
+- **SafeHtml()** (11 connections) — `client/src/components/common/SafeHtml.tsx`
+- **chatPanelChannelVisibility.ts** (11 connections) — `client/src/components/panels/chatPanelChannelVisibility.ts`
+- **ChatPanelMessage** (11 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
+- **chatPanelUnreadBump.ts** (10 connections) — `client/src/components/panels/chatPanelUnreadBump.ts`
+- **useChatPanelRuntime()** (10 connections) — `client/src/components/panels/useChatPanelRuntime.ts`
+- **isChatContent()** (10 connections) — `client/src/utils/messageTypeUtils.ts`
+- **ChatPanelRuntime.tsx** (9 connections) — `client/src/components/panels/ChatPanelRuntime.tsx`
+- **resolveChatExportPayload()** (8 connections) — `client/src/components/panels/chatPanelExportFormat.ts`
+- **determineMessageType()** (8 connections) — `client/src/utils/messageTypeUtils.ts`
+- **isVisibleInChannelView()** (7 connections) — `client/src/components/panels/chatPanelChannelVisibility.ts`
+- **formatChatTimestampUtc()** (7 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
+- **filterMessagesForChannelView()** (6 connections) — `client/src/components/panels/chatPanelChannelFilter.ts`
+- **getChatPanelMessageClass()** (6 connections) — `client/src/components/panels/chatPanelMessageClass.ts`
+- **bumpUnreadCountForMessage()** (6 connections) — `client/src/components/panels/chatPanelUnreadBump.ts`
+- **computeUnreadChatCounts()** (6 connections) — `client/src/components/panels/chatPanelUnreadCounts.ts`
+- **chatPanelChannelFilter.ts** (5 connections) — `client/src/components/panels/chatPanelChannelFilter.ts`
+- **chatPanelMessageClass.ts** (5 connections) — `client/src/components/panels/chatPanelMessageClass.ts`
+- *... and 52 more nodes in this community*
 
 ## Relationships
 
-- [[Character Selection Screens]] (41 shared connections)
-- [[Character Creation Screens]] (31 shared connections)
-- [[App Creation Flow Screens]] (15 shared connections)
-- [[API Type Guards]] (15 shared connections)
-- [[Mythosapp Submitauth Applyauthenticatedsession]] (9 shared connections)
-- [[Logout Session Chrome Hooks]] (7 shared connections)
-- [[Client Memory Leak Detector]] (4 shared connections)
-- [[Client Security Utilities]] (2 shared connections)
-- [[App Router Integration]] (2 shared connections)
-- [[Pages Mappagerenderer Mappagestate]] (1 shared connections)
+- [NPC Combat Integration](NPC_Combat_Integration.md) (12 shared connections)
+- [Command Input Validator](Command_Input_Validator.md) (10 shared connections)
+- [Holidays JSON Schema](Holidays_JSON_Schema.md) (7 shared connections)
+- [Rescue Service Tests](Rescue_Service_Tests.md) (5 shared connections)
+- [Fresh Session Test Guide](Fresh_Session_Test_Guide.md) (4 shared connections)
+- [WebSocket Message Schemas](WebSocket_Message_Schemas.md) (4 shared connections)
+- [Chat Channel Design Spec](Chat_Channel_Design_Spec.md) (4 shared connections)
+- [Memory Leak Metrics Tests](Memory_Leak_Metrics_Tests.md) (3 shared connections)
+- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (2 shared connections)
+- [Communication Command Handlers](Communication_Command_Handlers.md) (2 shared connections)
+- [Connection Cleaner Tests](Connection_Cleaner_Tests.md) (2 shared connections)
+- [Realtime Event Handlers](Realtime_Event_Handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- `client/src/mythosApp/AppDemoView.tsx`
-- `client/src/mythosApp/__tests__/useMythosAppState.test.ts`
-- `client/src/mythosApp/characterSessionApi.ts`
-- `client/src/mythosApp/creationCompleteActions.ts`
-- `client/src/mythosApp/creationCompleteFlow.ts`
-- `client/src/mythosApp/creationTypes.ts`
-- `client/src/mythosApp/deleteCharacterActions.ts`
-- `client/src/mythosApp/deleteCharacterFlow.ts`
-- `client/src/mythosApp/mapServerCharacters.ts`
-- `client/src/mythosApp/mythosAppViewModel.ts`
-- `client/src/mythosApp/mythosAppViewModelFactory.ts`
-- `client/src/mythosApp/selectCharacterFlow.ts`
-- `client/src/mythosApp/serverAvailability.ts`
-- `client/src/mythosApp/useAuthSessionRestore.ts`
-- `client/src/mythosApp/useMythosApp.tsx`
-- `client/src/mythosApp/useMythosAppActions.ts`
-- `client/src/mythosApp/useMythosAppState.ts`
-- `client/src/mythosApp/useMythosAuthForm.ts`
-- `client/src/types/auth.ts`
+- `client/src/components/common/SafeHtml.tsx`
+- `client/src/components/common/__tests__/SafeHtml.test.tsx`
+- `client/src/components/panels/ChatPanelMessagesLog.tsx`
+- `client/src/components/panels/ChatPanelRuntime.tsx`
+- `client/src/components/panels/ChatPanelRuntimeView.tsx`
+- `client/src/components/panels/__tests__/chatPanelRuntimeUtils.test.ts`
+- `client/src/components/panels/chatPanelChannelFilter.ts`
+- `client/src/components/panels/chatPanelChannelVisibility.ts`
+- `client/src/components/panels/chatPanelExportFormat.ts`
+- `client/src/components/panels/chatPanelMessageClass.ts`
+- `client/src/components/panels/chatPanelRuntimeUtils.ts`
+- `client/src/components/panels/chatPanelUnreadBump.ts`
+- `client/src/components/panels/chatPanelUnreadCounts.ts`
+- `client/src/components/panels/useChatPanelRuntime.ts`
+- `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
+- `client/src/utils/__tests__/messageTypeUtils.test.ts`
+- `client/src/utils/messageTypeUtils.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 467 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 405 (98%)
+- INFERRED: 8 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

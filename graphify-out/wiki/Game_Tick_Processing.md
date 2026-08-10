@@ -1,62 +1,56 @@
 # Game Tick Processing
 
-> 48 nodes · cohesion 0.08
+> 41 nodes
 
 ## Key Concepts
 
-- **game_tick_processing.py** (65 connections) — `server/app/game_tick_processing.py`
-- **get_mythos_chronicle()** (24 connections) — `server/time/time_service.py`
-- **FastAPI** (16 connections) — `server/app/game_tick_processing.py`
-- **game_tick_loop()** (14 connections) — `server/app/game_tick_processing.py`
-- **_process_damage_over_time_effect()** (11 connections) — `server/app/game_tick_processing.py`
-- **_process_single_effect()** (11 connections) — `server/app/game_tick_processing.py`
-- **broadcast_tick_event()** (9 connections) — `server/app/game_tick_processing.py`
-- **process_status_effects()** (9 connections) — `server/app/game_tick_processing.py`
-- **_process_heal_over_time_effect()** (8 connections) — `server/app/game_tick_processing.py`
-- **cleanup_decayed_corpses()** (7 connections) — `server/app/game_tick_processing.py`
-- **_create_corpse_lifecycle_service()** (7 connections) — `server/app/game_tick_processing.py`
-- **get_tick_interval()** (7 connections) — `server/app/game_tick_processing.py`
-- **process_combat_tick()** (7 connections) — `server/app/game_tick_processing.py`
-- **process_player_effects_expiration()** (7 connections) — `server/app/game_tick_processing.py`
-- **_process_player_status_effects()** (7 connections) — `server/app/game_tick_processing.py`
-- **Any** (7 connections) — `server/app/game_tick_processing.py`
-- **_cleanup_single_decayed_corpse()** (6 connections) — `server/app/game_tick_processing.py`
-- **_process_all_status_effects()** (6 connections) — `server/app/game_tick_processing.py`
-- **process_dp_decay_and_death()** (6 connections) — `server/app/game_tick_processing.py`
-- **UUID** (6 connections) — `server/app/game_tick_processing.py`
-- **_process_single_player_mp_regeneration()** (5 connections) — `server/app/game_tick_processing.py`
-- **process_casting_progress()** (4 connections) — `server/app/game_tick_processing.py`
-- **process_npc_maintenance()** (4 connections) — `server/app/game_tick_processing.py`
-- **_validate_and_get_player()** (4 connections) — `server/app/game_tick_processing.py`
-- **_log_cleanup_results()** (3 connections) — `server/app/game_tick_processing.py`
-- *... and 23 more nodes in this community*
+- **HealthService** (24 connections) — `server/services/health_service.py`
+- **.get_health_status()** (10 connections) — `server/services/health_service.py`
+- **.check_database_health_async()** (9 connections) — `server/services/health_service.py`
+- **Any** (7 connections)
+- **._create_health_response()** (7 connections) — `server/services/health_service.py`
+- **.get_server_component_health()** (7 connections) — `server/services/health_service.py`
+- **.check_database_health()** (6 connections) — `server/services/health_service.py`
+- **._ping_database()** (5 connections) — `server/services/health_service.py`
+- **._health_from_pool()** (5 connections) — `server/services/health_service.py`
+- **.check_connections_health()** (5 connections) — `server/services/health_service.py`
+- **.get_database_component_health()** (5 connections) — `server/services/health_service.py`
+- **.get_connections_component_health()** (5 connections) — `server/services/health_service.py`
+- **.determine_overall_status()** (5 connections) — `server/services/health_service.py`
+- **room_service()** (5 connections) — `server/tests/unit/game/test_room_service.py`
+- **.get_server_uptime()** (4 connections) — `server/services/health_service.py`
+- **._status_from_query_ms()** (4 connections) — `server/services/health_service.py`
+- **.get_database_component_health_async()** (4 connections) — `server/services/health_service.py`
+- **.generate_alerts()** (4 connections) — `server/services/health_service.py`
+- **.__init__()** (3 connections) — `server/services/health_service.py`
+- **.get_memory_usage()** (3 connections) — `server/services/health_service.py`
+- **.get_cpu_usage()** (3 connections) — `server/services/health_service.py`
+- **HealthStatus** (3 connections)
+- **health_service()** (3 connections) — `server/tests/unit/services/test_health_service.py`
+- **Health monitoring service for MythosMUD server.      Provides comprehensive he** (1 connections) — `server/services/health_service.py`
+- **Initialize the health service.          Args:             connection_manager:** (1 connections) — `server/services/health_service.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [[Status Effect Tick Tests]] (21 shared connections)
-- [[App Game Tick]] (17 shared connections)
-- [[NPC Admin API]] (12 shared connections)
-- [[Look Command Helpers]] (8 shared connections)
-- [[Combat Player Broadcasts]] (6 shared connections)
-- [[App Lifespan Management]] (4 shared connections)
-- [[Lifespan Startup Hooks]] (3 shared connections)
-- [[Async Task Registry]] (3 shared connections)
-- [[Players API Endpoints]] (2 shared connections)
-- [[Config Npc]] (2 shared connections)
-- [[Application DI Bundles]] (2 shared connections)
-- [[Combat Taunt Tests]] (2 shared connections)
+- [Monitoring Response Models](Monitoring_Response_Models.md) (13 shared connections)
+- [NPC Occupant Verification](NPC_Occupant_Verification.md) (2 shared connections)
+- [Combat Turn Processor](Combat_Turn_Processor.md) (1 shared connections)
+- [Inventory Service Helpers](Inventory_Service_Helpers.md) (1 shared connections)
+- [ASCII Map Exit Tests](ASCII_Map_Exit_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/game_tick_processing.py`
-- `server/time/time_service.py`
+- `server/services/health_service.py`
+- `server/tests/unit/game/test_room_service.py`
+- `server/tests/unit/services/test_health_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 285 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 148 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

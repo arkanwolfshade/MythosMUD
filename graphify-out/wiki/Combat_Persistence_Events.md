@@ -1,51 +1,51 @@
 # Combat Persistence Events
 
-> 37 nodes · cohesion 0.06
+> 28 nodes
 
 ## Key Concepts
 
-- **test_combat_persistence_handler_events.py** (23 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **persistence_handler()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **Test _publish_player_dp_correction_event handles errors gracefully.** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **Test _publish_player_dp_update_event_impl publishes to event bus.** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_event_bus_publish_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **Test _publish_player_dp_update_event_impl handles errors gracefully.** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_all_parameters()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_all_parameters_new()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_no_event_bus()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_outer_exception()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_publish_error_new()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_success_new()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_all_parameters()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_legacy_subject()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_nats_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_no_event_bus()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_no_nats()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_with_nats()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **Unit tests for combat persistence handler - event publishing.  Tests DP update a** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- *... and 12 more nodes in this community*
+- **test_inventory_mutation_guard.py** (17 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **guard()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_mutation_decision_init()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_mutation_decision_duplicate()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_inventory_mutation_guard_init_custom_params()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_inventory_mutation_guard_init()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_without_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_with_unique_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_with_duplicate_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_different_players_same_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_async_without_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_async_with_unique_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_async_with_duplicate_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_async_different_players_same_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Unit tests for inventory mutation guard - core functionality.  Tests initializat** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test MutationDecision initialization.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test MutationDecision for duplicate.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test InventoryMutationGuard initialization.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test InventoryMutationGuard initialization with custom parameters.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test acquire without token allows mutation.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test acquire with unique token allows mutation.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test acquire with duplicate token suppresses mutation.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test acquire allows same token for different players.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test acquire_async without token allows mutation.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [[Combat Service Bundle]] (2 shared connections)
-- [[Combat Domain Events]] (2 shared connections)
+- [Magic Command Handlers](Magic_Command_Handlers.md) (4 shared connections)
+- [Chat Service Whispers](Chat_Service_Whispers.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- `server/tests/unit/services/test_inventory_mutation_guard.py`
 
 ## Audit Trail
 
-- EXTRACTED: 86 (100%)
+- EXTRACTED: 61 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

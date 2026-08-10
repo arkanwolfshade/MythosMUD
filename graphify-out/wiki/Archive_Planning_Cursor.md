@@ -1,40 +1,26 @@
 # Archive Planning Cursor
 
-> 12 nodes · cohesion 0.17
+> 2 nodes
 
 ## Key Concepts
 
-- **5. Testing Approaches** (6 connections) — `.cursor/rules/vim.md`
-- **Phase 5: Testing and Validation** (4 connections) — `docs/archive/PLANNING_redis_to_nats_migration.md`
-- **Phase 4: Testing and Validation (2-3 days)** (4 connections) — `docs/archive/PLANNING_unified_command_handler.md`
-- **5.3 Performance Testing** (2 connections) — `docs/archive/PLANNING_redis_to_nats_migration.md`
-- **5.2 Integration Testing** (2 connections) — `.cursor/rules/vim.md`
-- **5.1 Unit Testing** (1 connections) — `docs/archive/PLANNING_redis_to_nats_migration.md`
-- **5.2 Integration Testing** (1 connections) — `docs/archive/PLANNING_redis_to_nats_migration.md`
-- **4.1 Functional Testing** (1 connections) — `docs/archive/PLANNING_unified_command_handler.md`
-- **5.1 Unit Testing** (1 connections) — `.cursor/rules/vim.md`
-- **5.3 End-to-End Testing** (1 connections) — `.cursor/rules/vim.md`
-- **5.4 Test Organization** (1 connections) — `.cursor/rules/vim.md`
-- **5.5 Mocking and Stubbing** (1 connections) — `.cursor/rules/vim.md`
+- **test_handle_learn_command_no_spell_name()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test learn command when no spell name is provided.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [[Archive Planning Redis]] (1 shared connections)
-- [[Archive Planning Unified]] (1 shared connections)
-- [[Vim Editor Guidelines]] (1 shared connections)
+- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/rules/vim.md`
-- `docs/archive/PLANNING_redis_to_nats_migration.md`
-- `docs/archive/PLANNING_unified_command_handler.md`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

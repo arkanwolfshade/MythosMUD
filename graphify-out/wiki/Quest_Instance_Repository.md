@@ -1,57 +1,56 @@
 # Quest Instance Repository
 
-> 27 nodes · cohesion 0.15
+> 18 nodes
 
 ## Key Concepts
 
-- **QuestInstanceRepository** (23 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **QuestInstance** (19 connections) — `server/models/quest.py`
-- **quest_instance_repository.py** (14 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **.create()** (9 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **_row_to_quest_instance()** (9 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **UUID** (9 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **.get_by_player_and_quest()** (8 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **.list_active_by_player()** (8 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **.list_completed_by_player()** (8 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **.update_state_and_progress()** (7 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **_str_player_id()** (7 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **QuestInstance** (7 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **Any** (5 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **datetime** (4 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **quest_instance_repository()** (3 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **.__init__()** (2 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **Per-character quest state: one row per player per quest.** (1 connections) — `server/models/quest.py`
-- **Create a QuestInstanceRepository instance.** (1 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **QuestInstance repository for quest subsystem.  CRUD for quest_instances via Post** (1 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **Get the quest instance for this player and quest (any state). Returns None if no** (1 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **Update an instance's state and/or progress. Pass only fields to change.** (1 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **List all active quest instances for the player.** (1 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **List completed quest instances for the player (for quest log or prerequisite che** (1 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **Normalize player_id to string for DB (players.player_id is UUID as_uuid=False).** (1 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **Map procedure result row to QuestInstance model.** (1 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- *... and 2 more nodes in this community*
+- **prototype_registry.py** (19 connections) — `server/game/items/prototype_registry.py`
+- **PrototypeRegistryError** (19 connections) — `server/game/items/prototype_registry.py`
+- **validate_prototypes.py** (8 connections) — `server/scripts/validate_prototypes.py`
+- **models.py** (7 connections) — `server/game/items/models.py`
+- **test_resolve_weapon_attack_from_equipped_registry_error_returns_none()** (5 connections) — `server/tests/unit/game/test_weapons.py`
+- **test_weapon_from_prototype_registry_missing_prototype_returns_none()** (4 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
+- **parse_arguments()** (3 connections) — `server/scripts/validate_prototypes.py`
+- **main()** (3 connections) — `server/scripts/validate_prototypes.py`
+- **constants.py** (2 connections) — `server/game/items/constants.py`
+- **Constants supporting item prototype validation.  These enumerations anchor the s** (1 connections) — `server/game/items/constants.py`
+- **Pydantic models for item prototype validation.  This module defines the ItemProt** (1 connections) — `server/game/items/models.py`
+- **Exception** (1 connections)
+- **Prototype registry for managing item prototypes.  This module provides the Pro** (1 connections) — `server/game/items/prototype_registry.py`
+- **Raised when prototype registry lookups fail.** (1 connections) — `server/game/items/prototype_registry.py`
+- **Namespace** (1 connections)
+- **CLI entrypoint for validating MythosMUD item prototype definitions.** (1 connections) — `server/scripts/validate_prototypes.py`
+- **When prototype is not found, returns None.** (1 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
+- **When registry.get raises PrototypeRegistryError, returns None.** (1 connections) — `server/tests/unit/game/test_weapons.py`
 
 ## Relationships
 
-- [[NPC Admin API]] (24 shared connections)
-- [[Game Service Bundle]] (7 shared connections)
-- [[Quest Service Core]] (6 shared connections)
-- [[SQLAlchemy Model Base]] (4 shared connections)
-- [[Quest Instance Repository Tests]] (3 shared connections)
-- [[Quest Flow Integration]] (3 shared connections)
+- [Commands Inventory Display](Commands_Inventory_Display.md) (10 shared connections)
+- [Typography Layout Spec](Typography_Layout_Spec.md) (7 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (6 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
+- [test_profession_meets_stat_requirements_multiple_not_met](test_profession_meets_stat_requirements_multiple_not_met.md) (4 shared connections)
+- [Command Integration Summary](Command_Integration_Summary.md) (3 shared connections)
+- [Character Creation Service](Character_Creation_Service.md) (2 shared connections)
+- [Memory Leak Metrics](Memory_Leak_Metrics.md) (2 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (2 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/quest.py`
-- `server/persistence/repositories/quest_instance_repository.py`
-- `server/tests/unit/persistence/test_quest_instance_repository.py`
+- `server/game/items/constants.py`
+- `server/game/items/models.py`
+- `server/game/items/prototype_registry.py`
+- `server/scripts/validate_prototypes.py`
+- `server/tests/unit/game/test_player_schema_converter_weapon.py`
+- `server/tests/unit/game/test_weapons.py`
 
 ## Audit Trail
 
-- EXTRACTED: 127 (83%)
-- INFERRED: 26 (17%)
+- EXTRACTED: 74 (94%)
+- INFERRED: 5 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

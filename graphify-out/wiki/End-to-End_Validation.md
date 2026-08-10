@@ -1,50 +1,38 @@
 # End-to-End Validation
 
-> 37 nodes · cohesion 0.05
+> 12 nodes
 
 ## Key Concepts
 
-- **End-to-End Validation Report - Modular E2E Test Suite** (9 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **Validation Test Cases** (7 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **Detailed Validation Results** (6 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **Validation Results Summary** (6 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **Benefits Achieved** (5 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **Quality Metrics** (4 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **Recommendations** (3 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **Conclusion** (2 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **Executive Summary** (2 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **END_TO_END_VALIDATION.md** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **✅ Backward Compatibility Validation** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **Backward Compatibility Validation Results** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **Completeness Metrics** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **Compliance Metrics** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **✅ Cross-Reference Validation** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **Cross-Reference Validation Results** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **Development Benefits** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **✅ END-TO-END VALIDATION: COMPLETE AND SUCCESSFUL** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **✅ END-TO-END VALIDATION: PASSED** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **✅ Execution Options Validation** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **Execution Options Validation Results** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **File Size Compliance Analysis** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **✅ File Size Validation** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **File Structure Analysis** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **✅ File Structure Validation** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- *... and 12 more nodes in this community*
+- **CombatMessages** (6 connections)
+- **.validate_npc_messages()** (6 connections) — `server/services/combat_messaging_service.py`
+- **.get_attack_message()** (3 connections) — `server/services/combat_messaging_service.py`
+- **.get_death_message()** (3 connections) — `server/services/combat_messaging_service.py`
+- **.get_combat_start_messages()** (3 connections) — `server/services/combat_messaging_service.py`
+- **.get_combat_end_messages()** (3 connections) — `server/services/combat_messaging_service.py`
+- **Any** (2 connections)
+- **Generate an attack message based on perspective and NPC configuration.** (1 connections) — `server/services/combat_messaging_service.py`
+- **Generate a death message for an NPC.          Args:             npc_name: Name o** (1 connections) — `server/services/combat_messaging_service.py`
+- **Generate combat start messages for all room occupants.          Args:** (1 connections) — `server/services/combat_messaging_service.py`
+- **Generate combat end messages for all room occupants.          Args:** (1 connections) — `server/services/combat_messaging_service.py`
+- **Validate NPC message templates against the schema.          Args:             me** (1 connections) — `server/services/combat_messaging_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (3 shared connections)
+- [Weapon Resolution Helpers](Weapon_Resolution_Helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/END_TO_END_VALIDATION.md`
+- `server/services/combat_messaging_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 72 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 29 (94%)
+- INFERRED: 2 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

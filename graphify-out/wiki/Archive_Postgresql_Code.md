@@ -1,11 +1,11 @@
 # Archive Postgresql Code
 
-> 2 nodes · cohesion 1.00
+> 2 nodes
 
 ## Key Concepts
 
-- **players.current_room_id Index Gap** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
 - **SELECT * Anti-Pattern** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
+- **players.current_room_id Index Gap** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
 
 ## Relationships
 
@@ -23,4 +23,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

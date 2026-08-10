@@ -1,37 +1,36 @@
 # Investigations Sessions Session
 
-> 10 nodes · cohesion 0.24
+> 8 nodes
 
 ## Key Concepts
 
-- **Detailed Findings** (7 connections) — `investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md`
-- **5. System Impact Assessment** (5 connections) — `investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md`
-- **5. System Impact Assessment** (4 connections) — `investigations/sessions/2025-11-19_session-002_combat-message-uuid-display.md`
-- **5.1 User Experience Impact** (2 connections) — `investigations/sessions/2025-11-19_session-002_combat-message-uuid-display.md`
-- **5.2 Functional Impact** (2 connections) — `investigations/sessions/2025-11-19_session-002_combat-message-uuid-display.md`
-- **5.3 Code Impact** (2 connections) — `investigations/sessions/2025-11-19_session-002_combat-message-uuid-display.md`
-- **1. Error Log Analysis** (1 connections) — `investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md`
-- **3. Similar Issues Found** (1 connections) — `investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md`
-- **4. Correct Implementation Pattern** (1 connections) — `investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md`
-- **6. Error Handling Analysis** (1 connections) — `investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md`
+- **Implementation Phases** (7 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Phase 1: Core Infrastructure Enhancement** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Phase 5: Authentication and Security** (3 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **1.1 Enhance CircuitBreaker Class** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **1.2 Create CircuitBreaker Manager** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **1.3 Add Configuration Support** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **5.1 Authentication Operations** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **5.2 Rate Limiting Integration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- [[Combat UUID Display Bug]] (2 shared connections)
-- [[Investigations Sessions Xx]] (1 shared connections)
-- [[Investigations Sessions Session]] (1 shared connections)
+- [Components Map Nodes](Components_Map_Nodes.md) (1 shared connections)
+- [Npc Communication](Npc_Communication.md) (1 shared connections)
+- [Cursor Skills Onboard](Cursor_Skills_Onboard.md) (1 shared connections)
+- [Components Panels Chatpanelrefactoredderived](Components_Panels_Chatpanelrefactoredderived.md) (1 shared connections)
+- [Cursor Skills Polish](Cursor_Skills_Polish.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md`
-- `investigations/sessions/2025-11-19_session-002_combat-message-uuid-display.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,52 +1,54 @@
 # E2E Suite Overview
 
-> 27 nodes · cohesion 0.07
+> 26 nodes
 
 ## Key Concepts
 
-- **Comprehensive Overview - Modular E2E Test Suite** (12 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **Execution Options** (5 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **Key Benefits** (5 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **Migration and Adoption** (4 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **Quality Assurance** (4 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **Testing Approach** (3 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **Conclusion** (2 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **COMPREHENSIVE_OVERVIEW.md** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **Development Benefits** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **Execution Validation** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **Executive Summary** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **File Size Compliance** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **File Structure Overview** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **Gradual Migration** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **Immediate Benefits** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **Long-term Benefits** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **Maintainability Benefits** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **✅ Modular E2E Test Suite Refactoring: COMPLETE** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **Option 1: Individual Scenario Execution** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **Option 2: Scenario Group Execution** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **Option 3: All Scenarios Execution** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **Option 4: Legacy Compatibility** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **Performance Benefits** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **Playwright MCP (All Scenarios)** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **Usability Benefits** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- *... and 2 more nodes in this community*
+- **_find_item_in_room_drops()** (23 connections) — `server/commands/look_item.py`
+- **test_find_item_in_room_drops_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_by_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Find an item in room drops by name or prototype_id.      Args:         room_drop** (1 connections) — `server/commands/look_item.py`
+- **Test finding item in room drops by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops by prototype_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops with multiple matches.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops with invalid instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops by item_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _find_item_in_room_drops() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [[E 2 E Cursor Skills]] (1 shared connections)
-- [[Archive Room Hierarchy]] (1 shared connections)
-- [[Development Ai E 2 E]] (1 shared connections)
+- [Services Lucidity Repository](Services_Lucidity_Repository.md) (10 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (8 shared connections)
+- [Archive Circuit Breaker](Archive_Circuit_Breaker.md) (4 shared connections)
 
 ## Source Files
 
-- `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
+- `server/commands/look_item.py`
+- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (100%)
+- EXTRACTED: 72 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

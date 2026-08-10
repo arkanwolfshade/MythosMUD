@@ -1,34 +1,26 @@
 # Command Testing Guide
 
-> 10 nodes · cohesion 0.20
+> 2 nodes
 
 ## Key Concepts
 
-- **Command Handler Testing** (4 connections) — `docs/COMMAND_TESTING_GUIDE.md`
-- **Unit Testing** (4 connections) — `docs/COMMAND_TESTING_GUIDE.md`
-- **Command Model Testing** (3 connections) — `docs/COMMAND_TESTING_GUIDE.md`
-- **Command Parser Testing** (2 connections) — `docs/COMMAND_TESTING_GUIDE.md`
-- **Basic Handler Test** (1 connections) — `docs/COMMAND_TESTING_GUIDE.md`
-- **Error Handling Test** (1 connections) — `docs/COMMAND_TESTING_GUIDE.md`
-- **Field Validation Test** (1 connections) — `docs/COMMAND_TESTING_GUIDE.md`
-- **Model Validation Test** (1 connections) — `docs/COMMAND_TESTING_GUIDE.md`
-- **Parameter Validation Test** (1 connections) — `docs/COMMAND_TESTING_GUIDE.md`
-- **Parser Functionality Test** (1 connections) — `docs/COMMAND_TESTING_GUIDE.md`
+- **test_create_learn_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_learn_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [[Command Testing Guide]] (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/COMMAND_TESTING_GUIDE.md`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

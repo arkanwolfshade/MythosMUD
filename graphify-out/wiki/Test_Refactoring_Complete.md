@@ -1,51 +1,31 @@
 # Test Refactoring Complete
 
-> 41 nodes · cohesion 0.05
+> 7 nodes
 
 ## Key Concepts
 
-- **Test Suite Refactoring - PROJECT COMPLETE 🎉** (23 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Final Validation** (5 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Usage** (4 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Executive Summary** (3 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Final Statistics** (3 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Impact Assessment** (3 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Key Takeaways** (3 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Next Steps for Professor Wolfshade** (3 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Project Conclusion** (3 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Achievement Metrics** (2 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Consolidation Details** (2 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Project Timeline** (2 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Success Declaration** (2 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **TEST_REFACTORING_PROJECT_COMPLETE.md** (1 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **All 28 Legacy Files Successfully Merged** (1 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **🏆 ALL SUCCESS CRITERIA MET AND EXCEEDED** (1 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Code Quality Improvements** (1 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Content Validation: ✅ PASSED** (1 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Current State** (1 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Developer Productivity Gains** (1 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Efficiency Metrics** (1 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **File Count Validation: ✅ PASSED** (1 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Final Structure** (1 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Final Thoughts** (1 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- **Find Tests** (1 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
-- *... and 16 more nodes in this community*
+- **migration_schema_checks.py** (3 connections) — `server/scripts/migration_schema_checks.py`
+- **table_exists()** (3 connections) — `server/scripts/migration_schema_checks.py`
+- **column_exists()** (3 connections) — `server/scripts/migration_schema_checks.py`
+- **AsyncConnection** (2 connections)
+- **Shared schema existence checks for one-off migration scripts.** (1 connections) — `server/scripts/migration_schema_checks.py`
+- **Return True if the named table exists in information_schema.** (1 connections) — `server/scripts/migration_schema_checks.py`
+- **Return True if the named column exists on the table.** (1 connections) — `server/scripts/migration_schema_checks.py`
 
 ## Relationships
 
-- [[Archive Refactoring Project]] (5 shared connections)
-- [[E 2 E Cursor Skills]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
+- `server/scripts/migration_schema_checks.py`
 
 ## Audit Trail
 
-- EXTRACTED: 86 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

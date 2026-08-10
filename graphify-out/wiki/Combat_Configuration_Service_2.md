@@ -1,50 +1,58 @@
 # Combat Configuration Service
 
-> 37 nodes · cohesion 0.06
+> 46 nodes
 
 ## Key Concepts
 
-- **TestCombatConfigurationService** (26 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test get_combat_configuration_for_scope with global scope.** (4 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.service()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_configuration_custom()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test update_combat_configuration raises error for global scope.** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test validate_configuration validates current configuration.** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.mock_config()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_clear_all_overrides()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_clear_scope_override()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_clear_scope_override_global_raises()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_active_overrides()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_caching()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_for_scope_global()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_for_scope_player()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_for_scope_room()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_for_scope_temporary()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_init()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_is_combat_available()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_is_combat_available_with_override()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_update_combat_configuration()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_update_combat_configuration_global_raises()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_update_combat_configuration_invalid_raises()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_configuration()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test suite for CombatConfigurationService class.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- *... and 12 more nodes in this community*
+- **test_command_utility.py** (20 connections) — `server/tests/unit/models/test_command_utility.py`
+- **command_utility.py** (18 connections) — `server/models/command_utility.py`
+- **HelpCommand** (13 connections) — `server/models/command_utility.py`
+- **WhoCommand** (13 connections) — `server/models/command_utility.py`
+- **StatusCommand** (8 connections) — `server/models/command_utility.py`
+- **TimeCommand** (8 connections) — `server/models/command_utility.py`
+- **WhoamiCommand** (8 connections) — `server/models/command_utility.py`
+- **.create_help_command()** (5 connections) — `server/utils/command_factories_utility.py`
+- **test_help_command_topic_max_length()** (4 connections) — `server/tests/unit/models/test_command_utility.py`
+- **test_who_command_filter_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_utility.py`
+- **test_help_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
+- **test_help_command_with_topic()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
+- **test_help_command_validate_topic_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
+- **test_help_command_validate_topic_none()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
+- **test_who_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
+- **test_who_command_with_filter_name()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
+- **test_who_command_validate_filter_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
+- **test_who_command_validate_filter_name_none()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
+- **test_status_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
+- **test_time_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
+- **test_whoami_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
+- **test_create_help_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_help_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **Utility command models for MythosMUD.  This module provides command models for u** (1 connections) — `server/models/command_utility.py`
+- **Command for getting help on commands.** (1 connections) — `server/models/command_utility.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [[Combat Configuration Service]] (7 shared connections)
+- [Cursor Plans Disconnect](Cursor_Plans_Disconnect.md) (8 shared connections)
+- [Emote Schema Validator](Emote_Schema_Validator.md) (7 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (6 shared connections)
+- [Chat Panel Components](Chat_Panel_Components.md) (5 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (5 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_configuration_service.py`
+- `server/models/command_utility.py`
+- `server/tests/unit/models/test_command_utility.py`
+- `server/tests/unit/utils/test_command_factories_utility.py`
+- `server/utils/command_factories_utility.py`
 
 ## Audit Trail
 
-- EXTRACTED: 85 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 151 (93%)
+- INFERRED: 12 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

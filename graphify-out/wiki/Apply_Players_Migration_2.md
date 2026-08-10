@@ -1,10 +1,13 @@
 # Apply Players Migration
 
-> 1 nodes · cohesion 1.00
+> 4 nodes
 
 ## Key Concepts
 
-- **apply_players_migration.ps1** (0 connections) — `scripts/apply_players_migration.ps1`
+- **apply_migration()** (3 connections) — `scripts/apply_players_migration.py`
+- **apply_players_migration.py** (2 connections) — `scripts/apply_players_migration.py`
+- **main()** (2 connections) — `scripts/apply_players_migration.py`
+- **Apply migration to a single database.** (1 connections) — `scripts/apply_players_migration.py`
 
 ## Relationships
 
@@ -12,14 +15,14 @@
 
 ## Source Files
 
-- `scripts/apply_players_migration.ps1`
+- `scripts/apply_players_migration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

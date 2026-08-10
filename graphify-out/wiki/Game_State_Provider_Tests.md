@@ -1,53 +1,53 @@
 # Game State Provider Tests
 
-> 43 nodes · cohesion 0.05
+> 26 nodes
 
 ## Key Concepts
 
-- **test_game_state_provider.py** (27 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_get_app()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_get_async_persistence()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_send_personal_message()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test get_room_occupants() with empty online_players.** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names_empty_room_data()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names_invalid_uuid()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names_no_player_ids()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names_player_not_found()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_npcs_batch()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_npcs_batch_empty()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_player()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_players_batch()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_players_batch_empty()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_players_batch_no_persistence()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_players_batch_player_not_found()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_room_occupants_empty_online_players()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_room_occupants_with_online_players()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_send_initial_game_state()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_send_initial_game_state_no_player()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_send_initial_game_state_send_fails()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Unit tests for game state provider.  Tests the GameStateProvider class.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test get_players_batch() handles player not found.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- *... and 18 more nodes in this community*
+- **format_message_content()** (17 connections) — `server/realtime/message_formatters.py`
+- **test_message_formatters.py** (16 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_nats_error()** (4 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_say()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_local()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_global()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_emote()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_pose()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_whisper()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_whisper_for_recipient()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_system()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_admin()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_unknown_channel()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Format message content based on channel type and sender name.      Args:** (1 connections) — `server/realtime/message_formatters.py`
+- **Unit tests for message formatters.  Tests the message_formatters module function** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'say' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'local' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'global' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'emote' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'pose' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'whisper' channel messages (default).** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'whisper' for recipient as 'X whispers to** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'system' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'admin' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats unknown channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [[Realtime Game State]] (2 shared connections)
-- [[Game State Provider]] (1 shared connections)
-- [[Quest Flow Integration]] (1 shared connections)
-- [[Room Occupant Manager Tests]] (1 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (5 shared connections)
+- [NATS Chat Broadcasting](NATS_Chat_Broadcasting.md) (2 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/realtime/message_formatters.py`
+- `server/tests/unit/realtime/test_message_formatters.py`
 
 ## Audit Trail
 
-- EXTRACTED: 91 (100%)
+- EXTRACTED: 80 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

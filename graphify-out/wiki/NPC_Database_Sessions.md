@@ -1,69 +1,66 @@
 # NPC Database Sessions
 
-> 106 nodes · cohesion 0.03
+> 96 nodes
 
 ## Key Concepts
 
-- **npc_database.py** (27 connections) — `server/npc_database.py`
-- **get_npc_session()** (24 connections) — `server/npc_database.py`
-- **npc_instance_service.py** (24 connections) — `server/services/npc_instance_service.py`
-- **test_npc_database.py** (22 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **instance.py** (22 connections) — `server/commands/npc_admin/instance.py`
-- **get_npc_engine()** (14 connections) — `server/npc_database.py`
-- **migrate_combat_data.py** (13 connections) — `server/scripts/migrate_combat_data.py`
-- **get_npc_database_path()** (10 connections) — `server/npc_database.py`
-- **init_npc_db()** (10 connections) — `server/npc_database.py`
-- **_initialize_npc_database()** (10 connections) — `server/npc_database.py`
-- **get_postgres_connect_args()** (9 connections) — `server/database_config_helpers.py`
-- **close_npc_db()** (9 connections) — `server/npc_database.py`
-- **get_npc_session_maker()** (9 connections) — `server/npc_database.py`
-- **TestNPCDatabaseInitialization** (8 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **TestCloseNpcDb** (6 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **TestNPCSession** (6 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **ensure_npc_database_directory()** (6 connections) — `server/npc_database.py`
-- **TestEnsureNPCDatabaseDirectory** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **TestGetNPCDatabasePath** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **TestInitNpcDb** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **_parse_npc_spawn_args()** (5 connections) — `server/commands/npc_admin/instance.py`
-- **reset_npc_database()** (5 connections) — `server/npc_database.py`
-- **.test_close_npc_db_disposes_engine()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **TestEventLoopHandling** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **TestNPCSessionMaker** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- *... and 81 more nodes in this community*
+- **admin_summon_command.py** (34 connections) — `server/commands/admin_summon_command.py`
+- **test_inventory_helpers_extended.py** (26 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **resolve_state()** (18 connections) — `server/commands/inventory_command_helpers.py`
+- **resolve_player()** (18 connections) — `server/commands/inventory_command_helpers.py`
+- **broadcast_room_event()** (18 connections) — `server/commands/inventory_command_helpers.py`
+- **_resolve_summon_context()** (11 connections) — `server/commands/admin_summon_command.py`
+- **Any** (10 connections)
+- **handle_summon_command()** (10 connections) — `server/commands/admin_summon_command.py`
+- **_broadcast_and_log_summon_success()** (7 connections) — `server/commands/admin_summon_command.py`
+- **_complete_summon()** (7 connections) — `server/commands/admin_summon_command.py`
+- **_persist_summoned_item()** (6 connections) — `server/commands/admin_summon_command.py`
+- **test_inventory_commands_state_helpers.py** (6 connections) — `server/tests/unit/commands/test_inventory_commands_state_helpers.py`
+- **_parse_summon_command_data()** (5 connections) — `server/commands/admin_summon_command.py`
+- **_validate_summon_prerequisites()** (4 connections) — `server/commands/admin_summon_command.py`
+- **_summon_npc_stub_response()** (4 connections) — `server/commands/admin_summon_command.py`
+- **_create_summon_item_instance()** (4 connections) — `server/commands/admin_summon_command.py`
+- **_log_summon_success()** (4 connections) — `server/commands/admin_summon_command.py`
+- **test_persist_player_validation_error()** (4 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **test_resolve_state_with_app()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
+- **test_resolve_state_no_app()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
+- **test_resolve_state_no_state()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
+- **test_resolve_player_success()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
+- **test_resolve_player_no_persistence()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
+- **test_resolve_player_not_found()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
+- **test_broadcast_room_event_with_connection_manager()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
+- *... and 71 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Admin API]] (44 shared connections)
-- [[Commands Npc Admin]] (9 shared connections)
-- [[NPC Occupant Verification]] (8 shared connections)
-- [[Migrate Combat]] (5 shared connections)
-- [[NPC Services Bundle]] (5 shared connections)
-- [[Alias Expansion Logic]] (4 shared connections)
-- [[Combat Schema Validation]] (4 shared connections)
-- [[Lifespan Startup Hooks]] (4 shared connections)
-- [[Database Helper Tests]] (3 shared connections)
-- [[NPC Definition Schemas]] (3 shared connections)
-- [[NPC Definition Admin API]] (3 shared connections)
-- [[Database Error Handling]] (2 shared connections)
+- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (30 shared connections)
+- [Client Event Store](Client_Event_Store.md) (9 shared connections)
+- [Client Security Utilities](Client_Security_Utilities.md) (6 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
+- [Async Task Registry](Async_Task_Registry.md) (4 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (3 shared connections)
+- [Memory Leak Metrics](Memory_Leak_Metrics.md) (3 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (3 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (2 shared connections)
+- [Typography Layout Spec](Typography_Layout_Spec.md) (2 shared connections)
+- [Game State Provider](Game_State_Provider.md) (2 shared connections)
+- [Container Sync Remediation](Container_Sync_Remediation.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/npc_admin/instance.py`
-- `server/database.py`
-- `server/database_config_helpers.py`
-- `server/npc_database.py`
-- `server/scripts/migrate_combat_data.py`
-- `server/services/npc_instance_service.py`
-- `server/tests/unit/infrastructure/test_database_error_handling.py`
-- `server/tests/unit/infrastructure/test_database_helpers.py`
-- `server/tests/unit/infrastructure/test_npc_database.py`
+- `server/commands/admin_summon_command.py`
+- `server/commands/inventory_command_helpers.py`
+- `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
+- `server/tests/unit/commands/test_inventory_commands_state_helpers.py`
+- `server/tests/unit/commands/test_inventory_helpers.py`
+- `server/tests/unit/commands/test_inventory_helpers_extended.py`
 
 ## Audit Trail
 
-- EXTRACTED: 401 (96%)
-- INFERRED: 16 (4%)
+- EXTRACTED: 328 (98%)
+- INFERRED: 7 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

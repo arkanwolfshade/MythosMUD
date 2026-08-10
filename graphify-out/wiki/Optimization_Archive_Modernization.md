@@ -1,55 +1,80 @@
 # Optimization Archive Modernization
 
-> 25 nodes · cohesion 0.08
+> 487 nodes
 
 ## Key Concepts
 
-- **Implementation Phases** (14 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Phase 2B: Infrastructure Tests (Week 4)** (7 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Implementation Progress** (6 connections) — `docs/archive/TEST_OPTIMIZATION_STATUS.md`
-- **✅ Phase 1: Quick Wins (In Progress)** (4 connections) — `docs/archive/TEST_OPTIMIZATION_STATUS.md`
-- **Phase 1: Local Channel** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- **Phase 2: Global Channel** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- **Phase 3: Whisper Channel** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- **✅ 1.1 Placeholder Tests Removed** (1 connections) — `docs/archive/TEST_OPTIMIZATION_STATUS.md`
-- **⏳ 1.2 Trivial Type Assertions (Pending)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_STATUS.md`
-- **⏳ 1.3 Duplicate Tests (Pending)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_STATUS.md`
-- **⏳ Phase 3: Coverage Test Optimization (Pending)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_STATUS.md`
-- **⏳ Phase 4: Test Consolidation (Pending)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_STATUS.md`
-- **⏳ Phase 5: Critical Gap Tests (Pending)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_STATUS.md`
-- **Deliverables** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Phase 0: Foundation (Week 1) - 40 hours** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Phase 1: Fix Failing Tests (Week 1-2) - 40 hours** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Phase 2: Unit Test Modernization (Week 3-4) - 80 hours** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Phase 2A: Service Layer Tests (Week 3)** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Phase 3: Test Pattern Modernization (Week 5) - 40 hours** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Phase 4: Add Coverage for New Architecture (Week 6) - 40 hours** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Tasks** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Task 2.1: Reduce Dependency Injection Tests (2 hours)** (1 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 2.2: Consolidate Dependency Injection Test Files (2 hours)** (1 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 2.3: Reduce App Factory Tests (1 hour)** (1 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 2.4: Review Lifespan Tests (1 hour)** (1 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
+- **DatabaseError** (434 connections) — `server/exceptions.py`
+- **log_and_raise()** (174 connections) — `server/utils/error_logging.py`
+- **get_session_maker()** (91 connections) — `server/database.py`
+- **__init__.py** (71 connections) — `server/models/__init__.py`
+- **Base** (58 connections) — `server/models/base.py`
+- **PlayerRepository** (31 connections) — `server/persistence/repositories/player_repository.py`
+- **player_repository.py** (28 connections) — `server/persistence/repositories/player_repository.py`
+- **Skill** (27 connections) — `server/models/skill.py`
+- **test_world.py** (27 connections) — `server/tests/unit/models/test_world.py`
+- **PlayerSpell** (23 connections) — `server/models/player_spells.py`
+- **test_quest_instance_repository.py** (22 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
+- **base.py** (21 connections) — `server/models/base.py`
+- **QuestInstance** (21 connections) — `server/models/quest.py`
+- **player_effect_repository.py** (21 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **player_spell_repository.py** (20 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **QuestInstanceRepository** (20 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **test_quest_definition_repository.py** (20 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **quest_instance_repository.py** (19 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **test_item.py** (19 connections) — `server/tests/unit/models/test_item.py`
+- **PlayerEffectRepository** (18 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **player_skill_repository.py** (18 connections) — `server/persistence/repositories/player_skill_repository.py`
+- **PlayerEffect** (17 connections) — `server/models/player_effect.py`
+- **PlayerSkill** (17 connections) — `server/models/player_skill.py`
+- **PlayerSkillRepository** (17 connections) — `server/persistence/repositories/player_skill_repository.py`
+- **QuestDefinitionRepository** (17 connections) — `server/persistence/repositories/quest_definition_repository.py`
+- *... and 462 more nodes in this community*
 
 ## Relationships
 
-- [[Archive Optimization Status]] (1 shared connections)
-- [[Test Modernization Plan]] (1 shared connections)
-- [[Advanced Chat Channels Spec]] (1 shared connections)
-- [[Test Optimization Roadmap]] (1 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (207 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (28 shared connections)
+- [NPC Service Tests](NPC_Service_Tests.md) (22 shared connections)
+- [Combat Command Models](Combat_Command_Models.md) (19 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (19 shared connections)
+- [Dependency Upgrade Report](Dependency_Upgrade_Report.md) (19 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (17 shared connections)
+- [Maps API Endpoints](Maps_API_Endpoints.md) (17 shared connections)
+- [NATS Message Broker](NATS_Message_Broker.md) (15 shared connections)
+- [Game Magic Spell](Game_Magic_Spell.md) (14 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (13 shared connections)
+- [Player Save Preparer](Player_Save_Preparer.md) (13 shared connections)
 
 ## Source Files
 
-- `docs/TEST_MODERNIZATION_PLAN.md`
-- `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- `docs/archive/TEST_OPTIMIZATION_STATUS.md`
+- `e2e-tests/load-tests/get_invite_codes.py`
+- `monitoring/webhook-receiver.py`
+- `server/database.py`
+- `server/exceptions.py`
+- `server/game/mechanics.py`
+- `server/game/movement_service.py`
+- `server/models/__init__.py`
+- `server/models/alias.py`
+- `server/models/base.py`
+- `server/models/calendar.py`
+- `server/models/emote.py`
+- `server/models/invite.py`
+- `server/models/item.py`
+- `server/models/player_effect.py`
+- `server/models/player_skill.py`
+- `server/models/player_spells.py`
+- `server/models/quest.py`
+- `server/models/skill.py`
+- `server/models/skill_use_log.py`
+- `server/models/spell_db.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2255 (82%)
+- INFERRED: 496 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

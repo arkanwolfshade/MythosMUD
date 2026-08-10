@@ -1,50 +1,37 @@
 # E 2 E Scenario Whisper
 
-> 26 nodes · cohesion 0.08
+> 9 nodes
 
 ## Key Concepts
 
-- **Detailed Test Results** (15 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **Technical Verification** (8 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **Message Flow Analysis** (3 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **State Synchronization** (3 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **Details** (2 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **ArkanWolfshade Console** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **ArkanWolfshade's Final State** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **ArkanWolfshade View** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **Console Log Analysis** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **Delivery Times** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **Ithaqua Console** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **Ithaqua's Final State** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **Ithaqua View** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **Message Sequence Timeline** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **NATS Subject Pattern** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **New Locations** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **Step 1: Initial Setup (Same Room)** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **Step 2: Same-Room Whisper** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **Step 3: Player Movement (Ithaqua)** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **Step 4: Cross-Location Whisper (Sender Stationary)** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **Step 5: Cross-Location Reply** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **Step 6: Reply Setup Before Movement** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **Step 7: Sender Movement During Transit** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **Step 8: Cross-Location Reply (Both Moved)** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- **Step 9: Final Cross-Location Reply (Sender Returns)** (1 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
-- *... and 1 more nodes in this community*
+- **REQUIRED TOOL USAGE PATTERN** (9 connections) — `.cursor/commands/server-test-remediation.md`
+- **5. Test Environment Setup** (3 connections) — `.cursor/commands/server-test-remediation.md`
+- **8. Error Handling and Debugging** (3 connections) — `.cursor/commands/server-test-remediation.md`
+- **Environment Variables** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Test Configuration** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **6. Quality Assurance Checklist** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Test Debugging** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Common Debug Commands** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **10. Final Verification** (1 connections) — `.cursor/commands/server-test-remediation.md`
 
 ## Relationships
 
-- [[Whisper Scenario Test Report]] (2 shared connections)
+- [NPC Death Message Bug](NPC_Death_Message_Bug.md) (1 shared connections)
+- [3. Systematic Investigation Approach](3._Systematic_Investigation_Approach.md) (1 shared connections)
+- [E 2 E Phase Code](E_2_E_Phase_Code.md) (1 shared connections)
+- [Dependency Injection Dependencies](Dependency_Injection_Dependencies.md) (1 shared connections)
+- [Realtime Performance Tracker](Realtime_Performance_Tracker.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
+- `.cursor/commands/server-test-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

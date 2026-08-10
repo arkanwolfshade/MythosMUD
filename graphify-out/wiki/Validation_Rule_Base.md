@@ -1,65 +1,42 @@
 # Validation Rule Base
 
-> 31 nodes · cohesion 0.07
+> 18 nodes
 
 ## Key Concepts
 
-- **ValidationRule** (10 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **String representation of the NPC definition.** (9 connections) — `server/models/npc.py`
-- **ValidationError** (8 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **base_rule.py** (5 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.create_error()** (3 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.create_warning()** (3 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.validate()** (3 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **__init__.py** (3 connections) — `tools/room_toolkit/room_validator/rules/__init__.py`
-- **.__repr__()** (2 connections) — `server/models/alias.py`
-- **.__repr__()** (2 connections) — `server/models/npc.py`
-- **.__repr__()** (2 connections) — `server/models/npc.py`
-- **.__repr__()** (2 connections) — `server/models/profession.py`
-- **.__str__()** (2 connections) — `server/models/room.py`
-- **.__repr__()** (2 connections) — `server/models/skill.py`
-- **.__repr__()** (2 connections) — `server/models/user.py`
-- **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.__str__()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **._filter_rooms_by_zone()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.get_rule_info()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Base validation rule class.  This module defines the abstract base class for all** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Create a validation error for this rule.          Args:             room_id: Roo** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Represents a validation error with metadata.      As documented in the restricte** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Create a validation warning for this rule.          Args:             room_id: R** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Get information about this rule.          Returns:             Dictionary with r** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- *... and 6 more nodes in this community*
+- **Execution Steps** (11 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Scenario 7: Who Command **[REQUIRES MULTI-PLAYER]**** (5 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **scenario-07-who-command.md** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Step 1: AW Uses Who Command** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Step 2: Verify AW Sees Both Players** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Step 3: Verify Location Information** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Step 4: Ithaqua Uses Who Command** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Step 5: Verify Ithaqua Sees Both Players** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Step 6: Test Who Command After Movement** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Step 7: Verify Updated Location Information** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Step 8: Test Who Command Format** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Step 9: Test Who Command with Single Player** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Step 10: Verify Single Player Who List** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
 
 ## Relationships
 
-- [[NPC Definition Schemas]] (2 shared connections)
-- [[Game Mechanics Service]] (2 shared connections)
-- [[Command Alias Model]] (1 shared connections)
-- [[LRU Cache Manager]] (1 shared connections)
-- [[Profession Model Tests]] (1 shared connections)
-- [[Room Occupancy Class]] (1 shared connections)
-- [[Game Service Bundle]] (1 shared connections)
-- [[API Test Fixtures]] (1 shared connections)
-- [[Standardized Error Responses]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/models/alias.py`
-- `server/models/npc.py`
-- `server/models/profession.py`
-- `server/models/room.py`
-- `server/models/skill.py`
-- `server/models/user.py`
-- `tools/room_toolkit/room_validator/rules/__init__.py`
-- `tools/room_toolkit/room_validator/rules/base_rule.py`
+- `e2e-tests/scenarios/scenario-07-who-command.md`
 
 ## Audit Trail
 
-- EXTRACTED: 79 (100%)
+- EXTRACTED: 34 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

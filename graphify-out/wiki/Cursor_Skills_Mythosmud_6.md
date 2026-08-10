@@ -1,17 +1,14 @@
 # Cursor Skills Mythosmud
 
-> 8 nodes · cohesion 0.25
+> 5 nodes
 
 ## Key Concepts
 
-- **MythosMUD Full-Stack Feature** (7 connections) — `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
-- **SKILL.md** (1 connections) — `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Authority** (1 connections) — `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Checklist** (1 connections) — `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Principle** (1 connections) — `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Reference** (1 connections) — `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Stack Summary** (1 connections) — `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
-- **When to Touch Each Layer** (1 connections) — `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
+- **MythosMUD Pre-Commit Checklist Skill** (4 connections) — `.cursor/skills/mythosmud-pre-commit-checklist/SKILL.md`
+- **MythosMUD Code Quality AI Skill** (1 connections) — `.cursor/skills/mythosmud-code-quality-ai/SKILL.md`
+- **MythosMUD Commit Messages Skill** (1 connections) — `.cursor/skills/mythosmud-commit-messages/SKILL.md`
+- **MythosMUD Test Writing Skill** (1 connections) — `.cursor/skills/mythosmud-test-writing/SKILL.md`
+- **Definition of Done Checklist** (1 connections) — `.cursor/skills/mythosmud-pre-commit-checklist/SKILL.md`
 
 ## Relationships
 
@@ -19,14 +16,17 @@
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-full-stack-feature/SKILL.md`
+- `.cursor/skills/mythosmud-code-quality-ai/SKILL.md`
+- `.cursor/skills/mythosmud-commit-messages/SKILL.md`
+- `.cursor/skills/mythosmud-pre-commit-checklist/SKILL.md`
+- `.cursor/skills/mythosmud-test-writing/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (25%)
+- INFERRED: 6 (75%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

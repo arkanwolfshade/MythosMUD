@@ -1,67 +1,53 @@
 # WebSocket Message Handlers
 
-> 124 nodes · cohesion 0.03
+> 137 nodes
 
 ## Key Concepts
 
-- **message_handler_factory.py** (22 connections) — `server/realtime/message_handler_factory.py`
-- **test_message_handler_factory.py** (20 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **MessageHandlerFactory** (17 connections) — `server/realtime/message_handler_factory.py`
-- **websocket_handler_connection.py** (17 connections) — `server/realtime/websocket_handler_connection.py`
-- **get_container()** (16 connections) — `server/container/main.py`
-- **message_handlers.py** (13 connections) — `server/realtime/message_handlers.py`
-- **MessageHandler** (12 connections) — `server/realtime/message_handler_factory.py`
-- **handle_command_message()** (11 connections) — `server/realtime/message_handlers.py`
-- **test_message_handlers.py** (11 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **handle_chat_message()** (10 connections) — `server/realtime/message_handlers.py`
-- **handle_ping_message()** (10 connections) — `server/realtime/message_handlers.py`
-- **handle_follow_response_message()** (9 connections) — `server/realtime/message_handlers.py`
-- **.__init__()** (8 connections) — `server/realtime/message_handler_factory.py`
-- **handle_party_invite_response_message()** (8 connections) — `server/realtime/message_handlers.py`
-- **Any** (8 connections) — `server/realtime/message_handler_factory.py`
-- **WebSocket** (8 connections) — `server/realtime/message_handler_factory.py`
-- **ChatMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
-- **ClientErrorReportMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
-- **CommandMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
-- **.handle_message()** (7 connections) — `server/realtime/message_handler_factory.py`
-- **PingMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (6 connections) — `server/realtime/message_handler_factory.py`
-- **handle_client_error_report_message()** (6 connections) — `server/realtime/message_handlers.py`
-- **cleanup_websocket_connection()** (6 connections) — `server/realtime/websocket_handler_connection.py`
-- **send_welcome_event()** (6 connections) — `server/realtime/websocket_handler_connection.py`
-- *... and 99 more nodes in this community*
+- **BehaviorEngine** (73 connections) — `server/npc/behavior_engine.py`
+- **test_behavior_engine.py** (54 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Any** (12 connections)
+- **._try_evaluators()** (7 connections) — `server/npc/behavior_engine.py`
+- **.evaluate_condition()** (6 connections) — `server/npc/behavior_engine.py`
+- **.get_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **.execute_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_equality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_inequality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_numeric_comparison()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_boolean_condition()** (4 connections) — `server/npc/behavior_engine.py`
+- **.execute_action()** (4 connections) — `server/npc/behavior_engine.py`
+- **.add_rule()** (3 connections) — `server/npc/behavior_engine.py`
+- **.get_rules()** (3 connections) — `server/npc/behavior_engine.py`
+- **.register_action_handler()** (3 connections) — `server/npc/behavior_engine.py`
+- **.get_behavior_engine()** (3 connections) — `server/npc/npc_base.py`
+- **test_behavior_engine_init()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_add_rule_success()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_add_rule_missing_fields()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_add_rule_replaces_existing()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_add_rule_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_remove_rule_success()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_remove_rule_not_found()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_remove_rule_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_get_rules()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- *... and 112 more nodes in this community*
 
 ## Relationships
 
-- [[Combat Player Broadcasts]] (9 shared connections)
-- [[Application DI Bundles]] (8 shared connections)
-- [[NPC Admin API]] (6 shared connections)
-- [[Room Occupant Events]] (6 shared connections)
-- [[WebSocket Message Validation]] (5 shared connections)
-- [[Pydantic Error Handlers]] (3 shared connections)
-- [[Game Mechanics Service]] (3 shared connections)
-- [[WebSocket Message Validator]] (3 shared connections)
-- [[Standardized Error Responses]] (2 shared connections)
-- [[Player Combat XP]] (2 shared connections)
-- [[Game Service Bundle]] (1 shared connections)
-- [[WebSocket Command Handler]] (1 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (6 shared connections)
+- [Help and WebSocket Core](Help_and_WebSocket_Core.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/main.py`
-- `server/realtime/message_handler_factory.py`
-- `server/realtime/message_handlers.py`
-- `server/realtime/websocket_handler_connection.py`
-- `server/tests/unit/realtime/test_message_handler_factory.py`
-- `server/tests/unit/realtime/test_message_handlers.py`
-- `server/tests/unit/realtime/test_websocket_handler_core.py`
+- `server/npc/behavior_engine.py`
+- `server/npc/npc_base.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 468 (99%)
-- INFERRED: 6 (1%)
+- EXTRACTED: 418 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

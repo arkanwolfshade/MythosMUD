@@ -1,67 +1,62 @@
 # Player Domain Model
 
-> 135 nodes · cohesion 0.02
+> 62 nodes
 
 ## Key Concepts
 
-- **Player** (185 connections) — `server/models/player.py`
-- **test_player_model.py** (46 connections) — `server/tests/unit/models/test_player_model.py`
-- **PlayerInventory** (30 connections) — `server/models/player.py`
-- **PositionState** (19 connections) — `server/models/game.py`
-- **row_to_player()** (18 connections) — `server/persistence/repositories/player_repository_mappers.py`
-- **player_repository_mappers.py** (9 connections) — `server/persistence/repositories/player_repository_mappers.py`
-- **player_repository_save.py** (9 connections) — `server/persistence/repositories/player_repository_save.py`
-- **Any** (7 connections) — `server/persistence/repositories/player_repository_mappers.py`
-- **_coerce_row_stats()** (4 connections) — `server/persistence/repositories/player_repository_mappers.py`
-- **_defaulted_numerics()** (4 connections) — `server/persistence/repositories/player_repository_mappers.py`
-- **_defaulted_strings()** (4 connections) — `server/persistence/repositories/player_repository_mappers.py`
-- **InventoryPayload** (4 connections) — `server/persistence/repositories/player_repository_mappers.py`
-- **_parse_equipped_safely()** (4 connections) — `server/persistence/repositories/player_repository_mappers.py`
-- **datetime** (4 connections) — `server/persistence/repositories/player_repository_save.py`
-- **_convert_legacy_stats_string()** (3 connections) — `server/models/player.py`
-- **test_player_add_experience()** (3 connections) — `server/tests/unit/models/test_player_model.py`
-- **test_player_add_experience_zero()** (3 connections) — `server/tests/unit/models/test_player_model.py`
-- **test_player_apply_dp_change_became_dead()** (3 connections) — `server/tests/unit/models/test_player_model.py`
-- **test_player_apply_dp_change_became_mortally_wounded()** (3 connections) — `server/tests/unit/models/test_player_model.py`
-- **test_player_apply_dp_change_updates_dp()** (3 connections) — `server/tests/unit/models/test_player_model.py`
-- **test_player_apply_dp_decay_caps_at_negative_10()** (3 connections) — `server/tests/unit/models/test_player_model.py`
-- **test_player_apply_dp_decay_changes_posture_when_crossing_zero()** (3 connections) — `server/tests/unit/models/test_player_model.py`
-- **test_player_apply_dp_decay_reduces_dp()** (3 connections) — `server/tests/unit/models/test_player_model.py`
-- **test_player_creation()** (3 connections) — `server/tests/unit/models/test_player_model.py`
-- **test_player_defaults()** (3 connections) — `server/tests/unit/models/test_player_model.py`
-- *... and 110 more nodes in this community*
+- **dependencies.py** (103 connections) — `server/dependencies.py`
+- **test_dependencies.py** (60 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **get_container()** (41 connections) — `server/dependencies.py`
+- **RuntimeError** (37 connections)
+- **Request** (29 connections)
+- **get_player_service()** (12 connections) — `server/dependencies.py`
+- **get_room_service()** (12 connections) — `server/dependencies.py`
+- **get_player_death_service()** (10 connections) — `server/dependencies.py`
+- **get_combat_service()** (10 connections) — `server/dependencies.py`
+- **get_magic_service()** (10 connections) — `server/dependencies.py`
+- **get_spell_learning_service()** (10 connections) — `server/dependencies.py`
+- **get_chat_service()** (10 connections) — `server/dependencies.py`
+- **get_connection_manager()** (9 connections) — `server/dependencies.py`
+- **get_async_persistence()** (9 connections) — `server/dependencies.py`
+- **get_player_respawn_service()** (9 connections) — `server/dependencies.py`
+- **get_player_combat_service()** (9 connections) — `server/dependencies.py`
+- **get_spell_registry()** (9 connections) — `server/dependencies.py`
+- **get_spell_targeting_service()** (9 connections) — `server/dependencies.py`
+- **get_spell_effects()** (9 connections) — `server/dependencies.py`
+- **get_mp_regeneration_service()** (9 connections) — `server/dependencies.py`
+- **get_npc_lifecycle_manager()** (9 connections) — `server/dependencies.py`
+- **get_npc_spawning_service()** (9 connections) — `server/dependencies.py`
+- **get_npc_population_controller()** (9 connections) — `server/dependencies.py`
+- **get_catatonia_registry()** (9 connections) — `server/dependencies.py`
+- **get_mythos_time_consumer()** (9 connections) — `server/dependencies.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Admin API]] (31 shared connections)
-- [[SQLAlchemy Model Base]] (22 shared connections)
-- [[Lucidity Database Models]] (14 shared connections)
-- [[Player Save Preparer]] (13 shared connections)
-- [[Integer Coercion Utils]] (11 shared connections)
-- [[Admin Summon Command]] (9 shared connections)
-- [[Integration DB Fixtures]] (7 shared connections)
-- [[Room Occupancy Class]] (7 shared connections)
-- [[Player Related Models]] (6 shared connections)
-- [[Player Death Service]] (6 shared connections)
-- [[Health Cold Resistance]] (5 shared connections)
-- [[Persistence Repositories Player]] (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (18 shared connections)
+- [Game Mechanics Service](Game_Mechanics_Service.md) (17 shared connections)
+- [NPC Service Tests](NPC_Service_Tests.md) (14 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (11 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (8 shared connections)
+- [Cursor Skills Frontend](Cursor_Skills_Frontend.md) (7 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (5 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (4 shared connections)
+- [LRU Cache Manager](LRU_Cache_Manager.md) (4 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (3 shared connections)
+- [Inventory Service Helpers](Inventory_Service_Helpers.md) (3 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
-- `server/models/player.py`
-- `server/models/player_spells.py`
-- `server/persistence/repositories/player_repository_mappers.py`
-- `server/persistence/repositories/player_repository_save.py`
-- `server/tests/unit/models/test_player_model.py`
-- `server/tests/unit/services/test_npc_combat_data_provider.py`
+- `server/dependencies.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 492 (85%)
-- INFERRED: 84 (15%)
+- EXTRACTED: 458 (85%)
+- INFERRED: 80 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,54 +1,79 @@
 # NPC Service Tests
 
-> 82 nodes · cohesion 0.04
+> 294 nodes
 
 ## Key Concepts
 
-- **test_npc_service.py** (48 connections) — `server/tests/unit/services/test_npc_service.py`
-- **_mock_result_mappings_all()** (29 connections) — `server/tests/unit/services/test_npc_service.py`
-- **_def_row()** (18 connections) — `server/tests/unit/services/test_npc_service.py`
-- **_spawn_rule_row()** (6 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_spawn_rule_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **Test get_npc_definition() returns definition when found.** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_npc_definition_success()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_npc_definition_with_base_stats()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_spawn_rule_invalid_max_population()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_spawn_rule_invalid_min_population()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_delete_npc_definition_success()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_delete_spawn_rule_success()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_by_name_case_insensitive()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_by_name_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_by_name_not_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definitions_by_sub_zone()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definitions_by_type()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definitions_success()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_spawn_rule_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_spawn_rules_success()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_update_npc_definition_invalid_probability()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_update_npc_definition_invalid_type()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_update_npc_definition_success()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **npc_service()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
-- *... and 57 more nodes in this community*
+- **Spell** (93 connections) — `server/models/spell.py`
+- **SpellEffects** (56 connections) — `server/game/magic/spell_effects.py`
+- **magic_service.py** (40 connections) — `server/game/magic/magic_service.py`
+- **SpellLearningService** (38 connections) — `server/game/magic/spell_learning_service.py`
+- **test_spell_effects.py** (38 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **PlayerSpellRepository** (37 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **lifespan_magic.py** (35 connections) — `server/app/lifespan_magic.py`
+- **SpellRegistry** (35 connections) — `server/game/magic/spell_registry.py`
+- **MagicService** (30 connections) — `server/game/magic/magic_service.py`
+- **test_spell.py** (30 connections) — `server/tests/unit/models/test_spell.py`
+- **SpellTargetingService** (29 connections) — `server/game/magic/spell_targeting.py`
+- **magic_service_completion.py** (25 connections) — `server/game/magic/magic_service_completion.py`
+- **SpellEffectsDeps** (25 connections) — `server/game/magic/spell_effects.py`
+- **spell.py** (22 connections) — `server/models/spell.py`
+- **spell_learning_service.py** (21 connections) — `server/game/magic/spell_learning_service.py`
+- **magic.py** (20 connections) — `server/container/bundles/magic.py`
+- **spell_targeting.py** (20 connections) — `server/game/magic/spell_targeting.py`
+- **MagicBundle** (19 connections) — `server/container/bundles/magic.py`
+- **CastingStateManager** (18 connections) — `server/game/magic/casting_state_manager.py`
+- **MagicServiceOptionalDeps** (18 connections) — `server/game/magic/magic_service.py`
+- **initialize_magic_services()** (15 connections) — `server/app/lifespan_magic.py`
+- **spell_registry.py** (15 connections) — `server/game/magic/spell_registry.py`
+- **test_spell_targeting.py** (15 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
+- **_create_registry_and_targeting()** (14 connections) — `server/container/bundles/magic.py`
+- **SpellCostsService** (14 connections) — `server/game/magic/spell_costs.py`
+- *... and 269 more nodes in this community*
 
 ## Relationships
 
-- [[Lifespan Startup Hooks]] (3 shared connections)
-- [[NPC Admin API]] (2 shared connections)
-- [[NPC Definition Schemas]] (2 shared connections)
-- [[Argon2 Password Hashing]] (1 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (89 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (30 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (22 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (21 shared connections)
+- [Security Headers Middleware](Security_Headers_Middleware.md) (20 shared connections)
+- [Client Event Store](Client_Event_Store.md) (17 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (14 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (14 shared connections)
+- [Async Persistence Migration](Async_Persistence_Migration.md) (13 shared connections)
+- [NPC Services Bundle](NPC_Services_Bundle.md) (10 shared connections)
+- [test_profession_meets_stat_requirements_multiple_not_met](test_profession_meets_stat_requirements_multiple_not_met.md) (10 shared connections)
+- [Quality Audit Report](Quality_Audit_Report.md) (9 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/auth/test_endpoints.py`
-- `server/tests/unit/services/test_npc_service.py`
+- `server/app/lifespan_magic.py`
+- `server/commands/magic_commands.py`
+- `server/container/bundles/magic.py`
+- `server/game/magic/casting_state_manager.py`
+- `server/game/magic/magic_service.py`
+- `server/game/magic/magic_service_completion.py`
+- `server/game/magic/spell_costs.py`
+- `server/game/magic/spell_effects.py`
+- `server/game/magic/spell_learning_service.py`
+- `server/game/magic/spell_materials.py`
+- `server/game/magic/spell_registry.py`
+- `server/game/magic/spell_targeting.py`
+- `server/models/spell.py`
+- `server/persistence/repositories/player_spell_repository.py`
+- `server/persistence/repositories/spell_repository.py`
+- `server/tests/unit/game/magic/test_spell_effects.py`
+- `server/tests/unit/game/magic/test_spell_targeting.py`
+- `server/tests/unit/models/test_spell.py`
+- `server/tests/unit/services/test_damage_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 274 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1300 (88%)
+- INFERRED: 173 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

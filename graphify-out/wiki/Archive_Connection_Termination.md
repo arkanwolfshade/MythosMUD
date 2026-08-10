@@ -1,47 +1,33 @@
 # Archive Connection Termination
 
-> 23 nodes · cohesion 0.09
+> 8 nodes
 
 ## Key Concepts
 
-- **Connection Termination Implementation Demo** (9 connections) — `docs/archive/connection_termination_demo.md`
-- ****1. Enhanced Connection Manager (`server/realtime/connection_manager.py`)**** (5 connections) — `docs/archive/connection_termination_demo.md`
-- **🔒 Security & User Experience Benefits** (4 connections) — `docs/archive/connection_termination_demo.md`
-- **🔧 Implementation Overview** (3 connections) — `docs/archive/connection_termination_demo.md`
-- **🧪 Testing Strategy** (3 connections) — `docs/archive/connection_termination_demo.md`
-- **🎯 Behavior Demonstration** (2 connections) — `docs/archive/connection_termination_demo.md`
-- **📋 Code Changes Made** (2 connections) — `docs/archive/connection_termination_demo.md`
-- **connection_termination_demo.md** (1 connections) — `docs/archive/connection_termination_demo.md`
-- ****After (Proper Behavior):**** (1 connections) — `docs/archive/connection_termination_demo.md`
-- ****Automated Testing:**** (1 connections) — `docs/archive/connection_termination_demo.md`
-- ****Before (Problematic Behavior):**** (1 connections) — `docs/archive/connection_termination_demo.md`
-- ****Enhanced SSE Connection Logic**** (1 connections) — `docs/archive/connection_termination_demo.md`
-- ****Enhanced WebSocket Connection Logic**** (1 connections) — `docs/archive/connection_termination_demo.md`
-- **📊 Expected Log Output** (1 connections) — `docs/archive/connection_termination_demo.md`
-- ****Manual Testing:**** (1 connections) — `docs/archive/connection_termination_demo.md`
-- **🏛️ MythosMUD Connection Termination Behavior** (1 connections) — `docs/archive/connection_termination_demo.md`
-- ****New Method: `force_disconnect_player()`**** (1 connections) — `docs/archive/connection_termination_demo.md`
-- ****Proper WebSocket Closure**** (1 connections) — `docs/archive/connection_termination_demo.md`
-- ****Resource Management:**** (1 connections) — `docs/archive/connection_termination_demo.md`
-- ****Scenario: User logs in twice**** (1 connections) — `docs/archive/connection_termination_demo.md`
-- ****Security:**** (1 connections) — `docs/archive/connection_termination_demo.md`
-- **🎉 Summary** (1 connections) — `docs/archive/connection_termination_demo.md`
-- ****User Experience:**** (1 connections) — `docs/archive/connection_termination_demo.md`
+- **schedule.schema.json** (8 connections) — `schemas/calendar/schedule.schema.json`
+- **required** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **$schema** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **$id** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **title** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **additionalProperties** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **schedules** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Services Inventory Mutation](Services_Inventory_Mutation.md) (1 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/connection_termination_demo.md`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

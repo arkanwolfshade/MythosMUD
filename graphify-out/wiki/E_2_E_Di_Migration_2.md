@@ -1,11 +1,11 @@
 # E 2 E Di Migration
 
-> 2 nodes · cohesion 1.00
+> 2 nodes
 
 ## Key Concepts
 
-- **ApplicationContainer** (1 connections) — `client/tests/e2e/DI_MIGRATION_TEST_RESULTS.md`
 - **DI Migration Test Results** (1 connections) — `client/tests/e2e/DI_MIGRATION_TEST_RESULTS.md`
+- **ApplicationContainer** (1 connections) — `client/tests/e2e/DI_MIGRATION_TEST_RESULTS.md`
 
 ## Relationships
 
@@ -23,4 +23,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

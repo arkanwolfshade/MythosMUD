@@ -1,51 +1,51 @@
 # Tailwind UI Migration Plan
 
-> 29 nodes · cohesion 0.07
+> 82 nodes
 
 ## Key Concepts
 
-- **Migration Strategy** (8 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ Phase 1: Setup & MOTD Protection (COMPLETED)** (5 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ Phase 2: New Mythos-Themed Interface Design (COMPLETED)** (4 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ Phase 3.1: Enhanced DraggablePanel (COMPLETED)** (4 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ Phase 3.2: Redesigned Chat Interface (COMPLETED)** (4 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ Phase 3.3: Enhanced Command Interface (COMPLETED)** (4 connections) — `docs/archive/PLANNING_tailwind.md`
-- **Phase 4: Advanced Mythos Features (2-3 days)** (4 connections) — `docs/archive/PLANNING_tailwind.md`
-- **Phase 5: Testing & Polish (2-3 days)** (4 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ 1.1 Install TailwindCSS with MOTD Safeguards** (1 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ 1.2 Configure TailwindCSS with MOTD Exclusion** (1 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ 1.3 Create MOTD Protection Layer** (1 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ 1.4 Test Setup** (1 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ 2.1 Design Philosophy for New Interface** (1 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ 2.2 New Interface Elements** (1 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ 2.3 New Base Components Created** (1 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ 3.1.1 Complete DraggablePanel Migration** (1 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ 3.1.2 New DraggablePanel Features** (1 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ 3.1.3 DraggablePanel Test Component** (1 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ 3.2.1 Enhanced Chat Panel** (1 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ 3.2.2 Chat Features** (1 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ 3.2.3 ChatPanel Test Component** (1 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ 3.3.1 Command Panel Improvements** (1 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ 3.3.2 Command Features** (1 connections) — `docs/archive/PLANNING_tailwind.md`
-- **✅ 3.3.3 CommandPanel Test Component** (1 connections) — `docs/archive/PLANNING_tailwind.md`
-- **4.1 Subtle Animation Effects** (1 connections) — `docs/archive/PLANNING_tailwind.md`
-- *... and 4 more nodes in this community*
+- **test_event_bus.py** (45 connections) — `server/tests/unit/events/test_event_bus.py`
+- **MockEventClass** (29 connections) — `server/tests/unit/events/test_event_bus.py`
+- **event_bus()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_subscribe()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_subscribe_multiple()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_unsubscribe()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_unsubscribe_not_found()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_get_subscriber_count()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_get_subscriber_count_none()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_get_all_subscriber_counts()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_publish()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_unsubscribe_multiple_handlers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_get_all_subscriber_counts_multiple_types()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_publish_no_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_inject_dispatches_to_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_publish_multiple_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_subscribe_invalid_handler()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_event_async_no_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_event_async_sync_subscriber_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_event_async_async_subscriber_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_task_result_async_no_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_task_result_async_with_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_subscribe_with_service_id()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_unsubscribe_all_for_service()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_unsubscribe_all_for_service_partial_cleanup()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [[Archive Planning Tailwind]] (1 shared connections)
-- [[Architecture Review Plan]] (1 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (5 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/PLANNING_tailwind.md`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 58 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 175 (80%)
+- INFERRED: 44 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

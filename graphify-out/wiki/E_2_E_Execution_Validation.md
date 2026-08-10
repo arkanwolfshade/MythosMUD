@@ -1,44 +1,29 @@
 # E 2 E Execution Validation
 
-> 20 nodes · cohesion 0.10
+> 5 nodes
 
 ## Key Concepts
 
-- **Execution Validation Documentation** (8 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Execution Benefits** (4 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Execution Options Validation** (4 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Execution Recommendations** (4 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Scenario Group Classifications** (4 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **EXECUTION_VALIDATION.md** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **All Scenarios Execution Benefits** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **By Complexity** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **By Functionality** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **By Testing Focus** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Conclusion** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **For CI/CD** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **For Development** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **For Testing** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Individual Scenario Execution Benefits** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Option 1: Individual Scenario Execution** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Option 2: Scenario Group Execution** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Option 3: All Scenarios Execution (Legacy Compatibility)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Overview** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Scenario Group Execution Benefits** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
+- **Phase 2: Categorize and Prioritize Mypy Issues** (5 connections) — `.cursor/commands/mypy-remediation.md`
+- **🔴 CRITICAL (Fix First - Blocking Issues)** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **🟡 HIGH PRIORITY (Fix Second - Core Functionality)** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **🟢 MEDIUM PRIORITY (Fix Third - Enhancement)** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **🔵 LOW PRIORITY (Fix Last - Polish)** (1 connections) — `.cursor/commands/mypy-remediation.md`
 
 ## Relationships
 
-- [[E 2 E Cursor Skills]] (1 shared connections)
+- [Configuration Files Reference](Configuration_Files_Reference.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/EXECUTION_VALIDATION.md`
+- `.cursor/commands/mypy-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,44 +1,37 @@
 # E 2 E Scenarios Scenario
 
-> 19 nodes · cohesion 0.11
+> 12 nodes
 
 ## Key Concepts
 
-- **Execution Steps** (10 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **Scenario 13: Whisper Basic **[REQUIRES MULTI-PLAYER]**** (6 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **Testing Approach Rationale** (3 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **Step 2: Both Players in Same Room** (2 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **scenario-13-whisper-basic.md** (1 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **Standard Playwright Not Suitable** (1 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **Step 2: AW Sends Whisper to Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **Step 3: Verify Ithaqua Receives AW's Whisper** (1 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **Step 4: Ithaqua Replies with Whisper** (1 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **Step 6: Test Multiple Whisper Messages** (1 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **Step 7: Test Whisper Message Formatting** (1 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **Step 8: Test Whisper Message History** (1 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **Step 9: Test Whisper vs Other Channels** (1 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **Why Playwright MCP is Required** (1 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
+- **test_combat_service_npc_in_combat.py** (8 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **combat_service()** (3 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **test_is_npc_in_combat_sync_returns_false_when_npc_not_in_combat()** (2 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **test_is_npc_in_combat_sync_returns_true_when_npc_uuid_in_combat()** (2 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **test_is_npc_in_combat_sync_returns_false_for_invalid_uuid_string()** (2 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **test_is_npc_in_combat_sync_returns_true_when_string_id_mapped_to_combat()** (2 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **Unit tests for CombatService.is_npc_in_combat_sync.  Tests the NPC-in-combat che** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **Create CombatService with mocked dependencies so is_npc_in_combat_sync can be te** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **Test is_npc_in_combat_sync returns False when NPC is not in any combat.** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **Test is_npc_in_combat_sync returns True when NPC UUID is in _npc_combats.** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **Test is_npc_in_combat_sync returns False for non-UUID string when no mapping.** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **Test is_npc_in_combat_sync returns True when integration service maps string id** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
 
 ## Relationships
 
-- [[E 2 E Scenarios Scenario]] (2 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (2 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- `e2e-tests/scenarios/scenario-13-whisper-basic.md`
+- `server/tests/unit/services/test_combat_service_npc_in_combat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
+- EXTRACTED: 25 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

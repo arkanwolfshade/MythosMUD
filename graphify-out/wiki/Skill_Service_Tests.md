@@ -1,50 +1,61 @@
 # Skill Service Tests
 
-> 64 nodes · cohesion 0.04
+> 46 nodes
 
 ## Key Concepts
 
-- **test_skill_service.py** (34 connections) — `server/tests/unit/game/test_skill_service.py`
-- **_occupation_slots_9()** (11 connections) — `server/tests/unit/game/test_skill_service.py`
-- **_personal_interest_4()** (8 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_cthulhu_mythos_in_occupation_rejected()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_duplicate_occupation_skill_ids_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_own_language_not_allocated_equals_edu()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_valid_creates_rows()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_wrong_occupation_values_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **catalog_with_own_language_and_mythos()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **skill_service()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_cthulhu_mythos_in_personal_rejected()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_duplicate_personal_skill_ids_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_overlap_occupation_and_personal_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_personal_interest_not_four_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_wrong_occupation_count_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **mock_player_skill_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **mock_skill_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **mock_skill_use_log_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_get_player_skills_non_owner_returns_none()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_get_player_skills_owner_returns_list()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_get_skills_catalog_returns_list()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_get_skills_used_this_level_returns_repo_result()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_record_successful_skill_use_calls_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_roll_skill_check_failure_does_not_record()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- *... and 39 more nodes in this community*
+- **test_corpse_lifecycle_service.py** (55 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_get_enum_value_enum()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_can_access_corpse_grace_period_expired()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_can_access_corpse_invalid_grace_period()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_is_corpse_decayed_not_decayed()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_create_corpse_on_death_player_no_name()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_create_corpse_on_death_custom_grace_period()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_is_corpse_decayed_timezone_aware()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_is_corpse_decayed_timezone_naive_vs_aware()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_corpse_lifecycle_service_init()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_cleanup_decayed_corpse_success()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_cleanup_decayed_corpses_in_room()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_get_all_decayed_corpses()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_cleanup_all_decayed_corpses()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_get_decayed_corpses_in_room_validation_error()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_get_decayed_corpses_in_room_non_corpse()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_cleanup_decayed_corpses_in_room_handles_errors()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_get_all_decayed_corpses_empty()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_get_all_decayed_corpses_uses_real_time_not_mythos_time()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_get_all_decayed_corpses_validation_error()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_get_all_decayed_corpses_non_corpse()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_cleanup_all_decayed_corpses_handles_errors()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_get_all_decayed_corpses_timezone_aware_utc()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **Unit tests for corpse lifecycle service.  Tests the CorpseLifecycleService class** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **Test _get_enum_value() with enum instance.** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [[Game Service Bundle]] (4 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (11 shared connections)
+- [Archive Npc Population](Archive_Npc_Population.md) (9 shared connections)
+- [Player State Factories](Player_State_Factories.md) (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [corpse_service](corpse_service.md) (1 shared connections)
+- [mock_persistence](mock_persistence.md) (1 shared connections)
+- [test_can_access_corpse_admin](test_can_access_corpse_admin.md) (1 shared connections)
+- [test_can_access_corpse_grace_period_active](test_can_access_corpse_grace_period_active.md) (1 shared connections)
+- [test_can_access_corpse_grace_period_type_error](test_can_access_corpse_grace_period_type_error.md) (1 shared connections)
+- [test_can_access_corpse_no_grace_period_start](test_can_access_corpse_no_grace_period_start.md) (1 shared connections)
+- [test_can_access_corpse_no_owner](test_can_access_corpse_no_owner.md) (1 shared connections)
+- [test_can_access_corpse_owner](test_can_access_corpse_owner.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `server/tests/unit/services/test_corpse_lifecycle_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 160 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 128 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

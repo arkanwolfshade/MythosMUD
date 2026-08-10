@@ -1,54 +1,56 @@
 # Alias Storage Layer
 
-> 59 nodes · cohesion 0.04
+> 52 nodes
 
 ## Key Concepts
 
-- **test_alias_storage.py** (64 connections) — `server/tests/unit/test_alias_storage.py`
-- **AliasStorage** (7 connections) — `server/tests/unit/test_alias_storage.py`
-- **alias_storage()** (4 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_alias_storage_creates_directory()** (4 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_alias_storage_init_with_env_var()** (4 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_alias_storage_init_with_storage_dir()** (4 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_alias_storage_init_without_env_var()** (4 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_get_alias_validator_caching()** (3 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_get_alias_validator_creation_failure()** (3 connections) — `server/tests/unit/test_alias_storage.py`
-- **Test validate_alias_name rejects reserved commands.** (2 connections) — `server/tests/unit/test_alias_storage.py`
-- **Test AliasStorage initialization with ALIASES_DIR environment variable.** (2 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_add_alias_new()** (2 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_backup_aliases_io_error()** (2 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_backup_aliases_nonexistent_file()** (2 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_backup_aliases_success()** (2 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_clear_aliases()** (2 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_create_alias_limit_reached()** (2 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_delete_player_aliases_nonexistent()** (2 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_get_alias_existing()** (2 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_get_alias_nonexistent()** (2 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_get_player_aliases_empty()** (2 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_get_player_aliases_invalid_alias_data()** (2 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_get_player_aliases_with_aliases()** (2 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_list_alias_files_empty()** (2 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_load_alias_data_invalid_json()** (2 connections) — `server/tests/unit/test_alias_storage.py`
-- *... and 34 more nodes in this community*
+- **NPCCombatLucidity** (34 connections) — `server/services/npc_combat_lucidity.py`
+- **TestNPCCombatLucidity** (17 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **_EncounterCtx** (9 connections) — `server/services/npc_combat_lucidity.py`
+- **.apply_encounter_lucidity_effect()** (9 connections) — `server/services/npc_combat_lucidity.py`
+- **._apply_loss_with_fallback()** (8 connections) — `server/services/npc_combat_lucidity.py`
+- **._commit_loss()** (7 connections) — `server/services/npc_combat_lucidity.py`
+- **._apply_disturbing_fallback()** (7 connections) — `server/services/npc_combat_lucidity.py`
+- **Any** (6 connections)
+- **._archetype_from_definition()** (4 connections) — `server/services/npc_combat_lucidity.py`
+- **._resolve_lucidity_category()** (4 connections) — `server/services/npc_combat_lucidity.py`
+- **test_npc_combat_lucidity.py** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_get_behavior_config_exception()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.get_lucidity_service()** (3 connections) — `server/services/npc_combat_integration_service.py`
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_none_npc()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_from_base_stats()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_from_mythos_tier()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_from_behavior_config()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_aggressive_mob()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_passive_mob()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_default()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_get_base_stats_exception()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_non_dict_stats()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_apply_encounter_lucidity_effect_success()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_apply_encounter_lucidity_effect_with_npc_name()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [[Alias Storage]] (26 shared connections)
-- [[Alias Expansion Logic]] (7 shared connections)
-- [[Alias Storage Services]] (5 shared connections)
-- [[Emote Schema Validator]] (3 shared connections)
-- [[Command Alias Model]] (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (11 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (6 shared connections)
+- [Pre-commit Hook Analysis](Pre-commit_Hook_Analysis.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_alias_storage.py`
+- `server/services/npc_combat_integration_service.py`
+- `server/services/npc_combat_lucidity.py`
+- `server/tests/unit/services/test_npc_combat_lucidity.py`
 
 ## Audit Trail
 
-- EXTRACTED: 169 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 171 (94%)
+- INFERRED: 10 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

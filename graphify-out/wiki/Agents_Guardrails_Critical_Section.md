@@ -1,38 +1,31 @@
 # Agents Guardrails Critical Section
 
-> 14 nodes · cohesion 0.14
+> 6 nodes
 
 ## Key Concepts
 
-- **Code quality and CI policy** (8 connections) — `AGENTS.md`
-- **Fragmentation and CI gates (overview)** (7 connections) — `AGENTS.md`
-- **AI guardrails (critical section)** (1 connections) — `AGENTS.md`
-- **Codacy (structural signals)** (1 connections) — `AGENTS.md`
-- **Code organization** (1 connections) — `AGENTS.md`
-- **Code review checklist** (1 connections) — `AGENTS.md`
-- **Code suppression rules** (1 connections) — `AGENTS.md`
-- **Companion CI script spec (pseudo-implementation)** (1 connections) — `AGENTS.md`
-- **Diff-based heuristics** (1 connections) — `AGENTS.md`
-- **Examples: acceptable vs over-fragmented** (1 connections) — `AGENTS.md`
-- **Linting and formatting** (1 connections) — `AGENTS.md`
-- **Lizard (hard gates)** (1 connections) — `AGENTS.md`
-- **Reviewer PR checks** (1 connections) — `AGENTS.md`
-- **Terminology** (1 connections) — `AGENTS.md`
+- **TestGetPlayerCombatService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_player_combat_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_player_combat_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_player_combat_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_player_combat_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_player_combat_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [[AGENTS Architecture Guidelines]] (1 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `AGENTS.md`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

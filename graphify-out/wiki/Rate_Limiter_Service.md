@@ -1,53 +1,42 @@
 # Rate Limiter Service
 
-> 77 nodes · cohesion 0.04
+> 16 nodes
 
 ## Key Concepts
 
-- **RateLimiter** (57 connections) — `server/realtime/rate_limiter.py`
-- **test_connection_rate_limiter.py** (31 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **Test RateLimiter.cleanup_old_attempts() removes old attempts.** (4 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **.get_message_rate_limit_info()** (3 connections) — `server/realtime/rate_limiter.py`
-- **.get_rate_limit_info()** (3 connections) — `server/realtime/rate_limiter.py`
-- **.get_stats()** (3 connections) — `server/realtime/rate_limiter.py`
-- **test_rate_limiter_check_message_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_message_rate_limit_first()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_message_rate_limit_within_limit()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_rate_limit_first_attempt()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_rate_limit_old_attempts_removed()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_rate_limit_within_limit()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_large_structures()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_large_structures_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_attempts_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_attempts_removes_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_message_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_message_attempts_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_message_attempts_removes_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_message_rate_limit_info()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_message_rate_limit_info_no_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_rate_limit_info()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_rate_limit_info_no_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- *... and 52 more nodes in this community*
+- **EnvironmentalContainerLoader** (8 connections) — `server/services/environmental_container_loader.py`
+- **.load_container_from_room_json()** (7 connections) — `server/services/environmental_container_loader.py`
+- **.migrate_room_container_to_postgresql()** (7 connections) — `server/services/environmental_container_loader.py`
+- **._parse_lock_state()** (5 connections) — `server/services/environmental_container_loader.py`
+- **._validate_container_capacity()** (4 connections) — `server/services/environmental_container_loader.py`
+- **.__init__()** (3 connections) — `server/services/environmental_container_loader.py`
+- **Any** (3 connections)
+- **.load_containers_for_room()** (3 connections) — `server/services/environmental_container_loader.py`
+- **ContainerComponent** (2 connections)
+- **UUID** (2 connections)
+- **ContainerLockState** (1 connections)
+- **Service for loading environmental containers from JSON and PostgreSQL.      Ha** (1 connections) — `server/services/environmental_container_loader.py`
+- **Initialize the environmental container loader.          Args:             per** (1 connections) — `server/services/environmental_container_loader.py`
+- **Load environmental container definition from room JSON.** (1 connections) — `server/services/environmental_container_loader.py`
+- **migrate_room_container_to_postgresql.** (1 connections) — `server/services/environmental_container_loader.py`
+- **Load all environmental containers for a room from PostgreSQL.          Args:** (1 connections) — `server/services/environmental_container_loader.py`
 
 ## Relationships
 
-- [[Room Occupant Events]] (10 shared connections)
-- [[Connection Disconnection Cleanup]] (5 shared connections)
-- [[Chat Rate Limiter]] (1 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (3 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/rate_limiter.py`
-- `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- `server/services/environmental_container_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 235 (97%)
-- INFERRED: 7 (3%)
+- EXTRACTED: 47 (94%)
+- INFERRED: 3 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

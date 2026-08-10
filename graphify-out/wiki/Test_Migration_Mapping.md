@@ -1,51 +1,54 @@
 # Test Migration Mapping
 
-> 34 nodes · cohesion 0.06
+> 53 nodes
 
 ## Key Concepts
 
-- **Complete File Mapping** (27 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Test Suite Migration File Mapping** (4 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Testing Strategy** (3 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Regression Tests** (2 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Summary Statistics** (2 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **TEST_MIGRATION_MAPPING.md** (1 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Coverage Tests** (1 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **E2E Tests** (1 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Fixtures and Utilities** (1 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Integration Tests** (1 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Migration Status Legend** (1 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Monitoring Tests** (1 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Performance Tests** (1 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Security Tests** (1 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Special/Demo/Deprecated Tests** (1 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Total Files: 204** (1 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Unit Tests - API Layer** (1 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Unit Tests - Authentication** (1 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Unit Tests - Chat/Communication** (1 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Unit Tests - Commands** (1 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Unit Tests - Events** (1 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Unit Tests - Infrastructure** (1 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Unit Tests - Logging** (1 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Unit Tests - Middleware** (1 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Unit Tests - Models** (1 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- *... and 9 more nodes in this community*
+- **testing_examples.py** (29 connections) — `docs/examples/logging/testing_examples.py`
+- **test_middleware_logging()** (5 connections) — `docs/examples/logging/testing_examples.py`
+- **test_websocket_logging()** (4 connections) — `docs/examples/logging/testing_examples.py`
+- **process_batch()** (4 connections) — `docs/examples/logging/testing_examples.py`
+- **WebSocket** (4 connections) — `docs/examples/logging/testing_examples.py`
+- **test_performance_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_exception_tracking()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_api_request_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_async_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_database_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_batch_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_logging_error_handling()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_logging_performance_metrics()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_fastapi_endpoint_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **async_operation()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **risky_operation()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **process_item()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **.execute()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **client** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **.post()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **.get()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **.connect()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **LoggingMiddleware** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **.process_request()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **request** (3 connections) — `docs/examples/logging/testing_examples.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [[Async Migration Gotchas]] (1 shared connections)
+- [Merge Refactoring Summary](Merge_Refactoring_Summary.md) (3 shared connections)
+- [Mythos Time HUD](Mythos_Time_HUD.md) (3 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (2 shared connections)
+- [Memory Leak Metrics](Memory_Leak_Metrics.md) (1 shared connections)
+- [Coverage Improvement Summary](Coverage_Improvement_Summary.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- `docs/archive/TEST_MIGRATION_MAPPING.md`
+- `docs/examples/logging/testing_examples.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 135 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,46 +1,43 @@
 # Calendar NPC Schedule
 
-> 21 nodes · cohesion 0.11
+> 13 nodes
 
 ## Key Concepts
 
-- **test_calendar.py** (12 connections) — `server/tests/unit/models/test_calendar.py`
-- **NPCScheduleModel** (9 connections) — `server/models/calendar.py`
-- **test_holiday_model_creation()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_holiday_model_repr()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_holiday_model_with_bonus_tags()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_npc_schedule_model_creation()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_npc_schedule_model_empty_arrays()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_npc_schedule_model_repr()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_npc_schedule_model_with_notes()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_holiday_model_table_name()** (2 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_npc_schedule_model_table_name()** (2 connections) — `server/tests/unit/models/test_calendar.py`
-- **Unit tests for calendar models.  Tests the HolidayModel and NPCScheduleModel SQL** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test NPCScheduleModel can have optional notes.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test NPCScheduleModel has correct table name.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test NPCScheduleModel __repr__ method.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test HolidayModel can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test NPCScheduleModel can have empty arrays.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test HolidayModel can have bonus_tags.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test HolidayModel has correct table name.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test HolidayModel __repr__ method.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test NPCScheduleModel can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_calendar.py`
+- **.create_drop_command()** (9 connections) — `server/utils/command_factories_inventory.py`
+- **test_create_drop_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_drop_command_invalid_index()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_drop_command_invalid_quantity()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_drop_command_invalid_index()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **test_create_drop_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_drop_command_with_quantity()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **Test create_drop_command() creates DropCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_drop_command() raises error with no args.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_drop_command() raises error when index is not integer.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_drop_command() raises error when quantity is not integer.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_drop_command() with quantity.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **Test create_drop_command() raises error for invalid index.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
 
 ## Relationships
 
-- [[SQLAlchemy Model Base]] (8 shared connections)
+- [Base Command Models](Base_Command_Models.md) (5 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (4 shared connections)
+- [Test Refactoring Status](Test_Refactoring_Status.md) (2 shared connections)
+- [Cursor Skills Critique](Cursor_Skills_Critique.md) (1 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/calendar.py`
-- `server/tests/unit/models/test_calendar.py`
+- `server/tests/unit/utils/test_command_factories_inventory.py`
+- `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- `server/utils/command_factories_inventory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 33 (89%)
+- INFERRED: 4 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

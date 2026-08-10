@@ -1,34 +1,25 @@
 # Player Command Developer
 
-> 7 nodes · cohesion 0.29
+> 1 nodes
 
 ## Key Concepts
 
-- **Security Considerations** (5 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Security Considerations** (4 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **2. Authorization** (2 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Authentication** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Data Protection** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **1. Input Validation** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **4. Logging** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
+- **__init__.py** (0 connections) — `server/tests/unit/events/__init__.py`
 
 ## Relationships
 
-- [[Dual Connection API Reference]] (1 shared connections)
-- [[Player Command Developer Guide]] (1 shared connections)
-- [[Chat Channel Design Spec]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
+- `server/tests/unit/events/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

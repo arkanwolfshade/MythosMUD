@@ -1,74 +1,58 @@
 # Chat Panel Filtering
 
-> 81 nodes · cohesion 0.05
+> 33 nodes
 
 ## Key Concepts
 
-- **chatPanelRuntimeUtils.ts** (31 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
-- **messageTypeUtils.ts** (22 connections) — `client/src/utils/messageTypeUtils.ts`
-- **ChatPanelMessagesLog.tsx** (21 connections) — `client/src/components/panels/ChatPanelMessagesLog.tsx`
-- **useChatPanelRuntime.ts** (17 connections) — `client/src/components/panels/useChatPanelRuntime.ts`
-- **chatPanelRuntimeUtils.test.ts** (17 connections) — `client/src/components/panels/__tests__/chatPanelRuntimeUtils.test.ts`
-- **ansiToHtml.ts** (16 connections) — `client/src/utils/ansiToHtml.ts`
-- **chatPanelExportFormat.ts** (13 connections) — `client/src/components/panels/chatPanelExportFormat.ts`
-- **chatPanelChannelVisibility.ts** (11 connections) — `client/src/components/panels/chatPanelChannelVisibility.ts`
-- **ChatPanelMessage** (11 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
-- **ansiToHtmlWithBreaks()** (11 connections) — `client/src/utils/ansiToHtml.ts`
-- **extractChannelFromMessage()** (11 connections) — `client/src/utils/messageTypeUtils.ts`
-- **chatPanelUnreadBump.ts** (10 connections) — `client/src/components/panels/chatPanelUnreadBump.ts`
-- **ChatPanelRuntime.tsx** (9 connections) — `client/src/components/panels/ChatPanelRuntime.tsx`
-- **isChatContent()** (9 connections) — `client/src/utils/messageTypeUtils.ts`
-- **resolveChatExportPayload()** (7 connections) — `client/src/components/panels/chatPanelExportFormat.ts`
-- **determineMessageType()** (7 connections) — `client/src/utils/messageTypeUtils.ts`
-- **isVisibleInChannelView()** (6 connections) — `client/src/components/panels/chatPanelChannelVisibility.ts`
-- **getChatPanelMessageClass()** (6 connections) — `client/src/components/panels/chatPanelMessageClass.ts`
-- **formatChatTimestampUtc()** (6 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
-- **ChatPanelRuntimeView.tsx** (6 connections) — `client/src/components/panels/ChatPanelRuntimeView.tsx`
-- **chatPanelRuntimeViewTypes.ts** (6 connections) — `client/src/components/panels/chatPanelRuntimeViewTypes.ts`
-- **bumpUnreadCountForMessage()** (6 connections) — `client/src/components/panels/chatPanelUnreadBump.ts`
-- **chatPanelChannelFilter.ts** (5 connections) — `client/src/components/panels/chatPanelChannelFilter.ts`
-- **chatPanelMessageClass.ts** (5 connections) — `client/src/components/panels/chatPanelMessageClass.ts`
-- **chatPanelUnreadCounts.ts** (5 connections) — `client/src/components/panels/chatPanelUnreadCounts.ts`
-- *... and 56 more nodes in this community*
+- **test_game.py** (20 connections) — `server/tests/unit/api/test_game.py`
+- **MythosTimeResponse** (15 connections) — `server/schemas/game/game.py`
+- **get_mythos_time()** (14 connections) — `server/api/game.py`
+- **TestGetMythosTime** (12 connections) — `server/tests/unit/api/test_game.py`
+- **TestGetMythosTimeEdgeCases** (6 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_mythos_time_success()** (4 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_mythos_time_no_holiday_service()** (4 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_mythos_time_holiday_service_error()** (4 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_mythos_time_with_holidays()** (4 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_mythos_time_no_container()** (4 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_mythos_time_holiday_service_upcoming_error()** (4 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_mythos_time_container_no_holiday_service_attribute()** (4 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_mythos_time_logs_debug()** (4 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_mythos_time_different_calendar_components()** (3 connections) — `server/tests/unit/api/test_game.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/api/test_game.py`
+- **mock_user()** (2 connections) — `server/tests/unit/api/test_game.py`
+- **mock_container()** (2 connections) — `server/tests/unit/api/test_game.py`
+- **Return the current Mythos calendar metadata for HUD initialization.      In-memo** (1 connections) — `server/api/game.py`
+- **Response model for Mythos calendar time endpoint.** (1 connections) — `server/schemas/game/game.py`
+- **Unit tests for game API endpoints.  Tests game status, broadcasting, and time en** (1 connections) — `server/tests/unit/api/test_game.py`
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **Create a mock application container.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **Test get_mythos_time endpoint.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **Test get_mythos_time returns time data.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **Test get_mythos_time handles missing holiday service.** (1 connections) — `server/tests/unit/api/test_game.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [[Chat Panel Components]] (19 shared connections)
-- [[Components Panels Chat]] (5 shared connections)
-- [[Components Panels Chatpanelrefactoredderived]] (5 shared connections)
-- [[Game Terminal Panels]] (4 shared connections)
-- [[Components Ui V 2]] (4 shared connections)
-- [[UI Player Event Handlers]] (2 shared connections)
-- [[Client Security Utilities]] (2 shared connections)
-- [[Client Event Store]] (2 shared connections)
+- [Client Lifecycle Metrics](Client_Lifecycle_Metrics.md) (11 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (4 shared connections)
+- [Archive Planning Code](Archive_Planning_Code.md) (3 shared connections)
+- [Player Respawn Service](Player_Respawn_Service.md) (2 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/panels/ChatPanelMessagesLog.tsx`
-- `client/src/components/panels/ChatPanelRuntime.tsx`
-- `client/src/components/panels/ChatPanelRuntimeView.tsx`
-- `client/src/components/panels/__tests__/chatPanelRuntimeUtils.test.ts`
-- `client/src/components/panels/chatPanelChannelFilter.ts`
-- `client/src/components/panels/chatPanelChannelVisibility.ts`
-- `client/src/components/panels/chatPanelExportFormat.ts`
-- `client/src/components/panels/chatPanelMessageClass.ts`
-- `client/src/components/panels/chatPanelRuntimeUtils.ts`
-- `client/src/components/panels/chatPanelRuntimeViewTypes.ts`
-- `client/src/components/panels/chatPanelUnreadBump.ts`
-- `client/src/components/panels/chatPanelUnreadCounts.ts`
-- `client/src/components/panels/useChatPanelRuntime.ts`
-- `client/src/utils/__tests__/messageTypeUtils.test.ts`
-- `client/src/utils/ansiToHtml.test.ts`
-- `client/src/utils/ansiToHtml.ts`
-- `client/src/utils/messageTypeUtils.ts`
-- `client/src/utils/testAnsi.ts`
+- `server/api/game.py`
+- `server/schemas/game/game.py`
+- `server/tests/unit/api/test_game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 399 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 107 (86%)
+- INFERRED: 17 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

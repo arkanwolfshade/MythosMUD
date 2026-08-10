@@ -1,73 +1,50 @@
 # Connection State Hooks
 
-> 69 nodes · cohesion 0.06
+> 68 nodes
 
 ## Key Concepts
 
-- **useWebSocketConnection.ts** (18 connections) — `client/src/hooks/useWebSocketConnection.ts`
-- **useGameConnectionRefactored.ts** (17 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
-- **useWebSocketConnectionTestFixtures.ts** (12 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **MockWebSocket** (12 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **useWebSocketConnection()** (11 connections) — `client/src/hooks/useWebSocketConnection.ts`
-- **useWebSocketConnection.pingHeartbeat.test.ts** (11 connections) — `client/src/hooks/__tests__/useWebSocketConnection.pingHeartbeat.test.ts`
-- **useGameConnection()** (9 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
-- **resourceCleanup.ts** (9 connections) — `client/src/utils/resourceCleanup.ts`
-- **useConnectionStateMachine.ts** (8 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **useWebSocketConnection.connection.test.ts** (8 connections) — `client/src/hooks/__tests__/useWebSocketConnection.connection.test.ts`
-- **useWebSocketConnection.errorHandling.test.ts** (8 connections) — `client/src/hooks/__tests__/useWebSocketConnection.errorHandling.test.ts`
-- **useConnectionState.ts** (7 connections) — `client/src/hooks/useConnectionState.ts`
-- **useSessionManagement.ts** (7 connections) — `client/src/hooks/useSessionManagement.ts`
-- **resourceCleanup.test.ts** (7 connections) — `client/src/utils/__tests__/resourceCleanup.test.ts`
-- **MockWebSocket** (7 connections) — `client/src/utils/__tests__/resourceCleanup.test.ts`
-- **useWebSocketConnection.callbacks.test.ts** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnection.callbacks.test.ts`
-- **useWebSocketConnection.cleanup.test.ts** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnection.cleanup.test.ts`
-- **useWebSocketConnection.messageHandling.test.ts** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnection.messageHandling.test.ts`
-- **defaultOptions** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **wsConnectionAfterEach()** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **wsConnectionBeforeEach()** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **wsTestState** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **useGameConnection.ts** (5 connections) — `client/src/hooks/useGameConnection.ts`
-- **useConnectionState()** (4 connections) — `client/src/hooks/useConnectionState.ts`
-- **connectionMachine** (4 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- *... and 44 more nodes in this community*
+- **test_nats_message_handler_subzone_events.py** (36 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_unsubscribe_from_subzone_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_exception()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_subscribe_to_subzone_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_subscribe_to_event_subjects_partial_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_cleanup_empty_subzone_subscriptions_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_unsubscribe_from_subzone_decrease_count()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_unsubscribe_from_subzone_not_subscribed()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_track_player_subzone_subscription_different_subzone()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_get_players_in_subzone()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_get_players_in_subzone_empty()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_different_subzone()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_same_subzone()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_cleanup_empty_subzone_subscriptions()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_subscribe_to_subzone_no_subject_manager()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_unsubscribe_from_event_subjects_partial()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_get_event_subscription_count()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_is_event_subscription_active()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_get_user_manager_injected()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_get_user_manager_fallback()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_old_subzone_none()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_new_subzone_none()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_subscribe_to_subzone_subscribe_failure()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_unsubscribe_from_subzone_unsubscribe_failure()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- *... and 43 more nodes in this community*
 
 ## Relationships
 
-- [[Client Event Store]] (10 shared connections)
-- [[Client Security Utilities]] (4 shared connections)
-- [[Client Lifecycle Metrics]] (3 shared connections)
-- [[App Creation Flow Screens]] (2 shared connections)
-- [[Game Client Container]] (1 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (8 shared connections)
 
 ## Source Files
 
-- `client/src/hooks/__tests__/useConnectionState.test.ts`
-- `client/src/hooks/__tests__/useConnectionStateMachine.test.ts`
-- `client/src/hooks/__tests__/useGameConnection.export.test.ts`
-- `client/src/hooks/__tests__/useSessionManagement.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.callbacks.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.cleanup.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.connection.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.errorHandling.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.messageHandling.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.pingHeartbeat.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- `client/src/hooks/useConnectionState.ts`
-- `client/src/hooks/useConnectionStateMachine.test.ts`
-- `client/src/hooks/useConnectionStateMachine.ts`
-- `client/src/hooks/useGameConnection.test.ts`
-- `client/src/hooks/useGameConnection.ts`
-- `client/src/hooks/useGameConnectionRefactored.ts`
-- `client/src/hooks/useSessionManagement.ts`
-- `client/src/hooks/useWebSocketConnection.ts`
-- `client/src/utils/__tests__/resourceCleanup.test.ts`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 280 (100%)
+- EXTRACTED: 142 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

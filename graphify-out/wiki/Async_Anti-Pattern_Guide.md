@@ -1,50 +1,42 @@
 # Async Anti-Pattern Guide
 
-> 29 nodes · cohesion 0.07
+> 16 nodes
 
 ## Key Concepts
 
-- **❌ NEVER DO THIS → ✅ DO THIS INSTEAD** (9 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **8. Mixing Sync and Async Code** (5 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **1. Blocking the Event Loop** (4 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **2. Using asyncio.run() Incorrectly** (4 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **5. Not Using asyncio.gather() Properly** (4 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **3. F-String Logging (Destroys Structured Logging)** (3 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **4. Missing Exception Handling in Async Code** (3 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **6. Resource Leaks (Not Closing Async Resources)** (3 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **7. Not Using Async Context Managers** (3 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **✅ CORRECT - Make the function async** (2 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **✅ CORRECT - Async all the way** (1 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **✅ CORRECT - Async context managers** (1 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **✅ CORRECT - Concurrent with return_exceptions=True** (1 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **✅ CORRECT - Fire-and-forget with proper error handling** (1 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **✅ CORRECT - Proper cleanup** (1 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **✅ CORRECT - Proper exception handling** (1 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **✅ CORRECT - Structured key-value pairs** (1 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **✅ CORRECT - Thread pool for blocking operations** (1 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **✅ CORRECT - Use asyncio.to_thread() if you must call sync from async** (1 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **❌ WRONG - asyncio.run() in library code** (1 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **❌ WRONG - Calling async from sync without care** (1 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **❌ WRONG - Concurrent but one failure cancels all** (1 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **❌ WRONG - F-strings destroy structured logging** (1 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **❌ WRONG - Manual resource management** (1 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- **❌ WRONG - Pool never closed** (1 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
-- *... and 4 more nodes in this community*
+- **optimized_validate_player_name()** (10 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_validate_player_name_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_with_underscore()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_with_hyphen()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_with_numbers()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_starts_with_number()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_special_chars()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating empty player name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating valid player name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name with underscore.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name with hyphen.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name with numbers.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name starting with number (invalid).** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name with special characters (invalid).** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Optimized validation for player name fields.      Args:         value: The playe** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- [[Async Anti Patterns]] (1 shared connections)
+- [WebSocket Handler Tests](WebSocket_Handler_Tests.md) (8 shared connections)
+- [Cursor Workflows Docs](Cursor_Workflows_Docs.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

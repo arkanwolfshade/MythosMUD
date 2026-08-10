@@ -1,39 +1,31 @@
 # Complexity Refactoring Plan
 
-> 14 nodes · cohesion 0.14
+> 6 nodes
 
 ## Key Concepts
 
-- **Complexity Refactoring Test Plan** (9 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **🔍 Specific Edge Cases to Test** (7 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **COMPLEXITY_REFACTORING_TEST_PLAN.md** (1 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **Container Operations** (1 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **CORS Configuration** (1 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **Complexity Refactoring Edge Cases** (1 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **Game Tick Processing** (1 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **📝 Notes** (1 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **📊 Performance Checks** (1 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **🚨 Red Flags to Watch For** (1 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **Respawn Operations** (1 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **Room Operations** (1 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **✅ Success Criteria** (1 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **WebSocket Token Parsing** (1 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **TestGetSpellRegistry** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_spell_registry_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_spell_registry_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_spell_registry dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_spell_registry returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_spell_registry raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [[Plan Cursor Plans]] (1 shared connections)
-- [[Bounded Contexts Service]] (1 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

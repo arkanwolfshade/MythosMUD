@@ -1,38 +1,31 @@
 # Mythosmud Obsidian Agents
 
-> 14 nodes · cohesion 0.14
+> 6 nodes
 
 ## Key Concepts
 
-- **MythosMUD Obsidian Vault — LLM Wiki Schema** (6 connections) — `data/MythosMUD-Obsidian/AGENTS.md`
-- **Operations** (5 connections) — `data/MythosMUD-Obsidian/AGENTS.md`
-- **Three layers** (4 connections) — `data/MythosMUD-Obsidian/AGENTS.md`
-- **AGENTS.md** (1 connections) — `data/MythosMUD-Obsidian/AGENTS.md`
-- **Division of labor with other tools** (1 connections) — `data/MythosMUD-Obsidian/AGENTS.md`
-- **Graphify sync** (1 connections) — `data/MythosMUD-Obsidian/AGENTS.md`
-- **Ingest** (1 connections) — `data/MythosMUD-Obsidian/AGENTS.md`
-- **Lint** (1 connections) — `data/MythosMUD-Obsidian/AGENTS.md`
-- **Page conventions** (1 connections) — `data/MythosMUD-Obsidian/AGENTS.md`
-- **Query** (1 connections) — `data/MythosMUD-Obsidian/AGENTS.md`
-- **Raw layout** (1 connections) — `data/MythosMUD-Obsidian/AGENTS.md`
-- **Special files (vault root)** (1 connections) — `data/MythosMUD-Obsidian/AGENTS.md`
-- **What agents must not do** (1 connections) — `data/MythosMUD-Obsidian/AGENTS.md`
-- **Wiki layout** (1 connections) — `data/MythosMUD-Obsidian/AGENTS.md`
+- **TestGetNPCSpawningService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_npc_spawning_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_npc_spawning_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_npc_spawning_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_npc_spawning_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_npc_spawning_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/AGENTS.md`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

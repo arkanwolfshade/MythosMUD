@@ -1,46 +1,58 @@
 # E 2 E Scenarios Scenario
 
-> 21 nodes · cohesion 0.10
+> 62 nodes
 
 ## Key Concepts
 
-- **Execution Steps** (22 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
-- **🛑 EXECUTION ENDS HERE - DO NOT PROCEED FURTHER** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
-- **✅ Scenario Completion Verification** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
-- **STEP 10 of 10: Scenario Completion** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
-- **✅ Step 1 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
-- **STEP 1 of 10: Setup - Both Players Connected** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
-- **✅ Step 2 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
-- **STEP 2 of 10: AW Dies (Trigger Corpse Creation)** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
-- **✅ Step 3 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
-- **STEP 3 of 10: Verify Corpse Overlay UI with Grace Period** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
-- **✅ Step 4 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
-- **STEP 4 of 10: Ithaqua Attempts to Loot Corpse (Should Fail)** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
-- **✅ Step 5 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
-- **STEP 5 of 10: AW (Owner) Attempts to Loot Corpse (Should Succeed)** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
-- **✅ Step 6 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
-- **STEP 6 of 10: Wait for Grace Period to Expire** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
-- **✅ Step 7 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
-- **STEP 7 of 10: Ithaqua Attempts to Loot Corpse After Grace Period** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
-- **✅ Step 8 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
-- **STEP 8 of 10: Verify Decay Countdown Display** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
-- **STEP 9 of 10: Test Corpse Decay (Optional - Long Duration)** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
+- **Invite** (35 connections) — `server/models/invite.py`
+- **test_invite.py** (17 connections) — `server/tests/unit/models/test_invite.py`
+- **.validate_invite()** (6 connections) — `server/auth/invites.py`
+- **.create_invite()** (6 connections) — `server/models/invite.py`
+- **._generate_invite_code()** (6 connections) — `server/models/invite.py`
+- **.use_invite()** (5 connections) — `server/auth/invites.py`
+- **.create_invite()** (4 connections) — `server/auth/invites.py`
+- **.get_user_invites()** (4 connections) — `server/auth/invites.py`
+- **.__init__()** (4 connections) — `server/models/invite.py`
+- **UUID** (3 connections)
+- **.get_unused_invites()** (3 connections) — `server/auth/invites.py`
+- **.cleanup_expired_invites()** (3 connections) — `server/auth/invites.py`
+- **.is_expired()** (3 connections) — `server/models/invite.py`
+- **.is_valid()** (3 connections) — `server/models/invite.py`
+- **test_invite_is_expired_with_future_expiry()** (3 connections) — `server/tests/unit/models/test_invite.py`
+- **test_invite_is_expired_with_past_expiry()** (3 connections) — `server/tests/unit/models/test_invite.py`
+- **test_invite_is_expired_with_aware_datetime()** (3 connections) — `server/tests/unit/models/test_invite.py`
+- **test_invite_is_valid_with_active_and_not_expired()** (3 connections) — `server/tests/unit/models/test_invite.py`
+- **test_invite_is_valid_with_inactive()** (3 connections) — `server/tests/unit/models/test_invite.py`
+- **test_invite_is_valid_with_expired()** (3 connections) — `server/tests/unit/models/test_invite.py`
+- **test_invite_is_valid_with_inactive_and_expired()** (3 connections) — `server/tests/unit/models/test_invite.py`
+- **test_invite_use_invite()** (3 connections) — `server/tests/unit/models/test_invite.py`
+- **test_invite_create_invite_defaults()** (3 connections) — `server/tests/unit/models/test_invite.py`
+- **test_invite_create_invite_with_creator()** (3 connections) — `server/tests/unit/models/test_invite.py`
+- **test_invite_create_invite_with_custom_expiry()** (3 connections) — `server/tests/unit/models/test_invite.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [[E 2 E Ai Execution]] (1 shared connections)
-- [[E 2 E Scenarios Scenario]] (1 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (8 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
+- [NATS Subject Manager](NATS_Subject_Manager.md) (2 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
+- [Container Loot Helpers](Container_Loot_Helpers.md) (1 shared connections)
+- [test_profession_meets_stat_requirements_multiple_not_met](test_profession_meets_stat_requirements_multiple_not_met.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
+- `server/auth/invites.py`
+- `server/models/invite.py`
+- `server/tests/unit/models/test_invite.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 176 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

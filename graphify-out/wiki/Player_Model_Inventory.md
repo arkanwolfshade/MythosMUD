@@ -1,56 +1,61 @@
 # Player Model Inventory
 
-> 44 nodes · cohesion 0.06
+> 34 nodes
 
 ## Key Concepts
 
-- **Player** (26 connections) — `server/models/game.py`
-- **test_game_player.py** (21 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_add_item_existing()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_add_status_effect()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_can_carry_weight_false()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_can_carry_weight_true()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_get_active_status_effects()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_get_active_status_effects_all_active()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_insufficient_quantity()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_removes_when_zero()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_success()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_status_effect_success()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **.add_item()** (3 connections) — `server/models/game.py`
-- **.remove_status_effect()** (3 connections) — `server/models/game.py`
-- **test_player_add_item_default_quantity()** (3 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_add_item_new()** (3 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_not_found()** (3 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_status_effect_not_found()** (3 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_update_last_active()** (3 connections) — `server/tests/unit/models/test_game_player.py`
-- **.can_carry_weight()** (2 connections) — `server/models/game.py`
-- **.remove_item()** (2 connections) — `server/models/game.py`
-- **.update_last_active()** (2 connections) — `server/models/game.py`
-- **Pydantic Player model for game logic and validation.      This is separate from** (1 connections) — `server/models/game.py`
-- **Add an item to the player's inventory.          Args:             item_id: Uniqu** (1 connections) — `server/models/game.py`
-- **Remove an item from the player's inventory.          Args:             item_id:** (1 connections) — `server/models/game.py`
-- *... and 19 more nodes in this community*
+- **test_admin_auth_service.py** (54 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **mock_user()** (3 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_admin_auth_service_init()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_username_from_dict()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_username_none()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_username_missing_attribute()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_user_id_from_dict()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_user_id_none()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_validate_permission_none_user()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_validate_permission_rate_limit_exceeded()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_has_permission_moderator()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_check_rate_limit_cleanup_old_entries()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_update_session_updates_existing()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_active_sessions()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_audit_log()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_audit_log_no_limit()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_validate_permission_logs_permission_denied()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **Unit tests for admin authentication service.  Tests the AdminAuthService class f** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **Create a mock user object.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **Test AdminAuthService initialization.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **Test get_username from dict.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **Test get_username returns 'unknown' for None.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **Test get_username returns 'unknown' when username missing.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **Test get_user_id from dict.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **Test get_user_id returns 'unknown' for None.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [[Status Effect Model]] (7 shared connections)
-- [[Game Inventory Item]] (6 shared connections)
-- [[Character Stats Model]] (3 shared connections)
-- [[Game Magic Spell]] (2 shared connections)
-- [[Admin NPC Schemas]] (1 shared connections)
-- [[NPC Admin API]] (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (2 shared connections)
+- [Health Endpoint Spec](Health_Endpoint_Spec.md) (2 shared connections)
+- [Room Get Zone Id](Room_Get_Zone_Id.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [admin_auth_service](admin_auth_service_2.md) (1 shared connections)
+- [superuser](superuser.md) (1 shared connections)
+- [test_admin_action_enum](test_admin_action_enum.md) (1 shared connections)
+- [test_admin_role_enum](test_admin_role_enum.md) (1 shared connections)
+- [test_check_rate_limit_adds_request](test_check_rate_limit_adds_request.md) (1 shared connections)
+- [test_cleanup_expired_sessions](test_cleanup_expired_sessions.md) (1 shared connections)
+- [test_cleanup_expired_sessions_no_expired](test_cleanup_expired_sessions_no_expired.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
-- `server/tests/unit/models/test_game_player.py`
+- `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 136 (100%)
+- EXTRACTED: 104 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

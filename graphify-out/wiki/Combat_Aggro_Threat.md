@@ -1,62 +1,59 @@
 # Combat Aggro Threat
 
-> 80 nodes · cohesion 0.05
+> 55 nodes
 
 ## Key Concepts
 
-- **combat_turn_participant_actions.py** (37 connections) — `server/services/combat_turn_participant_actions.py`
-- **aggro_threat.py** (22 connections) — `server/services/aggro_threat.py`
-- **CombatParticipant** (19 connections) — `server/services/combat_turn_participant_actions.py`
-- **CombatInstance** (13 connections) — `server/services/combat_turn_participant_actions.py`
-- **CombatService** (13 connections) — `server/services/combat_turn_participant_actions.py`
-- **update_aggro()** (13 connections) — `server/services/aggro_threat.py`
-- **add_damage_threat()** (12 connections) — `server/services/aggro_threat.py`
-- **UUID** (11 connections) — `server/services/aggro_threat.py`
-- **add_heal_threat()** (10 connections) — `server/services/aggro_threat.py`
-- **_weapon_damage_from_equipped_player()** (10 connections) — `server/services/combat_turn_participant_actions.py`
-- **CombatInstance** (9 connections) — `server/services/aggro_threat.py`
-- **AsyncPersistenceLayer** (9 connections) — `server/services/combat_turn_participant_actions.py`
-- **process_player_turn()** (9 connections) — `server/services/combat_turn_participant_actions.py`
-- **_resolve_npc_target()** (9 connections) — `server/services/combat_turn_participant_actions.py`
-- **AppConfig** (8 connections) — `server/services/combat_turn_participant_actions.py`
-- **PrototypeRegistry** (8 connections) — `server/services/combat_turn_participant_actions.py`
-- **UUID** (8 connections) — `server/services/combat_turn_participant_actions.py`
-- **get_or_create_hate_list()** (8 connections) — `server/services/aggro_threat.py`
-- **process_npc_turn()** (8 connections) — `server/services/combat_turn_participant_actions.py`
-- **resolve_player_attack_damage()** (8 connections) — `server/services/combat_turn_participant_actions.py`
-- **PlayerService** (7 connections) — `server/services/combat_turn_participant_actions.py`
-- **apply_taunt()** (7 connections) — `server/services/aggro_threat.py`
-- **_get_aggro_config()** (7 connections) — `server/services/aggro_threat.py`
-- **combat_service_end.py** (7 connections) — `server/services/combat_service_end.py`
-- **_execute_player_attack()** (7 connections) — `server/services/combat_turn_participant_actions.py`
-- *... and 55 more nodes in this community*
+- **test_websocket_helpers.py** (34 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **validate_occupant_name()** (14 connections) — `server/realtime/websocket_helpers.py`
+- **get_npc_name_from_instance()** (12 connections) — `server/realtime/websocket_helpers.py`
+- **check_shutdown_and_reject()** (12 connections) — `server/realtime/websocket_helpers.py`
+- **convert_uuids_to_strings()** (11 connections) — `server/realtime/websocket_helpers.py`
+- **load_player_mute_data()** (7 connections) — `server/realtime/websocket_helpers.py`
+- **test_get_npc_name_from_instance_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_npc_name_from_instance_not_found()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_npc_name_from_instance_no_name_attribute()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_npc_name_from_instance_import_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_npc_name_from_instance_runtime_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_check_shutdown_and_reject_not_shutting_down()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_check_shutdown_and_reject_shutting_down()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_check_shutdown_and_reject_websocket_disconnect()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_load_player_mute_data_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_load_player_mute_data_import_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_validate_occupant_name_valid()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_validate_occupant_name_uuid()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_validate_occupant_name_empty()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_validate_occupant_name_none()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_validate_occupant_name_not_string()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_convert_uuids_to_strings_dict()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_convert_uuids_to_strings_list()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_convert_uuids_to_strings_nested()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_convert_uuids_to_strings_no_uuid()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [[Combat Command Handler]] (13 shared connections)
-- [[Combat Service Bundle]] (12 shared connections)
-- [[Weapon Resolution Helpers]] (11 shared connections)
-- [[Combat Taunt Tests]] (11 shared connections)
-- [[Async Persistence Layer]] (9 shared connections)
-- [[Application DI Bundles]] (9 shared connections)
-- [[Combat Domain Events]] (9 shared connections)
-- [[NPC Admin API]] (9 shared connections)
-- [[Spell Effect Protocols]] (4 shared connections)
-- [[Combat Attack Service]] (2 shared connections)
-- [[Application Config Settings]] (1 shared connections)
+- [Async Persistence Layer](Async_Persistence_Layer.md) (10 shared connections)
+- [Plan Modernization Archive](Plan_Modernization_Archive.md) (7 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (5 shared connections)
+- [WebSocket Initial State](WebSocket_Initial_State.md) (4 shared connections)
+- [Game Mechanics Service](Game_Mechanics_Service.md) (2 shared connections)
+- [Combat Command Helpers](Combat_Command_Helpers.md) (2 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (2 shared connections)
+- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (2 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/aggro_threat.py`
-- `server/services/combat_service_end.py`
-- `server/services/combat_turn_participant_actions.py`
+- `server/realtime/websocket_helpers.py`
+- `server/tests/unit/realtime/test_websocket_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 367 (88%)
-- INFERRED: 49 (12%)
+- EXTRACTED: 180 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

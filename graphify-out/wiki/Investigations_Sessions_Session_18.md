@@ -1,44 +1,31 @@
 # Investigations Sessions Session
 
-> 20 nodes · cohesion 0.10
+> 6 nodes
 
 ## Key Concepts
 
-- **BUG INVESTIGATION REPORT: NATS Message Validation Failures** (9 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **Investigation Recommendations** (4 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **Root Cause Analysis** (4 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **System Impact Assessment** (4 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **Evidence Documentation** (3 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **2025-11-19_session-001_nats-message-validation-failure.md** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **Affected User Flows** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **Code References** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **Error Log Samples** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **Executive Summary** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **Further Investigation Priorities** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **Historical Context** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **Immediate Actions Required** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **Investigation Completion Checklist** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **Performance Impact** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **Primary Root Cause** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **Remediation Prompt** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **Severity: HIGH** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **Testing Recommendations** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **Why Schema Validation Passes But Handler Fails** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
+- **TestGetExplorationService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_exploration_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_exploration_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_exploration_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_exploration_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_exploration_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [[Investigations Sessions Session]] (1 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

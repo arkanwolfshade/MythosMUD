@@ -1,12 +1,12 @@
 # Load E 2 E Analysis
 
-> 3 nodes · cohesion 0.67
+> 3 nodes
 
 ## Key Concepts
 
 - **10 Concurrent Players Load Test** (2 connections) — `e2e-tests/load-tests/LOAD_TEST_EXECUTION_GUIDE.md`
-- **who Command Unawaited Coroutine Bug** (1 connections) — `e2e-tests/load-tests/load_test_analysis.md`
 - **Load Test Suite** (1 connections) — `e2e-tests/load-tests/README.md`
+- **who Command Unawaited Coroutine Bug** (1 connections) — `e2e-tests/load-tests/load_test_analysis.md`
 
 ## Relationships
 
@@ -26,4 +26,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

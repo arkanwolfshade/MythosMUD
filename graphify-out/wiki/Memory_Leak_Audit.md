@@ -1,45 +1,38 @@
 # Memory Leak Audit
 
-> 21 nodes · cohesion 0.10
+> 13 nodes
 
 ## Key Concepts
 
-- **Findings by Category** (8 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **1. Connection Management Leaks** (4 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **2. Event System Leaks** (3 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **3. Async Task and Background Task Leaks** (3 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **4. Cache and In-Memory Data Structure Leaks** (3 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **5. Client-Side Memory Leaks** (3 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **6. File Handle and I/O Leaks** (2 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **7. Circular Reference Leaks** (2 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **1.1 Database Connection Pools** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **1.2 WebSocket Connection Leaks** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **1.3 NATS Connection and Subscription Leaks** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **2.1 EventBus Subscriber Leaks** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **2.2 Client-Side Event Handler Leaks** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **3.1 Task Registry Leaks** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **3.2 Background Service Task Leaks** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **4.1 LRU Cache Growth** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **4.2 Dictionary and Set Growth** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **5.1 React Hook Leaks** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **5.2 Zustand Store Leaks** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **6.1 File Handle Leaks** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
-- **7.1 Object Reference Cycles** (1 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
+- **._handle_event()** (6 connections) — `server/npc/event_reaction_system.py`
+- **Any** (5 connections)
+- **.should_trigger()** (5 connections) — `server/npc/event_reaction_system.py`
+- **.execute()** (5 connections) — `server/npc/event_reaction_system.py`
+- **.__init__()** (4 connections) — `server/npc/event_reaction_system.py`
+- **._get_npc_context()** (4 connections) — `server/npc/event_reaction_system.py`
+- **.get_npc_reaction_stats()** (3 connections) — `server/npc/event_reaction_system.py`
+- **Initialize an NPC event reaction.          Args:             event_type: The typ** (1 connections) — `server/npc/event_reaction_system.py`
+- **Check if this reaction should trigger for the given event.          Args:** (1 connections) — `server/npc/event_reaction_system.py`
+- **Execute the reaction action.          Args:             event: The event that tr** (1 connections) — `server/npc/event_reaction_system.py`
+- **Handle an incoming event and trigger appropriate NPC reactions.          Args:** (1 connections) — `server/npc/event_reaction_system.py`
+- **Get context information for an NPC.          This method attempts to get actual** (1 connections) — `server/npc/event_reaction_system.py`
+- **Get statistics about an NPC's reactions.          Args:             npc_id: The** (1 connections) — `server/npc/event_reaction_system.py`
 
 ## Relationships
 
-- [[Memory Leak Audit]] (1 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (6 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (4 shared connections)
 
 ## Source Files
 
-- `docs/MEMORY_LEAK_AUDIT_REPORT.md`
+- `server/npc/event_reaction_system.py`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (100%)
+- EXTRACTED: 38 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

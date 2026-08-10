@@ -1,70 +1,67 @@
 # Standardized Error Responses
 
-> 268 nodes · cohesion 0.02
+> 247 nodes
 
 ## Key Concepts
 
-- **RateLimitError** (80 connections) — `server/exceptions.py`
-- **MythosMUDError** (67 connections) — `server/exceptions.py`
-- **ErrorMessages** (53 connections) — `server/error_types.py`
-- **ErrorContext** (51 connections) — `server/exceptions.py`
-- **AuthenticationError** (50 connections) — `server/exceptions.py`
+- **MythosMUDError** (79 connections) — `server/exceptions.py`
+- **RateLimitError** (76 connections) — `server/exceptions.py`
+- **AuthenticationError** (64 connections) — `server/exceptions.py`
 - **legacy_error_handlers.py** (48 connections) — `server/legacy_error_handlers.py`
-- **ErrorType** (45 connections) — `server/error_types.py`
-- **NetworkError** (42 connections) — `server/exceptions.py`
+- **ErrorType** (47 connections) — `server/error_types.py`
+- **ErrorMessages** (47 connections) — `server/error_types.py`
 - **test_legacy_error_handlers.py** (41 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **ResourceNotFoundError** (40 connections) — `server/exceptions.py`
-- **ConfigurationError** (39 connections) — `server/exceptions.py`
-- **CircuitBreaker** (39 connections) — `server/legacy_error_handlers.py`
-- **GameLogicError** (37 connections) — `server/exceptions.py`
-- **ErrorResponse** (36 connections) — `server/legacy_error_handlers.py`
-- **test_exceptions_comprehensive.py** (35 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
+- **CircuitBreaker** (38 connections) — `server/legacy_error_handlers.py`
+- **error_types.py** (37 connections) — `server/error_types.py`
+- **NetworkError** (37 connections) — `server/exceptions.py`
+- **ErrorResponse** (37 connections) — `server/legacy_error_handlers.py`
 - **TestErrorMapping** (35 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **ErrorSeverity** (34 connections) — `server/error_types.py`
-- **create_error_context()** (33 connections) — `server/exceptions.py`
-- **standardized_responses.py** (31 connections) — `server/error_handlers/standardized_responses.py`
+- **ResourceNotFoundError** (34 connections) — `server/exceptions.py`
+- **standardized_responses.py** (32 connections) — `server/error_handlers/standardized_responses.py`
+- **create_websocket_error_response()** (32 connections) — `server/error_types.py`
+- **ConfigurationError** (32 connections) — `server/exceptions.py`
+- **GameLogicError** (31 connections) — `server/exceptions.py`
 - **TestSanitization** (31 connections) — `server/tests/unit/test_legacy_error_handlers.py`
+- **JSONResponse** (30 connections) — `docs/examples/logging/fastapi_integration.py`
+- **ErrorSeverity** (30 connections) — `server/error_types.py`
+- **create_standard_error_response()** (27 connections) — `server/error_types.py`
 - **TestErrorHandlers** (27 connections) — `server/tests/unit/test_legacy_error_handlers.py`
 - **TestCircuitBreaker** (22 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **HttpStandardErrorResponse** (21 connections) — `server/error_types.py`
-- **JSONResponse** (21 connections) — `server/legacy_error_handlers.py`
-- **MythosMUDError** (21 connections) — `server/legacy_error_handlers.py`
-- *... and 243 more nodes in this community*
+- **Request** (21 connections)
+- **test_error_types.py** (21 connections) — `server/tests/unit/test_error_types.py`
+- *... and 222 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Admin API]] (116 shared connections)
-- [[Pydantic Error Handlers]] (47 shared connections)
-- [[Container Exception Handlers]] (45 shared connections)
-- [[Container API Endpoints]] (36 shared connections)
-- [[Enhanced Logging Exceptions]] (35 shared connections)
-- [[Legacy Error Sanitization]] (33 shared connections)
-- [[Character Creation API]] (8 shared connections)
-- [[Database Manager Tests]] (6 shared connections)
-- [[NATS Subject Admin API]] (6 shared connections)
-- [[WebSocket Message Validation]] (4 shared connections)
-- [[Auth Token Utilities]] (4 shared connections)
-- [[Combat Messaging Base]] (4 shared connections)
+- [Active Lucidity Service](Active_Lucidity_Service.md) (69 shared connections)
+- [Container API Endpoints](Container_API_Endpoints.md) (58 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (47 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (34 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (32 shared connections)
+- [Player Respawn Service](Player_Respawn_Service.md) (30 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (28 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (28 shared connections)
+- [Combat Command Helpers](Combat_Command_Helpers.md) (12 shared connections)
+- [Game Mechanics Service](Game_Mechanics_Service.md) (10 shared connections)
+- [Combat Disconnect Bug](Combat_Disconnect_Bug.md) (10 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (9 shared connections)
 
 ## Source Files
 
+- `docs/examples/logging/fastapi_integration.py`
 - `server/error_handlers/standardized_responses.py`
 - `server/error_types.py`
 - `server/exceptions.py`
 - `server/legacy_error_handlers.py`
-- `server/legacy_error_sanitization.py`
-- `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- `server/tests/unit/test_exceptions.py`
-- `server/tests/unit/test_exceptions_comprehensive.py`
+- `server/tests/unit/test_error_types.py`
 - `server/tests/unit/test_legacy_error_handlers.py`
-- `tools/room_toolkit/room_validator/rules/base_rule.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1224 (63%)
-- INFERRED: 733 (37%)
+- EXTRACTED: 1185 (66%)
+- INFERRED: 601 (34%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

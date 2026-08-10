@@ -1,11 +1,11 @@
 # E 2 E Mcp Tab
 
-> 2 nodes · cohesion 1.00
+> 2 nodes
 
 ## Key Concepts
 
-- **Playwright MCP core-tabs Capability** (1 connections) — `e2e-tests/MCP_TAB_MANAGEMENT_ISSUE.md`
 - **MCP Tab Management Issue** (1 connections) — `e2e-tests/MCP_TAB_MANAGEMENT_ISSUE.md`
+- **Playwright MCP core-tabs Capability** (1 connections) — `e2e-tests/MCP_TAB_MANAGEMENT_ISSUE.md`
 
 ## Relationships
 
@@ -23,4 +23,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,55 +1,52 @@
 # Rate Limiter Service
 
-> 53 nodes · cohesion 0.04
+> 73 nodes
 
 ## Key Concepts
 
-- **test_rate_limiter.py** (33 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_check_rate_limit_error_handling()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_remaining_messages_error_handling()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_record_message_error_handling()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **mock_config()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test get_system_stats returns system-wide statistics.** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_check_rate_limit_disabled()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_check_rate_limit_logs_violation()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_cleanup_old_entries()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_limit_default()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_limit_existing()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_player_stats_empty()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_remaining_messages()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_remaining_messages_zero()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_system_stats()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_system_stats_no_players()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_is_player_rate_limited_false()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_is_player_rate_limited_true()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_rate_limit_different_channels()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_rate_limit_different_players()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_rate_limit_sliding_window()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_record_message()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_record_message_cleanup_old()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_reset_player_limits_all_channels()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_reset_player_limits_nonexistent_player()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- *... and 28 more nodes in this community*
+- **test_combat_monitoring_service.py** (52 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **mock_feature_flags()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **mock_combat_config()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_start_combat_monitoring()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_end_combat_monitoring_success()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_end_combat_monitoring_failure()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_end_combat_monitoring_not_found()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_start_turn_monitoring()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_end_turn_monitoring()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_end_turn_monitoring_not_found()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_record_combat_error_validation()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_record_combat_error_timeout()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_record_combat_error_system()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_update_resource_metrics()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_get_metrics_history()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_get_metrics_history_with_limit()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_add_alert_callback()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_remove_alert_callback()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_get_active_alerts()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_get_all_alerts()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_resolve_alert()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_resolve_alert_not_found()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_clear_resolved_alerts()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_get_monitoring_summary()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_check_error_threshold()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
-- [[Database Manager Tests]] (4 shared connections)
-- [[Chat Rate Limiter]] (3 shared connections)
-- [[Services Rate Limiter]] (2 shared connections)
-- [[Rate Limiter Utilities]] (1 shared connections)
-- [[User Manager Mute Tests]] (1 shared connections)
+- [Combat Monitoring Service](Combat_Monitoring_Service.md) (9 shared connections)
+- [UI Animation Testing Standards](UI_Animation_Testing_Standards.md) (5 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
-- `server/tests/unit/services/test_user_manager.py`
+- `server/tests/unit/services/test_combat_monitoring_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 112 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 159 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

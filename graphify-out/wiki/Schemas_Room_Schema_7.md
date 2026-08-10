@@ -1,17 +1,21 @@
 # Schemas Room Schema
 
-> 4 nodes · cohesion 0.50
+> 8 nodes
 
 ## Key Concepts
 
-- **exits** (5 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
-- **additionalProperties** (1 connections) — `schemas/room_schema.json`
+- **environment** (5 connections) — `schemas/room_schema.json`
+- **enum** (4 connections) — `schemas/room_schema.json`
 - **type** (1 connections) — `schemas/room_schema.json`
+- **indoors** (1 connections) — `schemas/room_schema.json`
+- **outdoors** (1 connections) — `schemas/room_schema.json`
+- **underwater** (1 connections) — `schemas/room_schema.json`
+- **default** (1 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
-- [[Schemas Room Schema]] (2 shared connections)
+- [Schemas Room Schema](Schemas_Room_Schema.md) (1 shared connections)
 
 ## Source Files
 
@@ -19,10 +23,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

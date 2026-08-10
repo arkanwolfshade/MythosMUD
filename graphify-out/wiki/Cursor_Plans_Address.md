@@ -1,38 +1,31 @@
 # Cursor Plans Address
 
-> 14 nodes · cohesion 0.14
+> 6 nodes
 
 ## Key Concepts
 
-- **Findings Categories** (8 connections) — `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
-- **Semgrep Security Findings Remediation Plan** (7 connections) — `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
-- **address_semgrep_security_findings_9934ff00.plan.md** (1 connections) — `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
-- **1. Already Suppressed (68 instances) ✓** (1 connections) — `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
-- **2. Shell Spawn Security Issue (1 instance) - HIGH PRIORITY** (1 connections) — `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
-- **3. Non-literal RegExp in Test Fixtures (1 instance) - MEDIUM PRIORITY** (1 connections) — `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
-- **4. Unsafe Format Strings (10+ instances) - LOW PRIORITY** (1 connections) — `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
-- **5. Python SQL Injection Concerns (6 instances) - HIGH PRIORITY** (1 connections) — `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
-- **6. Python 3.6 Compatibility Warnings (2 instances) - INFORMATIONAL** (1 connections) — `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
-- **7. Missing Suppressions (2 instances) - LOW PRIORITY** (1 connections) — `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
-- **Files to Modify** (1 connections) — `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
-- **Notes** (1 connections) — `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
-- **Summary** (1 connections) — `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
-- **Verification** (1 connections) — `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
+- **TestGetPassiveLucidityFluxService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_passive_lucidity_flux_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_passive_lucidity_flux_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_passive_lucidity_flux_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_passive_lucidity_flux_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_passive_lucidity_flux_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [[Cursor Plans Plan]] (1 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,41 +1,29 @@
 # Investigations Sessions Xx
 
-> 17 nodes · cohesion 0.12
+> 5 nodes
 
 ## Key Concepts
 
-- **BUG INVESTIGATION REPORT: Movement Message Routing Issue** (8 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
-- **INVESTIGATION RECOMMENDATIONS** (5 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
-- **SYSTEM IMPACT ASSESSMENT** (4 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
-- **EVIDENCE DOCUMENTATION** (3 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
-- **2025-01-XX_movement-message-routing-bug.md** (1 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
-- **Affected Users** (1 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
-- **Code References** (1 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
-- **EXECUTIVE SUMMARY** (1 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
-- **INVESTIGATION COMPLETION CHECKLIST** (1 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
-- **Priority 1: Verify Message Creation Logic** (1 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
-- **Priority 2: Verify Filtering Logic** (1 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
-- **Priority 3: Check for Duplicate Messages** (1 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
-- **Priority 4: Test with Real Movement Commands** (1 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
-- **REMEDIATION PROMPT** (1 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
-- **Scope** (1 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
-- **Severity** (1 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
-- **Test Evidence** (1 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
+- **rename_used_to_is_active.py** (4 connections) — `server/scripts/rename_used_to_is_active.py`
+- **apply_migration()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
+- **main()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
+- **Apply the migration to rename used back to is_active.      Args:         databas** (1 connections) — `server/scripts/rename_used_to_is_active.py`
+- **Main entry point for the migration script.** (1 connections) — `server/scripts/rename_used_to_is_active.py`
 
 ## Relationships
 
-- [[Investigations Sessions Message]] (1 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
+- `server/scripts/rename_used_to_is_active.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

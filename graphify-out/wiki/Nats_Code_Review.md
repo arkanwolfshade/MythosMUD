@@ -1,47 +1,35 @@
 # Nats Code Review
 
-> 22 nodes · cohesion 0.09
+> 8 nodes
 
 ## Key Concepts
 
-- **NATS Code Review - Branch: feature/sqlite-to-postgresql** (10 connections) — `docs/NATS_CODE_REVIEW.md`
-- **Positive Findings ✅** (5 connections) — `docs/NATS_CODE_REVIEW.md`
-- **Critical Issues 🔴** (4 connections) — `docs/NATS_CODE_REVIEW.md`
-- **High Priority Issues 🟡** (4 connections) — `docs/NATS_CODE_REVIEW.md`
-- **Recommendations Summary** (4 connections) — `docs/NATS_CODE_REVIEW.md`
-- **NATS_CODE_REVIEW.md** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **1. **Blocking Operations in Message Handlers** (Anti-pattern violation)** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **1. **Excellent Error Boundary Implementation**** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **2. **Good Connection State Management**** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **2. **Missing Message Acknowledgment** (Anti-pattern violation)** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **3. **Connection Pool Not Used by Default** (Inefficiency)** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **3. **Proper Async/Await Usage**** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **4. **Subject Manager Pattern**** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **4. **Subject Naming Inconsistency** (Anti-pattern risk)** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **5. **No TLS Configuration** (Security concern)** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **6. **Error Handler May Block** (Anti-pattern risk)** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **Conclusion** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **Executive Summary** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **Immediate Actions (Critical)** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **Long-term (Medium Priority)** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **Short-term (High Priority)** (1 connections) — `docs/NATS_CODE_REVIEW.md`
-- **Testing Recommendations** (1 connections) — `docs/NATS_CODE_REVIEW.md`
+- **reset_npc_database()** (5 connections) — `server/npc_database.py`
+- **TestResetNPCDatabase** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **reset_state()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_reset_npc_database_resets_state()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Reset NPC database state for testing.      This function resets all global NPC d** (1 connections) — `server/npc_database.py`
+- **Reset NPC database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test reset_npc_database() function.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test reset_npc_database() resets all global state.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Relationships
 
-- [[Code Review Archive]] (1 shared connections)
-- [[Code Review Async]] (1 shared connections)
+- [Realtime Errors Error](Realtime_Errors_Error.md) (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/NATS_CODE_REVIEW.md`
+- `server/npc_database.py`
+- `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 18 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

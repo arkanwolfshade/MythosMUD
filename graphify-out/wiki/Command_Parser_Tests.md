@@ -1,57 +1,76 @@
 # Command Parser Tests
 
-> 66 nodes · cohesion 0.03
+> 263 nodes
 
 ## Key Concepts
 
-- **test_command_parser.py** (43 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **Test _create_command_object handles ValueError.** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_create_command_object_re_raises_mythos_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **Test _create_command_object handles 'w' alias.** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **Test parse_command raises error for empty string.** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_global_function()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_global_function_with_args()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_get_command_help_none()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_empty_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _normalize_command removes leading slash.** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **Test get_command_help returns general help when command_name is None.** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_command_parser_initialization()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_create_command_object_attribute_error()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_create_command_object_handles_alias_g()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_create_command_object_handles_alias_l()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_create_command_object_handles_alias_w()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_create_command_object_key_error()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_create_command_object_runtime_error()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_create_command_object_success()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_create_command_object_type_error()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_create_command_object_unsupported_command()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_create_command_object_value_error()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_get_command_help_case_insensitive()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_get_command_help_none()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_get_command_help_specific()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- *... and 41 more nodes in this community*
+- **NPCDefinition** (126 connections) — `server/models/npc.py`
+- **NPCSpawnRule** (57 connections) — `server/models/npc.py`
+- **npc.py** (37 connections) — `server/models/npc.py`
+- **test_npc_models.py** (33 connections) — `server/tests/unit/models/test_npc_models.py`
+- **should_spawn_npc()** (24 connections) — `server/npc/spawn_validator.py`
+- **test_spawn_validator.py** (24 connections) — `server/tests/unit/npc/test_spawn_validator.py`
+- **NPCDefinitionCRUDMixin** (18 connections) — `server/services/npc_service/definition_crud.py`
+- **spawn_validator.py** (14 connections) — `server/npc/spawn_validator.py`
+- **npc_service_models.py** (13 connections) — `server/services/npc_service_models.py`
+- **_row_to_npc_definition()** (12 connections) — `server/services/npc_service_models.py`
+- **spawn_rule_crud.py** (11 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **_JSONDict** (10 connections)
+- **NPCSpawnRuleCRUDMixin** (10 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **NPCRelationship** (9 connections) — `server/models/npc.py`
+- **._evaluate_spawn_requirements()** (9 connections) — `server/npc/spawning_service.py`
+- **.update_npc_definition()** (9 connections) — `server/services/npc_service/definition_crud.py`
+- **._should_spawn_npc()** (8 connections) — `server/npc/population_control.py`
+- **_try_spawn_rules()** (8 connections) — `server/npc/spawn_validator.py`
+- **AsyncSession** (8 connections)
+- **.create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
+- **._execute_create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
+- **._execute_npc_update()** (8 connections) — `server/services/npc_service/definition_crud.py`
+- **._execute_create_spawn_rule()** (8 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **_row_to_npc_spawn_rule()** (8 connections) — `server/services/npc_service_models.py`
+- **_loads_json_dict()** (7 connections) — `server/models/npc.py`
+- *... and 238 more nodes in this community*
 
 ## Relationships
 
-- [[Command Parser]] (4 shared connections)
-- [[NPC Admin API]] (3 shared connections)
-- [[Alias Expansion Logic]] (3 shared connections)
-- [[Command Parser Helpers]] (2 shared connections)
-- [[Command Service Tests]] (1 shared connections)
-- [[Command Input Utilities]] (1 shared connections)
-- [[Pydantic Error Handlers]] (1 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (37 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (25 shared connections)
+- [Spell Effect Protocols](Spell_Effect_Protocols.md) (23 shared connections)
+- [LRU Cache Manager](LRU_Cache_Manager.md) (19 shared connections)
+- [Plan Cursor Plans](Plan_Cursor_Plans.md) (13 shared connections)
+- [NPC Admin API](NPC_Admin_API.md) (12 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (11 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (9 shared connections)
+- [Test Refactoring Deliverables](Test_Refactoring_Deliverables.md) (9 shared connections)
+- [App Lifespan Management](App_Lifespan_Management.md) (6 shared connections)
+- [NPC Definition Schemas](NPC_Definition_Schemas.md) (4 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_parser.py`
-- `server/tests/unit/utils/test_command_parser_helpers.py`
+- `server/models/npc.py`
+- `server/models/room.py`
+- `server/npc/lifecycle_manager.py`
+- `server/npc/lifecycle_types.py`
+- `server/npc/npc_base.py`
+- `server/npc/population_control.py`
+- `server/npc/spawn_validator.py`
+- `server/npc/spawning_models.py`
+- `server/npc/spawning_service.py`
+- `server/npc/threading.py`
+- `server/services/npc_service/definition_crud.py`
+- `server/services/npc_service/queries.py`
+- `server/services/npc_service/spawn_rule_crud.py`
+- `server/services/npc_service_models.py`
+- `server/tests/unit/models/test_npc_models.py`
+- `server/tests/unit/npc/test_spawn_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 156 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 993 (96%)
+- INFERRED: 41 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

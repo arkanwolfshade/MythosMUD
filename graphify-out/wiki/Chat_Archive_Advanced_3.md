@@ -1,38 +1,35 @@
 # Chat Archive Advanced
 
-> 13 nodes · cohesion 0.15
+> 4 nodes
 
 ## Key Concepts
 
-- **Chat Panel Separation Implementation Tasks** (10 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Success Metrics** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Dependencies and Critical Path** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Risk Mitigation** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Conclusion** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Critical Path Analysis** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Functional Metrics** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Overview** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Phase Dependencies** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Quality Metrics** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Technical Risks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Timeline Metrics** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Timeline Risks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **quest_service()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
+- **_collect_progress_sync()** (5 connections) — `server/commands/inventory_command_helpers.py`
+- **Return quest_service.sync_collect_progress when it is callable.** (1 connections) — `server/commands/inventory_command_helpers.py`
+- **QuestService with mocked repos.** (1 connections) — `server/tests/unit/game/test_quest_service.py`
 
 ## Relationships
 
-- [[Chat Archive Advanced]] (4 shared connections)
-- [[Chat Panel Separation Spec]] (1 shared connections)
+- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (2 shared connections)
+- [Quest Service Core](Quest_Service_Core.md) (2 shared connections)
+- [Combat Death Handling](Combat_Death_Handling.md) (1 shared connections)
+- [Who Command Tests](Who_Command_Tests.md) (1 shared connections)
+- [Game State Provider](Game_State_Provider.md) (1 shared connections)
+- [NATS Message Broker](NATS_Message_Broker.md) (1 shared connections)
+- [Command Service Tests](Command_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- `server/commands/inventory_command_helpers.py`
+- `server/tests/unit/game/test_quest_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 8 (53%)
+- INFERRED: 7 (47%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

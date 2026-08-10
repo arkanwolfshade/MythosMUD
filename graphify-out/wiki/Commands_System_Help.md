@@ -1,51 +1,62 @@
 # Commands System Help
 
-> 23 nodes · cohesion 0.11
+> 25 nodes
 
 ## Key Concepts
 
-- **handle_help_command()** (11 connections) — `server/commands/system_commands.py`
-- **handle_system_command()** (8 connections) — `server/commands/system_commands.py`
-- **test_system_commands.py** (5 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **test_help_commands.py** (4 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **test_handle_help_command_no_topic()** (3 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **test_handle_help_command_unknown_topic()** (3 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **test_handle_help_command_with_topic()** (3 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **test_handle_system_command()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **test_handle_system_command_no_chat_service()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **test_handle_system_command_no_message()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **help_commands.py** (2 connections) — `server/commands/help_commands.py`
-- **Test handle_system_command() handles missing message.** (2 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **AliasStorage** (2 connections) — `server/commands/system_commands.py`
-- **Any** (2 connections) — `server/commands/system_commands.py`
-- **Help command adapter module.  The original help command handler lives in system_** (1 connections) — `server/commands/help_commands.py`
-- **Broadcast a system-level message via the chat service if available.** (1 connections) — `server/commands/system_commands.py`
-- **Handle the help command.      Args:         command_data: Command data dictionar** (1 connections) — `server/commands/system_commands.py`
-- **Unit tests for help command handlers.  Tests the help command functionality.** (1 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **Test handle_help_command() returns general help when no topic.** (1 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **Test handle_help_command() returns help for specific topic.** (1 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **Test handle_help_command() handles unknown topic.** (1 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **Unit tests for system command handlers.  Tests the system command functionality.** (1 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **Test handle_system_command() broadcasts system message.** (1 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **utility_commands.py** (20 connections) — `server/commands/utility_commands.py`
+- **handle_emote_command()** (15 connections) — `server/commands/emote_commands.py`
+- **emote_commands.py** (14 connections) — `server/commands/emote_commands.py`
+- **_get_emote_services()** (7 connections) — `server/commands/emote_commands.py`
+- **test_emote_commands.py** (6 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Any** (5 connections)
+- **_extract_emote_action()** (4 connections) — `server/commands/emote_commands.py`
+- **_validate_player_for_emote()** (4 connections) — `server/commands/emote_commands.py`
+- **_format_emote_messages()** (4 connections) — `server/commands/emote_commands.py`
+- **_handle_emote_result()** (4 connections) — `server/commands/emote_commands.py`
+- **test_handle_emote_command()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_handle_emote_command_no_message()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_handle_emote_command_no_chat_service()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Emote command handlers for MythosMUD.  This module contains handlers for the emo** (1 connections) — `server/commands/emote_commands.py`
+- **Extract action from command_data.      Args:         command_data: Command data** (1 connections) — `server/commands/emote_commands.py`
+- **Get chat service and player service from app state.      Args:         request:** (1 connections) — `server/commands/emote_commands.py`
+- **Validate player and extract required information for emote.      Args:         p** (1 connections) — `server/commands/emote_commands.py`
+- **Format emote messages for predefined or custom emotes.      Args:         action** (1 connections) — `server/commands/emote_commands.py`
+- **Handle the result from chat service after sending emote.      Args:         resu** (1 connections) — `server/commands/emote_commands.py`
+- **Handle the emote command for performing emotes.      Args:         command_data:** (1 connections) — `server/commands/emote_commands.py`
+- **Utility commands for MythosMUD.  This module contains handlers for utility comma** (1 connections) — `server/commands/utility_commands.py`
+- **Unit tests for emote command handlers.  Tests the emote command functionality.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Test handle_emote_command() processes emote.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Test handle_emote_command() handles missing message.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Test handle_emote_command() handles missing chat service.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
 
 ## Relationships
 
-- [[Alias Expansion Logic]] (4 shared connections)
-- [[Help and WebSocket Core]] (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (7 shared connections)
+- [Logging Migration Examples](Logging_Migration_Examples.md) (3 shared connections)
+- [Combat UUID Display Bug](Combat_UUID_Display_Bug.md) (3 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Status Command Handlers](Status_Command_Handlers.md) (2 shared connections)
+- [Logger Client Add To](Logger_Client_Add_To.md) (2 shared connections)
+- [System Monitoring API](System_Monitoring_API.md) (2 shared connections)
+- [Cursor Skills Harden](Cursor_Skills_Harden.md) (1 shared connections)
+- [Mythos Time HUD](Mythos_Time_HUD.md) (1 shared connections)
+- [Game State Provider](Game_State_Provider.md) (1 shared connections)
+- [Cursor Plans Pydantic](Cursor_Plans_Pydantic.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/help_commands.py`
-- `server/commands/system_commands.py`
-- `server/tests/unit/commands/test_help_commands.py`
-- `server/tests/unit/commands/test_system_commands.py`
+- `server/commands/emote_commands.py`
+- `server/commands/utility_commands.py`
+- `server/tests/unit/commands/test_emote_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (90%)
-- INFERRED: 6 (10%)
+- EXTRACTED: 100 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

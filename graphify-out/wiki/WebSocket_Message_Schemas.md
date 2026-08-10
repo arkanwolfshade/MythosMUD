@@ -1,52 +1,69 @@
 # WebSocket Message Schemas
 
-> 58 nodes · cohesion 0.06
+> 60 nodes
 
 ## Key Concepts
 
-- **test_websocket_messages.py** (31 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
-- **ChatMessageData** (11 connections) — `server/schemas/realtime/websocket_messages.py`
-- **CommandMessageData** (11 connections) — `server/schemas/realtime/websocket_messages.py`
-- **BaseWebSocketMessage** (10 connections) — `server/schemas/realtime/websocket_messages.py`
-- **websocket_messages.py** (8 connections) — `server/schemas/realtime/websocket_messages.py`
-- **ChatMessage** (7 connections) — `server/schemas/realtime/websocket_messages.py`
-- **CommandMessage** (7 connections) — `server/schemas/realtime/websocket_messages.py`
-- **PingMessage** (7 connections) — `server/schemas/realtime/websocket_messages.py`
-- **WrappedMessage** (7 connections) — `server/schemas/realtime/websocket_messages.py`
-- **test_chat_message()** (4 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
-- **test_chat_message_rejects_extra_fields()** (4 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
-- **test_chat_message_with_channel()** (4 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
-- **test_command_message()** (4 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
-- **test_command_message_rejects_extra_fields()** (4 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
-- **test_command_message_with_csrf_token()** (4 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
-- **Test ChatMessage with channel.** (3 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
-- **test_base_websocket_message()** (3 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
-- **test_base_websocket_message_with_csrf_token()** (3 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
-- **test_base_websocket_message_with_timestamp()** (3 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
-- **test_chat_message_data()** (3 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
-- **test_chat_message_data_no_channel()** (3 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
-- **test_chat_message_data_validation_error()** (3 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
-- **test_chat_message_data_with_channel()** (3 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
-- **test_command_message_data()** (3 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
-- **test_command_message_data_empty_args()** (3 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
-- *... and 33 more nodes in this community*
+- **maps.ts** (17 connections) — `client/src/api/maps.ts`
+- **AsciiMapViewer.tsx** (16 connections) — `client/src/components/map/AsciiMapViewer.tsx`
+- **useAsciiMapState.ts** (13 connections) — `client/src/components/map/useAsciiMapState.ts`
+- **AsciiMinimap.tsx** (12 connections) — `client/src/components/map/AsciiMinimap.tsx`
+- **AsciiMapViewerViews.tsx** (11 connections) — `client/src/components/map/AsciiMapViewerViews.tsx`
+- **useAsciiMapFetch.ts** (10 connections) — `client/src/components/map/useAsciiMapFetch.ts`
+- **fetchAsciiMap()** (9 connections) — `client/src/api/maps.ts`
+- **useAsciiMapState()** (9 connections) — `client/src/components/map/useAsciiMapState.ts`
+- **fetchAsciiMinimap()** (8 connections) — `client/src/api/maps.ts`
+- **isAsciiMapApiResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
+- **useAsciiMap.ts** (6 connections) — `client/src/components/map/useAsciiMap.ts`
+- **runFetchMap()** (6 connections) — `client/src/components/map/useAsciiMapFetch.ts`
+- **useAsciiMapViewerBindings()** (5 connections) — `client/src/components/map/AsciiMapViewer.tsx`
+- **AsciiMapViewer()** (5 connections) — `client/src/components/map/AsciiMapViewer.tsx`
+- **buildMapUrl()** (4 connections) — `client/src/api/maps.ts`
+- **formatMapErrorResponse()** (4 connections) — `client/src/api/maps.ts`
+- **AsciiMapEditor.tsx** (4 connections) — `client/src/components/map/AsciiMapEditor.tsx`
+- **AsciiMinimap()** (4 connections) — `client/src/components/map/AsciiMinimap.tsx`
+- **useAsciiMap.test.ts** (4 connections) — `client/src/components/map/__tests__/useAsciiMap.test.ts`
+- **asciiMapViewerUtils.ts** (4 connections) — `client/src/components/map/asciiMapViewerUtils.ts`
+- **createViewportKeyHandler()** (4 connections) — `client/src/components/map/asciiMapViewerUtils.ts`
+- **UseAsciiMapResult** (4 connections) — `client/src/components/map/useAsciiMap.ts`
+- **syncSelectionFromProps()** (4 connections) — `client/src/components/map/useAsciiMapFetch.ts`
+- **useAsciiMapPropEffects()** (4 connections) — `client/src/components/map/useAsciiMapState.ts`
+- **useAsciiMinimapData.ts** (4 connections) — `client/src/components/map/useAsciiMinimapData.ts`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [[Admin NPC Schemas]] (4 shared connections)
-- [[NATS Message Schemas]] (1 shared connections)
+- [Quest Flow Integration](Quest_Flow_Integration.md) (6 shared connections)
+- [Client App State Hooks](Client_App_State_Hooks.md) (4 shared connections)
+- [Player Death Service Tests](Player_Death_Service_Tests.md) (2 shared connections)
+- [Game Terminal Container](Game_Terminal_Container.md) (2 shared connections)
+- [Command Input Utilities](Command_Input_Utilities.md) (2 shared connections)
+- [API Test Fixtures](API_Test_Fixtures.md) (2 shared connections)
+- [Realtime Event Handlers](Realtime_Event_Handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/realtime/websocket_messages.py`
-- `server/tests/unit/schemas/test_websocket_messages.py`
+- `client/src/api/__tests__/maps.test.ts`
+- `client/src/api/maps.ts`
+- `client/src/components/map/AsciiMapEditor.tsx`
+- `client/src/components/map/AsciiMapViewer.tsx`
+- `client/src/components/map/AsciiMapViewerViews.tsx`
+- `client/src/components/map/AsciiMinimap.tsx`
+- `client/src/components/map/__tests__/asciiMapViewerUtils.test.ts`
+- `client/src/components/map/__tests__/useAsciiMap.test.ts`
+- `client/src/components/map/asciiMapViewerUtils.ts`
+- `client/src/components/map/useAsciiMap.ts`
+- `client/src/components/map/useAsciiMapFetch.ts`
+- `client/src/components/map/useAsciiMapState.ts`
+- `client/src/components/map/useAsciiMinimapData.ts`
+- `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 205 (100%)
+- EXTRACTED: 243 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

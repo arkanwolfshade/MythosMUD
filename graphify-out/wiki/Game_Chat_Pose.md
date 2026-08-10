@@ -1,42 +1,31 @@
 # Game Chat Pose
 
-> 14 nodes · cohesion 0.18
+> 6 nodes
 
 ## Key Concepts
 
-- **ChatPoseManager** (13 connections) — `server/game/chat_pose_manager.py`
-- **.normalize_player_id()** (5 connections) — `server/game/chat_pose_manager.py`
-- **.clear_pose()** (3 connections) — `server/game/chat_pose_manager.py`
-- **.get_pose()** (3 connections) — `server/game/chat_pose_manager.py`
-- **.set_pose()** (3 connections) — `server/game/chat_pose_manager.py`
-- **.get_all_poses()** (2 connections) — `server/game/chat_pose_manager.py`
-- **.__init__()** (2 connections) — `server/game/chat_pose_manager.py`
-- **Manages in-memory storage of player poses.** (1 connections) — `server/game/chat_pose_manager.py`
-- **Initialize the pose manager.** (1 connections) — `server/game/chat_pose_manager.py`
-- **Normalize player identifiers to string form.** (1 connections) — `server/game/chat_pose_manager.py`
-- **Set a player's pose in memory.          Args:             player_id: ID of the p** (1 connections) — `server/game/chat_pose_manager.py`
-- **Get a player's current pose.          Args:             player_id: ID of the pla** (1 connections) — `server/game/chat_pose_manager.py`
-- **Clear a player's pose.          Args:             player_id: ID of the player** (1 connections) — `server/game/chat_pose_manager.py`
-- **Get all poses (for testing/debugging).          Returns:             Dictionary** (1 connections) — `server/game/chat_pose_manager.py`
+- **TestGetMPRegenerationService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_mp_regeneration_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_mp_regeneration_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_mp_regeneration_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_mp_regeneration_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_mp_regeneration_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [[Chat Mute Admin API]] (2 shared connections)
-- [[NPC Admin API]] (1 shared connections)
-- [[Chat Message Helpers]] (1 shared connections)
-- [[Chat Service Whispers]] (1 shared connections)
-- [[Game Chat Whisper]] (1 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_pose_manager.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (92%)
-- INFERRED: 3 (8%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

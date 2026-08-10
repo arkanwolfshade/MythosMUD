@@ -1,56 +1,57 @@
 # NATS Retry Handler
 
-> 53 nodes · cohesion 0.06
+> 45 nodes
 
 ## Key Concepts
 
-- **NATSRetryHandler** (41 connections) — `server/realtime/nats_retry_handler.py`
-- **test_nats_retry_handler.py** (32 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **RetryableMessage** (13 connections) — `server/realtime/nats_retry_handler.py`
-- **test_retry_async_calls_function()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_async_increments_attempt()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_async_waits_for_backoff()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_async_zero_delay()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_should_retry_at_max()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_should_retry_over_max()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_should_retry_under_max()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_calculate_backoff_base()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_calculate_backoff_capped()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_calculate_backoff_exponential()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_calculate_backoff_non_negative()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_get_config()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_nats_retry_handler_init()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_nats_retry_handler_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_with_backoff_all_retries_fail()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_with_backoff_different_errors()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_with_backoff_no_sleep_after_last_attempt()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_with_backoff_preserves_exception_type()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_with_backoff_success_after_retries()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_with_backoff_success_first_attempt()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retryable_message_init()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_update_config_invalid_field()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- *... and 28 more nodes in this community*
+- **RoomIDUtils** (20 connections) — `server/realtime/room_id_utils.py`
+- **test_room_id_utils.py** (15 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **.__init__()** (9 connections) — `server/realtime/room_occupant_manager.py`
+- **.normalize_room_id_for_comparison()** (7 connections) — `server/realtime/room_id_utils.py`
+- **.check_normalized_ids_match()** (5 connections) — `server/realtime/room_id_utils.py`
+- **.check_normalized_room_matches()** (5 connections) — `server/realtime/room_id_utils.py`
+- **.check_npc_room_match()** (5 connections) — `server/realtime/room_id_utils.py`
+- **.check_fallback_room_matches()** (4 connections) — `server/realtime/room_id_utils.py`
+- **.__init__()** (3 connections) — `server/realtime/room_id_utils.py`
+- **test_room_id_utils_init()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_get_canonical_room_id()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_get_canonical_room_id_no_manager()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_normalize_room_id_for_comparison_none()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_normalize_room_id_for_comparison_string()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_normalize_room_id_for_comparison_whitespace()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_normalize_room_id_for_comparison_empty()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_normalized_ids_match()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_normalized_ids_match_none()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_normalized_room_matches()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_fallback_room_matches()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_npc_room_match()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **.get_canonical_room_id()** (2 connections) — `server/realtime/room_id_utils.py`
+- **Any** (1 connections)
+- **Utilities for room ID normalization and comparison.** (1 connections) — `server/realtime/room_id_utils.py`
+- **Initialize room ID utilities.          Args:             connection_manager: Con** (1 connections) — `server/realtime/room_id_utils.py`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [[Realtime Nats Retry]] (14 shared connections)
-- [[NPC Admin API]] (3 shared connections)
-- [[NATS Chat Broadcasting]] (3 shared connections)
-- [[Services Rate Limiter]] (2 shared connections)
-- [[Circuit Breaker Core]] (1 shared connections)
-- [[NATS Message Handler Tests]] (1 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (4 shared connections)
+- [Admin Shutdown Commands](Admin_Shutdown_Commands.md) (3 shared connections)
+- [Contexts Themecontext Hooks](Contexts_Themecontext_Hooks.md) (1 shared connections)
+- [Character Stats Generator](Character_Stats_Generator.md) (1 shared connections)
+- [Spell Effects Tests](Spell_Effects_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_retry_handler.py`
-- `server/tests/unit/realtime/test_nats_retry_handler.py`
+- `server/realtime/room_id_utils.py`
+- `server/realtime/room_occupant_manager.py`
+- `server/tests/unit/realtime/test_room_id_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 189 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 132 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

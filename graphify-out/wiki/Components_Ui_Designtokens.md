@@ -1,46 +1,36 @@
 # Components Ui Designtokens
 
-> 21 nodes · cohesion 0.15
+> 10 nodes
 
 ## Key Concepts
 
-- **designTokens.ts** (21 connections) — `client/src/components/ui/designTokens.ts`
-- **designTokens.test.ts** (13 connections) — `client/src/components/ui/__tests__/designTokens.test.ts`
-- **buildClasses** (3 connections) — `client/src/components/ui/designTokens.ts`
-- **animations** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **borderRadius** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **breakpoints** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **colors** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **layout** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **shadows** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **sizes** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **spacing** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **typography** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **variants** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **zIndex** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **ButtonVariant** (1 connections) — `client/src/components/ui/designTokens.ts`
-- **ColorVariant** (1 connections) — `client/src/components/ui/designTokens.ts`
-- **ComponentSize** (1 connections) — `client/src/components/ui/designTokens.ts`
-- **InputVariant** (1 connections) — `client/src/components/ui/designTokens.ts`
-- **PanelVariant** (1 connections) — `client/src/components/ui/designTokens.ts`
-- **SpacingSize** (1 connections) — `client/src/components/ui/designTokens.ts`
-- **TypographySize** (1 connections) — `client/src/components/ui/designTokens.ts`
+- **_setup_player_and_room()** (10 connections) — `server/realtime/connection_establishment.py`
+- **test_setup_player_and_room_success()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_setup_player_and_room_no_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_setup_player_and_room_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_setup_player_and_room_no_room_id()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Get player and setup room subscription.      Args:         player_id: The player** (1 connections) — `server/realtime/connection_establishment.py`
+- **Test _setup_player_and_room() successfully sets up player and room.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _setup_player_and_room() returns False when player not found.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _setup_player_and_room() handles no persistence.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _setup_player_and_room() handles player with no room_id.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Relationships
 
-- [[Chat Panel Components]] (2 shared connections)
+- [WebSocket Connection Setup](WebSocket_Connection_Setup.md) (5 shared connections)
+- [Logging Structured Setup](Logging_Structured_Setup.md) (4 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui/__tests__/designTokens.test.ts`
-- `client/src/components/ui/designTokens.ts`
+- `server/realtime/connection_establishment.py`
+- `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (100%)
+- EXTRACTED: 27 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

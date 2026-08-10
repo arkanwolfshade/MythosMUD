@@ -1,36 +1,33 @@
 # Investigations Sessions Session
 
-> 10 nodes · cohesion 0.20
+> 8 nodes
 
 ## Key Concepts
 
-- **Phase 3: Code Analysis** (6 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **DETAILED FINDINGS** (5 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **Finding 5: Client-Side UI Component (MISSING FEATURE)** (2 connections) — `investigations/sessions/2025-01-XX_session-occupants-npc-display.md`
-- **Finding 1: NPC is_alive Status Filtering (ROOT CAUSE)** (1 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **Finding 2: NPC is_alive Initialization** (1 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **Finding 3: NPC Death Handling** (1 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **Finding 4: Server-Side Data Transmission (WORKING)** (1 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **Phase 1: Initial Bug Report Analysis** (1 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **Phase 2: System State Investigation** (1 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **Phase 4: Evidence Collection** (1 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
+- **Proposed Changes** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **1. Enhanced ChatPanel (New Chat Input Panel)** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **2. Renamed Game Log Panel (Formerly ChatPanel)** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **New Features to Add** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Enhanced ChatPanel Interface** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **ChatPanel Layout Structure** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Purpose and Functionality** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Game Log Panel Layout Structure** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Relationships
 
-- [[Investigations Sessions Xx]] (1 shared connections)
-- [[Investigations Sessions Session]] (1 shared connections)
+- [Command Factories Combat](Command_Factories_Combat.md) (1 shared connections)
+- [Realtime Message Formatters](Realtime_Message_Formatters.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-01-XX_session-occupants-npc-display.md`
-- `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

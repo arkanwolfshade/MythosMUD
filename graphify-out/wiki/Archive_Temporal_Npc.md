@@ -1,29 +1,15 @@
 # Archive Temporal Npc
 
-> 15 nodes · cohesion 0.13
+> 2 nodes
 
 ## Key Concepts
 
-- **Temporal NPC Schedule Integration Status** (10 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
-- **Current Implementation Status** (3 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
-- **Related Files** (3 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
-- **Testing Considerations** (3 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
-- **temporal-npc-schedule-integration-status.md** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
-- **✅ Completed (Infrastructure)** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
-- **Database/Schema** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
-- **Integration Tests** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
-- **❌ Not Yet Implemented (NPC Response)** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
-- **Overview** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
-- **References** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
-- **Schedule Data Example** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
-- **Server-Side** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
-- **Summary** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
-- **Unit Tests** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
+- **Temporal NPC Schedules** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
+- **Schedule Service** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
 
 ## Relationships
 
-- [[Archive Planning Movement]] (1 shared connections)
-- [[Archive Temporal Npc]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
@@ -31,10 +17,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

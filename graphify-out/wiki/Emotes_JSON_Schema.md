@@ -1,50 +1,38 @@
 # Emotes JSON Schema
 
-> 28 nodes · cohesion 0.07
+> 10 nodes
 
 ## Key Concepts
 
-- **emotes.schema.json** (7 connections) — `db/static/schemas/emotes.schema.json`
-- **additionalProperties** (5 connections) — `db/static/schemas/emotes.schema.json`
-- **properties** (4 connections) — `db/static/schemas/emotes.schema.json`
-- **aliases** (4 connections) — `db/static/schemas/emotes.schema.json`
-- **emotes** (4 connections) — `db/static/schemas/emotes.schema.json`
-- **items** (3 connections) — `db/static/schemas/emotes.schema.json`
-- **other_message** (3 connections) — `db/static/schemas/emotes.schema.json`
-- **self_message** (3 connections) — `db/static/schemas/emotes.schema.json`
-- **properties** (2 connections) — `db/static/schemas/emotes.schema.json`
-- **additionalProperties** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **additionalProperties** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **required** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **uniqueItems** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **minProperties** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **$id** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **required** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **$schema** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/emotes.schema.json`
-- *... and 3 more nodes in this community*
+- **ChannelBroadcastingStrategyFactory** (11 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.register_strategy()** (3 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **test_channel_broadcasting_strategy_factory_init()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_channel_broadcasting_strategy_factory_register_strategy()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_global_channel_strategy_factory_instance()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Factory for creating channel broadcasting strategies.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Register a new strategy for a channel type.          Args:             channel_t** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Test ChannelBroadcastingStrategyFactory.__init__() initializes with default stra** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test ChannelBroadcastingStrategyFactory.register_strategy() registers new strate** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test global channel_strategy_factory instance exists.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Channel Broadcast Strategies](Channel_Broadcast_Strategies.md) (4 shared connections)
+- [Respawn Persistence Bug](Respawn_Persistence_Bug.md) (3 shared connections)
+- [Error Monitor Service](Error_Monitor_Service.md) (2 shared connections)
+- [System Audit Status](System_Audit_Status.md) (1 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/emotes.schema.json`
+- `server/realtime/channel_broadcasting_strategies.py`
+- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 54 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 26 (93%)
+- INFERRED: 2 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

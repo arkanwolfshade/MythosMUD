@@ -1,42 +1,32 @@
 # Room Get Zone Id
 
-> 14 nodes · cohesion 0.19
+> 5 nodes
 
 ## Key Concepts
 
-- **test_room_utils.py** (21 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **get_zone_from_room_id()** (6 connections) — `server/utils/room_utils.py`
-- **test_extract_subzone_from_room_id()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **test_extract_subzone_from_room_id_downtown()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **test_extract_subzone_from_room_id_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **test_get_zone_from_room_id()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **test_get_zone_from_room_id_innsmouth()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **test_get_zone_from_room_id_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **Test get_zone_from_room_id() extracts zone.** (2 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **Unit tests for room_utils.  Tests utility functions for room operations.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **Test extract_subzone_from_room_id() extracts subzone.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **Test extract_subzone_from_room_id() extracts different subzone.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **Test extract_subzone_from_room_id() returns None for invalid format.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **Test get_zone_from_room_id() returns None for invalid format.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **AdminSession** (6 connections) — `server/services/admin_auth_service.py`
+- **test_admin_session_init()** (3 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **.__init__()** (2 connections) — `server/services/admin_auth_service.py`
+- **Represents an admin session.** (1 connections) — `server/services/admin_auth_service.py`
+- **Test AdminSession initialization.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Relationships
 
-- [[Room Services Validator]] (6 shared connections)
-- [[Room Get Plane Id]] (5 shared connections)
-- [[Chat NATS Publisher]] (4 shared connections)
-- [[Room Get Subzone Local]] (3 shared connections)
+- [Health Endpoint Spec](Health_Endpoint_Spec.md) (2 shared connections)
+- [Player Model Inventory](Player_Model_Inventory.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_room_utils.py`
-- `server/utils/room_utils.py`
+- `server/services/admin_auth_service.py`
+- `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

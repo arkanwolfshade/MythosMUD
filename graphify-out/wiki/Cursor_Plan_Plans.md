@@ -1,39 +1,31 @@
 # Cursor Plan Plans
 
-> 14 nodes · cohesion 0.14
+> 6 nodes
 
 ## Key Concepts
 
-- **Dead Code Analysis and Removal Plan** (7 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
-- **3. Ordered Steps** (5 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
-- **2. Tooling** (3 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
-- **7. Summary Diagram** (2 connections) — `.cursor/plans/cursor_hooks_development_plan_23b08582.plan.md`
-- **dead_code_analysis_and_removal_746bc5c1.plan.md** (1 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
-- **1. Definition of "Dead Code" for This Repo** (1 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
-- **4. Known Intentional "Unused" (Whitelist / Do Not Remove)** (1 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
-- **5. Risk Mitigation** (1 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
-- **Client (TypeScript)** (1 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
-- **Phase 1: Setup and baseline** (1 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
-- **Phase 2: Generate dead-code lists** (1 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
-- **Phase 3: Removal in batches** (1 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
-- **Phase 4: Documentation and CI (optional)** (1 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
-- **Server (Python)** (1 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
+- **TestGetMythosTimeConsumer** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_mythos_time_consumer_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_mythos_time_consumer_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_mythos_time_consumer dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_mythos_time_consumer returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_mythos_time_consumer raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [[Cursor Plan Plans]] (1 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/cursor_hooks_development_plan_23b08582.plan.md`
-- `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

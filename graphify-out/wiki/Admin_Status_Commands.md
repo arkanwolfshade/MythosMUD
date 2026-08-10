@@ -1,61 +1,56 @@
 # Admin Status Commands
 
-> 59 nodes · cohesion 0.04
+> 72 nodes
 
 ## Key Concepts
 
-- **test_admin_commands.py** (35 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **handle_admin_command()** (13 connections) — `server/commands/admin_commands.py`
-- **Test handle_who_command successful execution.** (7 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **_handle_admin_status_command()** (6 connections) — `server/commands/admin_commands.py`
-- **_handle_admin_time_command()** (6 connections) — `server/commands/admin_commands.py`
-- **Test handle_mute_command() when user manager is not available.** (5 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_add_admin_command_no_target()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_add_admin_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_add_admin_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_admin_command_status()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_admin_command_time()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_admin_command_unknown()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_goto_command_no_app()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_goto_command_no_target()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_current_player_not_found()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_mute_failure()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_no_player_service()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_no_target()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_target_player_not_found()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_global_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mutes_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mutes_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mutes_command_with_mutes()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- *... and 34 more nodes in this community*
+- **_handle_admin_set_stat_command()** (33 connections) — `server/commands/admin_setstat_command.py`
+- **admin_setstat_command.py** (28 connections) — `server/commands/admin_setstat_command.py`
+- **test_admin_setstat_command.py** (21 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
+- **_apply_stat_change_and_build_result()** (8 connections) — `server/commands/admin_setstat_command.py`
+- **Any** (7 connections)
+- **_calculate_stat_warnings()** (6 connections) — `server/commands/admin_setstat_command.py`
+- **_log_admin_set_stat()** (6 connections) — `server/commands/admin_setstat_command.py`
+- **_build_set_stat_error_response()** (6 connections) — `server/commands/admin_setstat_command.py`
+- **_AdminSetStatLogContext** (5 connections) — `server/commands/admin_setstat_command.py`
+- **_parse_set_stat_args()** (5 connections) — `server/commands/admin_setstat_command.py`
+- **_notify_player_stat_change()** (5 connections) — `server/commands/admin_setstat_command.py`
+- **_resolve_admin_services_and_permissions()** (5 connections) — `server/commands/admin_setstat_command.py`
+- **_AdminSetStatApplyContext** (4 connections) — `server/commands/admin_setstat_command.py`
+- **_warning_for_cap_stat()** (4 connections) — `server/commands/admin_setstat_command.py`
+- **_get_app_or_error()** (4 connections) — `server/commands/admin_setstat_command.py`
+- **_parse_value_from_args()** (3 connections) — `server/commands/admin_setstat_command.py`
+- **_validate_set_stat_inputs()** (3 connections) — `server/commands/admin_setstat_command.py`
+- **_warning_for_stat_range()** (3 connections) — `server/commands/admin_setstat_command.py`
+- **test_handle_admin_set_stat_command_success_str()** (3 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
+- **test_handle_admin_set_stat_command_success_all_stat_types()** (3 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
+- **test_handle_admin_set_stat_command_invalid_stat_name()** (3 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
+- **test_handle_admin_set_stat_command_invalid_value()** (3 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
+- **test_handle_admin_set_stat_command_value_out_of_range()** (3 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
+- **test_handle_admin_set_stat_command_dp_above_maximum()** (3 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
+- **test_handle_admin_set_stat_command_mp_above_maximum()** (3 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [[Alias Expansion Logic]] (26 shared connections)
-- [[Admin Teleport Commands]] (7 shared connections)
-- [[Communication Command Handlers]] (2 shared connections)
-- [[Who Command Tests]] (2 shared connections)
-- [[Admin Set Lucidity Command]] (1 shared connections)
-- [[Admin Set Stat Command]] (1 shared connections)
-- [[Game Tick Processing]] (1 shared connections)
-- [[NPC Admin API]] (1 shared connections)
-- [[Whisper Reply Command Tests]] (1 shared connections)
-- [[Lucidity Recovery Commands]] (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (6 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (3 shared connections)
+- [Client Security Utilities](Client_Security_Utilities.md) (3 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (2 shared connections)
+- [Cursor Skills Harden](Cursor_Skills_Harden.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_commands.py`
-- `server/tests/unit/commands/test_admin_commands.py`
-- `server/tests/unit/commands/test_who_commands.py`
+- `server/commands/admin_setstat_command.py`
+- `server/tests/unit/commands/test_admin_setstat_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 168 (89%)
-- INFERRED: 21 (11%)
+- EXTRACTED: 244 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

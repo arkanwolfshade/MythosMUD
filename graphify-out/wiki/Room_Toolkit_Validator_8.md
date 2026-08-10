@@ -1,34 +1,25 @@
 # Room Toolkit Validator
 
-> 10 nodes · cohesion 0.20
+> 1 nodes
 
 ## Key Concepts
 
-- **properties** (12 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **id** (3 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **field1** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **field2** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **field3** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **World Loading** (0 connections) — `server/README.md`
 
 ## Relationships
 
-- [[Room Toolkit Validator]] (8 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- `server/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

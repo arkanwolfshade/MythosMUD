@@ -1,80 +1,61 @@
 # Admin Summon Command
 
-> 318 nodes · cohesion 0.01
+> 64 nodes
 
 ## Key Concepts
 
-- **inventory_equip_command.py** (45 connections) — `server/commands/inventory_equip_command.py`
-- **inventory_command_helpers.py** (39 connections) — `server/commands/inventory_command_helpers.py`
-- **inventory_pickup_command.py** (35 connections) — `server/commands/inventory_pickup_command.py`
-- **admin_summon_command.py** (34 connections) — `server/commands/admin_summon_command.py`
-- **inventory_unequip_command.py** (32 connections) — `server/commands/inventory_unequip_command.py`
-- **RoomDropManager** (29 connections) — `server/commands/inventory_command_contracts.py`
-- **inventory_get_command.py** (29 connections) — `server/commands/inventory_get_command.py`
-- **equipment_helpers.py** (28 connections) — `server/commands/equipment_helpers.py`
-- **persist_player()** (28 connections) — `server/commands/inventory_command_helpers.py`
-- **inventory_commands.py** (26 connections) — `server/commands/inventory_commands.py`
-- **inventory_drop_command.py** (25 connections) — `server/commands/inventory_drop_command.py`
-- **test_inventory_helpers_extended.py** (25 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
-- **test_inventory_commands_more_helpers.py** (22 connections) — `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
-- **inventory_put_command.py** (21 connections) — `server/commands/inventory_put_command.py`
-- **inventory_item_matching.py** (20 connections) — `server/commands/inventory_item_matching.py`
-- **get_shared_services()** (20 connections) — `server/commands/inventory_service_helpers.py`
-- **resolve_state_and_player()** (19 connections) — `server/commands/inventory_command_helpers.py`
-- **normalize_slot_name()** (19 connections) — `server/commands/inventory_item_matching.py`
-- **broadcast_room_event()** (18 connections) — `server/commands/inventory_command_helpers.py`
-- **clone_inventory()** (18 connections) — `server/commands/inventory_command_helpers.py`
-- **resolve_player()** (17 connections) — `server/commands/inventory_command_helpers.py`
-- **resolve_state()** (17 connections) — `server/commands/inventory_command_helpers.py`
-- **handle_drop_command()** (14 connections) — `server/commands/inventory_drop_command.py`
-- **FloorPickupAfterExtract** (14 connections) — `server/commands/inventory_pickup_command.py`
-- **build_and_broadcast_inventory_event()** (13 connections) — `server/commands/inventory_command_helpers.py`
-- *... and 293 more nodes in this community*
+- **test_command_inventory.py** (63 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **PickupCommand** (22 connections) — `server/models/command_inventory.py`
+- **command_inventory.py** (13 connections) — `server/models/command_inventory.py`
+- **PutCommand** (12 connections) — `server/models/command_inventory.py`
+- **GetCommand** (12 connections) — `server/models/command_inventory.py`
+- **InventoryCommand** (8 connections) — `server/models/command_inventory.py`
+- **test_pickup_command_validate_search_term_empty_string()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_pickup_command_validate_requirements_neither_provided()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_pickup_command_index_validation_min()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_pickup_command_quantity_validation_min()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_pickup_command_search_term_max_length()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_put_command_item_min_length()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_put_command_container_min_length()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_put_command_quantity_validation_min()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_get_command_item_min_length()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_get_command_container_min_length()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_get_command_quantity_validation_min()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_inventory_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_pickup_command_with_index()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_pickup_command_with_search_term()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_pickup_command_with_both()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_pickup_command_validate_search_term_strips()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_pickup_command_validate_search_term_whitespace_only()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_pickup_command_validate_search_term_none()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_pickup_command_validate_requirements_index_provided()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [[Inventory Service Helpers]] (34 shared connections)
-- [[NPC Admin API]] (29 shared connections)
-- [[Commands Inventory Item]] (28 shared connections)
-- [[Alias Expansion Logic]] (25 shared connections)
-- [[Inventory Test Support]] (23 shared connections)
-- [[Container Inventory Ops]] (10 shared connections)
-- [[Player Domain Model]] (9 shared connections)
-- [[SQLAlchemy Model Base]] (8 shared connections)
-- [[Container Inventory Finders]] (8 shared connections)
-- [[Integer Coercion Utils]] (7 shared connections)
-- [[Player Save Preparer]] (7 shared connections)
-- [[Commands Container Inventory]] (7 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (15 shared connections)
+- [WebSocket Request Context](WebSocket_Request_Context.md) (14 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (11 shared connections)
+- [Cursor Skills Critique](Cursor_Skills_Critique.md) (7 shared connections)
+- [Emote Schema Validator](Emote_Schema_Validator.md) (6 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (5 shared connections)
+- [Test Refactoring Status](Test_Refactoring_Status.md) (1 shared connections)
+- [Base Command Models](Base_Command_Models.md) (1 shared connections)
+- [NATS Subject Admin API](NATS_Subject_Admin_API.md) (1 shared connections)
+- [Architecture Review Plan](Architecture_Review_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_summon_command.py`
-- `server/commands/equipment_helpers.py`
-- `server/commands/inventory_command_coercion.py`
-- `server/commands/inventory_command_contracts.py`
-- `server/commands/inventory_command_helpers.py`
-- `server/commands/inventory_command_prototype.py`
-- `server/commands/inventory_commands.py`
-- `server/commands/inventory_drop_command.py`
-- `server/commands/inventory_equip_command.py`
-- `server/commands/inventory_get_command.py`
-- `server/commands/inventory_item_matching.py`
-- `server/commands/inventory_pickup_command.py`
-- `server/commands/inventory_put_command.py`
-- `server/commands/inventory_service_helpers.py`
-- `server/commands/inventory_unequip_command.py`
-- `server/tests/unit/commands/test_inventory_commands.py`
-- `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
-- `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
-- `server/tests/unit/commands/test_inventory_commands_state_helpers.py`
-- `server/tests/unit/commands/test_inventory_helpers.py`
+- `server/models/command_inventory.py`
+- `server/tests/unit/models/test_command_inventory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1478 (93%)
-- INFERRED: 114 (7%)
+- EXTRACTED: 230 (92%)
+- INFERRED: 19 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,39 +1,31 @@
 # Investigations Sessions Movement
 
-> 15 nodes · cohesion 0.13
+> 6 nodes
 
 ## Key Concepts
 
-- **BUG INVESTIGATION REPORT: Movement/Command Issues** (9 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
-- **REMEDIATION (2025-11-21)** (4 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
-- **EVIDENCE** (3 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
-- **RECOMMENDATIONS** (2 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
-- **2025-11-20_movement-bug-investigation.md** (1 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
-- **Code Changes** (1 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
-- **Code References** (1 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
-- **Database Query Results** (1 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
-- **Fixes Implemented** (1 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
-- **Investigation Priorities (NOT fixes)** (1 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
-- **REMEDIATION PROMPT** (1 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
-- **ROOT CAUSE ANALYSIS** (1 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
-- **RUNTIME VERIFICATION (2025-11-21)** (1 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
-- **SYSTEM IMPACT** (1 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
-- **Testing Required** (1 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
+- **TestGetAsyncPersistence** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_async_persistence_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_async_persistence_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_async_persistence dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_async_persistence returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_async_persistence raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [[Investigations Sessions Session]] (1 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-11-20_movement-bug-investigation.md`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

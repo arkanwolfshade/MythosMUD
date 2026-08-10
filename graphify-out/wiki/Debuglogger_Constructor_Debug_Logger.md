@@ -1,52 +1,45 @@
 # Debuglogger Constructor Debug Logger
 
-> 27 nodes · cohesion 0.13
+> 18 nodes
 
 ## Key Concepts
 
-- **debugLogger** (23 connections) — `client/src/utils/debugLogger.ts`
-- **.log()** (9 connections) — `client/src/utils/debugLogger.ts`
-- **debugLogger.ts** (7 connections) — `client/src/utils/debugLogger.ts`
-- **.logToConsole()** (6 connections) — `client/src/utils/debugLogger.ts`
-- **.downloadLogs()** (5 connections) — `client/src/utils/debugLogger.ts`
-- **debugLogger.test.ts** (4 connections) — `client/src/utils/__tests__/debugLogger.test.ts`
-- **.error()** (4 connections) — `client/src/utils/debugLogger.ts`
-- **.warn()** (4 connections) — `client/src/utils/debugLogger.ts`
-- **.debug()** (3 connections) — `client/src/utils/debugLogger.ts`
-- **.info()** (3 connections) — `client/src/utils/debugLogger.ts`
-- **.initializeConfig()** (3 connections) — `client/src/utils/debugLogger.ts`
-- **.addToBuffer()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **.constructor()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **.createLogEntry()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **.formatMessage()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **.getDefaultLogLevel()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **.getLogsAsString()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **.shouldLog()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **constructor()** (1 connections) — `client/src/utils/__tests__/debugLogger.test.ts`
-- **mockConsole** (1 connections) — `client/src/utils/__tests__/debugLogger.test.ts`
-- **.clearLogs()** (1 connections) — `client/src/utils/debugLogger.ts`
-- **.getLogBuffer()** (1 connections) — `client/src/utils/debugLogger.ts`
-- **.getLogLevel()** (1 connections) — `client/src/utils/debugLogger.ts`
-- **.setLogLevel()** (1 connections) — `client/src/utils/debugLogger.ts`
-- **LogConfig** (1 connections) — `client/src/utils/debugLogger.ts`
-- *... and 2 more nodes in this community*
+- **test_metadata.py** (11 connections) — `server/tests/unit/test_metadata.py`
+- **metadata.py** (3 connections) — `server/metadata.py`
+- **npc_metadata.py** (3 connections) — `server/npc_metadata.py`
+- **test_base_is_declarative_base()** (3 connections) — `server/tests/unit/test_metadata.py`
+- **test_base_has_metadata()** (3 connections) — `server/tests/unit/test_metadata.py`
+- **test_base_can_be_instantiated()** (3 connections) — `server/tests/unit/test_metadata.py`
+- **test_metadata_is_metadata_instance()** (2 connections) — `server/tests/unit/test_metadata.py`
+- **test_npc_metadata_is_metadata_instance()** (2 connections) — `server/tests/unit/test_metadata.py`
+- **test_metadata_and_npc_metadata_are_different()** (2 connections) — `server/tests/unit/test_metadata.py`
+- **Shared SQLAlchemy metadata for MythosMUD models.  This module provides the share** (1 connections) — `server/metadata.py`
+- **NPC Database metadata for MythosMUD.  This module defines the SQLAlchemy metadat** (1 connections) — `server/npc_metadata.py`
+- **Unit tests for metadata modules.  Tests the shared SQLAlchemy metadata instances** (1 connections) — `server/tests/unit/test_metadata.py`
+- **Test that metadata is a MetaData instance.** (1 connections) — `server/tests/unit/test_metadata.py`
+- **Test that npc_metadata is a MetaData instance.** (1 connections) — `server/tests/unit/test_metadata.py`
+- **Test that metadata and npc_metadata are separate instances.** (1 connections) — `server/tests/unit/test_metadata.py`
+- **Test that Base is a DeclarativeBase subclass.** (1 connections) — `server/tests/unit/test_metadata.py`
+- **Test that Base has metadata attribute set to shared metadata.** (1 connections) — `server/tests/unit/test_metadata.py`
+- **Test that Base can be instantiated (though meant to be subclassed).** (1 connections) — `server/tests/unit/test_metadata.py`
 
 ## Relationships
 
-- [[Draggable Panel UI]] (2 shared connections)
-- [[Game Terminal Panels]] (2 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (6 shared connections)
+- [Command Parser Tests](Command_Parser_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/utils/__tests__/debugLogger.test.ts`
-- `client/src/utils/debugLogger.ts`
+- `server/metadata.py`
+- `server/npc_metadata.py`
+- `server/tests/unit/test_metadata.py`
 
 ## Audit Trail
 
-- EXTRACTED: 94 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 39 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

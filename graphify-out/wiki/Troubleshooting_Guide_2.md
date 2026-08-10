@@ -1,36 +1,29 @@
 # Troubleshooting Guide
 
-> 12 nodes · cohesion 0.17
+> 5 nodes
 
 ## Key Concepts
 
-- **Advanced Troubleshooting** (4 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Debugging Techniques** (4 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Log Analysis Techniques** (4 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **System Monitoring** (3 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Enable Debug Logging** (1 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Error Correlation** (1 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Pattern Recognition** (1 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Performance Analysis** (1 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Real-time Monitoring** (1 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Resource Monitoring** (1 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Trace Specific Operations** (1 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Use Debugging Tools** (1 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
+- **name** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **maxLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [[Troubleshooting Guide]] (1 shared connections)
+- [Chat Panel Separation Spec](Chat_Panel_Separation_Spec.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/TROUBLESHOOTING_GUIDE.md`
+- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

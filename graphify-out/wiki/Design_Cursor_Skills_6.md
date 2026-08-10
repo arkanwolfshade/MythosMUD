@@ -1,11 +1,11 @@
 # Design Cursor Skills
 
-> 2 nodes · cohesion 1.00
+> 2 nodes
 
 ## Key Concepts
 
-- **Motion Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/motion-design.md`
-- **Motion 100/300/500 Duration Rule** (1 connections) — `.cursor/skills/frontend-design/reference/motion-design.md`
+- **Spatial Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/spatial-design.md`
+- **4pt Spacing System** (1 connections) — `.cursor/skills/frontend-design/reference/spatial-design.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/reference/motion-design.md`
+- `.cursor/skills/frontend-design/reference/spatial-design.md`
 
 ## Audit Trail
 
@@ -23,4 +23,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,40 +1,26 @@
 # Setup Dompurifytestwindow Localstorageshim
 
-> 13 nodes · cohesion 0.21
+> 2 nodes
 
 ## Key Concepts
 
-- **setup.ts** (12 connections) — `client/src/test/setup.ts`
-- **domPurifyTestWindow.ts** (3 connections) — `client/src/test/domPurifyTestWindow.ts`
-- **installDomPurifyTestWindow()** (3 connections) — `client/src/test/domPurifyTestWindow.ts`
-- **localStorageShim.ts** (3 connections) — `client/src/utils/localStorageShim.ts`
-- **installLocalStorageShim()** (3 connections) — `client/src/utils/localStorageShim.ts`
-- **createDomPurifyTestWindow()** (2 connections) — `client/src/test/domPurifyTestWindow.ts`
-- **localStorageShim.test.ts** (2 connections) — `client/src/utils/__tests__/localStorageShim.test.ts`
-- **constructor()** (1 connections) — `client/src/test/setup.ts`
-- **defaultFetchMock** (1 connections) — `client/src/test/setup.ts`
-- **disconnect()** (1 connections) — `client/src/test/setup.ts`
-- **observe()** (1 connections) — `client/src/test/setup.ts`
-- **takeRecords()** (1 connections) — `client/src/test/setup.ts`
-- **unobserve()** (1 connections) — `client/src/test/setup.ts`
+- **__init__.py** (1 connections) — `server/tests/unit/realtime/maintenance/__init__.py`
+- **Realtime maintenance unit tests.** (1 connections) — `server/tests/unit/realtime/maintenance/__init__.py`
 
 ## Relationships
 
-- [[Client Security Utilities]] (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/src/test/domPurifyTestWindow.ts`
-- `client/src/test/setup.ts`
-- `client/src/utils/__tests__/localStorageShim.test.ts`
-- `client/src/utils/localStorageShim.ts`
+- `server/tests/unit/realtime/maintenance/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

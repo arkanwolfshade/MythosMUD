@@ -1,54 +1,51 @@
 # Combat NPC Lookup
 
-> 52 nodes · cohesion 0.08
+> 48 nodes
 
 ## Key Concepts
 
-- **combat_service_npc.py** (25 connections) — `server/services/combat_service_npc.py`
-- **CombatService** (14 connections) — `server/services/combat_service_npc.py`
-- **get_combat_id_for_npc()** (13 connections) — `server/services/combat_service_npc.py`
-- **UUID** (12 connections) — `server/services/combat_service_npc.py`
-- **find_participant_uuid_by_string_id()** (10 connections) — `server/services/combat_service_npc.py`
-- **get_npc_participant_current_room()** (10 connections) — `server/services/combat_service_npc.py`
-- **resolve_npc_participant_id_in_combat()** (9 connections) — `server/services/combat_service_npc.py`
-- **DataProviderProtocol** (8 connections) — `server/services/combat_service_npc.py`
-- **_fallback_find_combat_id_for_npc()** (8 connections) — `server/services/combat_service_npc.py`
-- **get_combat_id_for_npc_via_mapping()** (8 connections) — `server/services/combat_service_npc.py`
-- **get_participant_current_room()** (8 connections) — `server/services/combat_service_npc.py`
-- **_get_uuid_mapping()** (8 connections) — `server/services/combat_service_npc.py`
-- **UUIDMappingProtocol** (8 connections) — `server/services/combat_service_npc.py`
-- **get_combat_by_participant()** (6 connections) — `server/services/combat_service_npc.py`
-- **is_npc_in_combat_sync()** (6 connections) — `server/services/combat_service_npc.py`
-- **_iter_active_combats()** (6 connections) — `server/services/combat_service_npc.py`
-- **npc_in_combat_by_string_id_mapping()** (6 connections) — `server/services/combat_service_npc.py`
-- **_participant_matches_npc_id()** (6 connections) — `server/services/combat_service_npc.py`
-- **sync_npc_participant_dp_after_spell_damage()** (6 connections) — `server/services/combat_service_npc.py`
-- **.get_uuid_for_string_id()** (6 connections) — `server/services/combat_service_npc.py`
-- **CombatInstance** (5 connections) — `server/services/combat_service_npc.py`
-- **npc_in_combat_by_uuid_lookup()** (5 connections) — `server/services/combat_service_npc.py`
-- **.get_original_string_id()** (5 connections) — `server/services/combat_service_npc.py`
-- **CombatParticipant** (4 connections) — `server/services/combat_service_npc.py`
-- **_get_data_provider()** (4 connections) — `server/services/combat_service_npc.py`
-- *... and 27 more nodes in this community*
+- **test_message_filtering.py** (26 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **message_filtering_helper()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_message_filtering_helper_init()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_collect_room_targets()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_collect_room_targets_empty()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_preload_receiver_mute_data()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_preload_receiver_mute_data_excludes_sender()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_collect_room_targets_with_canonical_id()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_extract_chat_event_info()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_should_apply_mute_check_sensitive_channel()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_should_apply_mute_check_non_sensitive_channel()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_compare_canonical_rooms_same()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_compare_canonical_rooms_different()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_get_player_room_from_online_players()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_get_player_room_from_online_players_not_found()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_get_player_room_from_persistence()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_get_player_room_from_persistence_not_found()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_is_player_in_room_true()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_is_player_in_room_false()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_is_player_muted_by_receiver()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_is_player_muted_by_receiver_not_muted()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_get_user_manager_custom()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_get_user_manager_global()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Unit tests for message filtering.  Tests the MessageFilteringHelper class.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [[Combat Service Bundle]] (16 shared connections)
-- [[Spell Effect Protocols]] (6 shared connections)
-- [[Combat Taunt Tests]] (3 shared connections)
-- [[Player Combat XP]] (3 shared connections)
-- [[Combat Command Handler]] (2 shared connections)
+- [Chat Message Filtering](Chat_Message_Filtering.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_service_npc.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 
-- EXTRACTED: 233 (97%)
-- INFERRED: 7 (3%)
+- EXTRACTED: 97 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

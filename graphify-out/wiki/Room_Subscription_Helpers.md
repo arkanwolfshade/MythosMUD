@@ -1,51 +1,61 @@
 # Room Subscription Helpers
 
-> 36 nodes · cohesion 0.06
+> 29 nodes
 
 ## Key Concepts
 
-- **test_room_subscription_manager_helpers.py** (21 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **subscription_manager()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **Test _canonical_room_id() with None.** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **Test remove_player_from_all_rooms() removes player from all rooms.** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_canonical_room_id()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_canonical_room_id_empty_string()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_canonical_room_id_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_canonical_room_id_no_persistence()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_canonical_room_id_no_room_id_attr()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_canonical_room_id_none()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_canonical_room_id_with_persistence()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_get_stats_empty()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_get_stats_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_get_stats_with_data()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_reconcile_room_presence()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_reconcile_room_presence_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_reconcile_room_presence_no_online_players()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_remove_player_from_all_rooms()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_remove_player_from_all_rooms_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_remove_player_from_all_rooms_no_subscriptions()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **test_remove_player_from_all_rooms_with_subscriptions()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **Unit tests for room subscription manager helper functions.  Tests the helper fun** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **Test reconcile_room_presence() handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **Test _canonical_room_id() resolves via persistence.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **Test _canonical_room_id() returns original when room has no id.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- *... and 11 more nodes in this community*
+- **NATSConnectionStateMachine** (58 connections) — `server/realtime/connection_state_machine.py`
+- **.on_connection_failed()** (3 connections) — `server/realtime/connection_state_machine.py`
+- **.__init__()** (2 connections) — `server/realtime/connection_state_machine.py`
+- **.on_connect()** (2 connections) — `server/realtime/connection_state_machine.py`
+- **.on_connected_successfully()** (2 connections) — `server/realtime/connection_state_machine.py`
+- **.on_disconnect()** (2 connections) — `server/realtime/connection_state_machine.py`
+- **.on_start_reconnect()** (2 connections) — `server/realtime/connection_state_machine.py`
+- **.on_open_circuit()** (2 connections) — `server/realtime/connection_state_machine.py`
+- **.on_close_circuit()** (2 connections) — `server/realtime/connection_state_machine.py`
+- **.on_degrade()** (2 connections) — `server/realtime/connection_state_machine.py`
+- **.on_recover()** (2 connections) — `server/realtime/connection_state_machine.py`
+- **.can_attempt_connection()** (2 connections) — `server/realtime/connection_state_machine.py`
+- **.should_open_circuit()** (2 connections) — `server/realtime/connection_state_machine.py`
+- **.reset()** (2 connections) — `server/realtime/connection_state_machine.py`
+- **Exception** (1 connections)
+- **State machine for NATS connection lifecycle.      States:     - disconnected: No** (1 connections) — `server/realtime/connection_state_machine.py`
+- **Initialize connection state machine.          Args:             connection_id: U** (1 connections) — `server/realtime/connection_state_machine.py`
+- **Handler for connect transition.          Resets reconnection counter and prepare** (1 connections) — `server/realtime/connection_state_machine.py`
+- **Handler for successful connection.          Records connection time and incremen** (1 connections) — `server/realtime/connection_state_machine.py`
+- **Handler for connection failure.          Records error and increments failure co** (1 connections) — `server/realtime/connection_state_machine.py`
+- **Handler for disconnection.          Increments disconnection counter.          A** (1 connections) — `server/realtime/connection_state_machine.py`
+- **Handler for starting reconnection.          Checks if circuit breaker should be** (1 connections) — `server/realtime/connection_state_machine.py`
+- **Handler for circuit breaker opening.          Logs circuit open event for alerti** (1 connections) — `server/realtime/connection_state_machine.py`
+- **Handler for circuit breaker closing.          Resets failure counters.** (1 connections) — `server/realtime/connection_state_machine.py`
+- **Handler for connection degradation.          Logs degraded state for monitoring.** (1 connections) — `server/realtime/connection_state_machine.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [[Room Occupant Events]] (2 shared connections)
-- [[Chat Logger Service Tests]] (1 shared connections)
+- [Exploration Command Factory](Exploration_Command_Factory.md) (12 shared connections)
+- [Realtime Connection](Realtime_Connection.md) (2 shared connections)
+- [Api Players Quests](Api_Players_Quests.md) (2 shared connections)
+- [Combat Service Bundle](Combat_Service_Bundle.md) (2 shared connections)
+- [Game State Provider](Game_State_Provider.md) (1 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (1 shared connections)
+- [test_can_attempt_connection_circuit_open](test_can_attempt_connection_circuit_open.md) (1 shared connections)
+- [test_can_attempt_connection_connected](test_can_attempt_connection_connected.md) (1 shared connections)
+- [test_can_attempt_connection_reconnecting](test_can_attempt_connection_reconnecting.md) (1 shared connections)
+- [test_close_circuit](test_close_circuit.md) (1 shared connections)
+- [test_connect_transition](test_connect_transition.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
+- `server/realtime/connection_state_machine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 77 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 99 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

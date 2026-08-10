@@ -1,56 +1,50 @@
 # Communication Command Factories
 
-> 42 nodes · cohesion 0.05
+> 35 nodes
 
 ## Key Concepts
 
-- **test_command_factories_communication.py** (28 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **Test create_mute_command() creates MuteCommand.** (3 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **Unit tests for communication command models.  Tests the communication command mo** (2 connections) — `server/tests/unit/models/test_command_communication.py`
-- **test_create_channel_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_channel_command_default_no_channel()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_channel_command_no_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_channel_command_with_default()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_emote_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_emote_command_no_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_local_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_local_command_no_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_local_command_too_long()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_me_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_me_command_no_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_pose_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_pose_command_no_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_reply_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_reply_command_empty_message()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_reply_command_no_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_say_command_no_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_system_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_system_command_no_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_whisper_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_whisper_command_no_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_whisper_command_no_message()** (2 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- *... and 17 more nodes in this community*
+- **File-by-File Changes** (11 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Pydantic Anti-Patterns Remediation Plan** (8 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Critical Issues Identified** (6 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Remediation Strategy** (4 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Phase 1: Critical Security Fixes (High Priority)** (4 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Phase 2: Type Safety Improvements (Medium Priority)** (3 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Phase 3: Code Organization (Low Priority)** (3 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Implementation Details** (2 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **pydantic_anti-patterns_remediation_5139237e.plan.md** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Executive Summary** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **1. Mutable Default Values (Rule 3 Violation)** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **2. Unsafe `dict[str, Any]` Types (Rule 2 Violation)** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **3. Old-Style model_config (Rule 1 Violation)** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **4. Missing Security Configuration** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **5. Missing model_config Entirely** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Task 1.1: Fix Mutable Default Values** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Task 1.2: Standardize model_config Usage** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Task 1.3: Add Security Configuration to All Models** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Task 2.1: Replace dict[str, Any] with Typed Models** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Task 2.2: Add Field Validators Where Needed** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Task 3.1: Create Base Model Classes** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **Task 3.2: Consolidate Duplicate Patterns** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **`server/schemas/player.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **`server/schemas/nats_messages.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- **`server/api/admin/npc.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [[Exploration Command Factories]] (10 shared connections)
-- [[NPC Admin API]] (2 shared connections)
-- [[Communication Command Models]] (1 shared connections)
-- [[Communication Command Classes]] (1 shared connections)
-- [[Player State Factories]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/models/test_command_communication.py`
-- `server/tests/unit/utils/test_command_factories_communication.py`
-- `server/tests/unit/utils/test_command_factories_moderation.py`
+- `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 97 (100%)
+- EXTRACTED: 68 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,61 +1,51 @@
 # NPC Combat Events
 
-> 65 nodes · cohesion 0.05
+> 62 nodes
 
 ## Key Concepts
 
-- **.__post_init__()** (21 connections) — `server/events/event_types.py`
-- **test_npc_combat_integration_class.py** (21 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **Initialize the event with proper type.** (18 connections) — `server/events/event_types.py`
-- **NPCCombatIntegration** (18 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **NPCAttacked** (12 connections) — `server/events/event_types.py`
-- **PlayerMortallyWoundedEvent** (4 connections) — `server/events/event_types.py`
-- **integration()** (4 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- *... and 40 more nodes in this community*
+- **test_validation.py** (36 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **validator()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **strict_validator()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **custom_length_validator()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_subject_validator_init_strict()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_subject_validator_init_custom_length()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_parameter_value_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_parameter_value_invalid_characters()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_parameter_value_strict_no_underscores()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_pattern_params_invalid()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_pattern_params_multiple_invalid()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_basic_valid()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_basic_empty()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_basic_too_long()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_basic_double_dots()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_basic_starts_with_dot()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_basic_ends_with_dot()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_basic_custom_length()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_components_valid()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_components_with_underscores()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_components_strict_no_underscores()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_components_invalid_characters()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_components_empty_component()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_components_numbers()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_components_hyphens()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [[Distributed Event Bus]] (14 shared connections)
-- [[NPC Services Bundle]] (6 shared connections)
-- [[Aggressive Mob NPC]] (3 shared connections)
-- [[NPC Death Lifecycle]] (2 shared connections)
-- [[Player Respawn Events]] (2 shared connections)
-- [[Player Death Service]] (2 shared connections)
-- [[Async Task Registry]] (1 shared connections)
-- [[Party Service Management]] (1 shared connections)
-- [[Player Event Handler Tests]] (1 shared connections)
-- [[Quest Service Core]] (1 shared connections)
+- [Cursor Rules Docker](Cursor_Rules_Docker.md) (8 shared connections)
+- [Cursor Setup Guide](Cursor_Setup_Guide.md) (7 shared connections)
 
 ## Source Files
 
-- `server/events/event_types.py`
-- `server/npc/combat_integration.py`
-- `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- `server/tests/unit/services/nats_subject_manager/test_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 224 (99%)
-- INFERRED: 3 (1%)
+- EXTRACTED: 132 (96%)
+- INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

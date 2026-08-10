@@ -1,52 +1,44 @@
 # Dual Connection API Reference
 
-> 29 nodes · cohesion 0.08
+> 19 nodes
 
 ## Key Concepts
 
-- **Dual Connection System API Reference** (15 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Best Practices** (5 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Error Handling** (5 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Session Management** (5 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Examples** (4 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Monitoring Endpoints** (4 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Client Integration** (3 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Connection Endpoints** (3 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **DUAL_CONNECTION_API_REFERENCE.md** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Common Error Types** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Connection Health Statistics** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Connection Management** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Connection State Management** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Dual Connection Statistics** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Error Recovery** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Error Response Format** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Establishing Dual Connections** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Get Player Session** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Monitoring Connection Health** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **New Game Session** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Overview** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Performance Optimization** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Performance Statistics** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **React Hook Usage** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **SSE Connection** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- *... and 4 more nodes in this community*
+- **GameConfig** (15 connections) — `server/config/models/game.py`
+- **.validate_max_connections()** (2 connections) — `server/config/models/game.py`
+- **.validate_aliases_dir()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_tick_interval()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_timeout()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_xp_multiplier()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_alert_threshold()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_performance_threshold()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_error_threshold()** (2 connections) — `server/config/models/game.py`
+- **BaseSettings** (1 connections)
+- **Game-specific configuration.** (1 connections) — `server/config/models/game.py`
+- **Validate max connections is reasonable.** (1 connections) — `server/config/models/game.py`
+- **Validate aliases directory path.** (1 connections) — `server/config/models/game.py`
+- **Validate combat tick interval.** (1 connections) — `server/config/models/game.py`
+- **Validate combat timeout.** (1 connections) — `server/config/models/game.py`
+- **Validate combat XP multiplier.** (1 connections) — `server/config/models/game.py`
+- **Validate combat alert threshold.** (1 connections) — `server/config/models/game.py`
+- **Validate combat performance threshold.** (1 connections) — `server/config/models/game.py`
+- **Validate combat error threshold.** (1 connections) — `server/config/models/game.py`
 
 ## Relationships
 
-- [[Player Command Developer]] (1 shared connections)
-- [[Real Time Architecture]] (1 shared connections)
-- [[Dual Connection Client Guide]] (1 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
+- [Archive Frd Random](Archive_Frd_Random.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
+- `server/config/models/game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 40 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

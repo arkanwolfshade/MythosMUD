@@ -1,57 +1,69 @@
 # Player Creation Service
 
-> 58 nodes · cohesion 0.05
+> 267 nodes
 
 ## Key Concepts
 
-- **PlayerStateService** (16 connections) — `server/game/player_state_service.py`
-- **PlayerSearchService** (14 connections) — `server/game/player_search_service.py`
-- **PlayerCreationService** (13 connections) — `server/game/player_creation_service.py`
-- **PlayerRespawnWrapper** (12 connections) — `server/game/player_respawn_wrapper.py`
-- **.create_player_with_stats()** (8 connections) — `server/game/player_creation_service.py`
-- **.__init__()** (8 connections) — `server/game/player_service.py`
-- **.create_player()** (7 connections) — `server/game/player_creation_service.py`
-- **Any** (7 connections) — `server/game/player_state_service.py`
-- **UUID** (7 connections) — `server/game/player_state_service.py`
-- **Stats** (6 connections) — `server/game/player_service.py`
-- **._resolve_tutorial_start_room()** (5 connections) — `server/game/player_creation_service.py`
-- **.apply_corruption()** (5 connections) — `server/game/player_state_service.py`
-- **.apply_fear()** (5 connections) — `server/game/player_state_service.py`
-- **.apply_lucidity_loss()** (5 connections) — `server/game/player_state_service.py`
-- **.damage_player()** (5 connections) — `server/game/player_state_service.py`
-- **.gain_occult_knowledge()** (5 connections) — `server/game/player_state_service.py`
-- **.heal_player()** (5 connections) — `server/game/player_state_service.py`
-- **.respawn_player_by_user_id()** (4 connections) — `server/game/player_respawn_wrapper.py`
-- **.respawn_player_from_delirium_by_user_id()** (4 connections) — `server/game/player_respawn_wrapper.py`
-- **.resolve_player_name()** (4 connections) — `server/game/player_search_service.py`
-- **UUID** (4 connections) — `server/game/player_creation_service.py`
-- **.__init__()** (3 connections) — `server/game/player_creation_service.py`
-- **.__init__()** (3 connections) — `server/game/player_respawn_wrapper.py`
-- **.get_online_players()** (3 connections) — `server/game/player_search_service.py`
-- **.__init__()** (3 connections) — `server/game/player_search_service.py`
-- *... and 33 more nodes in this community*
+- **Player** (200 connections) — `server/models/player.py`
+- **test_player_death_service.py** (52 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_player_model.py** (48 connections) — `server/tests/unit/models/test_player_model.py`
+- **PlayerDeathService** (29 connections) — `server/services/player_death_service.py`
+- **PositionState** (20 connections) — `server/models/game.py`
+- **player_death_service.py** (20 connections) — `server/services/player_death_service.py`
+- **log_exception_once()** (15 connections) — `server/structured_logging/enhanced_logging_config.py`
+- **.get_stats()** (13 connections) — `server/models/player.py`
+- **.handle_player_death()** (10 connections) — `server/services/player_death_service.py`
+- **PlayerLifecycleServices** (8 connections) — `server/services/combat_service_types.py`
+- **combat_service_types.py** (7 connections) — `server/services/combat_service_types.py`
+- **.process_mortally_wounded_tick()** (7 connections) — `server/services/player_death_service.py`
+- **._publish_death_event()** (7 connections) — `server/services/player_death_service.py`
+- **test_health_repository_cold_resistance.py** (7 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
+- **.set_stats()** (6 connections) — `server/models/player.py`
+- **.get_dead_players()** (6 connections) — `server/services/player_death_service.py`
+- **UUID** (6 connections)
+- **.apply_dp_decay()** (5 connections) — `server/models/player.py`
+- **.restore_to_full_health()** (5 connections) — `server/models/player.py`
+- **.apply_dp_change()** (5 connections) — `server/models/player.py`
+- **.get_mortally_wounded_players()** (5 connections) — `server/services/player_death_service.py`
+- **._ensure_player_posture_lying()** (5 connections) — `server/services/player_death_service.py`
+- **._clear_player_combat_state()** (5 connections) — `server/services/player_death_service.py`
+- **.is_alive()** (4 connections) — `server/models/player.py`
+- **.is_mortally_wounded()** (4 connections) — `server/models/player.py`
+- *... and 242 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Admin API]] (20 shared connections)
-- [[Combat Command Handler]] (19 shared connections)
-- [[Player Domain Model]] (2 shared connections)
-- [[Player Schema Converter]] (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (21 shared connections)
+- [Panel Layout Libraries Spec](Panel_Layout_Libraries_Spec.md) (12 shared connections)
+- [Invite and User Schemas](Invite_and_User_Schemas.md) (12 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (11 shared connections)
+- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (10 shared connections)
+- [Application Config Settings](Application_Config_Settings.md) (10 shared connections)
+- [Container Data Models](Container_Data_Models.md) (10 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (10 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (6 shared connections)
+- [Dependency Upgrade Report](Dependency_Upgrade_Report.md) (6 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (6 shared connections)
+- [WebSocket Initial State](WebSocket_Initial_State.md) (6 shared connections)
 
 ## Source Files
 
-- `server/game/player_creation_service.py`
-- `server/game/player_respawn_wrapper.py`
-- `server/game/player_search_service.py`
-- `server/game/player_service.py`
-- `server/game/player_state_service.py`
+- `server/models/game.py`
+- `server/models/player.py`
+- `server/services/combat_service_types.py`
+- `server/services/player_death_service.py`
+- `server/structured_logging/enhanced_logging_config.py`
+- `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- `server/tests/unit/models/test_player_model.py`
+- `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
+- `server/tests/unit/services/test_player_death_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 180 (88%)
-- INFERRED: 25 (12%)
+- EXTRACTED: 820 (89%)
+- INFERRED: 103 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

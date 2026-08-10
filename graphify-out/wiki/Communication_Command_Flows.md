@@ -1,67 +1,80 @@
 # Communication Command Flows
 
-> 116 nodes · cohesion 0.04
+> 436 nodes
 
 ## Key Concepts
 
-- **test_communication_commands_flows.py** (40 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **SimpleNamespace** (38 connections) — `server/tests/fixtures/unit/__init__.py`
-- **communication_commands_flows.py** (32 connections) — `server/commands/communication_commands_flows.py`
-- **communication_commands.py** (27 connections) — `server/commands/communication_commands.py`
-- **test_communication_commands_support.py** (20 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **ChatCommandsProtocol** (15 connections) — `server/commands/communication_commands_support.py`
-- **_chat_send_with_room_bundle()** (14 connections) — `server/commands/communication_commands_flows.py`
-- **communication_commands_support.py** (14 connections) — `server/commands/communication_commands_support.py`
-- **flow_global_command()** (12 connections) — `server/commands/communication_commands_flows.py`
-- **get_services_from_container()** (12 connections) — `server/commands/communication_commands_support.py`
-- **PlayerResolutionProtocol** (12 connections) — `server/commands/communication_commands_flows.py`
-- **_message_from_command()** (11 connections) — `server/commands/communication_commands_flows.py`
-- **_RoomChannelOutcomeConfig** (11 connections) — `server/commands/communication_commands_flows.py`
-- **chat_result_map()** (11 connections) — `server/commands/communication_commands_support.py`
-- **message_id_from_result()** (11 connections) — `server/commands/communication_commands_support.py`
-- **primary_id()** (11 connections) — `server/commands/communication_commands_support.py`
-- **flow_reply_command()** (10 connections) — `server/commands/communication_commands_flows.py`
-- **flow_say_command()** (10 connections) — `server/commands/communication_commands_flows.py`
-- **_require_chat_pair()** (10 connections) — `server/commands/communication_commands_flows.py`
-- **app_from_request()** (10 connections) — `server/commands/communication_commands_support.py`
-- **PlayerResolutionProtocol** (10 connections) — `server/commands/communication_commands_support.py`
-- **UserManagerProtocol** (10 connections) — `server/commands/communication_commands_support.py`
-- **ChatCommandsProtocol** (9 connections) — `server/commands/communication_commands_flows.py`
-- **flow_system_command()** (9 connections) — `server/commands/communication_commands_flows.py`
-- **flow_whisper_command()** (9 connections) — `server/commands/communication_commands_flows.py`
-- *... and 91 more nodes in this community*
+- **BaseEvent** (75 connections) — `server/events/event_types.py`
+- **PlayerEnteredRoom** (68 connections) — `server/events/event_types.py`
+- **PlayerLeftRoom** (51 connections) — `server/events/event_types.py`
+- **RealTimeEventHandler** (44 connections) — `server/realtime/event_handler.py`
+- **test_event_handler.py** (41 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_room_sync_service.py** (40 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **PlayerDPUpdated** (39 connections) — `server/events/event_types.py`
+- **event_handler.py** (35 connections) — `server/realtime/event_handler.py`
+- **PlayerXPAwardEvent** (35 connections) — `server/services/player_combat_service.py`
+- **test_player_event_handlers.py** (33 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **player_event_handlers.py** (26 connections) — `server/realtime/player_event_handlers.py`
+- **PlayerEventHandler** (26 connections) — `server/realtime/player_event_handlers.py`
+- **NPCEventHandler** (25 connections) — `server/realtime/npc_event_handlers.py`
+- **MessageBuilder** (22 connections) — `server/realtime/message_builders.py`
+- **RoomOccupantManager** (22 connections) — `server/realtime/room_occupant_manager.py`
+- **PlayerDiedEvent** (19 connections) — `server/events/event_types.py`
+- **room_occupant_manager.py** (19 connections) — `server/realtime/room_occupant_manager.py`
+- **RoomSyncService** (19 connections) — `server/services/room_sync_service.py`
+- **player_event_handlers_room.py** (17 connections) — `server/realtime/player_event_handlers_room.py`
+- **PlayerDPDecayEvent** (16 connections) — `server/events/event_types.py`
+- **NATSEventBusBridge** (16 connections) — `server/events/nats_event_bridge.py`
+- **room_sync_service.py** (16 connections) — `server/services/room_sync_service.py`
+- **event_serialization.py** (15 connections) — `server/events/event_serialization.py`
+- **test_event_serialization.py** (15 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **serialize_event()** (14 connections) — `server/events/event_serialization.py`
+- *... and 411 more nodes in this community*
 
 ## Relationships
 
-- [[Communication Command Handlers]] (15 shared connections)
-- [[Alias Expansion Logic]] (5 shared connections)
-- [[Container Inventory Finders]] (5 shared connections)
-- [[NPC Admin API]] (4 shared connections)
-- [[Player Combat XP]] (4 shared connections)
-- [[Container Inventory Ops]] (3 shared connections)
-- [[Bench Cache Npc]] (3 shared connections)
-- [[Whisper Reply Command Tests]] (2 shared connections)
-- [[Commands Communication Support]] (2 shared connections)
-- [[Command Request App State]] (2 shared connections)
-- [[Database Manager Tests]] (1 shared connections)
-- [[Cache and NPC Cache]] (1 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (84 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (37 shared connections)
+- [Pydantic Error Handlers](Pydantic_Error_Handlers.md) (36 shared connections)
+- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (15 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (13 shared connections)
+- [Character Stats Generator](Character_Stats_Generator.md) (12 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (11 shared connections)
+- [NPC Utility Functions](NPC_Utility_Functions.md) (11 shared connections)
+- [LRU Cache Manager](LRU_Cache_Manager.md) (11 shared connections)
+- [Test Value Distribution](Test_Value_Distribution.md) (11 shared connections)
+- [Player Creation Service](Player_Creation_Service.md) (10 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (9 shared connections)
 
 ## Source Files
 
-- `server/commands/communication_commands.py`
-- `server/commands/communication_commands_flows.py`
-- `server/commands/communication_commands_support.py`
-- `server/tests/fixtures/unit/__init__.py`
-- `server/tests/unit/commands/test_communication_commands_flows.py`
-- `server/tests/unit/commands/test_communication_commands_support.py`
-- `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
+- `server/events/distributed_event_bus.py`
+- `server/events/event_bus.py`
+- `server/events/event_serialization.py`
+- `server/events/event_types.py`
+- `server/events/nats_event_bridge.py`
+- `server/npc/population_control.py`
+- `server/realtime/connection_event_helpers.py`
+- `server/realtime/event_handler.py`
+- `server/realtime/integration/room_event_handler.py`
+- `server/realtime/message_builders.py`
+- `server/realtime/npc_event_handlers.py`
+- `server/realtime/player_event_handlers.py`
+- `server/realtime/player_event_handlers_room.py`
+- `server/realtime/player_name_utils.py`
+- `server/realtime/room_occupant_manager.py`
+- `server/services/player_combat_service.py`
+- `server/services/room_sync_service.py`
+- `server/tests/unit/events/test_event_serialization.py`
+- `server/tests/unit/events/test_nats_event_bridge.py`
+- `server/tests/unit/realtime/test_connection_event_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 544 (86%)
-- INFERRED: 88 (14%)
+- EXTRACTED: 1550 (90%)
+- INFERRED: 164 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

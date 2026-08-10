@@ -1,54 +1,51 @@
 # Async Remediation Summary
 
-> 63 nodes · cohesion 0.03
+> 60 nodes
 
 ## Key Concepts
 
-- **Async Remediation Summary - December 3, 2025** (25 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **✅ Verified Already Implemented** (8 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **🔧 Code Changes Made** (4 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **📚 Deliverables** (4 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **🚀 Deployment Readiness** (4 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **📞 Next Steps** (4 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **🎯 Performance Improvements** (4 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **💡 Recommendations** (4 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **💰 ROI Analysis** (4 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **🎯 Audit Compliance Score** (3 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **🎓 Key Learnings** (3 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **🚨 Risk Assessment** (3 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **📈 Success Metrics** (3 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **🎓 Technical Debt Reduced** (3 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **🧪 Test Coverage** (3 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **🔍 Testing Strategy** (3 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **📊 Remediation Results** (2 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Short-Term (This Week)** (2 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **ASYNC_REMEDIATION_SUMMARY_2025-12-03.md** (1 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **10. TLS Configuration** (1 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **1. Fixed Event Loop Blocking in PassiveLucidityFluxService** (1 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **2. Removed asyncio.run() from Exploration Service** (1 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **3. Added Exception Handling for Database Engine Creation** (1 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **4. Connection Pool Cleanup** (1 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **5. Mute Data Caching** (1 connections) — `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- *... and 38 more nodes in this community*
+- **test_async_persistence_room_cache.py** (32 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_get_players_batch_with_players()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_load_room_cache_async_rooms_none()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_load_room_cache_async_table_not_found()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_load_room_cache_async_other_error_raises()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_query_rooms_with_exits_async_table_not_found()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_query_rooms_with_exits_async_other_error_raises()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_get_user_by_username_case_insensitive_no_session()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_get_professions_no_session()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_get_players_batch_empty_list()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_generate_room_id_from_zone_data_with_prefix()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_generate_room_id_from_zone_data_needs_generation()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_generate_room_id_from_zone_data_none_values()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_parse_exits_json_string_valid()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_parse_exits_json_string_invalid()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_parse_exits_json_list()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_parse_exits_json_other_type()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_process_exits_for_room_with_direction()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_process_exits_for_room_no_direction()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_process_exits_for_room_multiple_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_process_combined_rows_with_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_process_combined_rows_no_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_process_room_rows_with_none_zone_stable_id()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_process_room_rows_with_none_stable_id()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_process_exit_rows_missing_direction()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [[Multiplayer Test Rules]] (1 shared connections)
-- [[Async Remediation Report]] (1 shared connections)
-- [[Application Container Analysis]] (1 shared connections)
-- [[Phase 2 Migration Status]] (1 shared connections)
-- [[Summary E 2 E Remaining]] (1 shared connections)
+- [Player Creation Service](Player_Creation_Service.md) (2 shared connections)
+- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 131 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 120 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

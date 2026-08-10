@@ -1,37 +1,27 @@
 # Migration Testing Guide
 
-> 13 nodes · cohesion 0.15
+> 2 nodes
 
 ## Key Concepts
 
-- **Testing Steps** (11 connections) — `docs/MIGRATION_019_TESTING_GUIDE.md`
-- **Step 3: Apply Migration** (3 connections) — `docs/MIGRATION_019_TESTING_GUIDE.md`
-- **Option A: Using PowerShell Script (Recommended)** (1 connections) — `docs/MIGRATION_019_TESTING_GUIDE.md`
-- **Option B: Using psql Directly** (1 connections) — `docs/MIGRATION_019_TESTING_GUIDE.md`
-- **Step 10: Verify Data Integrity** (1 connections) — `docs/MIGRATION_019_TESTING_GUIDE.md`
-- **Step 1: Backup Database** (1 connections) — `docs/MIGRATION_019_TESTING_GUIDE.md`
-- **Step 2: Verify Current State** (1 connections) — `docs/MIGRATION_019_TESTING_GUIDE.md`
-- **Step 4: Verify Migration Results** (1 connections) — `docs/MIGRATION_019_TESTING_GUIDE.md`
-- **Step 5: Verify Foreign Key Types** (1 connections) — `docs/MIGRATION_019_TESTING_GUIDE.md`
-- **Step 6: Verify Text Column Conversions** (1 connections) — `docs/MIGRATION_019_TESTING_GUIDE.md`
-- **Step 7: Verify Comments** (1 connections) — `docs/MIGRATION_019_TESTING_GUIDE.md`
-- **Step 8: Test Application Functionality** (1 connections) — `docs/MIGRATION_019_TESTING_GUIDE.md`
-- **Step 9: Test Idempotency** (1 connections) — `docs/MIGRATION_019_TESTING_GUIDE.md`
+- **.cleanup_large_structures()** (3 connections) — `server/realtime/message_queue.py`
+- **Clean up large data structures to prevent memory bloat.          Args:** (1 connections) — `server/realtime/message_queue.py`
 
 ## Relationships
 
-- [[Migration 019 Deployment]] (1 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/MIGRATION_019_TESTING_GUIDE.md`
+- `server/realtime/message_queue.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

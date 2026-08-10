@@ -1,43 +1,32 @@
 # Magic Game Healing
 
-> 15 nodes · cohesion 0.20
+> 6 nodes
 
 ## Key Concepts
 
-- **UUID** (9 connections) — `server/game/magic/magic_healing_events.py`
-- **Any** (8 connections) — `server/game/magic/magic_healing_events.py`
-- **._send_healing_update_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
-- **._publish_dp_event()** (6 connections) — `server/game/magic/magic_healing_events.py`
-- **._publish_or_send_dp_update()** (6 connections) — `server/game/magic/magic_healing_events.py`
-- **._is_heal_other_target()** (5 connections) — `server/game/magic/magic_healing_events.py`
-- **._send_instant_heal_event_if_applied()** (5 connections) — `server/game/magic/magic_healing_events.py`
-- **._effect_result_has_healing()** (4 connections) — `server/game/magic/magic_healing_events.py`
-- **Spell** (4 connections) — `server/game/magic/magic_healing_events.py`
-- **Publish DP update via event bus, or send fallback game event.** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **If instant cast applied healing, send DP update event to the healed player.** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **True when healing was applied to another player (heal-other, not steal-life or s** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **True if effect result indicates healing was applied (success, effect_applied, he** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **Send player_dp_updated event for the healed player (target for heal other, caste** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **Load player stats and delegate DP event publishing.** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **_get_death_location_name()** (4 connections) — `server/realtime/websocket_initial_state.py`
+- **.item_instance_exists()** (3 connections) — `server/async_persistence.py`
+- **Get the global async persistence instance.      DEPRECATED: Use ApplicationConta** (2 connections) — `server/async_persistence.py`
+- **Check if an item instance exists. Delegates to ItemRepository.** (1 connections) — `server/async_persistence.py`
+- **Room** (1 connections)
+- **Extract death location name from room object or dict.** (1 connections) — `server/realtime/websocket_initial_state.py`
 
 ## Relationships
 
-- [[Magic Service Bundle]] (6 shared connections)
-- [[Player Event Handler Tests]] (4 shared connections)
-- [[Combat Command Handler]] (4 shared connections)
-- [[Spell Registry Costs]] (3 shared connections)
-- [[Combat Player Broadcasts]] (1 shared connections)
+- [WebSocket Initial State](WebSocket_Initial_State.md) (3 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/magic_healing_events.py`
+- `server/async_persistence.py`
+- `server/realtime/websocket_initial_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 51 (85%)
-- INFERRED: 9 (15%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

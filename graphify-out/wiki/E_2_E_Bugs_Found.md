@@ -1,42 +1,38 @@
 # E 2 E Bugs Found
 
-> 18 nodes · cohesion 0.21
+> 10 nodes
 
 ## Key Concepts
 
-- **Bug #2: Chat Messages Not Displayed to Sender** (10 connections) — `e2e-tests/BUGS_FOUND.md`
-- **Bug #1: Mute Command Server Error** (9 connections) — `e2e-tests/BUGS_FOUND.md`
-- **Bug #3: Teleport Command Server Error** (9 connections) — `e2e-tests/BUGS_FOUND.md`
-- **Bugs Found During Multiplayer E2E Testing** (5 connections) — `e2e-tests/BUGS_FOUND.md`
-- **Actual Behavior** (3 connections) — `e2e-tests/BUGS_FOUND.md`
-- **Description** (3 connections) — `e2e-tests/BUGS_FOUND.md`
-- **Expected Behavior** (3 connections) — `e2e-tests/BUGS_FOUND.md`
-- **Fix Applied** (3 connections) — `e2e-tests/BUGS_FOUND.md`
-- **Impact** (3 connections) — `e2e-tests/BUGS_FOUND.md`
-- **Notes** (3 connections) — `e2e-tests/BUGS_FOUND.md`
-- **Steps to Reproduce** (3 connections) — `e2e-tests/BUGS_FOUND.md`
-- **Test Execution Summary** (3 connections) — `e2e-tests/BUGS_FOUND.md`
-- **Error Message** (2 connections) — `e2e-tests/BUGS_FOUND.md`
-- **BUGS_FOUND.md** (1 connections) — `e2e-tests/BUGS_FOUND.md`
-- **Additional Note** (1 connections) — `e2e-tests/BUGS_FOUND.md`
-- **Pattern Analysis** (1 connections) — `e2e-tests/BUGS_FOUND.md`
-- **Potential Causes** (1 connections) — `e2e-tests/BUGS_FOUND.md`
-- **Root Cause** (1 connections) — `e2e-tests/BUGS_FOUND.md`
+- **validate_command_format()** (9 connections) — `server/validators/command_validator.py`
+- **test_validate_command_format_valid()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_validate_command_format_empty()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_validate_command_format_suspicious()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_validate_command_format_too_long()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test validate_command_format returns True for valid command.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test validate_command_format returns False for empty command.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test validate_command_format returns False for suspicious command.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test validate_command_format returns False for too long command.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Validate command format and return validation result with error message.      Ar** (1 connections) — `server/validators/command_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Persistence Container Extended](Persistence_Container_Extended.md) (5 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [E 2 E Load Readme](E_2_E_Load_Readme.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/BUGS_FOUND.md`
+- `server/tests/unit/validators/test_command_validator.py`
+- `server/validators/command_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 64 (100%)
+- EXTRACTED: 26 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

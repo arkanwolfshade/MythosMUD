@@ -1,53 +1,38 @@
 # Chat Logger Service Tests
 
-> 28 nodes · cohesion 0.07
+> 14 nodes
 
 ## Key Concepts
 
-- **test_chat_logger.py** (16 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **chat_logger()** (3 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_chat_logger_initialization_with_directory()** (3 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_get_stats()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- **Test log_player_muted writes entry.** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **Test get_log_stats returns statistics.** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_get_log_file_paths()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_get_log_stats()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_log_chat_message()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_log_moderation_event()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_log_player_joined_room()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_log_player_muted()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_log_player_unmuted()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_log_rate_limit_violation()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_log_system_event()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_log_whisper_channel_message()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **test_shutdown()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **Unit tests for chat logger service.  Tests the ChatLogger class for structured c** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **Test log_player_joined_room writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **Test log_rate_limit_violation writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **Test get_log_file_paths returns correct paths.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **Test log_whisper_channel_message writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **Create a ChatLogger instance with temp directory.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **Test ChatLogger initialization with explicit directory.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **Test log_chat_message writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
-- *... and 3 more nodes in this community*
+- **test_event_publisher_helpers.py** (9 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **event_publisher()** (3 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **mock_nats_service()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **test_create_event_message()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **test_get_next_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **test_reset_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **test_get_async_persistence()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Unit tests for event publisher helper functions.  Tests the helper functions in** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Create a mock NATS service.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Create an EventPublisher instance.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Test _create_event_message() creates event message.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Test get_next_sequence_number() increments sequence.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Test reset_sequence_number() resets to 0.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Test _get_async_persistence() gets persistence from container.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
 
 ## Relationships
 
-- [[Chat Channel Logger]] (3 shared connections)
-- [[Room Subscription Helpers]] (1 shared connections)
-- [[Alias Storage Services]] (1 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
-- `server/tests/unit/services/test_chat_logger.py`
+- `server/tests/unit/realtime/test_event_publisher_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

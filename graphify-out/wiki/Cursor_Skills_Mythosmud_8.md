@@ -1,16 +1,11 @@
 # Cursor Skills Mythosmud
 
-> 7 nodes · cohesion 0.29
+> 2 nodes
 
 ## Key Concepts
 
-- **MythosMUD Commit Messages** (6 connections) — `.cursor/skills/mythosmud-commit-messages/SKILL.md`
-- **SKILL.md** (1 connections) — `.cursor/skills/mythosmud-commit-messages/SKILL.md`
-- **Examples** (1 connections) — `.cursor/skills/mythosmud-commit-messages/SKILL.md`
-- **Format** (1 connections) — `.cursor/skills/mythosmud-commit-messages/SKILL.md`
-- **Rules** (1 connections) — `.cursor/skills/mythosmud-commit-messages/SKILL.md`
-- **Template** (1 connections) — `.cursor/skills/mythosmud-commit-messages/SKILL.md`
-- **Types** (1 connections) — `.cursor/skills/mythosmud-commit-messages/SKILL.md`
+- **MythosMUD LLM Wiki Skill** (1 connections) — `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
+- **Obsidian LLM Wiki Vault** (1 connections) — `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
 
 ## Relationships
 
@@ -18,14 +13,14 @@
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-commit-messages/SKILL.md`
+- `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

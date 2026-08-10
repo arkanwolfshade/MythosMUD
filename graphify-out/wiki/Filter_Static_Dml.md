@@ -1,14 +1,14 @@
 # Filter Static Dml
 
-> 9 nodes · cohesion 0.31
+> 9 nodes
 
 ## Key Concepts
 
 - **_filter_lines()** (5 connections) — `scripts/filter_static_dml.py`
 - **filter_static_dml.py** (4 connections) — `scripts/filter_static_dml.py`
-- **main()** (3 connections) — `scripts/filter_static_dml.py`
-- **_skip_sequence_set_block()** (3 connections) — `scripts/filter_static_dml.py`
 - **_skip_table_data_block()** (3 connections) — `scripts/filter_static_dml.py`
+- **_skip_sequence_set_block()** (3 connections) — `scripts/filter_static_dml.py`
+- **main()** (3 connections) — `scripts/filter_static_dml.py`
 - **Skip a TABLE DATA block (COPY ... \\.). Return index after the block.** (1 connections) — `scripts/filter_static_dml.py`
 - **Skip a SEQUENCE SET block (setval + trailing blank lines). Return index after th** (1 connections) — `scripts/filter_static_dml.py`
 - **Filter out TABLE DATA and SEQUENCE SET blocks for excluded tables/sequences.** (1 connections) — `scripts/filter_static_dml.py`
@@ -30,4 +30,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

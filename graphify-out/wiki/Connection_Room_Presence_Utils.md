@@ -1,53 +1,48 @@
 # Connection Room Presence Utils
 
-> 31 nodes · cohesion 0.10
+> 22 nodes
 
 ## Key Concepts
 
-- **canonical_room_id_impl()** (16 connections) — `server/realtime/connection_room_utils.py`
-- **test_connection_room_utils.py** (15 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **prune_player_from_all_rooms_impl()** (7 connections) — `server/realtime/connection_room_utils.py`
-- **reconcile_room_presence_impl()** (7 connections) — `server/realtime/connection_room_utils.py`
-- **.canonical_room_id()** (5 connections) — `server/realtime/connection_manager.py`
-- **test_canonical_room_id_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **._reconcile_room_presence()** (3 connections) — `server/realtime/connection_manager.py`
-- **test_canonical_room_id_impl_attribute_error()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_empty_string()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_fallback_to_main_persistence()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_no_room_found()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_none()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_room_no_id_attribute()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_success_room_manager()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_prune_player_from_all_rooms_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_reconcile_room_presence_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **Any** (3 connections) — `server/realtime/connection_room_utils.py`
-- **Resolve a room id to the canonical Room.id value (public method).** (2 connections) — `server/realtime/connection_manager.py`
-- **Test canonical_room_id_impl() handles DatabaseError.** (2 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **Test canonical_room_id_impl() returns original room_id when room not found.** (2 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **Resolve a room id to the canonical Room.id value (compatibility method).** (1 connections) — `server/realtime/connection_manager.py`
-- **Ensure room_occupants only contains currently online players (compatibility meth** (1 connections) — `server/realtime/connection_manager.py`
-- **Ensure room_occupants only contains currently online players.** (1 connections) — `server/realtime/connection_room_utils.py`
-- **Remove a player from all room subscriptions and occupant lists.** (1 connections) — `server/realtime/connection_room_utils.py`
-- **Unit tests for connection room utils.  Tests the connection_room_utils module fu** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- *... and 6 more nodes in this community*
+- **_await_shutdown_result()** (14 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_no_player_service()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_no_permission()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_invalid_parameters()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_cancel()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_cancel_no_active()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_initiate()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_initiate_superseding()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_initiate_no_seconds()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_initiate_failure()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Await handle_shutdown_command; explicit return keeps test assertions typed as di** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test handle_shutdown_command() when player service is not available.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test handle_shutdown_command() when player is not found.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test handle_shutdown_command() when player lacks admin permission.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test handle_shutdown_command() with invalid parameters.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test handle_shutdown_command() with cancel action.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test handle_shutdown_command() with cancel when no active shutdown.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test handle_shutdown_command() with initiate action.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test handle_shutdown_command() with initiate action superseding existing shutdow** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test handle_shutdown_command() with initiate action but no seconds.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test handle_shutdown_command() with initiate action that fails.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Relationships
 
-- [[Room Occupant Events]] (9 shared connections)
-- [[NPC Admin API]] (5 shared connections)
+- [Playwright Remediation Plan](Playwright_Remediation_Plan.md) (11 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Room Drop Renderer](Room_Drop_Renderer.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_manager.py`
-- `server/realtime/connection_room_utils.py`
-- `server/tests/unit/realtime/test_connection_room_utils.py`
+- `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 104 (100%)
+- EXTRACTED: 55 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

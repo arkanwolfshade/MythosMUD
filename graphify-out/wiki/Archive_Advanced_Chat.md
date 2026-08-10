@@ -1,38 +1,51 @@
 # Archive Advanced Chat
 
-> 14 nodes · cohesion 0.14
+> 78 nodes
 
 ## Key Concepts
 
-- **Tasks** (7 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
-- **Implementation Notes** (5 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
-- **Advanced Chat Channels - Implementation Tasks** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
-- **tasks.md** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
-- **Dependencies** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
-- **Phase 1: Local Channel Implementation** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
-- **Phase 2: Global Channel Implementation** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
-- **Phase 3: Whisper Channel Implementation** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
-- **Phase 4: Channel Management and UI** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
-- **Phase 5: Admin Moderation and Integration** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
-- **Phase 6: Documentation and Final Testing** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
-- **Risk Mitigation** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
-- **Success Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
-- **Testing Strategy** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
+- **test_npc_event_handlers.py** (44 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **npc_event_handler()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_room()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_room()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_room_with_npc_instance()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_room_with_npc_instance()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_room_not_found()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_room_not_found()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **mock_message_builder()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **mock_send_occupants_update()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_npc_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_get_npc_instance_not_found()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_get_behavior_config_from_instance_private_attr()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_get_behavior_config_from_instance_method()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_get_behavior_config_from_instance_public_attr()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_get_behavior_config_from_instance_none()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_parse_behavior_config_dict()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_parse_behavior_config_string()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_parse_behavior_config_invalid_json()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_get_npc_instance_found()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- *... and 53 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Level and XP Curve](Level_and_XP_Curve.md) (14 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 170 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

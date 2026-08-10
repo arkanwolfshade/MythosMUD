@@ -1,50 +1,59 @@
 # Follow Service Tests
 
-> 66 nodes · cohesion 0.03
+> 65 nodes
 
 ## Key Concepts
 
-- **test_follow_service.py** (36 connections) — `server/tests/unit/game/test_follow_service.py`
-- **follow_service()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_on_npc_entered_room_moves_followers()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_on_player_entered_room_move_failure_auto_unfollow()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_on_player_entered_room_moves_followers()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_on_player_entered_room_no_from_room_id_skips_propagation()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **connection_manager()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **event_bus()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **movement_service()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_accept_follow_invalid_request_id()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_accept_follow_success()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_decline_follow_success()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_ensure_follower_standing_already_standing()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_ensure_follower_standing_fails_to_stand()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_ensure_follower_standing_sitting_stands()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_follow_request_ttl_constant()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_get_followers_empty()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_get_followers_multiple()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_get_following_display_following_npc()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_get_following_display_following_player_resolves_name()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_get_following_display_not_following()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_get_following_none()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_get_following_returns_tuple()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_on_player_disconnect_cancels_pending_requests()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_on_player_disconnect_clears_follow_state()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- *... and 41 more nodes in this community*
+- **rescue_commands.py** (33 connections) — `server/commands/rescue_commands.py`
+- **handle_ground_command()** (28 connections) — `server/commands/rescue_commands.py`
+- **test_rescue_commands.py** (23 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **send_rescue_update_event()** (18 connections) — `server/services/lucidity_event_dispatcher.py`
+- **handle_rescue_command()** (14 connections) — `server/commands/rescue_commands.py`
+- **Any** (9 connections)
+- **_run_ground_session()** (9 connections) — `server/commands/rescue_commands.py`
+- **_apply_grounding_adjustment()** (7 connections) — `server/commands/rescue_commands.py`
+- **UUID** (6 connections)
+- **_get_ground_services()** (5 connections) — `server/commands/rescue_commands.py`
+- **_validate_ground_context()** (5 connections) — `server/commands/rescue_commands.py`
+- **_normalize_player_ids()** (5 connections) — `server/commands/rescue_commands.py`
+- **_send_grounding_failure_events()** (5 connections) — `server/commands/rescue_commands.py`
+- **_send_grounding_success_events()** (5 connections) — `server/commands/rescue_commands.py`
+- **_complete_ground_command()** (5 connections) — `server/commands/rescue_commands.py`
+- **_validate_ground_target()** (4 connections) — `server/commands/rescue_commands.py`
+- **_send_grounding_channeling_events()** (4 connections) — `server/commands/rescue_commands.py`
+- **test_handle_ground_command_not_catatonic()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_success()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_target_player_key()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_apply_lucidity_error()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_rescue_command()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_rescue_command_no_target()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_rescue_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_rescue_command_target_player_key()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- *... and 40 more nodes in this community*
 
 ## Relationships
 
-- [[Distributed Event Bus]] (8 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (15 shared connections)
+- [Client Event Store](Client_Event_Store.md) (12 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (9 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
+- [Message Queue Cleanup](Message_Queue_Cleanup.md) (4 shared connections)
+- [Player Death Service](Player_Death_Service.md) (3 shared connections)
+- [Combat Messaging Tests](Combat_Messaging_Tests.md) (2 shared connections)
+- [Game State Provider](Game_State_Provider.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_follow_service.py`
+- `server/commands/rescue_commands.py`
+- `server/services/lucidity_event_dispatcher.py`
+- `server/tests/unit/commands/test_rescue_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 138 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 260 (96%)
+- INFERRED: 11 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

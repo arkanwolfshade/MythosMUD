@@ -1,46 +1,46 @@
 # CI Quality Scripts
 
-> 56 nodes · cohesion 0.06
+> 41 nodes
 
 ## Key Concepts
 
-- **safe_run()** (20 connections) — `scripts/utils/safe_subprocess.py`
-- **safe_subprocess.py** (19 connections) — `scripts/utils/safe_subprocess.py`
-- **safe_run_static()** (16 connections) — `scripts/utils/safe_subprocess.py`
-- **run_quality_fragmentation_guard.py** (9 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **worktree-ops.py** (9 connections) — `scripts/worktree-ops.py`
-- **get_project_root()** (8 connections) — `scripts/worktree-ops.py`
-- **get_current_worktree()** (7 connections) — `scripts/worktree-ops.py`
+- **safe_subprocess.py** (21 connections) — `scripts/utils/safe_subprocess.py`
+- **safe_run()** (19 connections) — `scripts/utils/safe_subprocess.py`
+- **run_quality_fragmentation_guard.py** (12 connections) — `scripts/run_quality_fragmentation_guard.py`
 - **main()** (6 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **install_dependencies()** (6 connections) — `scripts/worktree-ops.py`
-- **main()** (6 connections) — `scripts/worktree-ops.py`
-- **run_format()** (6 connections) — `scripts/worktree-ops.py`
-- **run_lint()** (6 connections) — `scripts/worktree-ops.py`
-- **run_tests()** (6 connections) — `scripts/worktree-ops.py`
-- **show_status()** (6 connections) — `scripts/worktree-ops.py`
 - **_run_git()** (5 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_resolved_changed_files()** (5 connections) — `scripts/run_quality_fragmentation_guard.py`
 - **validate_path()** (5 connections) — `scripts/utils/safe_subprocess.py`
-- **_changed_files_between()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **run_psql_command()** (4 connections) — `scripts/load_seed_data.py`
 - **_git_executable()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_changed_files_between()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
 - **_local_changed_files()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_resolved_changed_files()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **sqlint.py** (4 connections) — `scripts/sqlint.py`
-- **_resolve_sqlint_cmd()** (4 connections) — `scripts/sqlint.py`
-- **run_command()** (4 connections) — `scripts/worktree-ops.py`
+- **_build_guard_command()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
 - **validate_command()** (4 connections) — `scripts/utils/safe_subprocess.py`
+- **main()** (3 connections) — `scripts/load_seed_data.py`
+- **_resolve_pylint_cmd()** (3 connections) — `scripts/pylint.py`
 - **_resolve_base_sha()** (3 connections) — `scripts/run_quality_fragmentation_guard.py`
-- *... and 31 more nodes in this community*
+- **_is_graphify_path()** (3 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **Path** (3 connections)
+- **install.py** (2 connections) — `scripts/install.py`
+- **get_project_root()** (2 connections) — `scripts/install.py`
+- **load_seed_data.py** (2 connections) — `scripts/load_seed_data.py`
+- **pylint.py** (2 connections) — `scripts/pylint.py`
+- **_argv_char_len()** (2 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **Any** (2 connections)
+- **CompletedProcess** (2 connections)
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [[Dependency Risk Analyzer]] (3 shared connections)
-- [[AI Quality Guardrails]] (3 shared connections)
-- [[Linting Results Comparator]] (2 shared connections)
-- [[Grype Command Handle Result]] (2 shared connections)
-- [[Runner Path]] (2 shared connections)
-- [[Logging Migration Examples]] (1 shared connections)
-- [[Quality Fragmentation Ci]] (1 shared connections)
-- [[Load Seed]] (1 shared connections)
+- [Services Exploration Service](Services_Exploration_Service.md) (8 shared connections)
+- [AI Quality Guardrails](AI_Quality_Guardrails.md) (3 shared connections)
+- [Runner Path](Runner_Path.md) (2 shared connections)
+- [Linting Results Comparator](Linting_Results_Comparator.md) (1 shared connections)
+- [Dependency Risk Analyzer](Dependency_Risk_Analyzer.md) (1 shared connections)
+- [Grype Command Handle Result](Grype_Command_Handle_Result.md) (1 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
+- [Quality Fragmentation Ci](Quality_Fragmentation_Ci.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,20 +49,19 @@
 - `scripts/format.py`
 - `scripts/install.py`
 - `scripts/lint.py`
+- `scripts/load_seed_data.py`
 - `scripts/pylint.py`
 - `scripts/run.py`
 - `scripts/run_quality_fragmentation_guard.py`
 - `scripts/sqlfluff.py`
-- `scripts/sqlint.py`
 - `scripts/utils/safe_subprocess.py`
-- `scripts/worktree-ops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 202 (94%)
-- INFERRED: 13 (6%)
+- EXTRACTED: 137 (96%)
+- INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

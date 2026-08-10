@@ -1,58 +1,50 @@
 # Inventory Command Factories
 
-> 35 nodes · cohesion 0.07
+> 25 nodes
 
 ## Key Concepts
 
-- **test_command_factories_inventory_helpers.py** (21 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_summon_command() with quantity.** (6 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Unit tests for inventory command helper functions.  Tests helper functions used** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Test create_equip_command() with slot.** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_pickup_command() raises error for invalid quantity.** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_drop_command_invalid_index()** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_drop_command_with_quantity()** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_equip_command_with_name_and_slot()** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_equip_command_with_slot()** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_get_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_get_command_with_from()** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_inventory_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_inventory_command_with_args()** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_pickup_command_invalid_index()** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_pickup_command_invalid_quantity()** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_pickup_command_with_index()** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_pickup_command_with_quantity()** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_put_command()** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_put_command_with_in()** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_put_command_with_quantity()** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_unequip_command_with_name()** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_unequip_command_with_slot()** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_get_command() handles 'from' keyword.** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_get_command_with_from_keyword()** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_summon_command_with_quantity()** (2 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- *... and 10 more nodes in this community*
+- **ValidationRule** (10 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **ValidationError** (8 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **base_rule.py** (5 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **__init__.py** (3 connections) — `tools/room_toolkit/room_validator/rules/__init__.py`
+- **.create_error()** (3 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **.create_warning()** (3 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **.to_dict()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **.__str__()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **ABC** (2 connections)
+- **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **._filter_rooms_by_zone()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **.get_rule_info()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **Validation rules for room pathing analysis.  This module contains the rule syste** (1 connections) — `tools/room_toolkit/room_validator/rules/__init__.py`
+- **Base validation rule class.  This module defines the abstract base class for all** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **Represents a validation error with metadata.      As documented in the restricte** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **Initialize a validation error.          Args:             rule_name: Name of the** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **Convert error to dictionary format.** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **String representation of the error.** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **Abstract base class for all validation rules.      Each rule implements specific** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **Initialize the validation rule.          Args:             name: Name of the rul** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **Filter rooms by zone if specified.          Args:             room_database: Dic** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **Create a validation error for this rule.          Args:             room_id: Roo** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **Create a validation warning for this rule.          Args:             room_id: R** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **Get information about this rule.          Returns:             Dictionary with r** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
 
 ## Relationships
 
-- [[Exploration Command Factories]] (3 shared connections)
-- [[NPC Admin API]] (2 shared connections)
-- [[Commands Inventory]] (1 shared connections)
-- [[Commands Inventory Item]] (1 shared connections)
-- [[Command Factories Inventory]] (1 shared connections)
-- [[Inventory Command Factories]] (1 shared connections)
+- [Room Schema Validator](Room_Schema_Validator.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_inventory_helpers.py`
-- `server/tests/unit/utils/test_command_factories_inventory.py`
-- `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- `server/tests/unit/utils/test_command_factories_utility.py`
+- `tools/room_toolkit/room_validator/rules/__init__.py`
+- `tools/room_toolkit/room_validator/rules/base_rule.py`
 
 ## Audit Trail
 
-- EXTRACTED: 87 (100%)
+- EXTRACTED: 58 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

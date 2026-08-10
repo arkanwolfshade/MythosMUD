@@ -1,34 +1,31 @@
 # Archive Dual Connection
 
-> 10 nodes · cohesion 0.20
+> 7 nodes
 
 ## Key Concepts
 
-- **Technical Design** (5 connections) — `docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md`
-- **Data Structure Changes** (3 connections) — `docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md`
-- **API Changes** (2 connections) — `docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md`
-- **Connection Health Management** (2 connections) — `docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md`
-- **Message Delivery Strategy** (2 connections) — `docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md`
-- **Connection Manager Methods** (1 connections) — `docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md`
-- **Connection Metadata** (1 connections) — `docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md`
-- **Connection Tracking** (1 connections) — `docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md`
-- **Health Check System** (1 connections) — `docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md`
-- **Multi-Connection Message Delivery** (1 connections) — `docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md`
+- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **enum** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Relationships
 
-- [[Dual Connection System Spec]] (1 shared connections)
+- [Npc Event Reaction](Npc_Event_Reaction.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md`
+- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

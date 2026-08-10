@@ -1,40 +1,34 @@
 # Realtime Visual Indicator
 
-> 14 nodes · cohesion 0.14
+> 5 nodes
 
 ## Key Concepts
 
-- **test_visual_indicator.py** (10 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **test_filter_other_players_adds_linkdead_indicator()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **test_filter_other_players_no_linkdead_when_not_in_grace_period()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **test_format_player_look_display_adds_linkdead_indicator()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **test_format_player_look_display_no_linkdead_when_not_in_grace_period()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **test_player_occupant_processor_adds_linkdead_indicator()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **test_player_occupant_processor_no_linkdead_when_not_in_grace_period()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **Unit tests for visual indicator (linkdead) display.  Tests that "(linkdead)" ind** (1 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **Test PlayerOccupantProcessor adds (linkdead) indicator for grace period players.** (1 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **Test PlayerOccupantProcessor does not add (linkdead) when player not in grace pe** (1 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **Test _filter_other_players() adds (linkdead) indicator for grace period players.** (1 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **Test _filter_other_players() does not add (linkdead) when player not in grace pe** (1 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **Test _format_player_look_display() adds (linkdead) indicator for grace period pl** (1 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **Test _format_player_look_display() does not add (linkdead) when player not in gr** (1 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
+- **._initialize_item_services()** (10 connections) — `server/container/bundles/game.py`
+- **._handle_item_prototypes_db_error()** (4 connections) — `server/container/bundles/game.py`
+- **Exception** (1 connections)
+- **On SQLAlchemyError: log, optionally warn about schema/DDL, and clear item regist** (1 connections) — `server/container/bundles/game.py`
+- **Load item prototypes from PostgreSQL and create item factory.** (1 connections) — `server/container/bundles/game.py`
 
 ## Relationships
 
-- [[Look Player Command]] (3 shared connections)
-- [[Room Look Formatting]] (3 shared connections)
-- [[NPC Occupant Processor]] (3 shared connections)
+- [Cache and NPC Cache](Cache_and_NPC_Cache.md) (4 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
+- [Typography Layout Spec](Typography_Layout_Spec.md) (1 shared connections)
+- [Command Integration Summary](Command_Integration_Summary.md) (1 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_visual_indicator.py`
+- `server/container/bundles/game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 16 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

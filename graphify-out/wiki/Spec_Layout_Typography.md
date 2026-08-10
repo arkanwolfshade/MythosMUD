@@ -1,47 +1,29 @@
 # Spec Layout Typography
 
-> 19 nodes · cohesion 0.14
+> 5 nodes
 
 ## Key Concepts
 
-- **Technical Specifications** (12 connections) — `docs/CLIENT_TYPOGRAPHY_LAYOUT_SPEC.md`
-- **Game Log Panel** (5 connections) — `docs/CLIENT_LAYOUT_BASELINE.md`
-- **Command Panel** (5 connections) — `docs/CLIENT_TYPOGRAPHY_LAYOUT_SPEC.md`
-- **ChatPanel** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md`
-- **Components** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md`
-- **Features** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md`
-- **Props** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md`
-- **Usage** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md`
-- **Panel Positioning Strategy** (2 connections) — `docs/CLIENT_TYPOGRAPHY_LAYOUT_SPEC.md`
-- **Panel Size Adjustments** (2 connections) — `docs/CLIENT_TYPOGRAPHY_LAYOUT_SPEC.md`
-- **Chat Panel** (1 connections) — `docs/CLIENT_TYPOGRAPHY_LAYOUT_SPEC.md`
-- **Game Log Panel** (1 connections) — `docs/CLIENT_TYPOGRAPHY_LAYOUT_SPEC.md`
-- **Game Terminal Header** (1 connections) — `docs/CLIENT_TYPOGRAPHY_LAYOUT_SPEC.md`
-- **Large Screens (≥1400px)** (1 connections) — `docs/CLIENT_TYPOGRAPHY_LAYOUT_SPEC.md`
-- **Medium Screens (≥1200px)** (1 connections) — `docs/CLIENT_TYPOGRAPHY_LAYOUT_SPEC.md`
-- **Overlap Prevention Algorithm** (1 connections) — `docs/CLIENT_TYPOGRAPHY_LAYOUT_SPEC.md`
-- **Responsive Panel Sizes** (1 connections) — `docs/CLIENT_TYPOGRAPHY_LAYOUT_SPEC.md`
-- **Small Screens (<1200px)** (1 connections) — `docs/CLIENT_TYPOGRAPHY_LAYOUT_SPEC.md`
-- **Status Panel** (1 connections) — `docs/CLIENT_TYPOGRAPHY_LAYOUT_SPEC.md`
+- **2025_11_26_ensure_item_instance_foreign_keys.py** (2 connections) — `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
+- **downgrade()** (2 connections) — `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
+- **Ensure foreign key constraints exist for item_instances.** (1 connections) — `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
+- **This migration only ensures constraints exist - no downgrade needed.** (1 connections) — `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
 
 ## Relationships
 
-- [[Layout Baseline Typography]] (2 shared connections)
-- [[Chat Panel Separation]] (1 shared connections)
-- [[Typography Layout Spec]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/CLIENT_LAYOUT_BASELINE.md`
-- `docs/CLIENT_TYPOGRAPHY_LAYOUT_SPEC.md`
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md`
+- `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

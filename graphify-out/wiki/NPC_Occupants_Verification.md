@@ -1,50 +1,51 @@
 # NPC Occupants Verification
 
-> 31 nodes · cohesion 0.06
+> 21 nodes
 
 ## Key Concepts
 
-- **NPC Occupants Investigation - Verification Summary** (16 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **POTENTIAL ISSUES IDENTIFIED** (5 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **DETAILED FINDINGS** (4 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **NEXT STEPS** (4 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **ADDITIONAL BUG FIX: UUID Handling Error** (3 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **CURRENT INVESTIGATION STATUS** (3 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **2025-01-28_session-npc-occupants-verification-summary.md** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **COMMANDS FOR TESTING** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **CRITICAL FINDING** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **EXECUTIVE SUMMARY** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **FILES MODIFIED** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **Fix Applied** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **Issue 1: NPCs Not in Active Dict** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **Issue 2: Room ID Mismatch** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **Issue 3: Service Not Available** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **Issue 4: NPC Attribute Issue** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **Issue Identified** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **LOG LOCATIONS** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **NOTES** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **Phase 1: Enhanced Logging Implementation** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **Phase 2: Admin Command Creation** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **Phase 3: Verification Script Created** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **Phase 4: UUID Handling Bug Fix** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **Phase 5: Critical Discovery - NPCs ARE Being Found** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **Step 1: Restart Server and Test Command** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- *... and 6 more nodes in this community*
+- **test_occupants.py** (14 connections) — `server/commands/npc_admin/test_occupants.py`
+- **handle_npc_test_occupants_command()** (11 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Any** (7 connections)
+- **_resolve_room_and_handler_for_test_occupants()** (6 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_resolve_test_occupants_context()** (6 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_get_event_handler_for_test_occupants()** (5 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_resolve_app_and_player_for_test_occupants()** (5 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_get_room_id_for_test_occupants()** (4 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_separate_occupants()** (4 connections) — `server/commands/npc_admin/test_occupants.py`
+- **player_service()** (4 connections) — `server/tests/unit/game/test_player_service.py`
+- **_format_occupants_result()** (3 connections) — `server/commands/npc_admin/test_occupants.py`
+- **NPC test-occupants command for debugging occupant queries.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Get room_id from args or current room. Returns (room_id, error_result).** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Get event handler from app.state. Returns (event_handler, error_result).** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Separate occupants into players and NPCs.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Format occupants result as a string.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Resolve application and player object for NPC test occupants command.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Resolve room_id and event handler for NPC test occupants command.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Resolve application, player, room_id, and event handler for NPC test occupants c** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Handle NPC test occupants command - manually trigger occupant query for debuggin** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Create a PlayerService instance.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Player Schema Converter](Player_Schema_Converter.md) (5 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
+- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
+- `server/commands/npc_admin/test_occupants.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 75 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

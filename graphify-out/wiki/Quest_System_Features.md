@@ -1,42 +1,29 @@
 # Quest System Features
 
-> 18 nodes · cohesion 0.11
+> 4 nodes
 
 ## Key Concepts
 
-- **Quest System Features: Common MUD Patterns** (17 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
-- **QUEST_SYSTEM_FEATURES.md** (1 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
-- **Client integration** (1 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
-- **Feature 10: Persistent quest state** (1 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
-- **Feature 11: Design principles (from lysator)** (1 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
-- **Feature 1: Quest goal types** (1 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
-- **Feature 2: Quest reward types** (1 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
-- **Feature 3: Quest triggers** (1 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
-- **Feature 4: Event-driven progression** (1 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
-- **Feature 5: Declarative quest config (YAML)** (1 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
-- **Feature 6: Quest givers (questors)** (1 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
-- **Feature 7: Quest log / journal** (1 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
-- **Feature 8: Quest chains / prerequisites** (1 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
-- **Feature 9: Repeatable quests** (1 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
-- **Purpose** (1 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
-- **Related documentation** (1 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
-- **Review decisions** (1 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
-- **Review order** (1 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
+- **exits** (4 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **additionalProperties** (2 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [WebSocket-Only Migration Plan](WebSocket-Only_Migration_Plan.md) (3 shared connections)
+- [Edge Creation Modal](Edge_Creation_Modal.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/QUEST_SYSTEM_FEATURES.md`
+- `db/static/schemas/room.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

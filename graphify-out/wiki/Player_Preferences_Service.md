@@ -1,51 +1,61 @@
 # Player Preferences Service
 
-> 94 nodes · cohesion 0.02
+> 110 nodes
 
 ## Key Concepts
 
-- **test_player_preferences_service.py** (57 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test creating player preferences with invalid ID.** (5 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test muting channel with invalid channel name.** (4 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_create_player_preferences_integrity_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **mock_session()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test creating player preferences successfully.** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test updating default channel with invalid channel name.** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test muting a channel successfully.** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test checking if channel is muted with invalid channel.** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test unmuting channel with database error.** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test _is_valid_player_id with UUID string.** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test _is_valid_json_array with valid JSON array.** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **sample_player_id()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **sample_preferences()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_create_player_preferences_already_exists()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_create_player_preferences_invalid_id()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_create_player_preferences_success()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_create_player_preferences_with_string_id()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_delete_player_preferences_database_error()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_delete_player_preferences_invalid_id()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_delete_player_preferences_not_found()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_delete_player_preferences_success()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_get_muted_channels_database_error()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_get_muted_channels_invalid_id()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_get_muted_channels_not_found()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- *... and 69 more nodes in this community*
+- **test_user_manager.py** (71 connections) — `server/tests/unit/services/test_user_manager.py`
+- **user_manager()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **mock_data_dir()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_user_manager_init()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_normalize_to_uuid_uuid()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_normalize_to_uuid_string()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_normalize_to_uuid_invalid()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_admin_sync_true()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_admin_sync_false()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_mute_player_success()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_mute_player_admin_immune()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_unmute_player_success()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_unmute_player_not_muted()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_mute_channel_success()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_unmute_channel_success()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_unmute_channel_not_muted()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_unmute_global_not_muted()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_player_muted_true()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_player_muted_false()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_player_muted_async_true()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_player_muted_async_false()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_channel_muted_true()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_globally_muted_false()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_can_send_message_channel_muted()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_can_send_message_globally_muted()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- *... and 85 more nodes in this community*
 
 ## Relationships
 
-- [[Player Related Models]] (3 shared connections)
-- [[Argon2 Password Hashing]] (1 shared connections)
+- [Player Mute Persistence](Player_Mute_Persistence.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [test_add_admin_success](test_add_admin_success.md) (1 shared connections)
+- [test_can_send_message_player_muted](test_can_send_message_player_muted.md) (1 shared connections)
+- [test_can_send_message_true](test_can_send_message_true.md) (1 shared connections)
+- [test_get_player_mutes](test_get_player_mutes.md) (1 shared connections)
+- [test_is_cache_valid_false_expired](test_is_cache_valid_false_expired.md) (1 shared connections)
+- [test_is_channel_muted_false](test_is_channel_muted_false.md) (1 shared connections)
+- [test_is_globally_muted_true](test_is_globally_muted_true.md) (1 shared connections)
+- [test_load_player_mutes_batch_all_cached](test_load_player_mutes_batch_all_cached.md) (1 shared connections)
+- [test_load_player_mutes_invalid_uuid_in_data](test_load_player_mutes_invalid_uuid_in_data.md) (1 shared connections)
+- [test_mute_channel_already_muted](test_mute_channel_already_muted.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 217 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 235 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

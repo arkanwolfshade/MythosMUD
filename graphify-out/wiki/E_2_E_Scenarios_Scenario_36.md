@@ -1,21 +1,14 @@
 # E 2 E Scenarios Scenario
 
-> 12 nodes · cohesion 0.17
+> 5 nodes
 
 ## Key Concepts
 
-- **Scenario 39: Skills (New Tab) — URL and Content (Plan 10.8 E2)** (8 connections) — `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
-- **Execution Steps** (4 connections) — `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
-- **scenario-39-skills-new-tab.md** (1 connections) — `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
-- **Automated Implementation** (1 connections) — `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
-- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
-- **Prerequisites** (1 connections) — `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
-- **Status** (1 connections) — `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
-- **Step 1: Reach game and open main menu** (1 connections) — `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
-- **Step 2: Open Skills in new tab** (1 connections) — `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
-- **Step 3: Assert URL and skills page** (1 connections) — `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
-- **Success Criteria** (1 connections) — `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
-- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
+- **Local Channel System** (3 connections) — `e2e-tests/scenarios/scenario-08-local-channel-basic.md`
+- **Scenario 10 Local Channel Movement** (2 connections) — `e2e-tests/scenarios/scenario-10-local-channel-movement.md`
+- **Local Channel Sub-Zone Routing** (1 connections) — `e2e-tests/scenarios/scenario-09-local-channel-isolation.md`
+- **Scenario 11 Local Channel Errors** (1 connections) — `e2e-tests/scenarios/scenario-11-local-channel-errors.md`
+- **Scenario 12 Local Channel Integration** (1 connections) — `e2e-tests/scenarios/scenario-12-local-channel-integration.md`
 
 ## Relationships
 
@@ -23,14 +16,18 @@
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
+- `e2e-tests/scenarios/scenario-08-local-channel-basic.md`
+- `e2e-tests/scenarios/scenario-09-local-channel-isolation.md`
+- `e2e-tests/scenarios/scenario-10-local-channel-movement.md`
+- `e2e-tests/scenarios/scenario-11-local-channel-errors.md`
+- `e2e-tests/scenarios/scenario-12-local-channel-integration.md`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

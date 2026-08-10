@@ -1,38 +1,31 @@
 # Fastapi Code Review
 
-> 14 nodes · cohesion 0.14
+> 6 nodes
 
 ## Key Concepts
 
-- **Work Completed** (8 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **Final Summary** (7 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **1. Response Models (Critical Issue #1) ✅** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **2. Dependency Injection (Critical Issue #3) ✅** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **3. Error Handling (Medium Issue #7) ✅** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **4. Type Hints (Medium Issue #6) ✅** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **5. Monitoring Endpoints (Medium Issue #5) ✅** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **6. Router Prefix Documentation (Medium Issue #4) ✅** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **7. Fat Endpoints Refactoring (Critical Issue #2) ✅** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **Code Quality Improvements** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **Conclusion** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **End of Review** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **Metrics** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
-- **Remaining Work (Optional/Incremental)** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
+- **TestGetSpellEffects** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_spell_effects_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_spell_effects_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_spell_effects dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_spell_effects returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_spell_effects raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [[Fastapi Code Review]] (1 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/FASTAPI_CODE_REVIEW.md`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

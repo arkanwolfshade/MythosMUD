@@ -1,41 +1,30 @@
 # Review Code Postgresql
 
-> 13 nodes · cohesion 0.15
+> 4 nodes
 
 ## Key Concepts
 
-- **🟡 HIGH PRIORITY ISSUES** (6 connections) — `docs/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **🟢 MEDIUM PRIORITY ISSUES** (6 connections) — `docs/SQLALCHEMY_CODE_REVIEW.md`
-- **Performance Issues** (3 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **5. Missing Indexes on Foreign Keys** (2 connections) — `docs/SQLALCHEMY_CODE_REVIEW.md`
-- **7. Connection Pool Configuration** (2 connections) — `docs/SQLALCHEMY_CODE_REVIEW.md`
-- **10. **No Connection Timeout Configuration**** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- **10. Use of `BETWEEN` with Integer Ranges** (1 connections) — `docs/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **12. Inconsistent Constraint Naming** (1 connections) — `docs/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **13. Mixed Case in Table/Column Names** (1 connections) — `docs/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **9. Inconsistent Primary Key Types (UUID vs varchar vs integer)** (1 connections) — `docs/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **6. Long-Lived Sessions** (1 connections) — `docs/SQLALCHEMY_CODE_REVIEW.md`
-- **8. Transaction Boundaries** (1 connections) — `docs/SQLALCHEMY_CODE_REVIEW.md`
-- **9. Error Handling in Database Operations** (1 connections) — `docs/SQLALCHEMY_CODE_REVIEW.md`
+- **TestGetStatsGenerator** (4 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_stats_generator_returns_instance()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_stats_generator dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_stats_generator returns StatsGenerator instance.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [[Code Review Archive]] (1 shared connections)
-- [[Postgresql Anti Patterns]] (1 shared connections)
-- [[Code Review Sqlalchemy]] (1 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (1 shared connections)
+- [Game Mechanics Service](Game_Mechanics_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- `docs/SQLALCHEMY_CODE_REVIEW.md`
-- `docs/archive/POSTGRESQL_CODE_REVIEW.md`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 8 (89%)
+- INFERRED: 1 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

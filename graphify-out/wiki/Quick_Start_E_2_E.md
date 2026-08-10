@@ -1,26 +1,13 @@
 # Quick Start E 2 E
 
-> 17 nodes · cohesion 0.12
+> 4 nodes
 
 ## Key Concepts
 
-- **Quick Start: Running E2E Tests** (10 connections) — `docs/QUICK_START_E2E_TESTS.md`
-- **Troubleshooting** (5 connections) — `docs/QUICK_START_E2E_TESTS.md`
-- **Step 1: Start the E2E Test Server** (3 connections) — `docs/QUICK_START_E2E_TESTS.md`
-- **QUICK_START_E2E_TESTS.md** (1 connections) — `docs/QUICK_START_E2E_TESTS.md`
-- **Expected Results** (1 connections) — `docs/QUICK_START_E2E_TESTS.md`
-- **Method A: Use the E2E startup script (Simplest)** (1 connections) — `docs/QUICK_START_E2E_TESTS.md`
-- **Method B: Manual startup (More control)** (1 connections) — `docs/QUICK_START_E2E_TESTS.md`
-- **Next Actions** (1 connections) — `docs/QUICK_START_E2E_TESTS.md`
-- **Prerequisites ✅** (1 connections) — `docs/QUICK_START_E2E_TESTS.md`
-- **Problem: "element(s) not found" errors** (1 connections) — `docs/QUICK_START_E2E_TESTS.md`
-- **Problem: Login failed (500)** (1 connections) — `docs/QUICK_START_E2E_TESTS.md`
-- **Problem: Server won't start** (1 connections) — `docs/QUICK_START_E2E_TESTS.md`
-- **Problem: Tests timeout waiting for elements** (1 connections) — `docs/QUICK_START_E2E_TESTS.md`
-- **Step 2: Wait for Server to Start** (1 connections) — `docs/QUICK_START_E2E_TESTS.md`
-- **Step 3: Run the E2E Tests** (1 connections) — `docs/QUICK_START_E2E_TESTS.md`
-- **Test Credentials** (1 connections) — `docs/QUICK_START_E2E_TESTS.md`
-- **Viewing Test Results** (1 connections) — `docs/QUICK_START_E2E_TESTS.md`
+- **main()** (3 connections) — `scripts/e2e_reset_daisy_quest.py`
+- **e2e_reset_daisy_quest.py** (2 connections) — `scripts/e2e_reset_daisy_quest.py`
+- **_reset_daisy_quest()** (2 connections) — `scripts/e2e_reset_daisy_quest.py`
+- **Entry point: clear daisy quest instances via anyio.** (1 connections) — `scripts/e2e_reset_daisy_quest.py`
 
 ## Relationships
 
@@ -28,14 +15,14 @@
 
 ## Source Files
 
-- `docs/QUICK_START_E2E_TESTS.md`
+- `scripts/e2e_reset_daisy_quest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (75%)
+- INFERRED: 2 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,50 +1,47 @@
 # Respawn Persistence Bug
 
-> 34 nodes · cohesion 0.06
+> 17 nodes
 
 ## Key Concepts
 
-- **BUG INVESTIGATION REPORT: Player Respawn Persistence Failure** (9 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **REMEDIATION PROMPT** (6 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **DETAILED FINDINGS** (5 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **INVESTIGATION RECOMMENDATIONS** (4 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **Phase 3: Code Analysis** (4 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **Phase 4: Evidence Collection** (4 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **ROOT CAUSE ANALYSIS** (4 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **EVIDENCE DOCUMENTATION** (3 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **SYSTEM IMPACT ASSESSMENT** (2 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **2025-11-20_respawn-persistence-bug-investigation.md** (1 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **Code Evidence** (1 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **Code References** (1 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **Comparison Evidence** (1 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **Comparison with Working Code** (1 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **EXECUTIVE SUMMARY** (1 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **Files to Modify** (1 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **get_stats() Method Analysis** (1 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **INVESTIGATION COMPLETION CHECKLIST** (1 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **Option 1: Use flag_modified() (Recommended for Quick Fix)** (1 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **Option 2: Use MutableDict (Recommended for Long-term Solution)** (1 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **Option 3: Create New Dict Object (Workaround)** (1 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **Phase 1: Bug Report Analysis** (1 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **Phase 2: System State Investigation** (1 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **Player Model Analysis** (1 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **Primary Root Cause** (1 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- *... and 9 more nodes in this community*
+- **channel_broadcasting_strategies.py** (14 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **ChannelBroadcastingStrategy** (12 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **WhisperChannelStrategy** (8 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **SystemAdminChannelStrategy** (8 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **GlobalChannelStrategy** (7 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.__init__()** (7 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **test_whisper_channel_strategy_broadcast()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **ABC** (2 connections)
+- **.__init__()** (2 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Channel Broadcasting Strategies for NATS Message Handler.  This module implement** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Abstract base class for channel broadcasting strategies.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Strategy for global channel broadcasting.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Strategy for whisper channel broadcasting.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Strategy for system/admin channel broadcasting.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Initialize system/admin channel strategy.          Args:             channel_typ** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Initialize the strategy factory.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Test WhisperChannelStrategy.broadcast() sends personal message.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Channel Broadcast Strategies](Channel_Broadcast_Strategies.md) (11 shared connections)
+- [Transaction Boundaries Audit](Transaction_Boundaries_Audit.md) (5 shared connections)
+- [Emotes JSON Schema](Emotes_JSON_Schema.md) (3 shared connections)
+- [System Audit Status](System_Audit_Status.md) (3 shared connections)
+- [Error Monitor Service](Error_Monitor_Service.md) (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
+- `server/realtime/channel_broadcasting_strategies.py`
+- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (100%)
+- EXTRACTED: 71 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

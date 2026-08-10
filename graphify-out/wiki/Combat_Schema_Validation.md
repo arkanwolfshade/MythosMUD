@@ -1,59 +1,47 @@
 # Combat Schema Validation
 
-> 48 nodes · cohesion 0.08
+> 19 nodes
 
 ## Key Concepts
 
-- **test_combat_schema.py** (20 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **validate_npc_combat_data()** (13 connections) — `server/schemas/combat/combat_schema.py`
-- **combat_schema.py** (12 connections) — `server/schemas/combat/combat_schema.py`
-- **CombatSchemaValidationError** (11 connections) — `server/schemas/combat/combat_schema.py`
-- **validate_base_stats_combat_data()** (11 connections) — `server/schemas/combat/combat_schema.py`
-- **validate_combat_messages()** (11 connections) — `server/schemas/combat/combat_schema.py`
-- **__init__.py** (10 connections) — `server/schemas/combat/__init__.py`
-- **add_default_combat_data_to_stats()** (9 connections) — `server/schemas/combat/combat_schema.py`
-- **validate_behavior_config_combat_data()** (9 connections) — `server/schemas/combat/combat_schema.py`
-- **add_default_combat_data_to_config()** (8 connections) — `server/schemas/combat/combat_schema.py`
-- **get_combat_stats_summary()** (6 connections) — `server/schemas/combat/combat_schema.py`
-- **Any** (5 connections) — `server/schemas/combat/combat_schema.py`
-- **validate_message_template_variables()** (4 connections) — `server/schemas/combat/combat_schema.py`
-- **Draft7Validator** (4 connections) — `server/schemas/shared/inventory_schema.py`
-- **test_add_default_combat_data_to_config()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_add_default_combat_data_to_stats()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_add_default_combat_data_to_stats_preserves_existing()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_get_combat_stats_summary()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_validate_base_stats_combat_data_invalid_type()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_validate_base_stats_combat_data_missing_required()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_validate_base_stats_combat_data_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_validate_behavior_config_combat_data_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_validate_combat_messages_missing_required()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_validate_combat_messages_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_validate_npc_combat_data()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- *... and 23 more nodes in this community*
+- **get_npc_engine()** (14 connections) — `server/npc_database.py`
+- **TestNPCDatabaseInitialization** (8 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_raises_on_invalid_url()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **TestEventLoopHandling** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_initializes_engine()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_uses_existing_engine()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_env_fallback()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_uses_nullpool_for_test()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_recreates_on_loop_change()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **AsyncEngine** (2 connections)
+- **Get the NPC database engine, initializing if necessary.      Returns:         As** (1 connections) — `server/npc_database.py`
+- **Test NPC database initialization.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_engine() initializes engine when None.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_engine() returns existing engine if already initialized.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_engine() raises ValidationError for non-PostgreSQL URL.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_engine() uses environment fallback when config fails.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_engine() uses NullPool for test databases.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test event loop change detection and handling.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_engine() recreates engine when event loop changes.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Relationships
 
-- [[NPC Database Sessions]] (4 shared connections)
-- [[Migrate Combat]] (4 shared connections)
-- [[NPC Definition Schemas]] (1 shared connections)
-- [[Combat Domain Events]] (1 shared connections)
-- [[NPC Admin API]] (1 shared connections)
-- [[Combat Messaging Base]] (1 shared connections)
-- [[Player Save Preparer]] (1 shared connections)
+- [Realtime Errors Error](Realtime_Errors_Error.md) (5 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (4 shared connections)
+- [E 2 E Runtime Multiplayer](E_2_E_Runtime_Multiplayer.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/combat/__init__.py`
-- `server/schemas/combat/combat_schema.py`
-- `server/schemas/shared/inventory_schema.py`
-- `server/tests/unit/schemas/test_combat_schema.py`
+- `server/npc_database.py`
+- `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 183 (97%)
-- INFERRED: 6 (3%)
+- EXTRACTED: 52 (93%)
+- INFERRED: 4 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,65 +1,57 @@
 # Lucidity Rescue Helpers
 
-> 56 nodes · cohesion 0.06
+> 54 nodes
 
 ## Key Concepts
 
-- **lucidity_service.py** (46 connections) — `server/services/lucidity_service.py`
-- **lucidity_helpers.py** (24 connections) — `server/services/lucidity_helpers.py`
-- **send_rescue_update_event()** (18 connections) — `server/services/lucidity_event_dispatcher.py`
-- **lucidity_trigger_handlers.py** (17 connections) — `server/services/lucidity_trigger_handlers.py`
-- **decode_liabilities()** (10 connections) — `server/services/lucidity_helpers.py`
-- **handle_catatonia_transitions()** (10 connections) — `server/services/lucidity_trigger_handlers.py`
-- **handle_delirium_and_sanitarium_triggers()** (8 connections) — `server/services/lucidity_trigger_handlers.py`
-- **encode_liabilities()** (7 connections) — `server/services/lucidity_helpers.py`
-- **utc_now()** (7 connections) — `server/services/lucidity_helpers.py`
-- **UUID** (6 connections) — `server/services/lucidity_trigger_handlers.py`
-- **handle_sanitarium_trigger()** (6 connections) — `server/services/lucidity_trigger_handlers.py`
-- **UUID** (5 connections) — `server/services/lucidity_helpers.py`
-- **worsened_tier()** (5 connections) — `server/services/lucidity_helpers.py`
-- **.clear_liability()** (5 connections) — `server/services/lucidity_service.py`
-- **handle_delirium_trigger()** (5 connections) — `server/services/lucidity_trigger_handlers.py`
-- **datetime** (4 connections) — `server/services/lucidity_helpers.py`
-- **CatatoniaObserverProtocol** (4 connections) — `server/services/lucidity_trigger_handlers.py`
-- **.on_catatonia_cleared()** (4 connections) — `server/services/lucidity_helpers.py`
-- **.on_catatonia_entered()** (4 connections) — `server/services/lucidity_helpers.py`
-- **clamp_lucidity()** (4 connections) — `server/services/lucidity_helpers.py`
-- **coerce_metadata_dict()** (4 connections) — `server/services/lucidity_helpers.py`
-- **lucidity_event_source()** (4 connections) — `server/services/lucidity_helpers.py`
-- **normalize_metadata()** (4 connections) — `server/services/lucidity_helpers.py`
-- **LiabilityStackEntry** (3 connections) — `server/services/lucidity_helpers.py`
-- **.on_sanitarium_failover()** (3 connections) — `server/services/lucidity_helpers.py`
-- *... and 31 more nodes in this community*
+- **ResourceManager** (19 connections) — `client/src/utils/resourceCleanup.ts`
+- **clientMetricsCollector.ts** (10 connections) — `client/src/utils/clientMetricsCollector.ts`
+- **ClientMetricsCollector** (9 connections) — `client/src/utils/clientMetricsCollector.ts`
+- **resourceCleanup.ts** (9 connections) — `client/src/utils/resourceCleanup.ts`
+- **resourceCleanup.test.ts** (7 connections) — `client/src/utils/__tests__/resourceCleanup.test.ts`
+- **MockWebSocket** (7 connections) — `client/src/utils/__tests__/resourceCleanup.test.ts`
+- **getClientMetricsCollector()** (6 connections) — `client/src/utils/clientMetricsCollector.ts`
+- **useResourceCleanup()** (6 connections) — `client/src/utils/resourceCleanup.ts`
+- **useComponentLifecycleTracking.ts** (5 connections) — `client/src/hooks/useComponentLifecycleTracking.ts`
+- **useComponentLifecycleTracking.test.ts** (4 connections) — `client/src/hooks/__tests__/useComponentLifecycleTracking.test.ts`
+- **useStoreSubscriptionTracking.test.ts** (4 connections) — `client/src/hooks/__tests__/useStoreSubscriptionTracking.test.ts`
+- **useStoreSubscriptionTracking.ts** (4 connections) — `client/src/hooks/useStoreSubscriptionTracking.ts`
+- **createTimerCleanup()** (4 connections) — `client/src/utils/resourceCleanup.ts`
+- **useComponentLifecycleTracking()** (3 connections) — `client/src/hooks/useComponentLifecycleTracking.ts`
+- **useStoreSubscriptionTracking()** (3 connections) — `client/src/hooks/useStoreSubscriptionTracking.ts`
+- **.getMetrics()** (3 connections) — `client/src/utils/clientMetricsCollector.ts`
+- **.getResourceStats()** (3 connections) — `client/src/utils/resourceCleanup.ts`
+- **createWebSocketCleanup()** (3 connections) — `client/src/utils/resourceCleanup.ts`
+- **createCustomResourceCleanup()** (3 connections) — `client/src/utils/resourceCleanup.ts`
+- **clientMetricsCollector.test.ts** (2 connections) — `client/src/utils/__tests__/clientMetricsCollector.test.ts`
+- **.setResourceManager()** (2 connections) — `client/src/utils/clientMetricsCollector.ts`
+- **.logMetrics()** (2 connections) — `client/src/utils/clientMetricsCollector.ts`
+- **.registerTimer()** (2 connections) — `client/src/utils/resourceCleanup.ts`
+- **.registerInterval()** (2 connections) — `client/src/utils/resourceCleanup.ts`
+- **.registerWebSocket()** (2 connections) — `client/src/utils/resourceCleanup.ts`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [[Lucidity State Models]] (36 shared connections)
-- [[Lucidity Event Dispatcher]] (14 shared connections)
-- [[Lucidity Database Models]] (9 shared connections)
-- [[NPC Admin API]] (7 shared connections)
-- [[Integer Coercion Utils]] (5 shared connections)
-- [[Alias Expansion Logic]] (3 shared connections)
-- [[Ground and Rescue Commands]] (3 shared connections)
-- [[Services Hallucination Frequency]] (2 shared connections)
-- [[Liability . Call ()]] (2 shared connections)
-- [[Services Player Respawn]] (2 shared connections)
-- [[Services Rescue Service]] (1 shared connections)
-- [[Lifespan Startup Hooks]] (1 shared connections)
+- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (3 shared connections)
 
 ## Source Files
 
-- `server/services/lucidity_event_dispatcher.py`
-- `server/services/lucidity_helpers.py`
-- `server/services/lucidity_service.py`
-- `server/services/lucidity_trigger_handlers.py`
-- `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- `client/src/hooks/__tests__/useComponentLifecycleTracking.test.ts`
+- `client/src/hooks/__tests__/useStoreSubscriptionTracking.test.ts`
+- `client/src/hooks/useComponentLifecycleTracking.ts`
+- `client/src/hooks/useStoreSubscriptionTracking.ts`
+- `client/src/utils/__tests__/clientMetricsCollector.test.ts`
+- `client/src/utils/__tests__/resourceCleanup.test.ts`
+- `client/src/utils/clientMetricsCollector.ts`
+- `client/src/utils/resourceCleanup.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 254 (98%)
-- INFERRED: 5 (2%)
+- EXTRACTED: 153 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

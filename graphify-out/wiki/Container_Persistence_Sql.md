@@ -1,39 +1,31 @@
 # Container Persistence Sql
 
-> 15 nodes · cohesion 0.17
+> 6 nodes
 
 ## Key Concepts
 
-- **_create_mock_container_row()** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **TestContainerPersistenceSQLInjection** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **test_container_persistence_sql_injection.py** (5 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **.test_update_container_safe_column_names()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **.test_update_container_sql_injection_in_metadata()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **.test_update_container_uses_parameterized_queries()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **.test_update_container_sql_injection_in_lock_state()** (3 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **UUID** (2 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Tests for SQL injection protection in container persistence operations.  These t** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Test that update_container uses parameterized queries, not string concatenation.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Test that column names are hardcoded, not from user input.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Create a complete mock container row with all required columns.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Test SQL injection protection in container persistence.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Test that SQL injection in lock_state is prevented.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Test that SQL injection in metadata_json is prevented.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **conftest.py** (5 connections) — `server/tests/unit/infrastructure/conftest.py`
+- **async_persistence_layer()** (3 connections) — `server/tests/unit/infrastructure/conftest.py`
+- **mock_event_bus()** (2 connections) — `server/tests/unit/infrastructure/conftest.py`
+- **Shared fixtures for unit tests in the infrastructure package.** (1 connections) — `server/tests/unit/infrastructure/conftest.py`
+- **Create a mock event bus.** (1 connections) — `server/tests/unit/infrastructure/conftest.py`
+- **Create an AsyncPersistenceLayer instance with skipped room cache.** (1 connections) — `server/tests/unit/infrastructure/conftest.py`
 
 ## Relationships
 
-- [[Container Persistence Layer]] (5 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_container_persistence_sql_injection.py`
+- `server/tests/unit/infrastructure/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

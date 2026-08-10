@@ -1,61 +1,58 @@
 # Catatonia Check Logic
 
-> 69 nodes · cohesion 0.05
+> 61 nodes
 
 ## Key Concepts
 
-- **catatonia_check.py** (25 connections) — `server/command_handler/catatonia_check.py`
-- **test_command_validation.py** (21 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **TestCatatoniaChecks** (21 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **check_catatonia_block()** (16 connections) — `server/command_handler/catatonia_check.py`
-- **_load_player_for_catatonia_check()** (11 connections) — `server/command_handler/catatonia_check.py`
-- **CommandExecutionRequest** (11 connections) — `server/command_handler/command_execution_request.py`
 - **_is_catatonic()** (10 connections) — `server/command_handler/catatonia_check.py`
-- **_check_catatonia_database()** (9 connections) — `server/command_handler/catatonia_check.py`
+- **_check_catatonia_registry()** (9 connections) — `server/command_handler/catatonia_check.py`
 - **_query_lucidity_record()** (9 connections) — `server/command_handler/catatonia_check.py`
-- **_check_catatonia_registry()** (8 connections) — `server/command_handler/catatonia_check.py`
+- **_check_catatonia_database()** (9 connections) — `server/command_handler/catatonia_check.py`
+- **CommandExecutionRequest** (9 connections)
+- **UUID** (8 connections)
 - **_fetch_lucidity_record()** (8 connections) — `server/command_handler/catatonia_check.py`
-- **UUID** (8 connections) — `server/command_handler/catatonia_check.py`
 - **_registry_player_id_value()** (7 connections) — `server/command_handler/catatonia_check.py`
-- **_PersistenceGetPlayerByName** (6 connections) — `server/command_handler/catatonia_check.py`
 - **_convert_player_id_to_uuid()** (4 connections) — `server/command_handler/catatonia_check.py`
-- **CommandExecutionRequest** (4 connections) — `server/command_handler/catatonia_check.py`
-- **PlayerLucidity** (4 connections) — `server/command_handler/catatonia_check.py`
-- **.test_check_catatonia_block_allowed_command()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_catatonia_block_no_app_state()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_catatonia_block_uses_string_registry_key_when_player_id_not_uuid_or_str()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **CommandExecutionRequest** (3 connections)
+- **.test_registry_player_id_value_preserves_uuid_and_str()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_registry_player_id_value_stringifies_non_string_ids()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_is_catatonic_with_tier()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_is_catatonic_with_zero_lcd()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_is_catatonic_with_negative_lcd()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_is_catatonic_not_catatonic()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_is_catatonic_none()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_fetch_lucidity_record()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_query_lucidity_record_success()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **.test_check_catatonia_database_catatonic()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **.test_check_catatonia_database_not_catatonic()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **.test_check_catatonia_registry_catatonic()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **.test_check_catatonia_registry_not_catatonic()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **.test_check_catatonia_registry_slotted_state_object()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- *... and 44 more nodes in this community*
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [[Alias Expansion Logic]] (10 shared connections)
-- [[Command Request App State]] (5 shared connections)
-- [[NPC Admin API]] (5 shared connections)
-- [[Player Cache]] (5 shared connections)
-- [[Command Commands Validation]] (5 shared connections)
-- [[Lucidity Database Models]] (2 shared connections)
-- [[Grace Period Blocking Tests]] (2 shared connections)
-- [[Player Combat XP]] (1 shared connections)
-- [[Unified Command Handler]] (1 shared connections)
-- [[Commands Command Validation]] (1 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (16 shared connections)
+- [Test Refactoring Summary](Test_Refactoring_Summary.md) (11 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (3 shared connections)
+- [Catatonia Registry Service](Catatonia_Registry_Service.md) (1 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Manager Services Nats](Manager_Services_Nats.md) (1 shared connections)
+- [Async Audit Cursor](Async_Audit_Cursor.md) (1 shared connections)
 
 ## Source Files
 
 - `server/command_handler/catatonia_check.py`
-- `server/command_handler/command_execution_request.py`
 - `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 260 (95%)
-- INFERRED: 15 (5%)
+- EXTRACTED: 174 (92%)
+- INFERRED: 15 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

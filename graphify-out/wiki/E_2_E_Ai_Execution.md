@@ -1,40 +1,36 @@
 # E 2 E Ai Execution
 
-> 16 nodes · cohesion 0.12
+> 8 nodes
 
 ## Key Concepts
 
-- **AI_EXECUTION_IMPROVEMENTS.md** (5 connections) — `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
-- **How These Improvements Prevent Failures** (5 connections) — `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
-- **Implementation Roadmap** (5 connections) — `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
-- **How to Update Existing Scenarios** (4 connections) — `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
-- **Example Transformation** (1 connections) — `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
-- **Overview** (1 connections) — `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
-- **Phase 1: Core Files (COMPLETED)** (1 connections) — `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
-- **Phase 2: High-Priority Scenarios (RECOMMENDED)** (1 connections) — `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
-- **Phase 3: Medium-Priority Scenarios** (1 connections) — `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
-- **Phase 4: Testing and Validation** (1 connections) — `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
-- **Preventing Infinite Loops** (1 connections) — `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
-- **Preventing Step Addition** (1 connections) — `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
-- **Preventing Step Modification** (1 connections) — `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
-- **Preventing Step Skipping** (1 connections) — `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
-- **STEP 3 of 5: Verify AW Sees Message** (1 connections) — `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
-- **Step-by-Step Process** (1 connections) — `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
+- **_get_alias_validator()** (8 connections) — `server/alias_storage.py`
+- **test_get_alias_validator_caching()** (3 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_get_alias_validator_import_failure()** (3 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_get_alias_validator_creation_failure()** (3 connections) — `server/tests/unit/test_alias_storage.py`
+- **Lazily instantiate and cache the alias schema validator.** (1 connections) — `server/alias_storage.py`
+- **Test _get_alias_validator caches the validator.** (1 connections) — `server/tests/unit/test_alias_storage.py`
+- **Test _get_alias_validator returns None when import has previously failed.** (1 connections) — `server/tests/unit/test_alias_storage.py`
+- **Test _get_alias_validator handles validator creation failure.** (1 connections) — `server/tests/unit/test_alias_storage.py`
 
 ## Relationships
 
-- [[E 2 E Ai Execution]] (1 shared connections)
+- [Alias Storage Services](Alias_Storage_Services.md) (4 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Fastapi Code Review](Fastapi_Code_Review.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
+- `server/alias_storage.py`
+- `server/tests/unit/test_alias_storage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 31 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

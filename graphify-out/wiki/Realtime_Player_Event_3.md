@@ -1,37 +1,34 @@
 # Realtime Player Event
 
-> 12 nodes · cohesion 0.17
+> 10 nodes
 
 ## Key Concepts
 
-- **test_player_event_handlers_utils_grace_period.py** (8 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
-- **test_is_player_in_grace_period_false()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
-- **test_is_player_in_grace_period_string_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
-- **test_is_player_in_grace_period_true()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
-- **mock_logger()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
-- **mock_name_extractor()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
-- **Unit tests for player event handlers utils grace period integration.  Tests the** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
-- **Create a mock PlayerNameExtractor.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
-- **Create a mock logger.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
-- **Test is_player_in_grace_period() returns True when player is in grace period.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
-- **Test is_player_in_grace_period() returns False when player is not in grace perio** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
-- **Test is_player_in_grace_period() handles string player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
+- **multiplayer-playwright-testing.md** (9 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **🚨 CRITICAL AI EXECUTOR REQUIREMENTS 🚨** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **🛑 MANDATORY EXECUTION PROTOCOL 🛑** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **🎮 MODULAR E2E TEST SUITE STRUCTURE 🎮** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **📋 EXECUTION OPTIONS** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **🎯 AVAILABLE SCENARIOS** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **🔧 TESTING APPROACH** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **📖 MANDATORY EXECUTION ORDER** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **🔄 BACKWARD COMPATIBILITY** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **📝 USAGE EXAMPLES** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
 
 ## Relationships
 
-- [[Player Respawn Events]] (4 shared connections)
-- [[Disconnect Grace Period]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
+- `.cursor/commands/multiplayer-playwright-testing.md`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

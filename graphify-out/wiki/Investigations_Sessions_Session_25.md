@@ -1,41 +1,32 @@
 # Investigations Sessions Session
 
-> 15 nodes · cohesion 0.14
+> 8 nodes
 
 ## Key Concepts
 
-- **F-String Logging Violations Remediation Complete** (10 connections) — `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
-- **Prevention Tools** (4 connections) — `docs/SQLALCHEMY_ASYNC_BEST_PRACTICES.md`
-- **Pre-commit Hooks** (3 connections) — `docs/SQLALCHEMY_ASYNC_BEST_PRACTICES.md`
-- **Remediation Results** (3 connections) — `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
-- **Verification** (3 connections) — `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
-- **Custom Linter** (1 connections) — `docs/SQLALCHEMY_ASYNC_BEST_PRACTICES.md`
-- **IDE Integration** (1 connections) — `docs/SQLALCHEMY_ASYNC_BEST_PRACTICES.md`
-- **2025-01-28_session-fstring-violations-remediated.md** (1 connections) — `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
-- **After** (1 connections) — `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
-- **Before** (1 connections) — `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
-- **Benefits Achieved** (1 connections) — `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
-- **Conclusion** (1 connections) — `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
-- **Executive Summary** (1 connections) — `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
-- **Full Compliance Check** (1 connections) — `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
-- **Next Steps** (1 connections) — `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
+- **required** (8 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **id** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **name** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **plane** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **zone** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **sub_zone** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **exits** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [[Investigations Sessions Session]] (2 shared connections)
-- [[Sqlalchemy Async Best]] (1 shared connections)
+- [Archive Plan Planning](Archive_Plan_Planning.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/SQLALCHEMY_ASYNC_BEST_PRACTICES.md`
-- `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
+- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

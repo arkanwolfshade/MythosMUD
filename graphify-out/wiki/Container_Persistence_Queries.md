@@ -1,57 +1,50 @@
 # Container Persistence Queries
 
-> 54 nodes · cohesion 0.05
+> 38 nodes
 
 ## Key Concepts
 
-- **test_container_persistence_extended_crud.py** (39 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **_build_container_data_from_row()** (12 connections) — `server/persistence/container_query_helpers.py`
-- **get_decayed_containers()** (12 connections) — `server/persistence/container_query_helpers.py`
-- **get_containers_by_entity_id()** (11 connections) — `server/persistence/container_query_helpers.py`
-- **get_containers_by_room_id()** (11 connections) — `server/persistence/container_query_helpers.py`
-- **Any** (7 connections) — `server/persistence/container_query_helpers.py`
-- **ContainerData** (7 connections) — `server/persistence/container_query_helpers.py`
-- **test_create_container_database_error()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_delete_container_database_error()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_delete_container_not_found()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_delete_container_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_delete_container_uuid_string_conversion()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_fetch_container_items_uuid_string_conversion()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_container_database_error()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_container_not_found()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_container_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_entity_id_database_error()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_entity_id_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_room_id_database_error()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_room_id_empty()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_room_id_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_decayed_containers_database_error()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_decayed_containers_none_time()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_decayed_containers_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_update_container_database_error()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- *... and 29 more nodes in this community*
+- **test_npc_combat_handlers.py** (22 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **npc_combat_handlers()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **test_handle_combat_result_success()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **test_handle_combat_result_combat_ended()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **test_handle_combat_result_broadcast_error()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **test_handle_combat_result_unsuccessful()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **mock_data_provider()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **mock_rewards()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **mock_combat_memory()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **mock_lifecycle()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **mock_messaging_integration()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **mock_combat_result()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **mock_npc_instance()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **test_handle_npc_death_on_combat_end()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **test_handle_npc_death_on_combat_end_error()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **test_handle_npc_death()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **test_handle_npc_death_no_npc()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **test_handle_npc_death_error()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **test_is_valid_uuid()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **Unit tests for NPC combat handlers.  Tests the NPCCombatHandlers class for com** (1 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **Create mock data provider.** (1 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **Create mock rewards manager.** (1 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **Create mock combat memory manager.** (1 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **Create mock lifecycle manager.** (1 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **Create mock messaging integration.** (1 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [[Container Data Models]] (21 shared connections)
-- [[Container Persistence Layer]] (17 shared connections)
-- [[NPC Admin API]] (5 shared connections)
-- [[Persistence Item Instance]] (3 shared connections)
-- [[Container Repository CRUD]] (2 shared connections)
-- [[Persistence Container Extended]] (1 shared connections)
-- [[Container Persistence Ops]] (1 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (8 shared connections)
 
 ## Source Files
 
-- `server/persistence/container_query_helpers.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- `server/tests/unit/services/test_npc_combat_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 181 (96%)
-- INFERRED: 7 (4%)
+- EXTRACTED: 82 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

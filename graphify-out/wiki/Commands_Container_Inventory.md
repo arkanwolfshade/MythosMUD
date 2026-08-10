@@ -1,49 +1,38 @@
 # Commands Container Inventory
 
-> 18 nodes · cohesion 0.18
+> 11 nodes
 
 ## Key Concepts
 
-- **container_helpers_inventory.py** (31 connections) — `server/commands/container_helpers_inventory.py`
-- **container_helpers_inventory_display.py** (17 connections) — `server/commands/container_helpers_inventory_display.py`
-- **get_container_data_for_inventory()** (8 connections) — `server/commands/container_helpers_inventory_display.py`
-- **_apply_container_component_to_slot()** (6 connections) — `server/commands/container_helpers_inventory_display.py`
-- **match_container_to_slot()** (6 connections) — `server/commands/container_helpers_inventory_display.py`
-- **_inventory_stack_to_display_dict()** (4 connections) — `server/commands/container_helpers_inventory_display.py`
-- **update_equipped_with_container_info()** (4 connections) — `server/commands/container_helpers_inventory_display.py`
-- **_component_metadata()** (3 connections) — `server/commands/container_helpers_inventory_display.py`
-- **_equipped_matches_container_metadata()** (2 connections) — `server/commands/container_helpers_inventory_display.py`
-- **_lock_state_as_str()** (2 connections) — `server/commands/container_helpers_inventory_display.py`
-- **Container display helpers for inventory UI (wearable contents, slot matching).** (1 connections) — `server/commands/container_helpers_inventory_display.py`
-- **Get container contents, capacities, and lock states for equipped containers.** (1 connections) — `server/commands/container_helpers_inventory_display.py`
-- **Shallow-copy a wearable stack into a plain dict for equipped-view metadata.** (1 connections) — `server/commands/container_helpers_inventory_display.py`
-- **Update equipped items' metadata to include container information.** (1 connections) — `server/commands/container_helpers_inventory_display.py`
-- **Match a container component to an equipped slot. Returns slot name or None.** (1 connections) — `server/commands/container_helpers_inventory_display.py`
-- **Container-related helper functions for inventory commands (facade re-exports).** (1 connections) — `server/commands/container_helpers_inventory.py`
-- **InventoryStack** (1 connections) — `server/commands/container_helpers_inventory_display.py`
-- **Player** (1 connections) — `server/commands/container_helpers_inventory_display.py`
+- **Path** (6 connections)
+- **alias_storage()** (6 connections) — `server/tests/unit/test_alias_storage.py`
+- **temp_storage_dir()** (3 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_backup_aliases_custom_dir()** (3 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_validate_alias_payload_no_validator()** (3 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_validate_alias_payload_with_validator()** (3 connections) — `server/tests/unit/test_alias_storage.py`
+- **Create a temporary directory for alias storage.** (1 connections) — `server/tests/unit/test_alias_storage.py`
+- **Create an AliasStorage instance with temporary directory.** (1 connections) — `server/tests/unit/test_alias_storage.py`
+- **Test backup_aliases uses custom backup directory.** (1 connections) — `server/tests/unit/test_alias_storage.py`
+- **Test _validate_alias_payload returns empty list when validator unavailable.** (1 connections) — `server/tests/unit/test_alias_storage.py`
+- **Test _validate_alias_payload uses validator when available.** (1 connections) — `server/tests/unit/test_alias_storage.py`
 
 ## Relationships
 
-- [[Container Inventory Finders]] (12 shared connections)
-- [[Container Inventory Ops]] (11 shared connections)
-- [[Admin Summon Command]] (7 shared connections)
-- [[Inventory Service Helpers]] (4 shared connections)
-- [[NPC Admin API]] (1 shared connections)
-- [[SQLAlchemy Model Base]] (1 shared connections)
-- [[Player Domain Model]] (1 shared connections)
+- [Alias Storage Services](Alias_Storage_Services.md) (5 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Status Effect Model](Status_Effect_Model.md) (1 shared connections)
+- [WebSocket Auth Integration](WebSocket_Auth_Integration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/container_helpers_inventory.py`
-- `server/commands/container_helpers_inventory_display.py`
+- `server/tests/unit/test_alias_storage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 89 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 26 (90%)
+- INFERRED: 3 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

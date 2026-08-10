@@ -1,33 +1,26 @@
 # Schemas Calendar Schedule
 
-> 9 nodes · cohesion 0.25
+> 2 nodes
 
 ## Key Concepts
 
-- **applies_to** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **items** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **items** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **effects** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **pattern** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **test_create_npc_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_npc_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [[Schemas Calendar Schedule]] (3 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

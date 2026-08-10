@@ -1,6 +1,6 @@
 # Investigations Sessions Movement
 
-> 4 nodes · cohesion 0.50
+> 4 nodes
 
 ## Key Concepts
 
@@ -26,4 +26,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

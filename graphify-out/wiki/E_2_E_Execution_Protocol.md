@@ -1,36 +1,26 @@
 # E 2 E Execution Protocol
 
-> 12 nodes · cohesion 0.17
+> 2 nodes
 
 ## Key Concepts
 
-- **Changes Summary** (9 connections) — `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
-- **Execution Protocol Changes Documentation** (4 connections) — `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
-- **EXECUTION_PROTOCOL_CHANGES.md** (1 connections) — `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
-- **1. File Structure Changes** (1 connections) — `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
-- **2. Execution Protocol Changes** (1 connections) — `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
-- **3. Cursor Rule Changes** (1 connections) — `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
-- **4. Testing Approach Changes** (1 connections) — `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
-- **5. Scenario Structure Changes** (1 connections) — `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
-- **6. Maintenance and Development Changes** (1 connections) — `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
-- **8. Performance and Efficiency Changes** (1 connections) — `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
-- **Overview** (1 connections) — `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
-- **Summary** (1 connections) — `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
+- **test_broadcast_player_mortally_wounded_with_attacker()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test broadcast_player_mortally_wounded with attacker name.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Relationships
 
-- [[Archive Room Hierarchy]] (1 shared connections)
+- [Database Pool Configuration](Database_Pool_Configuration.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
+- `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

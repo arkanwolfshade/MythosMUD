@@ -1,44 +1,31 @@
 # Game Chat Whisper
 
-> 14 nodes · cohesion 0.14
+> 6 nodes
 
 ## Key Concepts
 
-- **ChatWhisperTracker** (12 connections) — `server/game/chat_whisper_tracker.py`
-- **.__init__()** (6 connections) — `server/game/chat_service.py`
-- **.clear_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
-- **.get_all_trackings()** (2 connections) — `server/game/chat_whisper_tracker.py`
-- **.get_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
-- **.__init__()** (2 connections) — `server/game/chat_whisper_tracker.py`
-- **.store_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
-- **Initialize chat service.          Args:             persistence: Database persis** (1 connections) — `server/game/chat_service.py`
-- **Tracks last whisper senders for reply functionality.** (1 connections) — `server/game/chat_whisper_tracker.py`
-- **Initialize the whisper tracker.** (1 connections) — `server/game/chat_whisper_tracker.py`
-- **Store the last whisper sender for a player.          Args:             receiver_** (1 connections) — `server/game/chat_whisper_tracker.py`
-- **Get the last whisper sender for a player.          Args:             player_name** (1 connections) — `server/game/chat_whisper_tracker.py`
-- **Clear the last whisper sender for a player.          Args:             player_na** (1 connections) — `server/game/chat_whisper_tracker.py`
-- **Get all whisper trackings (for testing/debugging).          Returns:** (1 connections) — `server/game/chat_whisper_tracker.py`
+- **TestGetNPCLifecycleManager** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_npc_lifecycle_manager_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_npc_lifecycle_manager_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_npc_lifecycle_manager dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_npc_lifecycle_manager returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_npc_lifecycle_manager raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [[Chat Mute Admin API]] (3 shared connections)
-- [[Chat Service Whispers]] (2 shared connections)
-- [[Chat Moderation Service]] (1 shared connections)
-- [[Game Chat Pose]] (1 shared connections)
-- [[Chat Message Helpers]] (1 shared connections)
-- [[NPC Admin API]] (1 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_service.py`
-- `server/game/chat_whisper_tracker.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (91%)
-- INFERRED: 3 (9%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

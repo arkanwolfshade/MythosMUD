@@ -1,65 +1,45 @@
 # Async Task Registry
 
-> 58 nodes · cohesion 0.06
+> 14 nodes
 
 ## Key Concepts
 
-- **TaskRegistry** (39 connections) — `server/app/task_registry.py`
-- **MythosChronicle** (31 connections) — `server/time/time_service.py`
-- **MythosHourTickEvent** (22 connections) — `server/events/event_types.py`
-- **MythosTickScheduler** (22 connections) — `server/time/tick_scheduler.py`
-- **tick_scheduler.py** (10 connections) — `server/time/tick_scheduler.py`
-- **__init__.py** (8 connections) — `server/time/__init__.py`
-- **.shutdown_all()** (7 connections) — `server/app/task_registry.py`
-- **datetime** (7 connections) — `server/time/tick_scheduler.py`
-- **.__init__()** (7 connections) — `server/time/tick_scheduler.py`
-- **.get_task_lifecycle_metrics()** (5 connections) — `server/app/task_registry.py`
-- **HolidayResolver** (5 connections) — `server/time/tick_scheduler.py`
-- **MythosChronicle** (5 connections) — `server/time/tick_scheduler.py`
-- **EventBus** (5 connections) — `server/time/tick_scheduler.py`
-- **TaskRegistry** (5 connections) — `server/time/tick_scheduler.py`
-- **._emit_pending_ticks()** (5 connections) — `server/time/tick_scheduler.py`
-- **._publish_tick()** (5 connections) — `server/time/tick_scheduler.py`
-- **._run()** (5 connections) — `server/time/tick_scheduler.py`
-- **._cleanup_registry_collections()** (4 connections) — `server/app/task_registry.py`
-- **._truncate_to_hour()** (4 connections) — `server/time/tick_scheduler.py`
-- **._cancel_lifecycle_tasks()** (3 connections) — `server/app/task_registry.py`
-- **._cancel_remaining_tasks()** (3 connections) — `server/app/task_registry.py`
-- **._forcible_cleanup_on_timeout()** (3 connections) — `server/app/task_registry.py`
-- **.get_active_task_count()** (3 connections) — `server/app/task_registry.py`
-- **.get_task_stats_by_type()** (3 connections) — `server/app/task_registry.py`
-- **._wait_for_task_completion()** (3 connections) — `server/app/task_registry.py`
-- *... and 33 more nodes in this community*
+- **container_helpers_inventory_display.py** (17 connections) — `server/commands/container_helpers_inventory_display.py`
+- **_apply_container_component_to_slot()** (8 connections) — `server/commands/container_helpers_inventory_display.py`
+- **get_container_data_for_inventory()** (7 connections) — `server/commands/container_helpers_inventory_display.py`
+- **match_container_to_slot()** (6 connections) — `server/commands/container_helpers_inventory_display.py`
+- **_inventory_stack_to_display_dict()** (4 connections) — `server/commands/container_helpers_inventory_display.py`
+- **_component_metadata()** (3 connections) — `server/commands/container_helpers_inventory_display.py`
+- **_equipped_matches_container_metadata()** (2 connections) — `server/commands/container_helpers_inventory_display.py`
+- **_lock_state_as_str()** (2 connections) — `server/commands/container_helpers_inventory_display.py`
+- **InventoryStack** (1 connections)
+- **Player** (1 connections)
+- **Container display helpers for inventory UI (wearable contents, slot matching).** (1 connections) — `server/commands/container_helpers_inventory_display.py`
+- **Shallow-copy a wearable stack into a plain dict for equipped-view metadata.** (1 connections) — `server/commands/container_helpers_inventory_display.py`
+- **Match a container component to an equipped slot. Returns slot name or None.** (1 connections) — `server/commands/container_helpers_inventory_display.py`
+- **Get container contents, capacities, and lock states for equipped containers.** (1 connections) — `server/commands/container_helpers_inventory_display.py`
 
 ## Relationships
 
-- [[NPC Admin API]] (13 shared connections)
-- [[Async Task Registry]] (12 shared connections)
-- [[Time Event Consumer]] (10 shared connections)
-- [[Mythos Calendar Time Service]] (10 shared connections)
-- [[Distributed Event Bus]] (9 shared connections)
-- [[Time Service]] (8 shared connections)
-- [[Game Service Bundle]] (7 shared connections)
-- [[App Tracked Task]] (3 shared connections)
-- [[Game Tick Processing]] (3 shared connections)
-- [[Monitoring API Endpoints]] (1 shared connections)
-- [[NPC Combat Events]] (1 shared connections)
-- [[Inventory Service Helpers]] (1 shared connections)
+- [Container Inventory Finders](Container_Inventory_Finders.md) (4 shared connections)
+- [Chat Service Whispers](Chat_Service_Whispers.md) (4 shared connections)
+- [Character Creation Service](Character_Creation_Service.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
+- [Player Creation Service](Player_Creation_Service.md) (1 shared connections)
+- [Cache and NPC Cache](Cache_and_NPC_Cache.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/task_registry.py`
-- `server/events/event_types.py`
-- `server/time/__init__.py`
-- `server/time/tick_scheduler.py`
-- `server/time/time_service.py`
+- `server/commands/container_helpers_inventory_display.py`
 
 ## Audit Trail
 
-- EXTRACTED: 199 (76%)
-- INFERRED: 63 (24%)
+- EXTRACTED: 52 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

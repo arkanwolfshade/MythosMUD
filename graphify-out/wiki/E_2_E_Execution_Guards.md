@@ -1,39 +1,28 @@
 # E 2 E Execution Guards
 
-> 13 nodes · cohesion 0.15
+> 2 nodes
 
 ## Key Concepts
 
-- **Execution Guards for Modular E2E Test Suite** (9 connections) — `e2e-tests/EXECUTION_GUARDS.md`
-- **Anti-Patterns to Avoid** (3 connections) — `e2e-tests/EXECUTION_GUARDS.md`
-- **Implementation Guidelines** (3 connections) — `e2e-tests/EXECUTION_GUARDS.md`
-- **The Solution** (2 connections) — `docs/SQLALCHEMY_ASYNC_BEST_PRACTICES.md`
-- **✅ CORRECT PATTERNS** (2 connections) — `e2e-tests/EXECUTION_GUARDS.md`
-- **EXECUTION_GUARDS.md** (1 connections) — `e2e-tests/EXECUTION_GUARDS.md`
-- **Emergency Stop Procedures** (1 connections) — `e2e-tests/EXECUTION_GUARDS.md`
-- **For AI Executors** (1 connections) — `e2e-tests/EXECUTION_GUARDS.md`
-- **For Scenario Writers** (1 connections) — `e2e-tests/EXECUTION_GUARDS.md`
-- **❌ INFINITE LOOP PATTERNS** (1 connections) — `e2e-tests/EXECUTION_GUARDS.md`
-- **📚 Learning from Failures** (1 connections) — `e2e-tests/EXECUTION_GUARDS.md`
-- **Overview** (1 connections) — `e2e-tests/EXECUTION_GUARDS.md`
-- **Success Metrics** (1 connections) — `e2e-tests/EXECUTION_GUARDS.md`
+- **test_handle_whisper_command_target_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **Test handle_whisper_command when target is not found.** (1 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
 
 ## Relationships
 
-- [[E 2 E Execution Guards]] (2 shared connections)
-- [[Sqlalchemy Async Best]] (1 shared connections)
+- [Deprecated Logging Patterns](Deprecated_Logging_Patterns.md) (1 shared connections)
+- [Disconnect Grace Period](Disconnect_Grace_Period.md) (1 shared connections)
+- [Caching Lru Cache](Caching_Lru_Cache.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/SQLALCHEMY_ASYNC_BEST_PRACTICES.md`
-- `e2e-tests/EXECUTION_GUARDS.md`
+- `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

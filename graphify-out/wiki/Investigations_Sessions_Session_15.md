@@ -1,47 +1,47 @@
 # Investigations Sessions Session
 
-> 22 nodes · cohesion 0.09
+> 18 nodes
 
 ## Key Concepts
 
-- **BUG INVESTIGATION REPORT: Spell Slash Commands Failure** (8 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **Investigation Recommendations** (6 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **INVESTIGATION RECOMMENDATIONS** (5 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **ROOT CAUSE ANALYSIS** (4 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **EVIDENCE DOCUMENTATION** (3 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **Priority 4: Code Review** (2 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **2025-12-14_session-001_spell-commands-failure.md** (1 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **Code Evidence** (1 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **Command Processing Flow** (1 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **EXECUTIVE SUMMARY** (1 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **INVESTIGATION COMPLETION CHECKLIST** (1 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **Log Evidence** (1 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **Primary Root Cause** (1 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **Priority 1: Complete Pydantic Validation Infrastructure** (1 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **Priority 2: Verify Command Handler Compatibility** (1 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **Priority 3: Testing** (1 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **REMEDIATION PROMPT** (1 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **Why `/learn` Works** (1 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **Priority 1: Fix Mini-Map Endpoint** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **Priority 2: Fix ASCII Map Endpoint** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **Priority 4: Documentation** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **Priority 5: Testing** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
+- **run_flee_effect()** (18 connections) — `server/game/magic/spell_effect_flee.py`
+- **spell_effect_flee.py** (17 connections) — `server/game/magic/spell_effect_flee.py`
+- **Any** (10 connections)
+- **_flee_effect_validate_room_exits()** (5 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_services_available()** (4 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_not_in_combat_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_success_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_failure_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_invalid_target_type_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_services_unavailable_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_invalid_target_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_room_error_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **.get_room_by_id()** (3 connections) — `server/game/magic/spell_effects.py`
+- **Flee spell effect: voluntary flee mechanics (success roll, lose-attack-on-fail,** (1 connections) — `server/game/magic/spell_effect_flee.py`
+- **True if combat, movement, and get_room_by_id are all configured for flee effect.** (1 connections) — `server/game/magic/spell_effect_flee.py`
+- **Return (room_id, None) if combat room has exits; else (None, error_message).** (1 connections) — `server/game/magic/spell_effect_flee.py`
+- **Apply flee effect: same mechanics as /flee (success roll, lose-attack-on-fail, e** (1 connections) — `server/game/magic/spell_effect_flee.py`
+- **Callable to resolve room by ID for flee effect.** (1 connections) — `server/game/magic/spell_effects.py`
 
 ## Relationships
 
-- [[Investigations Sessions Session]] (2 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (8 shared connections)
+- [Container Component Capacity](Container_Component_Capacity.md) (3 shared connections)
+- [test_profession_meets_stat_requirements_multiple_not_met](test_profession_meets_stat_requirements_multiple_not_met.md) (3 shared connections)
+- [Logging Correct Patterns](Logging_Correct_Patterns.md) (1 shared connections)
+- [NPC Service Tests](NPC_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
+- `server/game/magic/spell_effect_flee.py`
+- `server/game/magic/spell_effects.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 84 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

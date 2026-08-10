@@ -1,64 +1,55 @@
 # Lucidity State Models
 
-> 60 nodes · cohesion 0.08
+> 41 nodes
 
 ## Key Concepts
 
-- **LucidityService** (98 connections) — `server/services/lucidity_service.py`
-- **LucidityRepository** (25 connections) — `server/services/lucidity_repository.py`
-- **CatatoniaObserverProtocol** (24 connections) — `server/services/lucidity_helpers.py`
-- **UUID** (20 connections) — `server/services/lucidity_service.py`
-- **LucidityAdjustmentFinalizeContext** (15 connections) — `server/services/lucidity_helpers.py`
-- **LucidityChangeEventContext** (15 connections) — `server/services/lucidity_helpers.py`
-- **LucidityUpdateResult** (15 connections) — `server/services/lucidity_helpers.py`
-- **Tier** (14 connections) — `server/services/lucidity_helpers.py`
-- **PlayerLucidity** (11 connections) — `server/services/lucidity_service.py`
-- **._finalize_lucidity_adjustment()** (10 connections) — `server/services/lucidity_service.py`
-- **._send_lucidity_change_event_if_needed()** (10 connections) — `server/services/lucidity_service.py`
-- **LucidityAdjustmentFinalizeContext** (9 connections) — `server/services/lucidity_service.py`
-- **LucidityChangeEventContext** (9 connections) — `server/services/lucidity_service.py`
-- **datetime** (9 connections) — `server/services/lucidity_service.py`
-- **LucidityCooldown** (9 connections) — `server/services/lucidity_service.py`
-- **LucidityUpdateResult** (9 connections) — `server/services/lucidity_service.py`
-- **Tier** (9 connections) — `server/services/lucidity_service.py`
-- **.apply_lucidity_adjustment()** (9 connections) — `server/services/lucidity_service.py`
-- **AsyncSession** (8 connections) — `server/services/lucidity_service.py`
-- **LucidityExposureState** (8 connections) — `server/services/lucidity_service.py`
-- **._apply_delta_to_record()** (8 connections) — `server/services/lucidity_service.py`
-- **._calculate_max_lcd()** (7 connections) — `server/services/lucidity_service.py`
-- **._add_liabilities_for_adjustment()** (6 connections) — `server/services/lucidity_service.py`
-- **.add_liability()** (6 connections) — `server/services/lucidity_service.py`
-- **.set_cooldown()** (5 connections) — `server/services/lucidity_service.py`
-- *... and 35 more nodes in this community*
+- **PlayerRepositoryProtocol** (21 connections) — `server/persistence/protocols.py`
+- **protocols.py** (11 connections) — `server/persistence/protocols.py`
+- **Player** (11 connections)
+- **RoomRepositoryProtocol** (9 connections) — `server/persistence/protocols.py`
+- **UUID** (6 connections)
+- **.get_players_batch()** (4 connections) — `server/persistence/protocols.py`
+- **.update_player_last_active()** (4 connections) — `server/persistence/protocols.py`
+- **.get_player_by_id()** (3 connections) — `server/persistence/protocols.py`
+- **.get_player_by_user_id()** (3 connections) — `server/persistence/protocols.py`
+- **.get_players_by_user_id()** (3 connections) — `server/persistence/protocols.py`
+- **.get_active_players_by_user_id()** (3 connections) — `server/persistence/protocols.py`
+- **.get_player_by_name()** (3 connections) — `server/persistence/protocols.py`
+- **.save_player()** (3 connections) — `server/persistence/protocols.py`
+- **.save_players()** (3 connections) — `server/persistence/protocols.py`
+- **.get_players_in_room()** (3 connections) — `server/persistence/protocols.py`
+- **.soft_delete_player()** (3 connections) — `server/persistence/protocols.py`
+- **.delete_player()** (3 connections) — `server/persistence/protocols.py`
+- **.validate_and_fix_player_room()** (3 connections) — `server/persistence/protocols.py`
+- **.get_room_by_id()** (3 connections) — `server/persistence/protocols.py`
+- **.list_rooms()** (3 connections) — `server/persistence/protocols.py`
+- **Protocol** (2 connections)
+- **.list_players()** (2 connections) — `server/persistence/protocols.py`
+- **datetime** (2 connections)
+- **Room** (2 connections)
+- **Repository protocols for MythosMUD persistence layer.  Explicit typing.Protocol** (1 connections) — `server/persistence/protocols.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [[Lucidity Rescue Helpers]] (36 shared connections)
-- [[Active Lucidity Service]] (20 shared connections)
-- [[Lucidity Event Dispatcher]] (13 shared connections)
-- [[Services Lucidity Repository]] (8 shared connections)
-- [[Services Rescue Service]] (8 shared connections)
-- [[Player Respawn Service]] (8 shared connections)
-- [[Combat Taunt Tests]] (7 shared connections)
-- [[Services Hallucination Frequency]] (6 shared connections)
-- [[Services Player Respawn]] (5 shared connections)
-- [[Services Service Lucidity]] (5 shared connections)
-- [[Combat Service Bundle]] (4 shared connections)
-- [[Lucidity Database Models]] (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
+- [Player Creation Service](Player_Creation_Service.md) (3 shared connections)
+- [Dependency Injection Tests](Dependency_Injection_Tests.md) (3 shared connections)
+- [Container System Architecture](Container_System_Architecture.md) (3 shared connections)
+- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/lucidity_helpers.py`
-- `server/services/lucidity_repository.py`
-- `server/services/lucidity_service.py`
-- `server/tests/unit/test_lucidity_service_smoke.py`
+- `server/persistence/protocols.py`
 
 ## Audit Trail
 
-- EXTRACTED: 240 (55%)
-- INFERRED: 193 (45%)
+- EXTRACTED: 126 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,36 +1,26 @@
 # E 2 E Scenarios Lucidity
 
-> 12 nodes · cohesion 0.17
+> 2 nodes
 
 ## Key Concepts
 
-- **Scenario LCD-01: Catatonia Grounding Ritual **[REQUIRES MULTI-PLAYER]**** (6 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
-- **Execution Steps** (5 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
-- **Prerequisites** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
-- **scenario-01-catatonia-grounding.md** (1 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
-- **Cleanup** (1 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
-- **lucidity Ledger Seeding** (1 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
-- **Overview** (1 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
-- **Step 1 – Establish Target Session (Tab 0)** (1 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
-- **Step 2 – Connect Rescuer (Tab 1)** (1 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
-- **Step 3 – Initiate Grounding** (1 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
-- **Step 4 – Verify Completion** (1 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
-- **Test Configuration** (1 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
+- **test_broadcast_player_respawn()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test broadcast_player_respawn broadcasts respawn message.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Database Pool Configuration](Database_Pool_Configuration.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
+- `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

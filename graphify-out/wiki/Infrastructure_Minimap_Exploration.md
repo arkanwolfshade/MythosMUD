@@ -1,34 +1,26 @@
 # Infrastructure Minimap Exploration
 
-> 10 nodes · cohesion 0.20
+> 2 nodes
 
 ## Key Concepts
 
-- **TestMinimapExplorationInvestigationDoc** (5 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **test_minimap_exploration_documentation.py** (2 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **.test_doc_describes_uuid_vs_stable_id_mismatch()** (2 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **.test_doc_explains_impact_on_non_admin_users()** (2 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **.test_investigation_doc_exists()** (2 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **Guardrails for minimap / exploration documentation.  Ensures the investigation w** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **Content checks for the minimap explored-rooms investigation document.** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **The session document must remain present for traceability.** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **Documentation must state that explored room identifiers are UUIDs, not stable_id** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **Documentation must tie the bug to non-admin minimap behavior (not only admins).** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
+- **test_validate_combat_command_rate_limited()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_combat_command when rate limited.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

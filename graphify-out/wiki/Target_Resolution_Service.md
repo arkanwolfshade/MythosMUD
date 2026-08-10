@@ -1,52 +1,51 @@
 # Target Resolution Service
 
-> 48 nodes · cohesion 0.04
+> 42 nodes
 
 ## Key Concepts
 
-- **test_target_resolution_service.py** (26 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **target_service()** (3 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_get_npc_instance_not_found()** (3 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_resolve_target_persistence_no_methods()** (3 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_resolve_target_player_no_room_id()** (3 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_resolve_target_player_not_found()** (3 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_resolve_target_string_player_id()** (3 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_search_npcs_in_room_empty_list()** (3 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_search_npcs_in_room_no_match()** (3 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_search_players_in_room_empty_list()** (3 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_search_players_in_room_no_match()** (3 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_target_resolution_service_init()** (3 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **Test _get_npc_instance() when NPC is not found.** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_npc_instance_not_found()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **mock_persistence()** (2 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **mock_player_service()** (2 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **Test resolve_target() when persistence has no get methods.** (2 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_resolve_target_empty_target_name()** (2 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_resolve_target_multiple_matches()** (2 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_resolve_target_no_matches()** (2 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_resolve_target_no_persistence_methods()** (2 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_resolve_target_no_room()** (2 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_resolve_target_single_match()** (2 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_resolve_target_sync_get_player_by_id()** (2 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_resolve_target_uses_get_player_fallback()** (2 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- *... and 23 more nodes in this community*
+- **test_memory_leak_metrics.py** (23 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **collector()** (3 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collector_initialization()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collect_connection_metrics()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collect_connection_metrics_no_manager()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collect_event_metrics()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collect_event_metrics_no_bus()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collect_cache_metrics()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collect_task_metrics()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collect_nats_metrics()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collect_all_metrics()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_calculate_growth_rates()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_calculate_growth_rates_insufficient_history()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_check_alerts_closed_websockets_threshold()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_check_alerts_subscriber_growth_rate()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_check_alerts_cache_capacity()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_check_alerts_task_growth_rate()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_check_alerts_no_alerts()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_metrics_collection_performance()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_metrics_history_bounded()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collect_all_metrics_error_handling()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **Unit tests for memory leak metrics collector.  Tests the MemoryLeakMetricsCollec** (1 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **Create a MemoryLeakMetricsCollector instance.** (1 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **Test MemoryLeakMetricsCollector initialization.** (1 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **Test collection of connection metrics.** (1 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [[Combat Command Handler]] (13 shared connections)
-- [[NPC Event Handler Tests]] (1 shared connections)
+- [Party Service Management](Party_Service_Management.md) (2 shared connections)
+- [Monitoring Response Models](Monitoring_Response_Models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_npc_event_handlers.py`
-- `server/tests/unit/services/test_target_resolution_service.py`
+- `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 110 (100%)
+- EXTRACTED: 85 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

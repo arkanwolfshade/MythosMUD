@@ -1,11 +1,11 @@
 # Design Cursor Skills
 
-> 2 nodes · cohesion 1.00
+> 2 nodes
 
 ## Key Concepts
 
-- **Eight Interactive States** (1 connections) — `.cursor/skills/frontend-design/reference/interaction-design.md`
-- **Interaction Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/interaction-design.md`
+- **Responsive Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/responsive-design.md`
+- **Mobile-First Responsive Design** (1 connections) — `.cursor/skills/frontend-design/reference/responsive-design.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/reference/interaction-design.md`
+- `.cursor/skills/frontend-design/reference/responsive-design.md`
 
 ## Audit Trail
 
@@ -23,4 +23,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

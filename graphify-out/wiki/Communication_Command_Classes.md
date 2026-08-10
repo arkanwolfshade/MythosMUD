@@ -1,62 +1,53 @@
 # Communication Command Classes
 
-> 53 nodes · cohesion 0.04
+> 38 nodes
 
 ## Key Concepts
 
-- **command_factories.py** (19 connections) — `server/utils/command_factories.py`
-- **CommunicationCommandFactory** (16 connections) — `server/utils/command_factories_communication.py`
-- **CombatCommandFactory** (13 connections) — `server/utils/command_factories_combat.py`
-- **.__init__()** (9 connections) — `server/utils/command_factories.py`
-- **command_factories_combat.py** (6 connections) — `server/utils/command_factories_combat.py`
-- **.create_channel_command()** (4 connections) — `server/utils/command_factories_communication.py`
-- **.create_emote_command()** (4 connections) — `server/utils/command_factories_communication.py`
-- **.create_local_command()** (4 connections) — `server/utils/command_factories_communication.py`
-- **.create_me_command()** (4 connections) — `server/utils/command_factories_communication.py`
-- **.create_reply_command()** (4 connections) — `server/utils/command_factories_communication.py`
-- **.create_say_command()** (4 connections) — `server/utils/command_factories_communication.py`
-- **.create_system_command()** (4 connections) — `server/utils/command_factories_communication.py`
-- **.create_whisper_command()** (4 connections) — `server/utils/command_factories_communication.py`
-- **.create_attack_command()** (3 connections) — `server/utils/command_factories_combat.py`
-- **.create_flee_command()** (3 connections) — `server/utils/command_factories_combat.py`
-- **.create_kick_command()** (3 connections) — `server/utils/command_factories_combat.py`
-- **.create_punch_command()** (3 connections) — `server/utils/command_factories_combat.py`
-- **.create_strike_command()** (3 connections) — `server/utils/command_factories_combat.py`
-- **.create_taunt_command()** (3 connections) — `server/utils/command_factories_combat.py`
-- **.create_pose_command()** (3 connections) — `server/utils/command_factories_communication.py`
-- **Factory class for creating combat command objects.** (2 connections) — `server/utils/command_factories_combat.py`
-- **Create a ReplyCommand from parsed arguments.** (2 connections) — `server/utils/command_factories_communication.py`
-- **AttackCommand** (1 connections) — `server/utils/command_factories_combat.py`
-- **ChannelCommand** (1 connections) — `server/utils/command_factories_communication.py`
-- **EmoteCommand** (1 connections) — `server/utils/command_factories_communication.py`
-- *... and 28 more nodes in this community*
+- **test_command_parser_helpers.py** (24 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_removes_slash_prefix()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_cleans_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_strips_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_no_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_simple()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_with_args()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_lowercases_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_empty_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_whitespace_only_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_get_command_help_specific_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_get_command_help_unknown_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_get_command_help_none()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_with_alias_l()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_with_alias_g()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_with_alias_w()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_unsupported_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_pydantic_validation_error()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_value_error()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Unit tests for command_parser helper methods.  Tests the helper methods in Comma** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() removes leading slash.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() cleans multiple whitespace.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() strips leading/trailing whitespace.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() handles command without slash.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _parse_command_parts() parses simple command.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Admin API]] (17 shared connections)
-- [[Command Factory Creators]] (6 shared connections)
-- [[Base Command Models]] (3 shared connections)
-- [[Exploration Command Factory]] (2 shared connections)
-- [[Command Factories Inventory]] (2 shared connections)
-- [[Command Factories Moderation]] (2 shared connections)
-- [[Player State Command Factory]] (2 shared connections)
-- [[Admin Command Models]] (2 shared connections)
-- [[Alias Expansion Logic]] (1 shared connections)
-- [[Command Factories Combat]] (1 shared connections)
-- [[Communication Command Factories]] (1 shared connections)
+- [Cursor Plans Login](Cursor_Plans_Login.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
-- `server/utils/command_factories.py`
-- `server/utils/command_factories_combat.py`
-- `server/utils/command_factories_communication.py`
+- `server/tests/unit/utils/test_command_parser_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 147 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 79 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

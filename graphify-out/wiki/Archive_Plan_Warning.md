@@ -1,12 +1,12 @@
 # Archive Plan Warning
 
-> 3 nodes · cohesion 0.67
+> 3 nodes
 
 ## Key Concepts
 
 - **Test Warning Remediation** (2 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **Early Logging Initialization** (1 connections) — `docs/archive/early-logging-initialization.plan.md`
 - **datetime.utcnow Deprecation Fix** (1 connections) — `docs/archive/WARNING_FIXES_SESSION_SUMMARY.md`
+- **Early Logging Initialization** (1 connections) — `docs/archive/early-logging-initialization.plan.md`
 
 ## Relationships
 
@@ -26,4 +26,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

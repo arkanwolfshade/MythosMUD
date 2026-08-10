@@ -1,64 +1,47 @@
 # NPC Admin Commands
 
-> 39 nodes · cohesion 0.10
+> 12 nodes
 
 ## Key Concepts
 
-- **__init__.py** (24 connections) — `server/commands/npc_admin/__init__.py`
-- **npc_admin_commands.py** (20 connections) — `server/commands/npc_admin_commands.py`
-- **definition.py** (16 connections) — `server/commands/npc_admin/definition.py`
-- **handle_npc_create_command()** (11 connections) — `server/commands/npc_admin/definition.py`
-- **NPCDefinitionType** (10 connections) — `server/models/npc.py`
-- **handle_npc_edit_command()** (9 connections) — `server/commands/npc_admin/definition.py`
-- **handle_npc_behavior_command()** (8 connections) — `server/commands/npc_admin/behavior.py`
-- **handle_npc_react_command()** (8 connections) — `server/commands/npc_admin/behavior.py`
-- **handle_npc_stop_command()** (8 connections) — `server/commands/npc_admin/behavior.py`
-- **handle_npc_delete_command()** (8 connections) — `server/commands/npc_admin/definition.py`
-- **handle_npc_list_command()** (8 connections) — `server/commands/npc_admin/definition.py`
-- **handle_npc_population_command()** (8 connections) — `server/commands/npc_admin/monitoring.py`
-- **handle_npc_status_command()** (8 connections) — `server/commands/npc_admin/monitoring.py`
-- **handle_npc_zone_command()** (8 connections) — `server/commands/npc_admin/monitoring.py`
-- **Any** (7 connections) — `server/commands/npc_admin/definition.py`
-- **_execute_npc_edit()** (6 connections) — `server/commands/npc_admin/definition.py`
-- **_build_npc_edit_params()** (5 connections) — `server/commands/npc_admin/definition.py`
-- **_parse_npc_edit_args()** (5 connections) — `server/commands/npc_admin/definition.py`
-- **AliasStorage** (4 connections) — `server/commands/npc_admin/definition.py`
-- **AliasStorage** (3 connections) — `server/commands/npc_admin/behavior.py`
-- **Any** (3 connections) — `server/commands/npc_admin/behavior.py`
-- **AliasStorage** (3 connections) — `server/commands/npc_admin/monitoring.py`
-- **Any** (3 connections) — `server/commands/npc_admin/monitoring.py`
-- **Handle NPC editing command.** (2 connections) — `server/commands/npc_admin/definition.py`
-- **NPC Admin Commands for MythosMUD.  This module provides administrative slash com** (1 connections) — `server/commands/npc_admin_commands.py`
-- *... and 14 more nodes in this community*
+- **test_magic_commands.py** (49 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_magic_service()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_player()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_chat_service()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_handle_cast_command_success()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_handle_spells_command_no_player()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Unit tests for magic commands.  Tests the /cast, /spells, /spell, /learn, and /s** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Create a mock magic service.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Create a mock player (healthy by default for cast/combat checks).** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Create a mock chat service.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test cast command success.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test spells command when player is not found.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [[Commands Npc Admin]] (32 shared connections)
-- [[Alias Expansion Logic]] (12 shared connections)
-- [[NPC Occupant Verification]] (6 shared connections)
-- [[NPC Admin API]] (4 shared connections)
-- [[NPC Definition Schemas]] (2 shared connections)
-- [[Aggressive Mob NPC]] (2 shared connections)
-- [[SQLAlchemy Model Base]] (1 shared connections)
-- [[Spell Registry Costs]] (1 shared connections)
-- [[Database Manager Tests]] (1 shared connections)
-- [[NPC Database Sessions]] (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (7 shared connections)
+- [Upgrade Archive Dependency](Upgrade_Archive_Dependency.md) (5 shared connections)
+- [E 2 E Whisper System](E_2_E_Whisper_System.md) (1 shared connections)
+- [Game Profession Service](Game_Profession_Service.md) (1 shared connections)
+- [Components Map Roommapeditor](Components_Map_Roommapeditor.md) (1 shared connections)
+- [E 2 E Scenarios Lucidity](E_2_E_Scenarios_Lucidity.md) (1 shared connections)
+- [test_process_combined_rows_with_exits](test_process_combined_rows_with_exits.md) (1 shared connections)
+- [test_process_exits_for_room_no_direction](test_process_exits_for_room_no_direction.md) (1 shared connections)
+- [test_process_exits_for_room_multiple_exits](test_process_exits_for_room_multiple_exits.md) (1 shared connections)
+- [Persistence Item Repositories](Persistence_Item_Repositories.md) (1 shared connections)
+- [Cursor Plans First](Cursor_Plans_First.md) (1 shared connections)
+- [Lucidity Utc Now](Lucidity_Utc_Now.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/npc_admin/__init__.py`
-- `server/commands/npc_admin/behavior.py`
-- `server/commands/npc_admin/definition.py`
-- `server/commands/npc_admin/monitoring.py`
-- `server/commands/npc_admin_commands.py`
-- `server/models/npc.py`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 204 (97%)
-- INFERRED: 6 (3%)
+- EXTRACTED: 65 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,20 +1,16 @@
 # Archive Character Creation
 
-> 7 nodes · cohesion 0.29
+> 3 nodes
 
 ## Key Concepts
 
-- **4. Backend: Data and Services** (7 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
-- **4.1 Level** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
-- **4.2 Skills catalog** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
-- **4.3 Player skills and profession skill modifiers** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
-- **4.4 Profession stat modifiers** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
-- **4.5 Skill use tracking and improvement** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
-- **4.6 Stat rolling and creation API changes** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
+- **Character Creation Revamp** (2 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
+- **CoC-Style Skills Allocation** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
+- **Skill Use Tracking and Level-Up Improvement** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
 
 ## Relationships
 
-- [[Plan Archive Character]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
@@ -22,10 +18,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

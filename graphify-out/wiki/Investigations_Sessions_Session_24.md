@@ -1,41 +1,32 @@
 # Investigations Sessions Session
 
-> 16 nodes · cohesion 0.12
+> 8 nodes
 
 ## Key Concepts
 
-- **Bug Investigation Report: Non-Admin Player Mini-Maps Not Showing Explored Rooms** (7 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **Detailed Findings** (6 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **Phase 2: Code Analysis** (6 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **2026-01-04_session-minimap-explored-rooms-bug.md** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **Bug Description** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **Executive Summary** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **Finding 1: Client-Side Mini-Map Component** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **Finding 2: Server-Side Mini-Map Endpoint** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **Finding 3: Exploration Service Implementation** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **Finding 4: Comparison with Working Implementation** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **Finding 5: Similar Issue in ASCII Map Endpoint** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **Investigation Completion Checklist** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **Phase 1: Initial Bug Report Analysis** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **Phase 4: System Impact Assessment** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **Phase 5: Evidence Documentation** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **Remediation Prompt** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
+- **test_error_logging.py** (5 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **test_create_error_context()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **test_create_error_context_with_metadata()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **test_error_context_to_dict()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **Unit tests for error_logging utilities.  Tests error logging helper functions.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **Test create_error_context() creates error context.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **Test create_error_context() can include metadata.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **Test error context to_dict() method.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
 
 ## Relationships
 
-- [[Investigations Sessions Session]] (1 shared connections)
-- [[Investigations Sessions Xx]] (1 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
+- `server/tests/unit/utils/test_error_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

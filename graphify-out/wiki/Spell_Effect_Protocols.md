@@ -1,65 +1,67 @@
 # Spell Effect Protocols
 
-> 140 nodes · cohesion 0.04
+> 112 nodes
 
 ## Key Concepts
 
-- **SpellEffects** (66 connections) — `server/game/magic/spell_effects.py`
-- **spell_effects_heal.py** (33 connections) — `server/game/magic/spell_effects_heal.py`
-- **spell_effects.py** (30 connections) — `server/game/magic/spell_effects.py`
-- **SpellEffectPlayer** (26 connections) — `server/game/magic/spell_effect_types.py`
-- **NpcSpellDamageTarget** (25 connections) — `server/game/magic/spell_effect_types.py`
-- **TargetMatch** (24 connections) — `server/game/magic/spell_effects.py`
-- **SpellEffectsEngineHealPort** (22 connections) — `server/game/magic/spell_effect_types.py`
-- **UUID** (22 connections) — `server/game/magic/spell_effects.py`
-- **UUID** (20 connections) — `server/game/magic/spell_effects_heal.py`
-- **Spell** (20 connections) — `server/game/magic/spell_effects.py`
-- **PlayerPersistenceSpellPort** (18 connections) — `server/game/magic/spell_effect_types.py`
-- **SpellEffectType** (18 connections) — `server/models/spell.py`
-- **CombatService** (16 connections) — `server/game/magic/spell_effects_heal.py`
-- **TargetMatch** (16 connections) — `server/game/magic/spell_effects_heal.py`
-- **run_heal_effect()** (15 connections) — `server/game/magic/spell_effects_heal.py`
-- **._dispatch_effect()** (15 connections) — `server/game/magic/spell_effects.py`
-- **NpcSpellDamageTarget** (13 connections) — `server/game/magic/spell_effects_heal.py`
-- **SpellEffectsEngineHealPort** (13 connections) — `server/game/magic/spell_effects_heal.py`
-- **NpcIntegrationStringIdPort** (12 connections) — `server/game/magic/spell_effect_types.py`
-- **Spell** (12 connections) — `server/game/magic/spell_effects_heal.py`
-- **CombatService** (12 connections) — `server/game/magic/spell_effects.py`
-- **MovementService** (12 connections) — `server/game/magic/spell_effects.py`
-- **NpcSpellDamageTarget** (12 connections) — `server/game/magic/spell_effects.py`
-- **NpcLifecycleManagerPort** (11 connections) — `server/game/magic/spell_effect_types.py`
-- **_run_steal_life()** (11 connections) — `server/game/magic/spell_effects_heal.py`
-- *... and 115 more nodes in this community*
+- **PopulationStats** (42 connections) — `server/npc/population_stats.py`
+- **spawning_service.py** (37 connections) — `server/npc/spawning_service.py`
+- **spawning_instance_factory.py** (24 connections) — `server/npc/spawning_instance_factory.py`
+- **test_population_stats.py** (23 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **spawning_request_execution.py** (19 connections) — `server/npc/spawning_request_execution.py`
+- **NPCSpawnStatistics** (16 connections) — `server/npc/spawning_service.py`
+- **SimpleNPCDefinition** (15 connections) — `server/npc/spawning_models.py`
+- **NPCSpawnResult** (14 connections) — `server/npc/spawning_models.py`
+- **create_npc_instance()** (13 connections) — `server/npc/spawning_instance_factory.py`
+- **spawning_models.py** (12 connections) — `server/npc/spawning_models.py`
+- **spawn_npc_from_request()** (12 connections) — `server/npc/spawning_request_execution.py`
+- **_instantiate_by_type()** (10 connections) — `server/npc/spawning_instance_factory.py`
+- **_build_aggressive()** (9 connections) — `server/npc/spawning_instance_factory.py`
+- **NPCSpawnRequest** (9 connections) — `server/npc/spawning_models.py`
+- **generate_npc_id()** (8 connections) — `server/npc/spawning_instance_factory.py`
+- **population_stats.py** (7 connections) — `server/npc/population_stats.py`
+- **_build_shopkeeper()** (6 connections) — `server/npc/spawning_instance_factory.py`
+- **_build_passive()** (6 connections) — `server/npc/spawning_instance_factory.py`
+- **._spawn_npc_from_request()** (6 connections) — `server/npc/spawning_service.py`
+- **._create_npc_instance()** (6 connections) — `server/npc/spawning_service.py`
+- **_coerce_simple_definition()** (5 connections) — `server/npc/spawning_instance_factory.py`
+- **_spawn_success()** (5 connections) — `server/npc/spawning_request_execution.py`
+- **._generate_npc_id()** (5 connections) — `server/npc/spawning_service.py`
+- **.get_spawn_statistics()** (5 connections) — `server/npc/spawning_service.py`
+- **.get_population_stats()** (4 connections) — `server/npc/population_control.py`
+- *... and 87 more nodes in this community*
 
 ## Relationships
 
-- [[Magic Service Bundle]] (29 shared connections)
-- [[Spell Registry Costs]] (23 shared connections)
-- [[Combat Service Bundle]] (23 shared connections)
-- [[Combat Command Handler]] (15 shared connections)
-- [[Game Magic Spell]] (12 shared connections)
-- [[Distributed Event Bus]] (11 shared connections)
-- [[Player Combat XP]] (6 shared connections)
-- [[Combat NPC Lookup]] (6 shared connections)
-- [[Spell Effects Tests]] (6 shared connections)
-- [[NPC Admin API]] (4 shared connections)
-- [[Combat Aggro Threat]] (4 shared connections)
-- [[Magic Game Service]] (4 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (44 shared connections)
+- [LRU Cache Manager](LRU_Cache_Manager.md) (24 shared connections)
+- [Command Parser Tests](Command_Parser_Tests.md) (23 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (11 shared connections)
+- [Plan Cursor Plans](Plan_Cursor_Plans.md) (7 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (7 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (4 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
+- [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
+- [NPC Occupant Verification](NPC_Occupant_Verification.md) (1 shared connections)
+- [MP Regeneration Service](MP_Regeneration_Service.md) (1 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_effect_types.py`
-- `server/game/magic/spell_effects.py`
-- `server/game/magic/spell_effects_heal.py`
-- `server/game/magic/spell_effects_internal.py`
-- `server/models/spell.py`
+- `server/npc/population_control.py`
+- `server/npc/population_stats.py`
+- `server/npc/spawning_instance_factory.py`
+- `server/npc/spawning_models.py`
+- `server/npc/spawning_request_execution.py`
+- `server/npc/spawning_service.py`
+- `server/tests/unit/npc/test_population_stats.py`
 
 ## Audit Trail
 
-- EXTRACTED: 616 (71%)
-- INFERRED: 253 (29%)
+- EXTRACTED: 443 (94%)
+- INFERRED: 30 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

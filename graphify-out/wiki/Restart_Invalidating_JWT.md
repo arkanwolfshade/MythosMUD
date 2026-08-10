@@ -1,55 +1,67 @@
 # Restart Invalidating JWT
 
-> 148 nodes · cohesion 0.02
+> 93 nodes
 
 ## Key Concepts
 
-- **test_users.py** (59 connections) — `server/tests/unit/auth/test_users.py`
-- **UserManager** (53 connections) — `server/auth/users.py`
-- **RestartInvalidatingJWTStrategy** (19 connections) — `server/auth/jwt_strategy.py`
-- **get_auth_backend()** (12 connections) — `server/auth/users.py`
-- **UsernameAuthenticationBackend** (10 connections) — `server/auth/users.py`
-- **get_username_auth_backend()** (9 connections) — `server/auth/users.py`
-- **get_user_manager()** (8 connections) — `server/auth/users.py`
-- **.read_token()** (6 connections) — `server/auth/jwt_strategy.py`
-- **get_user_db()** (6 connections) — `server/auth/users.py`
-- **test_jwt_strategy.py** (5 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
-- **get_current_user_with_logging()** (5 connections) — `server/auth/users.py`
-- **.on_after_register()** (5 connections) — `server/auth/users.py`
-- **Any** (5 connections) — `server/auth/users.py`
-- **User** (5 connections) — `server/auth/users.py`
-- **test_user_manager_on_after_forgot_password()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_user_manager_on_after_forgot_password_with_request()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_user_manager_on_after_register_bogus_email()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_user_manager_on_after_register_no_email()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_user_manager_on_after_register_non_bogus_email()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_user_manager_on_after_register_with_request()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_user_manager_on_after_request_verify()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_user_manager_on_after_request_verify_with_request()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **.__init__()** (4 connections) — `server/auth/users.py`
-- **.on_after_forgot_password()** (4 connections) — `server/auth/users.py`
-- **.on_after_request_verify()** (4 connections) — `server/auth/users.py`
-- *... and 123 more nodes in this community*
+- **coerce_int()** (37 connections) — `server/utils/int_coercion.py`
+- **player_event_handlers_respawn.py** (33 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **PlayerRespawnEventHandler** (33 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **PlayerRespawnedEvent** (19 connections) — `server/events/event_types.py`
+- **PlayerDeliriumRespawnedEvent** (15 connections) — `server/events/event_types.py`
+- **RespawnPlayerEventPayload** (13 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **int_coercion.py** (13 connections) — `server/utils/int_coercion.py`
+- **test_inventory_command_coercion.py** (12 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **UUID** (11 connections)
+- **.get_player_data_for_respawn()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.handle_player_respawned()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._extract_occupant_names()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._fetch_delirium_respawn_player_snapshot()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._resolve_player_data_for_respawn_event()** (8 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._build_respawn_player_payload()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.send_respawn_event_with_retry()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._fetch_fallback_player_data_for_respawn()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.handle_player_delirium_respawned()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._build_fallback_respawn_player_payload()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._build_player_respawned_event()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._send_room_occupants_after_respawn()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._enrich_room_data_with_occupant_names()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.get_current_lucidity()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **RespawnPlayerStatsPayload** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.update_connection_manager_position()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
+- *... and 68 more nodes in this community*
 
 ## Relationships
 
-- [[Argon2 Password Hashing]] (16 shared connections)
-- [[NPC Admin API]] (15 shared connections)
-- [[API Test Fixtures]] (13 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (15 shared connections)
+- [Pydantic Error Handlers](Pydantic_Error_Handlers.md) (11 shared connections)
+- [Panel Layout Libraries Spec](Panel_Layout_Libraries_Spec.md) (8 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (8 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (8 shared connections)
+- [Plan Modernization Archive](Plan_Modernization_Archive.md) (5 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (4 shared connections)
+- [Application Config Settings](Application_Config_Settings.md) (4 shared connections)
+- [WebSocket Initial State](WebSocket_Initial_State.md) (4 shared connections)
+- [Container Sync Remediation](Container_Sync_Remediation.md) (4 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
+- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (3 shared connections)
 
 ## Source Files
 
-- `server/auth/jwt_strategy.py`
-- `server/auth/users.py`
-- `server/tests/unit/auth/test_jwt_strategy.py`
-- `server/tests/unit/auth/test_users.py`
+- `server/events/event_types.py`
+- `server/realtime/event_handler.py`
+- `server/realtime/player_event_handlers_respawn.py`
+- `server/tests/unit/commands/test_inventory_command_coercion.py`
+- `server/tests/unit/realtime/test_event_handler.py`
+- `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- `server/utils/int_coercion.py`
 
 ## Audit Trail
 
-- EXTRACTED: 456 (94%)
-- INFERRED: 30 (6%)
+- EXTRACTED: 392 (94%)
+- INFERRED: 23 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

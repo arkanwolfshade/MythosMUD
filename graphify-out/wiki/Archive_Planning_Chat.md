@@ -1,36 +1,26 @@
 # Archive Planning Chat
 
-> 12 nodes · cohesion 0.17
+> 2 nodes
 
 ## Key Concepts
 
-- **Backend Components** (4 connections) — `docs/archive/PLANNING_chat_system.md`
-- **Redis Pub/Sub System** (4 connections) — `docs/archive/PLANNING_chat_system.md`
-- **Technical Architecture** (4 connections) — `docs/archive/PLANNING_chat_system.md`
-- **Frontend Components** (3 connections) — `docs/archive/PLANNING_chat_system.md`
-- **1. Chat Interface (`client/src/components/ChatInterface.tsx`)** (1 connections) — `docs/archive/PLANNING_chat_system.md`
-- **1. Chat Service (`server/game/chat_service.py`)** (1 connections) — `docs/archive/PLANNING_chat_system.md`
-- **2. Chat Hook (`client/src/hooks/useChat.ts`)** (1 connections) — `docs/archive/PLANNING_chat_system.md`
-- **2. Chat Models (`server/models/chat.py`)** (1 connections) — `docs/archive/PLANNING_chat_system.md`
-- **3. Chat API Endpoints (`server/api/chat.py`)** (1 connections) — `docs/archive/PLANNING_chat_system.md`
-- **Performance Benefits** (1 connections) — `docs/archive/PLANNING_chat_system.md`
-- **Redis Channels Structure** (1 connections) — `docs/archive/PLANNING_chat_system.md`
-- **Redis Data Structures** (1 connections) — `docs/archive/PLANNING_chat_system.md`
+- **test_handle_learn_command_no_player()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test learn command when player is not found.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [[Chat System Planning]] (1 shared connections)
+- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PLANNING_chat_system.md`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

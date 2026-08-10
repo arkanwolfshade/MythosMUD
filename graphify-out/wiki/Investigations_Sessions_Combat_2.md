@@ -1,36 +1,25 @@
 # Investigations Sessions Combat
 
-> 12 nodes · cohesion 0.17
+> 1 nodes
 
 ## Key Concepts
 
-- **Test Results** (7 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Test Observations** (4 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Test Conclusions** (3 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Areas for Further Testing** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Combat System Response** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Connection Stability** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Logging Verification** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Positive Results** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Recommendations** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Test Limitations** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Test Setup** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
-- **Test Status** (1 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
+- **__init__.py** (0 connections) — `server/app/__init__.py`
 
 ## Relationships
 
-- [[Combat Disconnect Bug]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
+- `server/app/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

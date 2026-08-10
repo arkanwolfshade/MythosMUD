@@ -1,47 +1,32 @@
 # Cursor Agents Performance
 
-> 23 nodes · cohesion 0.09
+> 8 nodes
 
 ## Key Concepts
 
-- **Performance Profiler Subagent** (13 connections) — `.cursor/agents/performance-profiler.md`
-- **Capabilities** (6 connections) — `.cursor/agents/performance-profiler.md`
-- **Example Scenarios** (4 connections) — `.cursor/agents/performance-profiler.md`
-- **Performance Monitoring** (4 connections) — `.cursor/agents/performance-profiler.md`
-- **Database Performance** (2 connections) — `.cursor/agents/performance-profiler.md`
-- **performance-profiler.md** (1 connections) — `.cursor/agents/performance-profiler.md`
-- **Bottleneck Identification** (1 connections) — `.cursor/agents/performance-profiler.md`
-- **Code Performance Review** (1 connections) — `.cursor/agents/performance-profiler.md`
-- **Database Query Optimization** (1 connections) — `.cursor/agents/performance-profiler.md`
-- **Enhanced Logging Integration** (1 connections) — `.cursor/agents/performance-profiler.md`
-- **Game Loop Performance** (1 connections) — `.cursor/agents/performance-profiler.md`
-- **Integration** (1 connections) — `.cursor/agents/performance-profiler.md`
-- **Log Analysis** (1 connections) — `.cursor/agents/performance-profiler.md`
-- **Memory Analysis** (1 connections) — `.cursor/agents/performance-profiler.md`
-- **Memory Leak Detection** (1 connections) — `.cursor/agents/performance-profiler.md`
-- **Memory Profiling** (1 connections) — `.cursor/agents/performance-profiler.md`
-- **Methodology** (1 connections) — `.cursor/agents/performance-profiler.md`
-- **Notes** (1 connections) — `.cursor/agents/performance-profiler.md`
-- **Output Format** (1 connections) — `.cursor/agents/performance-profiler.md`
-- **Performance Best Practices** (1 connections) — `.cursor/agents/performance-profiler.md`
-- **Performance Considerations** (1 connections) — `.cursor/agents/performance-profiler.md`
-- **Purpose** (1 connections) — `.cursor/agents/performance-profiler.md`
-- **Usage** (1 connections) — `.cursor/agents/performance-profiler.md`
+- **enum** (8 connections) — `schemas/calendar/schedule.schema.json`
+- **Monday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Tuesday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Wednesday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Thursday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Friday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Saturday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Sunday** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [[Codebase Explorer Agent]] (1 shared connections)
+- [Components Ui Statuspanel](Components_Ui_Statuspanel.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/agents/performance-profiler.md`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

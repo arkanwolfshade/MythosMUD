@@ -1,54 +1,51 @@
 # Admin Command Models
 
-> 68 nodes · cohesion 0.05
+> 34 nodes
 
 ## Key Concepts
 
-- **test_command_admin.py** (40 connections) — `server/tests/unit/models/test_command_admin.py`
-- **SummonCommand** (21 connections) — `server/models/command_admin.py`
-- **TeleportCommand** (18 connections) — `server/models/command_admin.py`
-- **GotoCommand** (13 connections) — `server/models/command_admin.py`
-- **NPCCommand** (13 connections) — `server/models/command_admin.py`
-- **ShutdownCommand** (12 connections) — `server/models/command_admin.py`
-- **Test ShutdownCommand can have args.** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **Test SummonCommand validates valid prototype_id.** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_goto_command_player_name_max_length()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_goto_command_player_name_min_length()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_goto_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_goto_command_validate_player_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_npc_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_npc_command_subcommand_max_length()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_npc_command_subcommand_min_length()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_npc_command_with_args()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_npc_command_with_subcommand()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_shutdown_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_shutdown_command_with_args()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_shutdown_command_with_cancel()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_shutdown_command_with_multiple_args()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_prototype_id_max_length()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_prototype_id_min_length()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_quantity_default()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_quantity_valid_range()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- *... and 43 more nodes in this community*
+- **TestHolidayService** (20 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_init_with_collection()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_refresh_active_activates_matching_holiday()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_refresh_active_no_matches()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_refresh_active_expires_old_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_refresh_active_caps_duration()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_active_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_active_holiday_names()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_upcoming_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_upcoming_holidays_wraps_around()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_upcoming_summary()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_day_ordinal()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_collection_property()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_last_refresh_property()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.sample_holidays()** (3 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_init_without_persistence_raises()** (3 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.mock_chronicle()** (2 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **Test suite for HolidayService class.** (1 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **Create a mock chronicle for testing.** (1 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **Create sample holiday entries for testing.** (1 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **Test HolidayService initialization with collection parameter.** (1 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **Test HolidayService initialization without persistence raises ValueError.** (1 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **Test refresh_active activates holidays matching current date.** (1 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **Test refresh_active returns empty when no holidays match.** (1 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **Test refresh_active expires holidays past their duration.** (1 connections) — `server/tests/unit/services/test_holiday_service.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [[Base Command Models]] (26 shared connections)
-- [[Exploration Command Models]] (7 shared connections)
-- [[Moderation Command Models]] (4 shared connections)
-- [[Alias Command Models]] (1 shared connections)
+- [Player Respawn Service](Player_Respawn_Service.md) (18 shared connections)
+- [ASCII Map API](ASCII_Map_API.md) (13 shared connections)
 
 ## Source Files
 
-- `server/models/command_admin.py`
-- `server/tests/unit/models/test_command_admin.py`
+- `server/tests/unit/services/test_holiday_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 239 (94%)
-- INFERRED: 15 (6%)
+- EXTRACTED: 96 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

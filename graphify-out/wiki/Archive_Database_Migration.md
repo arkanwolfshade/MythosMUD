@@ -1,44 +1,40 @@
 # Archive Database Migration
 
-> 20 nodes · cohesion 0.10
+> 12 nodes
 
 ## Key Concepts
 
-- **MythosMUD Database Migration Guide** (9 connections) — `docs/archive/DATABASE_MIGRATION.md`
-- **🔍 **Verification Commands**** (4 connections) — `docs/archive/DATABASE_MIGRATION.md`
-- **🔧 **Configuration Updates Made**** (3 connections) — `docs/archive/DATABASE_MIGRATION.md`
-- **🗄️ Database Schema Analysis** (3 connections) — `docs/archive/DATABASE_MIGRATION.md`
-- **🚨 **Migration Actions Required**** (3 connections) — `docs/archive/DATABASE_MIGRATION.md`
-- **✅ **RECOMMENDATION: Use `players_new.db`**** (3 connections) — `docs/archive/DATABASE_MIGRATION.md`
-- **Check current database path** (1 connections) — `docs/archive/DATABASE_MIGRATION.md`
-- **Current Model Expectations** (1 connections) — `docs/archive/DATABASE_MIGRATION.md`
-- **Current Situation** (1 connections) — `docs/archive/DATABASE_MIGRATION.md`
-- **📊 **Database Statistics**** (1 connections) — `docs/archive/DATABASE_MIGRATION.md`
-- **Files Updated** (1 connections) — `docs/archive/DATABASE_MIGRATION.md`
-- **For Development** (1 connections) — `docs/archive/DATABASE_MIGRATION.md`
-- **For Production Deployment** (1 connections) — `docs/archive/DATABASE_MIGRATION.md`
-- **⚠️ **Important Notes**** (1 connections) — `docs/archive/DATABASE_MIGRATION.md`
-- **New Default Configuration** (1 connections) — `docs/archive/DATABASE_MIGRATION.md`
-- **🎯 **Next Steps**** (1 connections) — `docs/archive/DATABASE_MIGRATION.md`
-- **Schema Comparison** (1 connections) — `docs/archive/DATABASE_MIGRATION.md`
-- **Test database connection** (1 connections) — `docs/archive/DATABASE_MIGRATION.md`
-- **Verify schema compatibility** (1 connections) — `docs/archive/DATABASE_MIGRATION.md`
-- **Why `players_new.db` is the correct choice** (1 connections) — `docs/archive/DATABASE_MIGRATION.md`
+- **seed_e2e_users.py** (9 connections) — `scripts/seed_e2e_users.py`
+- **_ensure_player_for_user()** (5 connections) — `scripts/seed_e2e_users.py`
+- **_seed_e2e_users()** (4 connections) — `scripts/seed_e2e_users.py`
+- **spawn_defaults.py** (4 connections) — `server/constants/spawn_defaults.py`
+- **main()** (3 connections) — `scripts/seed_e2e_users.py`
+- **E2eUserSpec** (2 connections) — `scripts/seed_e2e_users.py`
+- **UUID** (2 connections)
+- **datetime** (2 connections)
+- **Connection** (1 connections)
+- **One row in users plus optional default character for login E2E.** (1 connections) — `scripts/seed_e2e_users.py`
+- **Entry point: run E2E user seed via anyio.** (1 connections) — `scripts/seed_e2e_users.py`
+- **Shared spawn / respawn room identifiers used by gameplay and E2E seed scripts.** (1 connections) — `server/constants/spawn_defaults.py`
 
 ## Relationships
 
-- [[Migration 019 Deployment]] (1 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
+- [Panel Layout Libraries Spec](Panel_Layout_Libraries_Spec.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/DATABASE_MIGRATION.md`
+- `scripts/seed_e2e_users.py`
+- `server/constants/spawn_defaults.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 33 (94%)
+- INFERRED: 2 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,16 +1,15 @@
 # Cursor Plans Follow
 
-> 3 nodes · cohesion 0.67
+> 2 nodes
 
 ## Key Concepts
 
-- **Additional requirements (recorded)** (3 connections) — `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
-- **1. Display following in game UI title panel** (1 connections) — `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
-- **2. Auto-stand when following and target moves** (1 connections) — `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
+- **Follow Command Feature** (1 connections) — `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
+- **FollowService** (1 connections) — `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
 
 ## Relationships
 
-- [[Cursor Plans Follow]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
@@ -18,10 +17,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,42 +1,28 @@
 # Event Ownership Matrix
 
-> 17 nodes · cohesion 0.12
+> 4 nodes
 
 ## Key Concepts
 
-- **Event Ownership Matrix** (10 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
-- **Consolidation Strategy** (4 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
-- **Event Publishing Layers** (4 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
-- **Event Ownership Recommendations** (3 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
-- **EVENT_OWNERSHIP_MATRIX.md** (1 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
-- **Canonical Event Sources** (1 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
-- **Event Flow Diagram** (1 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
-- **Implementation Checklist** (1 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
-- **Layer 1: EventBus Events (Domain Events)** (1 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
-- **Layer 2: Real-Time Messages (Client-Facing)** (1 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
-- **Layer 3: NATS Messages (Internal Pub/Sub)** (1 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
-- **Message Delivery Rules** (1 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
-- **Overview** (1 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
-- **Phase 1: Audit Complete ✓** (1 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
-- **Phase 2: Eliminate Duplicates** (1 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
-- **Phase 3: Verify No Duplicates** (1 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
-- **References** (1 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
+- **sub_zone** (4 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **pattern** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [[Event Ownership Matrix]] (1 shared connections)
-- [[Event Subscription Cleanup]] (1 shared connections)
+- [Schemas Unified Room](Schemas_Unified_Room.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/EVENT_OWNERSHIP_MATRIX.md`
+- `schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 7 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

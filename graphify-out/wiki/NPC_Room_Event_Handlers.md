@@ -1,54 +1,55 @@
 # NPC Room Event Handlers
 
-> 32 nodes · cohesion 0.07
+> 33 nodes
 
 ## Key Concepts
 
-- **.handle_npc_entered()** (8 connections) — `server/realtime/npc_event_handlers.py`
-- **._send_npc_left_message()** (8 connections) — `server/realtime/npc_event_handlers.py`
-- **._get_npc_spawn_message()** (7 connections) — `server/realtime/npc_event_handlers.py`
-- **.handle_npc_left()** (6 connections) — `server/realtime/npc_event_handlers.py`
-- **Any** (6 connections) — `server/realtime/npc_event_handlers.py`
-- **._get_npc_instance()** (5 connections) — `server/realtime/npc_event_handlers.py`
-- **._get_npc_name()** (5 connections) — `server/realtime/npc_event_handlers.py`
-- **.__init__()** (5 connections) — `server/realtime/npc_event_handlers.py`
-- **._determine_direction_from_rooms()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **._extract_spawn_message_from_config()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **._get_behavior_config_from_instance()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **._get_npc_departure_message()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **._parse_behavior_config()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **._schedule_room_occupants_update()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **._validate_npc_left_room()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **NPCLeftRoom** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **Initialize the NPC event handler.          Args:             connection_manager:** (2 connections) — `server/realtime/npc_event_handlers.py`
-- **MessageBuilder** (2 connections) — `server/realtime/npc_event_handlers.py`
-- **NPCEnteredRoom** (2 connections) — `server/realtime/npc_event_handlers.py`
-- **Extract spawn_message from behavior_config.          Args:             behavior_** (1 connections) — `server/realtime/npc_event_handlers.py`
-- **Get the spawn message for an NPC from its behavior_config.          If no custom** (1 connections) — `server/realtime/npc_event_handlers.py`
-- **Get the name of an NPC by ID.          Args:             npc_id: The NPC ID** (1 connections) — `server/realtime/npc_event_handlers.py`
-- **Determine the direction from one room to another by checking room exits.** (1 connections) — `server/realtime/npc_event_handlers.py`
-- **Get the departure message for an NPC from its behavior_config.          If no cu** (1 connections) — `server/realtime/npc_event_handlers.py`
-- **Handle NPC entering a room.          This method broadcasts NPC appearance and t** (1 connections) — `server/realtime/npc_event_handlers.py`
-- *... and 7 more nodes in this community*
+- **format_metadata()** (15 connections) — `server/commands/inventory_display_helpers.py`
+- **inventory_display_helpers.py** (12 connections) — `server/commands/inventory_display_helpers.py`
+- **render_inventory()** (9 connections) — `server/commands/inventory_display_helpers.py`
+- **Any** (7 connections)
+- **test_inventory_commands_format_helpers.py** (6 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **build_inventory_lines()** (5 connections) — `server/commands/inventory_display_helpers.py`
+- **build_container_metadata()** (5 connections) — `server/commands/inventory_display_helpers.py`
+- **build_equipped_lines()** (5 connections) — `server/commands/inventory_display_helpers.py`
+- **get_equipped_item_identifiers()** (4 connections) — `server/commands/inventory_display_helpers.py`
+- **filter_non_equipped_inventory()** (4 connections) — `server/commands/inventory_display_helpers.py`
+- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_nested_dict()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_none()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_complex()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **Display and rendering helpers for inventory commands.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Format metadata for display.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Get sets of equipped item IDs and instance IDs for efficient lookup.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Filter out equipped items and container items from inventory.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Build inventory display lines.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Build and format metadata for equipped item with container.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Build equipped items display lines.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Render inventory display with equipped items and container contents.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [[Player Respawn Events]] (18 shared connections)
-- [[NPC Occupant Verification]] (3 shared connections)
-- [[NPC Admin API]] (3 shared connections)
-- [[Combat Player Broadcasts]] (2 shared connections)
-- [[Realtime Player Event]] (1 shared connections)
+- [Async Task Registry](Async_Task_Registry.md) (6 shared connections)
+- [Container Sync Remediation](Container_Sync_Remediation.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/npc_event_handlers.py`
+- `server/commands/inventory_display_helpers.py`
+- `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- `server/tests/unit/commands/test_inventory_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 97 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 109 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

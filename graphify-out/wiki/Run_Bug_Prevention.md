@@ -1,6 +1,6 @@
 # Run Bug Prevention
 
-> 9 nodes · cohesion 0.53
+> 9 nodes
 
 ## Key Concepts
 
@@ -8,10 +8,10 @@
 - **Write-ColorOutput()** (7 connections) — `scripts/run_bug_prevention_tests.ps1`
 - **Write-Section()** (5 connections) — `scripts/run_bug_prevention_tests.ps1`
 - **Invoke-ClientTest()** (4 connections) — `scripts/run_bug_prevention_tests.ps1`
-- **Invoke-IntegrationTest()** (3 connections) — `scripts/run_bug_prevention_tests.ps1`
-- **Invoke-ServerTest()** (3 connections) — `scripts/run_bug_prevention_tests.ps1`
-- **Show-TestSummary()** (3 connections) — `scripts/run_bug_prevention_tests.ps1`
 - **Write-Header()** (3 connections) — `scripts/run_bug_prevention_tests.ps1`
+- **Invoke-ServerTest()** (3 connections) — `scripts/run_bug_prevention_tests.ps1`
+- **Invoke-IntegrationTest()** (3 connections) — `scripts/run_bug_prevention_tests.ps1`
+- **Show-TestSummary()** (3 connections) — `scripts/run_bug_prevention_tests.ps1`
 - **Test-Command()** (2 connections) — `scripts/run_bug_prevention_tests.ps1`
 
 ## Relationships
@@ -30,4 +30,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

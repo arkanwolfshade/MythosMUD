@@ -1,6 +1,6 @@
 # Anyio Vs Asyncio
 
-> 3 nodes · cohesion 0.67
+> 3 nodes
 
 ## Key Concepts
 
@@ -25,4 +25,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

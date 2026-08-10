@@ -1,11 +1,11 @@
 # Install Ci Dependencies
 
-> 2 nodes · cohesion 1.00
+> 2 nodes
 
 ## Key Concepts
 
-- **install_ci_dependencies.sh script** (1 connections) — `scripts/install_ci_dependencies.sh`
 - **install_ci_dependencies.sh** (1 connections) — `scripts/install_ci_dependencies.sh`
+- **install_ci_dependencies.sh script** (1 connections) — `scripts/install_ci_dependencies.sh`
 
 ## Relationships
 
@@ -23,4 +23,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,36 +1,26 @@
 # Mythosmud Obsidian Raw
 
-> 11 nodes · cohesion 0.18
+> 2 nodes
 
 ## Key Concepts
 
-- **Spell Mechanics** (8 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Magic System & Spell Schools #magic #spells** (5 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Casting Time** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Effect Types** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Lucidity Cost** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Magic Points (MP)** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Range Types** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Spell Mastery** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Spell Schools** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Target Types** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **The Nature of Magic** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
+- **test_create_who_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_who_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [[Mythosmud Obsidian Raw]] (1 shared connections)
-- [[Mythosmud Obsidian Wiki]] (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

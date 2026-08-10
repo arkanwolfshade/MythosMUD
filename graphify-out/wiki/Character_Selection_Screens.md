@@ -1,69 +1,48 @@
 # Character Selection Screens
 
-> 48 nodes · cohesion 0.11
+> 22 nodes
 
 ## Key Concepts
 
-- **errorHandler.ts** (26 connections) — `client/src/utils/errorHandler.ts`
-- **deleteCharacterFlow.ts** (25 connections) — `client/src/mythosApp/deleteCharacterFlow.ts`
-- **isErrorResponse()** (24 connections) — `client/src/utils/errorHandler.ts`
-- **getErrorMessage()** (22 connections) — `client/src/utils/errorHandler.ts`
-- **CharacterSelectionScreen.tsx** (17 connections) — `client/src/components/CharacterSelectionScreen.tsx`
-- **isObject()** (17 connections) — `client/src/mythosApp/guards.ts`
-- **motdContinueFlow.ts** (14 connections) — `client/src/mythosApp/motdContinueFlow.ts`
-- **errorHandler.test.ts** (14 connections) — `client/src/utils/errorHandler.test.ts`
-- **runDeleteCharacterFlow()** (10 connections) — `client/src/mythosApp/deleteCharacterFlow.ts`
-- **registerFailureMessage.ts** (10 connections) — `client/src/mythosApp/registerFailureMessage.ts`
-- **guards.ts** (9 connections) — `client/src/mythosApp/guards.ts`
-- **tryStartLoginGracePeriod()** (9 connections) — `client/src/mythosApp/motdContinueFlow.ts`
-- **assertServerCharacterResponseArray()** (9 connections) — `client/src/utils/apiTypeGuards.ts`
-- **apiErrorMessage.ts** (8 connections) — `client/src/mythosApp/apiErrorMessage.ts`
-- **errorMessageFromApiBody()** (8 connections) — `client/src/mythosApp/apiErrorMessage.ts`
-- **registerFailureMessage()** (8 connections) — `client/src/mythosApp/registerFailureMessage.ts`
-- **getErrorType()** (8 connections) — `client/src/utils/errorHandler.ts`
-- **loginFailureMessage.ts** (7 connections) — `client/src/mythosApp/loginFailureMessage.ts`
-- **loginFailureMessage()** (6 connections) — `client/src/mythosApp/loginFailureMessage.ts`
-- **formatErrorForDisplay()** (6 connections) — `client/src/utils/errorHandler.ts`
-- **extractErrorMessageFromResponseBody()** (4 connections) — `client/src/components/CharacterSelectionScreen.tsx`
-- **errorDetailString()** (4 connections) — `client/src/mythosApp/serverAvailability.ts`
-- **stringIndicatesServerUnavailable()** (4 connections) — `client/src/mythosApp/serverAvailability.ts`
-- **startLoginGracePeriod.ts** (4 connections) — `client/src/mythosApp/startLoginGracePeriod.ts`
-- **getErrorDetails()** (4 connections) — `client/src/utils/errorHandler.ts`
-- *... and 23 more nodes in this community*
+- **edgeModalLogic.ts** (25 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **useEdgeCreationModal.ts** (19 connections) — `client/src/components/map/useEdgeCreationModal.ts`
+- **useEdgeCreationModal()** (15 connections) — `client/src/components/map/useEdgeCreationModal.ts`
+- **getInitialEdgeFormState()** (5 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **filterNodesForTargetSelection()** (4 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **resetEdgeFormFields()** (4 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **isStandardExitDirection()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **findRoomNodeById()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **edgeFormStateFromExisting()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **toggleStringFlag()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **edgeFormCanSubmit()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **deriveEdgeCreationData()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **submitValidatedEdge()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **runValidationAndPreviewSync()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **subscribeEscapeToClose()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **applyModalBodyScrollLock()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **STANDARD_DIRECTIONS** (2 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **STANDARD_DIRECTION_SET** (2 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **roomNodeMatchesSearchQuery()** (2 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **emptyEdgeFormState()** (2 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **EdgeFormResetters** (2 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **EdgeFormFields** (1 connections) — `client/src/components/map/edgeModalLogic.ts`
 
 ## Relationships
 
-- [[Client App State Hooks]] (41 shared connections)
-- [[Character Creation Screens]] (12 shared connections)
-- [[Mythosapp Submitauth Applyauthenticatedsession]] (6 shared connections)
-- [[API Type Guards]] (5 shared connections)
-- [[App Creation Flow Screens]] (4 shared connections)
-- [[Logout Session Chrome Hooks]] (3 shared connections)
-- [[Client Event Store]] (2 shared connections)
+- [Player Death Service Tests](Player_Death_Service_Tests.md) (11 shared connections)
+- [Player Cache](Player_Cache.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/components/CharacterNameScreen.tsx`
-- `client/src/components/CharacterSelectionScreen.tsx`
-- `client/src/mythosApp/apiErrorMessage.ts`
-- `client/src/mythosApp/characterSessionApi.ts`
-- `client/src/mythosApp/deleteCharacterFlow.ts`
-- `client/src/mythosApp/guards.ts`
-- `client/src/mythosApp/loginFailureMessage.ts`
-- `client/src/mythosApp/motdContinueFlow.ts`
-- `client/src/mythosApp/registerFailureMessage.ts`
-- `client/src/mythosApp/serverAvailability.ts`
-- `client/src/mythosApp/startLoginGracePeriod.ts`
-- `client/src/utils/apiTypeGuards.ts`
-- `client/src/utils/errorHandler.test.ts`
-- `client/src/utils/errorHandler.ts`
+- `client/src/components/map/edgeModalLogic.ts`
+- `client/src/components/map/useEdgeCreationModal.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 331 (100%)
+- EXTRACTED: 113 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

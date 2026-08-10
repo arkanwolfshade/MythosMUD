@@ -1,51 +1,42 @@
 # Plan Modernization Archive
 
-> 26 nodes · cohesion 0.08
+> 18 nodes
 
 ## Key Concepts
 
-- **Medium Priority (Features)** (18 connections) — `PLANNING.md`
-- **Appendices** (10 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **✅ **All Tasks Completed**** (4 connections) — `docs/archive/IMPLEMENTATION_COMPLETE.md`
-- ****High Priority Items (4/4) ✅**** (1 connections) — `docs/archive/IMPLEMENTATION_COMPLETE.md`
-- ****Low Priority Items (1/1) ✅**** (1 connections) — `docs/archive/IMPLEMENTATION_COMPLETE.md`
-- **5. **Performance Optimization with Async Logging** ✅** (1 connections) — `docs/archive/LOGGING_IMPLEMENTATION_SUMMARY.md`
-- **6. **Enhanced Error Handling with Structured Logging** ✅** (1 connections) — `docs/archive/LOGGING_IMPLEMENTATION_SUMMARY.md`
-- **7. **Log Aggregation and Centralized Collection** ✅** (1 connections) — `docs/archive/LOGGING_IMPLEMENTATION_SUMMARY.md`
-- **8. **Monitoring Integration with Metrics** ✅** (1 connections) — `docs/archive/LOGGING_IMPLEMENTATION_SUMMARY.md`
-- **Appendix A: Test File Inventory** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Appendix B: Direct app.state Access Locations** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Appendix C: Fixture Audit** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Consolidation Opportunities** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Current Fixture Categories** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **High Priority (Integration Tests)** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Low Priority (Other)** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Unit Tests by Category** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
-- **Admin/Moderator Tools ⏳** (1 connections) — `PLANNING.md`
-- **Advanced Chat Channels ⏳** (1 connections) — `PLANNING.md`
-- **Content Creation Tools ⏳** (1 connections) — `PLANNING.md`
-- **UI/UX Polish ⏳** (1 connections) — `PLANNING.md`
-- **21. Type Hints Incomplete** (1 connections) — `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
-- **22. Documentation Missing for Some Patterns** (1 connections) — `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
-- **23. Middleware Order Not Documented** (1 connections) — `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
-- **24. Missing Performance Monitoring for Middleware** (1 connections) — `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
-- *... and 1 more nodes in this community*
+- **get_occupant_names()** (11 connections) — `server/realtime/websocket_helpers.py`
+- **prepare_room_data_with_occupants()** (9 connections) — `server/realtime/websocket_initial_state.py`
+- **._prepare_room_data_for_respawn()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **_accumulate_valid_occupant_name()** (4 connections) — `server/realtime/websocket_helpers.py`
+- **test_get_occupant_names_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_occupant_names_filters_uuid()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_occupant_names_empty()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_occupant_names_none()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_prepare_room_data_with_occupants()** (3 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
+- **Prepare room data with NPC and player names for a respawn event.** (1 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **Parse one occupant row: append display name or log when it looks like a UUID.** (1 connections) — `server/realtime/websocket_helpers.py`
+- **Extract and validate occupant names from room occupants list.** (1 connections) — `server/realtime/websocket_helpers.py`
+- **Prepare room data and get occupant names.** (1 connections) — `server/realtime/websocket_initial_state.py`
+- **Test get_occupant_names() extracts valid occupant names.** (1 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **Test get_occupant_names() filters out UUID strings.** (1 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **Test get_occupant_names() returns empty list for empty occupants.** (1 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **Test get_occupant_names() handles None occupants.** (1 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **Test prepare_room_data_with_occupants() prepares room data and occupant names.** (1 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
 
 ## Relationships
 
-- [[Enhanced Logging Guide]] (1 shared connections)
-- [[Test Modernization Plan]] (1 shared connections)
-- [[Cursor Plans Uvicorn]] (1 shared connections)
-- [[System Audit Status]] (1 shared connections)
-- [[Logging MDC Code Review]] (1 shared connections)
+- [WebSocket Initial State](WebSocket_Initial_State.md) (7 shared connections)
+- [Combat Aggro Threat](Combat_Aggro_Threat.md) (7 shared connections)
+- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (5 shared connections)
+- [Async Persistence Layer](Async_Persistence_Layer.md) (2 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
-- `PLANNING.md`
-- `docs/TEST_MODERNIZATION_PLAN.md`
-- `docs/archive/IMPLEMENTATION_COMPLETE.md`
-- `docs/archive/LOGGING_IMPLEMENTATION_SUMMARY.md`
+- `server/realtime/player_event_handlers_respawn.py`
+- `server/realtime/websocket_helpers.py`
+- `server/realtime/websocket_initial_state.py`
+- `server/tests/unit/realtime/test_websocket_helpers.py`
+- `server/tests/unit/realtime/test_websocket_initial_state.py`
 
 ## Audit Trail
 
@@ -55,4 +46,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

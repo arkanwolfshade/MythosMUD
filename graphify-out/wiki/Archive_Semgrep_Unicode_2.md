@@ -1,10 +1,11 @@
 # Archive Semgrep Unicode
 
-> 1 nodes · cohesion 1.00
+> 2 nodes
 
 ## Key Concepts
 
-- **Semgrep Windows UTF-8 Fix** (0 connections) — `docs/archive/SEMGREP_UNICODE_FIX.md`
+- **Architecture Review Remediation** (1 connections) — `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
+- **Deprecated get_async_persistence Global** (1 connections) — `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
 
 ## Relationships
 
@@ -12,14 +13,14 @@
 
 ## Source Files
 
-- `docs/archive/SEMGREP_UNICODE_FIX.md`
+- `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

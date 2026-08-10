@@ -1,41 +1,26 @@
 # Investigations Sessions Session
 
-> 17 nodes · cohesion 0.12
+> 2 nodes
 
 ## Key Concepts
 
-- **Investigation Report: Admin Stats Display Bug** (8 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
-- **Detailed Findings** (6 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
-- **Investigation Recommendations** (4 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
-- **2025-12-11_session-001_admin-stats-bug.md** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
-- **Appendix: Related Files** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
-- **Code Quality Improvements** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
-- **Conclusion** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
-- **Executive Summary** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
-- **Immediate Actions Required** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
-- **Phase 1: Initial Bug Report Analysis** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
-- **Phase 2: System State Investigation** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
-- **Phase 3: Code Analysis** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
-- **Phase 4: Evidence Collection** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
-- **Phase 5: Root Cause Analysis** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
-- **Remediation Prompt** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
-- **System Impact Assessment** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
-- **Testing Recommendations** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
+- **test_create_time_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_time_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,50 +1,52 @@
 # ASCII Map Exit Tests
 
-> 49 nodes · cohesion 0.06
+> 104 nodes
 
 ## Key Concepts
 
-- **AsciiMapRenderer** (19 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **TestVerticalExitCharBetween** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **test_ascii_map_renderer_exits.py** (8 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **TestHorizontalExitCharBetween** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **TestResolveExitTarget** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **TestGetExitEntriesForRoom** (5 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **TestGetHorizontalExitCharViewportBounds** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **renderer()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_returns_entries_for_valid_exits()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_skips_exit_with_missing_target()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_returns_none_when_next_x_at_or_past_viewport_right()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_bidirectional_returns_em_dash()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_no_exit_returns_none()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_one_way_east_returns_gt()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_one_way_west_returns_lt()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_returns_coords_and_bidirectional_when_target_has_reverse_exit()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_returns_coords_and_not_bidirectional_when_no_reverse()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_returns_none_when_target_room_has_no_coords()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_returns_none_when_target_room_missing()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_bidirectional_returns_pipe()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_no_exit_returns_none()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_one_way_north_and_one_way_south_assign_caret_and_v_by_target()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_one_way_north_returns_caret()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_one_way_north_uses_caret_bidirectional_uses_pipe()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_one_way_south_returns_v()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- *... and 24 more nodes in this community*
+- **test_room_service.py** (56 connections) — `server/tests/unit/game/test_room_service.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **mock_room_cache()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **sample_room_dict()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_room_service_init()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_room_service_init_with_cache()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_with_cache()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_cache_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_without_cache()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_persistence_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_persistence_returns_dict()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_by_name()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_list_rooms_in_zone()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_adjacent_rooms_success()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_adjacent_rooms_source_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_adjacent_rooms_no_exits()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_adjacent_rooms_null_exit()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_adjacent_rooms_target_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_local_chat_scope()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_local_chat_scope_source_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_validate_room_exists_with_cache()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_validate_room_exists_cache_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_validate_room_exists_without_cache()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_validate_exit_exists_success()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_validate_exit_exists_invalid()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- *... and 79 more nodes in this community*
 
 ## Relationships
 
-- [[ASCII Map Renderer]] (7 shared connections)
+- [Inventory Service Helpers](Inventory_Service_Helpers.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Game Tick Processing](Game_Tick_Processing.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 131 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 210 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

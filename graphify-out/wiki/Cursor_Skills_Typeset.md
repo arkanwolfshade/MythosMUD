@@ -1,35 +1,26 @@
 # Cursor Skills Typeset
 
-> 11 nodes · cohesion 0.18
+> 2 nodes
 
 ## Key Concepts
 
-- **Improve Typography Systematically** (6 connections) — `.cursor/skills/typeset/SKILL.md`
-- **SKILL.md** (5 connections) — `.cursor/skills/typeset/SKILL.md`
-- **Assess Current Typography** (1 connections) — `.cursor/skills/typeset/SKILL.md`
-- **Establish Hierarchy** (1 connections) — `.cursor/skills/typeset/SKILL.md`
-- **Fix Readability** (1 connections) — `.cursor/skills/typeset/SKILL.md`
-- **Font Selection** (1 connections) — `.cursor/skills/typeset/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.cursor/skills/typeset/SKILL.md`
-- **Plan Typography Improvements** (1 connections) — `.cursor/skills/typeset/SKILL.md`
-- **Refine Details** (1 connections) — `.cursor/skills/typeset/SKILL.md`
-- **Verify Typography Improvements** (1 connections) — `.cursor/skills/typeset/SKILL.md`
-- **Weight Consistency** (1 connections) — `.cursor/skills/typeset/SKILL.md`
+- **test_create_punch_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_punch_command delegates to combat factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/typeset/SKILL.md`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

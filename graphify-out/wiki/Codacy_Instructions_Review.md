@@ -1,35 +1,26 @@
 # Codacy Instructions Review
 
-> 11 nodes · cohesion 0.18
+> 2 nodes
 
 ## Key Concepts
 
-- **MythosMUD — AI PR Reviewer Instructions** (10 connections) — `.codacy/instructions/review.md`
-- **review.md** (1 connections) — `.codacy/instructions/review.md`
-- **Architecture** (1 connections) — `.codacy/instructions/review.md`
-- **Code Style & Conventions** (1 connections) — `.codacy/instructions/review.md`
-- **Common Pitfalls (Flag These)** (1 connections) — `.codacy/instructions/review.md`
-- **Folder Structure** (1 connections) — `.codacy/instructions/review.md`
-- **Out of Scope** (1 connections) — `.codacy/instructions/review.md`
-- **PR-Specific Rules** (1 connections) — `.codacy/instructions/review.md`
-- **Purpose** (1 connections) — `.codacy/instructions/review.md`
-- **Stack** (1 connections) — `.codacy/instructions/review.md`
-- **Testing** (1 connections) — `.codacy/instructions/review.md`
+- **test_create_ground_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_ground_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `.codacy/instructions/review.md`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

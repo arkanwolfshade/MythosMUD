@@ -1,52 +1,70 @@
 # Warning Remediation Plan
 
-> 38 nodes · cohesion 0.06
+> 60 nodes
 
 ## Key Concepts
 
-- **Warning Remediation Plan** (12 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **Phase 2: HTTP Status Code Deprecation ⚠️ IN PROGRESS** (7 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **Phase 4: ResourceWarning - Unclosed Event Loops 🔴 HIGH PRIORITY** (7 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **Phase 3: RuntimeWarning - Unawaited Coroutines ⚠️ MODERATE PRIORITY** (6 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **Affected Areas** (5 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **Post-Fix Validation Process** (5 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **Appendix B: Common Patterns and Solutions** (4 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **Implementation Timeline** (4 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **Implementation Steps** (3 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **Success Metrics** (3 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **Warning Details** (3 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **Phase 5: Verification and Monitoring 📊** (2 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **WARNING_REMEDIATION_PLAN.md** (1 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **1. Run Complete Test Suite** (1 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **1. Test Mocking Issues** (1 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **2. Background Task Management** (1 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **2. Run Specific Test Categories** (1 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **3. Enable Warning Reporting** (1 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **3. SQLAlchemy/Database Operations** (1 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **4. Continuous Monitoring** (1 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **Affected Files** (1 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **Executive Summary** (1 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **MythosMUD Test Suite Warning Elimination** (1 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **Pattern 1: Async Test Fixtures** (1 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **Pattern 2: Mock Async Functions** (1 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- *... and 13 more nodes in this community*
+- **Profession** (27 connections) — `client/src/components/ProfessionCard.tsx`
+- **useProfessions.ts** (21 connections) — `client/src/hooks/useProfessions.ts`
+- **CharacterNameScreen.tsx** (20 connections) — `client/src/components/CharacterNameScreen.tsx`
+- **useStatsRollingActions.ts** (20 connections) — `client/src/hooks/useStatsRollingActions.ts`
+- **ProfessionCard.tsx** (19 connections) — `client/src/components/ProfessionCard.tsx`
+- **Stats** (18 connections) — `client/src/hooks/useStatsRolling.ts`
+- **useStatsRolling.ts** (15 connections) — `client/src/hooks/useStatsRolling.ts`
+- **StatsRollingScreen.tsx** (14 connections) — `client/src/components/StatsRollingScreen.tsx`
+- **ProfessionSelectionScreen.tsx** (12 connections) — `client/src/components/ProfessionSelectionScreen.tsx`
+- **StatsRollingScreen.test.tsx** (8 connections) — `client/src/components/StatsRollingScreen.test.tsx`
+- **useStatsRollingState.ts** (8 connections) — `client/src/hooks/useStatsRollingState.ts`
+- **performStatsRoll()** (6 connections) — `client/src/hooks/useStatsRollingActions.ts`
+- **parseProfessionsErrorResponse()** (5 connections) — `client/src/hooks/useProfessions.ts`
+- **loadProfessions()** (5 connections) — `client/src/hooks/useProfessions.ts`
+- **handleStatsRollResponse()** (5 connections) — `client/src/hooks/useStatsRollingActions.ts`
+- **useStatsRollingState()** (5 connections) — `client/src/hooks/useStatsRollingState.ts`
+- **assertProfessionArray()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
+- **assertStatsRollResponse()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
+- **getCreateCharacterErrorMessage()** (4 connections) — `client/src/components/CharacterNameScreen.tsx`
+- **CharacterNameScreen()** (4 connections) — `client/src/components/CharacterNameScreen.tsx`
+- **ProfessionSelectionScreen.test.tsx** (4 connections) — `client/src/components/ProfessionSelectionScreen.test.tsx`
+- **useProfessions()** (4 connections) — `client/src/hooks/useProfessions.ts`
+- **parseErrorMessage()** (4 connections) — `client/src/hooks/useStatsRollingActions.ts`
+- **PerformStatsRollParams** (4 connections) — `client/src/hooks/useStatsRollingActions.ts`
+- **CharacterNameScreenProps** (3 connections) — `client/src/components/CharacterNameScreen.tsx`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [[Common Troubleshooting Guide]] (1 shared connections)
-- [[Value Distribution Archive]] (1 shared connections)
-- [[Archive Warning Remediation]] (1 shared connections)
+- [Map Editing Hooks](Map_Editing_Hooks.md) (28 shared connections)
+- [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (10 shared connections)
+- [Quest Flow Integration](Quest_Flow_Integration.md) (10 shared connections)
+- [Bug Investigation Guide](Bug_Investigation_Guide.md) (8 shared connections)
+- [WebSocket Player Helpers](WebSocket_Player_Helpers.md) (6 shared connections)
+- [E2E Whisper Fix Report](E2E_Whisper_Fix_Report.md) (5 shared connections)
+- [Chat Panel Separation](Chat_Panel_Separation.md) (4 shared connections)
+- [Character Creation Screens](Character_Creation_Screens.md) (2 shared connections)
+- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (2 shared connections)
+- [Realtime Event Handlers](Realtime_Event_Handlers.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/WARNING_REMEDIATION_PLAN.md`
+- `client/src/components/CharacterNameScreen.tsx`
+- `client/src/components/ProfessionCard.test.tsx`
+- `client/src/components/ProfessionCard.tsx`
+- `client/src/components/ProfessionSelectionScreen.test.tsx`
+- `client/src/components/ProfessionSelectionScreen.tsx`
+- `client/src/components/StatsRollingScreen.test.tsx`
+- `client/src/components/StatsRollingScreen.tsx`
+- `client/src/hooks/useProfessions.ts`
+- `client/src/hooks/useStatsRolling.ts`
+- `client/src/hooks/useStatsRollingActions.ts`
+- `client/src/hooks/useStatsRollingState.ts`
+- `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 87 (100%)
+- EXTRACTED: 305 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

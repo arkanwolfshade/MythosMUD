@@ -1,6 +1,6 @@
 # Identify Critical Code
 
-> 22 nodes · cohesion 0.15
+> 22 nodes
 
 ## Key Concepts
 
@@ -9,15 +9,16 @@
 - **analyze_file()** (7 connections) — `scripts/identify_critical_code.py`
 - **process_ast_functions()** (6 connections) — `scripts/identify_critical_code.py`
 - **calculate_complexity()** (4 connections) — `scripts/identify_critical_code.py`
-- **calculate_priority()** (4 connections) — `scripts/identify_critical_code.py`
 - **check_file_keywords()** (4 connections) — `scripts/identify_critical_code.py`
+- **Any** (4 connections)
+- **calculate_priority()** (4 connections) — `scripts/identify_critical_code.py`
 - **main()** (4 connections) — `scripts/identify_critical_code.py`
-- **Any** (4 connections) — `scripts/identify_critical_code.py`
+- **AST** (3 connections)
 - **check_function_keywords()** (3 connections) — `scripts/identify_critical_code.py`
-- **AST** (3 connections) — `scripts/identify_critical_code.py`
-- **Path** (2 connections) — `scripts/identify_critical_code.py`
-- **AsyncFunctionDef** (1 connections) — `scripts/identify_critical_code.py`
-- **FunctionDef** (1 connections) — `scripts/identify_critical_code.py`
+- **Path** (2 connections)
+- **FunctionDef** (1 connections)
+- **AsyncFunctionDef** (1 connections)
+- **Calculate cyclomatic complexity of an AST node.      Args:         node: AST nod** (1 connections) — `scripts/identify_critical_code.py`
 - **Check file path and name for keyword matches.      Args:         file_path: Path** (1 connections) — `scripts/identify_critical_code.py`
 - **Check function name for keyword matches.      Args:         func_name: Function** (1 connections) — `scripts/identify_critical_code.py`
 - **Analyze a single function node for critical indicators.      Args:         node:** (1 connections) — `scripts/identify_critical_code.py`
@@ -25,7 +26,6 @@
 - **Analyze a file for critical code indicators.      Args:         file_path: Path** (1 connections) — `scripts/identify_critical_code.py`
 - **Calculate priority score for a file (higher = more critical).      Args:** (1 connections) — `scripts/identify_critical_code.py`
 - **Main entry point for critical code identification.** (1 connections) — `scripts/identify_critical_code.py`
-- **Calculate cyclomatic complexity of an AST node.      Args:         node: AST nod** (1 connections) — `scripts/identify_critical_code.py`
 
 ## Relationships
 
@@ -43,4 +43,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

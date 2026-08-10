@@ -1,50 +1,45 @@
 # Room Hierarchy FRD
 
-> 31 nodes · cohesion 0.06
+> 19 nodes
 
 ## Key Concepts
 
-- **Room Hierarchy Feature Requirements Document** (12 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **Future Considerations** (4 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **Schema Extensions** (4 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **Success Criteria** (4 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **Testing Requirements** (4 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **1. Room Schema Updates** (3 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **Current State Analysis** (3 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **New Schema Requirements** (3 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **Proposed Hierarchical Structure** (3 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **1. Four-Level Hierarchy** (2 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **ROOM_HIERARCHY_FRD.md** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **1. Additional Environment Types** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **1. Environment Classification** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **1. Functional Requirements** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **1. Schema Validation Tests** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **2. Advanced Zone Types** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **2. Directory Structure** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **2. Performance Requirements** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **2. World Loader Tests** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **2. Zone Configuration Schema (New)** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **2. Zone Type Classification** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **3. Cross-Plane Travel** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **3. Migration Tests** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **3. Quality Requirements** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **3. Sub-zone Configuration Schema (New)** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- *... and 6 more nodes in this community*
+- **Lint Remediation Prompt - AI-Optimized Version** (11 connections) — `.cursor/commands/lint-remediation.md`
+- **🚨 AI ERROR HANDLING** (3 connections) — `.cursor/commands/lint-remediation.md`
+- **📊 LINT ISSUE CATEGORIZATION GUIDE** (3 connections) — `.cursor/commands/lint-remediation.md`
+- **🔍 DEBUGGING GUIDE** (3 connections) — `.cursor/commands/lint-remediation.md`
+- **🚀 OPTIMIZATION TIPS** (3 connections) — `.cursor/commands/lint-remediation.md`
+- **📝 DOCUMENTATION REQUIREMENTS** (3 connections) — `.cursor/commands/lint-remediation.md`
+- **If Lint Still Fails After Fixes** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **If Multiple Categories Have Issues** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **📋 AI EXECUTION CHECKLIST** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🎯 AI SUCCESS METRICS** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Python/Ruff Error Codes** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **React/ESLint Error Codes** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **If Lint Command Fails** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **If Specific Issues Persist** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **For Large Codebases** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **For Performance** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Required Documentation for Each Fix** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Example Documentation Format** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🎯 AI EXECUTION SUCCESS CRITERIA** (1 connections) — `.cursor/commands/lint-remediation.md`
 
 ## Relationships
 
-- [[Archive Room Hierarchy]] (3 shared connections)
+- [Common Troubleshooting Guide](Common_Troubleshooting_Guide.md) (1 shared connections)
+- [Time Event Consumer](Time_Event_Consumer.md) (1 shared connections)
+- [Logging Implementation Summary](Logging_Implementation_Summary.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ROOM_HIERARCHY_FRD.md`
+- `.cursor/commands/lint-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

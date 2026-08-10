@@ -1,37 +1,40 @@
 # Logger Client Add To
 
-> 13 nodes · cohesion 0.35
+> 12 nodes
 
 ## Key Concepts
 
-- **ClientLogger** (13 connections) — `client/src/utils/logger.ts`
-- **.info()** (6 connections) — `client/src/utils/logger.ts`
-- **.addToBuffer()** (5 connections) — `client/src/utils/logger.ts`
-- **.createLogEntry()** (5 connections) — `client/src/utils/logger.ts`
-- **.error()** (5 connections) — `client/src/utils/logger.ts`
-- **.initializeLogging()** (4 connections) — `client/src/utils/logger.ts`
-- **.warn()** (4 connections) — `client/src/utils/logger.ts`
-- **.debug()** (3 connections) — `client/src/utils/logger.ts`
-- **.flushLogs()** (3 connections) — `client/src/utils/logger.ts`
-- **.clearLogs()** (2 connections) — `client/src/utils/logger.ts`
-- **.constructor()** (2 connections) — `client/src/utils/logger.ts`
-- **.downloadLogs()** (2 connections) — `client/src/utils/logger.ts`
-- **.getLogBuffer()** (1 connections) — `client/src/utils/logger.ts`
+- **handle_whoami_command()** (12 connections) — `server/commands/status_commands.py`
+- **test_utility_commands_whoami.py** (5 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
+- **test_handle_whoami_command()** (3 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_handle_whoami_command()** (3 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
+- **test_handle_whoami_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
+- **test_handle_whoami_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
+- **Handle the whoami command as an alias for status.      Mirrors handle_status_com** (1 connections) — `server/commands/status_commands.py`
+- **Test handle_whoami_command calls handle_status_command.** (1 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **Unit tests for utility command handlers.  Tests the whoami command functionality** (1 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
+- **Test handle_whoami_command() returns player information.** (1 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
+- **Test handle_whoami_command() handles missing persistence.** (1 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
+- **Test handle_whoami_command() handles player not found.** (1 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
 
 ## Relationships
 
-- [[Client Event Store]] (1 shared connections)
+- [Status Command Handlers](Status_Command_Handlers.md) (5 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Commands System Help](Commands_System_Help.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/utils/logger.ts`
+- `server/commands/status_commands.py`
+- `server/tests/unit/commands/test_status_commands.py`
+- `server/tests/unit/commands/test_utility_commands_whoami.py`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 28 (80%)
+- INFERRED: 7 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

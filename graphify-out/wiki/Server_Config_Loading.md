@@ -1,56 +1,50 @@
 # Server Config Loading
 
-> 43 nodes · cohesion 0.05
+> 35 nodes
 
 ## Key Concepts
 
-- **reset_config()** (9 connections) — `server/config/__init__.py`
-- **test_config.py** (9 connections) — `server/tests/unit/config/test_config.py`
-- **test_config_init.py** (9 connections) — `server/tests/unit/config/test_config_init.py`
-- **__init__.py** (9 connections) — `server/config/__init__.py`
-- **_create_config_instance()** (6 connections) — `server/config/__init__.py`
-- **_get_config_cached()** (5 connections) — `server/config/__init__.py`
-- **_get_config_test()** (5 connections) — `server/config/__init__.py`
-- **_is_test_mode()** (4 connections) — `server/config/__init__.py`
-- **test_reset_config_in_test_mode()** (4 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_reset_config_clears_state()** (4 connections) — `server/tests/unit/config/test_config.py`
-- **AppConfig** (4 connections) — `server/config/__init__.py`
-- **test_get_config_fresh_instances_in_test_mode()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_get_config_has_database_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_get_config_has_game_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_get_config_has_server_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_get_config_returns_app_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_get_config_has_database_config()** (3 connections) — `server/tests/unit/config/test_config.py`
-- **test_get_config_has_game_config()** (3 connections) — `server/tests/unit/config/test_config.py`
-- **test_get_config_has_server_config()** (3 connections) — `server/tests/unit/config/test_config.py`
-- **test_get_config_returns_app_config()** (3 connections) — `server/tests/unit/config/test_config.py`
-- **test_get_config_test_mode_returns_fresh_instances()** (3 connections) — `server/tests/unit/config/test_config.py`
-- **reset_config_singleton()** (3 connections) — `server/tests/conftest.py`
-- **Configuration module for MythosMUD server.  This module provides type-safe, vali** (1 connections) — `server/config/__init__.py`
-- **Reset the configuration cache.      In test mode, this is a no-op since get_conf** (1 connections) — `server/config/__init__.py`
-- **Detect if running in test environment.      Uses multiple detection methods to r** (1 connections) — `server/config/__init__.py`
-- *... and 18 more nodes in this community*
+- **test_quest_commands.py** (20 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **_enter_quest_command_patches()** (7 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **ExitStack** (5 connections)
+- **test_quest_ask_success()** (5 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_ask_npc_not_in_room()** (5 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_turnin_success()** (5 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_turnin_npc_not_in_room()** (5 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_journal_returns_unavailable_when_no_container()** (3 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_journal_returns_log_when_available()** (3 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_journal_character_not_found()** (3 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_abandon_usage_when_no_subcommand()** (3 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_abandon_usage_when_wrong_subcommand()** (3 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_abandon_usage_when_no_quest_name()** (3 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_abandon_success()** (3 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_abandon_failure_message()** (3 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_ask_usage_when_no_npc()** (3 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **current_user()** (2 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **mock_request()** (2 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **Unit tests for quest commands: journal/quests (quest log) and quest abandon.  Te** (1 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **Minimal current_user dict for command handlers.** (1 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **Request with app.state.container (set per test).** (1 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **Journal returns message when container/persistence not available.** (1 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **Journal returns formatted quest log when services available.** (1 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **Journal returns error when character not found.** (1 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **Quest command returns usage when args empty or not 'abandon'.** (1 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Admin API]] (19 shared connections)
-- [[Application Config Settings]] (2 shared connections)
-- [[ESLint Conftest Fixtures]] (2 shared connections)
-- [[Look Command Helpers]] (1 shared connections)
+- [Combat Death Handling](Combat_Death_Handling.md) (16 shared connections)
 
 ## Source Files
 
-- `server/config/__init__.py`
-- `server/tests/conftest.py`
-- `server/tests/unit/config/test_config.py`
-- `server/tests/unit/config/test_config_init.py`
+- `server/tests/unit/commands/test_quest_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 120 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 100 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

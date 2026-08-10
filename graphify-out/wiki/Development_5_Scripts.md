@@ -1,37 +1,27 @@
 # Development 5 Scripts
 
-> 13 nodes · cohesion 0.15
+> 2 nodes
 
 ## Key Concepts
 
-- **5. Development Scripts** (13 connections) — `docs/DEVELOPMENT.md`
-- **Character Management** (1 connections) — `docs/DEVELOPMENT.md`
-- **Code Examples** (1 connections) — `docs/DEVELOPMENT.md`
-- ****Enhanced Logging:**** (1 connections) — `docs/DEVELOPMENT.md`
-- ****Format Code:**** (1 connections) — `docs/DEVELOPMENT.md`
-- ****Install Everything:**** (1 connections) — `docs/DEVELOPMENT.md`
-- ****Lint Code:**** (1 connections) — `docs/DEVELOPMENT.md`
-- ****Multi-Character Support:**** (1 connections) — `docs/DEVELOPMENT.md`
-- **? NEVER USE** (1 connections) — `docs/DEVELOPMENT.md`
-- **Quick Start** (1 connections) — `docs/DEVELOPMENT.md`
-- **Registration and Login Flow** (1 connections) — `docs/DEVELOPMENT.md`
-- ****Run Tests:**** (1 connections) — `docs/DEVELOPMENT.md`
-- ****Run the Server:**** (1 connections) — `docs/DEVELOPMENT.md`
+- **.reset_metrics()** (3 connections) — `server/game/movement_monitor.py`
+- **Reset all metrics (useful for testing).** (1 connections) — `server/game/movement_monitor.py`
 
 ## Relationships
 
-- [[Development Setup Guide]] (1 shared connections)
+- [Movement Performance Monitor](Movement_Performance_Monitor.md) (1 shared connections)
+- [Monitoring Response Models](Monitoring_Response_Models.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/DEVELOPMENT.md`
+- `server/game/movement_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

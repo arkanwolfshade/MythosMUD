@@ -1,17 +1,10 @@
 # Hooks Useperformancemonitor
 
-> 8 nodes · cohesion 0.29
+> 1 nodes
 
 ## Key Concepts
 
-- **usePerformanceMonitor.ts** (6 connections) — `client/src/hooks/usePerformanceMonitor.ts`
-- **usePerformanceMonitor.test.ts** (3 connections) — `client/src/hooks/__tests__/usePerformanceMonitor.test.ts`
-- **usePerformanceMonitor()** (2 connections) — `client/src/hooks/usePerformanceMonitor.ts`
-- **ExtendedPerformance** (1 connections) — `client/src/hooks/usePerformanceMonitor.ts`
-- **PerformanceMemory** (1 connections) — `client/src/hooks/usePerformanceMonitor.ts`
-- **PerformanceMetrics** (1 connections) — `client/src/hooks/usePerformanceMonitor.ts`
-- **UsePerformanceMonitorOptions** (1 connections) — `client/src/hooks/usePerformanceMonitor.ts`
-- **ExtendedPerformance** (1 connections) — `client/src/hooks/__tests__/usePerformanceMonitor.test.ts`
+- **Configuration Refactoring Complete** (0 connections) — `docs/archive/CONFIGURATION_REFACTORING_COMPLETE.md`
 
 ## Relationships
 
@@ -19,15 +12,14 @@
 
 ## Source Files
 
-- `client/src/hooks/__tests__/usePerformanceMonitor.test.ts`
-- `client/src/hooks/usePerformanceMonitor.ts`
+- `docs/archive/CONFIGURATION_REFACTORING_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,54 +1,59 @@
 # Combat Turn Processor
 
-> 48 nodes · cohesion 0.09
+> 22 nodes
 
 ## Key Concepts
 
-- **CombatTurnProcessor** (44 connections) — `server/services/combat_turn_processor.py`
-- **CombatParticipant** (16 connections) — `server/services/combat_turn_processor.py`
-- **CombatInstance** (13 connections) — `server/services/combat_turn_processor.py`
-- **._execute_spell_action()** (11 connections) — `server/services/combat_turn_processor.py`
-- **._execute_queued_action()** (10 connections) — `server/services/combat_turn_processor.py`
-- **CombatAction** (8 connections) — `server/services/combat_turn_processor.py`
-- **._build_spell_target()** (7 connections) — `server/services/combat_turn_processor.py`
-- **._execute_default_action()** (7 connections) — `server/services/combat_turn_processor.py`
-- **._execute_participant_action()** (7 connections) — `server/services/combat_turn_processor.py`
-- **._execute_round()** (7 connections) — `server/services/combat_turn_processor.py`
-- **._get_player_and_room_for_spell()** (7 connections) — `server/services/combat_turn_processor.py`
-- **Any** (6 connections) — `server/services/combat_turn_processor.py`
-- **._execute_attack_action()** (6 connections) — `server/services/combat_turn_processor.py`
-- **._finalize_spell_execution()** (6 connections) — `server/services/combat_turn_processor.py`
-- **._get_spell_for_action()** (6 connections) — `server/services/combat_turn_processor.py`
-- **._is_npc_still_in_world()** (6 connections) — `server/services/combat_turn_processor.py`
-- **._apply_spell_effects()** (5 connections) — `server/services/combat_turn_processor.py`
-- **._handle_flee_skip_action()** (5 connections) — `server/services/combat_turn_processor.py`
-- **.process_game_tick()** (5 connections) — `server/services/combat_turn_processor.py`
-- **._process_npc_turn()** (5 connections) — `server/services/combat_turn_processor.py`
-- **._process_player_turn()** (5 connections) — `server/services/combat_turn_processor.py`
-- **._load_round_actions()** (4 connections) — `server/services/combat_turn_processor.py`
-- **._log_unknown_action()** (4 connections) — `server/services/combat_turn_processor.py`
-- **._npc_id_in_active_npcs()** (4 connections) — `server/services/combat_turn_processor.py`
-- **._resolve_npc_participant_to_string_id()** (4 connections) — `server/services/combat_turn_processor.py`
-- *... and 23 more nodes in this community*
+- **send_game_event()** (29 connections) — `server/realtime/connection_manager_api.py`
+- **connection_manager_utils.py** (15 connections) — `server/realtime/connection_manager_utils.py`
+- **resolve_connection_manager()** (14 connections) — `server/realtime/connection_manager_utils.py`
+- **broadcast_game_event()** (11 connections) — `server/realtime/connection_manager_api.py`
+- **lazy_import_api_function()** (11 connections) — `server/realtime/connection_manager_utils.py`
+- **send_room_event()** (7 connections) — `server/realtime/connection_manager_api.py`
+- **send_player_status_update()** (7 connections) — `server/realtime/connection_manager_api.py`
+- **__getattr__()** (5 connections) — `server/realtime/connection_manager.py`
+- **_coerce_connection_manager()** (4 connections) — `server/realtime/connection_manager_utils.py`
+- **_ensure_async_compat()** (4 connections) — `server/realtime/connection_manager_utils.py`
+- **_make_async_compat_wrapper()** (3 connections) — `server/realtime/connection_manager_utils.py`
+- **Lazy import for API utility functions to avoid circular dependencies.** (1 connections) — `server/realtime/connection_manager.py`
+- **Send a game event to a specific player via WebSocket.      Args:         player_** (1 connections) — `server/realtime/connection_manager_api.py`
+- **Broadcast a game event to all connected players.      Args:         event_type:** (1 connections) — `server/realtime/connection_manager_api.py`
+- **Send a room event to all players in a specific room.      Args:         room_id:** (1 connections) — `server/realtime/connection_manager_api.py`
+- **Send a player status update to a player.      Args:         player_id: The playe** (1 connections) — `server/realtime/connection_manager_api.py`
+- **Utility functions and module-level code for ConnectionManager.  This module cont** (1 connections) — `server/realtime/connection_manager_utils.py`
+- **Narrow container or test doubles to ConnectionManager for static typing.** (1 connections) — `server/realtime/connection_manager_utils.py`
+- **Wrap a sync or async callable so callers can always await it.** (1 connections) — `server/realtime/connection_manager_utils.py`
+- **Ensure connection manager methods are awaitable.      Wraps synchronous callable** (1 connections) — `server/realtime/connection_manager_utils.py`
+- **Resolve a connection manager instance.      Prefers explicitly supplied candidat** (1 connections) — `server/realtime/connection_manager_utils.py`
+- **Lazy import for API utility functions to avoid circular dependencies.      Args:** (1 connections) — `server/realtime/connection_manager_utils.py`
 
 ## Relationships
 
-- [[Combat Service Bundle]] (20 shared connections)
-- [[Combat Taunt Tests]] (8 shared connections)
-- [[Combat Command Handler]] (1 shared connections)
-- [[NPC Admin API]] (1 shared connections)
-- [[NPC Occupant Verification]] (1 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (12 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (8 shared connections)
+- [Room Occupant Events](Room_Occupant_Events.md) (4 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
+- [NPC Utility Functions](NPC_Utility_Functions.md) (4 shared connections)
+- [NPC Service Tests](NPC_Service_Tests.md) (3 shared connections)
+- [Connection Health Monitor](Connection_Health_Monitor.md) (2 shared connections)
+- [Database Error Handling](Database_Error_Handling.md) (2 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (2 shared connections)
+- [Invite and User Schemas](Invite_and_User_Schemas.md) (2 shared connections)
+- [WebSocket Code Review](WebSocket_Code_Review.md) (2 shared connections)
+- [Security Headers Middleware](Security_Headers_Middleware.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_turn_processor.py`
+- `server/realtime/connection_manager.py`
+- `server/realtime/connection_manager_api.py`
+- `server/realtime/connection_manager_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 212 (90%)
-- INFERRED: 23 (10%)
+- EXTRACTED: 93 (77%)
+- INFERRED: 28 (23%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

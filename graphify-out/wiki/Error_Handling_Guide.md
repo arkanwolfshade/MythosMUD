@@ -1,52 +1,58 @@
 # Error Handling Guide
 
-> 37 nodes · cohesion 0.05
+> 92 nodes
 
 ## Key Concepts
 
-- **Error Handling Guide for MythosMUD** (15 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- ****CRITICAL: Enhanced Logging Requirements for Error Handling**** (7 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **Common Patterns** (4 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **Anti-Patterns to Avoid** (3 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **Error Analysis and Monitoring** (3 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **Error Context Best Practices** (3 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **Logging Patterns** (3 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **Performance Considerations** (3 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **Security Considerations** (3 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **Testing Error Handling** (3 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **Enhanced Logging Best Practices for Error Handling** (2 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **ERROR_HANDLING_GUIDE.md** (1 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **API Endpoint Error Handling** (1 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **Best Practices** (1 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **Common Error Categories** (1 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **Conclusion** (1 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- ****Correct Error Logging Patterns**** (1 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **Creating Error Context** (1 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **Database Operations** (1 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **Direct Exception Creation** (1 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **✅ Do This Instead** (1 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- ****Documentation References**** (1 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **❌ Don't Do This** (1 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- ****Error Logging Best Practices**** (1 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- **Error Logging Overhead** (1 connections) — `docs/ERROR_HANDLING_GUIDE.md`
-- *... and 12 more nodes in this community*
+- **test_combat_persistence_handler_events.py** (25 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **CombatPersistenceHandler** (22 connections) — `server/services/combat_persistence_handler.py`
+- **combat_persistence_handler.py** (15 connections) — `server/services/combat_persistence_handler.py`
+- **test_combat_persistence_handler.py** (14 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **UUID** (8 connections)
+- **._persist_player_dp_sync()** (7 connections) — `server/services/combat_persistence_handler.py`
+- **._get_persistence_layer()** (6 connections) — `server/services/combat_persistence_handler.py`
+- **._publish_player_dp_update_event_impl()** (6 connections) — `server/services/combat_persistence_handler.py`
+- **._verify_player_save()** (5 connections) — `server/services/combat_persistence_handler.py`
+- **._publish_player_dp_correction_event()** (5 connections) — `server/services/combat_persistence_handler.py`
+- **._log_death_state_changes()** (4 connections) — `server/services/combat_persistence_handler.py`
+- **._persist_player_dp_background()** (4 connections) — `server/services/combat_persistence_handler.py`
+- **.publish_player_dp_update_event()** (4 connections) — `server/services/combat_persistence_handler.py`
+- **.__init__()** (3 connections) — `server/services/combat_persistence_handler.py`
+- **Any** (3 connections)
+- **persistence_handler()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **persistence_handler()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_event_bus_publish_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_persistence_handler_init()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_get_persistence_layer()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_get_persistence_layer_no_container()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_get_persistence_layer_container_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_get_persistence_layer_no_async_persistence()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_log_death_state_changes_death_threshold()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- *... and 67 more nodes in this community*
 
 ## Relationships
 
-- [[Error Handling Guide]] (1 shared connections)
-- [[Guide Player Command]] (1 shared connections)
-- [[Testing Error Handling]] (1 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (13 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (4 shared connections)
+- [AI Development Workflow](AI_Development_Workflow_2.md) (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (1 shared connections)
+- [NPC Occupant Verification](NPC_Occupant_Verification.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/ERROR_HANDLING_GUIDE.md`
+- `server/services/combat_persistence_handler.py`
+- `server/tests/unit/services/test_combat_persistence_handler.py`
+- `server/tests/unit/services/test_combat_persistence_handler_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 75 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 234 (97%)
+- INFERRED: 7 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

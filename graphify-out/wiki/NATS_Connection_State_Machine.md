@@ -1,52 +1,39 @@
 # NATS Connection State Machine
 
-> 27 nodes · cohesion 0.07
+> 14 nodes
 
 ## Key Concepts
 
-- **NATSConnectionStateMachine** (57 connections) — `server/realtime/connection_state_machine.py`
-- **.can_attempt_connection()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.__init__()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.on_close_circuit()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.on_connect()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.on_connected_successfully()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.on_degrade()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.on_disconnect()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.on_open_circuit()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.on_recover()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.on_start_reconnect()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.reset()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.should_open_circuit()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **StateMachine** (2 connections)
-- **Initialize connection state machine.          Args:             connection_id: U** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Handler for connect transition.          Resets reconnection counter and prepare** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Handler for successful connection.          Records connection time and incremen** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Handler for disconnection.          Increments disconnection counter.          A** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Handler for starting reconnection.          Checks if circuit breaker should be** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Handler for circuit breaker opening.          Logs circuit open event for alerti** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Handler for circuit breaker closing.          Resets failure counters.** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Handler for connection degradation.          Logs degraded state for monitoring.** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Handler for recovery from degraded state.          Logs recovery for monitoring.** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Check if connection attempt is allowed in current state.          Returns:** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Check if circuit breaker should be opened.          Returns:             True if** (1 connections) — `server/realtime/connection_state_machine.py`
-- *... and 2 more nodes in this community*
+- **TestPrepareCommandForProcessing** (7 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **test_command_preparation.py** (4 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_rate_limited()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_validation_failed()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_empty_after_cleaning()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_empty_after_normalization()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_success()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Unit tests for command preparation.  Tests command preparation and processing pi** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing function.** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing returns rate limit result when rate limited** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing returns validation result when validation f** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing handles empty command after cleaning.** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing handles empty command after normalization.** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing successfully prepares command.** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
 
 ## Relationships
 
-- [[Realtime Connection State]] (39 shared connections)
-- [[Combat Domain Events]] (3 shared connections)
-- [[NPC Admin API]] (2 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (6 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_state_machine.py`
+- `server/tests/unit/commands/test_command_preparation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 96 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,55 +1,49 @@
 # Test Refactoring Deliverables
 
-> 33 nodes · cohesion 0.06
+> 21 nodes
 
 ## Key Concepts
 
-- **Test Suite Refactoring - Executive Summary** (44 connections) — `docs/archive/TEST_REFACTORING_SUMMARY.md`
-- **✅ Validation Criteria** (3 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **Project Conclusion** (3 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
-- **Questions & Support** (3 connections) — `docs/archive/TEST_REFACTORING_SUMMARY.md`
-- **🗓️ Implementation Timeline** (2 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **🛠️ Tools Created** (2 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **Executive Summary** (2 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
-- **Outstanding Work** (2 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
-- **Success Declaration** (2 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
-- **TEST_REFACTORING_DELIVERABLES.md** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **6-Week Phased Approach** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **🎓 Academic Note** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **📖 Document Reference** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **Migration Tracking Script** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **Qualitative** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **Quantitative** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **📦 What Was Delivered** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- **TEST_REFACTORING_FINAL_SUMMARY.md** (1 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
-- **Acknowledgments** (1 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
-- **✅ ALL SUCCESS CRITERIA MET** (1 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
-- **Current State** (1 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
-- **Final Structure** (1 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
-- **Final Thoughts** (1 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
-- **Key Achievements** (1 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
-- **Next User Actions** (1 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
-- *... and 8 more nodes in this community*
+- **migrate_combat_data.py** (21 connections) — `server/scripts/migrate_combat_data.py`
+- **validate_npc_combat_data()** (13 connections) — `server/schemas/combat/combat_schema.py`
+- **Any** (9 connections)
+- **_migrate_one_npc()** (9 connections) — `server/scripts/migrate_combat_data.py`
+- **migrate_npc_combat_data()** (8 connections) — `server/scripts/migrate_combat_data.py`
+- **rollback_migration()** (8 connections) — `server/scripts/migrate_combat_data.py`
+- **validate_migration_results()** (7 connections) — `server/scripts/migrate_combat_data.py`
+- **_record_npc_error()** (6 connections) — `server/scripts/migrate_combat_data.py`
+- **_rollback_one_npc()** (6 connections) — `server/scripts/migrate_combat_data.py`
+- **main()** (6 connections) — `server/scripts/migrate_combat_data.py`
+- **AsyncSession** (5 connections)
+- **_validate_one_npc()** (5 connections) — `server/scripts/migrate_combat_data.py`
+- **_npc_has_full_combat_data()** (3 connections) — `server/scripts/migrate_combat_data.py`
+- **_npc_has_combat_data()** (3 connections) — `server/scripts/migrate_combat_data.py`
+- **Validate combat data for an NPC definition.      Args:         npc_definition: N** (1 connections) — `server/schemas/combat/combat_schema.py`
+- **Exception** (1 connections)
+- **Combat data migration script.  This script adds default combat data to existing** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Migrate combat data for all NPC definitions.      Args:         session: Databas** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Validate that migration was successful.      Args:         session: Database ses** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Rollback combat data migration by removing combat fields.      Args:         ses** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Main migration function.** (1 connections) — `server/scripts/migrate_combat_data.py`
 
 ## Relationships
 
-- [[Archive Refactoring Final]] (8 shared connections)
-- [[Archive Refactoring Summary]] (8 shared connections)
-- [[Archive Refactoring Deliverables]] (6 shared connections)
-- [[Upgrade Archive Dependency]] (1 shared connections)
+- [Weapon Resolution Helpers](Weapon_Resolution_Helpers.md) (14 shared connections)
+- [Command Parser Tests](Command_Parser_Tests.md) (9 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
+- [Realtime Errors Error](Realtime_Errors_Error.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
-- `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
-- `docs/archive/TEST_REFACTORING_SUMMARY.md`
+- `server/schemas/combat/combat_schema.py`
+- `server/scripts/migrate_combat_data.py`
 
 ## Audit Trail
 
-- EXTRACTED: 87 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 113 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

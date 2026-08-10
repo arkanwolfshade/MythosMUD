@@ -1,47 +1,42 @@
 # Investigations Sessions Session
 
-> 23 nodes · cohesion 0.09
+> 13 nodes
 
 ## Key Concepts
 
-- **Investigation Report: Delirium Respawn Bug** (8 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Detailed Findings** (6 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Phase 3: Code Analysis** (4 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Evidence Documentation** (3 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Phase 2: System State Investigation** (3 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Phase 4: Evidence Collection** (3 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **2025-12-07_session-001_delirium-respawn-bug.md** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Client-Side Death Detection** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Code References** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Current Lucidity Threshold Checks** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Database Schema** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Executive Summary** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Existing Similar Functionality** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Investigation Recommendations** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Lucidity Storage and Range** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Missing Components Summary** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Phase 1: Bug Report Analysis** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Phase 5: Analysis and Reporting** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Remediation Prompt** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Respawn Screen Components** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Respawn Service** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Root Cause Analysis** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **System Impact Assessment** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
+- **create_error_context()** (10 connections) — `server/api/player_helpers.py`
+- **create_context_from_request()** (7 connections) — `server/utils/error_logging.py`
+- **test_player_helpers.py** (5 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **test_create_error_context_without_user_sets_metadata()** (3 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **test_create_error_context_with_user_sets_user_id_and_metadata()** (3 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **Request** (1 connections)
+- **Any** (1 connections)
+- **Create error context from request and user.      Helper function to reduce dupli** (1 connections) — `server/api/player_helpers.py`
+- **Unit tests for server.api.player_helpers (error context helper).** (1 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **When current_user is None, context gets metadata only.** (1 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **When current_user is set, user_id is populated and metadata merged.** (1 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **Request** (1 connections)
+- **Create error context from a FastAPI request. Delegates to create_enhanced_error_** (1 connections) — `server/utils/error_logging.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
+- [Active Lucidity Service](Active_Lucidity_Service.md) (2 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (1 shared connections)
+- [Merge Refactoring Summary](Merge_Refactoring_Summary.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
+- `server/api/player_helpers.py`
+- `server/tests/unit/api/test_player_helpers.py`
+- `server/utils/error_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

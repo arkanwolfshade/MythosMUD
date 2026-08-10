@@ -1,57 +1,55 @@
 # Invite Registration Model
 
-> 48 nodes · cohesion 0.05
+> 89 nodes
 
 ## Key Concepts
 
-- **Invite** (34 connections) — `server/models/invite.py`
-- **test_invite.py** (16 connections) — `server/tests/unit/models/test_invite.py`
-- **set_display_name_default()** (4 connections) — `server/models/user.py`
-- **Any** (4 connections) — `server/models/user.py`
-- **.create_invite()** (3 connections) — `server/models/invite.py`
-- **._generate_invite_code()** (3 connections) — `server/models/invite.py`
-- **.__init__()** (3 connections) — `server/models/invite.py`
-- **.is_expired()** (3 connections) — `server/models/invite.py`
-- **.is_valid()** (3 connections) — `server/models/invite.py`
-- **test_invite_is_expired_with_aware_datetime()** (3 connections) — `server/tests/unit/models/test_invite.py`
-- **test_invite_is_expired_with_future_expiry()** (3 connections) — `server/tests/unit/models/test_invite.py`
-- **test_invite_is_expired_with_past_expiry()** (3 connections) — `server/tests/unit/models/test_invite.py`
-- **test_invite_is_valid_with_active_and_not_expired()** (3 connections) — `server/tests/unit/models/test_invite.py`
-- **test_invite_is_valid_with_expired()** (3 connections) — `server/tests/unit/models/test_invite.py`
-- **test_invite_is_valid_with_inactive()** (3 connections) — `server/tests/unit/models/test_invite.py`
-- **test_invite_is_valid_with_inactive_and_expired()** (3 connections) — `server/tests/unit/models/test_invite.py`
-- **test_invite_repr()** (3 connections) — `server/tests/unit/models/test_invite.py`
-- **test_invite_use_invite()** (3 connections) — `server/tests/unit/models/test_invite.py`
-- **Any** (3 connections) — `server/models/invite.py`
-- **.use_invite()** (2 connections) — `server/models/invite.py`
-- **Test is_valid returns False for expired invite.** (2 connections) — `server/tests/unit/models/test_invite.py`
-- **test_invite_create_invite_defaults()** (2 connections) — `server/tests/unit/models/test_invite.py`
-- **test_invite_create_invite_with_creator()** (2 connections) — `server/tests/unit/models/test_invite.py`
-- **test_invite_create_invite_with_custom_expiry()** (2 connections) — `server/tests/unit/models/test_invite.py`
-- **test_invite_generate_invite_code_format()** (2 connections) — `server/tests/unit/models/test_invite.py`
-- *... and 23 more nodes in this community*
+- **FeatureFlagService** (36 connections) — `server/services/feature_flag_service.py`
+- **TestFeatureFlagService** (23 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **feature_flag_service.py** (13 connections) — `server/services/feature_flag_service.py`
+- **test_feature_flag_service.py** (10 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **get_feature_flags()** (9 connections) — `server/services/feature_flag_service.py`
+- **.get_combat_configuration()** (8 connections) — `server/services/feature_flag_service.py`
+- **is_combat_enabled()** (8 connections) — `server/services/feature_flag_service.py`
+- **TestGlobalFunctions** (8 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.get_feature_status()** (7 connections) — `server/services/feature_flag_service.py`
+- **is_combat_logging_enabled()** (6 connections) — `server/services/feature_flag_service.py`
+- **is_combat_monitoring_enabled()** (6 connections) — `server/services/feature_flag_service.py`
+- **.validate_combat_requirements()** (5 connections) — `server/services/feature_flag_service.py`
+- **refresh_feature_flags()** (5 connections) — `server/services/feature_flag_service.py`
+- **.check_combat_availability()** (4 connections) — `server/services/feature_flag_service.py`
+- **.test_get_feature_flags()** (4 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.__init__()** (3 connections) — `server/services/feature_flag_service.py`
+- **.clear_cache()** (3 connections) — `server/services/feature_flag_service.py`
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_enabled_true()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_enabled_false()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_enabled_caching()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_logging_enabled_true()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_logging_enabled_false()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_monitoring_enabled_true()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_monitoring_enabled_false()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- *... and 64 more nodes in this community*
 
 ## Relationships
 
-- [[SQLAlchemy Model Base]] (6 shared connections)
-- [[NPC Admin API]] (4 shared connections)
-- [[Lucidity Database Models]] (4 shared connections)
-- [[Invite Generate Invites]] (3 shared connections)
-- [[API Test Fixtures]] (3 shared connections)
-- [[Player Domain Model]] (1 shared connections)
+- [Player Related Models](Player_Related_Models.md) (3 shared connections)
+- [Archive Frd Random](Archive_Frd_Random.md) (2 shared connections)
+- [Combat Monitoring Service](Combat_Monitoring_Service.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [UI Animation Testing Standards](UI_Animation_Testing_Standards.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/invite.py`
-- `server/models/user.py`
-- `server/tests/unit/models/test_invite.py`
+- `server/services/feature_flag_service.py`
+- `server/tests/unit/services/test_feature_flag_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 126 (91%)
-- INFERRED: 13 (9%)
+- EXTRACTED: 276 (98%)
+- INFERRED: 6 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

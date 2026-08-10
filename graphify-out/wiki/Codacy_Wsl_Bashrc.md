@@ -1,11 +1,11 @@
 # Codacy Wsl Bashrc
 
-> 2 nodes · cohesion 1.00
+> 2 nodes
 
 ## Key Concepts
 
-- **wsl-bashrc-codacy.sh script** (1 connections) — `.codacy/wsl-bashrc-codacy.sh`
 - **wsl-bashrc-codacy.sh** (1 connections) — `.codacy/wsl-bashrc-codacy.sh`
+- **wsl-bashrc-codacy.sh script** (1 connections) — `.codacy/wsl-bashrc-codacy.sh`
 
 ## Relationships
 
@@ -23,4 +23,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

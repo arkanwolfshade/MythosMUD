@@ -1,13 +1,12 @@
 # Cursor Plans Plan
 
-> 4 nodes · cohesion 0.50
+> 3 nodes
 
 ## Key Concepts
 
-- **Vite Best-Practices Remediation** (2 connections) — `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
-- **Vitest Best-Practices Remediation** (2 connections) — `.cursor/plans/vitest_best-practices_remediation_f589ee02.plan.md`
-- **Test Suite Improvement** (1 connections) — `.cursor/plans/test_suite_improvement_f5a4acf1.plan.md`
-- **import.meta.env (Vite)** (1 connections) — `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
+- **Logging Aggregator Verification** (2 connections) — `.cursor/plans/logging_aggregator_verification.plan.md`
+- **Structlog Anti-Pattern Remediation** (1 connections) — `.cursor/plans/structlog_anti-pattern_remediation_1d228d75.plan.md`
+- **warnings.log and errors.log Aggregators** (1 connections) — `.cursor/plans/logging_aggregator_verification.plan.md`
 
 ## Relationships
 
@@ -15,16 +14,15 @@
 
 ## Source Files
 
-- `.cursor/plans/test_suite_improvement_f5a4acf1.plan.md`
-- `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
-- `.cursor/plans/vitest_best-practices_remediation_f589ee02.plan.md`
+- `.cursor/plans/logging_aggregator_verification.plan.md`
+- `.cursor/plans/structlog_anti-pattern_remediation_1d228d75.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (33%)
-- INFERRED: 4 (67%)
+- EXTRACTED: 2 (50%)
+- INFERRED: 2 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

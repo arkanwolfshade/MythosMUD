@@ -1,28 +1,26 @@
 # Investigations Sessions Session
 
-> 4 nodes · cohesion 0.50
+> 2 nodes
 
 ## Key Concepts
 
-- **ROOT CAUSE ANALYSIS** (4 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
-- **Primary Issue: Dual Update Mechanism** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
-- **Secondary Issue: NPC Room Tracking** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
-- **Specific Bug Scenario** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
+- **Admin Look Mob Stats Bug** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
+- **is_alive Called As Function Not Property** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
 
 ## Relationships
 
-- [[Investigations Sessions Session]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
+- `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

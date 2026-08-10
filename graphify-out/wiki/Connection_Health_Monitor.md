@@ -1,56 +1,50 @@
 # Connection Health Monitor
 
-> 27 nodes · cohesion 0.11
+> 18 nodes
 
 ## Key Concepts
 
-- **HealthMonitor** (23 connections) — `server/realtime/monitoring/health_monitor.py`
-- **UUID** (10 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._process_single_connection()** (8 connections) — `server/realtime/monitoring/health_monitor.py`
-- **__init__.py** (7 connections) — `server/realtime/monitoring/__init__.py`
-- **.check_all_connections_health()** (6 connections) — `server/realtime/monitoring/health_monitor.py`
-- **.periodic_health_check_task()** (5 connections) — `server/realtime/monitoring/health_monitor.py`
-- **.start_periodic_checks()** (5 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._cleanup_stale_connections()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._find_player_id_for_cleanup()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._check_connection_stale()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._check_websocket_open()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
-- **.__init__()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._validate_and_update_token()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
-- **test_health_monitor_init_custom_intervals()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Find player_id for cleanup when metadata is missing.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Check if connection is stale based on timeout.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Check if WebSocket is actually open.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Validate token and update last validation time if needed.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Process health check for a single connection.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Clean up stale connections.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Check health of all connections and clean up stale/dead ones.          This meth** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Periodic health check task that runs continuously.          This task:         -** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Start the periodic health check task.          This should be called during appl** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Monitors connection health and manages periodic health checks.      This class p** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Initialize the health monitor.          Args:             is_websocket_open_call** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- *... and 2 more nodes in this community*
+- **MagicServiceHealingMixin** (15 connections) — `server/game/magic/magic_healing_events.py`
+- **magic_healing_events.py** (14 connections) — `server/game/magic/magic_healing_events.py`
+- **._send_healing_update_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
+- **._publish_dp_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
+- **UUID** (6 connections)
+- **._publish_or_send_dp_update()** (6 connections) — `server/game/magic/magic_healing_events.py`
+- **._is_heal_other_target()** (5 connections) — `server/game/magic/magic_healing_events.py`
+- **Any** (5 connections)
+- **._send_instant_heal_event_if_applied()** (5 connections) — `server/game/magic/magic_healing_events.py`
+- **._effect_result_has_healing()** (4 connections) — `server/game/magic/magic_healing_events.py`
+- **Healing event notification for spellcasting.  Mixin that sends player_dp_updated** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **Mixin for MagicService: send DP update events when spells apply healing.** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **True when healing was applied to another player (heal-other, not steal-life or s** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **True if effect result indicates healing was applied (success, effect_applied, he** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **Send player_dp_updated event for the healed player (target for heal other, caste** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **Load player stats and delegate DP event publishing.** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **Publish DP update via event bus, or send fallback game event.** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **If instant cast applied healing, send DP update event to the healed player.** (1 connections) — `server/game/magic/magic_healing_events.py`
 
 ## Relationships
 
-- [[Realtime Health Monitor]] (7 shared connections)
-- [[NPC Admin API]] (5 shared connections)
-- [[Room Occupant Events]] (4 shared connections)
-- [[Realtime Performance Tracker]] (3 shared connections)
-- [[Connection Statistics Aggregator]] (1 shared connections)
+- [NPC Service Tests](NPC_Service_Tests.md) (8 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (3 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (3 shared connections)
+- [Combat Turn Processor](Combat_Turn_Processor.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
+- [Logging Correct Patterns](Logging_Correct_Patterns.md) (1 shared connections)
+- [Security Headers Middleware](Security_Headers_Middleware.md) (1 shared connections)
+- [NPC Occupant Verification](NPC_Occupant_Verification.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/monitoring/__init__.py`
-- `server/realtime/monitoring/health_monitor.py`
-- `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- `server/game/magic/magic_healing_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 98 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 76 (93%)
+- INFERRED: 6 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

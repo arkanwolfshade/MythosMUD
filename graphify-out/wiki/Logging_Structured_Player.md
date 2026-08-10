@@ -1,54 +1,53 @@
 # Logging Structured Player
 
-> 25 nodes · cohesion 0.09
+> 59 nodes
 
 ## Key Concepts
 
-- **PlayerGuidFormatter** (16 connections) — `server/structured_logging/player_guid_formatter.py`
-- **logging_utilities.py** (10 connections) — `server/structured_logging/logging_utilities.py`
-- **load_player_guid_formatter_class()** (10 connections) — `server/structured_logging/logging_utilities.py`
-- **_rotation_bound_logger()** (4 connections) — `server/structured_logging/logging_utilities.py`
+- **PlayerGuidFormatter** (33 connections) — `server/structured_logging/player_guid_formatter.py`
+- **test_player_guid_formatter.py** (24 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **_player_service_mock()** (11 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **player_guid_formatter.py** (4 connections) — `server/structured_logging/player_guid_formatter.py`
 - **.format()** (4 connections) — `server/structured_logging/player_guid_formatter.py`
+- **test_format_with_guid_player_found()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_multiple_guids()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_guid_at_start()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_guid_at_end()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_guid_in_middle()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_guid_with_hyphens()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_player_service_error()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_with_different_log_levels()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 - **._convert_player_guids()** (3 connections) — `server/structured_logging/player_guid_formatter.py`
-- **_PlayerGuidFormatterType** (2 connections) — `server/structured_logging/logging_utilities.py`
-- **BoundLogger** (2 connections) — `server/structured_logging/logging_utilities.py`
-- **player_guid_formatter.py** (2 connections) — `server/structured_logging/player_guid_formatter.py`
-- **._get_player_name()** (2 connections) — `server/structured_logging/player_guid_formatter.py`
-- **.__init__()** (2 connections) — `server/structured_logging/player_guid_formatter.py`
-- **._is_likely_player_id()** (2 connections) — `server/structured_logging/player_guid_formatter.py`
-- **LogRecord** (1 connections) — `server/structured_logging/player_guid_formatter.py`
-- **Logging utilities for directory management, path resolution, and environment det** (1 connections) — `server/structured_logging/logging_utilities.py`
-- **# NOTE: Using structlog directly here to avoid circular import.** (1 connections) — `server/structured_logging/logging_utilities.py`
-- **# NOTE: Infrastructure files may use structlog.get_logger() directly to avoid** (1 connections) — `server/structured_logging/logging_utilities.py`
-- **Return PlayerGuidFormatter without a static import from caller modules.      Imp** (1 connections) — `server/structured_logging/logging_utilities.py`
-- **Structlog logger for rotate_log_files (cast silences basedpyright Any from get_l** (1 connections) — `server/structured_logging/logging_utilities.py`
-- **Player GUID Formatter for MythosMUD logging system.  This module provides a cust** (1 connections) — `server/structured_logging/player_guid_formatter.py`
-- **Determine if a GUID is likely to be a player ID based on context.          Args:** (1 connections) — `server/structured_logging/player_guid_formatter.py`
-- **Get player name for GUID from in-memory data.          Args:             guid: T** (1 connections) — `server/structured_logging/player_guid_formatter.py`
-- **Custom formatter that converts player GUIDs to "<name>: <GUID>" format.      Thi** (1 connections) — `server/structured_logging/player_guid_formatter.py`
-- **Initialize the PlayerGuidFormatter.          Args:             player_service: S** (1 connections) — `server/structured_logging/player_guid_formatter.py`
-- **Format a log record with enhanced player GUID display.          Args:** (1 connections) — `server/structured_logging/player_guid_formatter.py`
-- **Convert player GUIDs in message to enhanced format.          Args:             m** (1 connections) — `server/structured_logging/player_guid_formatter.py`
+- **formatter()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_player_guid_formatter_init()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_player_guid_formatter_init_with_format()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_no_guids()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_with_guid_no_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_invalid_guid_format()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_empty_message()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_format_message_with_special_characters()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_uuid_pattern_matching()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_uuid_pattern_not_matching_partial()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_uuid_pattern_case_insensitive()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [[Logging Path Utilities]] (6 shared connections)
-- [[Player GUID Formatter]] (5 shared connections)
-- [[Logging File Setup]] (3 shared connections)
-- [[NPC Admin API]] (2 shared connections)
-- [[Logging Rotating Handlers]] (2 shared connections)
+- [Logging File Setup](Logging_File_Setup.md) (3 shared connections)
+- [Logging Path Utilities](Logging_Path_Utilities.md) (2 shared connections)
+- [Test Optimization Insights](Test_Optimization_Insights.md) (1 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/logging_utilities.py`
 - `server/structured_logging/player_guid_formatter.py`
+- `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (92%)
-- INFERRED: 6 (8%)
+- EXTRACTED: 178 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

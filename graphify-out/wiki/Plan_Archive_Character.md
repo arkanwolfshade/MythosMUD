@@ -1,39 +1,29 @@
 # Plan Archive Character
 
-> 13 nodes · cohesion 0.15
+> 4 nodes
 
 ## Key Concepts
 
-- **Character Creation Revamp and CoC 7th Ed Skills Plan** (11 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
-- **5. Client: Creation flow and skills UI** (3 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
-- **9. Files to add or touch (summary)** (3 connections) — `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
-- **6. Implementation order (suggested)** (2 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
-- **character_creation_revamp_coc_skills_plan.md** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
-- **1. Requirements Summary (from discovery)** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
-- **2. Current State (brief)** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
-- **3. Target Creation Flow** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
-- **5.1 Creation flow** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
-- **5.2 Skills visibility** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
-- **6.1 Implementation progress** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
-- **7.1 Integration points and mitigations (summary)** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
-- **8. Decided points and implementation notes** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
+- **._process_log_entry()** (5 connections) — `server/services/chat_logger.py`
+- **._writer_worker()** (3 connections) — `server/services/chat_logger.py`
+- **Background worker thread that handles all file writing operations.** (1 connections) — `server/services/chat_logger.py`
+- **Process a log entry from the queue and write it to the appropriate file.** (1 connections) — `server/services/chat_logger.py`
 
 ## Relationships
 
-- [[Archive Character Creation]] (3 shared connections)
-- [[Cursor Plans Follow]] (1 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (3 shared connections)
+- [AnyIO vs Asyncio Guide](AnyIO_vs_Asyncio_Guide.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
-- `docs/archive/character_creation_revamp_coc_skills_plan.md`
+- `server/services/chat_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

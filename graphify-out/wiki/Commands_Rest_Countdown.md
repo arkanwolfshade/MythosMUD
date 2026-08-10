@@ -1,41 +1,37 @@
 # Commands Rest Countdown
 
-> 15 nodes · cohesion 0.24
+> 7 nodes
 
 ## Key Concepts
 
-- **rest_countdown_task.py** (12 connections) — `server/commands/rest_countdown_task.py`
-- **create_rest_countdown_task()** (7 connections) — `server/commands/rest_countdown_task.py`
-- **_handle_countdown_loop()** (6 connections) — `server/commands/rest_countdown_task.py`
-- **_send_countdown_message()** (6 connections) — `server/commands/rest_countdown_task.py`
-- **UUID** (6 connections) — `server/commands/rest_countdown_task.py`
-- **_disconnect_player_after_rest()** (5 connections) — `server/commands/rest_countdown_task.py`
-- **_is_rest_interrupted()** (5 connections) — `server/commands/rest_countdown_task.py`
-- **Any** (5 connections) — `server/commands/rest_countdown_task.py`
-- **Rest countdown task implementation.  This module contains the async task that ha** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Create and return a rest countdown task.      Args:         player_id: The playe** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Check if rest countdown was interrupted.      Args:         player_id: Player UU** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Send countdown message to player.      Args:         player_id: Player UUID** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Execute countdown loop, sending messages every second.      Args:         player** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Disconnect player after rest countdown completes.      Args:         player_id:** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Task** (1 connections) — `server/commands/rest_countdown_task.py`
+- **circuit_breaker.py** (10 connections) — `server/realtime/circuit_breaker.py`
+- **CircuitState** (6 connections) — `server/realtime/circuit_breaker.py`
+- **.get_state()** (3 connections) — `server/realtime/circuit_breaker.py`
+- **Enum** (2 connections)
+- **Circuit breaker pattern for NATS message processing.  Implements three-state cir** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Circuit breaker states.      - CLOSED: Normal operation, requests pass through** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Get current circuit state.          Returns:             Current CircuitState** (1 connections) — `server/realtime/circuit_breaker.py`
 
 ## Relationships
 
-- [[Combat Player Broadcasts]] (4 shared connections)
-- [[Rest Command Flow]] (3 shared connections)
-- [[NPC Admin API]] (2 shared connections)
+- [Performance Optimization Summary](Performance_Optimization_Summary.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Circuit Breaker Core](Circuit_Breaker_Core.md) (2 shared connections)
+- [CircuitBreakerOpen](CircuitBreakerOpen.md) (1 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/rest_countdown_task.py`
+- `server/realtime/circuit_breaker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

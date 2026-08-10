@@ -1,34 +1,26 @@
 # Cursor Commands Mypy
 
-> 10 nodes · cohesion 0.20
+> 2 nodes
 
 ## Key Concepts
 
-- **Mypy Type Checking Remediation Prompt - AI-Optimized Version** (12 connections) — `.cursor/commands/mypy-remediation.md`
-- **📝 DOCUMENTATION REQUIREMENTS** (3 connections) — `.cursor/commands/mypy-remediation.md`
-- **📊 MYPY ERROR CODE CATEGORIZATION GUIDE** (2 connections) — `.cursor/commands/mypy-remediation.md`
-- **mypy-remediation.md** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **📋 AI EXECUTION CHECKLIST** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **🎯 AI EXECUTION SUCCESS CRITERIA** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **🎯 AI SUCCESS METRICS** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Common Mypy Error Codes** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Example Documentation Format** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Required Documentation for Each Fix** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **test_create_goto_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_goto_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [[Cursor Commands Mypy]] (6 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/mypy-remediation.md`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,46 +1,41 @@
 # Investigations Sessions Session
 
-> 21 nodes · cohesion 0.10
+> 15 nodes
 
 ## Key Concepts
 
-- **BUG INVESTIGATION REPORT: Posture Desynchronization After Respawn** (9 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **DETAILED FINDINGS** (6 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **ROOT CAUSE ANALYSIS** (4 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **SYSTEM IMPACT ASSESSMENT** (4 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **EVIDENCE DOCUMENTATION** (3 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **2025-01-28_session-001_posture-desync-after-respawn.md** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **1. Respawn Service Implementation** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **2. Stand Command Validation** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **3. Client Character Information Panel** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **4. Respawn Event Handling** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **5. Position Synchronization Logic** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **Code References** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **Contributing Factors** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **Data Flow Analysis** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **EXECUTIVE SUMMARY** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **Impact Areas** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **INVESTIGATION COMPLETION CHECKLIST** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **Log Evidence** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **Primary Root Cause** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **Risk Assessment** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **Scope** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
+- **.call()** (9 connections) — `server/realtime/circuit_breaker.py`
+- **._transition_to()** (6 connections) — `server/realtime/circuit_breaker.py`
+- **._on_success()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **._on_failure()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **._time_until_retry()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **.get_stats()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **._should_attempt_reset()** (3 connections) — `server/realtime/circuit_breaker.py`
+- **Any** (2 connections)
+- **Execute function through circuit breaker.          Enforces circuit breaker logi** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Handle successful function call.          Updates state based on current circuit** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Handle failed function call.          Updates state based on failure count:** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Check if enough time has passed to attempt circuit reset.          Returns:** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Calculate seconds until circuit can attempt reset.          Returns:** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Transition circuit to new state.          Args:             new_state: State to** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Get circuit breaker statistics.          Returns:             Dictionary with ci** (1 connections) — `server/realtime/circuit_breaker.py`
 
 ## Relationships
 
-- [[Investigations Sessions Session]] (1 shared connections)
-- [[Combat UUID Display Bug]] (1 shared connections)
+- [Performance Optimization Summary](Performance_Optimization_Summary.md) (7 shared connections)
+- [CircuitBreakerOpen](CircuitBreakerOpen.md) (1 shared connections)
+- [Commands Rest Countdown](Commands_Rest_Countdown.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
+- `server/realtime/circuit_breaker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
+- EXTRACTED: 43 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

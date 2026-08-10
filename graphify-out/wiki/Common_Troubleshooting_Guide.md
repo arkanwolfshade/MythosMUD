@@ -1,56 +1,44 @@
 # Common Troubleshooting Guide
 
-> 30 nodes · cohesion 0.09
+> 17 nodes
 
 ## Key Concepts
 
-- **Common Issues and Solutions** (22 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **2. WebSocket Connection Issues** (6 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **4. Performance Issues** (5 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Common Causes and Solutions** (5 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Diagnosis** (5 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Symptoms** (5 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Root Causes** (4 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **Common Issues** (4 connections) — `docs/PRE_COMMIT_LOGGING_VALIDATION.md`
-- **1. Database Connection Issues** (4 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **3. Authentication Issues** (4 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **5. Game Logic Issues** (4 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **1. Test Fixture Issues** (1 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **3. Async Context Manager Issues** (1 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **False Positives** (1 connections) — `docs/PRE_COMMIT_LOGGING_VALIDATION.md`
-- **Pre-commit Hook Not Running** (1 connections) — `docs/PRE_COMMIT_LOGGING_VALIDATION.md`
-- **Command Processing Failures** (1 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Connection Pool Exhaustion** (1 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Database Corruption** (1 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Database File Permissions** (1 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Database Lock Issues** (1 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Database Query Performance** (1 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Memory Leaks** (1 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Memory Leaks in Connections** (1 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Network Configuration Issues** (1 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- **Password Hashing Issues** (1 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
-- *... and 5 more nodes in this community*
+- **Lint Remediation Prompt - AI-Optimized Version** (11 connections) — `.cursor/commands/lint-remediation.md`
+- **🚨 AI ERROR HANDLING** (3 connections) — `.cursor/commands/lint-remediation.md`
+- **🔍 DEBUGGING GUIDE** (3 connections) — `.cursor/commands/lint-remediation.md`
+- **🚀 OPTIMIZATION TIPS** (3 connections) — `.cursor/commands/lint-remediation.md`
+- **📝 DOCUMENTATION REQUIREMENTS** (3 connections) — `.cursor/commands/lint-remediation.md`
+- **lint-remediation.md** (2 connections) — `.cursor/commands/lint-remediation.md`
+- **If Lint Still Fails After Fixes** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **If Multiple Categories Have Issues** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **📋 AI EXECUTION CHECKLIST** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🎯 AI SUCCESS METRICS** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **If Lint Command Fails** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **If Specific Issues Persist** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **For Large Codebases** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **For Performance** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Required Documentation for Each Fix** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Example Documentation Format** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🎯 AI EXECUTION SUCCESS CRITERIA** (1 connections) — `.cursor/commands/lint-remediation.md`
 
 ## Relationships
 
-- [[Warning Remediation Plan]] (1 shared connections)
-- [[Pre-commit Logging Validation]] (1 shared connections)
-- [[Plan Cursor Plans]] (1 shared connections)
-- [[Troubleshooting Guide]] (1 shared connections)
-- [[Combat Disconnect Bug]] (1 shared connections)
+- [Room Hierarchy FRD](Room_Hierarchy_FRD.md) (1 shared connections)
+- [Archive Player Protection](Archive_Player_Protection.md) (1 shared connections)
+- [Cursor Agents Readme](Cursor_Agents_Readme.md) (1 shared connections)
+- [Dual Connection Implementation Tasks](Dual_Connection_Implementation_Tasks.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/PRE_COMMIT_LOGGING_VALIDATION.md`
-- `docs/TROUBLESHOOTING_GUIDE.md`
-- `docs/archive/WARNING_REMEDIATION_PLAN.md`
+- `.cursor/commands/lint-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 87 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

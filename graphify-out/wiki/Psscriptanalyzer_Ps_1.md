@@ -1,10 +1,10 @@
 # Psscriptanalyzer Ps 1
 
-> 2 nodes · cohesion 1.00
+> 2 nodes
 
 ## Key Concepts
 
-- **psscriptanalyzer.ps1** (1 connections) — `scripts/psscriptanalyzer.ps1`
+- **psscriptanalyzer.ps1** (3 connections) — `scripts/psscriptanalyzer.ps1`
 - **Import-PSScriptAnalyzerModule()** (1 connections) — `scripts/psscriptanalyzer.ps1`
 
 ## Relationships
@@ -17,10 +17,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

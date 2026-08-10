@@ -1,40 +1,39 @@
 # Services Combat Initialization
 
-> 14 nodes · cohesion 0.21
+> 8 nodes
 
 ## Key Concepts
 
-- **combat_initialization.py** (10 connections) — `server/services/combat_initialization.py`
-- **.create_combat_instance()** (7 connections) — `server/services/combat_initialization.py`
-- **_build_participant()** (6 connections) — `server/services/combat_initialization.py`
-- **_build_combat_instance()** (5 connections) — `server/services/combat_initialization.py`
-- **_compute_turn_order()** (5 connections) — `server/services/combat_initialization.py`
-- **CombatParticipantData** (4 connections) — `server/services/combat_initialization.py`
-- **CombatInstance** (3 connections) — `server/services/combat_initialization.py`
-- **UUID** (3 connections) — `server/services/combat_initialization.py`
-- **CombatParticipant** (2 connections) — `server/services/combat_initialization.py`
-- **Combat initialization logic.  Handles creation and setup of combat instances.** (1 connections) — `server/services/combat_initialization.py`
-- **Build CombatInstance with turn interval in ticks (1 tick = 0.1s, so seconds * 10** (1 connections) — `server/services/combat_initialization.py`
-- **Build CombatParticipant from CombatParticipantData.** (1 connections) — `server/services/combat_initialization.py`
-- **Return participant IDs sorted by dexterity (highest first).** (1 connections) — `server/services/combat_initialization.py`
-- **Create and initialize a combat instance.** (1 connections) — `server/services/combat_initialization.py`
+- **optimized_comprehensive_sanitize_input()** (14 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_comprehensive_sanitize_input_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_comprehensive_sanitize_input_normal()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_comprehensive_sanitize_input_normalizes_newlines()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test comprehensive sanitization of empty string.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test comprehensive sanitization of normal text.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test that optimized comprehensive sanitization normalizes newlines to spaces.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Optimized comprehensive input sanitization.      Args:         text: Raw input t** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- [[Combat Service Bundle]] (7 shared connections)
-- [[Combat Taunt Tests]] (4 shared connections)
-- [[NPC Admin API]] (1 shared connections)
+- [WebSocket Handler Tests](WebSocket_Handler_Tests.md) (5 shared connections)
+- [Cursor Workflows Docs](Cursor_Workflows_Docs.md) (2 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (2 shared connections)
+- [Persistence Player Effect](Persistence_Player_Effect.md) (1 shared connections)
+- [Command Factories Inventory](Command_Factories_Inventory.md) (1 shared connections)
+- [Game Instance Manager](Game_Instance_Manager.md) (1 shared connections)
+- [E 2 E Whisper System](E_2_E_Whisper_System.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_initialization.py`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (92%)
-- INFERRED: 4 (8%)
+- EXTRACTED: 27 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

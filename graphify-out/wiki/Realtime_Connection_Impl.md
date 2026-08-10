@@ -1,51 +1,41 @@
 # Realtime Connection Impl
 
-> 22 nodes · cohesion 0.16
+> 15 nodes
 
 ## Key Concepts
 
-- **test_connection_helpers_impl.py** (34 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **convert_uuids_to_strings()** (18 connections) — `server/realtime/connection_helpers.py`
-- **test_connection_helpers.py** (8 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **Test convert_uuids_to_strings() with dict containing UUID.** (6 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_dict()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_convert_uuids_to_strings_list()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_convert_uuids_to_strings_nested()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_convert_uuids_to_strings_uuid()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_convert_uuids_to_strings_dict()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_int()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_list()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_nested()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_string()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_uuid()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **mock_manager()** (2 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **Test convert_uuids_to_strings() with UUID object.** (2 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **Test convert_uuids_to_strings() with string (no conversion).** (2 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **Recursively convert UUID objects to strings for JSON serialization.      Args:** (1 connections) — `server/realtime/connection_helpers.py`
-- **Unit tests for connection helpers implementation functions.  Tests the implement** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **Unit tests for connection helpers.  Tests the connection helper functions.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **Test convert_uuids_to_strings() with nested structures.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
+- **rest_countdown_task.py** (12 connections) — `server/commands/rest_countdown_task.py`
+- **create_rest_countdown_task()** (7 connections) — `server/commands/rest_countdown_task.py`
+- **UUID** (6 connections)
+- **_send_countdown_message()** (6 connections) — `server/commands/rest_countdown_task.py`
+- **_handle_countdown_loop()** (6 connections) — `server/commands/rest_countdown_task.py`
+- **_is_rest_interrupted()** (5 connections) — `server/commands/rest_countdown_task.py`
+- **Any** (5 connections)
+- **_disconnect_player_after_rest()** (5 connections) — `server/commands/rest_countdown_task.py`
+- **Task** (1 connections)
+- **Rest countdown task implementation.  This module contains the async task that ha** (1 connections) — `server/commands/rest_countdown_task.py`
+- **Check if rest countdown was interrupted.      Args:         player_id: Player UU** (1 connections) — `server/commands/rest_countdown_task.py`
+- **Send countdown message to player.      Args:         player_id: Player UUID** (1 connections) — `server/commands/rest_countdown_task.py`
+- **Execute countdown loop, sending messages every second.      Args:         player** (1 connections) — `server/commands/rest_countdown_task.py`
+- **Disconnect player after rest countdown completes.      Args:         player_id:** (1 connections) — `server/commands/rest_countdown_task.py`
+- **Create and return a rest countdown task.      Args:         player_id: The playe** (1 connections) — `server/commands/rest_countdown_task.py`
 
 ## Relationships
 
-- [[Realtime Connection Impl]] (28 shared connections)
-- [[Room Occupant Events]] (2 shared connections)
-- [[Message Broadcaster Tests]] (2 shared connections)
-- [[WebSocket Helper Utilities]] (1 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_helpers.py`
-- `server/tests/unit/realtime/test_connection_helpers.py`
-- `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- `server/commands/rest_countdown_task.py`
 
 ## Audit Trail
 
-- EXTRACTED: 107 (100%)
+- EXTRACTED: 59 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

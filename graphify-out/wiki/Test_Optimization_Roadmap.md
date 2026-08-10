@@ -1,52 +1,51 @@
 # Test Optimization Roadmap
 
-> 43 nodes · cohesion 0.05
+> 30 nodes
 
 ## Key Concepts
 
-- **Test Suite Optimization Roadmap** (15 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Phase 5: Strategic Additions (Week 5)** (6 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Phase 1: Quick Wins (Week 1)** (5 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Phase 4: Test Consolidation (Week 4)** (5 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Phase 6: Long-Term Optimizations (Ongoing)** (5 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Net Impact Projection** (4 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Phase 3: Coverage Test Optimization (Week 3)** (4 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Monitoring and Validation** (3 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Optimization Strategy Overview** (3 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Success Criteria** (3 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Risk Mitigation Strategy** (2 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **TEST_OPTIMIZATION_ROADMAP.md** (1 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **After Month 1 (Pruning Phase)** (1 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **After Month 2 (Consolidation + Additions)** (1 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **After Month 3+ (Continuous Improvement)** (1 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Guiding Principles** (1 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Monthly Review Questions** (1 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Qualitative Goals** (1 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Quantitative Goals** (1 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Recommended Execution Order** (1 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Rollback Plan** (1 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Safety Measures** (1 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Success Metrics** (1 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 1.1: Remove Placeholder Tests (30 minutes)** (1 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 1.2: Remove Trivial Type Assertions (1 hour)** (1 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- *... and 18 more nodes in this community*
+- **AliasGraph** (18 connections) — `server/utils/alias_graph.py`
+- **test_alias_graph.py** (9 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **test_alias_graph_init()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **test_alias_graph_build_graph()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **test_alias_graph_detect_cycle_no_cycle()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **test_alias_graph_is_safe_to_expand()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **test_alias_graph_get_expansion_depth()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **test_alias_graph_clear()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **.__init__()** (3 connections) — `server/utils/alias_graph.py`
+- **.build_graph()** (3 connections) — `server/utils/alias_graph.py`
+- **._extract_alias_references()** (3 connections) — `server/utils/alias_graph.py`
+- **.detect_cycle()** (3 connections) — `server/utils/alias_graph.py`
+- **.is_safe_to_expand()** (3 connections) — `server/utils/alias_graph.py`
+- **.get_expansion_depth()** (2 connections) — `server/utils/alias_graph.py`
+- **.clear()** (2 connections) — `server/utils/alias_graph.py`
+- **Unit tests for alias_graph utilities.  Tests the AliasGraph class.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Test AliasGraph initialization.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Test AliasGraph.build_graph() builds dependency graph.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Test AliasGraph.detect_cycle() returns None when no cycle.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Test AliasGraph.is_safe_to_expand() returns True when safe.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Test AliasGraph.get_expansion_depth() returns depth.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Test AliasGraph.clear() clears the graph.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Graph-based circular dependency detection for alias expansion.      Uses depth-f** (1 connections) — `server/utils/alias_graph.py`
+- **Initialize alias graph analyzer.          Args:             alias_storage: Stora** (1 connections) — `server/utils/alias_graph.py`
+- **Build dependency graph for a player's aliases.          Creates a directed graph** (1 connections) — `server/utils/alias_graph.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [[Chat Archive Advanced]] (1 shared connections)
-- [[Optimization Archive Modernization]] (1 shared connections)
-- [[Archive Plan Planning]] (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (5 shared connections)
 
 ## Source Files
 
-- `docs/TEST_OPTIMIZATION_ROADMAP.md`
+- `server/tests/unit/utils/test_alias_graph.py`
+- `server/utils/alias_graph.py`
 
 ## Audit Trail
 
-- EXTRACTED: 87 (100%)
+- EXTRACTED: 79 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

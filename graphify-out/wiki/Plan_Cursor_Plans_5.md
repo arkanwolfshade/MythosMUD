@@ -1,41 +1,36 @@
 # Plan Cursor Plans
 
-> 10 nodes · cohesion 0.20
+> 10 nodes
 
 ## Key Concepts
 
-- **ApplicationContainer DI** (6 connections) — `.cursor/plans/appstate_to_dependency_injection_migration_5749b0cc.plan.md`
-- **ADR-013 Pydantic BaseSettings Configuration** (3 connections) — `docs/architecture/decisions/ADR-013-pydantic-configuration.md`
-- **Architecture Remediation Plan** (2 connections) — `docs/archive/ARCHITECTURE_REMEDIATION_PLAN.md`
-- **Architecture Review Plan** (2 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **Architecture Review Remediation** (2 connections) — `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
-- **Client Updates System Audit** (2 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
-- **.env and YAML Config Split** (1 connections) — `docs/archive/.ENV_REFACTORING_SUMMARY.md`
-- **App.state to Dependency Injection Migration** (1 connections) — `.cursor/plans/appstate_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Deprecated get_async_persistence Global** (1 connections) — `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
-- **Option C Replacement Client Updates** (1 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
+- **optimized_validate_alias_name()** (7 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_validate_alias_name_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_alias_name_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_alias_name_starts_with_number()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_alias_name_hyphen()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating empty alias name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating valid alias name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating alias name starting with number (invalid).** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating alias name with hyphen (invalid - aliases don't allow hyphens).** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Optimized validation for alias name fields.      Args:         value: The alias** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- [[Architecture Implementation Summary]] (2 shared connections)
-- [[Architecture Decisions Adr]] (1 shared connections)
+- [WebSocket Handler Tests](WebSocket_Handler_Tests.md) (5 shared connections)
+- [Cursor Workflows Docs](Cursor_Workflows_Docs.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/appstate_to_dependency_injection_migration_5749b0cc.plan.md`
-- `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
-- `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
-- `docs/architecture/decisions/ADR-013-pydantic-configuration.md`
-- `docs/archive/.ENV_REFACTORING_SUMMARY.md`
-- `docs/archive/ARCHITECTURE_REMEDIATION_PLAN.md`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (67%)
-- INFERRED: 7 (33%)
+- EXTRACTED: 24 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

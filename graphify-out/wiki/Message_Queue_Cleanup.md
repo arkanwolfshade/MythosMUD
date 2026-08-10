@@ -1,66 +1,61 @@
 # Message Queue Cleanup
 
-> 84 nodes · cohesion 0.04
+> 80 nodes
 
 ## Key Concepts
 
-- **MessageQueue** (56 connections) — `server/realtime/message_queue.py`
-- **test_message_queue.py** (30 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **deque** (24 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **.add_message()** (4 connections) — `server/realtime/message_queue.py`
-- **.cleanup_old_messages()** (4 connections) — `server/realtime/message_queue.py`
-- **._is_message_recent()** (4 connections) — `server/realtime/message_queue.py`
-- **test_message_queue_cleanup_large_structures()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_cleanup_old_messages()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_cleanup_old_messages_invalid_timestamp()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_cleanup_old_messages_removes_empty()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_cleanup_old_messages_string_timestamp()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_get_messages_error()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_has_messages_empty_list()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **Any** (4 connections) — `server/realtime/message_queue.py`
-- **.__init__()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.__init__()** (3 connections) — `server/monitoring/performance_monitor.py`
-- **.__init__()** (3 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.cleanup_large_structures()** (3 connections) — `server/realtime/message_queue.py`
-- **.get_messages()** (3 connections) — `server/realtime/message_queue.py`
-- **.get_stats()** (3 connections) — `server/realtime/message_queue.py`
-- **Test MessageQueue.get_messages() handles errors.** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **Test MessageQueue.remove_player_messages() removes all messages.** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_add_message()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_add_message_error()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_add_message_limit_reached()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- *... and 59 more nodes in this community*
+- **test_rescue_service.py** (32 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **rescue_service.py** (19 connections) — `server/services/rescue_service.py`
+- **RescueService** (12 connections) — `server/services/rescue_service.py`
+- **.rescue()** (9 connections) — `server/services/rescue_service.py`
+- **Any** (7 connections)
+- **factory()** (7 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **_load_rescue_participants()** (6 connections) — `server/services/rescue_service.py`
+- **.__init__()** (6 connections) — `server/services/rescue_service.py`
+- **_ensure_uuid()** (5 connections) — `server/services/rescue_service.py`
+- **._apply_rescue_adjustment()** (5 connections) — `server/services/rescue_service.py`
+- **_maybe_await()** (4 connections) — `server/services/rescue_service.py`
+- **_dispatch_rescue_events()** (4 connections) — `server/services/rescue_service.py`
+- **UUID** (3 connections)
+- **_rescue_success_payload()** (3 connections) — `server/services/rescue_service.py`
+- **async_session_factory()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **lucidity_service_factory()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **rescue_service()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **sample_lucidity_record()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_no_persistence()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **EventDispatcher** (2 connections)
+- **mock_persistence()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_session()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_lucidity_service()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_event_dispatcher()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **sample_rescuer()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [[Room Occupant Events]] (11 shared connections)
-- [[Mythos Map Builder]] (5 shared connections)
-- [[Connection Disconnection Cleanup]] (5 shared connections)
-- [[NPC Admin API]] (2 shared connections)
-- [[Error Monitor Service]] (1 shared connections)
-- [[Services Combat Service]] (1 shared connections)
-- [[Zone Coordinate Generator]] (1 shared connections)
-- [[Memory Leak Metrics]] (1 shared connections)
-- [[Performance Monitor Metrics]] (1 shared connections)
-- [[Manager Services Nats]] (1 shared connections)
-- [[Combat Domain Events]] (1 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (10 shared connections)
+- [Follow Service Tests](Follow_Service_Tests.md) (4 shared connections)
+- [Combat Messaging Tests](Combat_Messaging_Tests.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (1 shared connections)
+- [Cache and NPC Cache](Cache_and_NPC_Cache.md) (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (1 shared connections)
 
 ## Source Files
 
-- `data/local/mythos_mud_mapbuilder.py`
-- `server/monitoring/memory_leak_metrics.py`
-- `server/monitoring/performance_monitor.py`
-- `server/realtime/message_queue.py`
-- `server/services/nats_metrics.py`
-- `server/services/nats_subject_manager/metrics.py`
-- `server/tests/unit/realtime/test_message_queue.py`
+- `server/services/rescue_service.py`
+- `server/tests/unit/services/test_rescue_service.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 248 (86%)
-- INFERRED: 40 (14%)
+- EXTRACTED: 210 (95%)
+- INFERRED: 11 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

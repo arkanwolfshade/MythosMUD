@@ -1,37 +1,26 @@
 # Contexts Panelcontextruntime
 
-> 12 nodes · cohesion 0.21
+> 2 nodes
 
 ## Key Concepts
 
-- **PanelContextRuntime.tsx** (10 connections) — `client/src/contexts/PanelContextRuntime.tsx`
-- **PanelContextRuntime.test.tsx** (5 connections) — `client/src/contexts/__tests__/PanelContextRuntime.test.tsx`
-- **PanelContext** (2 connections) — `client/src/contexts/PanelContextRuntime.tsx`
-- **PanelProvider()** (2 connections) — `client/src/contexts/PanelContextRuntime.tsx`
-- **PanelState** (2 connections) — `client/src/contexts/PanelContextRuntime.tsx`
-- **defaultPanels** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
-- **PanelContextType** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
-- **PanelLayout** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
-- **PanelPosition** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
-- **PanelProviderProps** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
-- **PanelSize** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
-- **useRuntimePanelContext()** (1 connections) — `client/src/contexts/__tests__/PanelContextRuntime.test.tsx`
+- **test_handle_stop_command_no_player()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test stop command when player is not found.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/contexts/PanelContextRuntime.tsx`
-- `client/src/contexts/__tests__/PanelContextRuntime.test.tsx`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

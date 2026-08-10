@@ -1,43 +1,33 @@
 # Mythosmud Obsidian Raw
 
-> 19 nodes · cohesion 0.11
+> 8 nodes
 
 ## Key Concepts
 
-- **Zone Characteristics** (17 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **Arkham City #arkham #geography** (2 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **Geography & Major Locations.md** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **Antarctica #antarctica #geography** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **Arkham Known Subzones** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **Bayous of Louisiana #bayousoflouisiana #geography** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **Bayous of Louisiana Zone Characteristics** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **Dunwich #dunwich #geography** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **Dunwich Zone Characteristics** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **Innsmouth #innsmouth #geography** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **Innsmouth Known Subzones** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **Innsmouth Zone Characteristics** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **Kingsport #kingsport #geography** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **Kingsport Zone Characteristics** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **Other Locations** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **R'lyeh #rlyeh #geography** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **R'lyeh Zone Characteristics** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **The Dreamlands #dreamlands #geography** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **The Plateau of Leng #plateauofleng #geography** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
+- **TestHandleSpecialCommandRouting** (5 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_handle_special_command_routing_alias_command()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_handle_special_command_routing_alias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_handle_special_command_routing_emote_conversion()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing handles alias management commands.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing returns error when alias storage unavailabl** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing converts single-word emotes.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
+- `server/tests/unit/commands/test_command_aliases.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

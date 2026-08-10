@@ -1,50 +1,47 @@
 # Caching Lru Cache
 
-> 26 nodes · cohesion 0.08
+> 18 nodes
 
 ## Key Concepts
 
-- **test_lru_cache.py** (14 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **cache_with_ttl()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **cache_without_ttl()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expiration_check_only_when_ttl_enabled()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expiration_performance_impact()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expiration_rate_calculated()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expired_count_tracked_in_stats()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expired_entries_not_counted_in_evictions()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expired_entries_removed_efficiently()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_mixed_expired_and_valid_entries()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_put_expired_entries_removed_before_capacity_check()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_put_expired_entries_removed_before_lru_eviction()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_size_stays_within_bounds_after_expiration()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Unit tests for LRU cache expiration and eviction.  Tests the LRUCache class, foc** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expired entry count is tracked in cache stats.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expiration rate is calculated in stats.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that cache size stays within bounds after expiration cleanup.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expiration checking doesn't significantly impact performance.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Create an LRUCache with TTL enabled.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expired entries are removed efficiently in bulk.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test cache behavior with mix of expired and valid entries.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Create an LRUCache without TTL.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expired entries are removed before LRU eviction.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expired entries are removed before checking if cache is full.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expired entries are not counted as LRU evictions.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- *... and 1 more nodes in this community*
+- **test_communication_commands_whisper_reply.py** (17 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **communication_commands_mocks.py** (5 connections) — `server/tests/unit/commands/communication_commands_mocks.py`
+- **test_handle_whisper_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **test_handle_reply_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **test_handle_whisper_command_chat_service_failure()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **test_handle_whisper_command_no_target()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **test_handle_whisper_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **test_handle_reply_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **test_handle_reply_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **Shared mock wiring for communication command unit tests.** (1 connections) — `server/tests/unit/commands/communication_commands_mocks.py`
+- **Unit tests for whisper and reply communication command handlers.** (1 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **Test handle_whisper_command with no target.** (1 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **Test handle_whisper_command when services are not available.** (1 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **Test handle_whisper_command successful execution.** (1 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **Test handle_reply_command with no message.** (1 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **Test handle_reply_command when services are not available.** (1 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **Test handle_reply_command successful execution.** (1 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **Test handle_whisper_command when chat service returns failure.** (1 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
 
 ## Relationships
 
-- [[LRU Cache Manager]] (1 shared connections)
+- [Disconnect Grace Period](Disconnect_Grace_Period.md) (7 shared connections)
+- [Client Event Store](Client_Event_Store.md) (6 shared connections)
+- [Deprecated Logging Patterns](Deprecated_Logging_Patterns.md) (6 shared connections)
+- [E 2 E Execution Guards](E_2_E_Execution_Guards.md) (1 shared connections)
+- [E 2 E Scenario Template](E_2_E_Scenario_Template.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/caching/test_lru_cache.py`
+- `server/tests/unit/commands/communication_commands_mocks.py`
+- `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
 
 ## Audit Trail
 
-- EXTRACTED: 51 (100%)
+- EXTRACTED: 55 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,41 +1,36 @@
 # Commands Time
 
-> 15 nodes · cohesion 0.19
+> 7 nodes
 
 ## Key Concepts
 
-- **handle_time_command()** (12 connections) — `server/commands/time_commands.py`
-- **test_time_commands.py** (7 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_holiday_service_error()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_no_holiday_service()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_no_holidays()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_success()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_with_holidays()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() includes active holidays.** (2 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Unit tests for time command handlers.  Tests the time command functionality.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() handles holiday service errors.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() handles missing holiday service.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() returns time information.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Handle the time command, exposing the current Mythos time and active holidays.** (1 connections) — `server/commands/time_commands.py`
-- **AliasStorage** (1 connections) — `server/commands/time_commands.py`
-- **Any** (1 connections) — `server/commands/time_commands.py`
+- **._get_player_mute_file()** (7 connections) — `server/services/user_manager.py`
+- **.__init__()** (4 connections) — `server/services/user_manager.py`
+- **_get_proper_data_dir()** (4 connections) — `server/services/user_manager.py`
+- **Path** (3 connections)
+- **Initialize the user manager.          Args:             data_dir: Directory f** (1 connections) — `server/services/user_manager.py`
+- **Get the mute data file path for a specific player.** (1 connections) — `server/services/user_manager.py`
+- **Get the proper environment-aware data directory for user management.      Uses** (1 connections) — `server/services/user_manager.py`
 
 ## Relationships
 
-- [[Alias Expansion Logic]] (2 shared connections)
-- [[Game Tick Processing]] (1 shared connections)
+- [Player Mute Persistence](Player_Mute_Persistence.md) (4 shared connections)
+- [chat_logger](chat_logger.md) (1 shared connections)
+- [Async Migration Gotchas](Async_Migration_Gotchas.md) (1 shared connections)
+- [Game Magic Spell](Game_Magic_Spell.md) (1 shared connections)
+- [Archive Frd Random](Archive_Frd_Random.md) (1 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/time_commands.py`
-- `server/tests/unit/commands/test_time_commands.py`
+- `server/services/user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 20 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

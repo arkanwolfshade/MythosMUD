@@ -1,43 +1,26 @@
 # Investigations Sessions Session
 
-> 16 nodes · cohesion 0.12
+> 2 nodes
 
 ## Key Concepts
 
-- **Detailed Findings** (7 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **FINDINGS** (6 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
-- **DETAILED FINDINGS** (6 connections) — `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
-- **5. Evidence Collection** (2 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
-- **2. Code Flow Analysis** (2 connections) — `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
-- **1. Error Log Analysis** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **2. Message Structure Analysis** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **4. Schema Validation Status** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **5. Impact Assessment** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- **1. Game State** (1 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
-- **2. Database Investigation** (1 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
-- **4. Potential Issues Identified** (1 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
-- **1. Bug Behavior Analysis** (1 connections) — `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
-- **3. Root Cause Analysis** (1 connections) — `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
-- **4. Code Architecture Issues** (1 connections) — `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
-- **5. Evidence Collection** (1 connections) — `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
+- **test_create_whoami_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_whoami_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [[Investigations Sessions Session]] (3 shared connections)
-- [[Investigations Sessions Movement]] (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
-- `investigations/sessions/2025-11-20_movement-bug-investigation.md`
-- `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

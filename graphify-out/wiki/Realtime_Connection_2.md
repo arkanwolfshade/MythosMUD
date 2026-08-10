@@ -1,43 +1,34 @@
 # Realtime Connection
 
-> 15 nodes · cohesion 0.20
+> 6 nodes
 
 ## Key Concepts
 
-- **get_npc_name_from_instance()** (11 connections) — `server/realtime/connection_utils.py`
-- **test_connection_utils.py** (8 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **test_get_npc_name_from_instance_handles_exception()** (4 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **test_get_npc_name_from_instance_no_lifecycle_manager()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **test_get_npc_name_from_instance_no_name()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **test_get_npc_name_from_instance_no_service()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **test_get_npc_name_from_instance_not_found()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **test_get_npc_name_from_instance_success()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Test get_npc_name_from_instance() returns NPC name when found.** (2 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Get NPC name from the actual NPC instance, preserving original case from databas** (1 connections) — `server/realtime/connection_utils.py`
-- **Unit tests for connection utils.  Tests the connection_utils module functions.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Test get_npc_name_from_instance() returns None when NPC has no name.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Test get_npc_name_from_instance() returns None when service not available.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Test get_npc_name_from_instance() returns None when no lifecycle manager.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Test get_npc_name_from_instance() handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **connection_state_machine.py** (10 connections) — `server/realtime/connection_state_machine.py`
+- **ConnectionEvent** (4 connections) — `server/realtime/connection_state_machine.py`
+- **Enum** (2 connections)
+- **StateMachine** (2 connections)
+- **Connection state machine for NATS messaging.  Implements a robust state machine** (1 connections) — `server/realtime/connection_state_machine.py`
+- **Events that trigger state transitions.      AI: Explicit events make the FSM det** (1 connections) — `server/realtime/connection_state_machine.py`
 
 ## Relationships
 
-- [[Room Occupant Events]] (1 shared connections)
-- [[NPC Admin API]] (1 shared connections)
-- [[NPC Occupant Verification]] (1 shared connections)
-- [[Services Service Room]] (1 shared connections)
+- [Room Subscription Helpers](Room_Subscription_Helpers.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Exploration Command Factory](Exploration_Command_Factory.md) (2 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
+- [Combat Service Bundle](Combat_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_utils.py`
-- `server/tests/unit/realtime/test_connection_utils.py`
+- `server/realtime/connection_state_machine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 20 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

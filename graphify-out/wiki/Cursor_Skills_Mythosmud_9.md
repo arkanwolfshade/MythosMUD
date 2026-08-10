@@ -1,16 +1,11 @@
 # Cursor Skills Mythosmud
 
-> 7 nodes · cohesion 0.29
+> 2 nodes
 
 ## Key Concepts
 
-- **MythosMUD Logging Standards** (6 connections) — `.cursor/skills/mythosmud-logging-standards/SKILL.md`
-- **SKILL.md** (1 connections) — `.cursor/skills/mythosmud-logging-standards/SKILL.md`
-- **Import** (1 connections) — `.cursor/skills/mythosmud-logging-standards/SKILL.md`
-- **Optional Helpers** (1 connections) — `.cursor/skills/mythosmud-logging-standards/SKILL.md`
-- **Reference** (1 connections) — `.cursor/skills/mythosmud-logging-standards/SKILL.md`
-- **Structured Logging** (1 connections) — `.cursor/skills/mythosmud-logging-standards/SKILL.md`
-- **Summary** (1 connections) — `.cursor/skills/mythosmud-logging-standards/SKILL.md`
+- **MythosMUD Logging Standards Skill** (1 connections) — `.cursor/skills/mythosmud-logging-standards/SKILL.md`
+- **get_logger Structured Logging** (1 connections) — `.cursor/skills/mythosmud-logging-standards/SKILL.md`
 
 ## Relationships
 
@@ -22,10 +17,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

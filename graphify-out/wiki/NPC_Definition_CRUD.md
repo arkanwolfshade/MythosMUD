@@ -1,56 +1,59 @@
 # NPC Definition CRUD
 
-> 65 nodes · cohesion 0.05
+> 54 nodes
 
 ## Key Concepts
 
-- **NPCDefinitionCRUDMixin** (18 connections) — `server/services/npc_service/definition_crud.py`
-- **_row_to_npc_definition()** (13 connections) — `server/services/npc_service_models.py`
-- **NPCSpawnRuleCRUDMixin** (10 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **.update_npc_definition()** (9 connections) — `server/services/npc_service/definition_crud.py`
-- **_row_to_npc_spawn_rule()** (9 connections) — `server/services/npc_service_models.py`
-- **.create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
-- **._execute_create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
-- **._execute_npc_update()** (8 connections) — `server/services/npc_service/definition_crud.py`
-- **._execute_create_spawn_rule()** (8 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **AsyncSession** (8 connections) — `server/services/npc_service/definition_crud.py`
-- **NPCDefinition** (8 connections) — `server/services/npc_service/definition_crud.py`
-- **._build_npc_update_data()** (7 connections) — `server/services/npc_service/definition_crud.py`
-- **.get_npc_definition()** (7 connections) — `server/services/npc_service/definition_crud.py`
-- **.get_npc_definitions()** (7 connections) — `server/services/npc_service/definition_crud.py`
-- **.create_spawn_rule()** (7 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **.get_spawn_rule()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **.get_spawn_rules()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **AsyncSession** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **.get_npc_definition_by_name()** (5 connections) — `server/services/npc_service/definition_crud.py`
-- **.get_npc_definitions_by_sub_zone()** (5 connections) — `server/services/npc_service/queries.py`
-- **.get_npc_definitions_by_type()** (5 connections) — `server/services/npc_service/queries.py`
-- **._add_json_field()** (4 connections) — `server/services/npc_service/definition_crud.py`
-- **._add_simple_field()** (4 connections) — `server/services/npc_service/definition_crud.py`
-- **.delete_npc_definition()** (4 connections) — `server/services/npc_service/definition_crud.py`
-- **._log_npc_definition_created()** (4 connections) — `server/services/npc_service/definition_crud.py`
-- *... and 40 more nodes in this community*
+- **InventorySchemaValidationError** (20 connections) — `server/schemas/shared/inventory_schema.py`
+- **PlayerSavePreparer** (16 connections) — `server/persistence/repositories/player_repository_save.py`
+- **validate_inventory_payload()** (13 connections) — `server/schemas/shared/inventory_schema.py`
+- **player_repository_save.py** (11 connections) — `server/persistence/repositories/player_repository_save.py`
+- **test_inventory_schema.py** (11 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **.prepare()** (10 connections) — `server/persistence/repositories/player_repository_save.py`
+- **validate_inventory_items()** (9 connections) — `server/schemas/shared/inventory_schema.py`
+- **Any** (7 connections)
+- **Player** (7 connections)
+- **._prepare_inventory_payload()** (7 connections) — `server/persistence/repositories/player_repository_save.py`
+- **inventory_schema.py** (7 connections) — `server/schemas/shared/inventory_schema.py`
+- **_parse_inventory_raw()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **_parse_equipped_raw()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **._ensure_inventory_record()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **._normalize_timestamps()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **._upsert_string_defaults()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **._upsert_numeric_defaults()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **_build_validator()** (5 connections) — `server/schemas/shared/inventory_schema.py`
+- **._normalize_is_admin()** (4 connections) — `server/persistence/repositories/player_repository_save.py`
+- **test_validate_inventory_payload_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_payload_invalid_inventory()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_items_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_items_invalid_quantity()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **.execute()** (3 connections) — `server/persistence/repositories/player_repository_save.py`
+- **Any** (3 connections)
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Admin API]] (17 shared connections)
-- [[Lifespan Startup Hooks]] (2 shared connections)
-- [[NPC Definition Schemas]] (2 shared connections)
-- [[Quest Flow Integration]] (1 shared connections)
+- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (5 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
+- [Logging Correct Patterns](Logging_Correct_Patterns.md) (4 shared connections)
+- [Dependency Upgrade Report](Dependency_Upgrade_Report.md) (3 shared connections)
+- [Player Creation Service](Player_Creation_Service.md) (2 shared connections)
+- [NPC Database Sessions](NPC_Database_Sessions.md) (2 shared connections)
+- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
+- [Weapon Resolution Helpers](Weapon_Resolution_Helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_service/definition_crud.py`
-- `server/services/npc_service/queries.py`
-- `server/services/npc_service/spawn_rule_crud.py`
-- `server/services/npc_service_models.py`
+- `server/persistence/repositories/player_repository_save.py`
+- `server/schemas/shared/inventory_schema.py`
+- `server/tests/unit/schemas/test_inventory_schema.py`
 
 ## Audit Trail
 
-- EXTRACTED: 244 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 203 (95%)
+- INFERRED: 11 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

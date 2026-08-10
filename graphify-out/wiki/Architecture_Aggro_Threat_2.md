@@ -1,16 +1,14 @@
 # Architecture Aggro Threat
 
-> 7 nodes · cohesion 0.29
+> 5 nodes
 
 ## Key Concepts
 
-- **Aggro and Threat System Implementation Plan** (6 connections) — `docs/architecture/aggro-threat-implementation-plan.md`
-- **aggro-threat-implementation-plan.md** (1 connections) — `docs/architecture/aggro-threat-implementation-plan.md`
-- **Constants (locked)** (1 connections) — `docs/architecture/aggro-threat-implementation-plan.md`
-- **Integration with NPC static data (behavior_config / npc_type)** (1 connections) — `docs/architecture/aggro-threat-implementation-plan.md`
-- **Key Modules and Files** (1 connections) — `docs/architecture/aggro-threat-implementation-plan.md`
-- **References** (1 connections) — `docs/architecture/aggro-threat-implementation-plan.md`
-- **Status** (1 connections) — `docs/architecture/aggro-threat-implementation-plan.md`
+- **Aggro and Threat System Design** (4 connections) — `docs/architecture/aggro-threat-system.md`
+- **Aggro Threat Implementation Plan** (1 connections) — `docs/architecture/aggro-threat-implementation-plan.md`
+- **Hate List** (1 connections) — `docs/architecture/aggro-threat-system.md`
+- **UpdateAggro** (1 connections) — `docs/architecture/aggro-threat-system.md`
+- **Aggro Stability Margin** (1 connections) — `docs/architecture/aggro-threat-system.md`
 
 ## Relationships
 
@@ -19,13 +17,14 @@
 ## Source Files
 
 - `docs/architecture/aggro-threat-implementation-plan.md`
+- `docs/architecture/aggro-threat-system.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

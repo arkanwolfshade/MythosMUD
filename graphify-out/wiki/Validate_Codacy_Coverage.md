@@ -1,15 +1,15 @@
 # Validate Codacy Coverage
 
-> 15 nodes · cohesion 0.25
+> 15 nodes
 
 ## Key Concepts
 
 - **validate_codacy_coverage_gate.py** (7 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **Path** (6 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **Path** (6 connections)
 - **validate_python_gate()** (6 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **cobertura_has_server_sources()** (5 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **cobertura_root_line_rate()** (5 connections) — `scripts/validate_codacy_coverage_gate.py`
 - **_parse_cobertura_xml()** (5 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **cobertura_root_line_rate()** (5 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **cobertura_has_server_sources()** (5 connections) — `scripts/validate_codacy_coverage_gate.py`
 - **validate_lcov_gate()** (5 connections) — `scripts/validate_codacy_coverage_gate.py`
 - **lcov_aggregate_hits()** (4 connections) — `scripts/validate_codacy_coverage_gate.py`
 - **main()** (3 connections) — `scripts/validate_codacy_coverage_gate.py`
@@ -36,4 +36,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

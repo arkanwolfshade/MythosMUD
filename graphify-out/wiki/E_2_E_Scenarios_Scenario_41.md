@@ -1,17 +1,12 @@
 # E 2 E Scenarios Scenario
 
-> 8 nodes · cohesion 0.25
+> 3 nodes
 
 ## Key Concepts
 
-- **Scenario 41: Skills After Character Creation (Plan 10.8 E4)** (7 connections) — `e2e-tests/scenarios/scenario-41-skills-after-creation.md`
-- **scenario-41-skills-after-creation.md** (1 connections) — `e2e-tests/scenarios/scenario-41-skills-after-creation.md`
-- **Automated Implementation** (1 connections) — `e2e-tests/scenarios/scenario-41-skills-after-creation.md`
-- **Execution Steps** (1 connections) — `e2e-tests/scenarios/scenario-41-skills-after-creation.md`
-- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-41-skills-after-creation.md`
-- **Prerequisites** (1 connections) — `e2e-tests/scenarios/scenario-41-skills-after-creation.md`
-- **Status** (1 connections) — `e2e-tests/scenarios/scenario-41-skills-after-creation.md`
-- **Success Criteria** (1 connections) — `e2e-tests/scenarios/scenario-41-skills-after-creation.md`
+- **Scenario 34 Two Players Same Room Visibility** (2 connections) — `e2e-tests/scenarios/scenario-34-two-players-same-room.md`
+- **Scenario 36 Movement Visibility** (1 connections) — `e2e-tests/scenarios/scenario-36-movement-visibility.md`
+- **Scenario 37 Chat Message Ordering** (1 connections) — `e2e-tests/scenarios/scenario-37-chat-message-ordering.md`
 
 ## Relationships
 
@@ -19,14 +14,16 @@
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-41-skills-after-creation.md`
+- `e2e-tests/scenarios/scenario-34-two-players-same-room.md`
+- `e2e-tests/scenarios/scenario-36-movement-visibility.md`
+- `e2e-tests/scenarios/scenario-37-chat-message-ordering.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 4 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

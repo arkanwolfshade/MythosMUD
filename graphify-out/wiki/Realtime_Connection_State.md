@@ -1,52 +1,38 @@
 # Realtime Connection State
 
-> 26 nodes · cohesion 0.08
+> 10 nodes
 
 ## Key Concepts
 
-- **test_connection_state_machine.py** (38 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_can_attempt_connection_circuit_open()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_can_attempt_connection_connected()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_close_circuit()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_connected_successfully_from_connecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_connected_successfully_from_reconnecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_disconnect_from_connected()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_disconnect_from_degraded()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_get_stats()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_last_error_set()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_open_circuit()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_reconnect_attempts_reset_on_success()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_should_open_circuit_under_threshold()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test can_attempt_connection() returns False when connected.** (2 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test connected_successfully() transition from connecting to connected.** (2 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_connection_event_enum()** (2 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Unit tests for connection state machine.  Tests the NATSConnectionStateMachine c** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test disconnect() transition from connected to disconnected.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test disconnect() transition from degraded to disconnected.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test open_circuit() transition from reconnecting to circuit_open.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test ConnectionEvent enum values.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test close_circuit() transition from circuit_open to disconnected.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test should_open_circuit() returns False when under threshold.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test get_stats() returns comprehensive statistics.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test reconnect_attempts resets on successful connection.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- *... and 1 more nodes in this community*
+- **Mypy Type Checking Remediation Prompt - AI-Optimized Version** (12 connections) — `.cursor/commands/mypy-remediation.md`
+- **📝 DOCUMENTATION REQUIREMENTS** (3 connections) — `.cursor/commands/mypy-remediation.md`
+- **📊 MYPY ERROR CODE CATEGORIZATION GUIDE** (2 connections) — `.cursor/commands/mypy-remediation.md`
+- **mypy-remediation.md** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **📋 AI EXECUTION CHECKLIST** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **🎯 AI SUCCESS METRICS** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **Common Mypy Error Codes** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **Required Documentation for Each Fix** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **Example Documentation Format** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **🎯 AI EXECUTION SUCCESS CRITERIA** (1 connections) — `.cursor/commands/mypy-remediation.md`
 
 ## Relationships
 
-- [[Realtime Connection State]] (22 shared connections)
-- [[NATS Connection State Machine]] (13 shared connections)
-- [[NPC Admin API]] (1 shared connections)
+- [Components Ui V 2](Components_Ui_V_2.md) (2 shared connections)
+- [Audit Executive Summary](Audit_Executive_Summary.md) (1 shared connections)
+- [E 2 E Runtime Combat](E_2_E_Runtime_Combat.md) (1 shared connections)
+- [Configuration Files Reference](Configuration_Files_Reference.md) (1 shared connections)
+- [Events Event Bus](Events_Event_Bus.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_state_machine.py`
+- `.cursor/commands/mypy-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

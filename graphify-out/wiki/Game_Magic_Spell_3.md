@@ -1,48 +1,37 @@
 # Game Magic Spell
 
-> 20 nodes · cohesion 0.14
+> 12 nodes
 
 ## Key Concepts
 
-- **spell_learning_service.py** (13 connections) — `server/game/magic/spell_learning_service.py`
-- **UUID** (11 connections) — `server/game/magic/spell_learning_service.py`
-- **Any** (9 connections) — `server/game/magic/spell_learning_service.py`
-- **.learn_spell()** (8 connections) — `server/game/magic/spell_learning_service.py`
-- **._validate_prerequisites()** (6 connections) — `server/game/magic/spell_learning_service.py`
-- **.learn_spell_from_book()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **.learn_spell_from_npc()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **.learn_spell_from_quest()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **Spell** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **.increase_mastery_on_cast()** (3 connections) — `server/game/magic/spell_learning_service.py`
-- **Spell learning service for handling spell acquisition.  This module provides ser** (1 connections) — `server/game/magic/spell_learning_service.py`
-- **Validate prerequisites for learning a spell.          Args:             player_i** (1 connections) — `server/game/magic/spell_learning_service.py`
-- **Learn a spell from a spellbook item.          Args:             player_id: Playe** (1 connections) — `server/game/magic/spell_learning_service.py`
-- **# TODO: Integrate with item system to get spellbook data  # pylint: disable=fixm** (1 connections) — `server/game/magic/spell_learning_service.py`
-- **Learn a spell from an NPC teacher.          Args:             player_id: Player** (1 connections) — `server/game/magic/spell_learning_service.py`
-- **# TODO: Integrate with NPC system to validate teacher status  # pylint: disable=** (1 connections) — `server/game/magic/spell_learning_service.py`
-- **Learn a spell as a quest reward.          Args:             player_id: Player ID** (1 connections) — `server/game/magic/spell_learning_service.py`
-- **# TODO: Integrate with quest system to validate quest completion  # pylint: disa** (1 connections) — `server/game/magic/spell_learning_service.py`
-- **Increase mastery level after casting a spell.          Args:             player_** (1 connections) — `server/game/magic/spell_learning_service.py`
-- **Learn a spell for a player.          Args:             player_id: Player ID** (1 connections) — `server/game/magic/spell_learning_service.py`
+- **.load_player_mutes()** (12 connections) — `server/services/user_manager.py`
+- **._load_player_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
+- **._load_global_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
+- **._convert_mute_info_timestamps()** (5 connections) — `server/services/user_manager.py`
+- **._convert_mute_info_uuids()** (5 connections) — `server/services/user_manager.py`
+- **._load_channel_mutes_from_data()** (5 connections) — `server/services/user_manager.py`
+- **Convert timestamp strings in mute_info to datetime objects.** (1 connections) — `server/services/user_manager.py`
+- **Convert UUID strings in mute_info to UUID objects.** (1 connections) — `server/services/user_manager.py`
+- **Load player mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
+- **Load channel mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
+- **Load global mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
+- **Load mute data for a specific player from JSON file.          Args:** (1 connections) — `server/services/user_manager.py`
 
 ## Relationships
 
-- [[Magic Service Bundle]] (15 shared connections)
-- [[Combat Command Handler]] (4 shared connections)
-- [[Spell Registry Costs]] (4 shared connections)
-- [[NPC Admin API]] (2 shared connections)
-- [[Magic Lifespan Initialization]] (1 shared connections)
+- [Player Mute Persistence](Player_Mute_Persistence.md) (16 shared connections)
+- [Commands Time](Commands_Time.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_learning_service.py`
+- `server/services/user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 68 (85%)
-- INFERRED: 12 (15%)
+- EXTRACTED: 45 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

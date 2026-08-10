@@ -1,56 +1,51 @@
 # Async Persistence Migration
 
-> 35 nodes · cohesion 0.06
+> 23 nodes
 
 ## Key Concepts
 
-- **ASYNC_PERSISTENCE_MIGRATION_PLAN.md** (23 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Phase 3: Remove PersistenceLayer** (5 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Phase 5: Create Greenfield Async Tests** (5 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Migration Strategy** (5 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **Implementation Notes** (3 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Phase 1: Identify All Sync Callers** (3 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **AsyncPersistenceLayer** (2 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **PersistenceLayer Sync Shim** (2 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Current Status** (2 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **Async Code Review Post Migration** (1 connections) — `docs/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **1.1 Find all PersistenceLayer usage** (1 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **1.2 Document call sites** (1 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **3.1 Delete persistence.py** (1 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **3.2 Update persistence package** (1 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **3.3 Remove hook decorator** (1 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **3.4 Update imports** (1 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **5.1 Test structure** (1 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **5.2 Test coverage areas** (1 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **5.3 Test patterns** (1 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **5.4 Test utilities** (1 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Current Architecture** (1 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Key Changes Required** (1 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Overview** (1 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Risks and Mitigations** (1 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Success Criteria** (1 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- *... and 10 more nodes in this community*
+- **MagicServiceCompletionMixin** (21 connections) — `server/game/magic/magic_service_completion.py`
+- **UUID** (12 connections)
+- **Any** (11 connections)
+- **._execute_casting_immediately()** (9 connections) — `server/game/magic/magic_service_completion.py`
+- **._complete_casting()** (8 connections) — `server/game/magic/magic_service_completion.py`
+- **._recreate_target_from_state()** (7 connections) — `server/game/magic/magic_service_completion.py`
+- **._try_queue_spell_for_combat()** (6 connections) — `server/game/magic/magic_service_completion.py`
+- **._try_complete_casting_via_combat()** (6 connections) — `server/game/magic/magic_service_completion.py`
+- **._get_player_and_room()** (5 connections) — `server/game/magic/magic_service_completion.py`
+- **._apply_spell_costs_and_effects()** (5 connections) — `server/game/magic/magic_service_completion.py`
+- **._parse_casting_target_id()** (5 connections) — `server/game/magic/magic_service_completion.py`
+- **_send_spell_completion_message()** (4 connections) — `server/game/magic/magic_service_completion.py`
+- **_is_heal_other_target()** (4 connections) — `server/game/magic/magic_service_completion.py`
+- **_send_healing_update_event()** (4 connections) — `server/game/magic/magic_service_completion.py`
+- **Mixin for MagicService: complete casting (player/room, target, costs/effects, co** (1 connections) — `server/game/magic/magic_service_completion.py`
+- **Get player and room_id for casting completion.          Returns:             Tup** (1 connections) — `server/game/magic/magic_service_completion.py`
+- **Recreate target from stored casting state.          Args:             casting_st** (1 connections) — `server/game/magic/magic_service_completion.py`
+- **Apply spell costs and process effects.          Args:             player_id: Pla** (1 connections) — `server/game/magic/magic_service_completion.py`
+- **Parse target_id from casting state. Returns None if missing or invalid.** (1 connections) — `server/game/magic/magic_service_completion.py`
+- **Apply costs and queue spell for next combat round. Returns True if queued, False** (1 connections) — `server/game/magic/magic_service_completion.py`
+- **Apply spell costs/effects, send completion message and healing event.** (1 connections) — `server/game/magic/magic_service_completion.py`
+- **If in combat, try to queue spell for next round. Return True if queued, False ot** (1 connections) — `server/game/magic/magic_service_completion.py`
+- **Complete a casting and apply spell effects.          In combat, spells are queue** (1 connections) — `server/game/magic/magic_service_completion.py`
 
 ## Relationships
 
-- [[Async Persistence Migration]] (2 shared connections)
-- [[Application Container Analysis]] (1 shared connections)
-- [[Plan Archive Architecture]] (1 shared connections)
-- [[Async Migration Gotchas]] (1 shared connections)
-- [[Async Audit Summary]] (1 shared connections)
+- [NPC Service Tests](NPC_Service_Tests.md) (13 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (2 shared connections)
+- [Security Headers Middleware](Security_Headers_Middleware.md) (1 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
+- [Logging Correct Patterns](Logging_Correct_Patterns.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- `docs/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- `server/game/magic/magic_service_completion.py`
 
 ## Audit Trail
 
-- EXTRACTED: 74 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 106 (91%)
+- INFERRED: 10 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

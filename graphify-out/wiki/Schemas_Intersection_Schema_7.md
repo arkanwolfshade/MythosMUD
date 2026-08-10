@@ -1,17 +1,30 @@
 # Schemas Intersection Schema
 
-> 4 nodes · cohesion 0.50
+> 17 nodes
 
 ## Key Concepts
 
-- **id** (4 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **pattern** (1 connections) — `schemas/intersection_schema.json`
+- **properties** (7 connections) — `schemas/intersection_schema.json`
+- **exits** (5 connections) — `schemas/intersection_schema.json`
+- **north** (2 connections) — `schemas/intersection_schema.json`
+- **south** (2 connections) — `schemas/intersection_schema.json`
+- **east** (2 connections) — `schemas/intersection_schema.json`
+- **west** (2 connections) — `schemas/intersection_schema.json`
+- **up** (2 connections) — `schemas/intersection_schema.json`
+- **down** (2 connections) — `schemas/intersection_schema.json`
 - **type** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **oneOf** (1 connections) — `schemas/intersection_schema.json`
+- **oneOf** (1 connections) — `schemas/intersection_schema.json`
+- **oneOf** (1 connections) — `schemas/intersection_schema.json`
+- **oneOf** (1 connections) — `schemas/intersection_schema.json`
+- **oneOf** (1 connections) — `schemas/intersection_schema.json`
+- **oneOf** (1 connections) — `schemas/intersection_schema.json`
+- **additionalProperties** (1 connections) — `schemas/intersection_schema.json`
 
 ## Relationships
 
-- [[Schemas Intersection Schema]] (1 shared connections)
+- [Schemas Intersection Schema](Schemas_Intersection_Schema.md) (1 shared connections)
 
 ## Source Files
 
@@ -19,10 +32,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

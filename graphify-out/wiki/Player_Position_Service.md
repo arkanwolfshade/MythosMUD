@@ -1,55 +1,54 @@
 # Player Position Service
 
-> 68 nodes · cohesion 0.05
+> 51 nodes
 
 ## Key Concepts
 
-- **PlayerPositionService** (60 connections) — `server/services/player_position_service.py`
-- **test_player_position_service.py** (26 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **.change_position()** (10 connections) — `server/services/player_position_service.py`
-- **Any** (7 connections) — `server/services/player_position_service.py`
-- **._extract_player_info()** (4 connections) — `server/services/player_position_service.py`
-- **._get_current_position()** (4 connections) — `server/services/player_position_service.py`
-- **._get_player_for_position_change()** (4 connections) — `server/services/player_position_service.py`
-- **._update_connection_manager()** (4 connections) — `server/services/player_position_service.py`
-- **._update_player_position()** (4 connections) — `server/services/player_position_service.py`
-- **test_change_position_database_error()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_save_error()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **.ensure_default_aliases()** (3 connections) — `server/services/player_position_service.py`
-- **.__init__()** (3 connections) — `server/services/player_position_service.py`
-- **._validate_position()** (3 connections) — `server/services/player_position_service.py`
-- **test_change_position_all_positions()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_already_in_position()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_get_stats_error()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_invalid_position()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_no_get_stats()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_no_persistence()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_player_not_found()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_success()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_updates_connection_manager()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_updates_existing_connection_info()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_ensure_default_aliases_creates_missing()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- *... and 43 more nodes in this community*
+- **test_combat_handler.py** (37 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_handler_with_persistence()** (20 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_AppStatePersistence** (10 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_AppWithPersistence** (10 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_CmdType** (8 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_as_app_with_state()** (8 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_get_player_and_room_unknown_player()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_get_player_and_room_no_current_room()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_get_player_and_room_unknown_room()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_get_player_and_room_success()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_resolve_combat_target_rejects_non_npc()** (5 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_resolve_combat_target_rejects_dead_npc()** (5 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_get_player_and_room_no_persistence_on_app()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_resolve_combat_target_failure_message()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_combat_command_handler_requires_async_persistence()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_extract_combat_command_data_string_type()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_extract_combat_command_data_enum_value()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_validate_target_name_empty()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_validate_target_name_present()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_room_forbids_combat_true()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_room_forbids_combat_false_no_attrs()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_validate_combat_action()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_validate_combat_action_empty_name()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_handle_flee_command_delegates()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_handle_taunt_command_delegates()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [[Distributed Event Bus]] (14 shared connections)
-- [[Game Service Bundle]] (7 shared connections)
-- [[Alias Expansion Logic]] (3 shared connections)
-- [[NPC Admin API]] (3 shared connections)
-- [[Rest Command Flow]] (2 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (12 shared connections)
+- [NPC Services Bundle](NPC_Services_Bundle.md) (7 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (6 shared connections)
+- [Combat Taunt Tests](Combat_Taunt_Tests.md) (5 shared connections)
+- [Logging Correct Patterns](Logging_Correct_Patterns.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/player_position_service.py`
-- `server/tests/unit/services/test_player_position_service.py`
+- `server/tests/unit/commands/test_combat_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 219 (92%)
-- INFERRED: 18 (8%)
+- EXTRACTED: 181 (92%)
+- INFERRED: 15 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

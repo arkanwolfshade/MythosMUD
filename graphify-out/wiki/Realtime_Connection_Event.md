@@ -1,48 +1,37 @@
 # Realtime Connection Event
 
-> 21 nodes · cohesion 0.15
+> 13 nodes
 
 ## Key Concepts
 
-- **test_connection_event_helpers.py** (12 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **subscribe_to_room_events_impl()** (10 connections) — `server/realtime/connection_event_helpers.py`
-- **unsubscribe_from_room_events_impl()** (10 connections) — `server/realtime/connection_event_helpers.py`
-- **test_subscribe_to_room_events_impl_attribute_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_subscribe_to_room_events_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_unsubscribe_from_room_events_impl_attribute_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_unsubscribe_from_room_events_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_subscribe_to_room_events_impl_no_event_bus()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_subscribe_to_room_events_impl_success()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_unsubscribe_from_room_events_impl_no_event_bus()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_unsubscribe_from_room_events_impl_success()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test subscribe_to_room_events_impl() handles DatabaseError.** (2 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test unsubscribe_from_room_events_impl() handles DatabaseError.** (2 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Any** (2 connections) — `server/realtime/connection_event_helpers.py`
-- **Subscribe to room movement events for occupant broadcasting.** (1 connections) — `server/realtime/connection_event_helpers.py`
-- **Unsubscribe from room movement events.** (1 connections) — `server/realtime/connection_event_helpers.py`
-- **Unit tests for connection event helpers.  Tests the connection_event_helpers mod** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test subscribe_to_room_events_impl() successfully subscribes to events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test subscribe_to_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test unsubscribe_from_room_events_impl() successfully unsubscribes from events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test unsubscribe_from_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **verify_npc_occupants.py** (8 connections) — `server/scripts/verify_npc_occupants.py`
+- **verify_npcs_in_lifecycle_manager()** (6 connections) — `server/scripts/verify_npc_occupants.py`
+- **_check_service_availability()** (5 connections) — `server/scripts/verify_npc_occupants.py`
+- **_collect_npcs_by_room()** (4 connections) — `server/scripts/verify_npc_occupants.py`
+- **_test_query_for_room()** (4 connections) — `server/scripts/verify_npc_occupants.py`
+- **Any** (3 connections)
+- **_print_summary()** (3 connections) — `server/scripts/verify_npc_occupants.py`
+- **Verification script to check NPCs in lifecycle manager and test occupant query l** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **Check if NPC service, lifecycle manager, and active_npcs are available.      Ret** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **Collect NPCs grouped by room ID.      Args:         active_npcs: Dictionary of a** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **Test query logic for a specific room.      Args:         active_npcs: Dictionary** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **Print verification summary.      Args:         npc_count: Total number of active** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **Verify NPCs exist in lifecycle manager and test query logic.** (1 connections) — `server/scripts/verify_npc_occupants.py`
 
 ## Relationships
 
-- [[NPC Admin API]] (5 shared connections)
-- [[Room Occupant Events]] (4 shared connections)
-- [[Services Service Room]] (2 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (3 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_event_helpers.py`
-- `server/tests/unit/realtime/test_connection_event_helpers.py`
+- `server/scripts/verify_npc_occupants.py`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 39 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

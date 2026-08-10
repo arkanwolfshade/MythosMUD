@@ -1,39 +1,31 @@
 # Cursor Skills Frontend
 
-> 15 nodes · cohesion 0.13
+> 6 nodes
 
 ## Key Concepts
 
-- **Typography** (6 connections) — `.cursor/skills/frontend-design/reference/typography.md`
-- **Classic Typography Principles** (4 connections) — `.cursor/skills/frontend-design/reference/typography.md`
-- **Font Selection & Pairing** (4 connections) — `.cursor/skills/frontend-design/reference/typography.md`
-- **Modern Web Typography** (3 connections) — `.cursor/skills/frontend-design/reference/typography.md`
-- **typography.md** (1 connections) — `.cursor/skills/frontend-design/reference/typography.md`
-- **Accessibility Considerations** (1 connections) — `.cursor/skills/frontend-design/reference/typography.md`
-- **Choosing Distinctive Fonts** (1 connections) — `.cursor/skills/frontend-design/reference/typography.md`
-- **Fluid Type** (1 connections) — `.cursor/skills/frontend-design/reference/typography.md`
-- **Modular Scale & Hierarchy** (1 connections) — `.cursor/skills/frontend-design/reference/typography.md`
-- **OpenType Features** (1 connections) — `.cursor/skills/frontend-design/reference/typography.md`
-- **Pairing Principles** (1 connections) — `.cursor/skills/frontend-design/reference/typography.md`
-- **Readability & Measure** (1 connections) — `.cursor/skills/frontend-design/reference/typography.md`
-- **Typography System Architecture** (1 connections) — `.cursor/skills/frontend-design/reference/typography.md`
-- **Vertical Rhythm** (1 connections) — `.cursor/skills/frontend-design/reference/typography.md`
-- **Web Font Loading** (1 connections) — `.cursor/skills/frontend-design/reference/typography.md`
+- **TestGetSpellLearningService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_spell_learning_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_spell_learning_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_spell_learning_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_spell_learning_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_spell_learning_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/reference/typography.md`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

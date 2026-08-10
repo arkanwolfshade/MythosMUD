@@ -1,47 +1,48 @@
 # Services Combat Persistence
 
-> 22 nodes · cohesion 0.10
+> 17 nodes
 
 ## Key Concepts
 
-- **test_combat_persistence_handler.py** (13 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **persistence_handler()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_get_persistence_layer_container_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test _get_persistence_layer handles container errors.** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_get_persistence_layer()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_get_persistence_layer_no_async_persistence()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_get_persistence_layer_no_container()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_log_death_state_changes_death_threshold()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_log_death_state_changes_mortally_wounded()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_persist_player_dp_background_public_api()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_persistence_handler_init()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **mock_player()** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Unit tests for combat persistence handler - core functionality.  Tests initializ** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Create mock combat service.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Create CombatPersistenceHandler instance.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test CombatPersistenceHandler initialization.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test _get_persistence_layer gets persistence from container.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test _get_persistence_layer returns None when container unavailable.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test _log_death_state_changes logs death threshold.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test _log_death_state_changes logs mortally wounded.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test persist_player_dp_background public API method.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **PublishError** (11 connections) — `server/infrastructure/message_broker.py`
+- **.publish()** (7 connections) — `server/infrastructure/nats_broker.py`
+- **Any** (5 connections)
+- **.is_connected()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **._validate_publish_message()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **.subscribe()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **.request()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **._validate_publish_subject()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **test_publish_not_connected()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_publish_failure()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **Exception raised when publishing message fails.** (1 connections) — `server/infrastructure/message_broker.py`
+- **Check if connected to NATS and healthy.          Returns:             bool: T** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Publish message to NATS subject.** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Subscribe to NATS subject with message handler.** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Send request and wait for reply (request-reply pattern).          Args:** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Test publish() raises PublishError when not connected.** (1 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **Test publish() raises PublishError on failure.** (1 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 
 ## Relationships
 
-- [[Combat Service Bundle]] (2 shared connections)
-- [[Database Manager Tests]] (1 shared connections)
+- [Realtime Event Delegation](Realtime_Event_Delegation.md) (8 shared connections)
+- [Multiplayer Browser Helpers](Multiplayer_Browser_Helpers.md) (4 shared connections)
+- [Combat Monitoring Service](Combat_Monitoring_Service.md) (3 shared connections)
+- [NATS Message Schemas](NATS_Message_Schemas.md) (1 shared connections)
+- [Realtime Maintenance Connection](Realtime_Maintenance_Connection.md) (1 shared connections)
+- [Database Error Handling](Database_Error_Handling.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_persistence_handler.py`
+- `server/infrastructure/message_broker.py`
+- `server/infrastructure/nats_broker.py`
+- `server/tests/unit/infrastructure/test_nats_broker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 55 (92%)
+- INFERRED: 5 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

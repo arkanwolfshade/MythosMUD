@@ -1,52 +1,59 @@
 # Rescue Service Tests
 
-> 48 nodes · cohesion 0.04
+> 23 nodes
 
 ## Key Concepts
 
-- **test_rescue_service.py** (30 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **Test rescue() returns error when rescuer is not found.** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **async_session_factory()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **lucidity_service_factory()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_event_dispatcher()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_lucidity_service()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_persistence()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_session()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **sample_rescuer()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **sample_target()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_apply_lucidity_error()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_delta_calculation()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_delta_zero_or_negative()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_different_rooms()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_dispatches_events_for_both_players()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_event_dispatcher_error()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_handles_uuid_objects()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_handles_uuid_strings()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_lucidity_record_not_found()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_metadata_includes_location()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_metadata_includes_rescuer()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_not_catatonic()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_rescuer_not_found()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_success()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_target_not_found()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- *... and 23 more nodes in this community*
+- **ChatPanelRefactoredView.tsx** (14 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
+- **chatPanelRefactoredDerived.ts** (13 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **useChatPanelRefactored.ts** (12 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
+- **ChatPanelRefactored.tsx** (10 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
+- **chatPanelRefactoredDerived.test.ts** (10 connections) — `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
+- **useChatPanelRefactored()** (7 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
+- **resolveMessageChannel()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **computeUnreadCounts()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **computeFilteredMessages()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **ChatPanelRefactoredMessage** (6 connections) — `client/src/components/panels/chatPanelRefactoredTypes.ts`
+- **ChatPanelRefactored.test.tsx** (5 connections) — `client/src/components/panels/__tests__/ChatPanelRefactored.test.tsx`
+- **isDisplayableChatMessage()** (5 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **computeChannelMessages()** (5 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **chatPanelRefactoredTypes.ts** (5 connections) — `client/src/components/panels/chatPanelRefactoredTypes.ts`
+- **filterNonSystemMessages()** (4 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **ChatPanelRefactored()** (3 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
+- **ChatPanelRefactoredProps** (2 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
+- **ChatPanelRefactoredView()** (2 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
+- **ChatHistoryToggle()** (2 connections) — `client/src/components/panels/chat/ChatHistoryToggle.tsx`
+- **UseChatPanelRefactoredResult** (2 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
+- **ChatPanelRefactoredChromeProps** (1 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
+- **ChatPanelRefactoredViewProps** (1 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
+- **base()** (1 connections) — `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
 
 ## Relationships
 
-- [[Services Rescue Service]] (3 shared connections)
-- [[Lucidity Database Models]] (1 shared connections)
-- [[Services Service Lucidity]] (1 shared connections)
+- [NPC Combat Integration](NPC_Combat_Integration.md) (7 shared connections)
+- [Client App State Hooks](Client_App_State_Hooks.md) (5 shared connections)
+- [Command Input Validator](Command_Input_Validator.md) (2 shared connections)
+- [Holidays JSON Schema](Holidays_JSON_Schema.md) (2 shared connections)
+- [Combat Attack Handler](Combat_Attack_Handler.md) (1 shared connections)
+- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_rescue_service.py`
+- `client/src/components/panels/ChatPanelRefactored.tsx`
+- `client/src/components/panels/ChatPanelRefactoredView.tsx`
+- `client/src/components/panels/__tests__/ChatPanelRefactored.test.tsx`
+- `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
+- `client/src/components/panels/chat/ChatHistoryToggle.tsx`
+- `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- `client/src/components/panels/chatPanelRefactoredTypes.ts`
+- `client/src/components/panels/useChatPanelRefactored.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 103 (100%)
+- EXTRACTED: 128 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

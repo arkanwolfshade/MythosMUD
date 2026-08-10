@@ -1,52 +1,61 @@
 # WebSocket Auth Integration
 
-> 50 nodes · cohesion 0.06
+> 49 nodes
 
 ## Key Concepts
 
-- **websocket_integration.py** (19 connections) — `docs/examples/logging/websocket_integration.py`
-- **handle_websocket_message()** (8 connections) — `docs/examples/logging/websocket_integration.py`
-- **websocket_endpoint()** (7 connections) — `docs/examples/logging/websocket_integration.py`
-- **.send_text()** (7 connections) — `docs/examples/logging/websocket_integration.py`
-- **WebSocketManager** (7 connections) — `docs/examples/logging/websocket_integration.py`
-- **handle_game_action()** (6 connections) — `docs/examples/logging/websocket_integration.py`
-- **.disconnect()** (6 connections) — `docs/examples/logging/websocket_integration.py`
-- **handle_chat_message()** (5 connections) — `docs/examples/logging/websocket_integration.py`
-- **WebSocket** (5 connections) — `docs/examples/logging/websocket_integration.py`
-- **.connect()** (5 connections) — `docs/examples/logging/websocket_integration.py`
-- **authenticate_websocket_connection()** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **handle_websocket_error()** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **.broadcast_message()** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **.send_message()** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **WebSocketRateLimiter** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **parse_websocket_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **websocket_heartbeat()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **.broadcast_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **Exception** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **auth_service** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **.verify_token()** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **chat_service** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **.process_message()** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **game_service** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **.process_action()** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- *... and 25 more nodes in this community*
+- **WebSocketRequestContext** (26 connections) — `server/realtime/request_context.py`
+- **test_request_context.py** (16 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **command_execution_request.py** (9 connections) — `server/command_handler/command_execution_request.py`
+- **request_context.py** (9 connections) — `server/realtime/request_context.py`
+- **test_command_execution_request.py** (8 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
+- **Any** (7 connections)
+- **.set_app_state_services()** (4 connections) — `server/realtime/request_context.py`
+- **.get_event_bus()** (4 connections) — `server/realtime/request_context.py`
+- **.get_alias_storage()** (4 connections) — `server/realtime/request_context.py`
+- **test_command_request_app_state_from_websocket_request_context()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
+- **test_create_websocket_request_context()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_create_websocket_request_context_no_user()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **.__init__()** (3 connections) — `server/realtime/request_context.py`
+- **.set_alias_storage()** (3 connections) — `server/realtime/request_context.py`
+- **.get_persistence()** (3 connections) — `server/realtime/request_context.py`
+- **test_websocket_request_context_init()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_init_no_user()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_set_alias_storage()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_set_app_state_services()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_set_app_state_services_none()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_get_persistence()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_get_event_bus()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_get_event_bus_none()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_get_alias_storage()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_get_alias_storage_not_set()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [[FastAPI Auth Integration]] (3 shared connections)
-- [[App Lifespan Management]] (2 shared connections)
-- [[Logging Correct Patterns]] (2 shared connections)
+- [Logout and Quit Commands](Logout_and_Quit_Commands.md) (6 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (5 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (2 shared connections)
+- [Test Refactoring Summary](Test_Refactoring_Summary.md) (1 shared connections)
+- [Cursor Skills Harden](Cursor_Skills_Harden.md) (1 shared connections)
+- [Who Command Tests](Who_Command_Tests.md) (1 shared connections)
+- [Commands Container Inventory](Commands_Container_Inventory.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/websocket_integration.py`
+- `server/command_handler/command_execution_request.py`
+- `server/realtime/request_context.py`
+- `server/tests/unit/command_handler/test_command_execution_request.py`
+- `server/tests/unit/realtime/test_request_context.py`
 
 ## Audit Trail
 
-- EXTRACTED: 147 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 155 (96%)
+- INFERRED: 7 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

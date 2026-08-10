@@ -1,64 +1,76 @@
 # Players API Endpoints
 
-> 84 nodes · cohesion 0.08
+> 375 nodes
 
 ## Key Concepts
 
-- **players.py** (64 connections) — `server/api/players.py`
-- **ClassDefinition** (31 connections) — `server/schemas/players/class_definition.py`
-- **test_players_api_coverage.py** (27 connections) — `server/tests/unit/api/test_players_api_coverage.py`
-- **PlayerRead** (25 connections) — `server/api/players.py`
-- **User** (23 connections) — `server/api/players.py`
-- **FastAPIRequest** (22 connections) — `server/api/players.py`
-- **PlayerService** (20 connections) — `server/api/players.py`
-- **UUID** (19 connections) — `server/api/players.py`
-- **AvailableClassesResponse** (17 connections) — `server/api/players.py`
-- **DeleteCharacterResponse** (17 connections) — `server/api/players.py`
-- **LoginGracePeriodResponse** (17 connections) — `server/api/players.py`
-- **SelectCharacterRequest** (17 connections) — `server/api/players.py`
-- **MessageResponse** (17 connections) — `server/api/players.py`
-- **get_player_quests()** (14 connections) — `server/api/players.py`
-- **start_login_grace_period_endpoint()** (14 connections) — `server/api/players.py`
-- **_validate_character_access()** (13 connections) — `server/api/players.py`
-- **select_character()** (12 connections) — `server/api/players.py`
-- **_user()** (12 connections) — `server/tests/unit/api/test_players_api_coverage.py`
-- **_disconnect_other_characters()** (11 connections) — `server/api/players.py`
-- **list_players()** (11 connections) — `server/api/players.py`
-- **_validate_player_for_grace_period()** (11 connections) — `server/api/players.py`
-- **Any** (11 connections) — `server/api/players.py`
-- **create_player()** (10 connections) — `server/api/players.py`
-- **_validate_character_id()** (10 connections) — `server/api/players.py`
-- **_get_connection_manager()** (9 connections) — `server/api/players.py`
-- *... and 59 more nodes in this community*
+- **RateLimiter** (55 connections) — `server/realtime/rate_limiter.py`
+- **MessageQueue** (53 connections) — `server/realtime/message_queue.py`
+- **RoomSubscriptionManager** (45 connections) — `server/realtime/room_subscription_manager.py`
+- **test_connection_disconnection.py** (34 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
+- **test_connection_rate_limiter.py** (33 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_message_queue.py** (32 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **connection_disconnection.py** (31 connections) — `server/realtime/connection_disconnection.py`
+- **connection_cleaner.py** (22 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **_DisconnectConnectionManager** (19 connections) — `server/realtime/connection_disconnection.py`
+- **statistics_aggregator.py** (19 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **room_subscription_manager.py** (17 connections) — `server/realtime/room_subscription_manager.py`
+- **test_connection_disconnection_websockets.py** (15 connections) — `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
+- **cleanup_websocket_disconnect()** (14 connections) — `server/realtime/connection_disconnection.py`
+- **ConnectionMetadata** (14 connections) — `server/realtime/connection_models.py`
+- **MemoryMonitor** (14 connections) — `server/realtime/memory_monitor.py`
+- **disconnect_all_websockets_impl()** (13 connections) — `server/realtime/connection_disconnection.py`
+- **_track_disconnect_if_needed()** (13 connections) — `server/realtime/connection_disconnection.py`
+- **_cleanup_room_subscriptions()** (13 connections) — `server/realtime/connection_disconnection.py`
+- **disconnect_connection_by_id_impl()** (13 connections) — `server/realtime/connection_disconnection.py`
+- **room_event_handler.py** (13 connections) — `server/realtime/integration/room_event_handler.py`
+- **message_queue.py** (13 connections) — `server/realtime/message_queue.py`
+- **Any** (13 connections)
+- **._canonical_room_id()** (13 connections) — `server/realtime/room_subscription_manager.py`
+- **test_room_subscription_manager_npcs.py** (13 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **rate_limiter.py** (12 connections) — `server/realtime/rate_limiter.py`
+- *... and 350 more nodes in this community*
 
 ## Relationships
 
-- [[Admin NPC Schemas]] (20 shared connections)
-- [[NPC Admin API]] (17 shared connections)
-- [[Container Exception Handlers]] (16 shared connections)
-- [[Look Command Helpers]] (7 shared connections)
-- [[Character Creation API]] (4 shared connections)
-- [[Api Players Quests]] (4 shared connections)
-- [[API Test Fixtures]] (3 shared connections)
-- [[Player Schema Models]] (3 shared connections)
-- [[Player Effects API]] (2 shared connections)
-- [[Game Tick Processing]] (2 shared connections)
-- [[Game Service Bundle]] (2 shared connections)
-- [[Combat Attack Service]] (1 shared connections)
+- [Room Occupant Events](Room_Occupant_Events.md) (25 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (18 shared connections)
+- [Message Broadcaster Core](Message_Broadcaster_Core.md) (16 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (11 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (10 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (9 shared connections)
+- [Unified Command Handler](Unified_Command_Handler.md) (5 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
+- [Logging Structured Setup](Logging_Structured_Setup.md) (3 shared connections)
+- [Realtime WebSocket Auth](Realtime_WebSocket_Auth.md) (3 shared connections)
+- [Connection Statistics Aggregator](Connection_Statistics_Aggregator.md) (3 shared connections)
+- [App Router Integration](App_Router_Integration.md) (3 shared connections)
 
 ## Source Files
 
-- `server/api/players.py`
-- `server/schemas/players/class_definition.py`
-- `server/schemas/players/skill.py`
-- `server/tests/unit/api/test_players_api_coverage.py`
+- `server/realtime/connection_disconnection.py`
+- `server/realtime/connection_manager_methods.py`
+- `server/realtime/connection_models.py`
+- `server/realtime/integration/room_event_handler.py`
+- `server/realtime/maintenance/connection_cleaner.py`
+- `server/realtime/memory_monitor.py`
+- `server/realtime/message_queue.py`
+- `server/realtime/monitoring/statistics_aggregator.py`
+- `server/realtime/rate_limiter.py`
+- `server/realtime/room_subscription_manager.py`
+- `server/tests/unit/realtime/test_connection_disconnection.py`
+- `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
+- `server/tests/unit/realtime/test_connection_models.py`
+- `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- `server/tests/unit/realtime/test_message_queue.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
 
 ## Audit Trail
 
-- EXTRACTED: 456 (70%)
-- INFERRED: 195 (30%)
+- EXTRACTED: 1259 (97%)
+- INFERRED: 36 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

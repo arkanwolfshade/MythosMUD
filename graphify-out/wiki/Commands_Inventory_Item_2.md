@@ -1,46 +1,29 @@
 # Commands Inventory Item
 
-> 19 nodes · cohesion 0.11
+> 5 nodes
 
 ## Key Concepts
 
-- **match_equipped_item_by_name()** (18 connections) — `server/commands/inventory_item_matching.py`
-- **search_exact_match()** (3 connections) — `server/commands/inventory_item_matching.py`
-- **search_prefix_match()** (3 connections) — `server/commands/inventory_item_matching.py`
-- **search_substring_match()** (3 connections) — `server/commands/inventory_item_matching.py`
-- **test_match_equipped_item_by_name_empty_search()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_equipped_item_by_name_exact_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_equipped_item_by_name_item_id_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_equipped_item_by_name_no_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_equipped_item_by_name_prefix_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_equipped_item_by_name_substring_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Test _match_equipped_item_by_name with exact match.** (2 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Search for exact match. Returns slot_key if found, None otherwise.** (1 connections) — `server/commands/inventory_item_matching.py`
-- **Search for prefix match. Returns slot_key if found, None otherwise.** (1 connections) — `server/commands/inventory_item_matching.py`
-- **Search for substring match. Returns slot_key if found, None otherwise.** (1 connections) — `server/commands/inventory_item_matching.py`
-- **Resolve an equipped slot identifier via fuzzy item name search.      Scholars: w** (1 connections) — `server/commands/inventory_item_matching.py`
-- **Test _match_equipped_item_by_name with prefix match.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Test _match_equipped_item_by_name with substring match.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Test _match_equipped_item_by_name with item_id match.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Test _match_equipped_item_by_name with empty search term.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **2026_02_19_seed_quest_leave_the_tutorial.py** (2 connections) — `server/alembic/versions/2026_02_19_seed_quest_leave_the_tutorial.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2026_02_19_seed_quest_leave_the_tutorial.py`
+- **downgrade()** (2 connections) — `server/alembic/versions/2026_02_19_seed_quest_leave_the_tutorial.py`
+- **Insert leave_the_tutorial quest and quest_offers row.** (1 connections) — `server/alembic/versions/2026_02_19_seed_quest_leave_the_tutorial.py`
+- **Remove seed quest and its offer.** (1 connections) — `server/alembic/versions/2026_02_19_seed_quest_leave_the_tutorial.py`
 
 ## Relationships
 
-- [[Admin Summon Command]] (7 shared connections)
-- [[Commands Inventory Item]] (7 shared connections)
-- [[Commands Inventory]] (3 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/commands/inventory_item_matching.py`
-- `server/tests/unit/commands/test_inventory_helpers.py`
+- `server/alembic/versions/2026_02_19_seed_quest_leave_the_tutorial.py`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

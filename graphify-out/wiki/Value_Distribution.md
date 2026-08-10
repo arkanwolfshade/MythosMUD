@@ -1,36 +1,26 @@
 # Value Distribution
 
-> 12 nodes · cohesion 0.17
+> 2 nodes
 
 ## Key Concepts
 
-- **Execution Timeline** (12 connections) — `docs/TEST_VALUE_DISTRIBUTION.md`
-- **Month 1: Pruning Phase** (1 connections) — `docs/TEST_VALUE_DISTRIBUTION.md`
-- **Month 2: Consolidation + Gap Filling** (1 connections) — `docs/TEST_VALUE_DISTRIBUTION.md`
-- **Month 3+: Continuous Improvement** (1 connections) — `docs/TEST_VALUE_DISTRIBUTION.md`
-- **Ongoing Tasks** (1 connections) — `docs/TEST_VALUE_DISTRIBUTION.md`
-- **Week 1: Quick Wins** (1 connections) — `docs/TEST_VALUE_DISTRIBUTION.md`
-- **Week 2: Infrastructure Reduction** (1 connections) — `docs/TEST_VALUE_DISTRIBUTION.md`
-- **Week 3: Coverage Test Optimization** (1 connections) — `docs/TEST_VALUE_DISTRIBUTION.md`
-- **Week 4: Verification and Validation** (1 connections) — `docs/TEST_VALUE_DISTRIBUTION.md`
-- **Week 5: Parametrization (Part 1)** (1 connections) — `docs/TEST_VALUE_DISTRIBUTION.md`
-- **Week 7: Critical Gap Tests (Part 1)** (1 connections) — `docs/TEST_VALUE_DISTRIBUTION.md`
-- **Week 8: Critical Gap Tests (Part 2)** (1 connections) — `docs/TEST_VALUE_DISTRIBUTION.md`
+- **test_broadcast_combat_end()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test broadcast_combat_end broadcasts combat end event.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Relationships
 
-- [[Test Value Distribution]] (1 shared connections)
+- [Database Pool Configuration](Database_Pool_Configuration.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/TEST_VALUE_DISTRIBUTION.md`
+- `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

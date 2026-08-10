@@ -1,59 +1,56 @@
 # Player Related Models
 
-> 65 nodes · cohesion 0.05
+> 115 nodes
 
 ## Key Concepts
 
-- **PlayerChannelPreferences** (25 connections) — `server/models/player.py`
-- **PlayerPreferencesService** (19 connections) — `server/services/player_preferences_service.py`
-- **test_player_related_models.py** (18 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **UUID** (11 connections) — `server/services/player_preferences_service.py`
-- **._is_valid_player_id()** (11 connections) — `server/services/player_preferences_service.py`
-- **Any** (9 connections) — `server/services/player_preferences_service.py`
-- **AsyncSession** (9 connections) — `server/services/player_preferences_service.py`
-- **.create_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
-- **.is_channel_muted()** (7 connections) — `server/services/player_preferences_service.py`
-- **.mute_channel()** (7 connections) — `server/services/player_preferences_service.py`
-- **.unmute_channel()** (7 connections) — `server/services/player_preferences_service.py`
-- **.update_default_channel()** (7 connections) — `server/services/player_preferences_service.py`
-- **player_preferences_service.py** (6 connections) — `server/services/player_preferences_service.py`
-- **.delete_player_preferences()** (6 connections) — `server/services/player_preferences_service.py`
-- **.get_muted_channels()** (6 connections) — `server/services/player_preferences_service.py`
-- **.get_player_preferences()** (6 connections) — `server/services/player_preferences_service.py`
-- **._is_valid_channel()** (6 connections) — `server/services/player_preferences_service.py`
-- **test_player_channel_preferences_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_channel_preferences_defaults()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_channel_preferences_repr()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_channel_preferences_with_muted_channels()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_multiple_rooms()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_repr()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- *... and 40 more nodes in this community*
+- **CombatConfiguration** (31 connections) — `server/services/combat_configuration_service.py`
+- **TestCombatConfigurationService** (26 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **CombatConfigurationService** (19 connections) — `server/services/combat_configuration_service.py`
+- **TestCombatConfiguration** (19 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **combat_configuration_service.py** (17 connections) — `server/services/combat_configuration_service.py`
+- **CombatConfigurationError** (11 connections) — `server/services/combat_configuration_service.py`
+- **.update_combat_configuration()** (10 connections) — `server/services/combat_configuration_service.py`
+- **CombatConfigurationScope** (9 connections) — `server/services/combat_configuration_service.py`
+- **test_combat_configuration_service.py** (8 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.to_dict()** (7 connections) — `server/services/combat_configuration_service.py`
+- **.get_combat_configuration_for_scope()** (7 connections) — `server/services/combat_configuration_service.py`
+- **.validate_configuration()** (7 connections) — `server/services/combat_configuration_service.py`
+- **.get_combat_settings_summary()** (7 connections) — `server/services/combat_configuration_service.py`
+- **get_combat_configuration()** (7 connections) — `server/services/combat_configuration_service.py`
+- **Any** (5 connections)
+- **.from_dict()** (5 connections) — `server/services/combat_configuration_service.py`
+- **.get_active_overrides()** (5 connections) — `server/services/combat_configuration_service.py`
+- **.is_combat_available()** (5 connections) — `server/services/combat_configuration_service.py`
+- **.validate()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.__init__()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.get_combat_configuration()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.clear_scope_override()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.test_init_defaults()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_init_custom_values()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_to_dict()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- *... and 90 more nodes in this community*
 
 ## Relationships
 
-- [[SQLAlchemy Model Base]] (10 shared connections)
-- [[Player Domain Model]] (6 shared connections)
-- [[Lucidity Database Models]] (4 shared connections)
-- [[Player Preferences Service]] (3 shared connections)
-- [[Alias Expansion Logic]] (2 shared connections)
-- [[NPC Admin API]] (2 shared connections)
-- [[API Test Fixtures]] (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (3 shared connections)
+- [Invite Registration Model](Invite_Registration_Model.md) (3 shared connections)
+- [Archive Frd Random](Archive_Frd_Random.md) (2 shared connections)
+- [UI Animation Testing Standards](UI_Animation_Testing_Standards.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Combat Monitoring Service](Combat_Monitoring_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/player.py`
-- `server/services/player_preferences_service.py`
-- `server/tests/unit/models/test_player_related_models.py`
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/services/combat_configuration_service.py`
+- `server/tests/unit/services/test_combat_configuration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 226 (93%)
-- INFERRED: 18 (7%)
+- EXTRACTED: 341 (91%)
+- INFERRED: 32 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

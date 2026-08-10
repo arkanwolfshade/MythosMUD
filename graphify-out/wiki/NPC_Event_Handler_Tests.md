@@ -1,54 +1,58 @@
 # NPC Event Handler Tests
 
-> 69 nodes · cohesion 0.03
+> 50 nodes
 
 ## Key Concepts
 
-- **test_npc_event_handlers.py** (42 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _parse_behavior_config() with JSON string.** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **npc_event_handler()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_entered_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_entered_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_entered_room()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_entered_room_not_found()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_entered_room_with_npc_instance()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_left_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_left_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_left_room()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_left_room_not_found()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_left_room_with_npc_instance()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **mock_message_builder()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **mock_send_occupants_update()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _send_room_message() handles missing connection_manager.** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _get_behavior_config_from_instance() with method.** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_determine_direction_from_rooms_no_match()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_determine_direction_from_rooms_no_persistence()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_behavior_config_from_instance_method()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_behavior_config_from_instance_none()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_behavior_config_from_instance_private_attr()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_behavior_config_from_instance_public_attr()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_npc_departure_message_no_config()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- *... and 44 more nodes in this community*
+- **PlayerPositionService** (45 connections) — `server/services/player_position_service.py`
+- **test_player_position_service.py** (27 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_database_error()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_save_error()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_player_position_service_init()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_player_position_service_init_none_values()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_ensure_default_aliases_no_storage()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_ensure_default_aliases_creates_missing()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_ensure_default_aliases_updates_incorrect()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_ensure_default_aliases_keeps_correct()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_ensure_default_aliases_handles_errors()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_invalid_position()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_no_persistence()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_player_not_found()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_already_in_position()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_success()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_no_get_stats()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_get_stats_error()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_updates_connection_manager()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_updates_existing_connection_info()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_all_positions()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_update_connection_manager_no_manager()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_update_connection_manager_no_online_players()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_update_connection_manager_updates_by_display_name()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_update_connection_manager_handles_errors()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [[Distributed Event Bus]] (6 shared connections)
-- [[NPC Services Bundle]] (6 shared connections)
-- [[Player Respawn Events]] (2 shared connections)
-- [[Realtime Npc Event]] (1 shared connections)
-- [[Target Resolution Service]] (1 shared connections)
+- [Archive Planning Aliases](Archive_Planning_Aliases.md) (9 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [NPC Utility Functions](NPC_Utility_Functions.md) (3 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
+- [Player Death Service](Player_Death_Service.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Cache and NPC Cache](Cache_and_NPC_Cache.md) (1 shared connections)
+- [Status Effect Model](Status_Effect_Model.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_npc_event_handlers.py`
+- `server/services/player_position_service.py`
+- `server/tests/unit/services/test_player_position_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 162 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 166 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,73 +1,53 @@
 # Database Manager Tests
 
-> 91 nodes · cohesion 0.02
+> 26 nodes
 
 ## Key Concepts
 
-- **RuntimeError** (208 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **test_websocket_handler_helpers_extended.py** (32 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **_not_configured_async()** (4 connections) — `server/realtime/nats_message_handler.py`
-- **test_handle_generic_exception_disconnected()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_close_handles_no_running_loop()** (3 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_config_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_database_manager_close_dispose_error()** (3 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_get_engine_no_running_loop()** (3 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_get_engine_handles_no_running_loop()** (3 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **test_initialize_database_config_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **test_connection_manager_property_resolution_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_runtime_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_message_loop_should_raise_exception()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_send_welcome_event_cannot_call_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_send_welcome_event_close_message_sent()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **Test _send_error_response() handles WebSocket disconnection.** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **test_handle_runtime_error_disconnected()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **test_handle_runtime_error_other()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **test_send_error_response_disconnected()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **test_handle_generic_exception_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_message_loop_exception_runtime_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_runtime_error_disconnected()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_runtime_error_other()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_process_message_validation_failed()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_send_error_response_other_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- *... and 66 more nodes in this community*
+- **test_container_websocket_events.py** (23 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_with_owner()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_to_room()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_closed()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_with_owner_id()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_to_room_with_owner()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_updated()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_updated_empty_diff()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_decayed()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_returns_delivery_status()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_to_room_returns_stats()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_closed_returns_stats()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **Unit tests for container WebSocket events.  Tests the container WebSocket event** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **Create mock connection manager.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **Test emit_container_opened handles container with owner.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **Test emit_container_opened_to_room broadcasts to room.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **Test emit_container_closed emits close event.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **Test emit_container_opened handles container with owner_id.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **Test emit_container_opened_to_room handles container with owner.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **Test emit_container_updated broadcasts update event.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **Test emit_container_updated handles empty diff.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **Test emit_container_decayed broadcasts decay event.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **Test emit_container_opened returns delivery status.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **Test emit_container_opened_to_room returns broadcast stats.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [[Dependency Injection Tests]] (18 shared connections)
-- [[NPC Admin API]] (14 shared connections)
-- [[NATS Chat Broadcasting]] (9 shared connections)
-- [[WebSocket Handler Helpers]] (8 shared connections)
-- [[Dependencies Infrastructure]] (8 shared connections)
-- [[NATS Message Handler Tests]] (6 shared connections)
-- [[Standardized Error Responses]] (6 shared connections)
-- [[Lifespan Startup Hooks]] (6 shared connections)
-- [[WebSocket Coverage Gaps]] (5 shared connections)
-- [[Pydantic Error Handlers]] (5 shared connections)
-- [[Database Helper Tests]] (5 shared connections)
-- [[Database Error Handling]] (4 shared connections)
+- [E 2 E Testing Guide](E_2_E_Testing_Guide.md) (17 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (2 shared connections)
+- [NPC Occupant Verification](NPC_Occupant_Verification.md) (1 shared connections)
+- [test_emit_container_opened](test_emit_container_opened.md) (1 shared connections)
 
 ## Source Files
 
-- `server/database.py`
-- `server/realtime/nats_message_handler.py`
-- `server/realtime/websocket_handler_message_loop.py`
-- `server/tests/unit/infrastructure/test_database_error_handling.py`
-- `server/tests/unit/infrastructure/test_database_extended.py`
-- `server/tests/unit/infrastructure/test_database_init.py`
-- `server/tests/unit/realtime/test_nats_message_handler.py`
-- `server/tests/unit/realtime/test_websocket_handler_core.py`
-- `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- `server/tests/unit/services/test_rate_limiter.py`
+- `server/tests/unit/services/test_container_websocket_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 186 (44%)
-- INFERRED: 232 (56%)
+- EXTRACTED: 71 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

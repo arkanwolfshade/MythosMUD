@@ -1,11 +1,11 @@
 # Assets React Public
 
-> 2 nodes · cohesion 1.00
+> 2 nodes
 
 ## Key Concepts
 
-- **React Logo SVG** (1 connections) — `client/src/assets/react.svg`
 - **Vite Logo SVG** (1 connections) — `client/public/vite.svg`
+- **React Logo SVG** (1 connections) — `client/src/assets/react.svg`
 
 ## Relationships
 
@@ -24,4 +24,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

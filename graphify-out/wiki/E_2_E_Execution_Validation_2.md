@@ -1,13 +1,13 @@
 # E 2 E Execution Validation
 
-> 4 nodes · cohesion 0.50
+> 4 nodes
 
 ## Key Concepts
 
 - **Scenario Group Execution** (3 connections) — `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
 - **Local Channel Scenario Group (8-12)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Logout Scenario Group (19-21)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
 - **Whisper Channel Scenario Group (13-18)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
+- **Logout Scenario Group (19-21)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
 
 ## Relationships
 
@@ -26,4 +26,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

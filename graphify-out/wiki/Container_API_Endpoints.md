@@ -1,73 +1,64 @@
 # Container API Endpoints
 
-> 250 nodes · cohesion 0.02
+> 104 nodes
 
 ## Key Concepts
 
-- **TransferContainerRequest** (82 connections) — `server/api/container_models.py`
-- **container_endpoints_basic.py** (50 connections) — `server/api/container_endpoints_basic.py`
-- **container_helpers.py** (42 connections) — `server/api/container_helpers.py`
-- **test_container_helpers.py** (39 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **container_endpoints_loot.py** (35 connections) — `server/api/container_endpoints_loot.py`
-- **OpenContainerRequest** (30 connections) — `server/api/container_models.py`
-- **CloseContainerRequest** (27 connections) — `server/api/container_models.py`
-- **transfer_items()** (25 connections) — `server/api/container_endpoints_basic.py`
-- **open_container()** (23 connections) — `server/api/container_endpoints_basic.py`
-- **container_events.py** (20 connections) — `server/api/container_events.py`
-- **TestTransferItems** (20 connections) — `server/tests/unit/api/test_containers.py`
-- **close_container()** (19 connections) — `server/api/container_endpoints_basic.py`
-- **get_player_id_from_user()** (19 connections) — `server/api/container_helpers.py`
-- **handle_container_service_error()** (19 connections) — `server/api/container_helpers.py`
-- **emit_loot_all_event()** (17 connections) — `server/api/container_events.py`
-- **emit_transfer_event()** (17 connections) — `server/api/container_events.py`
-- **get_container_and_player_for_loot_all()** (17 connections) — `server/api/container_helpers.py`
-- **get_container_service()** (17 connections) — `server/api/container_helpers.py`
-- **_emit_close_container_event()** (14 connections) — `server/api/container_events.py`
-- **User** (14 connections) — `server/api/container_helpers.py`
-- **TestHandleContainerServiceError** (13 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Request** (13 connections) — `server/api/container_helpers.py`
-- **_convert_container_dict_to_container_data()** (12 connections) — `server/api/container_endpoints_basic.py`
-- **TestEmitCloseContainerEvent** (12 connections) — `server/tests/unit/api/test_container_events.py`
-- **TestEmitTransferEvent** (12 connections) — `server/tests/unit/api/test_container_events.py`
-- *... and 225 more nodes in this community*
+- **StandardizedErrorResponse** (35 connections) — `server/error_handlers/standardized_responses.py`
+- **pydantic_error_handler.py** (25 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **PydanticErrorHandler** (23 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.handle_validation_error()** (14 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.handle_exception()** (14 connections) — `server/error_handlers/standardized_responses.py`
+- **._handle_generic_exception()** (10 connections) — `server/error_handlers/standardized_responses.py`
+- **test_standardized_responses_security.py** (10 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- **TestStandardizedResponsesSecurity** (10 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- **__init__.py** (9 connections) — `server/error_handlers/__init__.py`
+- **handle_pydantic_error()** (9 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **convert_pydantic_error()** (9 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **_ExtractedErrorInfo** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._create_fallback_error_response()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.convert_to_mythos_error()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._extract_context_from_request()** (8 connections) — `server/error_handlers/standardized_responses.py`
+- **._handle_http_exception()** (8 connections) — `server/error_handlers/standardized_responses.py`
+- **._create_fallback_response()** (8 connections) — `server/error_handlers/standardized_responses.py`
+- **handle_api_error()** (8 connections) — `server/error_handlers/standardized_responses.py`
+- **ErrorContextInitKwargs** (8 connections) — `server/exceptions.py`
+- **ValidationError** (7 connections)
+- **._extract_error_info()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._generate_user_friendly_message()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._create_error_details()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.create_handler()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._handle_pydantic_validation_error()** (7 connections) — `server/error_handlers/standardized_responses.py`
+- *... and 79 more nodes in this community*
 
 ## Relationships
 
-- [[Container Exception Handlers]] (116 shared connections)
-- [[Loot All Endpoint]] (45 shared connections)
-- [[Standardized Error Responses]] (36 shared connections)
-- [[Container Loot Helpers]] (28 shared connections)
-- [[NPC Admin API]] (25 shared connections)
-- [[Container Open Events]] (23 shared connections)
-- [[API Test Fixtures]] (17 shared connections)
-- [[Admin NPC Schemas]] (16 shared connections)
-- [[Inventory Service Helpers]] (9 shared connections)
-- [[Container Component Capacity]] (6 shared connections)
-- [[Room Occupant Events]] (4 shared connections)
-- [[Database Manager Tests]] (3 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (58 shared connections)
+- [Active Lucidity Service](Active_Lucidity_Service.md) (8 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (4 shared connections)
+- [Error Handling Middleware](Error_Handling_Middleware.md) (4 shared connections)
+- [Cursor Skills Delight](Cursor_Skills_Delight.md) (2 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (2 shared connections)
+- [Combat Feature Flags](Combat_Feature_Flags.md) (2 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (2 shared connections)
 
 ## Source Files
 
-- `server/api/container_endpoints_basic.py`
-- `server/api/container_endpoints_loot.py`
-- `server/api/container_events.py`
-- `server/api/container_helpers.py`
-- `server/api/container_models.py`
-- `server/schemas/containers/__init__.py`
-- `server/schemas/containers/container.py`
-- `server/schemas/containers/container_data.py`
-- `server/schemas/game/weapon.py`
-- `server/services/container_websocket_events.py`
-- `server/tests/unit/api/test_container_events.py`
-- `server/tests/unit/api/test_container_helpers.py`
-- `server/tests/unit/api/test_containers.py`
+- `server/error_handlers/__init__.py`
+- `server/error_handlers/pydantic_error_handler.py`
+- `server/error_handlers/standardized_responses.py`
+- `server/error_types.py`
+- `server/exceptions.py`
+- `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- `server/tests/unit/realtime/test_websocket_handler_core.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1126 (80%)
-- INFERRED: 290 (20%)
+- EXTRACTED: 427 (95%)
+- INFERRED: 23 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,41 +1,38 @@
 # Cursor Plans Github
 
-> 16 nodes · cohesion 0.12
+> 8 nodes
 
 ## Key Concepts
 
-- **GitHub Actions Best-Practices Remediation Plan** (9 connections) — `.cursor/plans/github-actions-remediation.plan.md`
-- **1. Workflow Design & Code Organization** (5 connections) — `.cursor/plans/github-actions-remediation.plan.md`
-- **3. Code Quality & Maintainability** (3 connections) — `.cursor/plans/github-actions-remediation.plan.md`
-- **4. Security & Configuration** (3 connections) — `.cursor/plans/github-actions-remediation.plan.md`
-- **github-actions-remediation.plan.md** (1 connections) — `.cursor/plans/github-actions-remediation.plan.md`
-- **1.1 Duplicated steps across workflows (Rule 1.1 – Reusable Workflows)** (1 connections) — `.cursor/plans/github-actions-remediation.plan.md`
-- **1.2 Unnamed steps (Rule 1.2 – Name Jobs and Steps Consistently)** (1 connections) — `.cursor/plans/github-actions-remediation.plan.md`
-- **1.3 Job display name (Rule 1.2)** (1 connections) — `.cursor/plans/github-actions-remediation.plan.md`
-- **1.4 Concurrency (Rule 1.4 – Set Explicit Concurrency Groups)** (1 connections) — `.cursor/plans/github-actions-remediation.plan.md`
-- **3.1 Lint / quality order (Rule 3.1 – Run Linters Early)** (1 connections) — `.cursor/plans/github-actions-remediation.plan.md`
-- **3.2 Pin third-party action to SHA (Rule 3.2)** (1 connections) — `.cursor/plans/github-actions-remediation.plan.md`
-- **4.1 Debug flags always on (Rule 5.1 – Debugging with ACTIONS_STEP_DEBUG)** (1 connections) — `.cursor/plans/github-actions-remediation.plan.md`
-- **4.2 Hardcoded test credentials (Rule 4.1 – Store Secrets in GitHub Secrets)** (1 connections) — `.cursor/plans/github-actions-remediation.plan.md`
-- **5. Optional / Nice-to-Have** (1 connections) — `.cursor/plans/github-actions-remediation.plan.md`
-- **Summary** (1 connections) — `.cursor/plans/github-actions-remediation.plan.md`
-- **To-Do Checklist (ordered for implementation)** (1 connections) — `.cursor/plans/github-actions-remediation.plan.md`
+- **InviteBase** (10 connections) — `server/schemas/auth/invite.py`
+- **test_invite_base_validation()** (4 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_base()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_base_defaults()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **Base invite schema with common fields.** (1 connections) — `server/schemas/auth/invite.py`
+- **Test InviteBase can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **Test InviteBase has correct default values.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **Test InviteBase validates invite_code length.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
 
 ## Relationships
 
-- [[Playwright Remediation Plan]] (1 shared connections)
-- [[UI Animation Testing Standards]] (1 shared connections)
+- [Cursor Plans App](Cursor_Plans_App.md) (4 shared connections)
+- [Config Cors](Config_Cors.md) (2 shared connections)
+- [Design Cursor Skills](Design_Cursor_Skills.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (1 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/github-actions-remediation.plan.md`
+- `server/schemas/auth/invite.py`
+- `server/tests/unit/schemas/test_invite_schemas.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 23 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

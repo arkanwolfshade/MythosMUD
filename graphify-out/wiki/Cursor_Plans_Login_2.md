@@ -1,11 +1,11 @@
 # Cursor Plans Login
 
-> 2 nodes · cohesion 1.00
+> 2 nodes
 
 ## Key Concepts
 
-- **10-Second Login Grace Period** (1 connections) — `.cursor/plans/login_grace_period_implementation_32b067c4.plan.md`
 - **Login Grace Period Implementation** (1 connections) — `.cursor/plans/login_grace_period_implementation_32b067c4.plan.md`
+- **10-Second Login Grace Period** (1 connections) — `.cursor/plans/login_grace_period_implementation_32b067c4.plan.md`
 
 ## Relationships
 
@@ -23,4 +23,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,50 +1,55 @@
 # Conftest Migration Plan
 
-> 27 nodes · cohesion 0.07
+> 95 nodes
 
 ## Key Concepts
 
-- **Conftest.py Migration Plan: YAML Config → Pydantic Config** (11 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **Migration Strategy** (6 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **Implementation Plan** (5 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **Current Situation** (3 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **Current Status** (3 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **Phase 3: Adapt Test Client Fixtures** (3 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **CONFTEST_MIGRATION_PLAN.md** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **Changes Applied** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **✅ Completed Work** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **Current State (lines 278-299)** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **Current Test Metrics** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **Executive Summary** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **✅ MIGRATION COMPLETE! (October 12, 2025)** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **Next Steps** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **⚠️ Outstanding Issues** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **Phase 1: Fix Immediate Breakage ✅ COMPLETE** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **Phase 2: Add Critical Missing Environment Variables** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **Phase 4: Update All Fixtures Referencing config_loader** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **Phase 5: Add Test Pollution Prevention Fixtures** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **Recommended Approach** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **Required Changes** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **Risk Assessment** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **Step 1: Minimal Changes (SAFE)** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **Step 2: Add Pollution Prevention (MEDIUM RISK)** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- **Step 3: TestClient Lifespan Integration (HIGH RISK)** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
-- *... and 2 more nodes in this community*
+- **Player** (22 connections)
+- **UUID** (21 connections)
+- **Any** (20 connections)
+- **._ensure_room_cache_loaded()** (13 connections) — `server/async_persistence.py`
+- **Delegate to room loader; exposed for unit tests.** (8 connections) — `server/async_persistence.py`
+- **.get_player_by_id()** (6 connections) — `server/async_persistence.py`
+- **.get_players_batch()** (5 connections) — `server/async_persistence.py`
+- **._process_exit_rows()** (4 connections) — `server/async_persistence.py`
+- **._build_room_objects()** (4 connections) — `server/async_persistence.py`
+- **._query_rooms_with_exits_async()** (4 connections) — `server/async_persistence.py`
+- **._parse_exits_json()** (4 connections) — `server/async_persistence.py`
+- **._process_exits_for_room()** (4 connections) — `server/async_persistence.py`
+- **._process_combined_rows()** (4 connections) — `server/async_persistence.py`
+- **.get_player_by_name()** (4 connections) — `server/async_persistence.py`
+- **.get_players_by_user_id()** (4 connections) — `server/async_persistence.py`
+- **.get_active_players_by_user_id()** (4 connections) — `server/async_persistence.py`
+- **.get_player_by_user_id()** (4 connections) — `server/async_persistence.py`
+- **.list_players()** (4 connections) — `server/async_persistence.py`
+- **.get_players_in_room()** (4 connections) — `server/async_persistence.py`
+- **.update_player_last_active()** (4 connections) — `server/async_persistence.py`
+- **.apply_lucidity_loss()** (4 connections) — `server/async_persistence.py`
+- **.apply_fear()** (4 connections) — `server/async_persistence.py`
+- **.apply_corruption()** (4 connections) — `server/async_persistence.py`
+- **.heal_player()** (4 connections) — `server/async_persistence.py`
+- **.async_heal_player()** (4 connections) — `server/async_persistence.py`
+- *... and 70 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Magic Service Bundle](Magic_Service_Bundle.md) (47 shared connections)
+- [Persistence Item Instance](Persistence_Item_Instance.md) (5 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
+- [Async Persistence Types](Async_Persistence_Types.md) (3 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Container System Architecture](Container_System_Architecture.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/CONFTEST_MIGRATION_PLAN.md`
+- `server/async_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 287 (97%)
+- INFERRED: 10 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

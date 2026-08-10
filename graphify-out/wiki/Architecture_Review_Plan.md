@@ -1,55 +1,50 @@
 # Architecture Review Plan
 
-> 29 nodes · cohesion 0.07
+> 20 nodes
 
 ## Key Concepts
 
-- **MythosMUD Architectural Review Plan** (12 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **1. Current Architecture Assessment** (10 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **2. Architectural Patterns Evaluation** (4 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **6. Critical Issues and Recommendations** (4 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **3. Scalability and Performance** (3 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **15. Conclusion** (2 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- **4.3 Performance Optimizations** (2 connections) — `docs/archive/PLANNING_tailwind.md`
-- **architecture_review_plan_7bcbc812.plan.md** (2 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **1.1 Overall System Architecture** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **1.2 Layered Architecture Analysis** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **1.3 Dependency Injection Architecture** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **1.4 Repository Pattern Implementation** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **1.5 Event-Driven Architecture** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **1.6 Real-Time Communication Architecture** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **1.7 Security Architecture** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **1.8 Error Handling Architecture** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **1.9 Client Architecture** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **2.1 SOLID Principles Compliance** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **2.2 Design Patterns Used** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **2.3 Domain-Driven Design (DDD) Assessment** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **3.1 Horizontal Scalability** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **4. Testing Architecture** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **5. Documentation Architecture** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **6.1 High Priority** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- **6.2 Medium Priority** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- *... and 4 more nodes in this community*
+- **.create_get_command()** (13 connections) — `server/utils/command_factories_inventory.py`
+- **test_create_get_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_get_command_quantity_zero()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_get_command_quantity_negative()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_get_command_only_item_get_from_room()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_get_command_with_from_keyword()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_get_command_multi_word_container()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_get_command_multi_word_container_no_quantity()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_get_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **test_create_get_command_with_from()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **Test create_get_command() raises error with no args.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_get_command() with single arg returns get-from-room (container='room** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_get_command() handles 'from' keyword.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_get_command() raises error when quantity is zero.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_get_command() raises error when quantity is negative.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_get_command() handles multi-word container.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_get_command() handles multi-word container without quantity.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_get_command() creates GetCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **Test create_get_command() handles optional 'from' keyword.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **Create get command.          Supports: get <item> [from] <container> [quantity]** (1 connections) — `server/utils/command_factories_inventory.py`
 
 ## Relationships
 
-- [[Advanced Chat Channels Spec]] (1 shared connections)
-- [[Tailwind UI Migration Plan]] (1 shared connections)
-- [[Cursor Commands Remediation]] (1 shared connections)
-- [[Plan Cursor Plans]] (1 shared connections)
+- [Base Command Models](Base_Command_Models.md) (8 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (3 shared connections)
+- [Test Refactoring Status](Test_Refactoring_Status.md) (2 shared connections)
+- [Admin Summon Command](Admin_Summon_Command.md) (1 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
-- `docs/archive/PLANNING_tailwind.md`
+- `server/tests/unit/utils/test_command_factories_inventory.py`
+- `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- `server/utils/command_factories_inventory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 50 (94%)
+- INFERRED: 3 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

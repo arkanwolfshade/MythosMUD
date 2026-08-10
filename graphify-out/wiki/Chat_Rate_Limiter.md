@@ -1,54 +1,50 @@
 # Chat Rate Limiter
 
-> 30 nodes · cohesion 0.09
+> 20 nodes
 
 ## Key Concepts
 
-- **RateLimiter** (17 connections) — `server/services/rate_limiter.py`
-- **._cleanup_old_entries()** (6 connections) — `server/services/rate_limiter.py`
-- **.get_limit()** (6 connections) — `server/services/rate_limiter.py`
-- **.check_rate_limit()** (5 connections) — `server/services/rate_limiter.py`
-- **.get_player_stats()** (5 connections) — `server/services/rate_limiter.py`
-- **.get_remaining_messages()** (4 connections) — `server/services/rate_limiter.py`
-- **.record_message()** (4 connections) — `server/services/rate_limiter.py`
-- **.get_system_stats()** (3 connections) — `server/services/rate_limiter.py`
-- **.__init__()** (3 connections) — `server/services/rate_limiter.py`
-- **.is_player_rate_limited()** (3 connections) — `server/services/rate_limiter.py`
-- **rate_limiter()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_rate_limiter_legacy_config()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **.__init__()** (2 connections) — `server/realtime/rate_limiter.py`
-- **Initialize the rate limiter with configurable settings.          Args:** (2 connections) — `server/realtime/rate_limiter.py`
-- **Any** (2 connections) — `server/services/rate_limiter.py`
-- **.reset_player_limits()** (2 connections) — `server/services/rate_limiter.py`
-- **.set_limit()** (2 connections) — `server/services/rate_limiter.py`
-- **Remove timestamps older than the window size.          Args:             player_** (1 connections) — `server/services/rate_limiter.py`
-- **Check if a player is within rate limits for a channel.          Args:** (1 connections) — `server/services/rate_limiter.py`
-- **Record a message for rate limiting.          Args:             player_id: Player** (1 connections) — `server/services/rate_limiter.py`
-- **Sliding window rate limiter for chat channels.      Implements per-user, per-cha** (1 connections) — `server/services/rate_limiter.py`
-- **Get rate limiting statistics for a player.          Args:             player_id:** (1 connections) — `server/services/rate_limiter.py`
-- **Reset rate limiting for a player.          Args:             player_id: Player I** (1 connections) — `server/services/rate_limiter.py`
-- **Get system-wide rate limiting statistics.          Returns:             Dictiona** (1 connections) — `server/services/rate_limiter.py`
-- **Check if a player is currently rate limited on a channel.          Args:** (1 connections) — `server/services/rate_limiter.py`
-- *... and 5 more nodes in this community*
+- **.create_unequip_command()** (14 connections) — `server/utils/command_factories_inventory.py`
+- **test_create_unequip_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_unequip_command_empty()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_unequip_command_whitespace()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_unequip_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_unequip_command_known_slot()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_unequip_command_unknown_slot()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_unequip_command_multi_word()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_unequip_command_all_slots()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_unequip_command_with_slot()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **Test create_unequip_command() creates UnequipCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_unequip_command() raises error with no args.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_unequip_command() raises error with empty args.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_unequip_command() raises error with whitespace only.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_unequip_command() handles known slot.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_unequip_command() handles unknown slot as search term.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_unequip_command() handles multi-word search term.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_unequip_command() handles all known slots.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_unequip_command() with slot.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **Create unequip command.** (1 connections) — `server/utils/command_factories_inventory.py`
 
 ## Relationships
 
-- [[Rate Limiter Service]] (4 shared connections)
-- [[NPC Admin API]] (2 shared connections)
-- [[Rate Limiter Utilities]] (1 shared connections)
+- [Base Command Models](Base_Command_Models.md) (9 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (3 shared connections)
+- [Test Refactoring Status](Test_Refactoring_Status.md) (2 shared connections)
+- [WebSocket Request Context](WebSocket_Request_Context.md) (1 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/rate_limiter.py`
-- `server/services/rate_limiter.py`
-- `server/tests/unit/services/test_rate_limiter.py`
+- `server/tests/unit/utils/test_command_factories_inventory.py`
+- `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- `server/utils/command_factories_inventory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 85 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 51 (94%)
+- INFERRED: 3 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

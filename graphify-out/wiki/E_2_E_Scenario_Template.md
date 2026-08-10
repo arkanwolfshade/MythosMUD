@@ -1,42 +1,28 @@
 # E 2 E Scenario Template
 
-> 18 nodes · cohesion 0.11
+> 2 nodes
 
 ## Key Concepts
 
-- **Scenario X: [Scenario Title]** (10 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
-- **Mandatory AI Execution Contract** (6 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
-- **Prerequisites** (3 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
-- **Status** (2 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
-- **SCENARIO_TEMPLATE.md** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
-- **BEFORE EXECUTING THIS SCENARIO, YOU MUST** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
-- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
-- **Cleanup** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
-- **CONFIRMATION CHECKLIST** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
-- **EXECUTION AFFIRMATION (Type this before proceeding)** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
-- **Expected Results** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
-- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
-- **Overview** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
-- **E2E Scenario Template** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
-- **Success Criteria Checklist** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
-- **✅ TEMPLATE FILE** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
-- **Test Configuration** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
-- **⚠️ VIOLATION = COMPLETE FAILURE** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
+- **test_handle_whisper_command_whisper_to_self()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **Test handle_whisper_command when trying to whisper to self.** (1 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
 
 ## Relationships
 
-- [[E 2 E Scenario Template]] (1 shared connections)
+- [Deprecated Logging Patterns](Deprecated_Logging_Patterns.md) (1 shared connections)
+- [Disconnect Grace Period](Disconnect_Grace_Period.md) (1 shared connections)
+- [Caching Lru Cache](Caching_Lru_Cache.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/SCENARIO_TEMPLATE.md`
+- `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

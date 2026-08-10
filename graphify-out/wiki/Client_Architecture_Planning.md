@@ -1,35 +1,35 @@
 # Client Architecture Planning
 
-> 40 nodes · cohesion 0.05
+> 32 nodes
 
 ## Key Concepts
 
-- **MythosMUD Client Architecture Improvements Plan** (11 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **Implementation Timeline** (5 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **🚨 Priority 1: Production Readiness** (4 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **🏗️ Priority 4: Architecture Patterns** (4 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **Success Metrics** (4 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **Dependencies** (3 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **High Priority Improvements** (3 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **🔧 Priority 2: State Management Refactoring** (3 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **🚀 Priority 3: Performance Optimization** (3 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **🧪 Priority 5: Testing & Quality** (3 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **Risk Assessment** (3 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **Critical Issues (Immediate Action Required)** (2 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **Low Priority Improvements** (2 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **Medium Priority Improvements** (2 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **PLANNING_client_architecture_improvements.md** (1 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **1.1 Remove Debug Code** (1 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **1.2 Security Hardening** (1 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **1.3 Memory Leak Prevention** (1 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **2.1 Extract State Management** (1 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **2.2 Component Architecture Improvements** (1 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **3.1 Message List Optimization** (1 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **3.2 Connection Optimization** (1 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **4.1 Clean Architecture Implementation** (1 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **4.2 Error Handling & Resilience** (1 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- **4.3 Configuration Management** (1 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
-- *... and 15 more nodes in this community*
+- **🎯 MANDATORY AI EXECUTION PROTOCOL** (8 connections) — `.cursor/commands/client-test-remediation.md`
+- **Test Client Remediation Prompt - AI-Optimized Version** (6 connections) — `.cursor/commands/client-test-remediation.md`
+- **Phase 2: Categorize and Prioritize Failures** (6 connections) — `.cursor/commands/client-test-remediation.md`
+- **Phase 4: Tool Selection Guide** (5 connections) — `.cursor/commands/client-test-remediation.md`
+- **🔧 COMMON FIX TEMPLATES** (5 connections) — `.cursor/commands/client-test-remediation.md`
+- **Phase 5: Fix Implementation Patterns** (4 connections) — `.cursor/commands/client-test-remediation.md`
+- **🚨 AI ERROR HANDLING** (3 connections) — `.cursor/commands/client-test-remediation.md`
+- **client-test-remediation.md** (1 connections) — `.cursor/commands/client-test-remediation.md`
+- **Phase 1: Initial Assessment (REQUIRED FIRST)** (1 connections) — `.cursor/commands/client-test-remediation.md`
+- **🔴 CRITICAL (Fix First - Blocking Issues)** (1 connections) — `.cursor/commands/client-test-remediation.md`
+- **🟡 HIGH PRIORITY (Fix Second - Core Functionality)** (1 connections) — `.cursor/commands/client-test-remediation.md`
+- **🟢 MEDIUM PRIORITY (Fix Third - Enhancement)** (1 connections) — `.cursor/commands/client-test-remediation.md`
+- **🔵 LOW PRIORITY (Fix Last - Polish)** (1 connections) — `.cursor/commands/client-test-remediation.md`
+- **For Each Failure Category** (1 connections) — `.cursor/commands/client-test-remediation.md`
+- **Phase 3: Systematic Fixing Process** (1 connections) — `.cursor/commands/client-test-remediation.md`
+- **TypeScript/Compilation Issues** (1 connections) — `.cursor/commands/client-test-remediation.md`
+- **Component Rendering Issues** (1 connections) — `.cursor/commands/client-test-remediation.md`
+- **Hook Issues** (1 connections) — `.cursor/commands/client-test-remediation.md`
+- **Testing Library Issues** (1 connections) — `.cursor/commands/client-test-remediation.md`
+- **🔴 CRITICAL FIXES - TypeScript Errors** (1 connections) — `.cursor/commands/client-test-remediation.md`
+- **🟡 HIGH PRIORITY FIXES - Component Issues** (1 connections) — `.cursor/commands/client-test-remediation.md`
+- **🟢 MEDIUM PRIORITY FIXES - Hook Issues** (1 connections) — `.cursor/commands/client-test-remediation.md`
+- **Phase 6: Verification Protocol** (1 connections) — `.cursor/commands/client-test-remediation.md`
+- **Phase 7: Success Validation** (1 connections) — `.cursor/commands/client-test-remediation.md`
+- **If Tests Still Fail After Fixes** (1 connections) — `.cursor/commands/client-test-remediation.md`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
@@ -37,14 +37,14 @@
 
 ## Source Files
 
-- `docs/archive/PLANNING_client_architecture_improvements.md`
+- `.cursor/commands/client-test-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 78 (100%)
+- EXTRACTED: 62 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

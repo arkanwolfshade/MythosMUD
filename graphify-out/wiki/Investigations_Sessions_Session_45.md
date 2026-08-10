@@ -1,29 +1,26 @@
 # Investigations Sessions Session
 
-> 5 nodes · cohesion 0.40
+> 2 nodes
 
 ## Key Concepts
 
-- **Transformation Examples** (5 connections) — `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
-- **After (Structured Logging) - Say Message** (1 connections) — `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
-- **After (Structured Logging) - WebSocket Connection** (1 connections) — `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
-- **Before (Complex F-String)** (1 connections) — `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
-- **Before (F-String Logging)** (1 connections) — `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
+- **Missing Delirium Respawn Feature** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
+- **Lucidity -10 Delirium Threshold** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
 
 ## Relationships
 
-- [[Investigations Sessions Session]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
+- `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

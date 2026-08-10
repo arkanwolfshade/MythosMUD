@@ -1,50 +1,48 @@
 # AnyIO vs Asyncio Guide
 
-> 30 nodes · cohesion 0.07
+> 21 nodes
 
 ## Key Concepts
 
-- **AnyIO vs Asyncio: High-Level Comparison and Decision Guide** (10 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **Pros and Cons** (5 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **Core Architectural Differences** (4 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **Detailed Feature Comparison** (4 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **Real-World Impact for MythosMUD** (4 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **Recommendation for MythosMUD** (4 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **What Are They?** (3 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **My Academic Opinion (Mythos Persona)** (2 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **anyio_vs_asyncio_comparison.md** (1 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **1. **Structured Concurrency**** (1 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **2. **Backend Abstraction**** (1 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **3. **API Design Philosophy**** (1 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **Adjusts spectacles and peers at the codebase** (1 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **anyio Cons ❌** (1 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **anyio Pros ✅** (1 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **`anyio` (Third-Party Library)** (1 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **asyncio Cons ❌** (1 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **asyncio Pros ✅** (1 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **`asyncio` (Python Standard Library)** (1 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **Current Stack Compatibility** (1 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **Decision Matrix** (1 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **Entry Points** (1 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **Migration Complexity** (1 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **Next Steps** (1 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **Option 1: Full Migration (Recommended for Long-Term)** (1 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- *... and 5 more nodes in this community*
+- **Path** (12 connections)
+- **._get_current_log_file()** (6 connections) — `server/services/chat_logger.py`
+- **.__init__()** (5 connections) — `server/services/chat_logger.py`
+- **.get_global_channel_log_stats()** (5 connections) — `server/services/chat_logger.py`
+- **.get_log_file_paths()** (4 connections) — `server/services/chat_logger.py`
+- **._get_global_channel_log_file()** (4 connections) — `server/services/chat_logger.py`
+- **._get_whisper_channel_log_file()** (4 connections) — `server/services/chat_logger.py`
+- **._get_system_channel_log_file()** (4 connections) — `server/services/chat_logger.py`
+- **.get_global_channel_log_files()** (4 connections) — `server/services/chat_logger.py`
+- **.cleanup_old_global_channel_logs()** (4 connections) — `server/services/chat_logger.py`
+- **._start_writer_thread()** (3 connections) — `server/services/chat_logger.py`
+- **Initialize chat logger.          Args:             log_dir: Directory for log fi** (1 connections) — `server/services/chat_logger.py`
+- **Start the background writer thread for thread-safe file writing.** (1 connections) — `server/services/chat_logger.py`
+- **Get the current log file path for the specified type.          Args:** (1 connections) — `server/services/chat_logger.py`
+- **Get paths to current log files.          Returns:             Dictionary mapping** (1 connections) — `server/services/chat_logger.py`
+- **Get the global channel log file path.          Returns:             Path to the** (1 connections) — `server/services/chat_logger.py`
+- **Get the whisper channel log file path.          Returns:             Path to the** (1 connections) — `server/services/chat_logger.py`
+- **Get the system channel log file path.          Returns:             Path to the** (1 connections) — `server/services/chat_logger.py`
+- **Get all global channel log files.          Returns:             List of string p** (1 connections) — `server/services/chat_logger.py`
+- **Get statistics for global channel log files.          Returns:             Dicti** (1 connections) — `server/services/chat_logger.py`
+- **Clean up old global channel log files.          Args:             days_to_keep:** (1 connections) — `server/services/chat_logger.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Chat Channel Logger](Chat_Channel_Logger.md) (18 shared connections)
+- [Archive Frd Random](Archive_Frd_Random.md) (1 shared connections)
+- [Plan Archive Character](Plan_Archive_Character.md) (1 shared connections)
+- [Procedures Readme Semgrep](Procedures_Readme_Semgrep.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/anyio_vs_asyncio_comparison.md`
+- `server/services/chat_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 58 (100%)
+- EXTRACTED: 65 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

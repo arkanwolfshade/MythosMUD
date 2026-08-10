@@ -1,50 +1,34 @@
 # Feedbackmanager Feedback Manager
 
-> 25 nodes · cohesion 0.11
+> 10 nodes
 
 ## Key Concepts
 
-- **FeedbackManager** (21 connections) — `client/src/utils/feedbackManager.ts`
-- **.saveFeedback()** (6 connections) — `client/src/utils/feedbackManager.ts`
-- **feedbackManager.ts** (5 connections) — `client/src/utils/feedbackManager.ts`
-- **feedbackManager.test.ts** (4 connections) — `client/src/utils/__tests__/feedbackManager.test.ts`
-- **.addFeedback()** (3 connections) — `client/src/utils/feedbackManager.ts`
-- **FeedbackData** (2 connections) — `client/src/utils/feedbackManager.ts`
-- **.clearFeedback()** (2 connections) — `client/src/utils/feedbackManager.ts`
-- **.constructor()** (2 connections) — `client/src/utils/feedbackManager.ts`
-- **.deleteFeedback()** (2 connections) — `client/src/utils/feedbackManager.ts`
-- **.generateId()** (2 connections) — `client/src/utils/feedbackManager.ts`
-- **.importFeedback()** (2 connections) — `client/src/utils/feedbackManager.ts`
-- **.loadFeedback()** (2 connections) — `client/src/utils/feedbackManager.ts`
-- **.updateFeedback()** (2 connections) — `client/src/utils/feedbackManager.ts`
-- **useFeedbackManager()** (2 connections) — `client/src/utils/feedbackManager.ts`
-- **.exportFeedback()** (1 connections) — `client/src/utils/feedbackManager.ts`
-- **.getAllFeedback()** (1 connections) — `client/src/utils/feedbackManager.ts`
-- **.getFeedback()** (1 connections) — `client/src/utils/feedbackManager.ts`
-- **.getFeedbackByComponent()** (1 connections) — `client/src/utils/feedbackManager.ts`
-- **.getFeedbackByPriority()** (1 connections) — `client/src/utils/feedbackManager.ts`
-- **.getFeedbackByStatus()** (1 connections) — `client/src/utils/feedbackManager.ts`
-- **.getFeedbackByType()** (1 connections) — `client/src/utils/feedbackManager.ts`
-- **.getStats()** (1 connections) — `client/src/utils/feedbackManager.ts`
-- **.getTrends()** (1 connections) — `client/src/utils/feedbackManager.ts`
-- **.searchFeedback()** (1 connections) — `client/src/utils/feedbackManager.ts`
-- **FeedbackStats** (1 connections) — `client/src/utils/feedbackManager.ts`
+- **enum** (6 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **environment** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **intersection** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **street_paved** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **default** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Chat Panel Separation Spec](Chat_Panel_Separation_Spec.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/utils/__tests__/feedbackManager.test.ts`
-- `client/src/utils/feedbackManager.ts`
+- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 68 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

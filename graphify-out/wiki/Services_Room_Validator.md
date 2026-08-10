@@ -1,51 +1,34 @@
 # Services Room Validator
 
-> 26 nodes · cohesion 0.08
+> 10 nodes
 
 ## Key Concepts
 
-- **test_room_data_validator.py** (15 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_check_duplicate_occupants()** (2 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_check_duplicate_occupants_no_duplicates()** (2 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_check_empty_room_with_occupants()** (2 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_check_occupant_count_consistency()** (2 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_field_types()** (2 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_field_types_valid()** (2 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_required_fields()** (2 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_required_fields_all_present()** (2 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_room_consistency()** (2 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_room_data_invalid()** (2 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_room_data_room_id()** (2 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_room_data_valid()** (2 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **Unit tests for room_data_validator.  Tests the RoomDataValidator class methods.** (1 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **Test validate_room_consistency() validates room consistency.** (1 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **Test validate_required_fields() detects missing fields.** (1 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **Test validate_required_fields() passes when all fields present.** (1 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **Test validate_field_types() detects type mismatches.** (1 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **Test validate_field_types() passes with correct types.** (1 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **Test validate_room_data() returns is_valid=True for valid data.** (1 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **Test validate_room_data() returns is_valid=False for invalid data.** (1 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **Test validate_room_data() includes room_id in result.** (1 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **Test check_occupant_count_consistency() detects mismatches.** (1 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **Test check_duplicate_occupants() detects duplicates.** (1 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **Test check_duplicate_occupants() passes when no duplicates.** (1 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- *... and 1 more nodes in this community*
+- **Movement Subsystem Design** (9 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **SUBSYSTEM_MOVEMENT_DESIGN.md** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **Overview** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **Architecture** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **Key design decisions** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **Constraints** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **Component interactions** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **Developer guide** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **Troubleshooting** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **Related docs** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
 
 ## Relationships
 
-- [[NPC Combat Lifecycle]] (1 shared connections)
-- [[Room Services Validator]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_room_data_validator.py`
+- `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

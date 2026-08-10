@@ -1,66 +1,59 @@
 # Argon2 Password Hashing
 
-> 223 nodes · cohesion 0.02
+> 83 nodes
 
 ## Key Concepts
 
-- **endpoints.py** (49 connections) — `server/auth/endpoints.py`
-- **test_endpoints.py** (49 connections) — `server/tests/unit/auth/test_endpoints.py`
-- **test_argon2_utils.py** (41 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **login_user()** (29 connections) — `server/auth/endpoints.py`
-- **register_user()** (28 connections) — `server/auth/endpoints.py`
-- **InviteManager** (28 connections) — `server/auth/invites.py`
-- **hash_password()** (27 connections) — `server/auth/argon2_utils.py`
-- **UserCreate** (26 connections) — `server/auth/endpoints.py`
-- **LoginRequest** (22 connections) — `server/auth/endpoints.py`
-- **verify_password()** (16 connections) — `server/auth/argon2_utils.py`
-- **create_hasher_with_params()** (11 connections) — `server/auth/argon2_utils.py`
-- **User** (11 connections) — `server/auth/endpoints.py`
-- **list_invites()** (10 connections) — `server/auth/endpoints.py`
-- **Request** (10 connections) — `server/auth/endpoints.py`
-- **is_argon2_hash()** (9 connections) — `server/auth/argon2_utils.py`
-- **_check_shutdown_status()** (8 connections) — `server/auth/endpoints.py`
-- **create_invite()** (8 connections) — `server/auth/endpoints.py`
-- **IntegrityError** (8 connections) — `server/auth/endpoints.py`
-- **Any** (8 connections) — `server/auth/endpoints.py`
-- **needs_rehash()** (7 connections) — `server/auth/argon2_utils.py`
-- **_authenticate_user_credentials()** (7 connections) — `server/auth/endpoints.py`
-- **_create_user_object()** (7 connections) — `server/auth/endpoints.py`
-- **_find_user_by_username()** (7 connections) — `server/auth/endpoints.py`
-- **LoginResponse** (7 connections) — `server/auth/endpoints.py`
-- **_validate_invite_code()** (7 connections) — `server/auth/endpoints.py`
-- *... and 198 more nodes in this community*
+- **TransferContainerRequest** (57 connections) — `server/api/container_models.py`
+- **test_container_helpers.py** (43 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestHandleContainerServiceError** (13 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **execute_transfer()** (12 connections) — `server/api/container_helpers.py`
+- **TestCreateErrorContext** (12 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestGetPlayerIdFromUser** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestValidateUserForOpenContainer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestApplyRateLimitingForOpenContainer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestValidateUserForTransfer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestApplyRateLimitingForTransfer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestExecuteTransfer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestValidateUserForCloseContainer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestApplyRateLimitingForCloseContainer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestValidateUserForLootAll** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestApplyRateLimitingForLootAll** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestGetContainerService** (10 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_handle_container_service_error_with_request_data()** (6 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_apply_rate_limiting_for_open_container_exceeded()** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_apply_rate_limiting_for_transfer_exceeded()** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_execute_transfer_to_container()** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_execute_transfer_to_player()** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_handle_container_service_error_stale_token()** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_handle_container_service_error_invalid_stack()** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_handle_container_service_error_generic()** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_apply_rate_limiting_for_close_container_exceeded()** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [[NPC Admin API]] (31 shared connections)
-- [[API Test Fixtures]] (28 shared connections)
-- [[Restart Invalidating JWT]] (16 shared connections)
-- [[Container Exception Handlers]] (9 shared connections)
-- [[Auth Token Utilities]] (6 shared connections)
-- [[Admin NPC Schemas]] (5 shared connections)
-- [[FastAPI App Factory]] (4 shared connections)
-- [[Database Manager Tests]] (3 shared connections)
-- [[Seed E 2 E Users]] (2 shared connections)
-- [[Standardized Error Responses]] (2 shared connections)
-- [[Character Creation API]] (2 shared connections)
-- [[Admin Shutdown Command]] (2 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (129 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (32 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (15 shared connections)
+- [Product Requirements Document](Product_Requirements_Document.md) (9 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Chat Service Whispers](Chat_Service_Whispers.md) (1 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth/argon2_utils.py`
-- `server/auth/endpoints.py`
-- `server/auth/invites.py`
-- `server/auth/users.py`
-- `server/tests/unit/auth/test_argon2_utils.py`
-- `server/tests/unit/auth/test_endpoints.py`
+- `server/api/container_helpers.py`
+- `server/api/container_models.py`
+- `server/tests/unit/api/test_container_helpers.py`
+- `server/tests/unit/api/test_containers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 884 (95%)
-- INFERRED: 50 (5%)
+- EXTRACTED: 267 (68%)
+- INFERRED: 124 (32%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

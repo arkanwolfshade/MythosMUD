@@ -1,14 +1,10 @@
 # Cursor Commands New
 
-> 5 nodes · cohesion 0.40
+> 1 nodes
 
 ## Key Concepts
 
-- **new-worktree.md** (4 connections) — `.cursor/commands/new-worktree.md`
-- **Behavior** (1 connections) — `.cursor/commands/new-worktree.md`
-- **Canonical Worktree Layout** (1 connections) — `.cursor/commands/new-worktree.md`
-- **Purpose** (1 connections) — `.cursor/commands/new-worktree.md`
-- **Usage Notes for Agents** (1 connections) — `.cursor/commands/new-worktree.md`
+- **Canonical Worktree Layout** (0 connections) — `.cursor/commands/new-worktree.md`
 
 ## Relationships
 
@@ -20,10 +16,10 @@
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

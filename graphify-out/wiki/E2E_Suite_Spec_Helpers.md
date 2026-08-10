@@ -1,61 +1,51 @@
 # E2E Suite Spec Helpers
 
-> 28 nodes · cohesion 0.18
+> 16 nodes
 
 ## Key Concepts
 
-- **authenticated.ts** (15 connections) — `client/tests/e2e/di-migration/fixtures/authenticated.ts`
-- **commands.ts** (12 connections) — `client/tests/e2e/di-migration/fixtures/commands.ts`
-- **safeWait()** (11 connections) — `client/tests/e2e/di-migration/fixtures/wait.ts`
-- **executeCommand()** (9 connections) — `client/tests/e2e/di-migration/fixtures/commands.ts`
-- **wait.ts** (9 connections) — `client/tests/e2e/di-migration/fixtures/wait.ts`
-- **suite-01-core-services.spec.ts** (8 connections) — `client/tests/e2e/di-migration/suite-01-core-services.spec.ts`
-- **suite-03-command-handlers.spec.ts** (7 connections) — `client/tests/e2e/di-migration/suite-03-command-handlers.spec.ts`
-- **suite-04-game-tick.spec.ts** (7 connections) — `client/tests/e2e/di-migration/suite-04-game-tick.spec.ts`
-- **suite-05-websocket.spec.ts** (6 connections) — `client/tests/e2e/di-migration/suite-05-websocket.spec.ts`
-- **suite-06-integration.spec.ts** (6 connections) — `client/tests/e2e/di-migration/suite-06-integration.spec.ts`
-- **authenticatedTest** (6 connections) — `client/tests/e2e/di-migration/fixtures/authenticated.ts`
-- **setupAuthStorage()** (4 connections) — `client/tests/e2e/di-migration/fixtures/authenticated.ts`
-- **waitForResponse()** (4 connections) — `client/tests/e2e/di-migration/fixtures/commands.ts`
-- **status-output.ts** (4 connections) — `client/tests/e2e/di-migration/fixtures/status-output.ts`
-- **api.ts** (3 connections) — `client/tests/e2e/di-migration/fixtures/api.ts`
-- **openAuthenticatedPage()** (3 connections) — `client/tests/e2e/di-migration/fixtures/authenticated.ts`
-- **expectStatusCommandOutput()** (3 connections) — `client/tests/e2e/di-migration/fixtures/status-output.ts`
-- **waitForGameTick()** (3 connections) — `client/tests/e2e/di-migration/fixtures/wait.ts`
-- **constants.ts** (2 connections) — `client/tests/e2e/di-migration/constants.ts`
-- **suite-02-api-endpoints.spec.ts** (2 connections) — `client/tests/e2e/di-migration/suite-02-api-endpoints.spec.ts`
-- **testAPIEndpoint()** (2 connections) — `client/tests/e2e/di-migration/fixtures/api.ts`
-- **adminTest** (2 connections) — `client/tests/e2e/di-migration/fixtures/authenticated.ts`
-- **sendCommandToPage()** (2 connections) — `client/tests/e2e/di-migration/fixtures/commands.ts`
-- **waitForAnyResponse()** (2 connections) — `client/tests/e2e/di-migration/fixtures/commands.ts`
-- **waitForSpecificResponse()** (2 connections) — `client/tests/e2e/di-migration/fixtures/commands.ts`
-- *... and 3 more nodes in this community*
+- **quest_service.py** (26 connections) — `server/game/quest/quest_service.py`
+- **QuestCompleted** (9 connections) — `server/events/event_types.py`
+- **_consume_collect_goals_from_player()** (7 connections) — `server/game/quest/quest_service.py`
+- **_build_collect_n_progress()** (7 connections) — `server/game/quest/quest_service.py`
+- **_collect_goal_prototype_id()** (5 connections) — `server/game/quest/quest_service.py`
+- **_goal_activity_target()** (4 connections) — `server/game/quest/quest_service.py`
+- **_collect_goal_required_count()** (4 connections) — `server/game/quest/quest_service.py`
+- **__init__.py** (3 connections) — `server/game/quest/__init__.py`
+- **Event fired when a quest instance is completed (rewards applied, state set to co** (1 connections) — `server/events/event_types.py`
+- **Quest subsystem: service, goal progression, rewards.** (1 connections) — `server/game/quest/__init__.py`
+- **Quest service: start, progress, complete, turn-in, abandon, and quest log.  Reso** (1 connections) — `server/game/quest/quest_service.py`
+- **Resolve the activity/npc target string for a progress goal.** (1 connections) — `server/game/quest/quest_service.py`
+- **Return collect_n prototype id from goal target or config.** (1 connections) — `server/game/quest/quest_service.py`
+- **Return required count for a collect_n goal.** (1 connections) — `server/game/quest/quest_service.py`
+- **Consume each collect_n goal from player holdings. Return error dict or None.** (1 connections) — `server/game/quest/quest_service.py`
+- **Recompute collect_n goal counters from holdings into a progress dict.** (1 connections) — `server/game/quest/quest_service.py`
 
 ## Relationships
 
-- [[Character Selection E2E]] (4 shared connections)
+- [Quest Service Core](Quest_Service_Core.md) (20 shared connections)
+- [AI Agent Development Docs](AI_Agent_Development_Docs.md) (6 shared connections)
+- [Test Optimization Insights](Test_Optimization_Insights.md) (2 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Lucidity Database Models](Lucidity_Database_Models.md) (1 shared connections)
+- [Command Service Tests](Command_Service_Tests.md) (1 shared connections)
+- [Whisper Testing Complete](Whisper_Testing_Complete.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/di-migration/constants.ts`
-- `client/tests/e2e/di-migration/fixtures/api.ts`
-- `client/tests/e2e/di-migration/fixtures/authenticated.ts`
-- `client/tests/e2e/di-migration/fixtures/commands.ts`
-- `client/tests/e2e/di-migration/fixtures/status-output.ts`
-- `client/tests/e2e/di-migration/fixtures/wait.ts`
-- `client/tests/e2e/di-migration/suite-01-core-services.spec.ts`
-- `client/tests/e2e/di-migration/suite-02-api-endpoints.spec.ts`
-- `client/tests/e2e/di-migration/suite-03-command-handlers.spec.ts`
-- `client/tests/e2e/di-migration/suite-04-game-tick.spec.ts`
-- `client/tests/e2e/di-migration/suite-05-websocket.spec.ts`
-- `client/tests/e2e/di-migration/suite-06-integration.spec.ts`
+- `server/events/event_types.py`
+- `server/game/quest/__init__.py`
+- `server/game/quest/quest_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 138 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 71 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

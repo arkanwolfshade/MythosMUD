@@ -1,53 +1,60 @@
 # Communication Command Models
 
-> 86 nodes · cohesion 0.04
+> 104 nodes
 
 ## Key Concepts
 
-- **test_command_communication.py** (44 connections) — `server/tests/unit/models/test_command_communication.py`
-- **WhisperCommand** (15 connections) — `server/models/command_communication.py`
-- **EmoteCommand** (12 connections) — `server/models/command_communication.py`
-- **LocalCommand** (12 connections) — `server/models/command_communication.py`
-- **MeCommand** (12 connections) — `server/models/command_communication.py`
-- **ReplyCommand** (12 connections) — `server/models/command_communication.py`
-- **SayCommand** (12 connections) — `server/models/command_communication.py`
-- **SystemCommand** (12 connections) — `server/models/command_communication.py`
-- **Validate message content for security using centralized validation.** (4 connections) — `server/models/command_communication.py`
-- **Test SayCommand validates message min length.** (4 connections) — `server/tests/unit/models/test_command_communication.py`
-- **.validate_action()** (3 connections) — `server/models/command_communication.py`
-- **.validate_message()** (3 connections) — `server/models/command_communication.py`
-- **.validate_action()** (3 connections) — `server/models/command_communication.py`
-- **.validate_message()** (3 connections) — `server/models/command_communication.py`
-- **.validate_message()** (3 connections) — `server/models/command_communication.py`
-- **.validate_message()** (3 connections) — `server/models/command_communication.py`
-- **.validate_message()** (3 connections) — `server/models/command_communication.py`
-- **.validate_target()** (3 connections) — `server/models/command_communication.py`
-- **Test SayCommand calls validate_message_content.** (3 connections) — `server/tests/unit/models/test_command_communication.py`
-- **test_emote_command_action_max_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
-- **test_emote_command_action_min_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
-- **test_emote_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
-- **test_emote_command_validate_action_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
-- **test_local_command_message_max_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
-- **test_local_command_message_min_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
-- *... and 61 more nodes in this community*
+- **test_command_moderation.py** (38 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **validate_player_name()** (21 connections) — `server/validators/security_validator.py`
+- **MuteCommand** (18 connections) — `server/models/command_moderation.py`
+- **command_moderation.py** (16 connections) — `server/models/command_moderation.py`
+- **MuteGlobalCommand** (15 connections) — `server/models/command_moderation.py`
+- **AdminCommand** (15 connections) — `server/models/command_moderation.py`
+- **UnmuteCommand** (10 connections) — `server/models/command_moderation.py`
+- **UnmuteGlobalCommand** (10 connections) — `server/models/command_moderation.py`
+- **AddAdminCommand** (10 connections) — `server/models/command_moderation.py`
+- **MutesCommand** (8 connections) — `server/models/command_moderation.py`
+- **test_mute_command_duration_validation_min()** (4 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_duration_validation_max()** (4 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_reason_max_length()** (4 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_global_command_duration_validation_min()** (4 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_global_command_duration_validation_max()** (4 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_admin_command_validate_subcommand_invalid()** (4 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_admin_command_subcommand_min_length()** (4 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_admin_command_subcommand_max_length()** (4 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **.validate_player_name_field()** (3 connections) — `server/models/command_moderation.py`
+- **.validate_player_name_field()** (3 connections) — `server/models/command_moderation.py`
+- **.validate_player_name_field()** (3 connections) — `server/models/command_moderation.py`
+- **.validate_player_name_field()** (3 connections) — `server/models/command_moderation.py`
+- **.validate_player_name_field()** (3 connections) — `server/models/command_moderation.py`
+- **test_mute_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_with_duration()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- *... and 79 more nodes in this community*
 
 ## Relationships
 
-- [[Base Command Models]] (34 shared connections)
-- [[Command Field Validators]] (15 shared connections)
-- [[Communication Command Factories]] (1 shared connections)
+- [Chat Panel Components](Chat_Panel_Components.md) (13 shared connections)
+- [Emote Schema Validator](Emote_Schema_Validator.md) (9 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (8 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (8 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (8 shared connections)
+- [Admin Command Models](Admin_Command_Models.md) (7 shared connections)
+- [Game Terminal Panels](Game_Terminal_Panels.md) (3 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/command_communication.py`
-- `server/tests/unit/models/test_command_communication.py`
+- `server/models/command_moderation.py`
+- `server/tests/unit/models/test_command_moderation.py`
+- `server/tests/unit/validators/test_security_validator.py`
+- `server/validators/security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 296 (95%)
-- INFERRED: 14 (5%)
+- EXTRACTED: 323 (93%)
+- INFERRED: 23 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

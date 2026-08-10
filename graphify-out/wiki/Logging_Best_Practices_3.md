@@ -1,12 +1,12 @@
 # Logging Best Practices
 
-> 4 nodes · cohesion 0.67
+> 4 nodes
 
 ## Key Concepts
 
 - **Logging Best Practices** (2 connections) — `docs/LOGGING_BEST_PRACTICES.md`
-- **Structured Key-Value Logging** (2 connections) — `docs/LOGGING_BEST_PRACTICES.md`
 - **Logging Quick Reference** (2 connections) — `docs/LOGGING_QUICK_REFERENCE.md`
+- **Structured Key-Value Logging** (2 connections) — `docs/LOGGING_BEST_PRACTICES.md`
 - **Forbidden Logging Patterns** (2 connections) — `docs/LOGGING_QUICK_REFERENCE.md`
 
 ## Relationships
@@ -26,4 +26,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

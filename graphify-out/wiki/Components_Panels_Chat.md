@@ -1,55 +1,29 @@
 # Components Panels Chat
 
-> 19 nodes · cohesion 0.16
+> 5 nodes
 
 ## Key Concepts
 
-- **GameClientV2Minimap.tsx** (15 connections) — `client/src/components/ui-v2/GameClientV2Minimap.tsx`
-- **ChatMessage.tsx** (14 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
-- **SafeHtml.tsx** (14 connections) — `client/src/components/common/SafeHtml.tsx`
-- **SafeHtml()** (10 connections) — `client/src/components/common/SafeHtml.tsx`
-- **ChatMessage()** (7 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
-- **AsciiMinimap.tsx** (6 connections) — `client/src/components/map/AsciiMinimap.tsx`
-- **formatTimestamp()** (2 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
-- **getFontSizeClass()** (2 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
-- **getMessageClass()** (2 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
-- **AsciiMinimap()** (2 connections) — `client/src/components/map/AsciiMinimap.tsx`
-- **ChatMessage.test.tsx** (2 connections) — `client/src/components/panels/chat/__tests__/ChatMessage.test.tsx`
-- **SafeHtml.test.tsx** (2 connections) — `client/src/components/common/__tests__/SafeHtml.test.tsx`
-- **minimapBackdropLayout()** (2 connections) — `client/src/components/ui-v2/GameClientV2Minimap.tsx`
-- **MinimapPanelBackdrop()** (2 connections) — `client/src/components/ui-v2/GameClientV2Minimap.tsx`
-- **MinimapPanelSection()** (2 connections) — `client/src/components/ui-v2/GameClientV2Minimap.tsx`
-- **ChatMessageProps** (1 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
-- **SafeHtmlProps** (1 connections) — `client/src/components/common/SafeHtml.tsx`
-- **AsciiMinimapProps** (1 connections) — `client/src/components/map/AsciiMinimap.tsx`
-- **MinimapPanelSectionProps** (1 connections) — `client/src/components/ui-v2/GameClientV2Minimap.tsx`
+- **2026_02_19_add_quest_tables.py** (2 connections) — `server/alembic/versions/2026_02_19_add_quest_tables.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2026_02_19_add_quest_tables.py`
+- **downgrade()** (2 connections) — `server/alembic/versions/2026_02_19_add_quest_tables.py`
+- **Create quest_definitions, quest_instances, quest_offers tables.** (1 connections) — `server/alembic/versions/2026_02_19_add_quest_tables.py`
+- **Drop quest tables (order matters for FKs).** (1 connections) — `server/alembic/versions/2026_02_19_add_quest_tables.py`
 
 ## Relationships
 
-- [[Chat Panel Components]] (8 shared connections)
-- [[UI Player Event Handlers]] (7 shared connections)
-- [[Chat Panel Filtering]] (5 shared connections)
-- [[Client Security Utilities]] (5 shared connections)
-- [[Client ASCII Map API]] (3 shared connections)
-- [[UI Panel Manager]] (3 shared connections)
-- [[Game Terminal Panels]] (2 shared connections)
-- [[Death Delirium UI Modals]] (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/src/components/common/SafeHtml.tsx`
-- `client/src/components/common/__tests__/SafeHtml.test.tsx`
-- `client/src/components/map/AsciiMinimap.tsx`
-- `client/src/components/panels/chat/ChatMessage.tsx`
-- `client/src/components/panels/chat/__tests__/ChatMessage.test.tsx`
-- `client/src/components/ui-v2/GameClientV2Minimap.tsx`
+- `server/alembic/versions/2026_02_19_add_quest_tables.py`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

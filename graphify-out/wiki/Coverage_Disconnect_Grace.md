@@ -1,48 +1,46 @@
 # Coverage Disconnect Grace
 
-> 24 nodes · cohesion 0.10
+> 17 nodes
 
 ## Key Concepts
 
-- **Test Coverage Summary: Disconnect Grace Period & Rest Command** (12 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Test Categories** (5 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **New Test Files Created** (4 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Test Coverage Summary** (4 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Test Execution** (4 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Integration Tests** (3 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Test Coverage by File** (3 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **E2E Test Scenarios** (2 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Unit Tests** (2 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md** (1 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Coverage Targets** (1 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Coverage Verification** (1 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Critical Files (90% Target)** (1 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **E2E Scenarios** (1 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Expected Coverage Results** (1 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Grace Period System Tests** (1 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Next Steps** (1 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Normal Files (70% Target)** (1 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Notes** (1 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Overview** (1 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Rest Command Tests** (1 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Run E2E Scenarios** (1 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Run Integration Tests** (1 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Run Unit Tests** (1 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **get_npc_database_path()** (11 connections) — `server/npc_database.py`
+- **ensure_npc_database_directory()** (6 connections) — `server/npc_database.py`
+- **TestGetNPCDatabasePath** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **TestEnsureNPCDatabaseDirectory** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_database_path_raises_for_non_postgresql()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_database_path_returns_none_for_postgresql()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_ensure_npc_database_directory_no_op_for_postgresql()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_ensure_npc_database_directory_creates_directory()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Path** (2 connections)
+- **Get the NPC database file path.      DEPRECATED: PostgreSQL does not use file pa** (1 connections) — `server/npc_database.py`
+- **Ensure NPC database directory exists.      DEPRECATED: PostgreSQL does not use f** (1 connections) — `server/npc_database.py`
+- **Test get_npc_database_path() function.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_database_path() returns None for PostgreSQL.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_database_path() raises for non-PostgreSQL URLs.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test ensure_npc_database_directory() function.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test ensure_npc_database_directory() is no-op for PostgreSQL.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test ensure_npc_database_directory() creates directory if needed.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Room Service Tests](Room_Service_Tests.md) (5 shared connections)
+- [Realtime Errors Error](Realtime_Errors_Error.md) (5 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- `server/npc_database.py`
+- `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 54 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 44 (88%)
+- INFERRED: 6 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

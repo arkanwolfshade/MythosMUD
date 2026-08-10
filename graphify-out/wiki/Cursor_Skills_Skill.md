@@ -1,6 +1,6 @@
 # Cursor Skills Skill
 
-> 16 nodes · cohesion 0.13
+> 16 nodes
 
 ## Key Concepts
 
@@ -49,4 +49,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,40 +1,37 @@
 # Architecture Decisions Adr
 
-> 15 nodes · cohesion 0.13
+> 13 nodes
 
 ## Key Concepts
 
-- **ADR-012: python-statemachine for Backend Connection FSM** (10 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **Consequences** (4 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **Considered Options** (4 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **Context and Problem Statement** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **Decision Drivers** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **Decision Outcome** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **Negative** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **Neutral** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **Option 1: python-statemachine** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **Option 2: transitions** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **Option 3: Manual Implementation** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **Positive** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **References** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **Related ADRs** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **Validation** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Any** (6 connections)
+- **.merge_room_data()** (4 connections) — `server/services/room_data_cache.py`
+- **._is_newer_data()** (4 connections) — `server/services/room_data_cache.py`
+- **.is_room_data_fresh()** (3 connections) — `server/services/room_data_cache.py`
+- **.get_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **.set_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **.get_cache_stats()** (3 connections) — `server/services/room_data_cache.py`
+- **Check if room data is fresh enough to use.          Args:             room_data:** (1 connections) — `server/services/room_data_cache.py`
+- **Get room data from cache.          Args:             room_id: Room ID to retriev** (1 connections) — `server/services/room_data_cache.py`
+- **Store room data in cache.          Args:             room_id: Room ID to store** (1 connections) — `server/services/room_data_cache.py`
+- **Get statistics about the room data cache.          Args:             is_room_dat** (1 connections) — `server/services/room_data_cache.py`
+- **Merge room data with proper conflict resolution.          Args:             old_** (1 connections) — `server/services/room_data_cache.py`
+- **Check if new data is newer than old data for a specific key.          Args:** (1 connections) — `server/services/room_data_cache.py`
 
 ## Relationships
 
-- [[Architecture Decisions Adr]] (1 shared connections)
-- [[Cursor Agents Readme]] (1 shared connections)
+- [Room Data Cache](Room_Data_Cache.md) (6 shared connections)
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- `server/services/room_data_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
+- EXTRACTED: 32 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

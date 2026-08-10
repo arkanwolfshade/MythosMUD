@@ -1,36 +1,26 @@
 # Cursor Skills Animate
 
-> 12 nodes · cohesion 0.17
+> 2 nodes
 
 ## Key Concepts
 
-- **Implement Animations** (7 connections) — `.cursor/skills/animate/SKILL.md`
-- **SKILL.md** (6 connections) — `.cursor/skills/animate/SKILL.md`
-- **Assess Animation Opportunities** (1 connections) — `.cursor/skills/animate/SKILL.md`
-- **Delight Moments** (1 connections) — `.cursor/skills/animate/SKILL.md`
-- **Entrance Animations** (1 connections) — `.cursor/skills/animate/SKILL.md`
-- **Feedback & Guidance** (1 connections) — `.cursor/skills/animate/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.cursor/skills/animate/SKILL.md`
-- **Micro-interactions** (1 connections) — `.cursor/skills/animate/SKILL.md`
-- **Navigation & Flow** (1 connections) — `.cursor/skills/animate/SKILL.md`
-- **Plan Animation Strategy** (1 connections) — `.cursor/skills/animate/SKILL.md`
-- **State Transitions** (1 connections) — `.cursor/skills/animate/SKILL.md`
-- **Verify Quality** (1 connections) — `.cursor/skills/animate/SKILL.md`
+- **test_handle_spell_command_success()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test spell command success.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [[UI Animation Testing Standards]] (1 shared connections)
+- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/animate/SKILL.md`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,63 +1,62 @@
 # Dependency Injection Tests
 
-> 139 nodes · cohesion 0.02
+> 98 nodes
 
 ## Key Concepts
 
-- **test_dependencies.py** (60 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **get_container()** (41 connections) — `server/dependencies.py`
-- **Request** (29 connections) — `server/dependencies.py`
-- **test_dependency_injection.py** (15 connections) — `server/tests/unit/test_dependency_injection.py`
-- **get_player_service()** (12 connections) — `server/dependencies.py`
-- **get_room_service()** (12 connections) — `server/dependencies.py`
-- **get_async_persistence()** (9 connections) — `server/dependencies.py`
-- **get_combat_service()** (9 connections) — `server/dependencies.py`
-- **get_chat_service()** (8 connections) — `server/dependencies.py`
-- **get_exploration_service()** (8 connections) — `server/dependencies.py`
-- **get_magic_service()** (8 connections) — `server/dependencies.py`
-- **get_mp_regeneration_service()** (8 connections) — `server/dependencies.py`
-- **get_mythos_time_consumer()** (8 connections) — `server/dependencies.py`
-- **get_npc_lifecycle_manager()** (8 connections) — `server/dependencies.py`
-- **get_player_combat_service()** (8 connections) — `server/dependencies.py`
-- **get_player_death_service()** (8 connections) — `server/dependencies.py`
-- **get_player_respawn_service()** (8 connections) — `server/dependencies.py`
-- **get_profession_service()** (8 connections) — `server/dependencies.py`
-- **get_spell_registry()** (8 connections) — `server/dependencies.py`
-- **TestGetContainer** (8 connections) — `server/tests/unit/test_dependency_injection.py`
-- **Tests for get_player_service dependency function.** (7 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **TestGetContainer** (6 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **get_level_service()** (6 connections) — `server/dependencies.py`
-- **get_quest_service()** (6 connections) — `server/dependencies.py`
-- **get_skill_service()** (6 connections) — `server/dependencies.py`
-- *... and 114 more nodes in this community*
+- **Room** (75 connections) — `server/models/room.py`
+- **test_room_class.py** (29 connections) — `server/tests/unit/models/test_room_class.py`
+- **.to_dict()** (8 connections) — `server/models/room.py`
+- **UUID** (6 connections)
+- **.__init__()** (5 connections) — `server/models/room.py`
+- **.player_entered()** (5 connections) — `server/models/room.py`
+- **.get_containers()** (5 connections) — `server/models/room.py`
+- **.player_left()** (4 connections) — `server/models/room.py`
+- **.get_players()** (4 connections) — `server/models/room.py`
+- **.get_npcs()** (4 connections) — `server/models/room.py`
+- **.has_player()** (4 connections) — `server/models/room.py`
+- **.get_occupant_count()** (4 connections) — `server/models/room.py`
+- **Any** (3 connections)
+- **.add_player_silently()** (3 connections) — `server/models/room.py`
+- **.remove_player_silently()** (3 connections) — `server/models/room.py`
+- **.object_added()** (3 connections) — `server/models/room.py`
+- **.object_removed()** (3 connections) — `server/models/room.py`
+- **.npc_left()** (3 connections) — `server/models/room.py`
+- **.get_objects()** (3 connections) — `server/models/room.py`
+- **.is_empty()** (3 connections) — `server/models/room.py`
+- **test_room_init()** (3 connections) — `server/tests/unit/models/test_room_class.py`
+- **test_room_init_defaults()** (3 connections) — `server/tests/unit/models/test_room_class.py`
+- **test_room_player_entered()** (3 connections) — `server/tests/unit/models/test_room_class.py`
+- **test_room_player_entered_string_id()** (3 connections) — `server/tests/unit/models/test_room_class.py`
+- **test_room_player_entered_empty_id()** (3 connections) — `server/tests/unit/models/test_room_class.py`
+- *... and 73 more nodes in this community*
 
 ## Relationships
 
-- [[Dependencies Infrastructure]] (36 shared connections)
-- [[NPC Admin API]] (22 shared connections)
-- [[Combat Command Handler]] (19 shared connections)
-- [[Database Manager Tests]] (18 shared connections)
-- [[Character Stats Generator]] (9 shared connections)
-- [[Dependency Injection Dependencies]] (8 shared connections)
-- [[Async Persistence Layer]] (7 shared connections)
-- [[Maps API Endpoints]] (2 shared connections)
-- [[Application DI Bundles]] (1 shared connections)
-- [[Players API Endpoints]] (1 shared connections)
-- [[Argon2 Password Hashing]] (1 shared connections)
-- [[Game Profession Service]] (1 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (10 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
+- [Lucidity State Models](Lucidity_State_Models.md) (3 shared connections)
+- [WebSocket Initial State](WebSocket_Initial_State.md) (3 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (2 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (2 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
+- [NPC Services Bundle](NPC_Services_Bundle.md) (2 shared connections)
+- [Status Effect Model](Status_Effect_Model.md) (2 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
+- [Async Persistence Layer](Async_Persistence_Layer.md) (2 shared connections)
+- [Async Persistence Types](Async_Persistence_Types.md) (1 shared connections)
 
 ## Source Files
 
-- `server/dependencies.py`
-- `server/tests/unit/infrastructure/test_dependencies.py`
-- `server/tests/unit/test_dependency_injection.py`
+- `server/models/room.py`
+- `server/tests/unit/models/test_room_class.py`
 
 ## Audit Trail
 
-- EXTRACTED: 533 (92%)
-- INFERRED: 44 (8%)
+- EXTRACTED: 301 (97%)
+- INFERRED: 10 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

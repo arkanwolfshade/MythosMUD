@@ -1,72 +1,62 @@
 # Mythos Time HUD
 
-> 61 nodes · cohesion 0.08
+> 52 nodes
 
 ## Key Concepts
 
-- **sanitizeChatMessageForState()** (21 connections) — `client/src/components/ui-v2/utils/messageUtils.ts`
-- **systemHandlers.ts** (20 connections) — `client/src/components/ui-v2/eventHandlers/systemHandlers.ts`
-- **appendMessage()** (20 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- **mythosTime.ts** (20 connections) — `client/src/types/mythosTime.ts`
-- **lucidityEventUtils.ts** (19 connections) — `client/src/utils/lucidityEventUtils.ts`
-- **messageUtils.ts** (18 connections) — `client/src/components/ui-v2/utils/messageUtils.ts`
-- **combatHandlers.ts** (13 connections) — `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
-- **mythosTime.ts** (13 connections) — `client/src/utils/mythosTime.ts`
-- **MythosTimeHud.tsx** (12 connections) — `client/src/components/MythosTimeHud.tsx`
-- **useMythosTimeBootstrap.ts** (12 connections) — `client/src/components/ui-v2/hooks/useMythosTimeBootstrap.ts`
-- **combatHandlers.test.ts** (12 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/combatHandlers.test.ts`
-- **systemHandlers.test.ts** (12 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/systemHandlers.test.ts`
-- **buildLucidityStatus()** (10 connections) — `client/src/utils/lucidityEventUtils.ts`
-- **formatMythosTime12Hour()** (9 connections) — `client/src/utils/mythosTime.ts`
-- **mythosTime.test.ts** (7 connections) — `client/src/utils/__tests__/mythosTime.test.ts`
-- **MythosTimePayload** (7 connections) — `client/src/types/mythosTime.ts`
-- **handleMythosTimeUpdate()** (6 connections) — `client/src/components/ui-v2/eventHandlers/systemHandlers.ts`
-- **MythosTimeHud.test.tsx** (6 connections) — `client/src/components/__tests__/MythosTimeHud.test.tsx`
-- **buildMythosTimeState()** (6 connections) — `client/src/utils/mythosTime.ts`
-- **lucidityEventUtils.test.ts** (5 connections) — `client/src/utils/__tests__/lucidityEventUtils.test.ts`
-- **parseNumber()** (5 connections) — `client/src/utils/lucidityEventUtils.ts`
-- **getMessageMetadata()** (5 connections) — `client/src/components/ui-v2/utils/messageUtils.ts`
-- **MythosTimeHud()** (4 connections) — `client/src/components/MythosTimeHud.tsx`
-- **handleCombatDeath()** (4 connections) — `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
-- **handleCombatTargetSwitch()** (4 connections) — `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
-- *... and 36 more nodes in this community*
+- **websocket_integration.py** (22 connections) — `docs/examples/logging/websocket_integration.py`
+- **measure_performance()** (20 connections) — `server/monitoring/performance_monitor.py`
+- **handle_websocket_message()** (8 connections) — `docs/examples/logging/websocket_integration.py`
+- **WebSocketManager** (7 connections) — `docs/examples/logging/websocket_integration.py`
+- **websocket_endpoint()** (7 connections) — `docs/examples/logging/websocket_integration.py`
+- **.send_text()** (7 connections) — `docs/examples/logging/websocket_integration.py`
+- **.disconnect()** (6 connections) — `docs/examples/logging/websocket_integration.py`
+- **handle_game_action()** (6 connections) — `docs/examples/logging/websocket_integration.py`
+- **chat_service** (6 connections) — `docs/examples/logging/websocket_integration.py`
+- **.connect()** (5 connections) — `docs/examples/logging/websocket_integration.py`
+- **handle_chat_message()** (5 connections) — `docs/examples/logging/websocket_integration.py`
+- **WebSocket** (5 connections) — `docs/examples/logging/websocket_integration.py`
+- **.send_message()** (4 connections) — `docs/examples/logging/websocket_integration.py`
+- **.broadcast_message()** (4 connections) — `docs/examples/logging/websocket_integration.py`
+- **authenticate_websocket_connection()** (4 connections) — `docs/examples/logging/websocket_integration.py`
+- **WebSocketRateLimiter** (4 connections) — `docs/examples/logging/websocket_integration.py`
+- **handle_websocket_error()** (4 connections) — `docs/examples/logging/websocket_integration.py`
+- **websocket_heartbeat()** (3 connections) — `docs/examples/logging/websocket_integration.py`
+- **parse_websocket_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
+- **.broadcast_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
+- **.verify_token()** (3 connections) — `docs/examples/logging/websocket_integration.py`
+- **.check_rate_limit()** (2 connections) — `docs/examples/logging/websocket_integration.py`
+- **validate_websocket_message()** (2 connections) — `docs/examples/logging/websocket_integration.py`
+- **Exception** (2 connections)
+- **WebSocketDisconnect** (2 connections) — `docs/examples/logging/websocket_integration.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [[UI Player Event Handlers]] (41 shared connections)
-- [[Client Event Store]] (22 shared connections)
-- [[Draggable Panel UI]] (5 shared connections)
-- [[Chat Panel Components]] (5 shared connections)
-- [[Components Ui V 2]] (4 shared connections)
-- [[App Creation Flow Screens]] (2 shared connections)
-- [[Client Security Utilities]] (2 shared connections)
-- [[Game Client Container]] (1 shared connections)
+- [Memory Leak Metrics](Memory_Leak_Metrics.md) (6 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (4 shared connections)
+- [Cursor Skills Harden](Cursor_Skills_Harden.md) (4 shared connections)
+- [Merge Refactoring Summary](Merge_Refactoring_Summary.md) (3 shared connections)
+- [Test Migration Mapping](Test_Migration_Mapping.md) (3 shared connections)
+- [Player Movement Service](Player_Movement_Service.md) (2 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
+- [Quest Journal Commands](Quest_Journal_Commands.md) (1 shared connections)
+- [Commands System Help](Commands_System_Help.md) (1 shared connections)
+- [Persistence Extraction Complete](Persistence_Extraction_Complete.md) (1 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (1 shared connections)
+- [Async Code Review Docs](Async_Code_Review_Docs.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/MythosTimeHud.tsx`
-- `client/src/components/__tests__/MythosTimeHud.test.tsx`
-- `client/src/components/ui-v2/HeaderBar.tsx`
-- `client/src/components/ui-v2/__tests__/HeaderBar.test.tsx`
-- `client/src/components/ui-v2/eventHandlers/__tests__/combatHandlers.test.ts`
-- `client/src/components/ui-v2/eventHandlers/__tests__/systemHandlers.test.ts`
-- `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
-- `client/src/components/ui-v2/eventHandlers/systemHandlers.ts`
-- `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- `client/src/components/ui-v2/hooks/useMythosTimeBootstrap.ts`
-- `client/src/components/ui-v2/utils/messageUtils.ts`
-- `client/src/types/mythosTime.ts`
-- `client/src/utils/__tests__/lucidityEventUtils.test.ts`
-- `client/src/utils/__tests__/mythosTime.test.ts`
-- `client/src/utils/lucidityEventUtils.ts`
-- `client/src/utils/mythosTime.ts`
+- `docs/examples/logging/websocket_integration.py`
+- `server/monitoring/performance_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 336 (93%)
-- INFERRED: 24 (7%)
+- EXTRACTED: 170 (96%)
+- INFERRED: 8 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

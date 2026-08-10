@@ -1,11 +1,11 @@
 # Uvicorn Code Review
 
-> 2 nodes · cohesion 1.00
+> 2 nodes
 
 ## Key Concepts
 
-- **Deprecated get_event_loop Antipattern** (1 connections) — `docs/UVICORN_CODE_REVIEW.md`
 - **Uvicorn/ASGI Code Review** (1 connections) — `docs/UVICORN_CODE_REVIEW.md`
+- **Deprecated get_event_loop Antipattern** (1 connections) — `docs/UVICORN_CODE_REVIEW.md`
 
 ## Relationships
 
@@ -23,4 +23,4 @@
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -1,52 +1,52 @@
 # Server Process Termination
 
-> 32 nodes · cohesion 0.10
+> 22 nodes
 
 ## Key Concepts
 
-- **shutdown_sequence.py** (16 connections) — `server/commands/shutdown_sequence.py`
-- **execute_shutdown_sequence()** (13 connections) — `server/commands/shutdown_sequence.py`
-- **shutdown_process_termination.py** (9 connections) — `server/commands/shutdown_process_termination.py`
-- **Any** (8 connections) — `server/commands/shutdown_sequence.py`
-- **schedule_process_termination()** (4 connections) — `server/commands/shutdown_process_termination.py`
-- **_cancel_background_tasks()** (4 connections) — `server/commands/shutdown_sequence.py`
-- **_cleanup_connection_manager()** (4 connections) — `server/commands/shutdown_sequence.py`
-- **_despawn_all_npcs()** (4 connections) — `server/commands/shutdown_sequence.py`
-- **_disconnect_all_players()** (4 connections) — `server/commands/shutdown_sequence.py`
-- **_disconnect_nats_service()** (4 connections) — `server/commands/shutdown_sequence.py`
-- **_persist_all_players()** (4 connections) — `server/commands/shutdown_sequence.py`
-- **_stop_nats_message_handler()** (4 connections) — `server/commands/shutdown_sequence.py`
-- **_find_uvicorn_processes()** (3 connections) — `server/commands/shutdown_process_termination.py`
-- **_terminate_uvicorn_processes()** (3 connections) — `server/commands/shutdown_process_termination.py`
-- **_terminate_child_processes()** (2 connections) — `server/commands/shutdown_process_termination.py`
-- **_terminate_with_signals()** (2 connections) — `server/commands/shutdown_process_termination.py`
-- **Any** (2 connections) — `server/commands/shutdown_process_termination.py`
-- **Process termination utilities for graceful server shutdown.  This module handles** (1 connections) — `server/commands/shutdown_process_termination.py`
-- **Schedule a best-effort graceful process termination after a short delay.      Th** (1 connections) — `server/commands/shutdown_process_termination.py`
-- **Find all uvicorn processes using psutil.** (1 connections) — `server/commands/shutdown_process_termination.py`
-- **Terminate all uvicorn processes.** (1 connections) — `server/commands/shutdown_process_termination.py`
-- **Terminate all child processes of the current process.** (1 connections) — `server/commands/shutdown_process_termination.py`
-- **Fallback signal-based termination when psutil is not available.** (1 connections) — `server/commands/shutdown_process_termination.py`
-- **Shutdown sequence execution for graceful server shutdown.  This module handles t** (1 connections) — `server/commands/shutdown_sequence.py`
-- **Phase 4: Stop NATS message handler.** (1 connections) — `server/commands/shutdown_sequence.py`
-- *... and 7 more nodes in this community*
+- **MPRegenerationService** (20 connections) — `server/game/magic/mp_regeneration_service.py`
+- **.process_tick_regeneration()** (6 connections) — `server/game/magic/mp_regeneration_service.py`
+- **UUID** (5 connections)
+- **Any** (5 connections)
+- **._get_regen_multiplier()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
+- **.restore_mp_from_rest()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
+- **.restore_mp_from_meditation()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
+- **.restore_mp_from_item()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
+- **mp_regeneration_service()** (4 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **.__init__()** (3 connections) — `server/game/magic/mp_regeneration_service.py`
+- **test_mp_regeneration_service_init()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_mp_regeneration_service_init_custom_rate()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Service for managing MP regeneration.      Handles passive regeneration over tim** (1 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Initialize the MP regeneration service.          Args:             player_servic** (1 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Process MP regeneration for a player on a game tick.          Args:** (1 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Get MP regeneration multiplier based on player state.          Args:** (1 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Restore MP from resting (accelerated regeneration).          Args:             p** (1 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Restore MP from meditation (highly accelerated regeneration).          Args:** (1 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Restore MP from consuming an item.          Args:             player_id: Player** (1 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Create an MPRegenerationService instance.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test MPRegenerationService initialization.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test MPRegenerationService initialization with custom regen_rate.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [[NPC Admin API]] (6 shared connections)
-- [[Admin Shutdown Commands]] (3 shared connections)
+- [NPC Service Tests](NPC_Service_Tests.md) (5 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (4 shared connections)
+- [Cursor Agents Quick](Cursor_Agents_Quick.md) (4 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (2 shared connections)
+- [Combat Turn Processor](Combat_Turn_Processor.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/shutdown_process_termination.py`
-- `server/commands/shutdown_sequence.py`
+- `server/game/magic/mp_regeneration_service.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 105 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 71 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

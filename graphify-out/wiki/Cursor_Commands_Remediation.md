@@ -1,49 +1,42 @@
 # Cursor Commands Remediation
 
-> 22 nodes · cohesion 0.09
+> 12 nodes
 
 ## Key Concepts
 
-- **REQUIRED TOOL USAGE PATTERN** (9 connections) — `.cursor/commands/server-test-remediation.md`
-- **4. Common Fix Patterns** (5 connections) — `.cursor/commands/server-test-remediation.md`
-- **Testing Strategy** (4 connections) — `docs/archive/PLANNING_multiplayer.md`
-- **7. Common Test Failure Solutions** (4 connections) — `.cursor/commands/server-test-remediation.md`
-- **9. Test Maintenance Best Practices** (4 connections) — `.cursor/commands/server-test-remediation.md`
-- **8. Error Handling and Debugging** (3 connections) — `.cursor/commands/server-test-remediation.md`
-- **Authentication Tests** (2 connections) — `docs/archive/PLANNING_multiplayer.md`
-- **Integration Tests** (1 connections) — `docs/archive/PLANNING_multiplayer.md`
-- **Real-time Tests** (1 connections) — `docs/archive/PLANNING_multiplayer.md`
-- **10. Final Verification** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **6. Quality Assurance Checklist** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Authentication Test Patterns** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Common Debug Commands** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Database Connection Issues** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Database Test Patterns** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Game Logic Test Patterns** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Performance Considerations** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Test Data Management** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Test Debugging** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Test Isolation** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **WebSocket Test Issues** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **WebSocket Test Patterns** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **level_from_total_xp()** (13 connections) — `server/game/level_curve.py`
+- **test_level_from_total_xp_roundtrip()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_level_from_total_xp_threshold_level_two()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_level_from_total_xp_zero()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_level_from_total_xp_negative()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_check_level_up_no_change_returns_false()** (3 connections) — `server/tests/unit/game/test_level_service.py`
+- **Compute character level from total experience points.      Uses the same curve a** (1 connections) — `server/game/level_curve.py`
+- **Zero XP gives level 1.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **Negative XP treated as zero gives level 1.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **level_from_total_xp(total_xp_for_level(n)) >= n (at least that level).** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **XP just below total_xp_for_level(2) gives level 1; at or above gives level 2.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **check_level_up when level already matches curve returns False.** (1 connections) — `server/tests/unit/game/test_level_service.py`
 
 ## Relationships
 
-- [[Cursor Commands Remediation]] (2 shared connections)
-- [[Archive Planning Multiplayer]] (1 shared connections)
-- [[Archive Migration Completion]] (1 shared connections)
+- [Command Processor](Command_Processor.md) (6 shared connections)
+- [Game Level Service](Game_Level_Service.md) (3 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (2 shared connections)
+- [Code Review Archive](Code_Review_Archive.md) (2 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/server-test-remediation.md`
-- `docs/archive/PLANNING_multiplayer.md`
+- `server/game/level_curve.py`
+- `server/tests/unit/game/test_level_curve.py`
+- `server/tests/unit/game/test_level_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

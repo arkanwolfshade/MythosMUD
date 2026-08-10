@@ -1,56 +1,54 @@
 # Cursor Bug Agents
 
-> 26 nodes · cohesion 0.09
+> 18 nodes
 
 ## Key Concepts
 
-- **Bug Investigator Subagent** (18 connections) — `.cursor/agents/bug-investigator.md`
-- **Capabilities** (5 connections) — `.cursor/agents/bug-investigator.md`
-- **Investigation Scenarios** (5 connections) — `.cursor/agents/bug-investigator.md`
-- **investigate-bug.md** (5 connections) — `.cursor/commands/investigate-bug.md`
-- **Critical Requirements** (4 connections) — `.cursor/agents/bug-investigator.md`
-- **Investigation Only** (3 connections) — `.cursor/agents/bug-investigator.md`
-- **Evidence Collection** (2 connections) — `.cursor/agents/bug-investigator.md`
-- **Subagent Automatic Discovery** (2 connections) — `.cursor/agents/QUICK_START.md`
-- **Official Test Credentials** (2 connections) — `.cursor/commands/investigate-bug.md`
-- **bug-investigator.md** (1 connections) — `.cursor/agents/bug-investigator.md`
-- **Authentication/Login Issues** (1 connections) — `.cursor/agents/bug-investigator.md`
-- **Best Practices** (1 connections) — `.cursor/agents/bug-investigator.md`
-- **Chat/Communication Issues** (1 connections) — `.cursor/agents/bug-investigator.md`
-- **Evidence Standards** (1 connections) — `.cursor/agents/bug-investigator.md`
-- **Example Investigation Flow** (1 connections) — `.cursor/agents/bug-investigator.md`
-- **Movement/Command Issues** (1 connections) — `.cursor/agents/bug-investigator.md`
-- **Notes** (1 connections) — `.cursor/agents/bug-investigator.md`
-- **Output Format** (1 connections) — `.cursor/agents/bug-investigator.md`
-- **Performance Considerations** (1 connections) — `.cursor/agents/bug-investigator.md`
-- **Performance/System Issues** (1 connections) — `.cursor/agents/bug-investigator.md`
-- **Purpose** (1 connections) — `.cursor/agents/bug-investigator.md`
-- **Regression Analysis** (1 connections) — `.cursor/agents/bug-investigator.md`
-- **Root Cause Analysis** (1 connections) — `.cursor/agents/bug-investigator.md`
-- **Systematic Investigation** (1 connections) — `.cursor/agents/bug-investigator.md`
-- **Test Credentials** (1 connections) — `.cursor/agents/bug-investigator.md`
-- *... and 1 more nodes in this community*
+- **IdleMovementHandler** (60 connections) — `server/npc/idle_movement.py`
+- **test_idle_movement_handler_init_no_persistence()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_should_idle_move_not_alive()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_is_npc_in_combat_no_attribute()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_get_valid_exits_all_exits_invalid_subzone_returns_empty()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_select_exit_single_exit()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_calculate_distance_to_room_same_subzone()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_execute_idle_movement_no_valid_exits()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_execute_idle_movement_no_exit_selected()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Handler for NPC idle movement logic.      This class manages the decision-maki** (1 connections) — `server/npc/idle_movement.py`
+- **Test IdleMovementHandler initialization fails without persistence.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test should_idle_move() returns False when NPC is not alive.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test _is_npc_in_combat() handles missing in_combat attribute.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **When every target fails boundary validation, valid exits dict is empty.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test select_exit() with single exit.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test _calculate_distance_to_room() with rooms in same subzone.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test execute_idle_movement() when no valid exits.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test execute_idle_movement() when no exit is selected.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [[Investigations Sessions Session]] (1 shared connections)
-- [[Combat Client Crash Report]] (1 shared connections)
-- [[Architecture Decisions Adr]] (1 shared connections)
-- [[Codebase Explorer Agent]] (1 shared connections)
-- [[Bug Investigation Guide]] (1 shared connections)
+- [NPC Movement Integration](NPC_Movement_Integration.md) (19 shared connections)
+- [Dual Connection Monitoring Guide](Dual_Connection_Monitoring_Guide.md) (9 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (9 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (4 shared connections)
+- [Cursor Skills Arrange](Cursor_Skills_Arrange.md) (3 shared connections)
+- [Who Command Tests](Who_Command_Tests.md) (3 shared connections)
+- [test_calculate_distance_to_room_different_rooms](test_calculate_distance_to_room_different_rooms.md) (1 shared connections)
+- [test_calculate_distance_to_room_same_room](test_calculate_distance_to_room_same_room.md) (1 shared connections)
+- [test_execute_idle_movement_no_current_room](test_execute_idle_movement_no_current_room.md) (1 shared connections)
+- [test_get_valid_exits_empty_room](test_get_valid_exits_empty_room.md) (1 shared connections)
+- [test_get_valid_exits_filters_exits_outside_subzone](test_get_valid_exits_filters_exits_outside_subzone.md) (1 shared connections)
+- [test_select_exit_empty_dict](test_select_exit_empty_dict.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/agents/QUICK_START.md`
-- `.cursor/agents/bug-investigator.md`
-- `.cursor/commands/investigate-bug.md`
+- `server/npc/idle_movement.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 86 (92%)
+- INFERRED: 7 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

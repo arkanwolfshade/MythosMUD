@@ -1,48 +1,37 @@
 # Command Commands Validation
 
-> 17 nodes · cohesion 0.15
+> 10 nodes
 
 ## Key Concepts
 
-- **_check_all_command_blocks()** (17 connections) — `server/command_handler_unified.py`
-- **TestCheckAllCommandBlocks** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_all_command_blocks_casting()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_check_all_command_blocks_catatonia()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_check_all_command_blocks_grace_period()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_check_all_command_blocks_casting()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_all_command_blocks_catatonia()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_all_command_blocks_grace_period()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_all_command_blocks_no_blocks()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_all_command_blocks returns block result for catatonia.** (2 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_all_command_blocks returns result when catatonia blocks.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Test _check_all_command_blocks returns result when grace period blocks.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Test _check_all_command_blocks returns result when casting blocks.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Test _check_all_command_blocks function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_all_command_blocks returns block result for casting.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_all_command_blocks returns None when no blocks.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Check all command blocking conditions. Returns result if blocked, None otherwise** (1 connections) — `server/command_handler_unified.py`
+- **.validate_alias_definition()** (7 connections) — `server/validators/command_validator.py`
+- **test_command_validator_validate_alias_definition_valid()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_alias_definition_inherits_content_validation()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_alias_definition_length_limit()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_alias_definition_within_limit()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_alias_definition returns True for valid alias.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_alias_definition inherits content validation.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_alias_definition enforces alias length limit.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_alias_definition allows aliases within limit.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Validate alias definition command.          Applies validation to alias commands** (1 connections) — `server/validators/command_validator.py`
 
 ## Relationships
 
-- [[Command Alias Handling]] (4 shared connections)
-- [[Catatonia Check Logic]] (3 shared connections)
-- [[Unified Command Handler]] (3 shared connections)
-- [[Alias Expansion Logic]] (1 shared connections)
-- [[Command Request App State]] (1 shared connections)
-- [[Grace Period Blocking Tests]] (1 shared connections)
+- [Persistence Container Extended](Persistence_Container_Extended.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Look Command Helpers](Look_Command_Helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/command_handler_unified.py`
-- `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- `server/tests/unit/commands/test_command_validation.py`
+- `server/tests/unit/validators/test_command_validator.py`
+- `server/validators/command_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

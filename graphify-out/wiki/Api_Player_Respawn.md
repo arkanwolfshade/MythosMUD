@@ -1,48 +1,39 @@
 # Api Player Respawn
 
-> 21 nodes · cohesion 0.21
+> 15 nodes
 
 ## Key Concepts
 
-- **test_player_respawn_handlers.py** (13 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **_handle_delirium_respawn_validation_error()** (12 connections) — `server/api/player_respawn.py`
-- **_handle_respawn_validation_error()** (11 connections) — `server/api/player_respawn.py`
-- **respawn_player()** (9 connections) — `server/api/player_respawn.py`
-- **respawn_player_from_delirium()** (9 connections) — `server/api/player_respawn.py`
-- **_user()** (8 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_generic_500()** (4 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_lucidity_keyword()** (4 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_must_be_delirious()** (4 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_not_found()** (4 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_respawn_validation_generic_500()** (4 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_respawn_validation_must_be_dead()** (4 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_respawn_validation_not_found()** (4 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **Request** (4 connections) — `server/api/player_respawn.py`
-- **User** (4 connections) — `server/api/player_respawn.py`
-- **Respawn a dead player at their respawn location with full DP.      This endpoint** (2 connections) — `server/api/player_respawn.py`
-- **Convert ValidationError to appropriate HTTPException for respawn.      Args:** (2 connections) — `server/api/player_respawn.py`
-- **RespawnResponse** (2 connections) — `server/api/player_respawn.py`
-- **PlayerService** (2 connections) — `server/api/player_respawn.py`
-- **ValidationError** (2 connections) — `server/api/player_respawn.py`
-- **Respawn a delirious player at the Sanitarium with restored lucidity.      This e** (1 connections) — `server/api/player_respawn.py`
+- **test_container_persistence_sql_injection.py** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **_create_mock_container_row()** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **TestContainerPersistenceSQLInjection** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **.test_update_container_sql_injection_in_metadata()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **.test_update_container_uses_parameterized_queries()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **.test_update_container_safe_column_names()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **.test_update_container_sql_injection_in_lock_state()** (3 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **UUID** (2 connections)
+- **Tests for SQL injection protection in container persistence operations.  These t** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **Create a complete mock container row with all required columns.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **Test SQL injection protection in container persistence.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **Test that SQL injection in lock_state is prevented.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **Test that SQL injection in metadata_json is prevented.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **Test that update_container uses parameterized queries, not string concatenation.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **Test that column names are hardcoded, not from user input.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
 
 ## Relationships
 
-- [[NPC Admin API]] (15 shared connections)
-- [[Container Exception Handlers]] (5 shared connections)
-- [[Player Respawn Service]] (1 shared connections)
+- [Maps API Endpoints](Maps_API_Endpoints.md) (6 shared connections)
 
 ## Source Files
 
-- `server/api/player_respawn.py`
-- `server/tests/unit/api/test_player_respawn_handlers.py`
+- `server/tests/unit/test_container_persistence_sql_injection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 109 (100%)
+- EXTRACTED: 42 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

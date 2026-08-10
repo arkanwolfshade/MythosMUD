@@ -1,60 +1,51 @@
 # Command Alias Model
 
-> 64 nodes · cohesion 0.05
+> 58 nodes
 
 ## Key Concepts
 
-- **Alias** (49 connections) — `server/models/alias.py`
-- **test_alias.py** (28 connections) — `server/tests/unit/models/test_alias.py`
-- **alias.py** (4 connections) — `server/models/alias.py`
-- **test_alias_default_id()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_default_timestamps()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_default_version()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_equality_different_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_equality_different_ids()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_equality_different_name()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_equality_same_name_and_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_equality_with_non_alias()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_get_expanded_command_no_args()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_get_expanded_command_with_args()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_hash_different_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_hash_different_name()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_hash_same_name_and_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_hash_usable_in_set()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_is_reserved_command_case_insensitive()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_is_reserved_command_false()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_is_reserved_command_true()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_model_dump()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_model_dump_timestamps_isoformat()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_rejects_extra_fields()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_repr()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_update_timestamp()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- *... and 39 more nodes in this community*
+- **test_party_service.py** (35 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_create_party_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_create_party_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_add_member_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_add_member_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_add_member_no_such_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_request_party_invite_creates_pending()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_accept_party_invite_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_decline_party_invite_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_request_party_invite_target_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_remove_member_leave_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_remove_member_leader_leaves_disbands()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_kick_member_leader_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_kick_member_non_leader_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_kick_self_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_disband_party_by_leader_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_disband_party_by_non_leader_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_disband_party_by_id_without_caller()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_get_party_for_player_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_get_party_members_empty_when_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_get_party_members_includes_self()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_is_leader_false_when_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_is_leader_false_when_member()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_on_player_disconnect_member_removed()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_on_player_disconnect_leader_disbands_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [[Memory Profiler Tools]] (4 shared connections)
-- [[Alias Storage]] (3 shared connections)
-- [[SQLAlchemy Model Base]] (2 shared connections)
-- [[Alias Get Expanded Command]] (2 shared connections)
-- [[Alias Storage Layer]] (2 shared connections)
-- [[Alias Expansion Logic]] (1 shared connections)
-- [[Admin NPC Schemas]] (1 shared connections)
-- [[Alias Game Chat]] (1 shared connections)
-- [[Validation Rule Base]] (1 shared connections)
-- [[Alias Storage Services]] (1 shared connections)
+- [Realtime Conftest Mocks](Realtime_Conftest_Mocks.md) (4 shared connections)
+- [Combat DP Persistence Tests](Combat_DP_Persistence_Tests.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/alias.py`
-- `server/tests/unit/models/test_alias.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 194 (97%)
-- INFERRED: 6 (3%)
+- EXTRACTED: 120 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
 
-*Part of the graphify knowledge wiki. See [[index]] to navigate.*
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*
