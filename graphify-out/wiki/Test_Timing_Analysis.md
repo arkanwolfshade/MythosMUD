@@ -23,10 +23,10 @@
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Room Occupant Events](Room_Occupant_Events.md) (1 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 - [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (1 shared connections)
 
 ## Source Files
 

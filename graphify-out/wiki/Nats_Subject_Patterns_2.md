@@ -4,21 +4,22 @@
 
 ## Key Concepts
 
-- **test_create_alias_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_alias_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_event_bus_publish_multiple_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.publish() with multiple subscribers.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (1 shared connections)
+- [Services Rescue Service](Services_Rescue_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

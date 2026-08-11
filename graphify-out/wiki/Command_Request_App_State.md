@@ -1,31 +1,48 @@
 # Command Request App State
 
-> 6 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **._validate_movement()** (8 connections) — `server/game/movement_service.py`
-- **._resolve_posture_player()** (6 connections) — `server/game/movement_service.py`
-- **._validate_movement_rooms()** (6 connections) — `server/game/movement_service.py`
-- **Load fresh player from persistence for posture check when available.** (1 connections) — `server/game/movement_service.py`
-- **Validate rooms, membership, and exit for movement.** (1 connections) — `server/game/movement_service.py`
-- **Validate that a movement operation is allowed.          Args:             player** (1 connections) — `server/game/movement_service.py`
+- **test_player_effect_repository.py** (17 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **_make_effect()** (6 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **_row_from_effect()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_get_active_effects_for_player_filters_by_remaining()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_has_effect_true()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_get_effect_remaining_ticks()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **repo()** (3 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_add_effect_returns_id()** (2 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_delete_effect()** (2 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_has_effect_false()** (2 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_get_effect_remaining_ticks_none()** (2 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_expire_effects_for_tick_returns_expired_and_deletes()** (2 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **player_id()** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **Unit tests for PlayerEffectRepository (ADR-009 effects system).  Tests add_effec** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **Create PlayerEffectRepository instance.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **Build a mock PlayerEffect with given fields.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **Build a procedure result row (mappings().all() item) from effect mock.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **add_effect persists effect and returns effect id (via add_player_effect procedur** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **delete_effect removes effect by id.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **get_active_effects_for_player returns only effects with remaining_ticks > 0 (pro** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **has_effect returns True when player has active effect of type.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **has_effect returns False when no active effect of type.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **get_effect_remaining_ticks returns duration - (current_tick - applied_at_tick).** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **get_effect_remaining_ticks returns None when no matching effect.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **expire_effects_for_tick returns (player_id, effect_type) and deletes rows via pr** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
 
 ## Relationships
 
-- [Magic Service Bundle](Magic_Service_Bundle.md) (5 shared connections)
-- [Combat Client Crash Report](Combat_Client_Crash_Report.md) (4 shared connections)
-- [Room Map Viewer UI](Room_Map_Viewer_UI.md) (3 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (3 shared connections)
+- [Lucidity Event Dispatcher](Lucidity_Event_Dispatcher.md) (3 shared connections)
 
 ## Source Files
 
-- `server/game/movement_service.py`
+- `server/tests/unit/persistence/test_player_effect_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 65 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

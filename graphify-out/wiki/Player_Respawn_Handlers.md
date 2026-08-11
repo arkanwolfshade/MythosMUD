@@ -1,50 +1,59 @@
 # Player Respawn Handlers
 
-> 38 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **test_npc_admin_commands.py** (23 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_handle_npc_command_no_player_service()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_handle_npc_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_handle_npc_command_no_permission()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_handle_npc_command_no_args()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_validate_npc_admin_permission_no_player()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_validate_npc_admin_permission_not_admin()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_validate_npc_admin_permission_admin()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_handle_npc_create_command_no_args()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_handle_npc_list_command()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_handle_npc_spawn_command_no_args()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_handle_npc_spawn_command_name_not_found()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_handle_npc_spawn_command_name_success()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_spawn_command_regression_routing_via_npc_command()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_handle_npc_despawn_command_no_args()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_handle_npc_move_command_no_args()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_handle_npc_stats_command()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_validate_npc_admin_permission_exception()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_handle_npc_command_unknown_subcommand()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **Unit tests for NPC admin command handlers.  Tests the NPC admin command function** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **Test handle_npc_command() when player service is not available.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **Test handle_npc_command() when player is not found.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **Test handle_npc_command() when player lacks admin permission.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **Test handle_npc_command() with no arguments.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **Test validate_npc_admin_permission() with no player.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- *... and 13 more nodes in this community*
+- **FollowService** (36 connections) — `server/game/follow_service.py`
+- **UUID** (14 connections)
+- **_str_id()** (13 connections) — `server/game/follow_service.py`
+- **.request_follow()** (9 connections) — `server/game/follow_service.py`
+- **._send_result_to_player()** (8 connections) — `server/game/follow_service.py`
+- **Any** (7 connections)
+- **._expire_pending_requests()** (7 connections) — `server/game/follow_service.py`
+- **.accept_follow()** (7 connections) — `server/game/follow_service.py`
+- **.decline_follow()** (7 connections) — `server/game/follow_service.py`
+- **.get_followers()** (6 connections) — `server/game/follow_service.py`
+- **.get_following_display()** (6 connections) — `server/game/follow_service.py`
+- **._send_follow_request_to_target()** (5 connections) — `server/game/follow_service.py`
+- **.get_following()** (5 connections) — `server/game/follow_service.py`
+- **.get_following_display_name()** (5 connections) — `server/game/follow_service.py`
+- **.on_player_disconnect()** (4 connections) — `server/game/follow_service.py`
+- **Normalize ID to string for dict keys.** (1 connections) — `server/game/follow_service.py`
+- **In-memory follow state and movement propagation.      Subscribes to PlayerEntere** (1 connections) — `server/game/follow_service.py`
+- **Remove expired pending requests and notify requestors.** (1 connections) — `server/game/follow_service.py`
+- **Send a command_response-style message to a single player.** (1 connections) — `server/game/follow_service.py`
+- **Request to follow a player (pending acceptance) or start following an NPC immedi** (1 connections) — `server/game/follow_service.py`
+- **Send follow_request event to the target player only.** (1 connections) — `server/game/follow_service.py`
+- **Accept a follow request. Target is the player who accepted (the followee).** (1 connections) — `server/game/follow_service.py`
+- **Decline a follow request.** (1 connections) — `server/game/follow_service.py`
+- **Return list of follower player IDs (for movement propagation).** (1 connections) — `server/game/follow_service.py`
+- **Return (target_id, target_type) if following someone, else None.** (1 connections) — `server/game/follow_service.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [Player Schema Converter](Player_Schema_Converter.md) (11 shared connections)
-- [Death Delirium UI Modals](Death_Delirium_UI_Modals.md) (6 shared connections)
-- [Player Name Validation](Player_Name_Validation.md) (5 shared connections)
+- [Architecture Review Plan](Architecture_Review_Plan.md) (20 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (6 shared connections)
+- [Client Event Store](Client_Event_Store.md) (5 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
+- [NPC Utility Functions](NPC_Utility_Functions.md) (2 shared connections)
+- [Room Map Viewer UI](Room_Map_Viewer_UI.md) (1 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (1 shared connections)
+- [NPC Event Handler Tests](NPC_Event_Handler_Tests.md) (1 shared connections)
+- [Player Mute Persistence](Player_Mute_Persistence.md) (1 shared connections)
+- [test_setup_connection_metadata_no_session_token](test_setup_connection_metadata_no_session_token.md) (1 shared connections)
+- [Combat Turn Processor](Combat_Turn_Processor.md) (1 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_npc_admin_commands.py`
+- `server/game/follow_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 78 (81%)
-- INFERRED: 18 (19%)
+- EXTRACTED: 144 (95%)
+- INFERRED: 8 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

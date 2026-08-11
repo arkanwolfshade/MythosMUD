@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_process_dict_occupant_with_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Test process_dict_occupant() processes generic name.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_behavior_engine_init()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test BehaviorEngine initialization.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [Archive Lucidity System](Archive_Lucidity_System.md) (1 shared connections)
+- [Quest Instance Repository](Quest_Instance_Repository.md) (1 shared connections)
+- [WebSocket Message Handlers](WebSocket_Message_Handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

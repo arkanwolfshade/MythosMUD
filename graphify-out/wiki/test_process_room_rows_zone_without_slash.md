@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_room_rows_zone_without_slash()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_room_rows handles zone_stable_id without slash.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_handle_npc_attack_on_player_happy_path()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **Test handle_npc_attack_on_player starts combat and processes attack on happy pat** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
 
 ## Relationships
 
-- [Mythosmud Obsidian Raw](Mythosmud_Obsidian_Raw.md) (1 shared connections)
+- [NATS Docs Review](NATS_Docs_Review.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
 
 ## Audit Trail
 

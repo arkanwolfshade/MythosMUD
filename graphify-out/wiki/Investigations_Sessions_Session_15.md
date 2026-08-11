@@ -1,45 +1,34 @@
 # Investigations Sessions Session
 
-> 18 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **run_flee_effect()** (18 connections) — `server/game/magic/spell_effect_flee.py`
-- **spell_effect_flee.py** (17 connections) — `server/game/magic/spell_effect_flee.py`
-- **Any** (10 connections)
-- **_flee_effect_validate_room_exits()** (5 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_services_available()** (4 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_not_in_combat_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_success_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_failure_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_invalid_target_type_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_services_unavailable_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_invalid_target_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_room_error_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **.get_room_by_id()** (3 connections) — `server/game/magic/spell_effects.py`
-- **Flee spell effect: voluntary flee mechanics (success roll, lose-attack-on-fail,** (1 connections) — `server/game/magic/spell_effect_flee.py`
-- **True if combat, movement, and get_room_by_id are all configured for flee effect.** (1 connections) — `server/game/magic/spell_effect_flee.py`
-- **Return (room_id, None) if combat room has exits; else (None, error_message).** (1 connections) — `server/game/magic/spell_effect_flee.py`
-- **Apply flee effect: same mechanics as /flee (success roll, lose-attack-on-fail, e** (1 connections) — `server/game/magic/spell_effect_flee.py`
-- **Callable to resolve room by ID for flee effect.** (1 connections) — `server/game/magic/spell_effects.py`
+- **.add_message()** (4 connections) — `server/realtime/message_queue.py`
+- **Any** (4 connections)
+- **.cleanup_old_messages()** (4 connections) — `server/realtime/message_queue.py`
+- **._is_message_recent()** (4 connections) — `server/realtime/message_queue.py`
+- **.get_messages()** (3 connections) — `server/realtime/message_queue.py`
+- **.get_stats()** (3 connections) — `server/realtime/message_queue.py`
+- **Add a message to a player's pending message queue.          Args:             pl** (1 connections) — `server/realtime/message_queue.py`
+- **Get all pending messages for a player and clear the queue.          Args:** (1 connections) — `server/realtime/message_queue.py`
+- **Clean up old messages to prevent memory bloat.          Args:             max_ag** (1 connections) — `server/realtime/message_queue.py`
+- **Check if a message is recent (within the specified age limit).          Args:** (1 connections) — `server/realtime/message_queue.py`
+- **Get message queue statistics.          Returns:             Dict[str, Any]: Stat** (1 connections) — `server/realtime/message_queue.py`
 
 ## Relationships
 
-- [Combat Attack Service](Combat_Attack_Service.md) (8 shared connections)
-- [Container Component Capacity](Container_Component_Capacity.md) (3 shared connections)
-- [test_profession_meets_stat_requirements_multiple_not_met](test_profession_meets_stat_requirements_multiple_not_met.md) (3 shared connections)
-- [Logging Correct Patterns](Logging_Correct_Patterns.md) (1 shared connections)
-- [NPC Service Tests](NPC_Service_Tests.md) (1 shared connections)
+- [NATS Subject Patterns](NATS_Subject_Patterns.md) (5 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_effect_flee.py`
-- `server/game/magic/spell_effects.py`
+- `server/realtime/message_queue.py`
 
 ## Audit Trail
 
-- EXTRACTED: 84 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 25 (93%)
+- INFERRED: 2 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

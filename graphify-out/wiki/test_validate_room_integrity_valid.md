@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_validate_room_integrity_valid()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **Test validate_room_integrity() with valid room data.** (1 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_occupant_formatter_process_player_name_for_update_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._process_player_name_for_update() adds valid player name.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Relationships
 
-- [Cursor Subagents Docs](Cursor_Subagents_Docs.md) (1 shared connections)
+- [Command Integration Summary](Command_Integration_Summary.md) (1 shared connections)
+- [Room Occupant Formatter](Room_Occupant_Formatter.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_monitor.py`
+- `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_announce_spell_cast_no_player_id()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test announce spell cast when player has no ID.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_process_single_message_event_handler_error()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _process_single_message raises exception when event handler fails.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

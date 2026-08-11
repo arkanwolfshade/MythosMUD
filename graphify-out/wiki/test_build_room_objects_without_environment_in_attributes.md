@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_build_room_objects_without_environment_in_attributes()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _build_room_objects defaults to outdoors when environment not in attributes** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_process_single_message_event_type_empty_string()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _process_single_message handles event_type as empty string (falsy).** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [Mythosmud Obsidian Raw](Mythosmud_Obsidian_Raw.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

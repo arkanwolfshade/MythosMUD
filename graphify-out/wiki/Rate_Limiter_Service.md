@@ -23,9 +23,8 @@
 
 ## Relationships
 
-- [Room Service Tests](Room_Service_Tests.md) (3 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (5 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (3 shared connections)
 
 ## Source Files
 

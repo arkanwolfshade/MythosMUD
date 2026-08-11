@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_apply_encounter_lucidity_loss_with_location()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test apply_encounter_lucidity_loss() includes location_id in metadata.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_evaluate_boolean_condition_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_boolean_condition() handles 'false' literal.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [WebSocket Message Validator](WebSocket_Message_Validator.md) (1 shared connections)
+- [Quest Instance Repository](Quest_Instance_Repository.md) (1 shared connections)
+- [WebSocket Message Handlers](WebSocket_Message_Handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

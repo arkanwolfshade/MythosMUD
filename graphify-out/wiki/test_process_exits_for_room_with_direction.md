@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_stop_command_success()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test stop command success.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_connection_manager_property_resolution_error()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test connection_manager property handles resolution errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

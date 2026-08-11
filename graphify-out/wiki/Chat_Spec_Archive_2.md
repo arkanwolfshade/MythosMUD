@@ -11,7 +11,7 @@
 
 ## Relationships
 
-- [Cache and NPC Cache](Cache_and_NPC_Cache.md) (1 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
 
 ## Source Files
 

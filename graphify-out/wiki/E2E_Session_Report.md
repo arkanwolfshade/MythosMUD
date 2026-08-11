@@ -24,7 +24,7 @@
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
+- [Client Event Store](Client_Event_Store.md) (6 shared connections)
 
 ## Source Files
 

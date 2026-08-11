@@ -2,7 +2,7 @@
 
 > God node · 174 connections · `server/utils/error_logging.py`
 
-**Community:** [Optimization Archive Modernization](Optimization_Archive_Modernization.md)
+**Community:** [Schemas Maps Map](Schemas_Maps_Map.md)
 
 ## Connections by Relation
 

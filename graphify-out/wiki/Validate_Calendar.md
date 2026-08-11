@@ -1,36 +1,25 @@
 # Validate Calendar
 
-> 13 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **SessionManager** (12 connections) — `client/src/utils/security.ts`
-- **sessionManager.test.ts** (3 connections) — `client/src/utils/__tests__/sessionManager.test.ts`
-- **.cleanupExpiredSessions()** (3 connections) — `client/src/utils/security.ts`
-- **.startCleanupInterval()** (3 connections) — `client/src/utils/security.ts`
-- **.constructor()** (2 connections) — `client/src/utils/security.ts`
-- **.createSession()** (2 connections) — `client/src/utils/security.ts`
-- **.expireSession()** (2 connections) — `client/src/utils/security.ts`
-- **.generateSessionId()** (2 connections) — `client/src/utils/security.ts`
-- **SessionManagerTestHooks** (1 connections) — `client/src/utils/__tests__/sessionManager.test.ts`
-- **.isSessionValid()** (1 connections) — `client/src/utils/security.ts`
-- **.refreshSession()** (1 connections) — `client/src/utils/security.ts`
-- **.removeSession()** (1 connections) — `client/src/utils/security.ts`
-- **.destroy()** (1 connections) — `client/src/utils/security.ts`
+- **.add_item_to_inventory()** (3 connections) — `server/npc/npc_base.py`
+- **Add item to NPC inventory.** (1 connections) — `server/npc/npc_base.py`
 
 ## Relationships
 
-- [Realtime Event Handlers](Realtime_Event_Handlers.md) (2 shared connections)
+- [Quest Service Core](Quest_Service_Core.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/utils/__tests__/sessionManager.test.ts`
-- `client/src/utils/security.ts`
+- `server/npc/npc_base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

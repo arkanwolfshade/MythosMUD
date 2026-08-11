@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **mock_persistence()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_get_npc_instance_found()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test _get_npc_instance() when NPC is found.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- [Skill Service Tests](Skill_Service_Tests.md) (1 shared connections)
+- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 

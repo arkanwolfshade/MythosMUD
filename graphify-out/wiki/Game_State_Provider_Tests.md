@@ -1,51 +1,56 @@
 # Game State Provider Tests
 
-> 26 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **format_message_content()** (17 connections) — `server/realtime/message_formatters.py`
-- **test_message_formatters.py** (16 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_nats_error()** (4 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_say()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_local()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_global()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_emote()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_pose()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_whisper()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_whisper_for_recipient()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_system()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_admin()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_unknown_channel()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Format message content based on channel type and sender name.      Args:** (1 connections) — `server/realtime/message_formatters.py`
-- **Unit tests for message formatters.  Tests the message_formatters module function** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'say' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'local' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'global' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'emote' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'pose' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'whisper' channel messages (default).** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'whisper' for recipient as 'X whispers to** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'system' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'admin' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats unknown channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- *... and 1 more nodes in this community*
+- **message_handlers.py** (14 connections) — `server/realtime/message_handlers.py`
+- **test_message_handlers.py** (12 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **handle_command_message()** (11 connections) — `server/realtime/message_handlers.py`
+- **handle_chat_message()** (10 connections) — `server/realtime/message_handlers.py`
+- **handle_ping_message()** (10 connections) — `server/realtime/message_handlers.py`
+- **handle_follow_response_message()** (9 connections) — `server/realtime/message_handlers.py`
+- **handle_party_invite_response_message()** (8 connections) — `server/realtime/message_handlers.py`
+- **handle_client_error_report_message()** (6 connections) — `server/realtime/message_handlers.py`
+- **WebSocket** (6 connections)
+- **Any** (6 connections)
+- **test_handle_command_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_command_message_no_command()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_command_message_no_args()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_chat_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_chat_message_no_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_ping_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_ping_message_with_data()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **Message handler implementations for WebSocket message routing.  This module cont** (1 connections) — `server/realtime/message_handlers.py`
+- **Handle client_error_report: log client-reported errors to errors.log (via ERROR-** (1 connections) — `server/realtime/message_handlers.py`
+- **Handle command message type.** (1 connections) — `server/realtime/message_handlers.py`
+- **Handle chat message type.** (1 connections) — `server/realtime/message_handlers.py`
+- **Handle ping message type.** (1 connections) — `server/realtime/message_handlers.py`
+- **Handle follow_response message (accept/decline follow request).** (1 connections) — `server/realtime/message_handlers.py`
+- **Handle party_invite_response message (accept/decline party invite).** (1 connections) — `server/realtime/message_handlers.py`
+- **Unit tests for message handlers.  Tests the message_handlers module functions.** (1 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [Combat Domain Events](Combat_Domain_Events.md) (5 shared connections)
-- [NATS Chat Broadcasting](NATS_Chat_Broadcasting.md) (2 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [Rate Limiter Utilities](Rate_Limiter_Utilities.md) (6 shared connections)
+- [Multiplayer Browser Helpers](Multiplayer_Browser_Helpers.md) (6 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (4 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
+- [Combat Turn Processor](Combat_Turn_Processor.md) (2 shared connections)
+- [LRU Cache Manager](LRU_Cache_Manager.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_formatters.py`
-- `server/tests/unit/realtime/test_message_formatters.py`
+- `server/realtime/message_handlers.py`
+- `server/tests/unit/realtime/test_message_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 127 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

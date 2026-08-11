@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **test_update_default_channel_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test updating default channel when preferences not found.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_handle_npc_left_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test handle_npc_left() handles missing persistence.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- [Combat Command Handler](Combat_Command_Handler.md) (1 shared connections)
-- [Async Persistence Delegates](Async_Persistence_Delegates.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

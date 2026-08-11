@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **corpse_service()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **Create a CorpseLifecycleService instance.** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_handle_npc_left_room()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test handle_npc_left_room() processes event.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- [Player State Factories](Player_State_Factories.md) (1 shared connections)
-- [Skill Service Tests](Skill_Service_Tests.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 

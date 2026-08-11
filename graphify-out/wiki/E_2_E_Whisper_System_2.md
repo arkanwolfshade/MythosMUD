@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_command_factory_create_existing_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test CommandFactory.create_*() returns command for existing command.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_unsubscribe_from_subject_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _unsubscribe_from_subject() successfully unsubscribes.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

@@ -1,11 +1,10 @@
 # Integration DB Fixtures
 
-> 23 nodes
+> 20 nodes
 
 ## Key Concepts
 
 - **test_calendar.py** (13 connections) — `server/tests/unit/models/test_calendar.py`
-- **HolidayModel** (9 connections) — `server/models/calendar.py`
 - **test_holiday_model_creation()** (3 connections) — `server/tests/unit/models/test_calendar.py`
 - **test_holiday_model_with_bonus_tags()** (3 connections) — `server/tests/unit/models/test_calendar.py`
 - **test_holiday_model_repr()** (3 connections) — `server/tests/unit/models/test_calendar.py`
@@ -13,10 +12,8 @@
 - **test_npc_schedule_model_with_notes()** (3 connections) — `server/tests/unit/models/test_calendar.py`
 - **test_npc_schedule_model_repr()** (3 connections) — `server/tests/unit/models/test_calendar.py`
 - **test_npc_schedule_model_empty_arrays()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **Base** (2 connections)
 - **test_holiday_model_table_name()** (2 connections) — `server/tests/unit/models/test_calendar.py`
 - **test_npc_schedule_model_table_name()** (2 connections) — `server/tests/unit/models/test_calendar.py`
-- **Mythos holidays tracker.** (1 connections) — `server/models/calendar.py`
 - **Unit tests for calendar models.  Tests the HolidayModel and NPCScheduleModel SQL** (1 connections) — `server/tests/unit/models/test_calendar.py`
 - **Test HolidayModel can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_calendar.py`
 - **Test HolidayModel can have bonus_tags.** (1 connections) — `server/tests/unit/models/test_calendar.py`
@@ -30,17 +27,16 @@
 
 ## Relationships
 
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (10 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (10 shared connections)
 
 ## Source Files
 
-- `server/models/calendar.py`
 - `server/tests/unit/models/test_calendar.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 48 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

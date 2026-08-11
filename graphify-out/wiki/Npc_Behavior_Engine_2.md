@@ -17,7 +17,8 @@
 
 ## Relationships
 
-- [Investigations Sessions Session](Investigations_Sessions_Session.md) (5 shared connections)
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (4 shared connections)
+- [Catatonia Check Logic](Catatonia_Check_Logic.md) (1 shared connections)
 
 ## Source Files
 

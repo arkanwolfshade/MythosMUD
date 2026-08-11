@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_combat_state_in_combat_required()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_state when in combat and combat required.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_add_member_no_such_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **Adding to a non-existent party fails.** (1 connections) — `server/tests/unit/game/test_party_service.py`
 
 ## Relationships
 
-- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
+- [Command Alias Model](Command_Alias_Model.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 

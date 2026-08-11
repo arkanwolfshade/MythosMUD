@@ -33,11 +33,12 @@
 
 ## Relationships
 
-- [Communication Command Handlers](Communication_Command_Handlers.md) (24 shared connections)
+- [Communication Command Handlers](Communication_Command_Handlers.md) (23 shared connections)
 - [Connection Cleaner Tests](Connection_Cleaner_Tests.md) (7 shared connections)
 - [Combat Messaging Integration](Combat_Messaging_Integration.md) (3 shared connections)
 - [Room Planning Archive](Room_Planning_Archive.md) (2 shared connections)
 - [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (2 shared connections)
+- [API Test Fixtures](API_Test_Fixtures.md) (1 shared connections)
 
 ## Source Files
 

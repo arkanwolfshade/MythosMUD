@@ -20,7 +20,7 @@
 ## Relationships
 
 - [CI Quality Scripts](CI_Quality_Scripts.md) (1 shared connections)
-- [Services Exploration Service](Services_Exploration_Service.md) (1 shared connections)
+- [Combat Command Helpers](Combat_Command_Helpers.md) (1 shared connections)
 
 ## Source Files
 

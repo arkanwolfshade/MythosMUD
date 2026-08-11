@@ -1,63 +1,55 @@
 # WebSocket Code Review
 
-> 75 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **ScheduleService** (28 connections) — `server/services/schedule_service.py`
-- **schedule_service.py** (25 connections) — `server/services/schedule_service.py`
-- **time_event_consumer.py** (24 connections) — `server/time/time_event_consumer.py`
-- **MythosTimeEventConsumer** (23 connections) — `server/time/time_event_consumer.py`
+- **ScheduleEntry** (28 connections) — `server/schemas/calendar/calendar.py`
 - **TestScheduleService** (14 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **ChronicleLike** (13 connections) — `server/time/time_service.py`
-- **MythosHourTickEvent** (12 connections) — `server/events/event_types.py`
-- **_schedule_entry_from_row()** (8 connections) — `server/services/schedule_service.py`
-- **test_schedule_service.py** (8 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.__init__()** (8 connections) — `server/time/time_event_consumer.py`
-- **._async_load_from_database()** (7 connections) — `server/services/schedule_service.py`
-- **._build_broadcast_payload()** (7 connections) — `server/time/time_event_consumer.py`
-- **_fetch_schedule_entries()** (6 connections) — `server/services/schedule_service.py`
-- **._handle_tick()** (6 connections) — `server/time/time_event_consumer.py`
-- **normalize_weekday_names()** (5 connections) — `server/services/schedule_service.py`
-- **_DatabaseLoadResult** (5 connections) — `server/services/schedule_service.py`
 - **.test_async_load_from_database_passes_search_path_for_mythos_e2e()** (5 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **Any** (5 connections)
-- **_string_list_from_row()** (4 connections) — `server/services/schedule_service.py`
-- **_lower_string_list_from_row()** (4 connections) — `server/services/schedule_service.py`
-- **.get_active_entries()** (4 connections) — `server/services/schedule_service.py`
 - **.test_init_loads_from_database()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
 - **.test_get_active_entries_with_matches()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
 - **.test_get_active_entries_boundary_conditions()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
 - **.test_get_active_entries_wrong_day()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- *... and 50 more nodes in this community*
+- **.test_entries_property()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **.test_normalize_weekday_names_latin_to_standard()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **.test_entry_count_property()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **.apply_schedule_state()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **.validate_duration()** (3 connections) — `server/schemas/calendar/calendar.py`
+- **.entries()** (3 connections) — `server/services/schedule_service.py`
+- **.test_init_with_collections()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **.test_init_without_persistence_raises()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **.test_get_active_entries_no_matches()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **.validate_days()** (2 connections) — `server/schemas/calendar/calendar.py`
+- **.validate_slug_list()** (2 connections) — `server/schemas/calendar/calendar.py`
+- **Record the schedule categories currently active for NPC routines.** (1 connections) — `server/npc/lifecycle_manager.py`
+- **Any** (1 connections)
+- **Single schedule block describing routine availability (`data/<env>/calendar/sche** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Validate schedule entry days are standard English weekday names (Sunday, Monday,** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Validate slug-formatted list entries.          Args:             value: Sequence** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Ensure the schedule window moves time forward like the Chronology Tablets prescr** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Get all schedule entries.          Returns:             list[ScheduleEntry]: Lis** (1 connections) — `server/services/schedule_service.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [Player Command Developer Guide](Player_Command_Developer_Guide.md) (16 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (12 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (11 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (9 shared connections)
-- [Player Respawn Service](Player_Respawn_Service.md) (7 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (6 shared connections)
-- [Real-Time Architecture Docs](Real-Time_Architecture_Docs.md) (5 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
-- [MP Regeneration Service](MP_Regeneration_Service.md) (3 shared connections)
-- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
-- [Inventory Service Helpers](Inventory_Service_Helpers.md) (3 shared connections)
-- [Test Migration Report](Test_Migration_Report.md) (2 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (21 shared connections)
+- [Async Room Loading Tests](Async_Room_Loading_Tests.md) (4 shared connections)
+- [Player Command Developer Guide](Player_Command_Developer_Guide.md) (3 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
 
 ## Source Files
 
-- `server/events/event_types.py`
+- `server/npc/lifecycle_manager.py`
+- `server/schemas/calendar/calendar.py`
 - `server/services/schedule_service.py`
 - `server/tests/unit/services/test_schedule_service.py`
-- `server/time/time_event_consumer.py`
-- `server/time/time_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 285 (90%)
-- INFERRED: 32 (10%)
+- EXTRACTED: 114 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,61 +1,57 @@
 # NPC Utility Functions
 
-> 132 nodes
+> 52 nodes
 
 ## Key Concepts
 
 - **test_follow_service.py** (38 connections) — `server/tests/unit/game/test_follow_service.py`
-- **FollowService** (36 connections) — `server/game/follow_service.py`
-- **follow_service.py** (24 connections) — `server/game/follow_service.py`
-- **UUID** (14 connections)
-- **_str_id()** (13 connections) — `server/game/follow_service.py`
-- **test_follow_flow.py** (13 connections) — `server/tests/integration/test_follow_flow.py`
-- **.__init__()** (10 connections) — `server/game/follow_service.py`
-- **.request_follow()** (9 connections) — `server/game/follow_service.py`
-- **._handle_player_follower_move()** (9 connections) — `server/game/follow_service.py`
-- **._handle_npc_follower_move()** (9 connections) — `server/game/follow_service.py`
-- **._send_result_to_player()** (8 connections) — `server/game/follow_service.py`
-- **._send_follow_state_to_player()** (8 connections) — `server/game/follow_service.py`
-- **.unfollow()** (8 connections) — `server/game/follow_service.py`
-- **Any** (7 connections)
-- **._expire_pending_requests()** (7 connections) — `server/game/follow_service.py`
-- **.accept_follow()** (7 connections) — `server/game/follow_service.py`
-- **.decline_follow()** (7 connections) — `server/game/follow_service.py`
-- **_is_npc_follow_value()** (6 connections) — `server/game/follow_service.py`
-- **.get_followers()** (6 connections) — `server/game/follow_service.py`
-- **.get_following_display()** (6 connections) — `server/game/follow_service.py`
-- **._ensure_follower_standing()** (6 connections) — `server/game/follow_service.py`
-- **._on_player_entered_room()** (6 connections) — `server/game/follow_service.py`
-- **._send_follow_request_to_target()** (5 connections) — `server/game/follow_service.py`
-- **.get_following()** (5 connections) — `server/game/follow_service.py`
-- **.get_following_display_name()** (5 connections) — `server/game/follow_service.py`
-- *... and 107 more nodes in this community*
+- **follow_service()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_on_player_entered_room_move_failure_auto_unfollow()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_on_npc_entered_room_moves_followers()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_on_player_entered_room_no_from_room_id_skips_propagation()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
+- **event_bus()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **movement_service()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **user_manager()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **connection_manager()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_request_follow_npc_immediate()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_request_follow_player_muted_auto_decline()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_request_follow_player_creates_pending()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_request_follow_already_following_rejected()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_decline_follow_success()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_accept_follow_invalid_request_id()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_unfollow_was_following()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_unfollow_was_not_following()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_get_followers_empty()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_get_followers_multiple()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_get_following_none()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_get_following_display_not_following()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_get_following_display_following_npc()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_on_player_disconnect_clears_follow_state()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_on_player_disconnect_cancels_pending_requests()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_ensure_follower_standing_already_standing()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [Level and XP Curve](Level_and_XP_Curve.md) (17 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (11 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (5 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
-- [Combat Turn Processor](Combat_Turn_Processor.md) (4 shared connections)
-- [Combat Client Crash Report](Combat_Client_Crash_Report.md) (3 shared connections)
-- [NPC Event Handler Tests](NPC_Event_Handler_Tests.md) (3 shared connections)
-- [Logging Correct Patterns](Logging_Correct_Patterns.md) (3 shared connections)
-- [Player Mute Persistence](Player_Mute_Persistence.md) (2 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (1 shared connections)
-- [Room Occupant Events](Room_Occupant_Events.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (6 shared connections)
+- [Player Respawn Handlers](Player_Respawn_Handlers.md) (2 shared connections)
 - [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (1 shared connections)
+- [Realtime Connection](Realtime_Connection.md) (1 shared connections)
+- [Design Cursor Skills](Design_Cursor_Skills.md) (1 shared connections)
+- [Cursor Skills Mythosmud](Cursor_Skills_Mythosmud.md) (1 shared connections)
+- [Commands Rest Countdown](Commands_Rest_Countdown.md) (1 shared connections)
+- [Magic Game Healing](Magic_Game_Healing.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/follow_service.py`
-- `server/tests/integration/test_follow_flow.py`
 - `server/tests/unit/game/test_follow_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 424 (97%)
-- INFERRED: 11 (3%)
+- EXTRACTED: 118 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

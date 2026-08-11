@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **check_invites_schema.py** (1 connections) — `server/scripts/check_invites_schema.py`
-- **main()** (1 connections) — `server/scripts/check_invites_schema.py`
+- **test_get_following_display_following_player_resolves_name()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **When following a player, display uses resolved name from persistence, not UUID.** (1 connections) — `server/tests/unit/game/test_follow_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NPC Utility Functions](NPC_Utility_Functions.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/check_invites_schema.py`
+- `server/tests/unit/game/test_follow_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,44 +1,43 @@
 # Alias Command Models
 
-> 20 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **.get_player_aliases()** (8 connections) — `server/alias_storage.py`
-- **.save_player_aliases()** (7 connections) — `server/alias_storage.py`
-- **.create_alias()** (7 connections) — `server/alias_storage.py`
-- **.add_alias()** (6 connections) — `server/alias_storage.py`
-- **.remove_alias()** (4 connections) — `server/alias_storage.py`
-- **.get_alias()** (4 connections) — `server/alias_storage.py`
-- **.get_alias_count()** (4 connections) — `server/alias_storage.py`
-- **.clear_aliases()** (3 connections) — `server/alias_storage.py`
-- **.validate_alias_name()** (3 connections) — `server/alias_storage.py`
-- **.validate_alias_command()** (3 connections) — `server/alias_storage.py`
-- **Get all aliases for a player.** (1 connections) — `server/alias_storage.py`
-- **Save aliases for a player.** (1 connections) — `server/alias_storage.py`
-- **Add or update an alias for a player.** (1 connections) — `server/alias_storage.py`
-- **Remove an alias for a player.** (1 connections) — `server/alias_storage.py`
-- **Get a specific alias for a player.** (1 connections) — `server/alias_storage.py`
-- **Clear all aliases for a player.** (1 connections) — `server/alias_storage.py`
-- **Get the number of aliases for a player.** (1 connections) — `server/alias_storage.py`
-- **Validate alias name format.** (1 connections) — `server/alias_storage.py`
-- **Validate alias command.** (1 connections) — `server/alias_storage.py`
-- **Create and save a new alias for a player.** (1 connections) — `server/alias_storage.py`
+- **NPCCacheService** (14 connections) — `server/caching/cache_service.py`
+- **_FakeNPCService** (7 connections) — `scripts/bench_cache_npc.py`
+- **bench_npc_cache()** (7 connections) — `scripts/bench_cache_npc.py`
+- **bench_cache_npc.py** (6 connections) — `scripts/bench_cache_npc.py`
+- **.get_npc_definitions()** (4 connections) — `scripts/bench_cache_npc.py`
+- **Any** (4 connections)
+- **.get_spawn_rules()** (4 connections) — `scripts/bench_cache_npc.py`
+- **.get_npc_definition()** (3 connections) — `scripts/bench_cache_npc.py`
+- **main()** (2 connections) — `scripts/bench_cache_npc.py`
+- **.invalidate_npc_definitions()** (2 connections) — `server/caching/cache_service.py`
+- **.invalidate_spawn_rules()** (2 connections) — `server/caching/cache_service.py`
+- **.__init__()** (1 connections) — `scripts/bench_cache_npc.py`
+- **NPC cache micro-benchmark for CI artifacts. Measures miss vs. hit timings for NP** (1 connections) — `scripts/bench_cache_npc.py`
+- **Service for caching NPC definitions and spawn rules.** (1 connections) — `server/caching/cache_service.py`
+- **Invalidate all NPC definition caches.** (1 connections) — `server/caching/cache_service.py`
+- **Invalidate all NPC spawn rule caches.** (1 connections) — `server/caching/cache_service.py`
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (10 shared connections)
-- [Alias Expansion Logic](Alias_Expansion_Logic.md) (5 shared connections)
-- [Fastapi Code Review](Fastapi_Code_Review.md) (2 shared connections)
+- [Grace Period Blocking Tests](Grace_Period_Blocking_Tests.md) (6 shared connections)
+- [Quest Journal Commands](Quest_Journal_Commands.md) (3 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Cache and NPC Cache](Cache_and_NPC_Cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/alias_storage.py`
+- `scripts/bench_cache_npc.py`
+- `server/caching/cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 52 (87%)
+- INFERRED: 8 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

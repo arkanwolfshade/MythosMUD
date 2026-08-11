@@ -1,31 +1,33 @@
 # Cursor Skills Frontend
 
-> 8 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **TestGetContainer** (6 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_container_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_container_missing_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_container_no_state_attribute()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_container dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_container returns container when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_container raises RuntimeError when container not in app.state.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_container raises RuntimeError when app.state doesn't exist.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **TestHandleSpecialCommandRouting** (7 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_handle_special_command_routing_alias_command()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_handle_special_command_routing_alias_storage_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_handle_special_command_routing_emote_conversion()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_handle_special_command_routing_returns_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **Tests for _handle_special_command_routing function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **Test _handle_special_command_routing processes alias commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **Test _handle_special_command_routing returns error when alias_storage is None.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **Test _handle_special_command_routing converts single-word emotes.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **Test _handle_special_command_routing returns None for normal commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
 
 ## Relationships
 
-- [Player Domain Model](Player_Domain_Model.md) (4 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (5 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/commands/test_command_handler_unified_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 23 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

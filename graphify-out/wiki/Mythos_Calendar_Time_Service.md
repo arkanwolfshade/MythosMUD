@@ -1,14 +1,12 @@
 # Mythos Calendar Time Service
 
-> 22 nodes
+> 18 nodes
 
 ## Key Concepts
 
 - **CombatDPSync** (11 connections) — `server/services/combat_hp_sync.py`
 - **UUID** (9 connections)
 - **._persist_player_dp_sync()** (8 connections) — `server/services/combat_hp_sync.py`
-- **._publish_player_dp_update_event()** (6 connections) — `server/services/combat_hp_sync.py`
-- **._publish_player_dp_correction_event()** (6 connections) — `server/services/combat_hp_sync.py`
 - **._get_persistence()** (5 connections) — `server/services/combat_hp_sync.py`
 - **._update_and_save_player_dp()** (5 connections) — `server/services/combat_hp_sync.py`
 - **._verify_player_save()** (4 connections) — `server/services/combat_hp_sync.py`
@@ -24,15 +22,13 @@
 - **Log death threshold events based on DP changes.          Args:             curre** (1 connections) — `server/services/combat_hp_sync.py`
 - **Update player DP and save to database.          Args:             persistence: P** (1 connections) — `server/services/combat_hp_sync.py`
 - **Synchronously persist player DP to database.          This is the actual persist** (1 connections) — `server/services/combat_hp_sync.py`
-- **Publish a PlayerDPUpdated event for real-time UI updates.** (1 connections) — `server/services/combat_hp_sync.py`
-- **Publish a correction event when database persistence fails.** (1 connections) — `server/services/combat_hp_sync.py`
 
 ## Relationships
 
-- [Level and XP Curve](Level_and_XP_Curve.md) (4 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
-- [NPC Occupant Verification](NPC_Occupant_Verification.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
 
 ## Source Files
 
@@ -40,8 +36,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 73 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 61 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

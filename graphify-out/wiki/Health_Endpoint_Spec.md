@@ -1,53 +1,55 @@
 # Health Endpoint Spec
 
-> 30 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **AdminAuthService** (19 connections) — `server/services/admin_auth_service.py`
-- **.validate_permission()** (12 connections) — `server/services/admin_auth_service.py`
-- **AdminRole** (7 connections) — `server/services/admin_auth_service.py`
-- **Any** (6 connections)
-- **._update_session()** (6 connections) — `server/services/admin_auth_service.py`
-- **.get_user_role()** (5 connections) — `server/services/admin_auth_service.py`
-- **._has_permission()** (5 connections) — `server/services/admin_auth_service.py`
-- **._log_audit_event()** (5 connections) — `server/services/admin_auth_service.py`
-- **.get_username()** (4 connections) — `server/services/admin_auth_service.py`
-- **.get_user_id()** (4 connections) — `server/services/admin_auth_service.py`
-- **Request** (4 connections)
-- **._check_rate_limit()** (4 connections) — `server/services/admin_auth_service.py`
-- **.get_active_sessions()** (3 connections) — `server/services/admin_auth_service.py`
-- **.get_audit_log()** (3 connections) — `server/services/admin_auth_service.py`
-- **.__init__()** (2 connections) — `server/services/admin_auth_service.py`
-- **.cleanup_expired_sessions()** (2 connections) — `server/services/admin_auth_service.py`
-- **Enumeration of admin roles.** (1 connections) — `server/services/admin_auth_service.py`
-- **Service for admin authentication and authorization.** (1 connections) — `server/services/admin_auth_service.py`
-- **Initialize the admin auth service.** (1 connections) — `server/services/admin_auth_service.py`
-- **Determine the admin role for a user.          Args:             current_user: Th** (1 connections) — `server/services/admin_auth_service.py`
-- **Safely get username from current user object.** (1 connections) — `server/services/admin_auth_service.py`
-- **Safely get user ID from current user object.** (1 connections) — `server/services/admin_auth_service.py`
-- **Validate that the current user has permission to perform the action.          Ar** (1 connections) — `server/services/admin_auth_service.py`
-- **Check if a role has permission for an action.          Args:             role: T** (1 connections) — `server/services/admin_auth_service.py`
-- **Check if user has exceeded rate limits.          Args:             user_id: The** (1 connections) — `server/services/admin_auth_service.py`
-- *... and 5 more nodes in this community*
+- **EmoteService** (18 connections) — `server/game/emote_service.py`
+- **EmoteDefinition** (5 connections) — `server/game/emote_service.py`
+- **.format_emote_messages()** (5 connections) — `server/game/emote_service.py`
+- **_get_emote_validator()** (4 connections) — `server/game/emote_service.py`
+- **_EmoteLoadResult** (4 connections) — `server/game/emote_service.py`
+- **._load_emotes()** (4 connections) — `server/game/emote_service.py`
+- **._async_load_emotes()** (4 connections) — `server/game/emote_service.py`
+- **.get_emote_definition()** (4 connections) — `server/game/emote_service.py`
+- **_EmoteRowData** (3 connections) — `server/game/emote_service.py`
+- **TypedDict** (3 connections)
+- **.__init__()** (3 connections) — `server/game/emote_service.py`
+- **.reload_emotes()** (3 connections) — `server/game/emote_service.py`
+- **._validate_emote_payload()** (3 connections) — `server/game/emote_service.py`
+- **.is_emote_alias()** (2 connections) — `server/game/emote_service.py`
+- **.list_available_emotes()** (2 connections) — `server/game/emote_service.py`
+- **Lazily instantiate and cache the emote schema validator.** (1 connections) — `server/game/emote_service.py`
+- **Public emote payload returned by EmoteService lookups.** (1 connections) — `server/game/emote_service.py`
+- **Service for managing predefined emote actions and their messages.** (1 connections) — `server/game/emote_service.py`
+- **Initialize the EmoteService.          Args:             emote_file_path: DEPRECA** (1 connections) — `server/game/emote_service.py`
+- **Load emote definitions from PostgreSQL database.** (1 connections) — `server/game/emote_service.py`
+- **Async helper to load emotes from PostgreSQL database.** (1 connections) — `server/game/emote_service.py`
+- **Check if a command is an emote alias.          Args:             command: The co** (1 connections) — `server/game/emote_service.py`
+- **Get the emote definition for a command.          Args:             command: The** (1 connections) — `server/game/emote_service.py`
+- **Format emote messages for the player and room occupants.          Args:** (1 connections) — `server/game/emote_service.py`
+- **Get a list of all available emotes and their aliases.          Returns:** (1 connections) — `server/game/emote_service.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (6 shared connections)
-- [Room Get Zone Id](Room_Get_Zone_Id.md) (2 shared connections)
-- [Player Model Inventory](Player_Model_Inventory.md) (2 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
-- [admin_auth_service](admin_auth_service_2.md) (1 shared connections)
-- [test_get_admin_auth_service](test_get_admin_auth_service.md) (1 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (6 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (4 shared connections)
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (2 shared connections)
+- [Async Persistence Types](Async_Persistence_Types.md) (2 shared connections)
+- [Chat Message Helpers](Chat_Message_Helpers.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Test Migration Report](Test_Migration_Report.md) (1 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/admin_auth_service.py`
+- `server/game/emote_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 104 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 74 (94%)
+- INFERRED: 5 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

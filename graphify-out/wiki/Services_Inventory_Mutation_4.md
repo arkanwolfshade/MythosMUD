@@ -1,29 +1,35 @@
 # Services Inventory Mutation
 
-> 6 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **TestGetRoomService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_room_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_room_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_room_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_room_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_room_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **inventory_command_prototype.py** (12 connections) — `server/commands/inventory_command_prototype.py`
+- **infer_equip_slot_from_prototype()** (9 connections) — `server/commands/inventory_command_prototype.py`
+- **prototype_registry_from_request()** (4 connections) — `server/commands/inventory_command_prototype.py`
+- **prototype_from_registry()** (4 connections) — `server/commands/inventory_command_prototype.py`
+- **_first_normalized_wear_slot()** (3 connections) — `server/commands/inventory_command_prototype.py`
+- **_inventory_prototype_id()** (2 connections) — `server/commands/inventory_command_prototype.py`
+- **_wear_slots_from_prototype()** (2 connections) — `server/commands/inventory_command_prototype.py`
+- **Prototype registry access and equip-slot inference for inventory items.** (1 connections) — `server/commands/inventory_command_prototype.py`
+- **Resolve prototype registry from FastAPI-style request (agent-readable indirectio** (1 connections) — `server/commands/inventory_command_prototype.py`
+- **Return the prototype object for ``prototype_id``, or None if missing or invalid.** (1 connections) — `server/commands/inventory_command_prototype.py`
+- **Infer equip slot from prototype wear_slots for inventory items.** (1 connections) — `server/commands/inventory_command_prototype.py`
 
 ## Relationships
 
-- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
+- [Character Creation Service](Character_Creation_Service.md) (6 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
+- [Game State Provider](Game_State_Provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/commands/inventory_command_prototype.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 38 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

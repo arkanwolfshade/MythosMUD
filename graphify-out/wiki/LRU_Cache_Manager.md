@@ -1,69 +1,56 @@
 # LRU Cache Manager
 
-> 249 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **NPCPopulationController** (64 connections) — `server/npc/population_control.py`
-- **NPCCombatIntegration** (63 connections) — `server/npc/combat_integration.py`
-- **test_npc_instance_service.py** (53 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **NPCSpawningService** (50 connections) — `server/npc/spawning_service.py`
-- **NPCInstanceService** (24 connections) — `server/services/npc_instance_service.py`
-- **test_npc_combat_integration_class.py** (23 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **npc.py** (14 connections) — `server/container/bundles/npc.py`
-- **NPCBundle** (14 connections) — `server/container/bundles/npc.py`
-- **initialize_npc_instance_service()** (14 connections) — `server/services/npc_instance_service.py`
-- **NPCService** (14 connections) — `server/services/npc_service/__init__.py`
-- **_create_npc_services_on_app()** (10 connections) — `server/app/lifespan_startup.py`
-- **._create_npc_services()** (8 connections) — `server/container/bundles/npc.py`
-- **._build_player_attacked_event()** (8 connections) — `server/npc/combat_integration.py`
-- **Any** (8 connections)
-- **UUID** (7 connections)
-- **.get_combat_stats()** (7 connections) — `server/npc/combat_integration.py`
-- **CombatEventPublisherProtocol** (7 connections) — `server/npc/combat_integration_protocols.py`
-- **.__init__()** (7 connections) — `server/npc/population_control.py`
-- **._check_spawn_requirements_for_room()** (7 connections) — `server/npc/population_control.py`
-- **.__init__()** (7 connections) — `server/npc/spawning_service.py`
-- **.initialize()** (6 connections) — `server/container/bundles/npc.py`
-- **._compute_dp_update_fields()** (6 connections) — `server/npc/combat_integration.py`
-- **._get_combat_event_publisher()** (6 connections) — `server/npc/combat_integration.py`
-- **._calculate_max_dp()** (6 connections) — `server/npc/combat_integration.py`
-- **.__init__()** (6 connections) — `server/services/npc_instance_service.py`
-- *... and 224 more nodes in this community*
+- **test_websocket_handler_coverage_gaps.py** (24 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **handle_chat_message()** (18 connections) — `server/realtime/websocket_handler.py`
+- **UUID** (3 connections)
+- **test_handle_chat_message()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_game_command_resolve_connection_manager_from_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_game_command_exception_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_game_command_runtime_error_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_process_websocket_command_resolve_connection_manager_from_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_chat_message_resolve_connection_manager_from_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_chat_message_exception_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_chat_message_runtime_error_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_chat_message_no_player()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_chat_message_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_message_loop_should_raise_exception()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_process_exception_in_message_loop()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_setup_initial_connection_state_should_exit()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_setup_initial_connection_state_with_room()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_setup_initial_connection_state_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_send_welcome_event_already_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_send_welcome_event_close_message_sent()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_send_welcome_event_cannot_call_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **Handle a chat message from a player.      Args:         websocket: The WebSocket** (1 connections) — `server/realtime/websocket_handler.py`
+- **Test handle_chat_message handles chat message.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **Unit tests to fill coverage gaps in websocket_handler.py.  These tests target sp** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **Test _handle_websocket_message_loop re-raises exception when should_raise is Tru** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [Level and XP Curve](Level_and_XP_Curve.md) (71 shared connections)
-- [Spell Effect Protocols](Spell_Effect_Protocols.md) (24 shared connections)
-- [Command Parser Tests](Command_Parser_Tests.md) (19 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (11 shared connections)
-- [MP Regeneration Service](MP_Regeneration_Service.md) (9 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (9 shared connections)
-- [Lucidity Recovery Commands](Lucidity_Recovery_Commands.md) (7 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (5 shared connections)
-- [Player Domain Model](Player_Domain_Model.md) (4 shared connections)
-- [Plan Cursor Plans](Plan_Cursor_Plans.md) (4 shared connections)
-- [Realtime Errors Error](Realtime_Errors_Error.md) (3 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (3 shared connections)
+- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (7 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (7 shared connections)
+- [Container API Endpoints](Container_API_Endpoints.md) (4 shared connections)
+- [Application DI Bundles](Application_DI_Bundles.md) (4 shared connections)
+- [Game State Provider Tests](Game_State_Provider_Tests.md) (2 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan_startup.py`
-- `server/container/bundles/npc.py`
-- `server/npc/combat_integration.py`
-- `server/npc/combat_integration_protocols.py`
-- `server/npc/npc_base.py`
-- `server/npc/population_control.py`
-- `server/npc/spawning_service.py`
-- `server/services/npc_instance_service.py`
-- `server/services/npc_service/__init__.py`
-- `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- `server/tests/unit/services/test_npc_instance_service.py`
+- `server/realtime/websocket_handler.py`
+- `server/tests/unit/realtime/test_websocket_handler_core.py`
+- `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 798 (92%)
-- INFERRED: 73 (8%)
+- EXTRACTED: 107 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

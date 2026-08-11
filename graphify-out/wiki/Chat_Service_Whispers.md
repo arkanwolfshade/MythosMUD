@@ -1,64 +1,50 @@
 # Chat Service Whispers
 
-> 86 nodes
+> 64 nodes
 
 ## Key Concepts
 
-- **InventoryService** (43 connections) — `server/services/inventory_service.py`
-- **InventoryStack** (34 connections) — `server/services/inventory_service.py`
-- **inventory_service.py** (29 connections) — `server/services/inventory_service.py`
-- **test_inventory_service.py** (20 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **EquipmentService** (18 connections) — `server/services/equipment_service.py`
-- **MutationDecision** (18 connections) — `server/services/inventory_mutation_guard.py`
-- **inventory_service_helpers.py** (16 connections) — `server/commands/inventory_service_helpers.py`
-- **InventoryValidationError** (13 connections) — `server/services/inventory_service.py`
-- **InventorySplitError** (13 connections) — `server/services/inventory_service.py`
-- **.equip_from_inventory()** (10 connections) — `server/services/equipment_service.py`
-- **InventoryServiceError** (9 connections) — `server/services/inventory_service.py`
-- **._clone_stack()** (9 connections) — `server/services/inventory_service.py`
-- **.unequip_to_inventory()** (8 connections) — `server/services/equipment_service.py`
-- **.add_stack()** (8 connections) — `server/services/inventory_service.py`
-- **.split_stack()** (8 connections) — `server/services/inventory_service.py`
-- **_ensure_shared_services_initialized()** (7 connections) — `server/commands/inventory_service_helpers.py`
-- **Any** (7 connections)
-- **._validate_and_clone_optional_fields()** (7 connections) — `server/services/inventory_service.py`
-- **._clone_with_quantity()** (7 connections) — `server/services/inventory_service.py`
-- **_clone_inventory()** (6 connections) — `server/services/equipment_service.py`
-- **_clone_equipped()** (6 connections) — `server/services/equipment_service.py`
-- **InventoryStackRequired** (6 connections) — `server/services/inventory_service.py`
-- **InnerContainer** (6 connections) — `server/services/inventory_service.py`
-- **InventoryStack** (5 connections)
-- **.begin_mutation()** (5 connections) — `server/services/inventory_service.py`
-- *... and 61 more nodes in this community*
+- **test_look_item_helpers.py** (28 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **_find_item_in_room_drops()** (23 connections) — `server/commands/look_item.py`
+- **test_find_item_in_room_drops_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_by_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_instance_number_zero()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (35 shared connections)
-- [Game Client Container](Game_Client_Container.md) (23 shared connections)
-- [Character Creation Service](Character_Creation_Service.md) (15 shared connections)
-- [Magic Command Handlers](Magic_Command_Handlers.md) (12 shared connections)
-- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (8 shared connections)
-- [Async Task Registry](Async_Task_Registry.md) (7 shared connections)
-- [Admin NPC Schemas](Admin_NPC_Schemas.md) (4 shared connections)
-- [NATS Subject Patterns](NATS_Subject_Patterns.md) (3 shared connections)
-- [Combat Persistence Events](Combat_Persistence_Events.md) (3 shared connections)
-- [Combat Player Broadcasts](Combat_Player_Broadcasts.md) (2 shared connections)
-- [Container Inventory Finders](Container_Inventory_Finders.md) (1 shared connections)
-- [Application Container Analysis](Application_Container_Analysis.md) (1 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (29 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_service_helpers.py`
-- `server/services/equipment_service.py`
-- `server/services/inventory_mutation_guard.py`
-- `server/services/inventory_service.py`
-- `server/tests/unit/services/test_equipment_service.py`
-- `server/tests/unit/services/test_inventory_service.py`
+- `server/commands/look_item.py`
+- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 351 (83%)
-- INFERRED: 70 (17%)
+- EXTRACTED: 173 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

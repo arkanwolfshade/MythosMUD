@@ -1,56 +1,53 @@
 # Combat Command Models
 
-> 69 nodes
+> 54 nodes
 
 ## Key Concepts
 
-- **test_container_persistence_extended_crud.py** (41 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **container_query_helpers.py** (21 connections) — `server/persistence/container_query_helpers.py`
-- **delete_container()** (14 connections) — `server/persistence/container_persistence.py`
-- **get_decayed_containers()** (13 connections) — `server/persistence/container_query_helpers.py`
-- **_build_container_data_from_row()** (12 connections) — `server/persistence/container_query_helpers.py`
-- **get_containers_by_room_id()** (12 connections) — `server/persistence/container_query_helpers.py`
-- **get_containers_by_entity_id()** (12 connections) — `server/persistence/container_query_helpers.py`
-- **test_create_container_success()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_update_container_uuid_string_conversion()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_update_container_items_missing_item_instance_id()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_update_container_items_only_prototype_id()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **Any** (4 connections)
-- **ContainerData** (4 connections)
-- **test_create_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_container_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_room_id_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_room_id_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_entity_id_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_entity_id_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_update_container_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_update_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_decayed_containers_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_decayed_containers_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_delete_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- *... and 44 more nodes in this community*
+- **NATSMetrics** (31 connections) — `server/services/nats_metrics.py`
+- **test_nats_service_init_with_config()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **nats_metrics.py** (4 connections) — `server/services/nats_metrics.py`
+- **.get_metrics()** (3 connections) — `server/services/nats_metrics.py`
+- **test_nats_metrics_init()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_publish_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_publish_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_subscribe_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_subscribe_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_batch_flush_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_batch_flush_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_connection_health()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_connection_health_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_pool_utilization()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_pool_utilization_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_get_metrics()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_get_metrics_empty_processing_times()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_message_processing_times_maxlen()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **.__init__()** (2 connections) — `server/services/nats_metrics.py`
+- **.record_publish()** (2 connections) — `server/services/nats_metrics.py`
+- **.record_subscribe()** (2 connections) — `server/services/nats_metrics.py`
+- **.record_batch_flush()** (2 connections) — `server/services/nats_metrics.py`
+- **.update_connection_health()** (2 connections) — `server/services/nats_metrics.py`
+- **.update_pool_utilization()** (2 connections) — `server/services/nats_metrics.py`
+- **.record_ack_success()** (2 connections) — `server/services/nats_metrics.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [Maps API Endpoints](Maps_API_Endpoints.md) (23 shared connections)
-- [JSONB Column Parsing](JSONB_Column_Parsing.md) (23 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (19 shared connections)
-- [Container System Architecture](Container_System_Architecture.md) (7 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
-- [Feature Implementation Phases](Feature_Implementation_Phases.md) (3 shared connections)
+- [Combat Service Bundle](Combat_Service_Bundle.md) (17 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (4 shared connections)
+- [Combat Persistence Events](Combat_Persistence_Events.md) (1 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
+- [Room Subscription Helpers](Room_Subscription_Helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/container_persistence.py`
-- `server/persistence/container_query_helpers.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- `server/services/nats_metrics.py`
+- `server/tests/unit/services/test_nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 248 (93%)
-- INFERRED: 19 (7%)
+- EXTRACTED: 125 (96%)
+- INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

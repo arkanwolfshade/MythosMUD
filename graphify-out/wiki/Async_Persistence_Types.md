@@ -1,55 +1,53 @@
 # Async Persistence Types
 
-> 28 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **RoomCacheLoader** (29 connections) — `server/async_persistence_room_loader.py`
-- **Any** (12 connections)
-- **.load()** (10 connections) — `server/async_persistence_room_loader.py`
-- **._generate_room_id_from_zone_data()** (7 connections) — `server/async_persistence_room_loader.py`
-- **._process_combined_rows()** (6 connections) — `server/async_persistence_room_loader.py`
-- **Profession** (5 connections)
-- **._build_room_data_from_row()** (5 connections) — `server/async_persistence_room_loader.py`
-- **._process_exit_rows()** (5 connections) — `server/async_persistence_room_loader.py`
-- **.get_professions()** (4 connections) — `server/async_persistence.py`
-- **._parse_zone_parts()** (4 connections) — `server/async_persistence_room_loader.py`
-- **._process_exits_for_room()** (4 connections) — `server/async_persistence_room_loader.py`
-- **._build_room_objects()** (4 connections) — `server/async_persistence_room_loader.py`
-- **.get_profession_by_id()** (3 connections) — `server/async_persistence.py`
-- **._apply_rooms_to_cache()** (3 connections) — `server/async_persistence_room_loader.py`
-- **._handle_room_load_error()** (3 connections) — `server/async_persistence_room_loader.py`
-- **._query_rooms_with_exits_async()** (3 connections) — `server/async_persistence_room_loader.py`
-- **._parse_exits_json()** (3 connections) — `server/async_persistence_room_loader.py`
-- **._process_room_rows()** (3 connections) — `server/async_persistence_room_loader.py`
-- **._extract_exit_fields()** (3 connections) — `server/async_persistence_room_loader.py`
-- **._resolve_exit_room_ids()** (3 connections) — `server/async_persistence_room_loader.py`
-- **._log_exit_debug()** (3 connections) — `server/async_persistence_room_loader.py`
-- **.__init__()** (2 connections) — `server/async_persistence_room_loader.py`
-- **._log_room_cache_after_load()** (2 connections) — `server/async_persistence_room_loader.py`
-- **BaseException** (2 connections)
-- **Get all available professions using SQLAlchemy ORM.** (1 connections) — `server/async_persistence.py`
-- *... and 3 more nodes in this community*
+- **handle_emote_command()** (15 connections) — `server/commands/emote_commands.py`
+- **emote_commands.py** (14 connections) — `server/commands/emote_commands.py`
+- **_get_emote_services()** (7 connections) — `server/commands/emote_commands.py`
+- **test_emote_commands.py** (6 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Any** (5 connections)
+- **_extract_emote_action()** (4 connections) — `server/commands/emote_commands.py`
+- **_validate_player_for_emote()** (4 connections) — `server/commands/emote_commands.py`
+- **_format_emote_messages()** (4 connections) — `server/commands/emote_commands.py`
+- **_handle_emote_result()** (4 connections) — `server/commands/emote_commands.py`
+- **test_handle_emote_command()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_handle_emote_command_no_message()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_handle_emote_command_no_chat_service()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Emote command handlers for MythosMUD.  This module contains handlers for the emo** (1 connections) — `server/commands/emote_commands.py`
+- **Extract action from command_data.      Args:         command_data: Command data** (1 connections) — `server/commands/emote_commands.py`
+- **Get chat service and player service from app state.      Args:         request:** (1 connections) — `server/commands/emote_commands.py`
+- **Validate player and extract required information for emote.      Args:         p** (1 connections) — `server/commands/emote_commands.py`
+- **Format emote messages for predefined or custom emotes.      Args:         action** (1 connections) — `server/commands/emote_commands.py`
+- **Handle the result from chat service after sending emote.      Args:         resu** (1 connections) — `server/commands/emote_commands.py`
+- **Handle the emote command for performing emotes.      Args:         command_data:** (1 connections) — `server/commands/emote_commands.py`
+- **Unit tests for emote command handlers.  Tests the emote command functionality.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Test handle_emote_command() processes emote.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Test handle_emote_command() handles missing message.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Test handle_emote_command() handles missing chat service.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (5 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (3 shared connections)
-- [Conftest Migration Plan](Conftest_Migration_Plan.md) (3 shared connections)
-- [Persistence Item Instance](Persistence_Item_Instance.md) (2 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (1 shared connections)
-- [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (2 shared connections)
+- [Health Endpoint Spec](Health_Endpoint_Spec.md) (2 shared connections)
+- [Combat UUID Display Bug](Combat_UUID_Display_Bug.md) (2 shared connections)
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (1 shared connections)
+- [Memory Leak Metrics](Memory_Leak_Metrics.md) (1 shared connections)
+- [Game State Provider](Game_State_Provider.md) (1 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (1 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
-- `server/async_persistence_room_loader.py`
+- `server/commands/emote_commands.py`
+- `server/tests/unit/commands/test_emote_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 119 (90%)
-- INFERRED: 13 (10%)
+- EXTRACTED: 79 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

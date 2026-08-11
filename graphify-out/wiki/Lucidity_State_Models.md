@@ -33,12 +33,10 @@
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
-- [Player Creation Service](Player_Creation_Service.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (4 shared connections)
 - [Dependency Injection Tests](Dependency_Injection_Tests.md) (3 shared connections)
-- [Container System Architecture](Container_System_Architecture.md) (3 shared connections)
-- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (3 shared connections)
 
 ## Source Files
 

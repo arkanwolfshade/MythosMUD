@@ -1,14 +1,22 @@
 # Auth Token Utilities
 
-> 66 nodes
+> 107 nodes
 
 ## Key Concepts
 
+- **AuthenticationError** (64 connections) — `server/exceptions.py`
 - **test_auth_utils.py** (52 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **AttributeError** (38 connections)
 - **create_access_token()** (30 connections) — `server/auth_utils.py`
 - **decode_access_token()** (25 connections) — `server/auth_utils.py`
+- **hash_password()** (18 connections) — `server/auth_utils.py`
+- **auth_utils.py** (16 connections) — `server/auth_utils.py`
+- **verify_password()** (9 connections) — `server/auth_utils.py`
 - **test_create_access_token_attribute_error()** (5 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_decode_access_token_attribute_error()** (5 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_verify_password_success()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_verify_password_failure()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_hash_password_raises_on_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_decode_access_token_success()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_decode_access_token_expired()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_create_access_token_with_custom_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
@@ -20,37 +28,35 @@
 - **test_decode_access_token_value_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_decode_access_token_type_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_decode_access_token_runtime_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_decode_access_token_with_custom_algorithm()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_decode_access_token_with_wrong_algorithm()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_runtime_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_with_audience()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_decode_access_token_with_expired_token_immediately()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **setup_jwt_secret()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_success()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_with_expires_delta()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_decode_access_token_invalid()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- *... and 41 more nodes in this community*
+- **test_hash_password_authentication_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- *... and 82 more nodes in this community*
 
 ## Relationships
 
-- [Combat Disconnect Bug](Combat_Disconnect_Bug.md) (11 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (9 shared connections)
-- [Services Rescue Service](Services_Rescue_Service.md) (6 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
-- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (3 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (27 shared connections)
+- [Realtime Conftest Mocks](Realtime_Conftest_Mocks.md) (15 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (7 shared connections)
+- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (4 shared connections)
+- [Container Data Models](Container_Data_Models.md) (3 shared connections)
+- [Holiday Persistence Models](Holiday_Persistence_Models.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 - [Room Occupant Events](Room_Occupant_Events.md) (2 shared connections)
+- [Mythos Time HUD](Mythos_Time_HUD.md) (2 shared connections)
+- [Combat Turn Processor](Combat_Turn_Processor.md) (2 shared connections)
+- [Status Command Handlers](Status_Command_Handlers.md) (2 shared connections)
 - [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
 
 ## Source Files
 
 - `server/auth_utils.py`
+- `server/exceptions.py`
 - `server/tests/unit/auth/test_auth_utils.py`
+- `server/tests/unit/services/test_npc_instance_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 241 (96%)
-- INFERRED: 9 (4%)
+- EXTRACTED: 376 (79%)
+- INFERRED: 99 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

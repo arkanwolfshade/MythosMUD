@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_movement_monitor_init()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **Test MovementMonitor initialization.** (1 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Create mock connection manager.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Relationships
 
-- [Cursor Subagents Docs](Cursor_Subagents_Docs.md) (1 shared connections)
+- [Database Pool Configuration](Database_Pool_Configuration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_monitor.py`
+- `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Audit Trail
 

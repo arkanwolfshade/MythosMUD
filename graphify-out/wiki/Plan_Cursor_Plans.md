@@ -17,7 +17,7 @@
 
 ## Relationships
 
-- [Combat Messaging Integration](Combat_Messaging_Integration.md) (2 shared connections)
+- [Game Terminal Container](Game_Terminal_Container.md) (2 shared connections)
 - [Command Input Validator](Command_Input_Validator.md) (2 shared connections)
 
 ## Source Files

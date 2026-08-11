@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_user_role_with_dict_is_admin()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **Test get_user_role returns ADMIN for dict user with is_admin.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_create_spawn_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_spawn_command produces NPCCommand for npc spawn subcommand.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [Player Model Inventory](Player_Model_Inventory.md) (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_admin_auth_service.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 

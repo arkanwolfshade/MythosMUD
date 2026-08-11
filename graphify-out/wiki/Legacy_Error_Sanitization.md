@@ -1,49 +1,56 @@
 # Legacy Error Sanitization
 
-> 28 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **CORSConfig** (19 connections) — `server/config/models/cors.py`
-- **._parse_csv()** (10 connections) — `server/config/models/cors.py`
-- **._validate_non_empty()** (5 connections) — `server/config/models/cors.py`
-- **._clean_list_items()** (5 connections) — `server/config/models/cors.py`
-- **._parse_json_array()** (5 connections) — `server/config/models/cors.py`
-- **._parse_comma_separated()** (4 connections) — `server/config/models/cors.py`
-- **.parse_allow_origins()** (3 connections) — `server/config/models/cors.py`
-- **.parse_allow_methods()** (3 connections) — `server/config/models/cors.py`
-- **.parse_allow_headers()** (3 connections) — `server/config/models/cors.py`
-- **.parse_expose_headers()** (3 connections) — `server/config/models/cors.py`
-- **._validate_and_warn_wildcards()** (2 connections) — `server/config/models/cors.py`
-- **.parse_max_age()** (2 connections) — `server/config/models/cors.py`
-- **.validate_max_age()** (2 connections) — `server/config/models/cors.py`
-- **BaseSettings** (1 connections)
-- **Any** (1 connections)
-- **Cross-origin resource sharing configuration.      Configuration precedence (high** (1 connections) — `server/config/models/cors.py`
-- **Validate CORS configuration and warn about wildcard origins.** (1 connections) — `server/config/models/cors.py`
-- **Validate that cleaned list is not empty if allow_empty is False.** (1 connections) — `server/config/models/cors.py`
-- **Clean and filter list items, removing empty strings.** (1 connections) — `server/config/models/cors.py`
-- **Parse JSON array string if it looks like one, otherwise return None.** (1 connections) — `server/config/models/cors.py`
-- **Parse comma-separated string into cleaned list.** (1 connections) — `server/config/models/cors.py`
-- **Parse comma separated strings or lists into a cleaned list of strings.** (1 connections) — `server/config/models/cors.py`
-- **Parse allowed origins from various input formats.** (1 connections) — `server/config/models/cors.py`
-- **Parse and validate CORS allowed methods. Converts all methods to uppercase.** (1 connections) — `server/config/models/cors.py`
-- **Parse and validate CORS allowed headers.** (1 connections) — `server/config/models/cors.py`
-- *... and 3 more nodes in this community*
+- **quest_commands.py** (32 connections) — `server/commands/quest_commands.py`
+- **Any** (17 connections)
+- **handle_journal_command()** (15 connections) — `server/commands/quest_commands.py`
+- **_resolve_quest_command_context()** (10 connections) — `server/commands/quest_commands.py`
+- **_handle_quest_npc_sub()** (8 connections) — `server/commands/quest_commands.py`
+- **_get_quest_service()** (7 connections) — `server/commands/quest_commands.py`
+- **_resolve_npc_in_player_room()** (7 connections) — `server/commands/quest_commands.py`
+- **_resolve_player_id()** (6 connections) — `server/commands/quest_commands.py`
+- **UUID** (6 connections)
+- **_active_npc_ids_in_room()** (6 connections) — `server/commands/quest_commands.py`
+- **_quest_command_ready()** (6 connections) — `server/commands/quest_commands.py`
+- **_get_container_and_persistence()** (5 connections) — `server/commands/quest_commands.py`
+- **_format_one_quest_entry()** (5 connections) — `server/commands/quest_commands.py`
+- **_format_quest_log()** (5 connections) — `server/commands/quest_commands.py`
+- **_handle_quest_abandon()** (5 connections) — `server/commands/quest_commands.py`
+- **_parse_quest_subcommand()** (4 connections) — `server/commands/quest_commands.py`
+- **_format_goal_line()** (4 connections) — `server/commands/quest_commands.py`
+- **_npc_definition_id()** (4 connections) — `server/commands/quest_commands.py`
+- **_format_quest_action_results()** (4 connections) — `server/commands/quest_commands.py`
+- **Quest commands: journal / quests (quest log), quest abandon/ask/turnin.  Returns** (1 connections) — `server/commands/quest_commands.py`
+- **Get QuestService from request app container, or None if unavailable.** (1 connections) — `server/commands/quest_commands.py`
+- **Get container and async_persistence from request, or None.** (1 connections) — `server/commands/quest_commands.py`
+- **Extract player_id from player object as UUID, or None.** (1 connections) — `server/commands/quest_commands.py`
+- **Parse quest subcommand args.      Returns (subcommand, remainder, error_message)** (1 connections) — `server/commands/quest_commands.py`
+- **Resolve player, player_id and QuestService from request and current_user.     Re** (1 connections) — `server/commands/quest_commands.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
-- [Archive Frd Random](Archive_Frd_Random.md) (2 shared connections)
+- [Server Config Loading](Server_Config_Loading.md) (11 shared connections)
+- [Look NPC Command](Look_NPC_Command.md) (7 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Quest Service Core](Quest_Service_Core.md) (3 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (2 shared connections)
+- [NATS Connection State Machine](NATS_Connection_State_Machine.md) (2 shared connections)
+- [Container Repository CRUD](Container_Repository_CRUD.md) (2 shared connections)
+- [Command Service Tests](Command_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/models/cors.py`
+- `server/commands/quest_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 169 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

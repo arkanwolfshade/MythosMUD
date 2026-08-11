@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_select_exit_empty_dict()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test select_exit() with empty exit dict.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_get_wearable_containers_for_player_empty()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test get_wearable_containers_for_player returns empty list when no containers.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [Cursor Bug Agents](Cursor_Bug_Agents.md) (1 shared connections)
-- [NPC Movement Integration](NPC_Movement_Integration.md) (1 shared connections)
+- [Exploration Command Factories](Exploration_Command_Factories.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

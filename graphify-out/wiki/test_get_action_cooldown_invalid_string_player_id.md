@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_action_cooldown_invalid_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test get_action_cooldown() raises error for invalid string player_id.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **mock_message_builder()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Create a mock message builder.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- [WebSocket Message Validator](WebSocket_Message_Validator.md) (1 shared connections)
+- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 

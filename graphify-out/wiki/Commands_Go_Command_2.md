@@ -4,21 +4,22 @@
 
 ## Key Concepts
 
-- **test_handle_learn_command_with_corruption()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test learn command with corruption applied.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_handle_event_async_async_subscriber_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test _handle_event_async() handles async subscriber errors.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (1 shared connections)
+- [Services Rescue Service](Services_Rescue_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

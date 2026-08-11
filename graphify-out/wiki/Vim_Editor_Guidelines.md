@@ -1,6 +1,6 @@
 # Vim Editor Guidelines
 
-> 86 nodes
+> 84 nodes
 
 ## Key Concepts
 
@@ -8,7 +8,6 @@
 - **test_nats_retry_handler.py** (34 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
 - **RetryableMessage** (13 connections) — `server/realtime/nats_retry_handler.py`
 - **RetryConfig** (10 connections) — `server/realtime/nats_retry_handler.py`
-- **nats_retry_handler.py** (9 connections) — `server/realtime/nats_retry_handler.py`
 - **.retry_async()** (5 connections) — `server/realtime/nats_retry_handler.py`
 - **.calculate_backoff()** (4 connections) — `server/realtime/nats_retry_handler.py`
 - **.should_retry()** (4 connections) — `server/realtime/nats_retry_handler.py`
@@ -29,16 +28,17 @@
 - **test_retry_config_calculate_delay_base()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
 - **test_retry_config_calculate_delay_capped()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
 - **test_retry_config_defaults()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- *... and 61 more nodes in this community*
+- **test_retryable_message_init()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (3 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (5 shared connections)
 - [NATS Chat Broadcasting](NATS_Chat_Broadcasting.md) (1 shared connections)
-- [Chat Message Filtering](Chat_Message_Filtering.md) (1 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
+- [Test Optimization Insights](Test_Optimization_Insights.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
+- [Lucidity Utc Now](Lucidity_Utc_Now.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 272 (99%)
-- INFERRED: 4 (1%)
+- EXTRACTED: 262 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

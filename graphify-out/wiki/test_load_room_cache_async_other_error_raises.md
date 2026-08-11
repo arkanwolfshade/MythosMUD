@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **wearable_service()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Create WearableContainerService instance.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_connection_manager_setter_updates_helpers()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test connection_manager setter updates filtering_helper and event_handler refere** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [NATS Subject Patterns](NATS_Subject_Patterns.md) (1 shared connections)
-- [Exploration Command Factories](Exploration_Command_Factories.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,38 +1,28 @@
 # Realtime Connection Impl
 
-> 15 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **rest_countdown_task.py** (12 connections) — `server/commands/rest_countdown_task.py`
-- **create_rest_countdown_task()** (7 connections) — `server/commands/rest_countdown_task.py`
-- **UUID** (6 connections)
-- **_send_countdown_message()** (6 connections) — `server/commands/rest_countdown_task.py`
-- **_handle_countdown_loop()** (6 connections) — `server/commands/rest_countdown_task.py`
-- **_is_rest_interrupted()** (5 connections) — `server/commands/rest_countdown_task.py`
-- **Any** (5 connections)
-- **_disconnect_player_after_rest()** (5 connections) — `server/commands/rest_countdown_task.py`
-- **Task** (1 connections)
-- **Rest countdown task implementation.  This module contains the async task that ha** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Check if rest countdown was interrupted.      Args:         player_id: Player UU** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Send countdown message to player.      Args:         player_id: Player UUID** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Execute countdown loop, sending messages every second.      Args:         player** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Disconnect player after rest countdown completes.      Args:         player_id:** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Create and return a rest countdown task.      Args:         player_id: The playe** (1 connections) — `server/commands/rest_countdown_task.py`
+- **.on_enter_state()** (4 connections) — `server/realtime/connection_state_machine.py`
+- **.get_stats()** (3 connections) — `server/realtime/connection_state_machine.py`
+- **State** (2 connections)
+- **Any** (2 connections)
+- **Called whenever state machine enters a new state.          Logs state transition** (1 connections) — `server/realtime/connection_state_machine.py`
+- **Get connection statistics.          Returns:             Dictionary with connect** (1 connections) — `server/realtime/connection_state_machine.py`
 
 ## Relationships
 
-- [Distributed Event Bus](Distributed_Event_Bus.md) (4 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Room Subscription Helpers](Room_Subscription_Helpers.md) (2 shared connections)
+- [Game State Provider](Game_State_Provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/rest_countdown_task.py`
+- `server/realtime/connection_state_machine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

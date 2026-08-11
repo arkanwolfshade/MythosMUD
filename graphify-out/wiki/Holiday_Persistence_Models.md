@@ -1,62 +1,50 @@
 # Holiday Persistence Models
 
-> 78 nodes
+> 64 nodes
 
 ## Key Concepts
 
-- **test_database_extended.py** (43 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **.initialize()** (12 connections) — `server/container/bundles/core.py`
-- **get_database_path()** (12 connections) — `server/database.py`
-- **init_db()** (11 connections) — `server/database.py`
-- **close_db()** (9 connections) — `server/database.py`
-- **get_engine()** (8 connections) — `server/database.py`
-- **get_database_url()** (6 connections) — `server/database.py`
-- **test_get_engine_initializes_database()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_get_database_path_unsupported()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_get_database_path_none_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_get_database_path_module_level_none()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **test_get_database_path_module_level_unsupported()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **.close()** (4 connections) — `server/database.py`
-- **ensure_database_directory()** (4 connections) — `server/database.py`
-- **test_get_session_maker_initializes_database()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_get_database_url_initializes_database()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_get_engine_initializes()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_get_engine_reinitializes_if_none()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_get_session_maker_initializes()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_get_database_url_initializes()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_get_database_path_postgresql()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_close_with_engine()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_close_without_engine()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_close_dispose_error()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_get_database_path_unsupported()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- *... and 53 more nodes in this community*
+- **test_room_sync_service.py** (40 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **sample_event()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_room_update_with_validation_handles_error()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_invalidate_stale_cache_error()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_fetch_fresh_room_data_handles_error()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_get_room_sync_service_returns_singleton()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **mock_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_room_sync_service_init()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_room_sync_service_init_with_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_set_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_event_with_ordering()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_event_with_ordering_increments_counter()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_event_with_ordering_tracks_last_processed()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_event_with_ordering_handles_error()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_room_update_with_validation_valid_data()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_room_update_with_validation_invalid_data()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_room_update_with_validation_stale_data()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_invalidate_stale_cache_success()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_invalidate_stale_cache_no_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_fetch_fresh_room_data_success()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_fetch_fresh_room_data_no_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_fetch_fresh_room_data_not_found()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_handle_stale_room_data_success()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_handle_stale_room_data_invalid_room_id()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_handle_stale_room_data_no_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [Spell Registry Costs](Spell_Registry_Costs.md) (39 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (19 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (7 shared connections)
-- [Rate Limiter Utilities](Rate_Limiter_Utilities.md) (4 shared connections)
-- [Combat Services Messaging](Combat_Services_Messaging.md) (3 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (2 shared connections)
-- [Player Respawn Events](Player_Respawn_Events.md) (1 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (1 shared connections)
-- [Archive Frd Random](Archive_Frd_Random.md) (1 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
-- [Realtime Errors Error](Realtime_Errors_Error.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (7 shared connections)
+- [Room Data Fixer](Room_Data_Fixer.md) (3 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (3 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/core.py`
-- `server/database.py`
-- `server/tests/unit/infrastructure/test_database_extended.py`
-- `server/tests/unit/infrastructure/test_database_init.py`
+- `server/tests/unit/services/test_room_sync_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 256 (98%)
-- INFERRED: 6 (2%)
+- EXTRACTED: 135 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

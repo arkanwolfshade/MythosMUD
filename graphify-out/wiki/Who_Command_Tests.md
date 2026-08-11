@@ -1,61 +1,63 @@
 # Who Command Tests
 
-> 71 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **quest_events.py** (14 connections) — `server/game/quest/quest_events.py`
-- **Any** (14 connections)
-- **subscribe_quest_events()** (13 connections) — `server/game/quest/quest_events.py`
-- **.event_bus()** (12 connections) — `server/realtime/connection_manager.py`
-- **NPCMessageQueue** (11 connections) — `server/npc/threading.py`
-- **NPCCommunicationBridge** (10 connections) — `server/npc/threading.py`
-- **._npc_thread_worker()** (8 connections) — `server/npc/threading.py`
-- **._execute_wander_movement()** (8 connections) — `server/npc/threading.py`
-- **._process_wander_action()** (6 connections) — `server/npc/threading.py`
-- **_make_on_player_entered()** (5 connections) — `server/game/quest/quest_events.py`
-- **.start_npc_thread()** (5 connections) — `server/npc/threading.py`
-- **._stop_npc_thread_internal()** (5 connections) — `server/npc/threading.py`
-- **.restart_npc_thread()** (5 connections) — `server/npc/threading.py`
-- **._process_npc_message()** (5 connections) — `server/npc/threading.py`
-- **Any** (4 connections)
-- **_make_on_player_left()** (4 connections) — `server/game/quest/quest_events.py`
-- **_make_on_npc_died()** (4 connections) — `server/game/quest/quest_events.py`
-- **.to_dict()** (4 connections) — `server/npc/threading.py`
-- **.get_messages()** (4 connections) — `server/npc/threading.py`
-- **.clear_messages()** (4 connections) — `server/npc/threading.py`
-- **.__init__()** (4 connections) — `server/npc/threading.py`
-- **.stop_npc_thread()** (4 connections) — `server/npc/threading.py`
-- **._parse_behavior_config()** (4 connections) — `server/npc/threading.py`
-- **_parse_player_id()** (3 connections) — `server/game/quest/quest_events.py`
-- **.to_json()** (3 connections) — `server/npc/threading.py`
-- *... and 46 more nodes in this community*
+- **chat_service.py** (33 connections) — `server/game/chat_service.py`
+- **ChatMessage** (27 connections) — `server/game/chat_message.py`
+- **chat_pose_helpers.py** (14 connections) — `server/game/chat_pose_helpers.py`
+- **chat_message.py** (13 connections) — `server/game/chat_message.py`
+- **set_player_pose()** (8 connections) — `server/game/chat_pose_helpers.py`
+- **Any** (5 connections)
+- **get_player_pose()** (5 connections) — `server/game/chat_pose_helpers.py`
+- **clear_player_pose()** (5 connections) — `server/game/chat_pose_helpers.py`
+- **normalize_player_id()** (4 connections) — `server/game/chat_pose_helpers.py`
+- **UUID** (4 connections)
+- **get_room_poses()** (4 connections) — `server/game/chat_pose_helpers.py`
+- **.to_dict()** (3 connections) — `server/game/chat_message.py`
+- **test_chat_message_init()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_chat_message_init_with_target()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_chat_message_to_dict()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_chat_message_to_dict_with_target()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_chat_message_log_message()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_chat_message_to_dict_with_echo_sent()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
+- **.__init__()** (2 connections) — `server/game/chat_message.py`
+- **UUID** (2 connections)
+- **.log_message()** (2 connections) — `server/game/chat_message.py`
+- **vulture_allowlist.py** (2 connections) — `vulture_allowlist.py`
+- **Any** (1 connections)
+- **Chat message model for MythosMUD.  This module provides the ChatMessage class wh** (1 connections) — `server/game/chat_message.py`
+- **Represents a chat message with metadata.** (1 connections) — `server/game/chat_message.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [Level and XP Curve](Level_and_XP_Curve.md) (25 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (4 shared connections)
-- [Test Optimization Insights](Test_Optimization_Insights.md) (3 shared connections)
-- [Cursor Bug Agents](Cursor_Bug_Agents.md) (3 shared connections)
-- [Command Parser Tests](Command_Parser_Tests.md) (3 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Magic Command Handlers](Magic_Command_Handlers.md) (2 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
-- [Chat Archive Advanced](Chat_Archive_Advanced.md) (1 shared connections)
-- [NPC Utility Functions](NPC_Utility_Functions.md) (1 shared connections)
-- [NPC Occupant Verification](NPC_Occupant_Verification.md) (1 shared connections)
-- [Monitoring Response Models](Monitoring_Response_Models.md) (1 shared connections)
+- [Chat Message Helpers](Chat_Message_Helpers.md) (16 shared connections)
+- [Chat Mute Admin API](Chat_Mute_Admin_API.md) (13 shared connections)
+- [Client Event Store](Client_Event_Store.md) (9 shared connections)
+- [Typography Layout Spec](Typography_Layout_Spec.md) (7 shared connections)
+- [Chat Moderation Service](Chat_Moderation_Service.md) (2 shared connections)
+- [WebSocket Request Context](WebSocket_Request_Context.md) (2 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (2 shared connections)
+- [NPC Service Tests](NPC_Service_Tests.md) (1 shared connections)
+- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (1 shared connections)
+- [Combat Configuration Service](Combat_Configuration_Service.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/quest/quest_events.py`
-- `server/npc/threading.py`
-- `server/realtime/connection_manager.py`
+- `server/game/chat_message.py`
+- `server/game/chat_pose_helpers.py`
+- `server/game/chat_service.py`
+- `server/tests/unit/game/test_chat_service.py`
+- `vulture_allowlist.py`
 
 ## Audit Trail
 
-- EXTRACTED: 209 (92%)
-- INFERRED: 19 (8%)
+- EXTRACTED: 169 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

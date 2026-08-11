@@ -1,25 +1,22 @@
 # Room Toolkit Validator
 
-> 4 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **start_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **validate_prototypes.ps1** (0 connections) — `scripts/items/validate_prototypes.ps1`
 
 ## Relationships
 
-- [Contributing Guidelines](Contributing_Guidelines.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `scripts/items/validate_prototypes.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

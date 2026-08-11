@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [Standardized Error Responses](Standardized_Error_Responses.md) (3 shared connections)
+- [Container API Endpoints](Container_API_Endpoints.md) (4 shared connections)
 - [Database Helper Tests](Database_Helper_Tests.md) (3 shared connections)
-- [Container API Endpoints](Container_API_Endpoints.md) (2 shared connections)
-- [Combat Command Helpers](Combat_Command_Helpers.md) (1 shared connections)
+- [Player Position Service](Player_Position_Service.md) (2 shared connections)
 
 ## Source Files
 

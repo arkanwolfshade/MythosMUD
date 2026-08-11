@@ -4,22 +4,21 @@
 
 ## Key Concepts
 
-- **test_create_corpse_on_death_success()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **Test create_corpse_on_death() successfully creates corpse.** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_send_room_message_no_room_manager()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test _send_room_message() handles missing room_manager.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
-- [Skill Service Tests](Skill_Service_Tests.md) (1 shared connections)
+- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

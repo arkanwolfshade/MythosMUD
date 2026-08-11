@@ -1,35 +1,33 @@
 # Architecture Decisions Adr
 
-> 13 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Any** (6 connections)
-- **.merge_room_data()** (4 connections) — `server/services/room_data_cache.py`
-- **._is_newer_data()** (4 connections) — `server/services/room_data_cache.py`
-- **.is_room_data_fresh()** (3 connections) — `server/services/room_data_cache.py`
-- **.get_cache()** (3 connections) — `server/services/room_data_cache.py`
-- **.set_cache()** (3 connections) — `server/services/room_data_cache.py`
-- **.get_cache_stats()** (3 connections) — `server/services/room_data_cache.py`
-- **Check if room data is fresh enough to use.          Args:             room_data:** (1 connections) — `server/services/room_data_cache.py`
-- **Get room data from cache.          Args:             room_id: Room ID to retriev** (1 connections) — `server/services/room_data_cache.py`
-- **Store room data in cache.          Args:             room_id: Room ID to store** (1 connections) — `server/services/room_data_cache.py`
-- **Get statistics about the room data cache.          Args:             is_room_dat** (1 connections) — `server/services/room_data_cache.py`
-- **Merge room data with proper conflict resolution.          Args:             old_** (1 connections) — `server/services/room_data_cache.py`
-- **Check if new data is newer than old data for a specific key.          Args:** (1 connections) — `server/services/room_data_cache.py`
+- **chat_logger()** (7 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **.__init__()** (4 connections) — `server/services/rate_limiter.py`
+- **Initialize the rate limiter with configuration-based limits.** (1 connections) — `server/services/rate_limiter.py`
+- **Create a ChatLogger instance with temp directory.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
 
 ## Relationships
 
-- [Room Data Cache](Room_Data_Cache.md) (6 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
+- [Cursor Plans Plan](Cursor_Plans_Plan.md) (1 shared connections)
+- [WebSocket Request Context](WebSocket_Request_Context.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (1 shared connections)
+- [Commands Time](Commands_Time.md) (1 shared connections)
+- [Admin Teleport FRD](Admin_Teleport_FRD.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/room_data_cache.py`
+- `server/services/rate_limiter.py`
+- `server/tests/unit/services/test_chat_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 8 (62%)
+- INFERRED: 5 (38%)
 - AMBIGUOUS: 0 (0%)
 
 ---

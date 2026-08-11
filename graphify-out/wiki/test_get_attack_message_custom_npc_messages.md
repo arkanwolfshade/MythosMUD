@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_validate_can_attack_target_different_party_allows()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **When players are not in same party, validate_can_attack_target allows attack.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_get_players_in_subzone()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test get_players_in_subzone returns players in subzone.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Relationships
 
-- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (1 shared connections)
+- [Connection State Hooks](Connection_State_Hooks.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

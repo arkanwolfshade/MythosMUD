@@ -25,7 +25,7 @@
 ## Relationships
 
 - [User Manager Mute Tests](User_Manager_Mute_Tests.md) (4 shared connections)
-- [FastAPI App Factory](FastAPI_App_Factory.md) (1 shared connections)
+- [Quest Journal Commands](Quest_Journal_Commands.md) (1 shared connections)
 
 ## Source Files
 

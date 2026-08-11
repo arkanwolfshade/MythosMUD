@@ -1,9 +1,10 @@
 # Warning Fixes Session
 
-> 23 nodes
+> 29 nodes
 
 ## Key Concepts
 
+- **subject_controller.py** (27 connections) — `server/api/admin/subject_controller.py`
 - **register_pattern()** (10 connections) — `server/api/admin/subject_controller.py`
 - **validate_subject()** (7 connections) — `server/api/admin/subject_controller.py`
 - **BaseModel** (6 connections)
@@ -16,25 +17,31 @@
 - **ValidateSubjectResponse** (4 connections) — `server/api/admin/subject_controller.py`
 - **SubjectStatisticsResponse** (4 connections) — `server/api/admin/subject_controller.py`
 - **PatternsResponse** (4 connections) — `server/api/admin/subject_controller.py`
+- **require_admin_user()** (4 connections) — `server/api/admin/subject_controller.py`
+- **get_subject_manager_dependency()** (3 connections) — `server/api/admin/subject_controller.py`
+- **NATS Subject Management API Controller for MythosMUD.  This module provides RE** (1 connections) — `server/api/admin/subject_controller.py`
 - **Request model for subject validation.** (1 connections) — `server/api/admin/subject_controller.py`
 - **Response model for subject validation.** (1 connections) — `server/api/admin/subject_controller.py`
 - **Request model for pattern registration.** (1 connections) — `server/api/admin/subject_controller.py`
 - **Response model for pattern registration.** (1 connections) — `server/api/admin/subject_controller.py`
 - **Response model for subject management statistics.** (1 connections) — `server/api/admin/subject_controller.py`
 - **Response model for pattern listing.** (1 connections) — `server/api/admin/subject_controller.py`
+- **Dependency function to inject NATSSubjectManager.      Returns:         Globa** (1 connections) — `server/api/admin/subject_controller.py`
+- **Dependency to require admin permissions.      Args:         current_user: Cur** (1 connections) — `server/api/admin/subject_controller.py`
 - **Get NATS subject management statistics and health status.      This endpoint p** (1 connections) — `server/api/admin/subject_controller.py`
-- **Validate a NATS subject against registered patterns.** (1 connections) — `server/api/admin/subject_controller.py`
-- **Get all registered subject patterns.      This endpoint allows administrators** (1 connections) — `server/api/admin/subject_controller.py`
-- **Register a new subject pattern.** (1 connections) — `server/api/admin/subject_controller.py`
-- **Register a new subject pattern.** (1 connections) — `server/api/admin/subject_controller.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (11 shared connections)
-- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (5 shared connections)
-- [Active Lucidity Service](Active_Lucidity_Service.md) (4 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (4 shared connections)
-- [Cursor Rules Docker](Cursor_Rules_Docker.md) (2 shared connections)
+- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (7 shared connections)
+- [Active Lucidity Service](Active_Lucidity_Service.md) (6 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (6 shared connections)
+- [Cursor Rules Docker](Cursor_Rules_Docker.md) (4 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 76 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 113 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

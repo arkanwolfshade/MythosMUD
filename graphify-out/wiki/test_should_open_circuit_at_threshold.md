@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_should_open_circuit_at_threshold()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test should_open_circuit() returns True when at threshold.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_create_help_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_help_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [Room Subscription Helpers](Room_Subscription_Helpers.md) (1 shared connections)
-- [Exploration Command Factory](Exploration_Command_Factory.md) (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_state_machine.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

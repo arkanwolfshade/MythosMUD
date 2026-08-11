@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_combat_command_target_too_long_with_mock()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command target too long warning path (line 163).** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_get_players_in_subzone_empty()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test get_players_in_subzone returns empty list for empty subzone.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Relationships
 
-- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
+- [Connection State Hooks](Connection_State_Hooks.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 

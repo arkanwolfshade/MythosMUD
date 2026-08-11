@@ -1,47 +1,52 @@
 # Lucidity Event Dispatcher
 
-> 25 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **test_player_effect_repository.py** (17 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **_make_effect()** (6 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **_row_from_effect()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **test_get_active_effects_for_player_filters_by_remaining()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **test_has_effect_true()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **test_get_effect_remaining_ticks()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **repo()** (3 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **test_add_effect_returns_id()** (2 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **test_delete_effect()** (2 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **test_has_effect_false()** (2 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **test_get_effect_remaining_ticks_none()** (2 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **test_expire_effects_for_tick_returns_expired_and_deletes()** (2 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **player_id()** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **Unit tests for PlayerEffectRepository (ADR-009 effects system).  Tests add_effec** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **Create PlayerEffectRepository instance.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **Build a mock PlayerEffect with given fields.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **Build a procedure result row (mappings().all() item) from effect mock.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **add_effect persists effect and returns effect id (via add_player_effect procedur** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **delete_effect removes effect by id.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **get_active_effects_for_player returns only effects with remaining_ticks > 0 (pro** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **has_effect returns True when player has active effect of type.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **has_effect returns False when no active effect of type.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **get_effect_remaining_ticks returns duration - (current_tick - applied_at_tick).** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **get_effect_remaining_ticks returns None when no matching effect.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **expire_effects_for_tick returns (player_id, effect_type) and deletes rows via pr** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **player_effect_repository.py** (21 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **PlayerEffectRepository** (18 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **.get_active_effects_for_player()** (10 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **_row_to_player_effect()** (8 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **UUID** (8 connections)
+- **.add_effect()** (8 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **Any** (7 connections)
+- **AddEffectInput** (7 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **_add_effect_params()** (6 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **.delete_effect()** (6 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **._execute_add_effect()** (5 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **.get_effect_remaining_ticks()** (5 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **_str_opt()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **_int_opt()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **_opt_str()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **.has_effect()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **._remaining_ticks()** (3 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **TypedDict** (1 connections)
+- **Player effect repository for the effects system (ADR-009).  Async persistence fo** (1 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **Return str(val) or empty string if val is None.** (1 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **Return int value or default if val is None.** (1 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **Return str value or default if val is None.** (1 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **Map procedure result row to PlayerEffect model.** (1 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **Input for add_effect. effect_type, category, duration, applied_at_tick required;** (1 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **Build params dict for add_player_effect procedure.** (1 connections) — `server/persistence/repositories/player_effect_repository.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (6 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (23 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (6 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Command Request App State](Command_Request_App_State.md) (3 shared connections)
+- [NATS Subject Manager](NATS_Subject_Manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_effect_repository.py`
+- `server/persistence/repositories/player_effect_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 135 (94%)
+- INFERRED: 9 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

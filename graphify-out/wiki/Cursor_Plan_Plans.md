@@ -1,29 +1,24 @@
 # Cursor Plan Plans
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **TestGetMythosTimeConsumer** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_mythos_time_consumer_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_mythos_time_consumer_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_mythos_time_consumer dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_mythos_time_consumer returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_mythos_time_consumer raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **test_send_messages_to_players_blocked()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _send_messages_to_players skips blocked messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
+- [Loot All Endpoint](Loot_All_Endpoint.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

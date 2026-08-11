@@ -1,71 +1,78 @@
 # Combat Attack Service
 
-> 257 nodes
+> 499 nodes
 
 ## Key Concepts
 
-- **CombatService** (182 connections) — `server/services/combat_service.py`
 - **TargetMatch** (121 connections) — `server/schemas/shared/target_resolution.py`
+- **Spell** (93 connections) — `server/models/spell.py`
+- **SpellEffects** (56 connections) — `server/game/magic/spell_effects.py`
 - **spell_effects.py** (48 connections) — `server/game/magic/spell_effects.py`
 - **spell_effects_heal.py** (40 connections) — `server/game/magic/spell_effects_heal.py`
-- **combat_service_npc.py** (30 connections) — `server/services/combat_service_npc.py`
+- **SpellLearningService** (38 connections) — `server/game/magic/spell_learning_service.py`
+- **test_spell_effects.py** (38 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **PlayerSpellRepository** (37 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **lifespan_magic.py** (35 connections) — `server/app/lifespan_magic.py`
+- **SpellRegistry** (35 connections) — `server/game/magic/spell_registry.py`
+- **MagicService** (30 connections) — `server/game/magic/magic_service.py`
+- **test_spell.py** (30 connections) — `server/tests/unit/models/test_spell.py`
+- **SpellTargetingService** (29 connections) — `server/game/magic/spell_targeting.py`
+- **test_damage_grace_period.py** (27 connections) — `server/tests/unit/services/test_damage_grace_period.py`
+- **SpellEffectsDeps** (25 connections) — `server/game/magic/spell_effects.py`
+- **spell_effects_status.py** (24 connections) — `server/game/magic/spell_effects_status.py`
+- **spell.py** (22 connections) — `server/models/spell.py`
 - **spell_effects_support.py** (19 connections) — `server/game/magic/spell_effects_support.py`
+- **CastingStateManager** (18 connections) — `server/game/magic/casting_state_manager.py`
+- **MagicServiceOptionalDeps** (18 connections) — `server/game/magic/magic_service.py`
+- **run_flee_effect()** (18 connections) — `server/game/magic/spell_effect_flee.py`
 - **NpcSpellDamageTarget** (18 connections) — `server/game/magic/spell_effect_types.py`
-- **SpellEffectPlayer** (15 connections) — `server/game/magic/spell_effect_types.py`
-- **._dispatch_effect()** (15 connections) — `server/game/magic/spell_effects.py`
-- **run_heal_effect()** (15 connections) — `server/game/magic/spell_effects_heal.py`
-- **SpellEffectsEngineHealPort** (14 connections) — `server/game/magic/spell_effect_types.py`
-- **UUID** (13 connections)
-- **get_combat_id_for_npc()** (13 connections) — `server/services/combat_service_npc.py`
-- **UUID** (12 connections)
-- **spell_effect_types.py** (11 connections) — `server/game/magic/spell_effect_types.py`
-- **PlayerPersistenceSpellPort** (11 connections) — `server/game/magic/spell_effect_types.py`
-- **_steal_life_resolve_target_dp()** (11 connections) — `server/game/magic/spell_effects_heal.py`
-- **_steal_life_apply_target_damage()** (11 connections) — `server/game/magic/spell_effects_heal.py`
-- **_run_steal_life()** (11 connections) — `server/game/magic/spell_effects_heal.py`
-- **UUID** (11 connections)
-- **get_npc_participant_current_room()** (11 connections) — `server/services/combat_service_npc.py`
-- **_run_standard_heal_after_validation()** (10 connections) — `server/game/magic/spell_effects_heal.py`
-- **spell_effects_internal.py** (10 connections) — `server/game/magic/spell_effects_internal.py`
-- **_get_uuid_mapping()** (10 connections) — `server/services/combat_service_npc.py`
-- **find_participant_uuid_by_string_id()** (10 connections) — `server/services/combat_service_npc.py`
-- *... and 232 more nodes in this community*
+- **StatusEffectType** (18 connections) — `server/models/game.py`
+- **spell_effect_flee.py** (17 connections) — `server/game/magic/spell_effect_flee.py`
+- **initialize_magic_services()** (15 connections) — `server/app/lifespan_magic.py`
+- *... and 474 more nodes in this community*
 
 ## Relationships
 
-- [NPC Service Tests](NPC_Service_Tests.md) (89 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (37 shared connections)
-- [Container Component Capacity](Container_Component_Capacity.md) (32 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (26 shared connections)
-- [Logging Correct Patterns](Logging_Correct_Patterns.md) (23 shared connections)
-- [NPC Services Bundle](NPC_Services_Bundle.md) (20 shared connections)
-- [test_profession_meets_stat_requirements_multiple_not_met](test_profession_meets_stat_requirements_multiple_not_met.md) (15 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (13 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (12 shared connections)
-- [Rest Command Flow](Rest_Command_Flow.md) (11 shared connections)
-- [Health Check Models](Health_Check_Models.md) (10 shared connections)
-- [Investigations Sessions Session](Investigations_Sessions_Session.md) (8 shared connections)
+- [Client Event Store](Client_Event_Store.md) (147 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (35 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (26 shared connections)
+- [Security Headers Middleware](Security_Headers_Middleware.md) (25 shared connections)
+- [NPC Admin Commands](NPC_Admin_Commands.md) (15 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (15 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (12 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (11 shared connections)
+- [Command Factory Tests](Command_Factory_Tests.md) (11 shared connections)
+- [Player Respawn Events](Player_Respawn_Events.md) (8 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (7 shared connections)
+- [Combat NPC Lookup](Combat_NPC_Lookup.md) (7 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/combat.py`
+- `server/app/lifespan_magic.py`
+- `server/commands/magic_commands.py`
+- `server/game/magic/casting_state_manager.py`
+- `server/game/magic/magic_service.py`
+- `server/game/magic/spell_effect_flee.py`
 - `server/game/magic/spell_effect_types.py`
 - `server/game/magic/spell_effects.py`
 - `server/game/magic/spell_effects_heal.py`
 - `server/game/magic/spell_effects_internal.py`
 - `server/game/magic/spell_effects_stats.py`
+- `server/game/magic/spell_effects_status.py`
 - `server/game/magic/spell_effects_support.py`
+- `server/game/magic/spell_learning_service.py`
+- `server/game/magic/spell_materials.py`
+- `server/game/magic/spell_registry.py`
+- `server/game/magic/spell_targeting.py`
+- `server/models/game.py`
+- `server/models/spell.py`
+- `server/persistence/repositories/player_spell_repository.py`
 - `server/schemas/shared/target_resolution.py`
-- `server/services/combat_service.py`
-- `server/services/combat_service_npc.py`
-- `server/services/combat_service_state.py`
-- `server/services/npc_combat_integration_service.py`
-- `server/tests/unit/game/magic/test_spell_effects.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1238 (93%)
-- INFERRED: 89 (7%)
+- EXTRACTED: 2188 (92%)
+- INFERRED: 188 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,49 +1,51 @@
 # E2E Suite Spec Helpers
 
-> 16 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **quest_service.py** (26 connections) — `server/game/quest/quest_service.py`
-- **QuestCompleted** (9 connections) — `server/events/event_types.py`
-- **_consume_collect_goals_from_player()** (7 connections) — `server/game/quest/quest_service.py`
-- **_build_collect_n_progress()** (7 connections) — `server/game/quest/quest_service.py`
-- **_collect_goal_prototype_id()** (5 connections) — `server/game/quest/quest_service.py`
-- **_goal_activity_target()** (4 connections) — `server/game/quest/quest_service.py`
-- **_collect_goal_required_count()** (4 connections) — `server/game/quest/quest_service.py`
-- **__init__.py** (3 connections) — `server/game/quest/__init__.py`
-- **Event fired when a quest instance is completed (rewards applied, state set to co** (1 connections) — `server/events/event_types.py`
-- **Quest subsystem: service, goal progression, rewards.** (1 connections) — `server/game/quest/__init__.py`
-- **Quest service: start, progress, complete, turn-in, abandon, and quest log.  Reso** (1 connections) — `server/game/quest/quest_service.py`
-- **Resolve the activity/npc target string for a progress goal.** (1 connections) — `server/game/quest/quest_service.py`
-- **Return collect_n prototype id from goal target or config.** (1 connections) — `server/game/quest/quest_service.py`
-- **Return required count for a collect_n goal.** (1 connections) — `server/game/quest/quest_service.py`
-- **Consume each collect_n goal from player holdings. Return error dict or None.** (1 connections) — `server/game/quest/quest_service.py`
-- **Recompute collect_n goal counters from holdings into a progress dict.** (1 connections) — `server/game/quest/quest_service.py`
+- **test_game_tick_processing.py** (15 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **get_tick_interval()** (8 connections) — `server/app/game_tick_processing.py`
+- **reset_current_tick()** (6 connections) — `server/app/game_tick_processing.py`
+- **test_get_current_tick()** (4 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_reset_current_tick()** (4 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_get_tick_interval()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_no_container()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_no_async_persistence()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_no_connection_manager()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_valid()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_container_is_none()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_connection_manager_is_none()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Reset the current tick for testing.** (1 connections) — `server/app/game_tick_processing.py`
+- **Get the server tick interval from configuration.      Returns:         float: Ti** (1 connections) — `server/app/game_tick_processing.py`
+- **Unit tests for game tick processing functions.  Tests the game tick processing l** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test get_current_tick returns the current tick value.** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test reset_current_tick resets the tick counter.** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test get_tick_interval returns tick interval from config.** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns False when no container.** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns False when no async_persiste** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns False when no connection_man** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns True when all required compo** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns False when container is None** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns False when connection_manage** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
 
 ## Relationships
 
-- [Quest Service Core](Quest_Service_Core.md) (20 shared connections)
-- [AI Agent Development Docs](AI_Agent_Development_Docs.md) (6 shared connections)
-- [Test Optimization Insights](Test_Optimization_Insights.md) (2 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
-- [Lucidity Database Models](Lucidity_Database_Models.md) (1 shared connections)
-- [Command Service Tests](Command_Service_Tests.md) (1 shared connections)
-- [Whisper Testing Complete](Whisper_Testing_Complete.md) (1 shared connections)
+- [Command Alias Handling](Command_Alias_Handling.md) (11 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (2 shared connections)
+- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (1 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/events/event_types.py`
-- `server/game/quest/__init__.py`
-- `server/game/quest/quest_service.py`
+- `server/app/game_tick_processing.py`
+- `server/tests/unit/app/test_game_tick_processing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 69 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

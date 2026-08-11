@@ -15,11 +15,11 @@
 ## Relationships
 
 - [Player Mute Persistence](Player_Mute_Persistence.md) (4 shared connections)
-- [chat_logger](chat_logger.md) (1 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
 - [Async Migration Gotchas](Async_Migration_Gotchas.md) (1 shared connections)
 - [Game Magic Spell](Game_Magic_Spell.md) (1 shared connections)
-- [Archive Frd Random](Archive_Frd_Random.md) (1 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 

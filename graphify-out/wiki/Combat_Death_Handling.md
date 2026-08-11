@@ -1,56 +1,56 @@
 # Combat Death Handling
 
-> 34 nodes
+> 43 nodes
 
 ## Key Concepts
 
-- **quest_commands.py** (32 connections) — `server/commands/quest_commands.py`
-- **handle_quest_command()** (21 connections) — `server/commands/quest_commands.py`
-- **Any** (17 connections)
-- **handle_journal_command()** (15 connections) — `server/commands/quest_commands.py`
-- **_resolve_quest_command_context()** (10 connections) — `server/commands/quest_commands.py`
-- **_handle_quest_npc_sub()** (8 connections) — `server/commands/quest_commands.py`
-- **_get_quest_service()** (7 connections) — `server/commands/quest_commands.py`
-- **_resolve_player_id()** (6 connections) — `server/commands/quest_commands.py`
-- **UUID** (6 connections)
-- **_quest_command_ready()** (6 connections) — `server/commands/quest_commands.py`
-- **_get_container_and_persistence()** (5 connections) — `server/commands/quest_commands.py`
-- **_format_one_quest_entry()** (5 connections) — `server/commands/quest_commands.py`
-- **_format_quest_log()** (5 connections) — `server/commands/quest_commands.py`
-- **_handle_quest_abandon()** (5 connections) — `server/commands/quest_commands.py`
-- **_parse_quest_subcommand()** (4 connections) — `server/commands/quest_commands.py`
-- **_format_goal_line()** (4 connections) — `server/commands/quest_commands.py`
-- **_npc_definition_id()** (4 connections) — `server/commands/quest_commands.py`
-- **_format_quest_action_results()** (4 connections) — `server/commands/quest_commands.py`
-- **Quest commands: journal / quests (quest log), quest abandon/ask/turnin.  Returns** (1 connections) — `server/commands/quest_commands.py`
-- **Get QuestService from request app container, or None if unavailable.** (1 connections) — `server/commands/quest_commands.py`
-- **Get container and async_persistence from request, or None.** (1 connections) — `server/commands/quest_commands.py`
-- **Extract player_id from player object as UUID, or None.** (1 connections) — `server/commands/quest_commands.py`
-- **Parse quest subcommand args.      Returns (subcommand, remainder, error_message)** (1 connections) — `server/commands/quest_commands.py`
-- **Resolve player, player_id and QuestService from request and current_user.     Re** (1 connections) — `server/commands/quest_commands.py`
-- **Return a single goal progress line for the quest log.** (1 connections) — `server/commands/quest_commands.py`
-- *... and 9 more nodes in this community*
+- **PydanticErrorHandler** (23 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.handle_validation_error()** (14 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **__init__.py** (9 connections) — `server/error_handlers/__init__.py`
+- **handle_pydantic_error()** (9 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **convert_pydantic_error()** (9 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **_ExtractedErrorInfo** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._create_fallback_error_response()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.convert_to_mythos_error()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **ErrorContextInitKwargs** (8 connections) — `server/exceptions.py`
+- **ValidationError** (7 connections)
+- **._extract_error_info()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._generate_user_friendly_message()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._create_error_details()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.create_handler()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._determine_error_type()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._determine_severity()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._format_single_field_error_message()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **_ExtractedFieldErrorInfo** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._get_display_field_name()** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **StandardizedErrorResponseDict** (3 connections)
+- **._get_field_path()** (3 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **Unpack** (3 connections)
+- **TypedDict** (2 connections)
+- **Keyword arguments accepted by create_error_context and ErrorContext().** (2 connections) — `server/exceptions.py`
+- **Error handlers package for MythosMUD.  This package provides specialized error h** (1 connections) — `server/error_handlers/__init__.py`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [Server Config Loading](Server_Config_Loading.md) (16 shared connections)
-- [Client Event Store](Client_Event_Store.md) (12 shared connections)
-- [Archive Bug Fix](Archive_Bug_Fix.md) (6 shared connections)
-- [Quest Service Core](Quest_Service_Core.md) (3 shared connections)
-- [Container Repository CRUD](Container_Repository_CRUD.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Character Info Panel Fix](Character_Info_Panel_Fix.md) (1 shared connections)
-- [Logging System Planning](Logging_System_Planning.md) (1 shared connections)
-- [Chat Archive Advanced](Chat_Archive_Advanced.md) (1 shared connections)
+- [Container API Endpoints](Container_API_Endpoints.md) (17 shared connections)
+- [Player Position Service](Player_Position_Service.md) (9 shared connections)
+- [Active Lucidity Service](Active_Lucidity_Service.md) (3 shared connections)
+- [Archive Planning E 2 E](Archive_Planning_E_2_E.md) (2 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
+- [Mythos Time HUD](Mythos_Time_HUD.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/quest_commands.py`
+- `server/error_handlers/__init__.py`
+- `server/error_handlers/pydantic_error_handler.py`
+- `server/exceptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 175 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 183 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

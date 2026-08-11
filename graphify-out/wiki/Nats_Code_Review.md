@@ -1,33 +1,31 @@
 # Nats Code Review
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **reset_npc_database()** (5 connections) — `server/npc_database.py`
-- **TestResetNPCDatabase** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **reset_state()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_reset_npc_database_resets_state()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Reset NPC database state for testing.      This function resets all global NPC d** (1 connections) — `server/npc_database.py`
-- **Reset NPC database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Test reset_npc_database() function.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Test reset_npc_database() resets all global state.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **items** (5 connections) — `db/static/schemas/holidays.schema.json`
+- **holidays** (4 connections) — `db/static/schemas/holidays.schema.json`
+- **properties** (2 connections) — `db/static/schemas/holidays.schema.json`
+- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **additionalProperties** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **minItems** (1 connections) — `db/static/schemas/holidays.schema.json`
 
 ## Relationships
 
-- [Realtime Errors Error](Realtime_Errors_Error.md) (3 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
+- [Services Inventory Mutation](Services_Inventory_Mutation.md) (1 shared connections)
+- [Respawn Occupant Enrichment](Respawn_Occupant_Enrichment.md) (1 shared connections)
+- [Archive Structured Error](Archive_Structured_Error.md) (1 shared connections)
+- [Commands Npc Admin](Commands_Npc_Admin.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc_database.py`
-- `server/tests/unit/infrastructure/test_npc_database.py`
+- `db/static/schemas/holidays.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 14 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

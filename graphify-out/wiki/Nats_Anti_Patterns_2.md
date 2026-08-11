@@ -4,21 +4,22 @@
 
 ## Key Concepts
 
-- **__init__.py** (1 connections) — `server/domain/__init__.py`
-- **Domain layer for MythosMUD.  This package contains the core business logic and d** (1 connections) — `server/domain/__init__.py`
+- **test_handle_nats_message_connection_manager_resolution_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _handle_nats_message handles connection manager resolution errors.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Auth Token Utilities](Auth_Token_Utilities.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/domain/__init__.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

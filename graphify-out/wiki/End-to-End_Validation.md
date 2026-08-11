@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
+- [Client Event Store](Client_Event_Store.md) (5 shared connections)
 - [Standardized Error Responses](Standardized_Error_Responses.md) (3 shared connections)
 - [Weapon Resolution Helpers](Weapon_Resolution_Helpers.md) (1 shared connections)
 

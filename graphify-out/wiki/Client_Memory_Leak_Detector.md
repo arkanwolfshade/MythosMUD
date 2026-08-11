@@ -1,16 +1,16 @@
 # Client Memory Leak Detector
 
-> 41 nodes
+> 63 nodes
 
 ## Key Concepts
 
 - **real_time.py** (34 connections) — `server/api/real_time.py`
+- **handle_websocket_connection()** (21 connections) — `server/realtime/websocket_handler.py`
+- **get_async_persistence()** (19 connections) — `server/async_persistence.py`
 - **_resolve_player_id()** (10 connections) — `server/api/real_time.py`
 - **websocket_endpoint()** (10 connections) — `server/api/real_time.py`
-- **PlayerConnectionsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
 - **Any** (9 connections)
 - **_ensure_connection_manager()** (9 connections) — `server/api/real_time.py`
-- **SessionInfo** (9 connections) — `server/schemas/realtime/realtime.py`
 - **WebSocket** (8 connections)
 - **_resolve_player_id_from_test()** (8 connections) — `server/api/real_time.py`
 - **_resolve_player_id_from_token()** (8 connections) — `server/api/real_time.py`
@@ -27,34 +27,37 @@
 - **Request** (4 connections)
 - **_parse_subprotocol_token()** (4 connections) — `server/api/real_time.py`
 - **_extract_bearer_token()** (3 connections) — `server/api/real_time.py`
-- **Real-time communication API endpoints for MythosMUD server.  This module handles** (1 connections) — `server/api/real_time.py`
-- **Ensure connection manager is available.     Raises LoggedHTTPException with prop** (1 connections) — `server/api/real_time.py`
-- *... and 16 more nodes in this community*
+- **.item_instance_exists()** (3 connections) — `server/async_persistence.py`
+- **test_handle_websocket_connection_shutdown_rejected()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [Command Testing Guide](Command_Testing_Guide.md) (14 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (10 shared connections)
+- [Client Event Store](Client_Event_Store.md) (9 shared connections)
+- [Command Testing Guide](Command_Testing_Guide.md) (8 shared connections)
 - [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (7 shared connections)
+- [LRU Cache Manager](LRU_Cache_Manager.md) (7 shared connections)
+- [Game Tick Processing](Game_Tick_Processing.md) (6 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (4 shared connections)
+- [Lucidity Recovery Commands](Lucidity_Recovery_Commands.md) (4 shared connections)
 - [WebSocket Initial State](WebSocket_Initial_State.md) (3 shared connections)
-- [Auth Token Utilities](Auth_Token_Utilities.md) (3 shared connections)
-- [Player Combat XP](Player_Combat_XP.md) (3 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (2 shared connections)
+- [Container API Endpoints](Container_API_Endpoints.md) (2 shared connections)
 - [Game State Provider](Game_State_Provider.md) (2 shared connections)
-- [NATS Message Schemas](NATS_Message_Schemas.md) (2 shared connections)
-- [Room Occupant Events](Room_Occupant_Events.md) (1 shared connections)
-- [Combat Command Helpers](Combat_Command_Helpers.md) (1 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
-- [Combat Turn Processor](Combat_Turn_Processor.md) (1 shared connections)
+- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (2 shared connections)
 
 ## Source Files
 
 - `server/api/real_time.py`
-- `server/schemas/realtime/realtime.py`
+- `server/async_persistence.py`
+- `server/realtime/websocket_handler.py`
+- `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
 
 ## Audit Trail
 
-- EXTRACTED: 202 (96%)
-- INFERRED: 9 (4%)
+- EXTRACTED: 274 (99%)
+- INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

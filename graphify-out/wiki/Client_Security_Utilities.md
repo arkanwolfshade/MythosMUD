@@ -1,66 +1,57 @@
 # Client Security Utilities
 
-> 123 nodes
+> 31 nodes
 
 ## Key Concepts
 
-- **admin_teleport_commands.py** (38 connections) — `server/commands/admin_teleport_commands.py`
 - **admin_setlucidity_command.py** (30 connections) — `server/commands/admin_setlucidity_command.py`
-- **get_admin_actions_logger()** (25 connections) — `server/structured_logging/admin_actions_logger.py`
-- **teleport_helpers.py** (23 connections) — `server/commands/teleport_helpers.py`
-- **handle_teleport_command()** (20 connections) — `server/commands/admin_teleport_commands.py`
-- **goto_helpers.py** (20 connections) — `server/commands/goto_helpers.py`
-- **admin_actions_logger.py** (18 connections) — `server/structured_logging/admin_actions_logger.py`
-- **validate_admin_permission()** (13 connections) — `server/commands/admin_permission_utils.py`
-- **admin_teleport_utils.py** (13 connections) — `server/commands/admin_teleport_utils.py`
-- **create_teleport_effect_message()** (13 connections) — `server/commands/admin_teleport_utils.py`
-- **test_admin_commands_helpers.py** (13 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
 - **Any** (12 connections)
 - **_execute_lucidity_change()** (12 connections) — `server/commands/admin_setlucidity_command.py`
 - **_handle_admin_set_lucidity_command()** (11 connections) — `server/commands/admin_setlucidity_command.py`
-- **broadcast_teleport_effects()** (11 connections) — `server/commands/admin_teleport_utils.py`
-- **get_online_player_by_display_name()** (10 connections) — `server/commands/admin_teleport_utils.py`
-- **notify_player_of_teleport()** (10 connections) — `server/commands/admin_teleport_utils.py`
-- **handle_confirm_teleport_command()** (9 connections) — `server/commands/admin_teleport_commands.py`
-- **handle_confirm_goto_command()** (9 connections) — `server/commands/admin_teleport_commands.py`
-- **execute_goto_teleport()** (9 connections) — `server/commands/goto_helpers.py`
-- **Any** (9 connections)
-- **execute_confirm_teleport()** (9 connections) — `server/commands/teleport_helpers.py`
-- **admin_permission_utils.py** (8 connections) — `server/commands/admin_permission_utils.py`
-- **execute_confirm_goto()** (8 connections) — `server/commands/goto_helpers.py`
-- **update_player_room_location()** (8 connections) — `server/commands/teleport_helpers.py`
-- *... and 98 more nodes in this community*
+- **_setup_command_execution()** (7 connections) — `server/commands/admin_setlucidity_command.py`
+- **_get_current_lcd()** (6 connections) — `server/commands/admin_setlucidity_command.py`
+- **_apply_lucidity_change()** (6 connections) — `server/commands/admin_setlucidity_command.py`
+- **_validate_command_context()** (6 connections) — `server/commands/admin_setlucidity_command.py`
+- **UUID** (5 connections)
+- **LucidityChangeCtx** (5 connections) — `server/commands/admin_setlucidity_command.py`
+- **_log_lucidity_success()** (5 connections) — `server/commands/admin_setlucidity_command.py`
+- **_get_player_service_from_app()** (5 connections) — `server/commands/admin_setlucidity_command.py`
+- **_resolve_target_player()** (5 connections) — `server/commands/admin_setlucidity_command.py`
+- **_extract_command_args()** (4 connections) — `server/commands/admin_setlucidity_command.py`
+- **_validate_lcd_value()** (4 connections) — `server/commands/admin_setlucidity_command.py`
+- **_check_admin_permissions()** (4 connections) — `server/commands/admin_setlucidity_command.py`
+- **_get_catatonia_registry_from_app()** (4 connections) — `server/commands/admin_setlucidity_command.py`
+- **Admin command to set player lucidity levels for testing.  This module provides** (1 connections) — `server/commands/admin_setlucidity_command.py`
+- **Extract target_player and lcd_value from command_data.** (1 connections) — `server/commands/admin_setlucidity_command.py`
+- **Validate LCD value is integer and in valid range (-100 to 100).** (1 connections) — `server/commands/admin_setlucidity_command.py`
+- **Check if current player is admin and return player object.** (1 connections) — `server/commands/admin_setlucidity_command.py`
+- **Get current LCD value from database, defaulting to 100 if no record exists.** (1 connections) — `server/commands/admin_setlucidity_command.py`
+- **Bundle for _apply_lucidity_change (lizard PARAM).** (1 connections) — `server/commands/admin_setlucidity_command.py`
+- **Apply lucidity adjustment and return result message or None on error.** (1 connections) — `server/commands/admin_setlucidity_command.py`
+- **Get player service from container, fallback to app.state for backward compatibil** (1 connections) — `server/commands/admin_setlucidity_command.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (31 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (19 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (7 shared connections)
-- [NPC Database Sessions](NPC_Database_Sessions.md) (6 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (5 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (4 shared connections)
-- [Structured Logging Admin](Structured_Logging_Admin.md) (4 shared connections)
-- [Admin Status Commands](Admin_Status_Commands.md) (3 shared connections)
-- [Cursor Skills Harden](Cursor_Skills_Harden.md) (1 shared connections)
-- [Room Drop Renderer](Room_Drop_Renderer.md) (1 shared connections)
-- [Archive Frd Random](Archive_Frd_Random.md) (1 shared connections)
-- [Logging Path Utilities](Logging_Path_Utilities.md) (1 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (4 shared connections)
+- [E2E Suite Overview](E2E_Suite_Overview.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (3 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (3 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (2 shared connections)
+- [Profession Get Mechanical Effects](Profession_Get_Mechanical_Effects.md) (2 shared connections)
+- [Message Queue Cleanup](Message_Queue_Cleanup.md) (2 shared connections)
+- [NATS Subject Manager](NATS_Subject_Manager.md) (1 shared connections)
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_permission_utils.py`
 - `server/commands/admin_setlucidity_command.py`
-- `server/commands/admin_teleport_commands.py`
-- `server/commands/admin_teleport_utils.py`
-- `server/commands/goto_helpers.py`
-- `server/commands/teleport_helpers.py`
-- `server/structured_logging/admin_actions_logger.py`
-- `server/tests/unit/commands/test_admin_commands_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 599 (99%)
-- INFERRED: 8 (1%)
+- EXTRACTED: 141 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

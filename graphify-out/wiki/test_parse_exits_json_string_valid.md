@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_resolve_connection_manager_from_container()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test _resolve_connection_manager_from_container resolves manager.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_subscribe_to_subject_runtime_error_returns_false()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _subscribe_to_subject returns False on RuntimeError.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [Database Pool Configuration](Database_Pool_Configuration.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

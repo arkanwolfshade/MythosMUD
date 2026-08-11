@@ -1,43 +1,34 @@
 # Commands Look Item
 
-> 13 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **.error()** (18 connections) — `client/src/utils/logger.ts`
-- **ClientLogger** (13 connections) — `client/src/utils/logger.ts`
-- **.info()** (6 connections) — `client/src/utils/logger.ts`
-- **.initializeLogging()** (5 connections) — `client/src/utils/logger.ts`
-- **.createLogEntry()** (5 connections) — `client/src/utils/logger.ts`
-- **.addToBuffer()** (5 connections) — `client/src/utils/logger.ts`
-- **.warn()** (4 connections) — `client/src/utils/logger.ts`
-- **.flushLogs()** (4 connections) — `client/src/utils/logger.ts`
-- **.debug()** (3 connections) — `client/src/utils/logger.ts`
-- **.constructor()** (2 connections) — `client/src/utils/logger.ts`
-- **.downloadLogs()** (2 connections) — `client/src/utils/logger.ts`
-- **.clearLogs()** (2 connections) — `client/src/utils/logger.ts`
-- **.getLogBuffer()** (1 connections) — `client/src/utils/logger.ts`
+- **applies_to** (5 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (4 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **items** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minLength** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **items** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **items** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **uniqueItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
 
 ## Relationships
 
-- [Map Editing Hooks](Map_Editing_Hooks.md) (2 shared connections)
-- [Combat Messaging Integration](Combat_Messaging_Integration.md) (2 shared connections)
-- [Room Planning Archive](Room_Planning_Archive.md) (2 shared connections)
-- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (2 shared connections)
-- [Realtime Event Handlers](Realtime_Event_Handlers.md) (2 shared connections)
-- [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (1 shared connections)
-- [Communication Command Handlers](Communication_Command_Handlers.md) (1 shared connections)
-- [Chat Channel Design Spec](Chat_Channel_Design_Spec.md) (1 shared connections)
-- [Character Stats Model](Character_Stats_Model.md) (1 shared connections)
+- [Contributing Ai Development](Contributing_Ai_Development.md) (1 shared connections)
+- [Container Item Repository](Container_Item_Repository.md) (1 shared connections)
+- [Security Additional Resources](Security_Additional_Resources.md) (1 shared connections)
+- [Logging Best Practices](Logging_Best_Practices.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/utils/logger.ts`
+- `db/static/schemas/npc_schedules.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (81%)
-- INFERRED: 13 (19%)
+- EXTRACTED: 24 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

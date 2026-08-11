@@ -1,45 +1,31 @@
 # Combat Services Messaging
 
-> 16 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **reset_database()** (16 connections) — `server/database.py`
-- **test_reset_database_resets_singleton()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_reset_database()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **reset_db_state()** (3 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_reset_database_resets_module_url()** (3 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **reset_db_state()** (3 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **reset_db()** (3 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **test_reset_database_resets_module_url()** (3 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **Reset the database connection state (for testing).      This resets the Database** (1 connections) — `server/database.py`
-- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **Test reset_database resets singleton.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **Test reset_database resets module-level _database_url.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Test reset_database resets both singleton and module-level URL.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **Test reset_database resets module-level _database_url.** (1 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **populate_test_npc_databases.py** (6 connections) — `scripts/populate_test_npc_databases.py`
+- **main()** (5 connections) — `scripts/populate_test_npc_databases.py`
+- **get_npc_data_from_source()** (4 connections) — `scripts/populate_test_npc_databases.py`
+- **populate_database()** (4 connections) — `scripts/populate_test_npc_databases.py`
+- **get_npc_database_url()** (3 connections) — `scripts/populate_test_npc_databases.py`
+- **Get NPC database URL for the specified environment.      Args:         environme** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **Extract NPC data from the source PostgreSQL database.      Args:         source_** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **Populate a PostgreSQL database with NPC data.      Args:         target_url: Pos** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **Main function to populate test NPC databases.** (1 connections) — `scripts/populate_test_npc_databases.py`
 
 ## Relationships
 
-- [Spell Registry Costs](Spell_Registry_Costs.md) (13 shared connections)
-- [Holiday Persistence Models](Holiday_Persistence_Models.md) (3 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
-- [Container Loot Helpers](Container_Loot_Helpers.md) (1 shared connections)
-- [NATS Subject Manager](NATS_Subject_Manager.md) (1 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (4 shared connections)
 
 ## Source Files
 
-- `server/database.py`
-- `server/tests/unit/infrastructure/test_database_error_handling.py`
-- `server/tests/unit/infrastructure/test_database_extended.py`
-- `server/tests/unit/infrastructure/test_database_init.py`
+- `scripts/populate_test_npc_databases.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 24 (92%)
+- INFERRED: 2 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

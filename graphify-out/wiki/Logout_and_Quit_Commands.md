@@ -1,65 +1,61 @@
 # Logout and Quit Commands
 
-> 95 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **websocket_handler_commands.py** (32 connections) — `server/realtime/websocket_handler_commands.py`
-- **handle_game_command()** (29 connections) — `server/realtime/websocket_handler_commands.py`
-- **test_websocket_handler_commands.py** (28 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **process_websocket_command()** (19 connections) — `server/realtime/websocket_handler_commands.py`
-- **resolve_websocket_connection_manager()** (11 connections) — `server/realtime/websocket_handler_commands.py`
-- **_websocket_unified_command_result()** (10 connections) — `server/realtime/websocket_handler_commands.py`
-- **create_websocket_request_context()** (9 connections) — `server/realtime/request_context.py`
-- **validate_player_and_persistence()** (9 connections) — `server/realtime/websocket_handler_commands.py`
-- **parse_game_command_tokens()** (8 connections) — `server/realtime/websocket_handler_commands.py`
-- **_attach_room_state_to_result()** (8 connections) — `server/realtime/websocket_handler_commands.py`
-- **_resolve_get_room_state_callable()** (6 connections) — `server/realtime/websocket_handler_commands.py`
-- **is_client_disconnected_exception()** (6 connections) — `server/realtime/websocket_helpers.py`
-- **test_process_websocket_command_attaches_room_state()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **test_process_websocket_command_room_state_get_room_fails_softly()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **_send_invalid_command_empty()** (4 connections) — `server/realtime/websocket_handler_commands.py`
-- **_broadcast_command_room_if_needed()** (4 connections) — `server/realtime/websocket_handler_commands.py`
-- **_cm_with_player_and_app()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **Path** (4 connections)
-- **test_process_websocket_command_room_changed_no_player_handler_skips_room_state()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **_invoke_get_room_state_event()** (3 connections) — `server/realtime/websocket_handler_commands.py`
-- **test_handle_game_command_broadcasts_when_result_requests()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **test_handle_game_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_game_command_empty_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_game_command_whitespace_only()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_game_command_single_word_no_args()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- *... and 70 more nodes in this community*
+- **player_respawn.py** (25 connections) — `server/api/player_respawn.py`
+- **test_player_respawn_handlers.py** (14 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **_handle_delirium_respawn_validation_error()** (12 connections) — `server/api/player_respawn.py`
+- **_handle_respawn_validation_error()** (11 connections) — `server/api/player_respawn.py`
+- **_run_player_respawn()** (10 connections) — `server/api/player_respawn.py`
+- **RespawnResponse** (9 connections) — `server/schemas/players/player_respawn.py`
+- **respawn_player_from_delirium()** (8 connections) — `server/api/player_respawn.py`
+- **respawn_player()** (8 connections) — `server/api/player_respawn.py`
+- **_user()** (8 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **Request** (5 connections)
+- **test_handle_respawn_validation_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_handle_respawn_validation_must_be_dead()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_handle_respawn_validation_generic_500()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_handle_delirium_validation_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_handle_delirium_validation_must_be_delirious()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_handle_delirium_validation_lucidity_keyword()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_handle_delirium_validation_generic_500()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **ValidationError** (2 connections)
+- **Any** (1 connections)
+- **Player respawn API endpoints.  This module handles endpoints for respawning play** (1 connections) — `server/api/player_respawn.py`
+- **Convert ValidationError to appropriate HTTPException for respawn.      Args:** (1 connections) — `server/api/player_respawn.py`
+- **Convert ValidationError to appropriate HTTPException for delirium respawn.** (1 connections) — `server/api/player_respawn.py`
+- **Execute a respawn service call inside a DB session with shared error handling.** (1 connections) — `server/api/player_respawn.py`
+- **Respawn a delirious player at the Sanitarium with restored lucidity.      This e** (1 connections) — `server/api/player_respawn.py`
+- **Respawn a dead player at their respawn location with full DP.      This endpoint** (1 connections) — `server/api/player_respawn.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [Player Combat XP](Player_Combat_XP.md) (25 shared connections)
-- [WebSocket Auth Integration](WebSocket_Auth_Integration.md) (6 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (6 shared connections)
-- [Combat Command Helpers](Combat_Command_Helpers.md) (6 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (5 shared connections)
-- [Game State Provider](Game_State_Provider.md) (3 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [Investigations Sessions Session](Investigations_Sessions_Session.md) (2 shared connections)
-- [Archive Frd Random](Archive_Frd_Random.md) (2 shared connections)
-- [Async Persistence Layer](Async_Persistence_Layer.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Room Occupant Events](Room_Occupant_Events.md) (1 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (12 shared connections)
+- [Client Event Store](Client_Event_Store.md) (9 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (9 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (6 shared connections)
+- [Disconnect Grace Period](Disconnect_Grace_Period.md) (3 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (2 shared connections)
+- [Profession Get Mechanical Effects](Profession_Get_Mechanical_Effects.md) (2 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (2 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (1 shared connections)
+- [Panel Layout Libraries Spec](Panel_Layout_Libraries_Spec.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/request_context.py`
-- `server/realtime/websocket_handler_commands.py`
-- `server/realtime/websocket_helpers.py`
-- `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- `server/tests/unit/realtime/test_websocket_handler_core.py`
-- `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- `server/api/player_respawn.py`
+- `server/schemas/players/player_respawn.py`
+- `server/tests/unit/api/test_player_respawn_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 295 (86%)
-- INFERRED: 47 (14%)
+- EXTRACTED: 144 (93%)
+- INFERRED: 11 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

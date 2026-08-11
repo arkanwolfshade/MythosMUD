@@ -21,18 +21,18 @@
 
 ## Relationships
 
-- [Investigations Sessions Xx](Investigations_Sessions_Xx.md) (2 shared connections)
-- [Migration Verification](Migration_Verification.md) (2 shared connections)
 - [Mythosmud Obsidian Raw](Mythosmud_Obsidian_Raw.md) (2 shared connections)
-- [Commands Go Command](Commands_Go_Command.md) (2 shared connections)
-- [Investigations Sessions Session](Investigations_Sessions_Session.md) (2 shared connections)
 - [Message Queue Cleanup](Message_Queue_Cleanup.md) (1 shared connections)
-- [E 2 E Whisper System](E_2_E_Whisper_System.md) (1 shared connections)
-- [Services Player Respawn](Services_Player_Respawn.md) (1 shared connections)
+- [test_reconnect_attempts_increment](test_reconnect_attempts_increment.md) (1 shared connections)
+- [test_get_stats_no_error](test_get_stats_no_error.md) (1 shared connections)
+- [test_disconnect_from_connected](test_disconnect_from_connected.md) (1 shared connections)
 - [test_should_idle_move_true_when_not_in_combat_and_probability_succeeds](test_should_idle_move_true_when_not_in_combat_and_probability_succeeds.md) (1 shared connections)
-- [test_get_valid_exits_empty_room](test_get_valid_exits_empty_room.md) (1 shared connections)
-- [Nats Subject Patterns](Nats_Subject_Patterns_2.md) (1 shared connections)
-- [Archive Migration Completion](Archive_Migration_Completion.md) (1 shared connections)
+- [test_track_player_presence_new_player](test_track_player_presence_new_player.md) (1 shared connections)
+- [test_can_attempt_connection_connected](test_can_attempt_connection_connected.md) (1 shared connections)
+- [test_can_attempt_connection_circuit_open](test_can_attempt_connection_circuit_open.md) (1 shared connections)
+- [test_time_until_retry_returns_zero_when_not_open](test_time_until_retry_returns_zero_when_not_open.md) (1 shared connections)
+- [test_profession_meets_stat_requirements_empty_requirements](test_profession_meets_stat_requirements_empty_requirements.md) (1 shared connections)
+- [test_last_connected_time_set](test_last_connected_time_set.md) (1 shared connections)
 
 ## Source Files
 

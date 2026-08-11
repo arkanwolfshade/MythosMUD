@@ -33,14 +33,15 @@
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
+- [NATS Subject Manager](NATS_Subject_Manager.md) (4 shared connections)
 - [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (4 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (2 shared connections)
 - [NPC Admin API](NPC_Admin_API.md) (2 shared connections)
 - [Player Respawn Service](Player_Respawn_Service.md) (2 shared connections)
-- [WebSocket Code Review](WebSocket_Code_Review.md) (2 shared connections)
-- [Container Persistence Layer](Container_Persistence_Layer.md) (1 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
+- [Health Endpoint Spec](Health_Endpoint_Spec.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
 
 ## Source Files
 

@@ -21,9 +21,9 @@
 
 ## Relationships
 
-- [Message Broadcaster Core](Message_Broadcaster_Core.md) (7 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (7 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 - [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
 
 ## Source Files

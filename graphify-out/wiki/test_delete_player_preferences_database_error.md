@@ -4,22 +4,21 @@
 
 ## Key Concepts
 
-- **test_delete_player_preferences_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test deleting player preferences with database error.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_npc_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test NPCEventHandler initialization.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- [Combat Command Handler](Combat_Command_Handler.md) (1 shared connections)
-- [Async Persistence Delegates](Async_Persistence_Delegates.md) (1 shared connections)
+- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

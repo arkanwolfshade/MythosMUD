@@ -1,6 +1,6 @@
 # NPC Combat Events
 
-> 62 nodes
+> 64 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **validator()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **strict_validator()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **custom_length_validator()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_subject_validator_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_subject_validator_init_strict()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_subject_validator_init_custom_length()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_validate_parameter_value_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
@@ -28,13 +29,11 @@
 - **test_validate_subject_components_invalid_characters()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_validate_subject_components_empty_component()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_validate_subject_components_numbers()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_subject_components_hyphens()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- *... and 37 more nodes in this community*
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [Cursor Rules Docker](Cursor_Rules_Docker.md) (8 shared connections)
-- [Cursor Setup Guide](Cursor_Setup_Guide.md) (7 shared connections)
+- [Cursor Setup Guide](Cursor_Setup_Guide.md) (15 shared connections)
 
 ## Source Files
 
@@ -42,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 132 (96%)
+- EXTRACTED: 136 (96%)
 - INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 

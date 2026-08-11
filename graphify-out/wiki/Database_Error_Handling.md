@@ -1,62 +1,50 @@
 # Database Error Handling
 
-> 109 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **message_handler_factory.py** (23 connections) — `server/realtime/message_handler_factory.py`
 - **test_message_handler_factory.py** (21 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
 - **MessageHandlerFactory** (18 connections) — `server/realtime/message_handler_factory.py`
-- **MessageHandler** (14 connections) — `server/realtime/message_handler_factory.py`
-- **message_handlers.py** (14 connections) — `server/realtime/message_handlers.py`
-- **test_message_handlers.py** (12 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **handle_command_message()** (11 connections) — `server/realtime/message_handlers.py`
-- **handle_chat_message()** (10 connections) — `server/realtime/message_handlers.py`
-- **handle_ping_message()** (10 connections) — `server/realtime/message_handlers.py`
-- **CommandMessageHandler** (9 connections) — `server/realtime/message_handler_factory.py`
-- **handle_follow_response_message()** (9 connections) — `server/realtime/message_handlers.py`
-- **WebSocket** (8 connections)
-- **Any** (8 connections)
-- **.__init__()** (8 connections) — `server/realtime/message_handler_factory.py`
-- **handle_party_invite_response_message()** (8 connections) — `server/realtime/message_handlers.py`
-- **ChatMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
-- **PingMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
-- **ClientErrorReportMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
-- **.handle_message()** (7 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (6 connections) — `server/realtime/message_handler_factory.py`
-- **handle_client_error_report_message()** (6 connections) — `server/realtime/message_handlers.py`
-- **WebSocket** (6 connections)
-- **Any** (6 connections)
-- **_resolve_npc_combat_service_raw()** (5 connections) — `server/npc/combat_integration_base.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- *... and 84 more nodes in this community*
+- **test_message_handler_factory_get_handler_found()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_game_command_alias()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **.register_handler()** (3 connections) — `server/realtime/message_handler_factory.py`
+- **test_command_message_handler_handle()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_ping_message_handler_handle()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_init()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_register_handler()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_get_handler_not_found()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_handle_message_success()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_handle_message_unknown_type()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_handle_message_no_type()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_get_supported_message_types()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_global_message_handler_factory()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **.get_supported_message_types()** (2 connections) — `server/realtime/message_handler_factory.py`
+- **Factory for creating and managing message handlers.      This factory pattern el** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Register a new message handler.          Args:             message_type: The mes** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Get a list of supported message types.          Returns:             List of sup** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Unit tests for message handler factory.  Tests the message_handler_factory modul** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **Test CommandMessageHandler.handle() calls handle_command_message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **Test PingMessageHandler.handle() calls handle_ping_message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **Test MessageHandlerFactory.__init__() initializes with default handlers.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **Test MessageHandlerFactory.register_handler() registers new handler.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **Test MessageHandlerFactory.get_handler() returns handler when found.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (5 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (4 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
-- [Combat Turn Processor](Combat_Turn_Processor.md) (2 shared connections)
-- [Player Combat XP](Player_Combat_XP.md) (2 shared connections)
-- [Event Bus Serialization](Event_Bus_Serialization.md) (1 shared connections)
-- [Game State Provider](Game_State_Provider.md) (1 shared connections)
-- [Infrastructure Message Broker](Infrastructure_Message_Broker.md) (1 shared connections)
-- [Services Combat Persistence](Services_Combat_Persistence.md) (1 shared connections)
-- [Logout and Quit Commands](Logout_and_Quit_Commands.md) (1 shared connections)
+- [Rate Limiter Utilities](Rate_Limiter_Utilities.md) (14 shared connections)
+- [Multiplayer Browser Helpers](Multiplayer_Browser_Helpers.md) (2 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration_base.py`
 - `server/realtime/message_handler_factory.py`
-- `server/realtime/message_handlers.py`
 - `server/tests/unit/realtime/test_message_handler_factory.py`
-- `server/tests/unit/realtime/test_message_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 398 (98%)
-- INFERRED: 10 (2%)
+- EXTRACTED: 94 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

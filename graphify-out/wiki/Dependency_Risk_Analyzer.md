@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [Services Exploration Service](Services_Exploration_Service.md) (2 shared connections)
+- [Combat Command Helpers](Combat_Command_Helpers.md) (2 shared connections)
 - [Player Domain Model](Player_Domain_Model.md) (2 shared connections)
 - [CI Quality Scripts](CI_Quality_Scripts.md) (1 shared connections)
 

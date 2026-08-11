@@ -1,69 +1,67 @@
 # Archive Frd Random
 
-> 96 nodes
+> 178 nodes
 
 ## Key Concepts
 
-- **get_config()** (105 connections) — `server/config/__init__.py`
 - **AppConfig** (31 connections) — `server/config/models/app.py`
+- **__init__.py** (24 connections) — `server/config/models/__init__.py`
+- **app.py** (20 connections) — `server/config/models/app.py`
+- **CORSConfig** (19 connections) — `server/config/models/cors.py`
+- **test_config_models.py** (19 connections) — `server/tests/unit/config/test_config_models.py`
+- **GameConfig** (15 connections) — `server/config/models/game.py`
+- **DatabaseConfig** (14 connections) — `server/config/models/server_db.py`
+- **ServerConfig** (12 connections) — `server/config/models/server_db.py`
 - **__init__.py** (11 connections) — `server/config/__init__.py`
-- **reset_config()** (9 connections) — `server/config/__init__.py`
-- **test_config.py** (9 connections) — `server/tests/unit/config/test_config.py`
-- **test_config_init.py** (9 connections) — `server/tests/unit/config/test_config_init.py`
+- **_parse_env_list()** (11 connections) — `server/config/models/_helpers.py`
+- **._parse_csv()** (10 connections) — `server/config/models/cors.py`
+- **LoggingConfig** (10 connections) — `server/config/models/security_logging.py`
+- **TimeConfig** (9 connections) — `server/config/models/chat_time.py`
+- **PlayerStatsConfig** (9 connections) — `server/config/models/player_stats.py`
 - **ChatConfig** (8 connections) — `server/config/models/chat_time.py`
-- **load_motd()** (8 connections) — `server/utils/motd_loader.py`
+- **_default_cors_origins()** (7 connections) — `server/config/models/_helpers.py`
 - **.to_legacy_dict()** (7 connections) — `server/config/models/app.py`
-- **test_motd_loader.py** (7 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **security_logging.py** (7 connections) — `server/config/models/security_logging.py`
+- **SecurityConfig** (7 connections) — `server/config/models/security_logging.py`
 - **Any** (6 connections)
 - **_create_config_instance()** (5 connections) — `server/config/__init__.py`
 - **_get_config_cached()** (5 connections) — `server/config/__init__.py`
 - **_get_config_test()** (5 connections) — `server/config/__init__.py`
+- **get_app_instance()** (5 connections) — `server/config/__init__.py`
 - **.__init__()** (5 connections) — `server/config/models/app.py`
-- **._legacy_game_entries()** (5 connections) — `server/config/models/app.py`
-- **._legacy_nats_dict()** (5 connections) — `server/config/models/app.py`
-- **._legacy_chat_dict()** (5 connections) — `server/config/models/app.py`
-- **._legacy_cors_dict()** (5 connections) — `server/config/models/app.py`
-- **generate_unique_codes()** (5 connections) — `tools/invite_tools/generate_invites.py`
-- **_is_test_mode()** (4 connections) — `server/config/__init__.py`
-- **._sanitize_environment_for_nested_configs()** (4 connections) — `server/config/models/app.py`
-- **test_reset_config_clears_state()** (4 connections) — `server/tests/unit/config/test_config.py`
-- **test_reset_config_in_test_mode()** (4 connections) — `server/tests/unit/config/test_config_init.py`
-- **generate_invites.py** (4 connections) — `tools/invite_tools/generate_invites.py`
-- *... and 71 more nodes in this community*
+- *... and 153 more nodes in this community*
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (28 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (8 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (5 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (5 shared connections)
-- [Rest Command Flow](Rest_Command_Flow.md) (4 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (3 shared connections)
-- [Event Bus Serialization](Event_Bus_Serialization.md) (3 shared connections)
-- [Message Broadcaster Core](Message_Broadcaster_Core.md) (3 shared connections)
-- [Playwright E2E Specs](Playwright_E2E_Specs.md) (2 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (2 shared connections)
-- [Invite and User Schemas](Invite_and_User_Schemas.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (20 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (7 shared connections)
+- [Combat Persistence Events](Combat_Persistence_Events.md) (4 shared connections)
+- [chat_logger](chat_logger.md) (2 shared connections)
+- [Player Respawn Events](Player_Respawn_Events.md) (2 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
 
 ## Source Files
 
 - `server/config/__init__.py`
+- `server/config/models/__init__.py`
+- `server/config/models/_helpers.py`
 - `server/config/models/app.py`
 - `server/config/models/chat_time.py`
-- `server/game/player_service.py`
-- `server/tests/conftest.py`
-- `server/tests/unit/config/test_config.py`
-- `server/tests/unit/config/test_config_init.py`
-- `server/tests/unit/test_config_smoke.py`
-- `server/tests/unit/utils/test_motd_loader.py`
-- `server/utils/motd_loader.py`
-- `tools/invite_tools/generate_invites.py`
+- `server/config/models/cors.py`
+- `server/config/models/game.py`
+- `server/config/models/player_stats.py`
+- `server/config/models/security_logging.py`
+- `server/config/models/server_db.py`
+- `server/tests/unit/config/test_config_models.py`
+- `server/time/time_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 379 (97%)
-- INFERRED: 12 (3%)
+- EXTRACTED: 536 (96%)
+- INFERRED: 20 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

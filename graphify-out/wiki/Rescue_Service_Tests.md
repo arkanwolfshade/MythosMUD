@@ -1,57 +1,59 @@
 # Rescue Service Tests
 
-> 23 nodes
+> 84 nodes
 
 ## Key Concepts
 
-- **ChatPanelRefactoredView.tsx** (14 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
-- **chatPanelRefactoredDerived.ts** (13 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- **useChatPanelRefactored.ts** (12 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
-- **ChatPanelRefactored.tsx** (10 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
-- **chatPanelRefactoredDerived.test.ts** (10 connections) — `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
-- **useChatPanelRefactored()** (7 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
-- **resolveMessageChannel()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- **computeUnreadCounts()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- **computeFilteredMessages()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- **ChatPanelRefactoredMessage** (6 connections) — `client/src/components/panels/chatPanelRefactoredTypes.ts`
-- **ChatPanelRefactored.test.tsx** (5 connections) — `client/src/components/panels/__tests__/ChatPanelRefactored.test.tsx`
-- **isDisplayableChatMessage()** (5 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- **computeChannelMessages()** (5 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- **chatPanelRefactoredTypes.ts** (5 connections) — `client/src/components/panels/chatPanelRefactoredTypes.ts`
-- **filterNonSystemMessages()** (4 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- **ChatPanelRefactored()** (3 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
-- **ChatPanelRefactoredProps** (2 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
-- **ChatPanelRefactoredView()** (2 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
-- **ChatHistoryToggle()** (2 connections) — `client/src/components/panels/chat/ChatHistoryToggle.tsx`
-- **UseChatPanelRefactoredResult** (2 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
-- **ChatPanelRefactoredChromeProps** (1 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
-- **ChatPanelRefactoredViewProps** (1 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
-- **base()** (1 connections) — `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
+- **test_player_presence_tracker.py** (37 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **player_presence_tracker.py** (31 connections) — `server/realtime/player_presence_tracker.py`
+- **track_player_disconnected_impl()** (29 connections) — `server/realtime/player_presence_tracker.py`
+- **track_player_connected_impl()** (15 connections) — `server/realtime/player_presence_tracker.py`
+- **_build_player_info()** (10 connections) — `server/realtime/player_presence_tracker.py`
+- **broadcast_connection_message_impl()** (10 connections) — `server/realtime/player_presence_tracker.py`
+- **Any** (9 connections)
+- **_resolve_room_id()** (9 connections) — `server/realtime/player_presence_tracker.py`
+- **_should_skip_disconnect()** (9 connections) — `server/realtime/player_presence_tracker.py`
+- **_acquire_disconnect_lock()** (9 connections) — `server/realtime/player_presence_tracker.py`
+- **_get_instance_manager_from_manager()** (6 connections) — `server/realtime/player_presence_tracker.py`
+- **test_player_presence_tracker_grace_period.py** (6 connections) — `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
+- **_resolve_room_id_for_tutorial_reconnect()** (5 connections) — `server/realtime/player_presence_tracker.py`
+- **UUID** (4 connections)
+- **test_broadcast_connection_message_impl_error()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_track_player_disconnected_impl_error()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_track_player_disconnected_impl_finally_cleanup()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_build_player_info_new_connection()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_build_player_info_existing_connection()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_build_player_info_no_level()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_resolve_room_id_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_resolve_room_id_no_room_id()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_resolve_room_id_success()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_resolve_room_id_room_no_id()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_track_player_connected_impl_new_connection()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat Integration](NPC_Combat_Integration.md) (7 shared connections)
-- [Client App State Hooks](Client_App_State_Hooks.md) (5 shared connections)
-- [Command Input Validator](Command_Input_Validator.md) (2 shared connections)
-- [Holidays JSON Schema](Holidays_JSON_Schema.md) (2 shared connections)
-- [Combat Attack Handler](Combat_Attack_Handler.md) (1 shared connections)
-- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (1 shared connections)
+- [NATS Message Broker](NATS_Message_Broker.md) (12 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (10 shared connections)
+- [Chat Rate Limiter](Chat_Rate_Limiter.md) (9 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (4 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (3 shared connections)
+- [Realtime WebSocket Auth](Realtime_WebSocket_Auth.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Game State Provider](Game_State_Provider.md) (1 shared connections)
+- [Combat Messaging Tests](Combat_Messaging_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/panels/ChatPanelRefactored.tsx`
-- `client/src/components/panels/ChatPanelRefactoredView.tsx`
-- `client/src/components/panels/__tests__/ChatPanelRefactored.test.tsx`
-- `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
-- `client/src/components/panels/chat/ChatHistoryToggle.tsx`
-- `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- `client/src/components/panels/chatPanelRefactoredTypes.ts`
-- `client/src/components/panels/useChatPanelRefactored.ts`
+- `server/realtime/player_presence_tracker.py`
+- `server/tests/unit/realtime/test_player_presence_tracker.py`
+- `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 128 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 315 (98%)
+- INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

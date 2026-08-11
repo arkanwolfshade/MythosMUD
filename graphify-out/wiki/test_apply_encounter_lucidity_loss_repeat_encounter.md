@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_apply_encounter_lucidity_loss_repeat_encounter()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test apply_encounter_lucidity_loss() for repeat encounter.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_parse_behavior_config_invalid_json()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test _parse_behavior_config() with invalid JSON.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- [WebSocket Message Validator](WebSocket_Message_Validator.md) (1 shared connections)
+- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 

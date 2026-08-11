@@ -15,7 +15,7 @@
 
 ## Relationships
 
-- [Playwright Remediation Plan](Playwright_Remediation_Plan.md) (4 shared connections)
+- [Services Lucidity Repository](Services_Lucidity_Repository.md) (4 shared connections)
 - [Room Drop Renderer](Room_Drop_Renderer.md) (2 shared connections)
 
 ## Source Files

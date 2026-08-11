@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [Admin Command Models](Admin_Command_Models.md) (18 shared connections)
-- [Player Command Developer Guide](Player_Command_Developer_Guide.md) (11 shared connections)
-- [WebSocket Code Review](WebSocket_Code_Review.md) (7 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
-- [ASCII Map API](ASCII_Map_API.md) (6 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (5 shared connections)
-- [Real-Time Architecture Docs](Real-Time_Architecture_Docs.md) (5 shared connections)
-- [Chat Panel Filtering](Chat_Panel_Filtering.md) (2 shared connections)
+- [Spell Effects Tests](Spell_Effects_Tests.md) (24 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (12 shared connections)
+- [Player Command Developer Guide](Player_Command_Developer_Guide.md) (8 shared connections)
+- [Client Event Store](Client_Event_Store.md) (8 shared connections)
+- [Async Room Loading Tests](Async_Room_Loading_Tests.md) (3 shared connections)
+- [Chat Panel Filtering](Chat_Panel_Filtering.md) (3 shared connections)
 - [Test Migration Report](Test_Migration_Report.md) (2 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (2 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (2 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
+- [Container Component Capacity](Container_Component_Capacity.md) (2 shared connections)
+- [Exploration Command Factory](Exploration_Command_Factory.md) (2 shared connections)
+- [Cursor Skills Critique](Cursor_Skills_Critique.md) (2 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
 
 ## Source Files
 

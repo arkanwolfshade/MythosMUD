@@ -1,53 +1,49 @@
 # NPC Room Event Handlers
 
-> 33 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **format_metadata()** (15 connections) — `server/commands/inventory_display_helpers.py`
-- **inventory_display_helpers.py** (12 connections) — `server/commands/inventory_display_helpers.py`
-- **render_inventory()** (9 connections) — `server/commands/inventory_display_helpers.py`
-- **Any** (7 connections)
-- **test_inventory_commands_format_helpers.py** (6 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **build_inventory_lines()** (5 connections) — `server/commands/inventory_display_helpers.py`
-- **build_container_metadata()** (5 connections) — `server/commands/inventory_display_helpers.py`
-- **build_equipped_lines()** (5 connections) — `server/commands/inventory_display_helpers.py`
-- **get_equipped_item_identifiers()** (4 connections) — `server/commands/inventory_display_helpers.py`
-- **filter_non_equipped_inventory()** (4 connections) — `server/commands/inventory_display_helpers.py`
-- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **test_format_metadata_nested_dict()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **test_format_metadata_none()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_format_metadata_complex()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Display and rendering helpers for inventory commands.** (1 connections) — `server/commands/inventory_display_helpers.py`
-- **Format metadata for display.** (1 connections) — `server/commands/inventory_display_helpers.py`
-- **Get sets of equipped item IDs and instance IDs for efficient lookup.** (1 connections) — `server/commands/inventory_display_helpers.py`
-- **Filter out equipped items and container items from inventory.** (1 connections) — `server/commands/inventory_display_helpers.py`
-- **Build inventory display lines.** (1 connections) — `server/commands/inventory_display_helpers.py`
-- **Build and format metadata for equipped item with container.** (1 connections) — `server/commands/inventory_display_helpers.py`
-- **Build equipped items display lines.** (1 connections) — `server/commands/inventory_display_helpers.py`
-- **Render inventory display with equipped items and container contents.** (1 connections) — `server/commands/inventory_display_helpers.py`
-- *... and 8 more nodes in this community*
+- **combat_configuration_service.py** (17 connections) — `server/services/combat_configuration_service.py`
+- **CombatConfigurationError** (11 connections) — `server/services/combat_configuration_service.py`
+- **CombatConfigurationScope** (9 connections) — `server/services/combat_configuration_service.py`
+- **test_combat_configuration_service.py** (8 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.clear_scope_override()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.test_update_combat_configuration_global_raises()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_update_combat_configuration_invalid_raises()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_clear_scope_override_global_raises()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **Enum** (2 connections)
+- **is_combat_available()** (2 connections) — `server/services/combat_configuration_service.py`
+- **Exception** (1 connections)
+- **Combat configuration management service for MythosMUD.  This service provides ce** (1 connections) — `server/services/combat_configuration_service.py`
+- **Exception raised for combat configuration errors.** (1 connections) — `server/services/combat_configuration_service.py`
+- **Scope for combat configuration changes.** (1 connections) — `server/services/combat_configuration_service.py`
+- **Clear configuration override for a specific scope.          Args:             sc** (1 connections) — `server/services/combat_configuration_service.py`
+- **Convenience function to check if combat is available.      Args:         player_** (1 connections) — `server/services/combat_configuration_service.py`
+- **Unit tests for combat configuration service.  Tests the CombatConfigurationServi** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **Test update_combat_configuration raises error for global scope.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **Test update_combat_configuration raises error for invalid config.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **Test clear_scope_override raises error for global scope.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
 
 ## Relationships
 
-- [Async Task Registry](Async_Task_Registry.md) (6 shared connections)
-- [Container Sync Remediation](Container_Sync_Remediation.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Test Value Distribution](Test_Value_Distribution.md) (9 shared connections)
+- [Player Related Models](Player_Related_Models.md) (6 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (3 shared connections)
+- [Client Lifecycle Metrics](Client_Lifecycle_Metrics.md) (3 shared connections)
+- [Invite Registration Model](Invite_Registration_Model.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_display_helpers.py`
-- `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- `server/tests/unit/commands/test_inventory_helpers.py`
+- `server/services/combat_configuration_service.py`
+- `server/tests/unit/services/test_combat_configuration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 109 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 62 (86%)
+- INFERRED: 10 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

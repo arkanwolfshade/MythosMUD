@@ -1,6 +1,6 @@
 # Container Inventory Finders
 
-> 90 nodes
+> 89 nodes
 
 ## Key Concepts
 
@@ -26,37 +26,34 @@
 - **_container_uuid()** (5 connections) — `server/commands/container_helpers_inventory_find.py`
 - **Player** (5 connections)
 - **container_id()** (5 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **update_equipped_with_container_info()** (4 connections) — `server/commands/container_helpers_inventory_display.py`
 - **_component_metadata()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
 - **_resolve_inner_uuid()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
-- *... and 65 more nodes in this community*
+- **_container_from_equip_dict()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
+- *... and 64 more nodes in this community*
 
 ## Relationships
 
 - [Container Inventory Ops](Container_Inventory_Ops.md) (14 shared connections)
-- [FastAPI App Factory](FastAPI_App_Factory.md) (6 shared connections)
+- [Character Creation Service](Character_Creation_Service.md) (5 shared connections)
+- [Quest Journal Commands](Quest_Journal_Commands.md) (5 shared connections)
 - [Async Task Registry](Async_Task_Registry.md) (4 shared connections)
 - [Container Sync Remediation](Container_Sync_Remediation.md) (4 shared connections)
-- [Character Creation Service](Character_Creation_Service.md) (4 shared connections)
 - [FastAPI Auth Integration](FastAPI_Auth_Integration.md) (3 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (2 shared connections)
 - [Client Event Store](Client_Event_Store.md) (1 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
-- [Chat Service Whispers](Chat_Service_Whispers.md) (1 shared connections)
-- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
-- [Player Creation Service](Player_Creation_Service.md) (1 shared connections)
 - [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/container_helpers_inventory.py`
-- `server/commands/container_helpers_inventory_display.py`
 - `server/commands/container_helpers_inventory_find.py`
 - `server/tests/unit/api/test_container_exception_handlers.py`
 - `server/tests/unit/commands/test_container_helpers_inventory_find.py`
 
 ## Audit Trail
 
-- EXTRACTED: 446 (97%)
+- EXTRACTED: 444 (97%)
 - INFERRED: 16 (3%)
 - AMBIGUOUS: 0 (0%)
 

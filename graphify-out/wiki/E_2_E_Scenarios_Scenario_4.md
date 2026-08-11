@@ -1,22 +1,26 @@
 # E 2 E Scenarios Scenario
 
-> 1 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **mythosmud** (0 connections) — `pyproject.toml`
+- **command** (5 connections) — `schemas/alias_schema.json`
+- **type** (1 connections) — `schemas/alias_schema.json`
+- **description** (1 connections) — `schemas/alias_schema.json`
+- **minLength** (1 connections) — `schemas/alias_schema.json`
+- **maxLength** (1 connections) — `schemas/alias_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Npc Config Parsing](Npc_Config_Parsing.md) (1 shared connections)
 
 ## Source Files
 
-- `pyproject.toml`
+- `schemas/alias_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

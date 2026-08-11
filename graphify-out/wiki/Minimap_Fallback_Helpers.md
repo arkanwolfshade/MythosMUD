@@ -1,53 +1,65 @@
 # Minimap Fallback Helpers
 
-> 52 nodes
+> 121 nodes
 
 ## Key Concepts
 
+- **maps.py** (63 connections) — `server/api/maps.py`
 - **MapZoneContext** (22 connections) — `server/api/map_helpers.py`
 - **map_minimap.py** (21 connections) — `server/api/map_minimap.py`
 - **test_map_minimap_helpers.py** (20 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
 - **generate_minimap_html()** (16 connections) — `server/api/map_minimap.py`
+- **get_ascii_map()** (13 connections) — `server/api/maps.py`
+- **_run_set_map_origin()** (13 connections) — `server/api/maps.py`
+- **get_ascii_minimap()** (12 connections) — `server/api/maps.py`
 - **_ensure_current_room_in_minimap_rooms()** (11 connections) — `server/api/map_minimap.py`
+- **_run_coordinate_recalculation()** (11 connections) — `server/api/maps.py`
+- **AsyncSession** (10 connections)
+- **_build_ascii_minimap_response()** (10 connections) — `server/api/maps.py`
+- **__init__.py** (10 connections) — `server/schemas/maps/__init__.py`
 - **_resolve_current_room_for_minimap()** (9 connections) — `server/api/map_minimap.py`
 - **_apply_minimap_fallback_coordinates()** (9 connections) — `server/api/map_minimap.py`
+- **Request** (9 connections)
+- **_build_ascii_map_response()** (9 connections) — `server/api/maps.py`
+- **set_map_origin()** (9 connections) — `server/api/maps.py`
+- **map.py** (9 connections) — `server/schemas/maps/map.py`
+- **CoordinateValidator** (9 connections) — `server/services/coordinate_validator.py`
 - **_append_room_with_fallback_coords_if_needed()** (8 connections) — `server/api/map_minimap.py`
-- **TestApplyMinimapFallbackCoordinates** (8 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **TestAppendRoomWithFallbackCoordsIfNeeded** (7 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **test_generate_minimap_html_admin_path()** (5 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **test_generate_minimap_html_non_admin_filters_exploration()** (5 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **Any** (4 connections)
-- **AsyncSession** (3 connections)
-- **.test_appends_room_unchanged_when_has_coords()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **.test_appends_copy_with_fallback_0_0_when_coords_missing()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **.test_appends_fallback_when_only_one_coord_missing()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **.test_admin_gets_grid_layout_for_rooms_without_coords()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **.test_fallback_grid_wraps_by_fallback_grid_width()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **.test_non_admin_gets_fallback_only_for_current_room()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **.test_non_admin_uses_stable_id_for_current_room_match()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **test_resolve_current_room_from_pre_filter_list()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **test_resolve_current_room_loads_when_not_in_list()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **test_ensure_current_room_in_minimap_noop_without_id()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **test_ensure_current_room_in_minimap_noop_when_already_present()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- *... and 27 more nodes in this community*
+- **recalculate_coordinates()** (8 connections) — `server/api/maps.py`
+- **AsciiMapResponse** (8 connections) — `server/schemas/maps/map.py`
+- **AsciiMinimapResponse** (8 connections) — `server/schemas/maps/map.py`
+- **CoordinateRecalculationResponse** (8 connections) — `server/schemas/maps/map.py`
+- *... and 96 more nodes in this community*
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (23 shared connections)
-- [Map Room Helpers](Map_Room_Helpers.md) (7 shared connections)
-- [Inventory Service Helpers](Inventory_Service_Helpers.md) (7 shared connections)
-- [ASCII Map Renderer](ASCII_Map_Renderer.md) (2 shared connections)
+- [Container Persistence Ops](Container_Persistence_Ops.md) (27 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (15 shared connections)
+- [Inventory Service Helpers](Inventory_Service_Helpers.md) (10 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (10 shared connections)
+- [Map Room Helpers](Map_Room_Helpers.md) (9 shared connections)
+- [Client Event Store](Client_Event_Store.md) (9 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (8 shared connections)
+- [ASCII Map Renderer](ASCII_Map_Renderer.md) (6 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (3 shared connections)
+- [Zone Coordinate Generator](Zone_Coordinate_Generator.md) (3 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (2 shared connections)
+- [NATS Subject Manager](NATS_Subject_Manager.md) (1 shared connections)
 
 ## Source Files
 
 - `server/api/map_helpers.py`
 - `server/api/map_minimap.py`
+- `server/api/maps.py`
+- `server/schemas/maps/__init__.py`
+- `server/schemas/maps/map.py`
+- `server/services/coordinate_validator.py`
 - `server/tests/unit/api/test_map_minimap_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 199 (94%)
-- INFERRED: 12 (6%)
+- EXTRACTED: 554 (97%)
+- INFERRED: 15 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,11 +1,12 @@
 # Memory Profiler Tools
 
-> 57 nodes
+> 59 nodes
 
 ## Key Concepts
 
 - **MemoryProfiler** (32 connections) — `server/utils/memory_profiler.py`
 - **test_memory_profiler.py** (15 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **benchmark_model_memory_usage()** (13 connections) — `server/utils/memory_profiler.py`
 - **.measure_model_instantiation()** (8 connections) — `server/utils/memory_profiler.py`
 - **Any** (8 connections)
 - **.measure_model_deserialization()** (8 connections) — `server/utils/memory_profiler.py`
@@ -28,14 +29,16 @@
 - **test_memory_profiler_get_current_memory_usage()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
 - **test_memory_profiler_get_memory_delta()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
 - **test_memory_profiler_get_memory_delta_no_baseline()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_get_memory_usage_summary()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- *... and 32 more nodes in this community*
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [test_profession_meets_stat_requirements_multiple_not_met](test_profession_meets_stat_requirements_multiple_not_met.md) (7 shared connections)
-- [Monitoring Response Models](Monitoring_Response_Models.md) (2 shared connections)
-- [Alias Expansion Logic](Alias_Expansion_Logic.md) (1 shared connections)
+- [Monitoring Response Models](Monitoring_Response_Models.md) (6 shared connections)
+- [Alias Expansion Logic](Alias_Expansion_Logic.md) (2 shared connections)
+- [NPC Occupant Processor](NPC_Occupant_Processor.md) (1 shared connections)
+- [Emote Schema Validator](Emote_Schema_Validator.md) (1 shared connections)
+- [Combat NPC Lookup](Combat_NPC_Lookup.md) (1 shared connections)
+- [NPC Database Sessions](NPC_Database_Sessions.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 185 (95%)
-- INFERRED: 9 (5%)
+- EXTRACTED: 193 (93%)
+- INFERRED: 15 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

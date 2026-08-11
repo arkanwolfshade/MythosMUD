@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [Player Death Service Tests](Player_Death_Service_Tests.md) (5 shared connections)
-- [Command Input Utilities](Command_Input_Utilities.md) (3 shared connections)
-- [Combat Attack Handler](Combat_Attack_Handler.md) (2 shared connections)
+- [Command Input Utilities](Command_Input_Utilities.md) (5 shared connections)
+- [Player Death Service Tests](Player_Death_Service_Tests.md) (3 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (2 shared connections)
 
 ## Source Files
 

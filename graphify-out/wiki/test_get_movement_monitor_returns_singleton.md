@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_get_movement_monitor_returns_singleton()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **Test get_movement_monitor() returns singleton instance.** (1 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_occupant_formatter_is_valid_name_for_occupant_non_string()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._is_valid_name_for_occupant() returns False for non-strin** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Relationships
 
-- [Monitoring Response Models](Monitoring_Response_Models.md) (1 shared connections)
-- [Cursor Subagents Docs](Cursor_Subagents_Docs.md) (1 shared connections)
+- [Command Integration Summary](Command_Integration_Summary.md) (1 shared connections)
+- [Room Occupant Formatter](Room_Occupant_Formatter.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_monitor.py`
+- `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Audit Trail
 

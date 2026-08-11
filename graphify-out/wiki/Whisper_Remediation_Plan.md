@@ -1,62 +1,59 @@
 # Whisper Remediation Plan
 
-> 61 nodes
+> 49 nodes
 
 ## Key Concepts
 
-- **inventory_command_helpers.py** (48 connections) — `server/commands/inventory_command_helpers.py`
-- **inventory_pickup_command.py** (35 connections) — `server/commands/inventory_pickup_command.py`
-- **persist_player()** (30 connections) — `server/commands/inventory_command_helpers.py`
-- **test_inventory_commands_more_helpers.py** (23 connections) — `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
-- **clone_inventory()** (18 connections) — `server/commands/inventory_command_helpers.py`
-- **build_and_broadcast_inventory_event()** (13 connections) — `server/commands/inventory_command_helpers.py`
-- **_pickup_commit_inventory_after_floor_extract()** (13 connections) — `server/commands/inventory_pickup_command.py`
-- **test_inventory_commands_persistence_helpers.py** (12 connections) — `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
-- **Player** (11 connections)
-- **add_pickup_to_inventory()** (10 connections) — `server/commands/inventory_command_helpers.py`
-- **_pickup_resolve_floor_stack_or_error()** (10 connections) — `server/commands/inventory_pickup_command.py`
-- **complete_pickup_after_floor_extract()** (9 connections) — `server/commands/inventory_pickup_command.py`
-- **resolve_pickup_item_index()** (8 connections) — `server/commands/inventory_command_helpers.py`
-- **_sync_collect_quests_after_inventory_save()** (7 connections) — `server/commands/inventory_command_helpers.py`
-- **ensure_item_instance_for_pickup()** (7 connections) — `server/commands/inventory_command_helpers.py`
-- **get_room_manager()** (7 connections) — `server/commands/inventory_command_helpers.py`
-- **CommandResponse** (6 connections)
-- **_pickup_broadcast_success()** (6 connections) — `server/commands/inventory_pickup_command.py`
-- **_player_uuid_for_quest_sync()** (5 connections) — `server/commands/inventory_command_helpers.py`
-- **prepare_extracted_stack()** (5 connections) — `server/commands/inventory_command_helpers.py`
-- **UUID** (4 connections)
-- **_pickup_quantity_or_error()** (4 connections) — `server/commands/inventory_pickup_command.py`
-- **test_persist_player_inventory_schema_error()** (4 connections) — `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
-- **test_persist_player_error()** (4 connections) — `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
-- **_pickup_result_messages()** (3 connections) — `server/commands/inventory_pickup_command.py`
-- *... and 36 more nodes in this community*
+- **NPCDefinitionCRUDMixin** (18 connections) — `server/services/npc_service/definition_crud.py`
+- **__init__.py** (15 connections) — `server/services/npc_service/__init__.py`
+- **definition_crud.py** (15 connections) — `server/services/npc_service/definition_crud.py`
+- **npc_service_models.py** (13 connections) — `server/services/npc_service_models.py`
+- **_row_to_npc_definition()** (12 connections) — `server/services/npc_service_models.py`
+- **spawn_rule_crud.py** (11 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **NPCDefinitionUpdateParams** (11 connections) — `server/services/npc_service_models.py`
+- **.update_npc_definition()** (9 connections) — `server/services/npc_service/definition_crud.py`
+- **AsyncSession** (8 connections)
+- **.create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
+- **._execute_create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
+- **._execute_npc_update()** (8 connections) — `server/services/npc_service/definition_crud.py`
+- **.get_npc_definitions()** (7 connections) — `server/services/npc_service/definition_crud.py`
+- **.get_npc_definition()** (7 connections) — `server/services/npc_service/definition_crud.py`
+- **._build_npc_update_data()** (7 connections) — `server/services/npc_service/definition_crud.py`
+- **CreateNPCDefinitionInput** (6 connections) — `server/services/npc_service_models.py`
+- **NPCDefinitionCreateParams** (6 connections) — `server/services/npc_service_models.py`
+- **.get_npc_definition_by_name()** (5 connections) — `server/services/npc_service/definition_crud.py`
+- **._log_npc_definition_created()** (4 connections) — `server/services/npc_service/definition_crud.py`
+- **._add_simple_field()** (4 connections) — `server/services/npc_service/definition_crud.py`
+- **Any** (4 connections)
+- **._add_json_field()** (4 connections) — `server/services/npc_service/definition_crud.py`
+- **.delete_npc_definition()** (4 connections) — `server/services/npc_service/definition_crud.py`
+- **._validate_create_npc_definition_params()** (3 connections) — `server/services/npc_service/definition_crud.py`
+- **._validate_npc_update_params()** (3 connections) — `server/services/npc_service/definition_crud.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [NPC Database Sessions](NPC_Database_Sessions.md) (30 shared connections)
-- [Container Sync Remediation](Container_Sync_Remediation.md) (20 shared connections)
-- [Character Creation Service](Character_Creation_Service.md) (15 shared connections)
-- [FastAPI Auth Integration](FastAPI_Auth_Integration.md) (15 shared connections)
-- [Chat Service Whispers](Chat_Service_Whispers.md) (8 shared connections)
-- [Async Task Registry](Async_Task_Registry.md) (5 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
-- [NPC Definition CRUD](NPC_Definition_CRUD.md) (5 shared connections)
-- [Player Creation Service](Player_Creation_Service.md) (4 shared connections)
-- [Admin NPC Schemas](Admin_NPC_Schemas.md) (4 shared connections)
-- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (3 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (3 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (17 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (7 shared connections)
+- [Client Event Store](Client_Event_Store.md) (6 shared connections)
+- [Plan Cursor Plans](Plan_Cursor_Plans.md) (5 shared connections)
+- [Cursor Plans Best](Cursor_Plans_Best.md) (5 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (3 shared connections)
+- [Command Parser Tests](Command_Parser_Tests.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Container Component Capacity](Container_Component_Capacity.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_command_helpers.py`
-- `server/commands/inventory_pickup_command.py`
-- `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
-- `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- `server/services/npc_service/__init__.py`
+- `server/services/npc_service/definition_crud.py`
+- `server/services/npc_service/spawn_rule_crud.py`
+- `server/services/npc_service_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 348 (98%)
-- INFERRED: 7 (2%)
+- EXTRACTED: 225 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

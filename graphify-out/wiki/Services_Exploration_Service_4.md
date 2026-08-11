@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **.add_item_to_inventory()** (3 connections) — `server/npc/npc_base.py`
-- **Add item to NPC inventory.** (1 connections) — `server/npc/npc_base.py`
+- **test_calculate_distance_to_room_same_room()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test _calculate_distance_to_room() with same room.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [Quest Service Core](Quest_Service_Core.md) (1 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
+- [NPC Movement Integration](NPC_Movement_Integration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/npc_base.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

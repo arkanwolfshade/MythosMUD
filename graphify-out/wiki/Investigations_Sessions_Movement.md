@@ -1,29 +1,25 @@
 # Investigations Sessions Movement
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **TestGetAsyncPersistence** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_async_persistence_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_async_persistence_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_async_persistence dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_async_persistence returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_async_persistence raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **test_execute_idle_movement_no_valid_exits()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test execute_idle_movement() when no valid exits.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
+- [NPC Movement Integration](NPC_Movement_Integration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

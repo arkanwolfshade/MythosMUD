@@ -15,7 +15,7 @@
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
 
 ## Source Files
 

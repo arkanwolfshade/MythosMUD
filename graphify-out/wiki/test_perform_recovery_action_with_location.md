@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_perform_recovery_action_with_location()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test perform_recovery_action() includes location_id.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_calculate_distance_to_room_same_subzone()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test _calculate_distance_to_room() with rooms in same subzone.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [WebSocket Message Validator](WebSocket_Message_Validator.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
+- [NPC Movement Integration](NPC_Movement_Integration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

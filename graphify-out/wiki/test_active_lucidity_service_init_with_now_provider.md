@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_active_lucidity_service_init_with_now_provider()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test ActiveLucidityService initialization with custom now_provider.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **mock_send_occupants_update()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Create a mock send_occupants_update function.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
-- [WebSocket Message Validator](WebSocket_Message_Validator.md) (1 shared connections)
+- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

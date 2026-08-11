@@ -1,62 +1,68 @@
 # Container API Endpoints
 
-> 104 nodes
+> 122 nodes
 
 ## Key Concepts
 
-- **StandardizedErrorResponse** (35 connections) — `server/error_handlers/standardized_responses.py`
+- **websocket_handler.py** (64 connections) — `server/realtime/websocket_handler.py`
+- **ErrorType** (47 connections) — `server/error_types.py`
+- **ErrorMessages** (47 connections) — `server/error_types.py`
+- **error_types.py** (37 connections) — `server/error_types.py`
+- **standardized_responses.py** (32 connections) — `server/error_handlers/standardized_responses.py`
+- **create_websocket_error_response()** (32 connections) — `server/error_types.py`
+- **create_standard_error_response()** (27 connections) — `server/error_types.py`
 - **pydantic_error_handler.py** (25 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **PydanticErrorHandler** (23 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.handle_validation_error()** (14 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.handle_exception()** (14 connections) — `server/error_handlers/standardized_responses.py`
-- **._handle_generic_exception()** (10 connections) — `server/error_handlers/standardized_responses.py`
-- **test_standardized_responses_security.py** (10 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
-- **TestStandardizedResponsesSecurity** (10 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
-- **__init__.py** (9 connections) — `server/error_handlers/__init__.py`
-- **handle_pydantic_error()** (9 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **convert_pydantic_error()** (9 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **_ExtractedErrorInfo** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._create_fallback_error_response()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.convert_to_mythos_error()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._extract_context_from_request()** (8 connections) — `server/error_handlers/standardized_responses.py`
-- **._handle_http_exception()** (8 connections) — `server/error_handlers/standardized_responses.py`
-- **._create_fallback_response()** (8 connections) — `server/error_handlers/standardized_responses.py`
-- **handle_api_error()** (8 connections) — `server/error_handlers/standardized_responses.py`
-- **ErrorContextInitKwargs** (8 connections) — `server/exceptions.py`
-- **ValidationError** (7 connections)
-- **._extract_error_info()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._generate_user_friendly_message()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._create_error_details()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.create_handler()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._handle_pydantic_validation_error()** (7 connections) — `server/error_handlers/standardized_responses.py`
-- *... and 79 more nodes in this community*
+- **websocket_handler_message_loop.py** (25 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **websocket_handler_validation.py** (21 connections) — `server/realtime/websocket_handler_validation.py`
+- **test_error_types.py** (21 connections) — `server/tests/unit/test_error_types.py`
+- **create_sse_error_response()** (17 connections) — `server/error_types.py`
+- **._handle_logged_http_exception()** (11 connections) — `server/error_handlers/standardized_responses.py`
+- **handle_message_loop_exception()** (10 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **ErrorResponseDetails** (9 connections) — `server/error_types.py`
+- **test_websocket_handler_error_handling.py** (9 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **_normalize_error_response_details()** (7 connections) — `server/error_types.py`
+- **send_websocket_error_response()** (7 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **WebSocket** (7 connections)
+- **TypedDict** (6 connections)
+- **handle_json_decode_error()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **UUID** (6 connections)
+- **handle_websocket_runtime_error()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **handle_websocket_generic_exception()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **process_exception_in_message_loop()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- *... and 97 more nodes in this community*
 
 ## Relationships
 
 - [Standardized Error Responses](Standardized_Error_Responses.md) (58 shared connections)
-- [Active Lucidity Service](Active_Lucidity_Service.md) (8 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (4 shared connections)
-- [Error Handling Middleware](Error_Handling_Middleware.md) (4 shared connections)
-- [Cursor Skills Delight](Cursor_Skills_Delight.md) (2 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (2 shared connections)
-- [Combat Feature Flags](Combat_Feature_Flags.md) (2 shared connections)
-- [Player Combat XP](Player_Combat_XP.md) (2 shared connections)
+- [Player Position Service](Player_Position_Service.md) (27 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (18 shared connections)
+- [Combat Death Handling](Combat_Death_Handling.md) (17 shared connections)
+- [Client Event Store](Client_Event_Store.md) (11 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (9 shared connections)
+- [Game Tick Processing](Game_Tick_Processing.md) (8 shared connections)
+- [Database Helper Tests](Database_Helper_Tests.md) (8 shared connections)
+- [Application DI Bundles](Application_DI_Bundles.md) (7 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (7 shared connections)
+- [Active Lucidity Service](Active_Lucidity_Service.md) (4 shared connections)
+- [Disconnect Grace Period](Disconnect_Grace_Period.md) (4 shared connections)
 
 ## Source Files
 
-- `server/error_handlers/__init__.py`
 - `server/error_handlers/pydantic_error_handler.py`
 - `server/error_handlers/standardized_responses.py`
 - `server/error_types.py`
-- `server/exceptions.py`
-- `server/tests/unit/error_handlers/test_standardized_responses_security.py`
-- `server/tests/unit/realtime/test_websocket_handler_core.py`
+- `server/realtime/message_validator.py`
+- `server/realtime/websocket_handler.py`
+- `server/realtime/websocket_handler_message_loop.py`
+- `server/realtime/websocket_handler_validation.py`
+- `server/realtime/websocket_helpers.py`
+- `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- `server/tests/unit/test_error_types.py`
 
 ## Audit Trail
 
-- EXTRACTED: 427 (95%)
-- INFERRED: 23 (5%)
+- EXTRACTED: 646 (94%)
+- INFERRED: 43 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

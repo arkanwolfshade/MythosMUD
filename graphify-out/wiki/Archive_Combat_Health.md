@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **test_check_item_in_location_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking item in location successfully.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_event_bus_publish()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.publish() queues or processes event.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [Archive Circuit Breaker](Archive_Circuit_Breaker.md) (1 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (1 shared connections)
+- [Services Rescue Service](Services_Rescue_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

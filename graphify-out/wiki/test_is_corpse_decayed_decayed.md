@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_is_corpse_decayed_decayed()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **Test is_corpse_decayed() returns True for decayed corpse.** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_handle_npc_left_room_with_npc_instance()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test handle_npc_left_room() with valid NPC instance.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
-- [Skill Service Tests](Skill_Service_Tests.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 

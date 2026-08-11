@@ -1,6 +1,6 @@
 # Logging File Setup
 
-> 76 nodes
+> 74 nodes
 
 ## Key Concepts
 
@@ -10,7 +10,6 @@
 - **load_player_guid_formatter_class()** (11 connections) — `server/structured_logging/logging_utilities.py`
 - **_setup_aggregator_handlers()** (9 connections) — `server/structured_logging/logging_file_setup.py`
 - **_setup_console_handler()** (9 connections) — `server/structured_logging/logging_file_setup.py`
-- **_prepare_log_environment()** (9 connections) — `server/structured_logging/logging_file_setup.py`
 - **_setup_category_handlers()** (8 connections) — `server/structured_logging/logging_file_setup.py`
 - **LoggerNameFilter** (8 connections) — `server/structured_logging/logging_file_setup.py`
 - **_create_handler_for_category()** (8 connections) — `server/structured_logging/logging_file_setup.py`
@@ -29,19 +28,21 @@
 - **test_aggregator_handlers_on_root_when_async()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
 - **_get_or_create_log_queue()** (5 connections) — `server/structured_logging/logging_file_setup.py`
 - **_get_handler_class()** (5 connections) — `server/structured_logging/logging_file_setup.py`
-- *... and 51 more nodes in this community*
+- **_add_handler_to_loggers()** (5 connections) — `server/structured_logging/logging_file_setup.py`
+- *... and 49 more nodes in this community*
 
 ## Relationships
 
-- [Logging Path Utilities](Logging_Path_Utilities.md) (11 shared connections)
+- [Logging Path Utilities](Logging_Path_Utilities.md) (13 shared connections)
 - [Logging Structured Handlers](Logging_Structured_Handlers.md) (10 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
 - [Windows Log Rotation](Windows_Log_Rotation.md) (4 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (3 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
 - [Logging Structured Player](Logging_Structured_Player.md) (3 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
 - [Monitoring Bundle Services](Monitoring_Bundle_Services.md) (1 shared connections)
 - [Logging Structured Processors](Logging_Structured_Processors.md) (1 shared connections)
-- [Test Optimization Insights](Test_Optimization_Insights.md) (1 shared connections)
+- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 294 (97%)
+- EXTRACTED: 284 (97%)
 - INFERRED: 10 (3%)
 - AMBIGUOUS: 0 (0%)
 

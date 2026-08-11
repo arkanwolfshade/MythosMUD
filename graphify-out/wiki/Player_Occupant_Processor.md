@@ -1,53 +1,54 @@
 # Player Occupant Processor
 
-> 35 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **CombatEventPublisher** (30 connections) — `server/services/combat_event_publisher.py`
-- **._publish_combat_payload()** (14 connections) — `server/services/combat_event_publisher.py`
-- **_CombatPublishJob** (13 connections) — `server/services/combat_event_publisher.py`
-- **.publish_combat_started()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_combat_ended()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_player_attacked()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_npc_attacked()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_npc_took_damage()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_npc_died()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_combat_turn_advanced()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_combat_timeout()** (5 connections) — `server/services/combat_event_publisher.py`
-- **._create_event_message()** (4 connections) — `server/services/combat_event_publisher.py`
-- **.__init__()** (3 connections) — `server/services/combat_event_publisher.py`
-- **._nats_ready()** (3 connections) — `server/services/combat_event_publisher.py`
-- **combat_event_publisher()** (3 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
-- **test_combat_event_publisher_initialization_with_nats_service()** (3 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
-- **test_combat_event_publisher_initialization_with_subject_manager()** (3 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
-- **Any** (2 connections)
-- **._build_combat_subject()** (2 connections) — `server/services/combat_event_publisher.py`
-- **Bundled NATS publish inputs (keeps helper parameter count under gate).** (1 connections) — `server/services/combat_event_publisher.py`
-- **Service for publishing combat events to NATS for real-time distribution.** (1 connections) — `server/services/combat_event_publisher.py`
-- **Initialize combat event publisher.          Args:             nats_service: N** (1 connections) — `server/services/combat_event_publisher.py`
-- **Create a standardized event message structure matching EventMessageSchema.** (1 connections) — `server/services/combat_event_publisher.py`
-- **Shared NATS publish path for combat events.** (1 connections) — `server/services/combat_event_publisher.py`
-- **Publish combat started event to NATS.** (1 connections) — `server/services/combat_event_publisher.py`
-- *... and 10 more nodes in this community*
+- **test_look_container_helpers.py** (45 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **_format_container_contents()** (11 connections) — `server/commands/look_container.py`
+- **test_format_container_contents_with_quantity()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_via_inner_container_no_inner_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_via_inner_container_invalid_uuid()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_via_inner_container_no_get_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_matches_item_instance_id_true()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_matches_item_instance_id_false()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_matches_item_instance_id_none()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_matches_name_or_slot_slot_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_matches_name_or_slot_name_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_matches_name_or_slot_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_get_container_data_from_component_no_container_id()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_get_container_data_from_component_no_get_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_extract_container_metadata_no_metadata()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_format_container_contents_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_format_container_contents_with_quantity()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Format container contents as list of lines.** (1 connections) — `server/commands/look_container.py`
+- **Test formatting container contents with quantity > 1.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Unit tests for look container helper functions.  Tests the helper functions in l** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_via_inner_container() when item has no inner_container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_via_inner_container() with invalid UUID.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_via_inner_container() when persistence has no get_container** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _matches_item_instance_id() returns True when IDs match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _matches_item_instance_id() returns False when IDs don't match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [Combat Domain Events](Combat_Domain_Events.md) (21 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (3 shared connections)
-- [Inventory Command Models](Inventory_Command_Models.md) (2 shared connections)
-- [Combat Attack Service](Combat_Attack_Service.md) (1 shared connections)
-- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (1 shared connections)
+- [Player State Command Factory](Player_State_Command_Factory.md) (20 shared connections)
+- [Admin Command Models](Admin_Command_Models.md) (10 shared connections)
+- [Health Check Service](Health_Check_Service.md) (8 shared connections)
+- [Container System Architecture](Container_System_Architecture.md) (6 shared connections)
+- [Look Container Command](Look_Container_Command.md) (4 shared connections)
 
 ## Source Files
 
-- `server/services/combat_event_publisher.py`
-- `server/tests/unit/services/test_combat_event_publisher.py`
+- `server/commands/look_container.py`
+- `server/tests/unit/commands/test_look_container.py`
+- `server/tests/unit/commands/test_look_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 130 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 118 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

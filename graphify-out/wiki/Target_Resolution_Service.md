@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [Party Service Management](Party_Service_Management.md) (2 shared connections)
-- [Monitoring Response Models](Monitoring_Response_Models.md) (1 shared connections)
+- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 

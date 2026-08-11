@@ -1,6 +1,6 @@
 # Command Testing Guide
 
-> 20 nodes
+> 24 nodes
 
 ## Key Concepts
 
@@ -8,8 +8,10 @@
 - **PresenceStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
 - **SessionStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
 - **ErrorStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
+- **PlayerConnectionsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
 - **NewGameSessionResponse** (10 connections) — `server/schemas/realtime/realtime.py`
 - **ConnectionStatisticsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
+- **SessionInfo** (9 connections) — `server/schemas/realtime/realtime.py`
 - **PresenceInfo** (6 connections) — `server/schemas/realtime/realtime.py`
 - **BaseModel** (6 connections)
 - **HealthInfo** (6 connections) — `server/schemas/realtime/realtime.py`
@@ -21,16 +23,18 @@
 - **Error statistics for connection monitoring.      This model represents aggregate** (1 connections) — `server/schemas/realtime/presence_data.py`
 - **Real-time API response schemas for MythosMUD server.  This module provides Pydan** (1 connections) — `server/schemas/realtime/realtime.py`
 - **Presence information for a player connection.** (1 connections) — `server/schemas/realtime/realtime.py`
+- **Session information for a player connection.** (1 connections) — `server/schemas/realtime/realtime.py`
 - **Health information for a player connection.** (1 connections) — `server/schemas/realtime/realtime.py`
+- **Response model for player connection information endpoint.** (1 connections) — `server/schemas/realtime/realtime.py`
 - **Response model for new game session endpoint.** (1 connections) — `server/schemas/realtime/realtime.py`
 - **Response model for connection statistics endpoint.** (1 connections) — `server/schemas/realtime/realtime.py`
 
 ## Relationships
 
-- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (14 shared connections)
-- [NATS Message Schemas](NATS_Message_Schemas.md) (3 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (2 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
+- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (8 shared connections)
+- [NATS Message Schemas](NATS_Message_Schemas.md) (5 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
 
 ## Source Files
 
@@ -39,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 68 (69%)
-- INFERRED: 30 (31%)
+- EXTRACTED: 83 (70%)
+- INFERRED: 36 (30%)
 - AMBIGUOUS: 0 (0%)
 
 ---

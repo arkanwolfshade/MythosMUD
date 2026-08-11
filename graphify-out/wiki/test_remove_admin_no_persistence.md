@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_remove_admin_no_persistence()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test remove_admin() handles missing persistence.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_send_room_update_to_player_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test send_room_update_to_player() successfully sends room update.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [Player Preferences Service](Player_Preferences_Service.md) (1 shared connections)
+- [Game Chat Moderation](Game_Chat_Moderation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_user_manager.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

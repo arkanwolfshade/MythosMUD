@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [Command Alias Handling](Command_Alias_Handling.md) (14 shared connections)
-- [Application Container Analysis](Application_Container_Analysis.md) (4 shared connections)
-- [Archive Planning E 2 E](Archive_Planning_E_2_E.md) (2 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
-- [NATS Subject Patterns](NATS_Subject_Patterns.md) (1 shared connections)
-- [test_load_room_cache_async_success_with_rooms_logs_sample_ids](test_load_room_cache_async_success_with_rooms_logs_sample_ids.md) (1 shared connections)
-- [test_build_room_objects_without_environment_in_attributes](test_build_room_objects_without_environment_in_attributes.md) (1 shared connections)
-- [test_invite_use_invite](test_invite_use_invite.md) (1 shared connections)
-- [test_query_rooms_with_exits_async_other_error_raises](test_query_rooms_with_exits_async_other_error_raises.md) (1 shared connections)
-- [test_invite_repr](test_invite_repr.md) (1 shared connections)
-- [test_load_room_cache_async_warning_logging](test_load_room_cache_async_warning_logging.md) (1 shared connections)
-- [Commands Teach Command](Commands_Teach_Command.md) (1 shared connections)
+- [Pre-commit Hook Analysis](Pre-commit_Hook_Analysis.md) (14 shared connections)
+- [Structured Concurrency Patterns](Structured_Concurrency_Patterns.md) (4 shared connections)
+- [E 2 E Testing Guide](E_2_E_Testing_Guide.md) (2 shared connections)
+- [Combat Player Broadcasts](Combat_Player_Broadcasts.md) (1 shared connections)
+- [Schedule Service Loader](Schedule_Service_Loader.md) (1 shared connections)
+- [test_select_exit_empty_dict](test_select_exit_empty_dict.md) (1 shared connections)
+- [test_on_failure_opens_circuit_at_threshold](test_on_failure_opens_circuit_at_threshold.md) (1 shared connections)
+- [test_should_attempt_reset_returns_true_after_timeout](test_should_attempt_reset_returns_true_after_timeout.md) (1 shared connections)
+- [test_should_idle_move_not_active](test_should_idle_move_not_active.md) (1 shared connections)
+- [test_on_failure_resets_success_count](test_on_failure_resets_success_count.md) (1 shared connections)
+- [test_get_valid_exits_filters_exits_outside_subzone](test_get_valid_exits_filters_exits_outside_subzone.md) (1 shared connections)
+- [test_calculate_distance_to_room_same_room](test_calculate_distance_to_room_same_room.md) (1 shared connections)
 
 ## Source Files
 

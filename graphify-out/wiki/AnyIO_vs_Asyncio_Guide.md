@@ -29,7 +29,7 @@
 ## Relationships
 
 - [Chat Channel Logger](Chat_Channel_Logger.md) (18 shared connections)
-- [Archive Frd Random](Archive_Frd_Random.md) (1 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
 - [Plan Archive Character](Plan_Archive_Character.md) (1 shared connections)
 - [Procedures Readme Semgrep](Procedures_Readme_Semgrep.md) (1 shared connections)
 

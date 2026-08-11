@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_get_alerts_high_failure_rate()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **Test get_alerts() alerts on high failure rate.** (1 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_occupant_formatter_is_valid_name_for_occupant_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._is_valid_name_for_occupant() returns False for UUID.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Relationships
 
-- [Cursor Subagents Docs](Cursor_Subagents_Docs.md) (1 shared connections)
+- [Command Integration Summary](Command_Integration_Summary.md) (1 shared connections)
+- [Room Occupant Formatter](Room_Occupant_Formatter.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_monitor.py`
+- `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -34,11 +34,13 @@
 ## Relationships
 
 - [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (16 shared connections)
-- [Combat Command Handler](Combat_Command_Handler.md) (14 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (9 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (6 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (14 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (6 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (2 shared connections)
 - [Player Domain Model](Player_Domain_Model.md) (1 shared connections)
-- [Combat Service Bundle](Combat_Service_Bundle.md) (1 shared connections)
+- [NPC Service Tests](NPC_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 

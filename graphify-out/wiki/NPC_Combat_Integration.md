@@ -1,62 +1,56 @@
 # NPC Combat Integration
 
-> 46 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **ChatPanelRuntimeViewParts.tsx** (28 connections) — `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- **channels.ts** (27 connections) — `client/src/config/channels.ts`
-- **chatPanelHistorySearch.tsx** (10 connections) — `client/src/components/panels/chatPanelHistorySearch.tsx`
-- **ChatPanelRefactoredToolbar.tsx** (9 connections) — `client/src/components/panels/ChatPanelRefactoredToolbar.tsx`
-- **CHAT_CHANNEL_OPTIONS** (9 connections) — `client/src/config/channels.ts`
-- **ChatStatistics.tsx** (8 connections) — `client/src/components/panels/chat/ChatStatistics.tsx`
-- **commandPanelUtils.ts** (8 connections) — `client/src/components/panels/commandPanelUtils.ts`
-- **channels.test.ts** (8 connections) — `client/src/config/__tests__/channels.test.ts`
-- **ChannelActivityIndicators.tsx** (7 connections) — `client/src/components/panels/chat/ChannelActivityIndicators.tsx`
-- **ChannelSelectorSection.tsx** (7 connections) — `client/src/components/panels/chat/ChannelSelectorSection.tsx`
-- **AVAILABLE_CHANNELS** (7 connections) — `client/src/config/channels.ts`
-- **ChatPanelRuntimeView.tsx** (6 connections) — `client/src/components/panels/ChatPanelRuntimeView.tsx`
-- **chatPanelRuntimeViewTypes.ts** (6 connections) — `client/src/components/panels/chatPanelRuntimeViewTypes.ts`
-- **ChatPanelRuntimeViewProps** (6 connections) — `client/src/components/panels/chatPanelRuntimeViewTypes.ts`
-- **ALL_MESSAGES_CHANNEL** (6 connections) — `client/src/config/channels.ts`
-- **getChannelById()** (6 connections) — `client/src/config/channels.ts`
-- **prepareCommandForSubmit()** (5 connections) — `client/src/components/panels/commandPanelUtils.ts`
-- **ChatPanelHistorySearchProps** (4 connections) — `client/src/components/panels/chatPanelHistorySearch.tsx`
-- **ChannelActivityIndicators()** (4 connections) — `client/src/components/panels/chat/ChannelActivityIndicators.tsx`
-- **ChatPanelRuntimeViewInner()** (3 connections) — `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- **ChatPanelHistorySearch()** (3 connections) — `client/src/components/panels/chatPanelHistorySearch.tsx`
-- **ChatStatistics()** (3 connections) — `client/src/components/panels/chat/ChatStatistics.tsx`
-- **prependChannelShortcut()** (3 connections) — `client/src/components/panels/commandPanelUtils.ts`
-- **getChannelDisplayName()** (3 connections) — `client/src/config/channels.ts`
-- **ChatPanelRefactoredToolbar()** (2 connections) — `client/src/components/panels/ChatPanelRefactoredToolbar.tsx`
-- *... and 21 more nodes in this community*
+- **ChatPanelRefactoredView.tsx** (14 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
+- **chatPanelRefactoredDerived.ts** (13 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **useChatPanelRefactored.ts** (12 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
+- **ChatPanelRefactored.tsx** (10 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
+- **chatPanelRefactoredDerived.test.ts** (10 connections) — `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
+- **useChatPanelRefactored()** (7 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
+- **resolveMessageChannel()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **computeUnreadCounts()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **computeFilteredMessages()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **ChatPanelRefactoredMessage** (6 connections) — `client/src/components/panels/chatPanelRefactoredTypes.ts`
+- **ChatPanelRefactored.test.tsx** (5 connections) — `client/src/components/panels/__tests__/ChatPanelRefactored.test.tsx`
+- **isDisplayableChatMessage()** (5 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **computeChannelMessages()** (5 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **chatPanelRefactoredTypes.ts** (5 connections) — `client/src/components/panels/chatPanelRefactoredTypes.ts`
+- **filterNonSystemMessages()** (4 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **ChatPanelRefactored()** (3 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
+- **ChatPanelRefactoredProps** (2 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
+- **ChatPanelRefactoredView()** (2 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
+- **ChatHistoryToggle()** (2 connections) — `client/src/components/panels/chat/ChatHistoryToggle.tsx`
+- **UseChatPanelRefactoredResult** (2 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
+- **ChatPanelRefactoredChromeProps** (1 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
+- **ChatPanelRefactoredViewProps** (1 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
+- **base()** (1 connections) — `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
 
 ## Relationships
 
-- [Command Input Validator](Command_Input_Validator.md) (28 shared connections)
-- [Client App State Hooks](Client_App_State_Hooks.md) (12 shared connections)
-- [Rescue Service Tests](Rescue_Service_Tests.md) (7 shared connections)
-- [Lucidity Rate Overrides](Lucidity_Rate_Overrides.md) (4 shared connections)
-- [Draggable Panel UI](Draggable_Panel_UI.md) (1 shared connections)
-- [Memory Leak Metrics Tests](Memory_Leak_Metrics_Tests.md) (1 shared connections)
+- [Lucidity Rate Overrides](Lucidity_Rate_Overrides.md) (7 shared connections)
+- [Ground and Rescue Commands](Ground_and_Rescue_Commands.md) (5 shared connections)
+- [Command Input Validator](Command_Input_Validator.md) (2 shared connections)
+- [Holidays JSON Schema](Holidays_JSON_Schema.md) (2 shared connections)
+- [Command Input Utilities](Command_Input_Utilities.md) (1 shared connections)
+- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/panels/ChatPanelRefactoredToolbar.tsx`
-- `client/src/components/panels/ChatPanelRuntimeView.tsx`
-- `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- `client/src/components/panels/chat/ChannelActivityIndicators.tsx`
-- `client/src/components/panels/chat/ChannelSelectorSection.tsx`
-- `client/src/components/panels/chat/ChatStatistics.tsx`
-- `client/src/components/panels/chatPanelHistorySearch.tsx`
-- `client/src/components/panels/chatPanelRuntimeViewTypes.ts`
-- `client/src/components/panels/commandPanelUtils.ts`
-- `client/src/config/__tests__/channels.test.ts`
-- `client/src/config/channels.ts`
+- `client/src/components/panels/ChatPanelRefactored.tsx`
+- `client/src/components/panels/ChatPanelRefactoredView.tsx`
+- `client/src/components/panels/__tests__/ChatPanelRefactored.test.tsx`
+- `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
+- `client/src/components/panels/chat/ChatHistoryToggle.tsx`
+- `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- `client/src/components/panels/chatPanelRefactoredTypes.ts`
+- `client/src/components/panels/useChatPanelRefactored.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 217 (100%)
+- EXTRACTED: 128 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

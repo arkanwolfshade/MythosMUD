@@ -1,56 +1,49 @@
 # Combat Configuration Service
 
-> 46 nodes
+> 48 nodes
 
 ## Key Concepts
 
-- **test_command_utility.py** (20 connections) — `server/tests/unit/models/test_command_utility.py`
-- **command_utility.py** (18 connections) — `server/models/command_utility.py`
-- **HelpCommand** (13 connections) — `server/models/command_utility.py`
-- **WhoCommand** (13 connections) — `server/models/command_utility.py`
-- **StatusCommand** (8 connections) — `server/models/command_utility.py`
-- **TimeCommand** (8 connections) — `server/models/command_utility.py`
-- **WhoamiCommand** (8 connections) — `server/models/command_utility.py`
-- **.create_help_command()** (5 connections) — `server/utils/command_factories_utility.py`
-- **test_help_command_topic_max_length()** (4 connections) — `server/tests/unit/models/test_command_utility.py`
-- **test_who_command_filter_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_utility.py`
-- **test_help_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
-- **test_help_command_with_topic()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
-- **test_help_command_validate_topic_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
-- **test_help_command_validate_topic_none()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
-- **test_who_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
-- **test_who_command_with_filter_name()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
-- **test_who_command_validate_filter_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
-- **test_who_command_validate_filter_name_none()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
-- **test_status_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
-- **test_time_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
-- **test_whoami_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_utility.py`
-- **test_create_help_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **test_create_help_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Utility command models for MythosMUD.  This module provides command models for u** (1 connections) — `server/models/command_utility.py`
-- **Command for getting help on commands.** (1 connections) — `server/models/command_utility.py`
-- *... and 21 more nodes in this community*
+- **test_message_filtering.py** (26 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **message_filtering_helper()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_message_filtering_helper_init()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_collect_room_targets()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_collect_room_targets_empty()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_preload_receiver_mute_data()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_preload_receiver_mute_data_excludes_sender()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_collect_room_targets_with_canonical_id()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_extract_chat_event_info()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_should_apply_mute_check_sensitive_channel()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_should_apply_mute_check_non_sensitive_channel()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_compare_canonical_rooms_same()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_compare_canonical_rooms_different()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_get_player_room_from_online_players()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_get_player_room_from_online_players_not_found()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_get_player_room_from_persistence()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_get_player_room_from_persistence_not_found()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_is_player_in_room_true()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_is_player_in_room_false()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_is_player_muted_by_receiver()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_is_player_muted_by_receiver_not_muted()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_get_user_manager_custom()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_get_user_manager_global()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Unit tests for message filtering.  Tests the MessageFilteringHelper class.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [Cursor Plans Disconnect](Cursor_Plans_Disconnect.md) (8 shared connections)
-- [Emote Schema Validator](Emote_Schema_Validator.md) (7 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
-- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (6 shared connections)
-- [Chat Panel Components](Chat_Panel_Components.md) (5 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (5 shared connections)
+- [Chat Message Filtering](Chat_Message_Filtering.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_utility.py`
-- `server/tests/unit/models/test_command_utility.py`
-- `server/tests/unit/utils/test_command_factories_utility.py`
-- `server/utils/command_factories_utility.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 
-- EXTRACTED: 151 (93%)
-- INFERRED: 12 (7%)
+- EXTRACTED: 97 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

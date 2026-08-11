@@ -1,33 +1,26 @@
 # Components Ui Designtokens
 
-> 10 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **_setup_player_and_room()** (10 connections) — `server/realtime/connection_establishment.py`
-- **test_setup_player_and_room_success()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_setup_player_and_room_no_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_setup_player_and_room_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_setup_player_and_room_no_room_id()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Get player and setup room subscription.      Args:         player_id: The player** (1 connections) — `server/realtime/connection_establishment.py`
-- **Test _setup_player_and_room() successfully sets up player and room.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _setup_player_and_room() returns False when player not found.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _setup_player_and_room() handles no persistence.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _setup_player_and_room() handles player with no room_id.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **._error_callback()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._handle_error_async()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **Exception** (2 connections)
+- **Handle NATS errors.          AI: Runs as fire-and-forget async task to prevent** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Async handler for NATS connection errors.** (1 connections) — `server/infrastructure/nats_broker.py`
 
 ## Relationships
 
-- [WebSocket Connection Setup](WebSocket_Connection_Setup.md) (5 shared connections)
-- [Logging Structured Setup](Logging_Structured_Setup.md) (4 shared connections)
+- [Realtime Event Delegation](Realtime_Event_Delegation.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_establishment.py`
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/infrastructure/nats_broker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_teleport_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_teleport_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_convert_ids_to_uuids_none_target()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _convert_ids_to_uuids handles None target.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [Loot All Endpoint](Loot_All_Endpoint.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

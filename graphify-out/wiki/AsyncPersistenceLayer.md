@@ -2,7 +2,7 @@
 
 > God node · 185 connections · `server/async_persistence.py`
 
-**Community:** [Magic Service Bundle](Magic_Service_Bundle.md)
+**Community:** [Client Event Store](Client_Event_Store.md)
 
 ## Connections by Relation
 

@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [E2E Suite Spec Helpers](E2E_Suite_Spec_Helpers.md) (20 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (18 shared connections)
 - [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (9 shared connections)
 - [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (5 shared connections)
 - [Whisper Testing Complete](Whisper_Testing_Complete.md) (4 shared connections)
-- [Combat Death Handling](Combat_Death_Handling.md) (3 shared connections)
+- [Legacy Error Sanitization](Legacy_Error_Sanitization.md) (3 shared connections)
+- [Command Service Tests](Command_Service_Tests.md) (3 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
 - [Player Domain Model](Player_Domain_Model.md) (2 shared connections)
-- [Command Service Tests](Command_Service_Tests.md) (2 shared connections)
-- [Chat Archive Advanced](Chat_Archive_Advanced.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
-- [Cache and NPC Cache](Cache_and_NPC_Cache.md) (1 shared connections)
+- [NPC Service Tests](NPC_Service_Tests.md) (2 shared connections)
+- [Character Creation Service](Character_Creation_Service.md) (1 shared connections)
 - [AI Agent Development Docs](AI_Agent_Development_Docs.md) (1 shared connections)
-- [Structured Concurrency Patterns](Structured_Concurrency_Patterns.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
 
 ## Source Files
 

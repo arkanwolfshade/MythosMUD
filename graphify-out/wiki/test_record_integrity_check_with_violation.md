@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_record_integrity_check_with_violation()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **Test record_integrity_check() records check with violation.** (1 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_handle_player_movement_exception()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test handle_player_movement handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Relationships
 
-- [Cursor Subagents Docs](Cursor_Subagents_Docs.md) (1 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (1 shared connections)
+- [Connection State Hooks](Connection_State_Hooks.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_monitor.py`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

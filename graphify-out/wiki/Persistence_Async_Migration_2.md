@@ -4,21 +4,22 @@
 
 ## Key Concepts
 
-- **test_broadcast_combat_ended()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_ended broadcasts combat ended event.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_event_bus_subscribe_multiple()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.subscribe() with multiple handlers.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [Database Pool Configuration](Database_Pool_Configuration.md) (1 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (1 shared connections)
+- [Services Rescue Service](Services_Rescue_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

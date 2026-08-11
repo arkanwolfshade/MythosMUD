@@ -1,11 +1,11 @@
-# test_mute_channel_already_muted
+# test_is_player_muted_true
 
 > 2 nodes
 
 ## Key Concepts
 
-- **test_mute_channel_already_muted()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test mute_channel() when channel is already muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_player_muted_true()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test is_player_muted() returns True when player is muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 

@@ -29,7 +29,7 @@
 - [Emotes JSON Schema](Emotes_JSON_Schema.md) (3 shared connections)
 - [System Audit Status](System_Audit_Status.md) (3 shared connections)
 - [Error Monitor Service](Error_Monitor_Service.md) (3 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 
 ## Source Files
 

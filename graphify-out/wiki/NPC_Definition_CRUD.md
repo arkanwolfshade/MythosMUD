@@ -1,12 +1,13 @@
 # NPC Definition CRUD
 
-> 54 nodes
+> 62 nodes
 
 ## Key Concepts
 
 - **InventorySchemaValidationError** (20 connections) — `server/schemas/shared/inventory_schema.py`
 - **PlayerSavePreparer** (16 connections) — `server/persistence/repositories/player_repository_save.py`
 - **validate_inventory_payload()** (13 connections) — `server/schemas/shared/inventory_schema.py`
+- **__init__.py** (12 connections) — `server/schemas/shared/__init__.py`
 - **player_repository_save.py** (11 connections) — `server/persistence/repositories/player_repository_save.py`
 - **test_inventory_schema.py** (11 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
 - **.prepare()** (10 connections) — `server/persistence/repositories/player_repository_save.py`
@@ -22,35 +23,38 @@
 - **._upsert_string_defaults()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
 - **._upsert_numeric_defaults()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
 - **_build_validator()** (5 connections) — `server/schemas/shared/inventory_schema.py`
+- **.__init__()** (4 connections) — `server/persistence/repositories/player_repository.py`
 - **._normalize_is_admin()** (4 connections) — `server/persistence/repositories/player_repository_save.py`
+- **test_persist_player_error()** (4 connections) — `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- **test_persist_player_validation_error()** (4 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
 - **test_validate_inventory_payload_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
 - **test_validate_inventory_payload_invalid_inventory()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_items_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_items_invalid_quantity()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **.execute()** (3 connections) — `server/persistence/repositories/player_repository_save.py`
-- **Any** (3 connections)
-- *... and 29 more nodes in this community*
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (5 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
-- [Logging Correct Patterns](Logging_Correct_Patterns.md) (4 shared connections)
-- [Dependency Upgrade Report](Dependency_Upgrade_Report.md) (3 shared connections)
-- [Player Creation Service](Player_Creation_Service.md) (2 shared connections)
-- [NPC Database Sessions](NPC_Database_Sessions.md) (2 shared connections)
-- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (8 shared connections)
+- [Character Creation Service](Character_Creation_Service.md) (5 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Combat Flee Command](Combat_Flee_Command.md) (3 shared connections)
+- [Spell Effect Protocols](Spell_Effect_Protocols.md) (2 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (1 shared connections)
 - [Weapon Resolution Helpers](Weapon_Resolution_Helpers.md) (1 shared connections)
 
 ## Source Files
 
+- `server/persistence/repositories/player_repository.py`
 - `server/persistence/repositories/player_repository_save.py`
+- `server/schemas/shared/__init__.py`
 - `server/schemas/shared/inventory_schema.py`
+- `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- `server/tests/unit/commands/test_inventory_helpers_extended.py`
 - `server/tests/unit/schemas/test_inventory_schema.py`
 
 ## Audit Trail
 
-- EXTRACTED: 203 (95%)
+- EXTRACTED: 231 (95%)
 - INFERRED: 11 (5%)
 - AMBIGUOUS: 0 (0%)
 

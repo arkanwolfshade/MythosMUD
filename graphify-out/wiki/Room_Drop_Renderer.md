@@ -1,6 +1,6 @@
 # Room Drop Renderer
 
-> 40 nodes
+> 34 nodes
 
 ## Key Concepts
 
@@ -8,9 +8,6 @@
 - **Any** (20 connections)
 - **handle_shutdown_command()** (14 connections) — `server/commands/admin_shutdown_command.py`
 - **initiate_shutdown_countdown()** (13 connections) — `server/commands/admin_shutdown_command.py`
-- **cancel_shutdown_countdown()** (11 connections) — `server/commands/admin_shutdown_command.py`
-- **parse_shutdown_parameters()** (11 connections) — `server/commands/admin_shutdown_command.py`
-- **broadcast_shutdown_notification()** (7 connections) — `server/commands/admin_shutdown_command.py`
 - **countdown_loop()** (7 connections) — `server/commands/admin_shutdown_command.py`
 - **_create_countdown_task()** (5 connections) — `server/commands/admin_shutdown_command.py`
 - **_store_shutdown_data()** (5 connections) — `server/commands/admin_shutdown_command.py`
@@ -26,24 +23,28 @@
 - **_get_shutdown_services()** (4 connections) — `server/commands/admin_shutdown_command.py`
 - **Task** (2 connections)
 - **Admin shutdown command for MythosMUD.  This module provides the /shutdown comman** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Broadcast shutdown notification to all players.      Args:         connection_ma** (1 connections) — `server/commands/admin_shutdown_command.py`
 - **Cancel existing shutdown task if present.      Args:         app: FastAPI applic** (1 connections) — `server/commands/admin_shutdown_command.py`
 - **Set shutdown pending flag in container and app.state.      Args:         app: Fa** (1 connections) — `server/commands/admin_shutdown_command.py`
-- *... and 15 more nodes in this community*
+- **Create countdown task from coroutine, handling task registry if available.** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Store shutdown data in container and app.state.      Args:         app: FastAPI** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Clear shutdown state in container and app.state.      Args:         app: FastAPI** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Main countdown loop that sends notifications and executes shutdown.      Args:** (1 connections) — `server/commands/admin_shutdown_command.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [Playwright Remediation Plan](Playwright_Remediation_Plan.md) (18 shared connections)
-- [Client Event Store](Client_Event_Store.md) (8 shared connections)
-- [Game Mechanics Service](Game_Mechanics_Service.md) (3 shared connections)
-- [Realtime Message Builders](Realtime_Message_Builders.md) (3 shared connections)
+- [Services Lucidity Repository](Services_Lucidity_Repository.md) (12 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (5 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [E 2 E Cleanup Troubleshooting](E_2_E_Cleanup_Troubleshooting.md) (3 shared connections)
+- [Status Effect Model](Status_Effect_Model.md) (3 shared connections)
+- [Commands System Help](Commands_System_Help.md) (3 shared connections)
 - [Persistence Refactoring Complete](Persistence_Refactoring_Complete.md) (3 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (2 shared connections)
 - [Chat Archive Advanced](Chat_Archive_Advanced.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Client Security Utilities](Client_Security_Utilities.md) (1 shared connections)
-- [Structured Logging Admin](Structured_Logging_Admin.md) (1 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
-- [Connection Room Presence Utils](Connection_Room_Presence_Utils.md) (1 shared connections)
+- [Logging Structured Setup](Logging_Structured_Setup.md) (2 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
+- [E2E Suite Overview](E2E_Suite_Overview.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 192 (99%)
+- EXTRACTED: 160 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,33 +1,24 @@
 # Chat Archive Advanced
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **quest_service()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **_collect_progress_sync()** (5 connections) — `server/commands/inventory_command_helpers.py`
-- **Return quest_service.sync_collect_progress when it is callable.** (1 connections) — `server/commands/inventory_command_helpers.py`
-- **QuestService with mocked repos.** (1 connections) — `server/tests/unit/game/test_quest_service.py`
+- **test_get_player_lucidity_tier_with_uuid()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _get_player_lucidity_tier handles UUID objects.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (2 shared connections)
-- [Quest Service Core](Quest_Service_Core.md) (2 shared connections)
-- [Combat Death Handling](Combat_Death_Handling.md) (1 shared connections)
-- [Who Command Tests](Who_Command_Tests.md) (1 shared connections)
-- [Game State Provider](Game_State_Provider.md) (1 shared connections)
-- [NATS Message Broker](NATS_Message_Broker.md) (1 shared connections)
-- [Command Service Tests](Command_Service_Tests.md) (1 shared connections)
+- [Loot All Endpoint](Loot_All_Endpoint.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_command_helpers.py`
-- `server/tests/unit/game/test_quest_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (53%)
-- INFERRED: 7 (47%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

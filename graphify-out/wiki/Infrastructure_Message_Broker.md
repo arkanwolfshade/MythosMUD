@@ -27,8 +27,8 @@
 
 ## Relationships
 
-- [Multiplayer Browser Helpers](Multiplayer_Browser_Helpers.md) (2 shared connections)
-- [Database Error Handling](Database_Error_Handling.md) (1 shared connections)
+- [Realtime Event Delegation](Realtime_Event_Delegation.md) (2 shared connections)
+- [Rate Limiter Utilities](Rate_Limiter_Utilities.md) (1 shared connections)
 
 ## Source Files
 

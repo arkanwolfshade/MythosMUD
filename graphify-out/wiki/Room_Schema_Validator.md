@@ -36,7 +36,7 @@
 - [Admin Set Stat Command](Admin_Set_Stat_Command.md) (5 shared connections)
 - [Room Fixer Toolkit](Room_Fixer_Toolkit.md) (3 shared connections)
 - [Hierarchical Schema Tests](Hierarchical_Schema_Tests.md) (3 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (2 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (2 shared connections)
 - [Inventory Command Factories](Inventory_Command_Factories.md) (2 shared connections)
 - [Migration Testing Strategy](Migration_Testing_Strategy.md) (1 shared connections)
 

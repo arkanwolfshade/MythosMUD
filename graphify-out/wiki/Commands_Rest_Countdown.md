@@ -1,34 +1,23 @@
 # Commands Rest Countdown
 
-> 7 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **circuit_breaker.py** (10 connections) — `server/realtime/circuit_breaker.py`
-- **CircuitState** (6 connections) — `server/realtime/circuit_breaker.py`
-- **.get_state()** (3 connections) — `server/realtime/circuit_breaker.py`
-- **Enum** (2 connections)
-- **Circuit breaker pattern for NATS message processing.  Implements three-state cir** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Circuit breaker states.      - CLOSED: Normal operation, requests pass through** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Get current circuit state.          Returns:             Current CircuitState** (1 connections) — `server/realtime/circuit_breaker.py`
+- **test_get_following_returns_tuple()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **get_following returns (target_id, target_type).** (1 connections) — `server/tests/unit/game/test_follow_service.py`
 
 ## Relationships
 
-- [Performance Optimization Summary](Performance_Optimization_Summary.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Circuit Breaker Core](Circuit_Breaker_Core.md) (2 shared connections)
-- [CircuitBreakerOpen](CircuitBreakerOpen.md) (1 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
-- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
+- [NPC Utility Functions](NPC_Utility_Functions.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/circuit_breaker.py`
+- `server/tests/unit/game/test_follow_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

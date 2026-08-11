@@ -36,11 +36,11 @@
 - [AnyIO vs Asyncio Guide](AnyIO_vs_Asyncio_Guide.md) (18 shared connections)
 - [Procedures Readme Semgrep](Procedures_Readme_Semgrep.md) (3 shared connections)
 - [Plan Archive Character](Plan_Archive_Character.md) (3 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 - [Admin Teleport FRD](Admin_Teleport_FRD.md) (2 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
 - [Player Mute Persistence](Player_Mute_Persistence.md) (1 shared connections)
-- [chat_logger](chat_logger.md) (1 shared connections)
-- [Monitoring API Endpoints](Monitoring_API_Endpoints.md) (1 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
 
 ## Source Files
 

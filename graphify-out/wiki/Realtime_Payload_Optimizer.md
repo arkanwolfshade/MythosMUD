@@ -1,24 +1,53 @@
 # Realtime Payload Optimizer
 
-> 2 nodes
+> 87 nodes
 
 ## Key Concepts
 
-- **test_handle_spells_command_no_spells()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test spells command when player has no spells.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **RateLimiter** (54 connections) — `server/realtime/rate_limiter.py`
+- **test_connection_rate_limiter.py** (33 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **.get_rate_limit_info()** (3 connections) — `server/realtime/rate_limiter.py`
+- **Any** (3 connections)
+- **.get_stats()** (3 connections) — `server/realtime/rate_limiter.py`
+- **.get_message_rate_limit_info()** (3 connections) — `server/realtime/rate_limiter.py`
+- **mock_manager()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
+- **test_rate_limiter_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_init_custom()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_check_rate_limit_first_attempt()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_check_rate_limit_within_limit()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_check_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_check_rate_limit_old_attempts_removed()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_get_rate_limit_info()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_get_rate_limit_info_no_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_old_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_old_attempts_removes_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_old_attempts_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_large_structures()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_large_structures_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_remove_player_data()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_remove_player_data_not_present()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_remove_player_data_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_get_stats()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_get_stats_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- *... and 62 more nodes in this community*
 
 ## Relationships
 
-- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
+- [NATS Subject Patterns](NATS_Subject_Patterns.md) (9 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (3 shared connections)
+- [Unified Command Handler](Unified_Command_Handler.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/realtime/rate_limiter.py`
+- `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
+- `server/tests/unit/realtime/test_connection_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 243 (98%)
+- INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

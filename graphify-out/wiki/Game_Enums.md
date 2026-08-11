@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_broadcast_player_respawn_personal_message_error()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_player_respawn handles personal message errors.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_handle_nats_message_validation_error()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _handle_nats_message handles validation errors and adds to DLQ.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [Database Pool Configuration](Database_Pool_Configuration.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

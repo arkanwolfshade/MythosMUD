@@ -20,7 +20,7 @@
 
 ## Relationships
 
-- [Level and XP Curve](Level_and_XP_Curve.md) (3 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (3 shared connections)
 
 ## Source Files
 

@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **.test_stop_success()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **Test stop successfully stops the service.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_start_failure()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test start handles exceptions gracefully.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
 
 ## Relationships
 

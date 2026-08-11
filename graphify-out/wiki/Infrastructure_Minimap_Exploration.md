@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_combat_command_rate_limited()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command when rate limited.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_remove_member_leave_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **Member can leave; party remains.** (1 connections) — `server/tests/unit/game/test_party_service.py`
 
 ## Relationships
 
-- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
+- [Command Alias Model](Command_Alias_Model.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 

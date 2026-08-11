@@ -1,52 +1,54 @@
 # Config Model Tests
 
-> 54 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **test_look_helpers.py** (30 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **_parse_instance_number()** (11 connections) — `server/commands/look_helpers.py`
-- **test_parse_instance_number_hyphen_syntax()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_parse_instance_number_space_syntax()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_parse_instance_number_no_instance()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_parse_instance_number_multiple_spaces()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_get_health_label_healthy()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_get_health_label_wounded()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_get_health_label_critical()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_get_health_label_mortally_wounded()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_get_health_label_no_max_dp()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_get_health_label_zero_max_dp()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_get_lucidity_label_lucid()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_get_lucidity_label_disturbed()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_get_lucidity_label_unstable()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_get_lucidity_label_mad()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_get_lucidity_label_no_lucidity()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_get_visible_equipment_no_equipment()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_get_visible_equipment_with_equipment()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_is_direction_cardinal()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_is_direction_abbreviation()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_is_direction_not_direction()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_get_wearable_container_service_initializes()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_get_wearable_container_service_no_persistence()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_parse_instance_number_hyphen_syntax()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
-- *... and 29 more nodes in this community*
+- **HealthService** (24 connections) — `server/services/health_service.py`
+- **.get_health_status()** (10 connections) — `server/services/health_service.py`
+- **.check_database_health_async()** (9 connections) — `server/services/health_service.py`
+- **Any** (7 connections)
+- **._create_health_response()** (7 connections) — `server/services/health_service.py`
+- **.get_server_component_health()** (7 connections) — `server/services/health_service.py`
+- **.check_database_health()** (6 connections) — `server/services/health_service.py`
+- **._ping_database()** (5 connections) — `server/services/health_service.py`
+- **._health_from_pool()** (5 connections) — `server/services/health_service.py`
+- **.check_connections_health()** (5 connections) — `server/services/health_service.py`
+- **.get_database_component_health()** (5 connections) — `server/services/health_service.py`
+- **.get_connections_component_health()** (5 connections) — `server/services/health_service.py`
+- **.determine_overall_status()** (5 connections) — `server/services/health_service.py`
+- **room_service()** (5 connections) — `server/tests/unit/game/test_room_service.py`
+- **.get_server_uptime()** (4 connections) — `server/services/health_service.py`
+- **._status_from_query_ms()** (4 connections) — `server/services/health_service.py`
+- **.get_database_component_health_async()** (4 connections) — `server/services/health_service.py`
+- **.generate_alerts()** (4 connections) — `server/services/health_service.py`
+- **.__init__()** (3 connections) — `server/services/health_service.py`
+- **.get_memory_usage()** (3 connections) — `server/services/health_service.py`
+- **.get_cpu_usage()** (3 connections) — `server/services/health_service.py`
+- **HealthStatus** (3 connections)
+- **health_service()** (3 connections) — `server/tests/unit/services/test_health_service.py`
+- **Health monitoring service for MythosMUD server.      Provides comprehensive he** (1 connections) — `server/services/health_service.py`
+- **Initialize the health service.          Args:             connection_manager:** (1 connections) — `server/services/health_service.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [Look Player Command](Look_Player_Command.md) (22 shared connections)
-- [Commands Command Look](Commands_Command_Look.md) (4 shared connections)
-- [Look Container Command](Look_Container_Command.md) (3 shared connections)
+- [Monitoring Response Models](Monitoring_Response_Models.md) (13 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
+- [Combat Turn Processor](Combat_Turn_Processor.md) (1 shared connections)
+- [Inventory Service Helpers](Inventory_Service_Helpers.md) (1 shared connections)
+- [ASCII Map Exit Tests](ASCII_Map_Exit_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_helpers.py`
-- `server/tests/unit/commands/test_look_helpers.py`
-- `server/tests/unit/commands/test_look_helpers_functions.py`
+- `server/services/health_service.py`
+- `server/tests/unit/game/test_room_service.py`
+- `server/tests/unit/services/test_health_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 143 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 148 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

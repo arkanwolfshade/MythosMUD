@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_emit_container_opened()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **Test emit_container_opened emits event to player.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_handle_npc_entered_room()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test handle_npc_entered_room() processes event.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- [E 2 E Testing Guide](E_2_E_Testing_Guide.md) (1 shared connections)
-- [Database Manager Tests](Database_Manager_Tests.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_container_websocket_events.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 

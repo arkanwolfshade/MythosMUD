@@ -33,13 +33,13 @@
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (9 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (9 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (4 shared connections)
 - [Logging Path Utilities](Logging_Path_Utilities.md) (2 shared connections)
 - [Logging File Setup](Logging_File_Setup.md) (1 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
-- [Test Optimization Insights](Test_Optimization_Insights.md) (1 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (1 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (1 shared connections)
 
 ## Source Files
 

@@ -2,7 +2,7 @@
 
 > God node · 182 connections · `server/services/combat_service.py`
 
-**Community:** [Combat Attack Service](Combat_Attack_Service.md)
+**Community:** [Client Event Store](Client_Event_Store.md)
 
 ## Connections by Relation
 
@@ -106,7 +106,7 @@
 - CombatCommandHandlerExtras `INFERRED`
 - SpellEffectsDeps `INFERRED`
 - CombatPersistenceHandler `INFERRED`
-- MagicServiceCompletionMixin `INFERRED`
+- CombatBundle `INFERRED`
 
 ---
 

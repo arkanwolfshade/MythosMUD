@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [Client Security Utilities](Client_Security_Utilities.md) (4 shared connections)
+- [E2E Suite Overview](E2E_Suite_Overview.md) (4 shared connections)
 - [Room Drop Renderer](Room_Drop_Renderer.md) (1 shared connections)
-- [Archive Frd Random](Archive_Frd_Random.md) (1 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
 
 ## Source Files
 

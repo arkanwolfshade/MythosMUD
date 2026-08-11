@@ -34,8 +34,8 @@
 ## Relationships
 
 - [Cursor Plans Plan](Cursor_Plans_Plan.md) (4 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
 
 ## Source Files
 

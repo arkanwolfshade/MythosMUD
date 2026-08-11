@@ -1,10 +1,11 @@
 # Audit Logger Service
 
-> 44 nodes
+> 48 nodes
 
 ## Key Concepts
 
 - **AuditLogger** (21 connections) — `server/utils/audit_logger.py`
+- **audit_logger.py** (14 connections) — `server/utils/audit_logger.py`
 - **._write_entry()** (10 connections) — `server/utils/audit_logger.py`
 - **test_audit_logger.py** (8 connections) — `server/tests/unit/utils/test_audit_logger.py`
 - **Any** (7 connections)
@@ -28,22 +29,26 @@
 - **datetime** (3 connections)
 - **.log_player_action()** (3 connections) — `server/utils/audit_logger.py`
 - **.log_alias_expansion()** (3 connections) — `server/utils/audit_logger.py`
-- **Unit tests for audit_logger utilities.  Tests the AuditLogger class.** (1 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- *... and 19 more nodes in this community*
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (4 shared connections)
-- [Archive Frd Random](Archive_Frd_Random.md) (1 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (3 shared connections)
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Combat Player Broadcasts](Combat_Player_Broadcasts.md) (1 shared connections)
+- [Async Audit Cursor](Async_Audit_Cursor.md) (1 shared connections)
+- [Container Component Capacity](Container_Component_Capacity.md) (1 shared connections)
 
 ## Source Files
 
 - `server/tests/unit/utils/test_audit_logger.py`
 - `server/utils/audit_logger.py`
+- `server/utils/log_time_formats.py`
 
 ## Audit Trail
 
-- EXTRACTED: 139 (100%)
+- EXTRACTED: 158 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

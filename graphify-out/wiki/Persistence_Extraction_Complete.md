@@ -18,9 +18,11 @@
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (4 shared connections)
-- [Mythos Time HUD](Mythos_Time_HUD.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Memory Leak Metrics](Memory_Leak_Metrics.md) (1 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
 - [Game State Provider](Game_State_Provider.md) (1 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (1 shared connections)
 
 ## Source Files
 

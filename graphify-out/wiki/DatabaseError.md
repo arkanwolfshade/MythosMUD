@@ -2,7 +2,7 @@
 
 > God node · 434 connections · `server/exceptions.py`
 
-**Community:** [Optimization Archive Modernization](Optimization_Archive_Modernization.md)
+**Community:** [Schemas Maps Map](Schemas_Maps_Map.md)
 
 ## Connections by Relation
 
@@ -32,10 +32,10 @@
 - exceptions.py `EXTRACTED`
 
 ### imports
-- connection_manager_methods.py `EXTRACTED`
 - database.py `EXTRACTED`
 - async_persistence.py `EXTRACTED`
 - players.py `EXTRACTED`
+- connection_manager_methods.py `EXTRACTED`
 - maps.py `EXTRACTED`
 - test_container_persistence.py `EXTRACTED`
 - container_persistence.py `EXTRACTED`
@@ -71,9 +71,9 @@
 - track_player_connected_impl() `INFERRED`
 - get_containers_by_entity_id() `INFERRED`
 - delete_container() `INFERRED`
-- cleanup_websocket_disconnect() `INFERRED`
 - _disconnect_connection_for_session() `INFERRED`
 - handle_new_game_session_impl() `INFERRED`
+- _disconnect_other_characters() `INFERRED`
 
 ### inherits
 - MythosMUDError `EXTRACTED`

@@ -13,7 +13,7 @@
 
 ## Relationships
 
-- [Chat Service Whispers](Chat_Service_Whispers.md) (1 shared connections)
+- [Character Creation Service](Character_Creation_Service.md) (1 shared connections)
 
 ## Source Files
 

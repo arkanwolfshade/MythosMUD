@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [Players API Endpoints](Players_API_Endpoints.md) (3 shared connections)
+- [JSONB Column Parsing](JSONB_Column_Parsing.md) (2 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (1 shared connections)
 
 ## Source Files
 

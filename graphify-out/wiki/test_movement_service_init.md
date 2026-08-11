@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_movement_service_init()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test MovementService initialization.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_broadcast_player_respawn_personal_message_error()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test broadcast_player_respawn handles personal message errors.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Relationships
 
-- [Combat Client Crash Report](Combat_Client_Crash_Report.md) (1 shared connections)
-- [Calendar Holiday Schemas](Calendar_Holiday_Schemas.md) (1 shared connections)
+- [Database Pool Configuration](Database_Pool_Configuration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

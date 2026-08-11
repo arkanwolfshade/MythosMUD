@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_build_room_objects_with_dict_attributes()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _build_room_objects uses environment from attributes dict.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_alert_to_dict()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **Test Alert.to_dict converts to dictionary.** (1 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
 
 ## Relationships
 
-- [Mythosmud Obsidian Raw](Mythosmud_Obsidian_Raw.md) (1 shared connections)
+- [Rate Limiter Service](Rate_Limiter_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/services/test_combat_monitoring_service.py`
 
 ## Audit Trail
 

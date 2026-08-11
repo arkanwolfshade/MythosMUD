@@ -1,54 +1,54 @@
 # WebSocket Request Context
 
-> 32 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **UnequipCommand** (22 connections) — `server/models/command_inventory.py`
-- **test_unequip_command_validate_slot_empty_string()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_unequip_command_validate_search_term_empty_string()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_unequip_command_validate_requirements_neither_provided()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_unequip_command_with_slot()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_unequip_command_with_search_term()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_unequip_command_with_both()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_unequip_command_validate_slot_strips()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_unequip_command_validate_slot_whitespace_only()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_unequip_command_validate_search_term_strips()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_unequip_command_validate_search_term_whitespace_only()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_unequip_command_validate_requirements_slot_provided()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_unequip_command_validate_requirements_search_term_provided()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **.validate_slot()** (2 connections) — `server/models/command_inventory.py`
-- **.validate_search_term()** (2 connections) — `server/models/command_inventory.py`
-- **.validate_unequip_requirements()** (2 connections) — `server/models/command_inventory.py`
-- **Command for unequipping an item back to inventory.** (1 connections) — `server/models/command_inventory.py`
-- **Strip and normalize slot name.** (1 connections) — `server/models/command_inventory.py`
-- **Strip and validate search term.** (1 connections) — `server/models/command_inventory.py`
-- **Ensure either slot or search_term is provided.** (1 connections) — `server/models/command_inventory.py`
-- **Test UnequipCommand can be created with slot.** (1 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **Test UnequipCommand can be created with search_term.** (1 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **Test UnequipCommand can be created with both slot and search_term.** (1 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **Test UnequipCommand strips whitespace from slot.** (1 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **Test UnequipCommand cannot accept empty slot (fails min_length before validator)** (1 connections) — `server/tests/unit/models/test_command_inventory.py`
-- *... and 7 more nodes in this community*
+- **ChatPoseManager** (11 connections) — `server/game/chat_pose_manager.py`
+- **ChatWhisperTracker** (10 connections) — `server/game/chat_whisper_tracker.py`
+- **.__init__()** (7 connections) — `server/game/chat_service.py`
+- **.normalize_player_id()** (5 connections) — `server/game/chat_pose_manager.py`
+- **.set_pose()** (3 connections) — `server/game/chat_pose_manager.py`
+- **.get_pose()** (3 connections) — `server/game/chat_pose_manager.py`
+- **.clear_pose()** (3 connections) — `server/game/chat_pose_manager.py`
+- **.__init__()** (2 connections) — `server/game/chat_pose_manager.py`
+- **.get_all_poses()** (2 connections) — `server/game/chat_pose_manager.py`
+- **.__init__()** (2 connections) — `server/game/chat_whisper_tracker.py`
+- **.store_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
+- **.get_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
+- **.clear_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
+- **.get_all_trackings()** (2 connections) — `server/game/chat_whisper_tracker.py`
+- **Manages in-memory storage of player poses.** (1 connections) — `server/game/chat_pose_manager.py`
+- **Initialize the pose manager.** (1 connections) — `server/game/chat_pose_manager.py`
+- **Normalize player identifiers to string form.** (1 connections) — `server/game/chat_pose_manager.py`
+- **Set a player's pose in memory.          Args:             player_id: ID of the p** (1 connections) — `server/game/chat_pose_manager.py`
+- **Get a player's current pose.          Args:             player_id: ID of the pla** (1 connections) — `server/game/chat_pose_manager.py`
+- **Clear a player's pose.          Args:             player_id: ID of the player** (1 connections) — `server/game/chat_pose_manager.py`
+- **Get all poses (for testing/debugging).          Returns:             Dictionary** (1 connections) — `server/game/chat_pose_manager.py`
+- **Initialize chat service.          Args:             persistence: Database persis** (1 connections) — `server/game/chat_service.py`
+- **Tracks last whisper senders for reply functionality.** (1 connections) — `server/game/chat_whisper_tracker.py`
+- **Initialize the whisper tracker.** (1 connections) — `server/game/chat_whisper_tracker.py`
+- **Store the last whisper sender for a player.          Args:             receiver_** (1 connections) — `server/game/chat_whisper_tracker.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [Admin Summon Command](Admin_Summon_Command.md) (14 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (3 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
-- [Emote Schema Validator](Emote_Schema_Validator.md) (1 shared connections)
-- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (1 shared connections)
-- [Chat Rate Limiter](Chat_Rate_Limiter.md) (1 shared connections)
+- [Chat Mute Admin API](Chat_Mute_Admin_API.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Who Command Tests](Who_Command_Tests.md) (2 shared connections)
+- [Chat Moderation Service](Chat_Moderation_Service.md) (1 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_inventory.py`
-- `server/tests/unit/models/test_command_inventory.py`
+- `server/game/chat_pose_manager.py`
+- `server/game/chat_service.py`
+- `server/game/chat_whisper_tracker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 78 (94%)
-- INFERRED: 5 (6%)
+- EXTRACTED: 67 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

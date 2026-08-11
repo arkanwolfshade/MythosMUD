@@ -32,7 +32,7 @@
 ## Relationships
 
 - [Security Infrastructure](Security_Infrastructure.md) (24 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 - [Realtime Websocket Handler](Realtime_Websocket_Handler.md) (2 shared connections)
 
 ## Source Files

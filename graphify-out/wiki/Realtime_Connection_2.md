@@ -1,31 +1,33 @@
 # Realtime Connection
 
-> 6 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **connection_state_machine.py** (10 connections) — `server/realtime/connection_state_machine.py`
-- **ConnectionEvent** (4 connections) — `server/realtime/connection_state_machine.py`
-- **Enum** (2 connections)
-- **StateMachine** (2 connections)
-- **Connection state machine for NATS messaging.  Implements a robust state machine** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Events that trigger state transitions.      AI: Explicit events make the FSM det** (1 connections) — `server/realtime/connection_state_machine.py`
+- **test_websocket_handler_rate_limit.py** (7 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **test_check_rate_limit_no_connection_id()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **test_check_rate_limit_passed()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **test_check_rate_limit_exceeded()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Unit tests for websocket handler rate limiting.  Tests the rate limiting functio** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Test _check_rate_limit() returns True when no connection_id.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Test _check_rate_limit() returns True when rate limit check passes.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Test _check_rate_limit() returns False when rate limit exceeded.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
 
 ## Relationships
 
-- [Room Subscription Helpers](Room_Subscription_Helpers.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Exploration Command Factory](Exploration_Command_Factory.md) (2 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
-- [Combat Service Bundle](Combat_Service_Bundle.md) (1 shared connections)
+- [Container API Endpoints](Container_API_Endpoints.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_state_machine.py`
+- `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

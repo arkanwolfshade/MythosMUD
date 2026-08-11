@@ -10,7 +10,7 @@
 ## Relationships
 
 - [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 

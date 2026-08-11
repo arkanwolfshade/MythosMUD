@@ -1,60 +1,55 @@
 # NPC Definition Admin API
 
-> 68 nodes
+> 70 nodes
 
 ## Key Concepts
 
-- **ChatService** (83 connections) — `server/game/chat_service.py`
-- **UUID** (26 connections)
-- **Any** (14 connections)
-- **.initialize()** (5 connections) — `server/container/bundles/chat.py`
-- **._normalize_player_id()** (5 connections) — `server/game/chat_service.py`
-- **.send_local_message()** (4 connections) — `server/game/chat_service.py`
-- **.send_global_message()** (4 connections) — `server/game/chat_service.py`
-- **.send_party_message()** (4 connections) — `server/game/chat_service.py`
-- **.send_system_message()** (4 connections) — `server/game/chat_service.py`
-- **.send_whisper_message()** (4 connections) — `server/game/chat_service.py`
-- **.set_player_pose()** (4 connections) — `server/game/chat_service.py`
-- **.send_predefined_emote()** (4 connections) — `server/game/chat_service.py`
-- **.get_player_mutes()** (4 connections) — `server/game/chat_service.py`
-- **.get_player_pose()** (3 connections) — `server/game/chat_service.py`
-- **.clear_player_pose()** (3 connections) — `server/game/chat_service.py`
-- **.mute_channel()** (3 connections) — `server/game/chat_service.py`
-- **.unmute_channel()** (3 connections) — `server/game/chat_service.py`
-- **.is_channel_muted()** (3 connections) — `server/game/chat_service.py`
-- **.mute_player()** (3 connections) — `server/game/chat_service.py`
-- **.unmute_player()** (3 connections) — `server/game/chat_service.py`
-- **.is_player_muted()** (3 connections) — `server/game/chat_service.py`
-- **.mute_global()** (3 connections) — `server/game/chat_service.py`
-- **.unmute_global()** (3 connections) — `server/game/chat_service.py`
-- **.is_globally_muted()** (3 connections) — `server/game/chat_service.py`
-- **.add_admin()** (3 connections) — `server/game/chat_service.py`
-- *... and 43 more nodes in this community*
+- **test_command_factories_communication.py** (29 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **CommunicationCommandFactory** (15 connections) — `server/utils/command_factories_communication.py`
+- **.create_whisper_command()** (8 connections) — `server/utils/command_factories_communication.py`
+- **.create_channel_command()** (8 connections) — `server/utils/command_factories_communication.py`
+- **.create_local_command()** (7 connections) — `server/utils/command_factories_communication.py`
+- **.create_reply_command()** (7 connections) — `server/utils/command_factories_communication.py`
+- **.create_say_command()** (6 connections) — `server/utils/command_factories_communication.py`
+- **.create_system_command()** (6 connections) — `server/utils/command_factories_communication.py`
+- **.create_emote_command()** (6 connections) — `server/utils/command_factories_communication.py`
+- **.create_me_command()** (6 connections) — `server/utils/command_factories_communication.py`
+- **.create_pose_command()** (5 connections) — `server/utils/command_factories_communication.py`
+- **test_create_say_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_local_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_whisper_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_whisper_command_no_message()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_reply_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_local_command_too_long()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_system_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_emote_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_me_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_channel_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_channel_command_default_no_channel()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_reply_command_empty_message()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_whisper_command_too_long()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_say_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- *... and 45 more nodes in this community*
 
 ## Relationships
 
-- [Chat Mute Admin API](Chat_Mute_Admin_API.md) (29 shared connections)
-- [Chat Message Helpers](Chat_Message_Helpers.md) (11 shared connections)
-- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (4 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [MP Regeneration Service](MP_Regeneration_Service.md) (2 shared connections)
-- [Player Domain Model](Player_Domain_Model.md) (2 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (2 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
-- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (1 shared connections)
-- [NPC Service Tests](NPC_Service_Tests.md) (1 shared connections)
-- [Combat Configuration Service](Combat_Configuration_Service.md) (1 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (14 shared connections)
+- [Realtime Errors Error](Realtime_Errors_Error.md) (11 shared connections)
+- [NPC Occupant Processor](NPC_Occupant_Processor.md) (8 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (1 shared connections)
+- [Environmental Container Scenario](Environmental_Container_Scenario.md) (1 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/chat.py`
-- `server/game/chat_service.py`
+- `server/tests/unit/utils/test_command_factories_communication.py`
+- `server/utils/command_factories_communication.py`
 
 ## Audit Trail
 
-- EXTRACTED: 249 (96%)
-- INFERRED: 10 (4%)
+- EXTRACTED: 209 (94%)
+- INFERRED: 14 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

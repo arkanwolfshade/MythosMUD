@@ -33,7 +33,9 @@
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (5 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (2 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,59 +1,58 @@
 # WebSocket Command Handler
 
-> 42 nodes
+> 46 nodes
 
 ## Key Concepts
 
-- **test_command_factories_combat.py** (14 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **CombatCommandFactory** (12 connections) — `server/utils/command_factories_combat.py`
-- **.__init__()** (9 connections) — `server/utils/command_factories.py`
-- **FleeCommand** (6 connections) — `server/models/command_combat.py`
-- **.create_attack_command()** (5 connections) — `server/utils/command_factories_combat.py`
-- **.create_punch_command()** (5 connections) — `server/utils/command_factories_combat.py`
-- **.create_kick_command()** (5 connections) — `server/utils/command_factories_combat.py`
-- **.create_strike_command()** (5 connections) — `server/utils/command_factories_combat.py`
-- **.create_taunt_command()** (5 connections) — `server/utils/command_factories_combat.py`
-- **.create_flee_command()** (4 connections) — `server/utils/command_factories_combat.py`
-- **test_create_attack_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_attack_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_punch_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_punch_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_kick_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_kick_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_strike_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_strike_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_flee_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_taunt_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **test_create_taunt_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **Command for fleeing combat (no target).** (1 connections) — `server/models/command_combat.py`
-- **Unit tests for combat command factories.  Tests the CombatCommandFactory class m** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **Test create_attack_command() creates AttackCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- **Test create_attack_command() allows None target (validation happens later).** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
-- *... and 17 more nodes in this community*
+- **StatsGenerator** (36 connections) — `server/game/stats_generator.py`
+- **Stats** (11 connections)
+- **.roll_stats_with_profession()** (7 connections) — `server/game/stats_generator.py`
+- **TestGetPlayerService** (7 connections) — `server/tests/unit/test_dependency_injection.py`
+- **TestGetRoomService** (7 connections) — `server/tests/unit/test_dependency_injection.py`
+- **TestGetStatsGenerator** (7 connections) — `server/tests/unit/test_dependency_injection.py`
+- **.roll_stats()** (6 connections) — `server/game/stats_generator.py`
+- **._roll_size()** (5 connections) — `server/game/stats_generator.py`
+- **._roll_3d6()** (5 connections) — `server/game/stats_generator.py`
+- **.get_available_classes()** (5 connections) — `server/game/stats_generator.py`
+- **.roll_stats_with_validation()** (5 connections) — `server/game/stats_generator.py`
+- **._roll_4d6_drop_lowest()** (4 connections) — `server/game/stats_generator.py`
+- **._roll_point_buy()** (4 connections) — `server/game/stats_generator.py`
+- **.validate_class_prerequisites()** (4 connections) — `server/game/stats_generator.py`
+- **._check_profession_requirements()** (4 connections) — `server/game/stats_generator.py`
+- **.get_stat_summary()** (4 connections) — `server/game/stats_generator.py`
+- **.test_get_player_service_success()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
+- **.test_get_room_service_success()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
+- **.test_get_stats_generator()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
+- **.test_get_stats_generator_stateless()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
+- **.test_get_player_service_not_initialized()** (3 connections) — `server/tests/unit/test_dependency_injection.py`
+- **.test_get_room_service_not_initialized()** (3 connections) — `server/tests/unit/test_dependency_injection.py`
+- **.__init__()** (2 connections) — `server/game/stats_generator.py`
+- **Any** (2 connections)
+- **Service for generating random character statistics.** (1 connections) — `server/game/stats_generator.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [Environmental Container Scenario](Environmental_Container_Scenario.md) (6 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
-- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (3 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (2 shared connections)
-- [Emote Schema Validator](Emote_Schema_Validator.md) (1 shared connections)
-- [Moderation Command Models](Moderation_Command_Models.md) (1 shared connections)
-- [Base Command Models](Base_Command_Models.md) (1 shared connections)
-- [Admin Command Models](Admin_Command_Models.md) (1 shared connections)
-- [Cursor Plans Disconnect](Cursor_Plans_Disconnect.md) (1 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (14 shared connections)
+- [Game Mechanics Service](Game_Mechanics_Service.md) (7 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Inventory Service Helpers](Inventory_Service_Helpers.md) (4 shared connections)
+- [Container Loot Helpers](Container_Loot_Helpers.md) (3 shared connections)
+- [NPC Database Sessions](NPC_Database_Sessions.md) (1 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
+- [System Monitoring API](System_Monitoring_API.md) (1 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_combat.py`
-- `server/tests/unit/utils/test_command_factories_combat.py`
-- `server/utils/command_factories.py`
-- `server/utils/command_factories_combat.py`
+- `server/game/stats_generator.py`
+- `server/tests/unit/test_dependency_injection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 121 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 148 (88%)
+- INFERRED: 21 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

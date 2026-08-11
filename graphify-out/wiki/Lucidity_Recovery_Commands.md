@@ -1,53 +1,52 @@
 # Lucidity Recovery Commands
 
-> 78 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **test_npc_utils.py** (30 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **get_zone_key_from_room_id()** (17 connections) — `server/npc/npc_utils.py`
-- **extract_npc_metadata()** (12 connections) — `server/npc/npc_utils.py`
-- **extract_definition_id_from_npc()** (12 connections) — `server/npc/npc_utils.py`
-- **extract_room_id_from_npc()** (11 connections) — `server/npc/npc_utils.py`
-- **npc_utils.py** (8 connections) — `server/npc/npc_utils.py`
-- **.despawn_npc()** (8 connections) — `server/npc/population_control.py`
-- **._get_active_npcs_from_lifecycle_manager()** (6 connections) — `server/npc/population_control.py`
-- **._get_zone_key_from_room_id()** (5 connections) — `server/npc/population_control.py`
-- **.cleanup_inactive_npcs()** (5 connections) — `server/npc/population_control.py`
-- **.is_required()** (4 connections) — `server/models/npc.py`
-- **._update_population_stats_for_despawn()** (4 connections) — `server/npc/population_control.py`
-- **Any** (3 connections)
-- **_stable_room_id_for_zone()** (3 connections) — `server/npc/npc_utils.py`
-- **.get_zone_population_summary()** (3 connections) — `server/npc/population_control.py`
-- **test_extract_room_id_from_npc_current_room()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_room_id_from_npc_current_room_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_room_id_from_npc_room_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_room_id_from_npc_not_found()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_room_id_from_npc_non_string()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_npc_metadata_valid()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_npc_metadata_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_npc_metadata_non_string_type()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_npc_metadata_truthy_required()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_npc_metadata_none_required()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- *... and 53 more nodes in this community*
+- **test_async_persistence_delegates.py** (35 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **reset_async_persistence()** (6 connections) — `server/async_persistence.py`
+- **test_validate_and_fix_player_room_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_apply_lucidity_loss_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_apply_fear_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_apply_corruption_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_heal_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_async_heal_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_damage_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_async_damage_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_create_container_with_params()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_create_container_with_kwargs()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_async_persistence_creates_instance()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_async_persistence_returns_same_instance()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_reset_async_persistence()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_player_by_user_id_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_container_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_containers_by_room_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_containers_by_entity_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_update_container_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_decayed_containers_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_decayed_containers_none_time()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_delete_container_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_create_item_instance_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_ensure_item_instance_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [Level and XP Curve](Level_and_XP_Curve.md) (8 shared connections)
-- [LRU Cache Manager](LRU_Cache_Manager.md) (7 shared connections)
-- [Command Parser Tests](Command_Parser_Tests.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (25 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (11 shared connections)
+- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (4 shared connections)
+- [Maps API Endpoints](Maps_API_Endpoints.md) (3 shared connections)
 
 ## Source Files
 
-- `server/models/npc.py`
-- `server/npc/npc_utils.py`
-- `server/npc/population_control.py`
-- `server/tests/unit/npc/test_npc_utils.py`
+- `server/async_persistence.py`
+- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 
 ## Audit Trail
 
-- EXTRACTED: 239 (99%)
-- INFERRED: 3 (1%)
+- EXTRACTED: 153 (94%)
+- INFERRED: 10 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

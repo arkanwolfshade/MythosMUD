@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_is_player_disconnecting_true()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Test is_player_disconnecting() returns True when player is disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_evaluate_numeric_comparison_greater_equal()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_numeric_comparison() handles >= operator.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [Archive Lucidity System](Archive_Lucidity_System.md) (1 shared connections)
+- [Quest Instance Repository](Quest_Instance_Repository.md) (1 shared connections)
+- [WebSocket Message Handlers](WebSocket_Message_Handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

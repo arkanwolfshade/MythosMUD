@@ -1,64 +1,41 @@
 # Investigations Sessions Session
 
-> 74 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **_check_grace_period_block()** (24 connections) — `server/command_handler_unified.py`
-- **test_command_validation.py** (22 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **_prepare_command_for_processing()** (21 connections) — `server/command_handler_unified.py`
-- **process_command_unified()** (19 connections) — `server/command_handler_unified.py`
-- **_handle_special_command_routing()** (18 connections) — `server/command_handler_unified.py`
-- **_check_casting_state()** (18 connections) — `server/command_handler_unified.py`
-- **check_catatonia_block()** (17 connections) — `server/command_handler/catatonia_check.py`
-- **_check_all_command_blocks()** (17 connections) — `server/command_handler_unified.py`
-- **_validate_command_basics()** (16 connections) — `server/command_handler_unified.py`
-- **command_request_app_state()** (14 connections) — `server/command_handler/command_execution_request.py`
-- **Any** (14 connections)
-- **test_command_handler_unified_helpers.py** (13 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **CommandExecutionRequest** (11 connections)
-- **_check_rate_limit()** (10 connections) — `server/command_handler_unified.py`
-- **process_command()** (9 connections) — `server/command_handler_unified.py`
-- **_get_grace_check_context()** (8 connections) — `server/command_handler_unified.py`
-- **_get_casting_block_result()** (7 connections) — `server/command_handler_unified.py`
-- **TestHandleSpecialCommandRouting** (7 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **TestCheckGracePeriodBlock** (7 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **TestCheckCastingState** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **test_command_request_app_state_from_http_request_like_object()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **test_command_request_app_state_missing_app_or_state_returns_none()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **TestCheckRateLimit** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_handle_special_command_routing_alias_command()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_handle_special_command_routing_alias_storage_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- *... and 49 more nodes in this community*
+- **get_player_service_for_testing()** (9 connections) — `server/dependencies.py`
+- **TestGetPlayerServiceForTesting** (7 connections) — `server/tests/unit/test_dependency_injection.py`
+- **TestGetPlayerServiceForTesting** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_player_service_for_testing_creates_mock()** (4 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_player_service_for_testing_with_injection()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
+- **.test_get_player_service_for_testing_without_injection()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
+- **.test_get_player_service_for_testing_with_provided_service()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Get a PlayerService instance for testing purposes.      This function allows tes** (1 connections) — `server/dependencies.py`
+- **Tests for get_player_service_for_testing helper function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_player_service_for_testing returns provided service.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_player_service_for_testing creates PlayerService when None provided.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_player_service_for_testing() function.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
+- **Test get_player_service_for_testing() with injected service.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
+- **Test get_player_service_for_testing() creates mock when None.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (34 shared connections)
-- [Admin Teleport Commands](Admin_Teleport_Commands.md) (24 shared connections)
-- [Catatonia Check Logic](Catatonia_Check_Logic.md) (16 shared connections)
-- [Health Check Service](Health_Check_Service.md) (9 shared connections)
-- [Test Refactoring Summary](Test_Refactoring_Summary.md) (6 shared connections)
-- [NATS Connection State Machine](NATS_Connection_State_Machine.md) (6 shared connections)
-- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (6 shared connections)
-- [WebSocket Auth Integration](WebSocket_Auth_Integration.md) (5 shared connections)
-- [Npc Behavior Engine](Npc_Behavior_Engine.md) (5 shared connections)
-- [Game Magic Spell](Game_Magic_Spell.md) (5 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (3 shared connections)
-- [Mythosmud Obsidian Raw](Mythosmud_Obsidian_Raw.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (6 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (5 shared connections)
+- [Inventory Service Helpers](Inventory_Service_Helpers.md) (1 shared connections)
+- [WebSocket Command Handler](WebSocket_Command_Handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/command_handler/catatonia_check.py`
-- `server/command_handler/command_execution_request.py`
-- `server/command_handler_unified.py`
-- `server/tests/unit/command_handler/test_command_execution_request.py`
-- `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- `server/tests/unit/commands/test_command_validation.py`
+- `server/dependencies.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/test_dependency_injection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 361 (97%)
-- INFERRED: 10 (3%)
+- EXTRACTED: 36 (84%)
+- INFERRED: 7 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

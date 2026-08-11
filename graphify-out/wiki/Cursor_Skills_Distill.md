@@ -1,24 +1,23 @@
 # Cursor Skills Distill
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/services/coordinate_generator.py`
-- **AsyncSession** (1 connections)
-- **Initialize coordinate generator.          Args:             session: Database se** (1 connections) — `server/services/coordinate_generator.py`
+- **test_format_message_for_receiver()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _format_message_for_receiver formats message.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [Zone Coordinate Generator](Zone_Coordinate_Generator.md) (1 shared connections)
+- [Loot All Endpoint](Loot_All_Endpoint.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/coordinate_generator.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

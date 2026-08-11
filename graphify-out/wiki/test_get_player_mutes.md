@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_player_mutes()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test get_player_mutes() returns player mutes.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_prepare_room_data_with_to_dict()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test _prepare_room_data() prepares room data with to_dict.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [Player Preferences Service](Player_Preferences_Service.md) (1 shared connections)
+- [Game Chat Moderation](Game_Chat_Moderation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_user_manager.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

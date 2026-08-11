@@ -1,49 +1,50 @@
 # Command Integration Summary
 
-> 19 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **ItemPrototypeModel** (28 connections) — `server/game/items/models.py`
-- **.find_by_tag()** (3 connections) — `server/game/items/prototype_registry.py`
-- **.all()** (3 connections) — `server/game/items/prototype_registry.py`
-- **switchblade_prototype()** (3 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
-- **.validate_item_type()** (2 connections) — `server/game/items/models.py`
-- **.validate_flags()** (2 connections) — `server/game/items/models.py`
-- **.validate_wear_slots()** (2 connections) — `server/game/items/models.py`
-- **.validate_effect_components()** (2 connections) — `server/game/items/models.py`
-- **.validate_tags()** (2 connections) — `server/game/items/models.py`
-- **BaseModel** (1 connections)
-- **Validated representation of an item prototype definition.      This model keeps** (1 connections) — `server/game/items/models.py`
-- **Validate that item_type is in the allowed list.          Args:             value** (1 connections) — `server/game/items/models.py`
-- **Validate that all flags are in the allowed list.          Args:             valu** (1 connections) — `server/game/items/models.py`
-- **Validate that all wear slots are in the allowed list.          Args:** (1 connections) — `server/game/items/models.py`
-- **Validate and normalize effect components.          Args:             value: The** (1 connections) — `server/game/items/models.py`
-- **Validate and normalize tags.          Args:             value: The list of tags** (1 connections) — `server/game/items/models.py`
-- **Find all prototypes that have a specific tag.          Args:             tag:** (1 connections) — `server/game/items/prototype_registry.py`
-- **Get all prototypes in the registry.          Returns:             Iterable[It** (1 connections) — `server/game/items/prototype_registry.py`
-- **Build ItemPrototypeModel for switchblade (weapon.main_hand.switchblade).** (1 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
+- **OccupantFormatter** (37 connections) — `server/realtime/occupant_formatter.py`
+- **.__init__()** (3 connections) — `server/realtime/occupant_formatter.py`
+- **test_occupant_formatter_is_valid_name_for_occupant_empty()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_add_valid_name_to_lists()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_process_player_name_for_update_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_process_npc_name_for_update_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_process_dict_occupant_for_update_npc()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_separate_occupants_by_type_dict_players()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Formats and separates occupants by type.** (1 connections) — `server/realtime/occupant_formatter.py`
+- **Initialize occupant formatter.** (1 connections) — `server/realtime/occupant_formatter.py`
+- **Test OccupantFormatter._is_valid_name_for_occupant() returns False for empty str** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._add_valid_name_to_lists() adds name to both lists.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._process_player_name_for_update() skips UUID player name.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._process_npc_name_for_update() skips UUID NPC name.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._process_dict_occupant_for_update() processes NPC dict.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter.separate_occupants_by_type() separates dict players.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Relationships
 
-- [Commands Inventory Display](Commands_Inventory_Display.md) (8 shared connections)
-- [Commands Look Item](Commands_Look_Item.md) (6 shared connections)
-- [Quest Instance Repository](Quest_Instance_Repository.md) (3 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
-- [Cache and NPC Cache](Cache_and_NPC_Cache.md) (1 shared connections)
-- [Realtime Visual Indicator](Realtime_Visual_Indicator.md) (1 shared connections)
-- [Typography Layout Spec](Typography_Layout_Spec.md) (1 shared connections)
+- [Room Occupant Formatter](Room_Occupant_Formatter.md) (15 shared connections)
+- [Contexts Themecontext Hooks](Contexts_Themecontext_Hooks.md) (6 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Archive Circuit Breaker](Archive_Circuit_Breaker.md) (2 shared connections)
+- [Character Stats Generator](Character_Stats_Generator.md) (2 shared connections)
+- [test_validate_room_integrity_room_without_get_players](test_validate_room_integrity_room_without_get_players.md) (1 shared connections)
+- [test_get_movement_monitor_returns_singleton](test_get_movement_monitor_returns_singleton.md) (1 shared connections)
+- [test_get_alerts_slow_movement_time](test_get_alerts_slow_movement_time.md) (1 shared connections)
+- [test_get_alerts_high_failure_rate](test_get_alerts_high_failure_rate.md) (1 shared connections)
+- [test_get_metrics_with_data](test_get_metrics_with_data.md) (1 shared connections)
+- [test_validate_room_integrity_valid](test_validate_room_integrity_valid.md) (1 shared connections)
+- [test_get_metrics_integrity_rate](test_get_metrics_integrity_rate.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/items/models.py`
-- `server/game/items/prototype_registry.py`
-- `server/tests/integration/test_combat_weapon_resolution.py`
+- `server/realtime/occupant_formatter.py`
+- `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (86%)
-- INFERRED: 8 (14%)
+- EXTRACTED: 65 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

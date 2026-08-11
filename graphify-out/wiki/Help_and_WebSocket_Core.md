@@ -1,51 +1,62 @@
 # Help and WebSocket Core
 
-> 38 nodes
+> 61 nodes
 
 ## Key Concepts
 
-- **npc_config_parsing.py** (14 connections) — `server/npc/npc_config_parsing.py`
-- **.__init__()** (11 connections) — `server/npc/npc_base.py`
-- **to_int_or_default()** (7 connections) — `server/npc/npc_config_parsing.py`
-- **get_combat_stats_dict()** (7 connections) — `server/npc/npc_config_parsing.py`
-- **normalize_determination_points()** (5 connections) — `server/npc/npc_config_parsing.py`
-- **parse_behavior_config()** (5 connections) — `server/npc/npc_config_parsing.py`
-- **_safe_stat_int()** (5 connections) — `server/npc/npc_config_parsing.py`
-- **._safe_get()** (4 connections) — `server/npc/npc_base.py`
-- **._apply_definition_attributes()** (4 connections) — `server/npc/npc_base.py`
-- **.heal()** (4 connections) — `server/npc/npc_base.py`
-- **parse_stats()** (4 connections) — `server/npc/npc_config_parsing.py`
-- **parse_ai_config()** (4 connections) — `server/npc/npc_config_parsing.py`
-- **_compute_max_dp()** (4 connections) — `server/npc/npc_config_parsing.py`
-- **._setup_base_behavior_rules()** (3 connections) — `server/npc/npc_base.py`
-- **._safe_stat_int()** (3 connections) — `server/npc/npc_base.py`
-- **.get_combat_stats()** (3 connections) — `server/npc/npc_base.py`
-- **._sync_dp_stats()** (3 connections) — `server/npc/npc_base.py`
-- **apply_dp_from_source()** (3 connections) — `server/npc/npc_config_parsing.py`
-- **apply_idle_movement_defaults()** (3 connections) — `server/npc/npc_config_parsing.py`
-- **Initialize the NPC base class.** (1 connections) — `server/npc/npc_base.py`
-- **Get attribute from obj with default to avoid lazy-loading issues.** (1 connections) — `server/npc/npc_base.py`
-- **Set npc_type, name, current_room, spawn_room_id from definition.** (1 connections) — `server/npc/npc_base.py`
-- **Setup base behavior rules common to all NPCs.** (1 connections) — `server/npc/npc_base.py`
-- **Return stats[key] as int, or default if missing/None.** (1 connections) — `server/npc/npc_base.py`
-- **Return current_dp, max_dp, dexterity for CombatParticipantData.** (1 connections) — `server/npc/npc_base.py`
-- *... and 13 more nodes in this community*
+- **MonitoringDashboard** (33 connections) — `server/monitoring/monitoring_dashboard.py`
+- **monitoring_dashboard.py** (25 connections) — `server/monitoring/monitoring_dashboard.py`
+- **Alert** (14 connections) — `server/monitoring/monitoring_dashboard.py`
+- **ExceptionStats** (12 connections) — `server/monitoring/exception_tracker.py`
+- **__init__.py** (11 connections) — `server/monitoring/__init__.py`
+- **.get_system_health()** (11 connections) — `server/monitoring/monitoring_dashboard.py`
+- **PerformanceStats** (11 connections) — `server/monitoring/performance_monitor.py`
+- **LogAggregationStats** (10 connections) — `server/structured_logging/log_aggregator.py`
+- **.record_custom_alert()** (9 connections) — `server/monitoring/monitoring_dashboard.py`
+- **__getattr__()** (8 connections) — `server/monitoring/__init__.py`
+- **SystemHealth** (8 connections) — `server/monitoring/monitoring_dashboard.py`
+- **.check_alerts()** (8 connections) — `server/monitoring/monitoring_dashboard.py`
+- **MonitoringSummary** (7 connections) — `server/monitoring/monitoring_dashboard.py`
+- **._generate_recommendations()** (7 connections) — `server/monitoring/monitoring_dashboard.py`
+- **.get_monitoring_summary()** (6 connections) — `server/monitoring/monitoring_dashboard.py`
+- **Any** (6 connections)
+- **.record_registry_failure()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
+- **.record_summon_quantity_spike()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
+- **.record_durability_anomaly()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
+- **.export_monitoring_data()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
+- **._get_memory_leak_metrics()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
+- **._calculate_performance_score()** (4 connections) — `server/monitoring/monitoring_dashboard.py`
+- **._make_rate_alert()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
+- **._make_performance_alert()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
+- **.resolve_alert()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [Level and XP Curve](Level_and_XP_Curve.md) (16 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [WebSocket Message Handlers](WebSocket_Message_Handlers.md) (1 shared connections)
+- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (13 shared connections)
+- [Memory Leak Metrics](Memory_Leak_Metrics.md) (8 shared connections)
+- [Room Occupant Manager Tests](Room_Occupant_Manager_Tests.md) (5 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (4 shared connections)
+- [Monitoring Bundle Services](Monitoring_Bundle_Services.md) (4 shared connections)
+- [Merge Refactoring Summary](Merge_Refactoring_Summary.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Realtime Errors Error](Realtime_Errors_Error.md) (3 shared connections)
+- [Magic Command Handlers](Magic_Command_Handlers.md) (2 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (1 shared connections)
+- [Spell Effect Protocols](Spell_Effect_Protocols.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/npc_base.py`
-- `server/npc/npc_config_parsing.py`
+- `server/monitoring/__init__.py`
+- `server/monitoring/exception_tracker.py`
+- `server/monitoring/monitoring_dashboard.py`
+- `server/monitoring/performance_monitor.py`
+- `server/structured_logging/log_aggregator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 115 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 233 (85%)
+- INFERRED: 40 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

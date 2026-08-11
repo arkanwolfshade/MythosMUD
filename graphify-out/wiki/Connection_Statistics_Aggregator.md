@@ -33,9 +33,7 @@
 
 ## Relationships
 
-- [Message Broadcaster Core](Message_Broadcaster_Core.md) (3 shared connections)
-- [Players API Endpoints](Players_API_Endpoints.md) (3 shared connections)
-- [Room Occupant Events](Room_Occupant_Events.md) (1 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (7 shared connections)
 
 ## Source Files
 

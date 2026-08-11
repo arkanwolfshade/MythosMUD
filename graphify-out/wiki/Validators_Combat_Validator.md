@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_kick_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_kick_command delegates to combat factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_handle_player_movement_new_subzone_none()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test handle_player_movement handles None new_subzone.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [Connection State Hooks](Connection_State_Hooks.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 

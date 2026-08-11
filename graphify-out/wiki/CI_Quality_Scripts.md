@@ -33,13 +33,13 @@
 
 ## Relationships
 
-- [Services Exploration Service](Services_Exploration_Service.md) (8 shared connections)
+- [Combat Command Helpers](Combat_Command_Helpers.md) (8 shared connections)
 - [AI Quality Guardrails](AI_Quality_Guardrails.md) (3 shared connections)
 - [Runner Path](Runner_Path.md) (2 shared connections)
 - [Linting Results Comparator](Linting_Results_Comparator.md) (1 shared connections)
 - [Dependency Risk Analyzer](Dependency_Risk_Analyzer.md) (1 shared connections)
 - [Grype Command Handle Result](Grype_Command_Handle_Result.md) (1 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
 - [Quality Fragmentation Ci](Quality_Fragmentation_Ci.md) (1 shared connections)
 
 ## Source Files

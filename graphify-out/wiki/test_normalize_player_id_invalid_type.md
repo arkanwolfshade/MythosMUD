@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_normalize_player_id_invalid_type()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Test normalize_player_id() with None returns None without warning.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_evaluate_condition_less_equal()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test evaluate_condition() handles <= operator.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [Archive Lucidity System](Archive_Lucidity_System.md) (1 shared connections)
+- [Quest Instance Repository](Quest_Instance_Repository.md) (1 shared connections)
+- [WebSocket Message Handlers](WebSocket_Message_Handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

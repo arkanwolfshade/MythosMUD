@@ -33,11 +33,13 @@
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (9 shared connections)
 - [Logout Command Tests](Logout_Command_Tests.md) (8 shared connections)
 - [Test Refactoring Summary](Test_Refactoring_Summary.md) (5 shared connections)
-- [Commands System Help](Commands_System_Help.md) (3 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (3 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (3 shared connections)
+- [Combat UUID Display Bug](Combat_UUID_Display_Bug.md) (3 shared connections)
+- [Container Repository CRUD](Container_Repository_CRUD.md) (2 shared connections)
 
 ## Source Files
 

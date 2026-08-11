@@ -1,60 +1,60 @@
 # Mythos Time HUD
 
-> 52 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **websocket_integration.py** (22 connections) — `docs/examples/logging/websocket_integration.py`
-- **measure_performance()** (20 connections) — `server/monitoring/performance_monitor.py`
-- **handle_websocket_message()** (8 connections) — `docs/examples/logging/websocket_integration.py`
-- **WebSocketManager** (7 connections) — `docs/examples/logging/websocket_integration.py`
-- **websocket_endpoint()** (7 connections) — `docs/examples/logging/websocket_integration.py`
-- **.send_text()** (7 connections) — `docs/examples/logging/websocket_integration.py`
-- **.disconnect()** (6 connections) — `docs/examples/logging/websocket_integration.py`
-- **handle_game_action()** (6 connections) — `docs/examples/logging/websocket_integration.py`
-- **chat_service** (6 connections) — `docs/examples/logging/websocket_integration.py`
-- **.connect()** (5 connections) — `docs/examples/logging/websocket_integration.py`
-- **handle_chat_message()** (5 connections) — `docs/examples/logging/websocket_integration.py`
-- **WebSocket** (5 connections) — `docs/examples/logging/websocket_integration.py`
-- **.send_message()** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **.broadcast_message()** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **authenticate_websocket_connection()** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **WebSocketRateLimiter** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **handle_websocket_error()** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **websocket_heartbeat()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **parse_websocket_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **.broadcast_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **.verify_token()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **.check_rate_limit()** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **validate_websocket_message()** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **Exception** (2 connections)
-- **WebSocketDisconnect** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- *... and 27 more nodes in this community*
+- **test_exceptions.py** (43 connections) — `server/tests/unit/test_exceptions.py`
+- **LoggedException** (23 connections) — `server/exceptions.py`
+- **test_enhanced_logging_config.py** (9 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **_StubBoundLogger** (8 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **_as_bound_logger()** (6 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **test_log_exception_once_logged_exception_uses_mark_logged()** (6 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **test_log_exception_once_plain_exception_sets_flag_and_skips_repeat()** (5 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **test_logged_http_exception_initialization()** (5 connections) — `server/tests/unit/test_exceptions.py`
+- **test_logged_http_exception_inheritance()** (4 connections) — `server/tests/unit/test_exceptions.py`
+- **test_logged_exception_initialization()** (3 connections) — `server/tests/unit/test_exceptions.py`
+- **test_logged_exception_already_logged()** (3 connections) — `server/tests/unit/test_exceptions.py`
+- **test_logged_exception_mark_logged()** (3 connections) — `server/tests/unit/test_exceptions.py`
+- **test_authentication_error_initialization()** (3 connections) — `server/tests/unit/test_exceptions.py`
+- **test_database_error_initialization()** (3 connections) — `server/tests/unit/test_exceptions.py`
+- **test_database_error_without_table()** (3 connections) — `server/tests/unit/test_exceptions.py`
+- **test_validation_error_initialization()** (3 connections) — `server/tests/unit/test_exceptions.py`
+- **test_validation_error_without_field()** (3 connections) — `server/tests/unit/test_exceptions.py`
+- **test_rate_limit_error_initialization()** (3 connections) — `server/tests/unit/test_exceptions.py`
+- **test_rate_limit_error_without_retry_after()** (3 connections) — `server/tests/unit/test_exceptions.py`
+- **test_logged_http_exception_with_logger_name()** (3 connections) — `server/tests/unit/test_exceptions.py`
+- **.already_logged()** (2 connections) — `server/exceptions.py`
+- **BoundLogger** (2 connections)
+- **Marker base class indicating an exception has already produced a log entry.** (1 connections) — `server/exceptions.py`
+- **Return True if this exception instance has already been logged.** (1 connections) — `server/exceptions.py`
+- **.__init__()** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [Memory Leak Metrics](Memory_Leak_Metrics.md) (6 shared connections)
-- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (4 shared connections)
-- [Cursor Skills Harden](Cursor_Skills_Harden.md) (4 shared connections)
-- [Merge Refactoring Summary](Merge_Refactoring_Summary.md) (3 shared connections)
-- [Test Migration Mapping](Test_Migration_Mapping.md) (3 shared connections)
-- [Player Movement Service](Player_Movement_Service.md) (2 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
-- [Quest Journal Commands](Quest_Journal_Commands.md) (1 shared connections)
-- [Commands System Help](Commands_System_Help.md) (1 shared connections)
-- [Persistence Extraction Complete](Persistence_Extraction_Complete.md) (1 shared connections)
-- [Combat Command Handler](Combat_Command_Handler.md) (1 shared connections)
-- [Async Code Review Docs](Async_Code_Review_Docs.md) (1 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (19 shared connections)
+- [Active Lucidity Service](Active_Lucidity_Service.md) (12 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (6 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (5 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (3 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (3 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (3 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (2 shared connections)
+- [Combat Death Handling](Combat_Death_Handling.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/websocket_integration.py`
-- `server/monitoring/performance_monitor.py`
+- `server/exceptions.py`
+- `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- `server/tests/unit/test_exceptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 170 (96%)
-- INFERRED: 8 (4%)
+- EXTRACTED: 160 (95%)
+- INFERRED: 8 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

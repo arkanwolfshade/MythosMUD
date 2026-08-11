@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **.test_get_player_service_not_initialized()** (3 connections) — `server/tests/unit/test_dependency_injection.py`
-- **Test get_player_service() raises error when service not initialized.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
+- **test_send_room_updates_to_entering_player_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test send_room_updates_to_entering_player() sends updates.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [Player Domain Model](Player_Domain_Model.md) (1 shared connections)
-- [Game Mechanics Service](Game_Mechanics_Service.md) (1 shared connections)
+- [Game Chat Moderation](Game_Chat_Moderation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_dependency_injection.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

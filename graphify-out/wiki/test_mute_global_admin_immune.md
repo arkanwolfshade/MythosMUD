@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_mute_global_admin_immune()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test mute_global() fails when trying to mute admin.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_subscribe_player_to_room_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test subscribe_player_to_room() successfully subscribes player.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [Player Preferences Service](Player_Preferences_Service.md) (1 shared connections)
+- [Game Chat Moderation](Game_Chat_Moderation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_user_manager.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

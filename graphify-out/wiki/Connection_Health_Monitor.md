@@ -1,11 +1,10 @@
 # Connection Health Monitor
 
-> 18 nodes
+> 16 nodes
 
 ## Key Concepts
 
 - **MagicServiceHealingMixin** (15 connections) — `server/game/magic/magic_healing_events.py`
-- **magic_healing_events.py** (14 connections) — `server/game/magic/magic_healing_events.py`
 - **._send_healing_update_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
 - **._publish_dp_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
 - **UUID** (6 connections)
@@ -14,7 +13,6 @@
 - **Any** (5 connections)
 - **._send_instant_heal_event_if_applied()** (5 connections) — `server/game/magic/magic_healing_events.py`
 - **._effect_result_has_healing()** (4 connections) — `server/game/magic/magic_healing_events.py`
-- **Healing event notification for spellcasting.  Mixin that sends player_dp_updated** (1 connections) — `server/game/magic/magic_healing_events.py`
 - **Mixin for MagicService: send DP update events when spells apply healing.** (1 connections) — `server/game/magic/magic_healing_events.py`
 - **True when healing was applied to another player (heal-other, not steal-life or s** (1 connections) — `server/game/magic/magic_healing_events.py`
 - **True if effect result indicates healing was applied (success, effect_applied, he** (1 connections) — `server/game/magic/magic_healing_events.py`
@@ -25,15 +23,12 @@
 
 ## Relationships
 
-- [NPC Service Tests](NPC_Service_Tests.md) (8 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (3 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (3 shared connections)
-- [Combat Turn Processor](Combat_Turn_Processor.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
-- [Logging Correct Patterns](Logging_Correct_Patterns.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (4 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
 - [Security Headers Middleware](Security_Headers_Middleware.md) (1 shared connections)
-- [NPC Occupant Verification](NPC_Occupant_Verification.md) (1 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
+- [Combat Turn Processor](Combat_Turn_Processor.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,8 +36,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 76 (93%)
-- INFERRED: 6 (7%)
+- EXTRACTED: 61 (91%)
+- INFERRED: 6 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

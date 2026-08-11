@@ -1,30 +1,25 @@
 # Game Quest Service
 
-> 7 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.enforce_rate_limit()** (5 connections) — `server/utils/rate_limiter.py`
-- **.get_rate_limit_info()** (4 connections) — `server/utils/rate_limiter.py`
-- **.check_rate_limit()** (3 connections) — `server/utils/rate_limiter.py`
-- **Any** (1 connections)
-- **Check if a user has exceeded the rate limit.          Args:             user_id:** (1 connections) — `server/utils/rate_limiter.py`
-- **Get rate limit information for a user.          Args:             user_id: The u** (1 connections) — `server/utils/rate_limiter.py`
-- **Enforce rate limiting for a user.          Args:             user_id: The user's** (1 connections) — `server/utils/rate_limiter.py`
+- **test_event_bus_get_subscriber_count()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.get_subscriber_count() returns count.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [Game Mechanics Service](Game_Mechanics_Service.md) (3 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (1 shared connections)
+- [Services Rescue Service](Services_Rescue_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/utils/rate_limiter.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

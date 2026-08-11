@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (20 shared connections)
-- [Client Event Store](Client_Event_Store.md) (14 shared connections)
-- [FastAPI Auth Integration](FastAPI_Auth_Integration.md) (10 shared connections)
-- [Character Creation Service](Character_Creation_Service.md) (10 shared connections)
-- [Admin NPC Schemas](Admin_NPC_Schemas.md) (9 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
+- [Character Creation Service](Character_Creation_Service.md) (27 shared connections)
+- [FastAPI Auth Integration](FastAPI_Auth_Integration.md) (13 shared connections)
+- [Admin NPC Schemas](Admin_NPC_Schemas.md) (11 shared connections)
+- [Client Event Store](Client_Event_Store.md) (9 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (5 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (4 shared connections)
 - [Container Inventory Finders](Container_Inventory_Finders.md) (4 shared connections)
-- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (4 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (4 shared connections)
+- [Magic Lifespan Initialization](Magic_Lifespan_Initialization.md) (4 shared connections)
 - [Container Inventory Ops](Container_Inventory_Ops.md) (3 shared connections)
-- [NPC Database Sessions](NPC_Database_Sessions.md) (2 shared connections)
-- [NPC Room Event Handlers](NPC_Room_Event_Handlers.md) (2 shared connections)
-- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (2 shared connections)
+- [Spell Effect Protocols](Spell_Effect_Protocols.md) (2 shared connections)
+- [Async Task Registry](Async_Task_Registry.md) (2 shared connections)
 
 ## Source Files
 

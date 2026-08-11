@@ -2,7 +2,7 @@
 
 > God node · 314 connections · `server/models/user.py`
 
-**Community:** [Combat Command Handler](Combat_Command_Handler.md)
+**Community:** [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md)
 
 ## Connections by Relation
 

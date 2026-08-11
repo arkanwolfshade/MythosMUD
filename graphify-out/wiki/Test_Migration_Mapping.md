@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [Merge Refactoring Summary](Merge_Refactoring_Summary.md) (3 shared connections)
-- [Mythos Time HUD](Mythos_Time_HUD.md) (3 shared connections)
-- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (2 shared connections)
-- [Memory Leak Metrics](Memory_Leak_Metrics.md) (1 shared connections)
+- [Memory Leak Metrics](Memory_Leak_Metrics.md) (4 shared connections)
+- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (3 shared connections)
+- [Player Movement Service](Player_Movement_Service.md) (2 shared connections)
 - [Coverage Improvement Summary](Coverage_Improvement_Summary.md) (1 shared connections)
 
 ## Source Files

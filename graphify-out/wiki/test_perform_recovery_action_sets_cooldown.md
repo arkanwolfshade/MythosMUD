@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_perform_recovery_action_sets_cooldown()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test perform_recovery_action() sets cooldown after action.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_select_exit_multiple_exits()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test select_exit() with multiple exits.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [WebSocket Message Validator](WebSocket_Message_Validator.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
+- [NPC Movement Integration](NPC_Movement_Integration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

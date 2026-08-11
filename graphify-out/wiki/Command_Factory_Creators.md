@@ -1,10 +1,13 @@
 # Command Factory Creators
 
-> 92 nodes
+> 98 nodes
 
 ## Key Concepts
 
 - **test_player_service.py** (54 connections) — `server/tests/unit/game/test_player_service.py`
+- **player_service()** (4 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_with_stats_character_limit()** (4 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_with_stats_name_exists()** (4 connections) — `server/tests/unit/game/test_player_service.py`
 - **test_player_service_init()** (3 connections) — `server/tests/unit/game/test_player_service.py`
 - **test_create_player_name_exists()** (3 connections) — `server/tests/unit/game/test_player_service.py`
 - **test_create_player_with_stats_success()** (3 connections) — `server/tests/unit/game/test_player_service.py`
@@ -26,17 +29,14 @@
 - **test_get_player_by_id_not_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
 - **test_get_player_by_name_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
 - **test_get_player_by_name_not_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_list_players()** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_resolve_player_name_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_resolve_player_name_not_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- *... and 67 more nodes in this community*
+- *... and 73 more nodes in this community*
 
 ## Relationships
 
-- [Room Service Tests](Room_Service_Tests.md) (14 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (3 shared connections)
-- [Game Mechanics Service](Game_Mechanics_Service.md) (2 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (14 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [NPC Database Sessions](NPC_Database_Sessions.md) (4 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (3 shared connections)
 - [NPC Occupants Verification](NPC_Occupants_Verification.md) (1 shared connections)
 
 ## Source Files
@@ -45,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 192 (94%)
-- INFERRED: 13 (6%)
+- EXTRACTED: 204 (93%)
+- INFERRED: 16 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

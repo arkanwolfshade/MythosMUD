@@ -1,23 +1,25 @@
 # Cursor Skills Typeset
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_create_punch_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_punch_command delegates to combat factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_logger()** (4 connections) — `server/tests/conftest.py`
+- **BoundLogger** (1 connections)
+- **Provide a logger for tests.** (1 connections) — `server/tests/conftest.py`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [ESLint Conftest Fixtures](ESLint_Conftest_Fixtures.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_contains_suspicious_patterns_detected()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test _contains_suspicious_patterns detects suspicious patterns.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_handle_npc_took_damage_event()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test _handle_npc_took_damage_event delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Relationships
 
-- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
+- [Connection State Hooks](Connection_State_Hooks.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 

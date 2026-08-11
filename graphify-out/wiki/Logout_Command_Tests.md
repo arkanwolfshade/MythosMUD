@@ -34,7 +34,7 @@
 ## Relationships
 
 - [Logging Migration Examples](Logging_Migration_Examples.md) (8 shared connections)
-- [Commands System Help](Commands_System_Help.md) (1 shared connections)
+- [Combat UUID Display Bug](Combat_UUID_Display_Bug.md) (1 shared connections)
 
 ## Source Files
 

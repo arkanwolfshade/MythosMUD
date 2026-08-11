@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_broadcast_combat_death()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_death broadcasts death event.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_process_single_message_validation_error_type_error()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _process_single_message raises TypeError when field types are invalid.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [Database Pool Configuration](Database_Pool_Configuration.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

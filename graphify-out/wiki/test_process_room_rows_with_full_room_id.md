@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_room_rows_with_full_room_id()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_room_rows with stable_id that already contains full hierarchical p** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_connection_manager_setter()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test connection_manager setter updates value.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Relationships
 
-- [Mythosmud Obsidian Raw](Mythosmud_Obsidian_Raw.md) (1 shared connections)
+- [Database Pool Configuration](Database_Pool_Configuration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Audit Trail
 

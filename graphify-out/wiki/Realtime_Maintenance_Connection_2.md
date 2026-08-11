@@ -1,32 +1,35 @@
 # Realtime Maintenance Connection
 
-> 6 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **SubscribeError** (9 connections) — `server/infrastructure/message_broker.py`
-- **test_subscribe_not_connected()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_subscribe_failure()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **Exception raised when subscribing to subject fails.** (1 connections) — `server/infrastructure/message_broker.py`
-- **Test subscribe() raises SubscribeError when not connected.** (1 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **Test subscribe() raises SubscribeError on failure.** (1 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_config_init.py** (9 connections) — `server/tests/unit/config/test_config_init.py`
+- **test_get_config_returns_app_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
+- **test_get_config_fresh_instances_in_test_mode()** (3 connections) — `server/tests/unit/config/test_config_init.py`
+- **test_get_config_has_server_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
+- **test_get_config_has_database_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
+- **test_get_config_has_game_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
+- **Unit tests for config module initialization.** (1 connections) — `server/tests/unit/config/test_config_init.py`
+- **Test that get_config() returns an AppConfig object.** (1 connections) — `server/tests/unit/config/test_config_init.py`
+- **Test that get_config() returns fresh instances in test mode.** (1 connections) — `server/tests/unit/config/test_config_init.py`
+- **Test that config has server configuration.** (1 connections) — `server/tests/unit/config/test_config_init.py`
+- **Test that config has database configuration.** (1 connections) — `server/tests/unit/config/test_config_init.py`
+- **Test that config has game configuration.** (1 connections) — `server/tests/unit/config/test_config_init.py`
 
 ## Relationships
 
-- [Multiplayer Browser Helpers](Multiplayer_Browser_Helpers.md) (3 shared connections)
-- [Combat Monitoring Service](Combat_Monitoring_Service.md) (3 shared connections)
-- [Realtime Event Delegation](Realtime_Event_Delegation.md) (1 shared connections)
-- [Services Combat Persistence](Services_Combat_Persistence.md) (1 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (6 shared connections)
+- [chat_logger](chat_logger.md) (2 shared connections)
 
 ## Source Files
 
-- `server/infrastructure/message_broker.py`
-- `server/tests/unit/infrastructure/test_nats_broker.py`
+- `server/tests/unit/config/test_config_init.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (72%)
-- INFERRED: 5 (28%)
+- EXTRACTED: 30 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

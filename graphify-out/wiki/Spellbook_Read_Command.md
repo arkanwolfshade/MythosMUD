@@ -33,8 +33,10 @@
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (9 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (3 shared connections)
+- [Container Repository CRUD](Container_Repository_CRUD.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,60 +1,69 @@
 # Player Schema Converter
 
-> 39 nodes
+> 140 nodes
 
 ## Key Concepts
 
+- **AliasStorage** (230 connections) — `server/alias_storage.py`
 - **router.py** (30 connections) — `server/commands/npc_admin/router.py`
 - **__init__.py** (24 connections) — `server/commands/npc_admin/__init__.py`
+- **test_npc_admin_commands.py** (23 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **instance.py** (22 connections) — `server/commands/npc_admin/instance.py`
 - **npc_admin_commands.py** (21 connections) — `server/commands/npc_admin_commands.py`
 - **_build_subcommand_map()** (20 connections) — `server/commands/npc_admin/router.py`
 - **handle_npc_command()** (17 connections) — `server/commands/npc_admin/router.py`
-- **behavior.py** (11 connections) — `server/commands/npc_admin/behavior.py`
-- **monitoring.py** (11 connections) — `server/commands/npc_admin/monitoring.py`
+- **definition.py** (16 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_spawn_command()** (13 connections) — `server/commands/npc_admin/instance.py`
+- **handle_npc_create_command()** (12 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_test_occupants_command()** (11 connections) — `server/commands/npc_admin/test_occupants.py`
+- **handle_npc_edit_command()** (10 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_despawn_command()** (10 connections) — `server/commands/npc_admin/instance.py`
+- **handle_npc_move_command()** (10 connections) — `server/commands/npc_admin/instance.py`
+- **handle_npc_stats_command()** (10 connections) — `server/commands/npc_admin/instance.py`
+- **NPCDefinitionType** (10 connections) — `server/models/npc.py`
 - **handle_npc_behavior_command()** (9 connections) — `server/commands/npc_admin/behavior.py`
 - **handle_npc_react_command()** (9 connections) — `server/commands/npc_admin/behavior.py`
 - **handle_npc_stop_command()** (9 connections) — `server/commands/npc_admin/behavior.py`
+- **handle_npc_delete_command()** (9 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_list_command()** (9 connections) — `server/commands/npc_admin/definition.py`
 - **handle_npc_population_command()** (9 connections) — `server/commands/npc_admin/monitoring.py`
 - **handle_npc_zone_command()** (9 connections) — `server/commands/npc_admin/monitoring.py`
 - **handle_npc_status_command()** (9 connections) — `server/commands/npc_admin/monitoring.py`
-- **validate_npc_admin_permission()** (9 connections) — `server/commands/npc_admin/router.py`
-- **_resolve_npc_command_player()** (5 connections) — `server/commands/npc_admin/router.py`
-- **Any** (5 connections)
-- **_extract_npc_subcommand()** (5 connections) — `server/commands/npc_admin/router.py`
-- **_invoke_npc_handler()** (5 connections) — `server/commands/npc_admin/router.py`
-- **_get_npc_help()** (4 connections) — `server/commands/npc_admin/router.py`
-- **Any** (3 connections)
-- **Any** (3 connections)
-- **NPC Admin Commands subpackage for MythosMUD.  Splits NPC admin functionality acr** (1 connections) — `server/commands/npc_admin/__init__.py`
-- **NPC behavior control commands (behavior, react, stop).** (1 connections) — `server/commands/npc_admin/behavior.py`
-- **Handle NPC behavior control command.** (1 connections) — `server/commands/npc_admin/behavior.py`
-- **Handle NPC reaction trigger command.** (1 connections) — `server/commands/npc_admin/behavior.py`
-- *... and 14 more nodes in this community*
+- *... and 115 more nodes in this community*
 
 ## Relationships
 
-- [Player Name Validation](Player_Name_Validation.md) (17 shared connections)
-- [Death Delirium UI Modals](Death_Delirium_UI_Modals.md) (17 shared connections)
-- [Client Event Store](Client_Event_Store.md) (17 shared connections)
-- [Player Respawn Handlers](Player_Respawn_Handlers.md) (11 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (10 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
-- [NPC Occupants Verification](NPC_Occupants_Verification.md) (5 shared connections)
-- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
-- [Player Creation Service](Player_Creation_Service.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (37 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (17 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (16 shared connections)
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (16 shared connections)
+- [NPC Admin Commands](NPC_Admin_Commands.md) (14 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (14 shared connections)
+- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (11 shared connections)
+- [NPC Occupants Verification](NPC_Occupants_Verification.md) (7 shared connections)
+- [Alias Storage Services](Alias_Storage_Services.md) (7 shared connections)
+- [Memory Threshold Monitor](Memory_Threshold_Monitor.md) (6 shared connections)
+- [E2E Suite Overview](E2E_Suite_Overview.md) (5 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (5 shared connections)
 
 ## Source Files
 
+- `server/alias_storage.py`
 - `server/commands/npc_admin/__init__.py`
 - `server/commands/npc_admin/behavior.py`
+- `server/commands/npc_admin/definition.py`
+- `server/commands/npc_admin/instance.py`
 - `server/commands/npc_admin/monitoring.py`
 - `server/commands/npc_admin/router.py`
+- `server/commands/npc_admin/test_occupants.py`
 - `server/commands/npc_admin_commands.py`
+- `server/models/npc.py`
+- `server/tests/unit/commands/test_npc_admin_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 211 (86%)
-- INFERRED: 34 (14%)
+- EXTRACTED: 716 (88%)
+- INFERRED: 98 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

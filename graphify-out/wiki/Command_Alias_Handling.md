@@ -1,53 +1,59 @@
 # Command Alias Handling
 
-> 28 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **WearableContainerServiceError** (25 connections) — `server/services/wearable_container_service.py`
-- **test_handle_equip_wearable_container_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_container_overflow_player_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_equip_wearable_container_creation_error()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_wrong_player()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_wrong_source_type()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_update_fails()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_update_fails()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_wrong_player()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_wrong_source_type()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Base exception for wearable container service operations.** (1 connections) — `server/services/wearable_container_service.py`
-- **Test handle_equip_wearable_container raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when container not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_container_overflow raises error when player not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_equip_wearable_container handles container creation error.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when container belongs to diff** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when container is not equipmen** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when update fails.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test update_wearable_container_items raises error when container not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test update_wearable_container_items raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- *... and 3 more nodes in this community*
+- **game_tick_processing.py** (77 connections) — `server/app/game_tick_processing.py`
+- **FastAPI** (16 connections)
+- **game_tick_loop()** (14 connections) — `server/app/game_tick_processing.py`
+- **_validate_app_state_for_status_effects()** (12 connections) — `server/app/game_tick_processing.py`
+- **process_status_effects()** (9 connections) — `server/app/game_tick_processing.py`
+- **broadcast_tick_event()** (9 connections) — `server/app/game_tick_processing.py`
+- **_process_player_status_effects()** (7 connections) — `server/app/game_tick_processing.py`
+- **process_player_effects_expiration()** (7 connections) — `server/app/game_tick_processing.py`
+- **process_combat_tick()** (7 connections) — `server/app/game_tick_processing.py`
+- **cleanup_decayed_corpses()** (7 connections) — `server/app/game_tick_processing.py`
+- **_process_all_status_effects()** (6 connections) — `server/app/game_tick_processing.py`
+- **process_dp_decay_and_death()** (6 connections) — `server/app/game_tick_processing.py`
+- **_create_corpse_lifecycle_service()** (6 connections) — `server/app/game_tick_processing.py`
+- **process_npc_maintenance()** (5 connections) — `server/app/game_tick_processing.py`
+- **_validate_and_get_player()** (4 connections) — `server/app/game_tick_processing.py`
+- **process_casting_progress()** (4 connections) — `server/app/game_tick_processing.py`
+- **_log_cleanup_results()** (3 connections) — `server/app/game_tick_processing.py`
+- **Game tick processing functions.  This module handles all game tick processing lo** (1 connections) — `server/app/game_tick_processing.py`
+- **Validate app state has required components for status effect processing.      Re** (1 connections) — `server/app/game_tick_processing.py`
+- **Validate container and retrieve player by ID.      Args:         container: Appl** (1 connections) — `server/app/game_tick_processing.py`
+- **Process all status effects for a player.      Args:         app: FastAPI applica** (1 connections) — `server/app/game_tick_processing.py`
+- **Process status effects for a single player.      Returns:         True if player** (1 connections) — `server/app/game_tick_processing.py`
+- **Expire player_effects for this tick; for LOGIN_WARDED clear in-memory state and** (1 connections) — `server/app/game_tick_processing.py`
+- **Process status effects for online players.** (1 connections) — `server/app/game_tick_processing.py`
+- **Process combat auto-progression.** (1 connections) — `server/app/game_tick_processing.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [Exploration Command Factories](Exploration_Command_Factories.md) (14 shared connections)
-- [NATS Subject Patterns](NATS_Subject_Patterns.md) (7 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
-- [Application Container Analysis](Application_Container_Analysis.md) (1 shared connections)
+- [Invite and User Schemas](Invite_and_User_Schemas.md) (18 shared connections)
+- [E2E Suite Spec Helpers](E2E_Suite_Spec_Helpers.md) (11 shared connections)
+- [Client Event Store](Client_Event_Store.md) (9 shared connections)
+- [Investigations Sessions Xx](Investigations_Sessions_Xx.md) (8 shared connections)
+- [Connection Room Presence Utils](Connection_Room_Presence_Utils.md) (7 shared connections)
+- [Player Respawn Events](Player_Respawn_Events.md) (7 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (5 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (4 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (3 shared connections)
+- [E 2 E Di Migration](E_2_E_Di_Migration.md) (3 shared connections)
+- [Combat Turn Processor](Combat_Turn_Processor.md) (3 shared connections)
+- [Skill Service Tests](Skill_Service_Tests.md) (3 shared connections)
 
 ## Source Files
 
-- `server/services/wearable_container_service.py`
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/app/game_tick_processing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (58%)
-- INFERRED: 33 (42%)
+- EXTRACTED: 216 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

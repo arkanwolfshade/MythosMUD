@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_extract_occupant_names_invalid_names()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Test extract_occupant_names() filters invalid names.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_validate_combat_command_invalid_target_name()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_combat_command with invalid target name format.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [Archive Lucidity System](Archive_Lucidity_System.md) (1 shared connections)
+- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 

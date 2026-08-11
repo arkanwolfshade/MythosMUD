@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_on_failure_resets_success_count()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test _on_failure() resets success count.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_handle_unequip_wearable_container_empty_allowed_roles()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_unequip_wearable_container when allowed_roles is empty list.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [Performance Optimization Summary](Performance_Optimization_Summary.md) (1 shared connections)
-- [Circuit Breaker Core](Circuit_Breaker_Core.md) (1 shared connections)
+- [Exploration Command Factories](Exploration_Command_Factories.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_circuit_breaker.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

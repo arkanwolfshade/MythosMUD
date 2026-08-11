@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_unequip_wearable_container_preserves()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_unequip_wearable_container preserves container.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_process_message_with_retry_success_path()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _process_message_with_retry succeeds when retry handler succeeds.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [Exploration Command Factories](Exploration_Command_Factories.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

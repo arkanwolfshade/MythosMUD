@@ -1,29 +1,24 @@
 # Claude Agents Deps
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **._validate_remove_player_params()** (6 connections) — `server/game/movement_service.py`
-- **.remove_player_from_room()** (6 connections) — `server/game/movement_service.py`
-- **Validate parameters for remove_player_from_room operation.** (1 connections) — `server/game/movement_service.py`
-- **Remove a player from a room (for logout, teleportation, etc.).          Args:** (1 connections) — `server/game/movement_service.py`
+- **test_get_player_lucidity_tier_exception_in_processing()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _get_player_lucidity_tier handles exceptions during processing.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
-- [Combat Client Crash Report](Combat_Client_Crash_Report.md) (2 shared connections)
-- [Room Map Viewer UI](Room_Map_Viewer_UI.md) (2 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
+- [Loot All Endpoint](Loot_All_Endpoint.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/movement_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (86%)
-- INFERRED: 2 (14%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

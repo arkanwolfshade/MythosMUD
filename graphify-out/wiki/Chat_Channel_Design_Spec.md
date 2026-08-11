@@ -32,12 +32,13 @@
 
 ## Relationships
 
-- [Communication Command Handlers](Communication_Command_Handlers.md) (11 shared connections)
-- [Client App State Hooks](Client_App_State_Hooks.md) (4 shared connections)
+- [Communication Command Handlers](Communication_Command_Handlers.md) (10 shared connections)
+- [Ground and Rescue Commands](Ground_and_Rescue_Commands.md) (4 shared connections)
 - [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (2 shared connections)
-- [Draggable Panel UI](Draggable_Panel_UI.md) (1 shared connections)
+- [API Test Fixtures](API_Test_Fixtures.md) (1 shared connections)
+- [Health Cold Resistance](Health_Cold_Resistance.md) (1 shared connections)
 - [Magic System Feature Plan](Magic_System_Feature_Plan.md) (1 shared connections)
-- [Commands Look Item](Commands_Look_Item.md) (1 shared connections)
+- [Cursor Bug Agents](Cursor_Bug_Agents.md) (1 shared connections)
 
 ## Source Files
 

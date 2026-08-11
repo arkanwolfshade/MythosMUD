@@ -1,27 +1,24 @@
 # Commands Admin Shutdown
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **mock_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **_passthrough_room_data()** (3 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **Return room data unchanged for convert_room_players_uuids_to_names mocks.** (1 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
+- **test_convert_ids_to_uuids()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _convert_ids_to_uuids converts IDs.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [WebSocket Initial State](WebSocket_Initial_State.md) (2 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [Loot All Endpoint](Loot_All_Endpoint.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_initial_state.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (67%)
-- INFERRED: 3 (33%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

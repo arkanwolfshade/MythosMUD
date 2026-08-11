@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_can_access_corpse_no_owner()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **Test can_access_corpse() allows access when no owner.** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_parse_behavior_config_empty_string()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test _parse_behavior_config() with empty string.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
-- [Skill Service Tests](Skill_Service_Tests.md) (1 shared connections)
+- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

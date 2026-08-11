@@ -1,6 +1,6 @@
 # NPC Definition Schemas
 
-> 19 nodes
+> 23 nodes
 
 ## Key Concepts
 
@@ -14,6 +14,10 @@
 - **get_spawn_room_for_definition()** (5 connections) — `server/npc/lifecycle_periodic.py`
 - **_should_skip_optional_npc()** (4 connections) — `server/npc/lifecycle_periodic.py`
 - **_check_spawn_conditions_for_optional_npc()** (4 connections) — `server/npc/lifecycle_periodic.py`
+- **.cleanup_old_records()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **.periodic_maintenance()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **Clean up old lifecycle records (delegates to lifecycle_periodic).** (1 connections) — `server/npc/lifecycle_manager.py`
+- **Perform periodic maintenance (delegates to lifecycle_periodic).** (1 connections) — `server/npc/lifecycle_manager.py`
 - **Periodic maintenance and optional NPC spawn checks for lifecycle.  Extracted fro** (1 connections) — `server/npc/lifecycle_periodic.py`
 - **Clean up old lifecycle records. Returns number of records removed.** (1 connections) — `server/npc/lifecycle_periodic.py`
 - **Run respawn queue, optional NPC spawn checks, and cleanup. Returns results dict.** (1 connections) — `server/npc/lifecycle_periodic.py`
@@ -26,18 +30,18 @@
 
 ## Relationships
 
-- [Level and XP Curve](Level_and_XP_Curve.md) (7 shared connections)
-- [Command Parser Tests](Command_Parser_Tests.md) (4 shared connections)
-- [NPCMaintenanceConfig](NPCMaintenanceConfig.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (11 shared connections)
+- [E 2 E Di Migration](E_2_E_Di_Migration.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 
 ## Source Files
 
+- `server/npc/lifecycle_manager.py`
 - `server/npc/lifecycle_periodic.py`
 
 ## Audit Trail
 
-- EXTRACTED: 79 (100%)
+- EXTRACTED: 87 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

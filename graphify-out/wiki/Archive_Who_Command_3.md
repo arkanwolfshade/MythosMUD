@@ -1,23 +1,22 @@
 # Archive Who Command
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_create_help_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_help_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **__init__.py** (0 connections) — `server/tests/unit/npc/__init__.py`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/npc/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,50 +1,39 @@
 # Feature Implementation Phases
 
-> 19 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **container_helpers.py** (26 connections) — `server/persistence/container_helpers.py`
-- **update_container_items()** (10 connections) — `server/persistence/container_helpers.py`
-- **fetch_container_items()** (9 connections) — `server/persistence/container_helpers.py`
-- **_coerce_row_quantity()** (7 connections) — `server/persistence/container_helpers.py`
-- **build_update_query()** (6 connections) — `server/persistence/container_helpers.py`
-- **_item_dict_from_contents_row()** (5 connections) — `server/persistence/container_helpers.py`
-- **UUID** (3 connections)
-- **test_coerce_row_quantity()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
-- **_metadata_dict_from_cell()** (2 connections) — `server/persistence/container_helpers.py`
-- **PsycopgConnection** (2 connections)
-- **datetime** (2 connections)
-- **PsycopgCursor** (1 connections)
-- **Composed** (1 connections)
-- **Helper functions for container persistence operations.** (1 connections) — `server/persistence/container_helpers.py`
-- **Normalize quantity/position from DB row cells; bool -> 1 (not coerce_int(False)=** (1 connections) — `server/persistence/container_helpers.py`
-- **Fetch container items directly from normalized tables.      Queries container_** (1 connections) — `server/persistence/container_helpers.py`
-- **Update container items using stored procedures.      Args:         cursor: Da** (1 connections) — `server/persistence/container_helpers.py`
-- **Build SQL update query for container.      Args:         updates: List of upd** (1 connections) — `server/persistence/container_helpers.py`
-- **Row quantity/position coercion matches item quantity rules (PR #461 / int_coerci** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- **NPCCommunicationIntegration** (10 connections) — `server/npc/communication_integration.py`
+- **.__init__()** (4 connections) — `server/npc/communication_integration.py`
+- **.send_message_to_room()** (4 connections) — `server/npc/communication_integration.py`
+- **.handle_player_message()** (4 connections) — `server/npc/communication_integration.py`
+- **._process_message_for_response()** (4 connections) — `server/npc/communication_integration.py`
+- **.send_whisper_to_player()** (3 connections) — `server/npc/communication_integration.py`
+- **.subscribe_to_room_messages()** (2 connections) — `server/npc/communication_integration.py`
+- **.unsubscribe_from_room_messages()** (2 connections) — `server/npc/communication_integration.py`
+- **Integrates NPCs with the existing chat and whisper systems.      This class prov** (1 connections) — `server/npc/communication_integration.py`
+- **Initialize the NPC communication integration.          Args:             event_b** (1 connections) — `server/npc/communication_integration.py`
+- **Send a message from an NPC to a room.          Args:             npc_id: ID of t** (1 connections) — `server/npc/communication_integration.py`
+- **Send a whisper from an NPC to a specific player.          Args:             npc_** (1 connections) — `server/npc/communication_integration.py`
+- **Handle a message received by an NPC from a player.          Args:             np** (1 connections) — `server/npc/communication_integration.py`
+- **Process a message to determine if the NPC should respond.          Args:** (1 connections) — `server/npc/communication_integration.py`
+- **Subscribe an NPC to messages in a specific room.          Args:             npc_** (1 connections) — `server/npc/communication_integration.py`
+- **Unsubscribe an NPC from messages in a specific room.          Args:** (1 connections) — `server/npc/communication_integration.py`
 
 ## Relationships
 
-- [Maps API Endpoints](Maps_API_Endpoints.md) (11 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
-- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (3 shared connections)
-- [Combat Command Models](Combat_Command_Models.md) (3 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (2 shared connections)
-- [Player Save Preparer](Player_Save_Preparer.md) (2 shared connections)
-- [Container System Architecture](Container_System_Architecture.md) (2 shared connections)
-- [JSONB Column Parsing](JSONB_Column_Parsing.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (6 shared connections)
+- [Chat Mute Admin API](Chat_Mute_Admin_API.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/container_helpers.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- `server/npc/communication_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 81 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 41 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

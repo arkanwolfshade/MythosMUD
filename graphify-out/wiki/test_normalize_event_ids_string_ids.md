@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_normalize_event_ids_string_ids()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Test normalize_event_ids() with string IDs.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_get_combat_victory_message()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test get_combat_victory_message returns victory message.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [Archive Lucidity System](Archive_Lucidity_System.md) (1 shared connections)
+- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 

@@ -1,51 +1,48 @@
 # Communication Command Classes
 
-> 38 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **test_command_parser_helpers.py** (24 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_normalize_command_removes_slash_prefix()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_normalize_command_cleans_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_normalize_command_strips_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_normalize_command_no_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_simple()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_with_args()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_lowercases_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_empty_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_whitespace_only_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_get_command_help_specific_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_get_command_help_unknown_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_get_command_help_none()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_with_alias_l()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_with_alias_g()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_with_alias_w()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_unsupported_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_pydantic_validation_error()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_value_error()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Unit tests for command_parser helper methods.  Tests the helper methods in Comma** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _normalize_command() removes leading slash.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _normalize_command() cleans multiple whitespace.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _normalize_command() strips leading/trailing whitespace.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _normalize_command() handles command without slash.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _parse_command_parts() parses simple command.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- *... and 13 more nodes in this community*
+- **TestFeatureFlagService** (23 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_enabled_true()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_enabled_false()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_enabled_caching()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_logging_enabled_true()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_logging_enabled_false()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_monitoring_enabled_true()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_monitoring_enabled_false()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_get_combat_configuration()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_clear_cache()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_validate_combat_requirements_disabled()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_validate_combat_requirements_valid()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_validate_combat_requirements_invalid_tick_interval()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_validate_combat_requirements_invalid_timeout()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_validate_combat_requirements_invalid_xp_multiplier()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_get_feature_status()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_check_combat_availability_enabled()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_check_combat_availability_disabled()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_check_combat_availability_invalid_requirements()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_check_combat_availability_with_player_id()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **Test suite for FeatureFlagService class.** (1 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **Test FeatureFlagService initialization.** (1 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **Test is_combat_enabled returns True when enabled.** (1 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **Test is_combat_enabled returns False when disabled.** (1 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [Cursor Plans Login](Cursor_Plans_Login.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Invite Registration Model](Invite_Registration_Model.md) (22 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_parser_helpers.py`
+- `server/tests/unit/services/test_feature_flag_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 79 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 103 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

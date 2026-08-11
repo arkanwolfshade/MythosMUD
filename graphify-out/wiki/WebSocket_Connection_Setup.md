@@ -1,55 +1,56 @@
 # WebSocket Connection Setup
 
-> 22 nodes
+> 109 nodes
 
 ## Key Concepts
 
 - **test_connection_establishment.py** (46 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **connection_establishment.py** (22 connections) — `server/realtime/connection_establishment.py`
+- **establish_websocket_connection()** (21 connections) — `server/realtime/connection_establishment.py`
+- **ConnectionMetadata** (14 connections) — `server/realtime/connection_models.py`
+- **_find_dead_connections()** (11 connections) — `server/realtime/connection_establishment.py`
+- **UUID** (11 connections)
+- **Any** (11 connections)
+- **_cleanup_dead_connections()** (10 connections) — `server/realtime/connection_establishment.py`
+- **_setup_player_and_room()** (10 connections) — `server/realtime/connection_establishment.py`
+- **_cleanup_failed_connection()** (10 connections) — `server/realtime/connection_establishment.py`
+- **_update_player_connection_list()** (9 connections) — `server/realtime/connection_establishment.py`
+- **_register_new_connection()** (9 connections) — `server/realtime/connection_establishment.py`
+- **_setup_connection_metadata()** (9 connections) — `server/realtime/connection_establishment.py`
+- **_setup_session_tracking()** (9 connections) — `server/realtime/connection_establishment.py`
+- **test_connection_models.py** (9 connections) — `server/tests/unit/realtime/test_connection_models.py`
+- **_track_player_presence()** (8 connections) — `server/realtime/connection_establishment.py`
+- **_remove_dead_connection()** (7 connections) — `server/realtime/connection_establishment.py`
+- **connection_models.py** (6 connections) — `server/realtime/connection_models.py`
 - **test_establish_websocket_connection_error()** (4 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_find_dead_connections_no_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_find_dead_connections_all_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_find_dead_connections_not_in_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_find_dead_connections_none_websocket()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_find_dead_connections_not_connected()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
 - **test_remove_dead_connection()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_remove_dead_connection_not_present()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_update_player_connection_list_no_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_cleanup_dead_connections_empty_list()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_cleanup_dead_connections_with_dead()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_register_new_connection()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_setup_connection_metadata_no_session_token()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_establish_websocket_connection_success()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_establish_websocket_connection_cleans_dead_connections()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Unit tests for connection establishment.  Tests the connection_establishment mod** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _remove_dead_connection() removes connection from tracking.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _remove_dead_connection() handles connection not present.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _update_player_connection_list() removes player when no active connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _cleanup_dead_connections() handles empty list.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _cleanup_dead_connections() cleans up dead connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _register_new_connection() registers new connection.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _setup_connection_metadata() handles None session and token.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test establish_websocket_connection() successfully establishes connection.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test establish_websocket_connection() handles errors.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test establish_websocket_connection() cleans up dead connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- *... and 84 more nodes in this community*
 
 ## Relationships
 
-- [Logging Structured Setup](Logging_Structured_Setup.md) (18 shared connections)
-- [App Game Tick](App_Game_Tick.md) (6 shared connections)
-- [Components Ui Designtokens](Components_Ui_Designtokens.md) (5 shared connections)
-- [Realtime Connection Impl](Realtime_Connection_Impl.md) (4 shared connections)
-- [Services Npc Startup](Services_Npc_Startup.md) (4 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (2 shared connections)
-- [test_get_combat_victory_message](test_get_combat_victory_message.md) (1 shared connections)
-- [test_is_valid_target_name_valid](test_is_valid_target_name_valid.md) (1 shared connections)
-- [test_setup_connection_metadata](test_setup_connection_metadata.md) (1 shared connections)
-- [test_track_player_presence_existing_player](test_track_player_presence_existing_player.md) (1 shared connections)
-- [test_track_player_presence_new_player](test_track_player_presence_new_player.md) (1 shared connections)
-- [test_validate_combat_state_in_combat_required](test_validate_combat_state_in_combat_required.md) (1 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (6 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (4 shared connections)
+- [NATS Subject Patterns](NATS_Subject_Patterns.md) (3 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (2 shared connections)
 
 ## Source Files
 
+- `server/realtime/connection_establishment.py`
+- `server/realtime/connection_models.py`
 - `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/realtime/test_connection_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 395 (99%)
+- INFERRED: 4 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

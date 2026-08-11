@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_normalize_event_ids_both_provided()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Test normalize_event_ids() with both player_id and room_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_get_combat_result_message_success_with_damage()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test get_combat_result_message with successful attack and damage.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [Archive Lucidity System](Archive_Lucidity_System.md) (1 shared connections)
+- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 

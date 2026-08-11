@@ -1,23 +1,24 @@
 # test_get_valid_exits_empty_room
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_create_admin_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_admin_command delegates to moderation factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **8. Error Handling and Debugging** (3 connections) — `.cursor/commands/server-test-remediation.md`
+- **Test Debugging** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Common Debug Commands** (1 connections) — `.cursor/commands/server-test-remediation.md`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [E 2 E Scenario Whisper](E_2_E_Scenario_Whisper.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `.cursor/commands/server-test-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

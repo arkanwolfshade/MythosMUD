@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [NATS Retry Handler](NATS_Retry_Handler.md) (3 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [NATS Retry Handler](NATS_Retry_Handler.md) (2 shared connections)
+- [Character Stats Generator](Character_Stats_Generator.md) (2 shared connections)
 - [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (2 shared connections)
 
 ## Source Files
 

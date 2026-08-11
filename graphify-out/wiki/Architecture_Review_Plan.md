@@ -1,48 +1,41 @@
 # Architecture Review Plan
 
-> 20 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **.create_get_command()** (13 connections) — `server/utils/command_factories_inventory.py`
-- **test_create_get_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_get_command_quantity_zero()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_get_command_quantity_negative()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_get_command_only_item_get_from_room()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_get_command_with_from_keyword()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_get_command_multi_word_container()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_get_command_multi_word_container_no_quantity()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_get_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_get_command_with_from()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_get_command() raises error with no args.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_get_command() with single arg returns get-from-room (container='room** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_get_command() handles 'from' keyword.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_get_command() raises error when quantity is zero.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_get_command() raises error when quantity is negative.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_get_command() handles multi-word container.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_get_command() handles multi-word container without quantity.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_get_command() creates GetCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_get_command() handles optional 'from' keyword.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Create get command.          Supports: get <item> [from] <container> [quantity]** (1 connections) — `server/utils/command_factories_inventory.py`
+- **._handle_player_follower_move()** (9 connections) — `server/game/follow_service.py`
+- **._handle_npc_follower_move()** (9 connections) — `server/game/follow_service.py`
+- **._send_follow_state_to_player()** (8 connections) — `server/game/follow_service.py`
+- **.unfollow()** (8 connections) — `server/game/follow_service.py`
+- **._ensure_follower_standing()** (6 connections) — `server/game/follow_service.py`
+- **._on_player_entered_room()** (6 connections) — `server/game/follow_service.py`
+- **._on_npc_entered_room()** (5 connections) — `server/game/follow_service.py`
+- **._send_result_and_player_update()** (4 connections) — `server/game/follow_service.py`
+- **Send command_response with result message and optional player_update (e.g. posit** (1 connections) — `server/game/follow_service.py`
+- **Send follow_state event so client can update title panel (who I am following).** (1 connections) — `server/game/follow_service.py`
+- **Stop following. Returns result message.** (1 connections) — `server/game/follow_service.py`
+- **If follower is sitting or prone, try to stand them so they can move.         Ret** (1 connections) — `server/game/follow_service.py`
+- **Move followers when the followed player moves.** (1 connections) — `server/game/follow_service.py`
+- **Move followers when the followed NPC moves.** (1 connections) — `server/game/follow_service.py`
+- **Handle movement propagation for a single follower of a player.          This hel** (1 connections) — `server/game/follow_service.py`
+- **Handle movement propagation for a single follower of an NPC.          Extracted** (1 connections) — `server/game/follow_service.py`
 
 ## Relationships
 
-- [Base Command Models](Base_Command_Models.md) (8 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (3 shared connections)
-- [Test Refactoring Status](Test_Refactoring_Status.md) (2 shared connections)
-- [Admin Summon Command](Admin_Summon_Command.md) (1 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
+- [Player Respawn Handlers](Player_Respawn_Handlers.md) (20 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (4 shared connections)
+- [Combat Turn Processor](Combat_Turn_Processor.md) (2 shared connections)
+- [NPC Service Tests](NPC_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories_inventory.py`
-- `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- `server/utils/command_factories_inventory.py`
+- `server/game/follow_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (94%)
-- INFERRED: 3 (6%)
+- EXTRACTED: 62 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

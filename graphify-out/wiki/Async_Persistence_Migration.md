@@ -1,49 +1,54 @@
 # Async Persistence Migration
 
-> 23 nodes
+> 39 nodes
 
 ## Key Concepts
 
-- **MagicServiceCompletionMixin** (21 connections) — `server/game/magic/magic_service_completion.py`
-- **UUID** (12 connections)
+- **UUID** (14 connections)
 - **Any** (11 connections)
-- **._execute_casting_immediately()** (9 connections) — `server/game/magic/magic_service_completion.py`
-- **._complete_casting()** (8 connections) — `server/game/magic/magic_service_completion.py`
-- **._recreate_target_from_state()** (7 connections) — `server/game/magic/magic_service_completion.py`
-- **._try_queue_spell_for_combat()** (6 connections) — `server/game/magic/magic_service_completion.py`
-- **._try_complete_casting_via_combat()** (6 connections) — `server/game/magic/magic_service_completion.py`
-- **._get_player_and_room()** (5 connections) — `server/game/magic/magic_service_completion.py`
-- **._apply_spell_costs_and_effects()** (5 connections) — `server/game/magic/magic_service_completion.py`
-- **._parse_casting_target_id()** (5 connections) — `server/game/magic/magic_service_completion.py`
-- **_send_spell_completion_message()** (4 connections) — `server/game/magic/magic_service_completion.py`
-- **_is_heal_other_target()** (4 connections) — `server/game/magic/magic_service_completion.py`
-- **_send_healing_update_event()** (4 connections) — `server/game/magic/magic_service_completion.py`
-- **Mixin for MagicService: complete casting (player/room, target, costs/effects, co** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Get player and room_id for casting completion.          Returns:             Tup** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Recreate target from stored casting state.          Args:             casting_st** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Apply spell costs and process effects.          Args:             player_id: Pla** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Parse target_id from casting state. Returns None if missing or invalid.** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Apply costs and queue spell for next combat round. Returns True if queued, False** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Apply spell costs/effects, send completion message and healing event.** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **If in combat, try to queue spell for next round. Return True if queued, False ot** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Complete a casting and apply spell effects.          In combat, spells are queue** (1 connections) — `server/game/magic/magic_service_completion.py`
+- **.delete_player()** (9 connections) — `server/game/player_service.py`
+- **.get_player_by_id()** (8 connections) — `server/game/player_service.py`
+- **.convert_player_to_schema()** (8 connections) — `server/game/player_service.py`
+- **.soft_delete_character()** (7 connections) — `server/game/player_service.py`
+- **.create_player_with_stats()** (5 connections) — `server/game/player_service.py`
+- **.get_user_characters()** (5 connections) — `server/game/player_service.py`
+- **.validate_character_access()** (5 connections) — `server/game/player_service.py`
+- **.create_player()** (4 connections) — `server/game/player_service.py`
+- **.list_players()** (4 connections) — `server/game/player_service.py`
+- **.apply_lucidity_loss()** (4 connections) — `server/game/player_service.py`
+- **.apply_fear()** (4 connections) — `server/game/player_service.py`
+- **.apply_corruption()** (4 connections) — `server/game/player_service.py`
+- **.gain_occult_knowledge()** (4 connections) — `server/game/player_service.py`
+- **.heal_player()** (4 connections) — `server/game/player_service.py`
+- **.damage_player()** (4 connections) — `server/game/player_service.py`
+- **.set_item_prototype_registry()** (3 connections) — `server/game/player_service.py`
+- **.respawn_player_by_user_id()** (3 connections) — `server/game/player_service.py`
+- **.respawn_player_from_delirium_by_user_id()** (3 connections) — `server/game/player_service.py`
+- **Stats** (1 connections)
+- **Set the item prototype registry on the schema converter (e.g. after item service** (1 connections) — `server/game/player_service.py`
+- **Create a new player character.          Args:             name: The player's nam** (1 connections) — `server/game/player_service.py`
+- **Create a new player character with specific stats.          Args:             na** (1 connections) — `server/game/player_service.py`
+- **Get a player by their ID.          Args:             player_id: The player's ID** (1 connections) — `server/game/player_service.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [NPC Service Tests](NPC_Service_Tests.md) (13 shared connections)
-- [Combat Attack Service](Combat_Attack_Service.md) (2 shared connections)
-- [Security Headers Middleware](Security_Headers_Middleware.md) (1 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
-- [Logging Correct Patterns](Logging_Correct_Patterns.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (20 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (7 shared connections)
+- [Realtime Errors Error](Realtime_Errors_Error.md) (3 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (2 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (2 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/magic_service_completion.py`
+- `server/game/player_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 106 (91%)
-- INFERRED: 10 (9%)
+- EXTRACTED: 128 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

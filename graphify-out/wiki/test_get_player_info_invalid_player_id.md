@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_player_info_invalid_player_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Test get_player_info() returns None for invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_contains_suspicious_patterns_detected()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test _contains_suspicious_patterns detects suspicious patterns.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [Archive Lucidity System](Archive_Lucidity_System.md) (1 shared connections)
+- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 

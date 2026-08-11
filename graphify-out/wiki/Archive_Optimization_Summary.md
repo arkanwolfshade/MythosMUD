@@ -1,37 +1,29 @@
 # Archive Optimization Summary
 
-> 14 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_persistence_container_persistence.py** (8 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_none()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_string()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_dict()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_empty_string()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_list()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_invalid_json()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Unit tests for persistence.container_persistence module.  This module tests the** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing None JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing string JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing dict JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing empty string JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing list JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing invalid JSON string.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **TestGetNPCLifecycleManager** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_npc_lifecycle_manager_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_npc_lifecycle_manager_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_npc_lifecycle_manager dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_npc_lifecycle_manager returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_npc_lifecycle_manager raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
-- [Maps API Endpoints](Maps_API_Endpoints.md) (1 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (82%)
-- INFERRED: 6 (18%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

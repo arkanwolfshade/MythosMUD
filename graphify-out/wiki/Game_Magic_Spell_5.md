@@ -33,10 +33,8 @@
 
 ## Relationships
 
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (11 shared connections)
-- [Player Creation Service](Player_Creation_Service.md) (5 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
-- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (12 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (6 shared connections)
 
 ## Source Files
 

@@ -33,9 +33,8 @@
 
 ## Relationships
 
+- [Chat Panel Separation](Chat_Panel_Separation.md) (4 shared connections)
 - [Combat Messaging Integration](Combat_Messaging_Integration.md) (3 shared connections)
-- [Chat Panel Separation](Chat_Panel_Separation.md) (2 shared connections)
-- [WebSocket Player Helpers](WebSocket_Player_Helpers.md) (2 shared connections)
 
 ## Source Files
 

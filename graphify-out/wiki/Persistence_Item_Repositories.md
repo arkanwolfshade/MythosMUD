@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_cast_command_blocked_when_incapacitated()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Cast command returns incapacitated message when player has 0 to -9 DP (prone, ca** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_handle_nats_message_retry_on_failure()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _handle_nats_message() uses circuit breaker which handles retries.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

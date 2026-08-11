@@ -1,50 +1,57 @@
 # Database Manager Tests
 
-> 26 nodes
+> 96 nodes
 
 ## Key Concepts
 
 - **test_container_websocket_events.py** (23 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_with_owner()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_to_room()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_closed()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_with_owner_id()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_to_room_with_owner()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_updated()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_updated_empty_diff()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_decayed()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_returns_delivery_status()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_to_room_returns_stats()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_closed_returns_stats()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **Unit tests for container WebSocket events.  Tests the container WebSocket event** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **Create mock connection manager.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **Test emit_container_opened handles container with owner.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **Test emit_container_opened_to_room broadcasts to room.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **Test emit_container_closed emits close event.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **Test emit_container_opened handles container with owner_id.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **Test emit_container_opened_to_room handles container with owner.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **Test emit_container_updated broadcasts update event.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **Test emit_container_updated handles empty diff.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **Test emit_container_decayed broadcasts decay event.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **Test emit_container_opened returns delivery status.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **Test emit_container_opened_to_room returns broadcast stats.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- *... and 1 more nodes in this community*
+- **container_events.py** (21 connections) — `server/api/container_events.py`
+- **emit_transfer_event()** (17 connections) — `server/api/container_events.py`
+- **container_websocket_events.py** (17 connections) — `server/services/container_websocket_events.py`
+- **emit_container_opened_events()** (16 connections) — `server/api/container_events.py`
+- **_emit_close_container_event()** (14 connections) — `server/api/container_events.py`
+- **emit_container_opened()** (14 connections) — `server/services/container_websocket_events.py`
+- **emit_container_opened_to_room()** (12 connections) — `server/services/container_websocket_events.py`
+- **emit_container_updated()** (10 connections) — `server/services/container_websocket_events.py`
+- **emit_container_closed()** (9 connections) — `server/services/container_websocket_events.py`
+- **emit_container_decayed()** (8 connections) — `server/services/container_websocket_events.py`
+- **UUID** (6 connections)
+- **UUID** (5 connections)
+- **Any** (5 connections)
+- **Any** (4 connections)
+- **.test_emit_transfer_event_success()** (4 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_transfer_event_no_connection_manager()** (4 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_transfer_event_no_container_in_result()** (4 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_transfer_event_no_room_id()** (4 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_transfer_event_validation_error()** (4 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_transfer_event_emission_error()** (4 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_transfer_event_to_player_direction()** (4 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_transfer_event_to_container_direction()** (4 connections) — `server/tests/unit/api/test_container_events.py`
+- **datetime** (3 connections)
+- **.test_emit_container_opened_events_success()** (3 connections) — `server/tests/unit/api/test_container_events.py`
+- *... and 71 more nodes in this community*
 
 ## Relationships
 
-- [E 2 E Testing Guide](E_2_E_Testing_Guide.md) (17 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (2 shared connections)
-- [NPC Occupant Verification](NPC_Occupant_Verification.md) (1 shared connections)
-- [test_emit_container_opened](test_emit_container_opened.md) (1 shared connections)
+- [Combat Player Broadcasts](Combat_Player_Broadcasts.md) (37 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (11 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (7 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (3 shared connections)
+- [Command Alias Handling](Command_Alias_Handling.md) (2 shared connections)
+- [Invite and User Schemas](Invite_and_User_Schemas.md) (1 shared connections)
+- [Archive Npc Population](Archive_Npc_Population.md) (1 shared connections)
 
 ## Source Files
 
+- `server/api/container_events.py`
+- `server/services/container_websocket_events.py`
+- `server/tests/unit/api/test_container_events.py`
 - `server/tests/unit/services/test_container_websocket_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (100%)
+- EXTRACTED: 340 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

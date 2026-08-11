@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_add_admin_success()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test add_admin() successfully adds admin.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_player_room_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test PlayerRoomEventHandler initialization.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [Player Preferences Service](Player_Preferences_Service.md) (1 shared connections)
+- [Game Chat Moderation](Game_Chat_Moderation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_user_manager.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

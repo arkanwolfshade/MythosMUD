@@ -33,13 +33,13 @@
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
-- [MP Regeneration Service](MP_Regeneration_Service.md) (3 shared connections)
+- [NPC Service Tests](NPC_Service_Tests.md) (3 shared connections)
 - [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (2 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (2 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
-- [Panel Layout Libraries Spec](Panel_Layout_Libraries_Spec.md) (1 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
+- [Container Component Capacity](Container_Component_Capacity.md) (2 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
 - [Catatonia Check Logic](Catatonia_Check_Logic.md) (1 shared connections)
 
 ## Source Files

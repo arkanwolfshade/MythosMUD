@@ -1,40 +1,46 @@
 # Tailwind UI Migration Plan
 
-> 82 nodes
+> 22 nodes
 
 ## Key Concepts
 
 - **test_event_bus.py** (45 connections) — `server/tests/unit/events/test_event_bus.py`
-- **MockEventClass** (29 connections) — `server/tests/unit/events/test_event_bus.py`
 - **event_bus()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_subscribe()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_subscribe_multiple()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_unsubscribe()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_unsubscribe_not_found()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_get_subscriber_count()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_get_subscriber_count_none()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_get_all_subscriber_counts()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_publish()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_unsubscribe_multiple_handlers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_get_all_subscriber_counts_multiple_types()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_publish_no_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_inject_dispatches_to_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_publish_multiple_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_subscribe_invalid_handler()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_event_async_no_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_event_async_sync_subscriber_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_event_async_async_subscriber_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_task_result_async_no_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_task_result_async_with_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_subscribe_with_service_id()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_unsubscribe_all_for_service()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_unsubscribe_all_for_service_partial_cleanup()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- *... and 57 more nodes in this community*
+- **test_event_bus_init()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_shutdown()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_shutdown_idempotent()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_subscribe_invalid_event_type()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_publish_invalid_event()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_stop_processing_not_running()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_ensure_processing_started()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_unsubscribe_all_for_service_nonexistent()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_multiple_services_subscribe_same_events_integration()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Unit tests for event bus.  Tests the EventBus class.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Create an EventBus instance.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus initialization.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.shutdown() stops processing.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.shutdown() is idempotent.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test subscribe() raises error for invalid event type.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test publish() raises error for invalid event.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test _stop_processing() when not running.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test _ensure_processing_started() calls _ensure_async_processing.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.unsubscribe_all_for_service() with nonexistent service_id.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Integration test: Multiple services subscribing to same events and cleanup.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [Level and XP Curve](Level_and_XP_Curve.md) (5 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
+- [Services Rescue Service](Services_Rescue_Service.md) (8 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (5 shared connections)
+- [CleanupContext](CleanupContext.md) (1 shared connections)
+- [Game Quest Service](Game_Quest_Service.md) (1 shared connections)
+- [.prune_stale_players](prune_stale_players.md) (1 shared connections)
+- [Archive Combat Health](Archive_Combat_Health.md) (1 shared connections)
+- [Nats Subject Patterns](Nats_Subject_Patterns_2.md) (1 shared connections)
+- [.check_and_cleanup](check_and_cleanup.md) (1 shared connections)
+- [test_setup_player_and_room_no_player](test_setup_player_and_room_no_player.md) (1 shared connections)
+- [Services Player Respawn](Services_Player_Respawn.md) (1 shared connections)
+- [Persistence Async Migration](Persistence_Async_Migration.md) (1 shared connections)
+- [E 2 E Remaining Work](E_2_E_Remaining_Work.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 175 (80%)
-- INFERRED: 44 (20%)
+- EXTRACTED: 77 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

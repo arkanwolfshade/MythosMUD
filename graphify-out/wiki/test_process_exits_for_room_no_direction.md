@@ -1,23 +1,26 @@
 # test_process_exits_for_room_no_direction
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_announce_spell_cast_no_chat_service()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test announce spell cast when chat service is not available.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **WebSocketRateLimiter** (4 connections) — `docs/examples/logging/websocket_integration.py`
+- **.check_rate_limit()** (2 connections) — `docs/examples/logging/websocket_integration.py`
+- **.__init__()** (1 connections) — `docs/examples/logging/websocket_integration.py`
+- **WebSocket rate limiter with enhanced logging.** (1 connections) — `docs/examples/logging/websocket_integration.py`
+- **Check if client is within rate limit with enhanced logging.** (1 connections) — `docs/examples/logging/websocket_integration.py`
 
 ## Relationships
 
-- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
+- [Memory Leak Metrics](Memory_Leak_Metrics.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `docs/examples/logging/websocket_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

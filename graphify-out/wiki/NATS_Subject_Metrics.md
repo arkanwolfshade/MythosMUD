@@ -1,50 +1,41 @@
 # NATS Subject Metrics
 
-> 34 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **test_command_base.py** (22 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_base_command_rejects_extra_fields()** (4 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_base_command_instantiation()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_base_command_model_config()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_base_command_slots()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_inheritance()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_direction_enum_values()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_direction_enum_all_directions()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_direction_enum_string_comparison()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_look()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_communication_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_exploration_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_admin_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_inventory_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_combat_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_magic_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_string_comparison()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **Unit tests for base command models and enums.  Tests the Direction and CommandTy** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test Direction enum contains all expected values.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test Direction enum contains all 10 expected directions.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test Direction enum values can be compared to strings.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test CommandType enum contains LOOK.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test CommandType enum contains communication commands.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test CommandType enum contains exploration commands.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test CommandType enum contains admin commands.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- *... and 9 more nodes in this community*
+- **._check_dict_condition()** (6 connections) — `server/models/npc.py`
+- **._spawn_value_allows_spawn()** (6 connections) — `server/models/npc.py`
+- **._single_spawn_condition_ok()** (5 connections) — `server/models/npc.py`
+- **.check_spawn_conditions()** (4 connections) — `server/models/npc.py`
+- **._check_missing_key_condition()** (3 connections) — `server/models/npc.py`
+- **._check_list_condition()** (3 connections) — `server/models/npc.py`
+- **._game_value_below_bound()** (3 connections) — `server/models/npc.py`
+- **._game_value_above_bound()** (3 connections) — `server/models/npc.py`
+- **._check_simple_condition()** (3 connections) — `server/models/npc.py`
+- **Check if missing key condition is acceptable.          Returns:             True** (1 connections) — `server/models/npc.py`
+- **Check list condition.          Returns:             True if condition passes, Fa** (1 connections) — `server/models/npc.py`
+- **True if numeric game_value is strictly below bound.** (1 connections) — `server/models/npc.py`
+- **True if numeric game_value is strictly above bound.** (1 connections) — `server/models/npc.py`
+- **Check dict (range) condition.** (1 connections) — `server/models/npc.py`
+- **Check simple value condition.          Returns:             True if condition pa** (1 connections) — `server/models/npc.py`
+- **Return False if this condition value blocks spawning; True otherwise.** (1 connections) — `server/models/npc.py`
+- **Evaluate one key from spawn_conditions; False means spawn blocked.** (1 connections) — `server/models/npc.py`
+- **Check if current game state meets spawn conditions.** (1 connections) — `server/models/npc.py`
 
 ## Relationships
 
-- [Emote Schema Validator](Emote_Schema_Validator.md) (5 shared connections)
-- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (5 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
+- [Command Parser Tests](Command_Parser_Tests.md) (9 shared connections)
+- [Look Command Helpers](Look_Command_Helpers.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_command_base.py`
+- `server/models/npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 74 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 45 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -34,8 +34,8 @@
 ## Relationships
 
 - [Chat Channel Logger](Chat_Channel_Logger.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
-- [chat_logger](chat_logger.md) (1 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
 
 ## Source Files
 

@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [PostgreSQL Adapter Tests](PostgreSQL_Adapter_Tests.md) (8 shared connections)
-- [Postgres Adapter](Postgres_Adapter.md) (6 shared connections)
+- [Postgres Adapter](Postgres_Adapter.md) (7 shared connections)
+- [PostgreSQL Adapter Tests](PostgreSQL_Adapter_Tests.md) (6 shared connections)
 - [Postgres Adapter Infrastructure](Postgres_Adapter_Infrastructure.md) (6 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 

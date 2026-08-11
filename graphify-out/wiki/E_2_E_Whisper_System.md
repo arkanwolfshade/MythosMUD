@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **handler()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Create a MagicCommandHandler instance.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_get_subscriber_stats()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.get_subscriber_stats() returns subscriber statistics.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
-- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (1 shared connections)
+- [Services Rescue Service](Services_Rescue_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

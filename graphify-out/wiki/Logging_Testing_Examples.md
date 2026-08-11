@@ -1,13 +1,12 @@
 # Logging Testing Examples
 
-> 55 nodes
+> 53 nodes
 
 ## Key Concepts
 
 - **TestRoomDataFixer** (20 connections) — `server/tests/unit/services/test_room_data_fixer.py`
 - **RoomDataFixer** (14 connections) — `server/services/room_data_fixer.py`
 - **.apply_room_data_fixes()** (13 connections) — `server/services/room_data_fixer.py`
-- **room_data_fixer.py** (7 connections) — `server/services/room_data_fixer.py`
 - **.fix_missing_name()** (7 connections) — `server/services/room_data_fixer.py`
 - **.fix_occupant_count_mismatch()** (7 connections) — `server/services/room_data_fixer.py`
 - **.fix_missing_description()** (6 connections) — `server/services/room_data_fixer.py`
@@ -29,15 +28,14 @@
 - **.test_count_applied_fixes()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
 - **.test_count_applied_fixes_no_fixable()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
 - **.test_apply_room_data_fixes_all_fixes()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- *... and 30 more nodes in this community*
+- **.test_apply_room_data_fixes_no_errors()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
 - [Communication Command Flows](Communication_Command_Flows.md) (3 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
-- [Room Data Fixer](Room_Data_Fixer.md) (1 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [Room Data Fixer](Room_Data_Fixer.md) (2 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 168 (97%)
-- INFERRED: 6 (3%)
+- EXTRACTED: 160 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

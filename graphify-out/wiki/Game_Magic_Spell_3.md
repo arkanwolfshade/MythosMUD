@@ -1,34 +1,32 @@
 # Game Magic Spell
 
-> 12 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **.load_player_mutes()** (12 connections) — `server/services/user_manager.py`
-- **._load_player_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
-- **._load_global_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
-- **._convert_mute_info_timestamps()** (5 connections) — `server/services/user_manager.py`
-- **._convert_mute_info_uuids()** (5 connections) — `server/services/user_manager.py`
-- **._load_channel_mutes_from_data()** (5 connections) — `server/services/user_manager.py`
-- **Convert timestamp strings in mute_info to datetime objects.** (1 connections) — `server/services/user_manager.py`
-- **Convert UUID strings in mute_info to UUID objects.** (1 connections) — `server/services/user_manager.py`
-- **Load player mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
-- **Load channel mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
-- **Load global mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
-- **Load mute data for a specific player from JSON file.          Args:** (1 connections) — `server/services/user_manager.py`
+- **TestValidateCommandBasics** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_validate_command_basics_empty()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_validate_command_basics_too_long()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_validate_command_basics_invalid_content()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_validate_command_basics_valid()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _validate_command_basics function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _validate_command_basics returns result for empty command.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _validate_command_basics returns result for command too long.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _validate_command_basics returns result for invalid command content.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _validate_command_basics returns None for valid command.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
 
 ## Relationships
 
-- [Player Mute Persistence](Player_Mute_Persistence.md) (16 shared connections)
-- [Commands Time](Commands_Time.md) (1 shared connections)
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (4 shared connections)
+- [Catatonia Check Logic](Catatonia_Check_Logic.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/user_manager.py`
+- `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

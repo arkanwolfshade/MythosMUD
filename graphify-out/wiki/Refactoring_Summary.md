@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_emote_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_emote_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_service_shutdown_removes_subscribers()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test that service shutdown removes all subscribers for that service.      This t** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 

@@ -30,11 +30,12 @@
 ## Relationships
 
 - [Postgres Adapter Infrastructure](Postgres_Adapter_Infrastructure.md) (6 shared connections)
-- [PostgreSQL Adapter Tests](PostgreSQL_Adapter_Tests.md) (5 shared connections)
+- [Postgres Adapter](Postgres_Adapter.md) (4 shared connections)
 - [Postgres Connection Tests](Postgres_Connection_Tests.md) (4 shared connections)
-- [Postgres Adapter](Postgres_Adapter.md) (3 shared connections)
+- [PostgreSQL Adapter Tests](PostgreSQL_Adapter_Tests.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 - [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
+- [Test Refactoring Status](Test_Refactoring_Status.md) (1 shared connections)
 
 ## Source Files
 

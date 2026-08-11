@@ -1,35 +1,23 @@
 # E 2 E Bugs Found
 
-> 10 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **validate_command_format()** (9 connections) — `server/validators/command_validator.py`
-- **test_validate_command_format_valid()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_validate_command_format_empty()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_validate_command_format_suspicious()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_validate_command_format_too_long()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test validate_command_format returns True for valid command.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test validate_command_format returns False for empty command.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test validate_command_format returns False for suspicious command.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test validate_command_format returns False for too long command.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Validate command format and return validation result with error message.      Ar** (1 connections) — `server/validators/command_validator.py`
+- **test_prepare_command_data_with_pipe_target()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test _prepare_command_data includes pipe_target if present.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
 
 ## Relationships
 
-- [Persistence Container Extended](Persistence_Container_Extended.md) (5 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
-- [E 2 E Load Readme](E_2_E_Load_Readme.md) (1 shared connections)
-- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
+- [NPC Population Control](NPC_Population_Control.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_command_validator.py`
-- `server/validators/command_validator.py`
+- `server/tests/unit/commands/test_command_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

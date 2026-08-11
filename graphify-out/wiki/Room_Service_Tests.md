@@ -1,78 +1,61 @@
 # Room Service Tests
 
-> 325 nodes
+> 123 nodes
 
 ## Key Concepts
 
-- **ValidationError** (540 connections) — `server/exceptions.py`
 - **test_command_factories_utility.py** (51 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **player_effects.py** (30 connections) — `server/api/player_effects.py`
-- **test_player_requests.py** (29 connections) — `server/tests/unit/schemas/test_player_requests.py`
-- **test_command_factories_communication.py** (29 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_player_effects_endpoints.py** (28 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
 - **UtilityCommandFactory** (20 connections) — `server/utils/command_factories_utility.py`
-- **CommunicationCommandFactory** (15 connections) — `server/utils/command_factories_communication.py`
-- **player_requests.py** (14 connections) — `server/schemas/players/player_requests.py`
-- **test_player_respawn_handlers.py** (14 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
 - **.create_summon_command()** (14 connections) — `server/utils/command_factories_utility.py`
-- **apply_lucidity_loss()** (12 connections) — `server/api/player_effects.py`
-- **_handle_delirium_respawn_validation_error()** (12 connections) — `server/api/player_respawn.py`
-- **MeCommand** (12 connections) — `server/models/command_communication.py`
-- **EffectResponse** (12 connections) — `server/schemas/players/player_effects.py`
-- **LucidityLossRequest** (12 connections) — `server/schemas/players/player_requests.py`
-- **DamageRequest** (12 connections) — `server/schemas/players/player_requests.py`
 - **.create_cast_command()** (12 connections) — `server/utils/command_factories_utility.py`
-- **apply_fear()** (11 connections) — `server/api/player_effects.py`
-- **apply_corruption()** (11 connections) — `server/api/player_effects.py`
-- **gain_occult_knowledge()** (11 connections) — `server/api/player_effects.py`
-- **heal_player()** (11 connections) — `server/api/player_effects.py`
-- **damage_player()** (11 connections) — `server/api/player_effects.py`
-- **_handle_respawn_validation_error()** (11 connections) — `server/api/player_respawn.py`
-- **BaseModel** (11 connections)
-- *... and 300 more nodes in this community*
+- **.create_teleport_command()** (11 connections) — `server/utils/command_factories_utility.py`
+- **.error()** (8 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **.create_alias_command()** (7 connections) — `server/utils/command_factories_utility.py`
+- **.create_unalias_command()** (7 connections) — `server/utils/command_factories_utility.py`
+- **.create_spell_command()** (7 connections) — `server/utils/command_factories_utility.py`
+- **.create_learn_command()** (7 connections) — `server/utils/command_factories_utility.py`
+- **.create_aliases_command()** (6 connections) — `server/utils/command_factories_utility.py`
+- **.create_goto_command()** (6 connections) — `server/utils/command_factories_utility.py`
+- **.create_spells_command()** (6 connections) — `server/utils/command_factories_utility.py`
+- **.create_help_command()** (5 connections) — `server/utils/command_factories_utility.py`
+- **.create_npc_command()** (5 connections) — `server/utils/command_factories_utility.py`
+- **.create_shutdown_command()** (5 connections) — `server/utils/command_factories_utility.py`
+- **test_create_alias_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_aliases_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_unalias_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_unalias_command_multiple_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_summon_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_summon_command_invalid_quantity()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_summon_command_negative_quantity()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_summon_command_invalid_token()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_summon_command_extra_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- *... and 98 more nodes in this community*
 
 ## Relationships
 
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (71 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (61 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (44 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (34 shared connections)
-- [Game Mechanics Service](Game_Mechanics_Service.md) (31 shared connections)
-- [NPC Occupant Processor](NPC_Occupant_Processor.md) (30 shared connections)
-- [Game Terminal Panels](Game_Terminal_Panels.md) (21 shared connections)
-- [Spell Registry Costs](Spell_Registry_Costs.md) (18 shared connections)
-- [Command Helper Utilities](Command_Helper_Utilities.md) (15 shared connections)
-- [Command Factory Creators](Command_Factory_Creators.md) (14 shared connections)
-- [Moderation Command Models](Moderation_Command_Models.md) (14 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (13 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (18 shared connections)
+- [Realtime Errors Error](Realtime_Errors_Error.md) (13 shared connections)
+- [Game Terminal Panels](Game_Terminal_Panels.md) (5 shared connections)
+- [Command Helper Utilities](Command_Helper_Utilities.md) (4 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (3 shared connections)
+- [Integer Coercion Utils](Integer_Coercion_Utils.md) (3 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (2 shared connections)
+- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (1 shared connections)
+- [Archive Frd Random](Archive_Frd_Random.md) (1 shared connections)
+- [Error Handling Middleware](Error_Handling_Middleware.md) (1 shared connections)
+- [Mythos Time HUD](Mythos_Time_HUD.md) (1 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/player_effects.py`
-- `server/api/player_respawn.py`
-- `server/database.py`
-- `server/exceptions.py`
-- `server/game/mechanics.py`
-- `server/game/movement_service.py`
-- `server/game/profession_service.py`
-- `server/models/command_channel.py`
-- `server/models/command_communication.py`
-- `server/schemas/players/player_effects.py`
-- `server/schemas/players/player_requests.py`
-- `server/tests/unit/api/test_containers.py`
-- `server/tests/unit/api/test_player_effects_endpoints.py`
-- `server/tests/unit/api/test_player_respawn_handlers.py`
-- `server/tests/unit/game/test_player_service.py`
-- `server/tests/unit/models/test_command_communication.py`
-- `server/tests/unit/models/test_container.py`
-- `server/tests/unit/schemas/test_player_requests.py`
-- `server/tests/unit/utils/test_command_factories_communication.py`
+- `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
 - `server/tests/unit/utils/test_command_factories_utility.py`
+- `server/utils/command_factories_utility.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1250 (72%)
-- INFERRED: 497 (28%)
+- EXTRACTED: 366 (93%)
+- INFERRED: 28 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

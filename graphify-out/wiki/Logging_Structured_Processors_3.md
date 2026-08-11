@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_logout_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_logout_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_extract_parsed_fields_basic()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test _extract_parsed_fields extracts basic fields.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [NPC Population Control](NPC_Population_Control.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/commands/test_command_service.py`
 
 ## Audit Trail
 

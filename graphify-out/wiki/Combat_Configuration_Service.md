@@ -34,8 +34,8 @@
 ## Relationships
 
 - [Chat Moderation Service](Chat_Moderation_Service.md) (5 shared connections)
-- [Chat Message Helpers](Chat_Message_Helpers.md) (1 shared connections)
-- [NPC Definition Admin API](NPC_Definition_Admin_API.md) (1 shared connections)
+- [Who Command Tests](Who_Command_Tests.md) (1 shared connections)
+- [Chat Mute Admin API](Chat_Mute_Admin_API.md) (1 shared connections)
 
 ## Source Files
 

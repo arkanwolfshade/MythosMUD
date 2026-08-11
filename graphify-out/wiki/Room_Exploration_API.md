@@ -1,12 +1,13 @@
 # Room Exploration API
 
-> 26 nodes
+> 28 nodes
 
 ## Key Concepts
 
 - **test_room_occupant_manager.py** (16 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
 - **occupant_manager()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
 - **test_get_room_occupants_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_get_room_occupants_get_players_error()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
 - **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
 - **test_room_occupant_manager_init()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
 - **test_get_room_occupants_no_persistence()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
@@ -28,13 +29,13 @@
 - **Test get_room_occupants handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
 - **Test separate_occupants_by_type separates occupants.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
 - **Test get_room_occupants with ensure_player_included.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test get_room_occupants returns both players and NPCs.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- *... and 1 more nodes in this community*
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [Communication Command Flows](Communication_Command_Flows.md) (4 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [Character Stats Generator](Character_Stats_Generator.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 55 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 58 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

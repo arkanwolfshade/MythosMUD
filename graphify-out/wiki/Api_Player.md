@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_spell_command_with_mastery()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test spell command when player has mastery.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_unsubscribe_from_room()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test unsubscribe_from_room unsubscribes from room.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

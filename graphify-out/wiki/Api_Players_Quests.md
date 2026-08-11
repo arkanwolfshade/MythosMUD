@@ -1,28 +1,23 @@
 # Api Players Quests
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.on_enter_state()** (4 connections) — `server/realtime/connection_state_machine.py`
-- **.get_stats()** (3 connections) — `server/realtime/connection_state_machine.py`
-- **State** (2 connections)
-- **Any** (2 connections)
-- **Called whenever state machine enters a new state.          Logs state transition** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Get connection statistics.          Returns:             Dictionary with connect** (1 connections) — `server/realtime/connection_state_machine.py`
+- **test_execute_command_handler_success()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test _execute_command_handler successfully executes handler.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
 
 ## Relationships
 
-- [Room Subscription Helpers](Room_Subscription_Helpers.md) (2 shared connections)
-- [Game State Provider](Game_State_Provider.md) (1 shared connections)
+- [NPC Population Control](NPC_Population_Control.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_state_machine.py`
+- `server/tests/unit/commands/test_command_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,34 +1,38 @@
 # Commands Command Handler
 
-> 10 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **.validate_expanded_command()** (8 connections) — `server/validators/command_validator.py`
-- **test_command_validator_validate_expanded_command_valid()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_command_validator_validate_expanded_command_inherits_content_validation()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_command_validator_validate_expanded_command_length_limit()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_command_validator_validate_expanded_command_within_limit()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.validate_expanded_command returns True for valid expanded** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.validate_expanded_command inherits content validation.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.validate_expanded_command enforces expanded length limit.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.validate_expanded_command allows commands within expanded** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Validate command after alias expansion.          Uses stricter length limits sin** (1 connections) — `server/validators/command_validator.py`
+- **UUID** (8 connections)
+- **.detect_and_handle_error_state()** (8 connections) — `server/realtime/errors/error_handler.py`
+- **Any** (7 connections)
+- **.handle_websocket_error()** (5 connections) — `server/realtime/errors/error_handler.py`
+- **.handle_authentication_error()** (5 connections) — `server/realtime/errors/error_handler.py`
+- **.handle_security_violation()** (5 connections) — `server/realtime/errors/error_handler.py`
+- **.get_error_statistics()** (5 connections) — `server/realtime/errors/error_handler.py`
+- **.__init__()** (4 connections) — `server/realtime/errors/error_handler.py`
+- **.recover_from_error()** (4 connections) — `server/realtime/errors/error_handler.py`
+- **Initialize the error handler.          Args:             force_disconnect_callba** (1 connections) — `server/realtime/errors/error_handler.py`
+- **Detect when a client is in an error state and handle it appropriately.** (1 connections) — `server/realtime/errors/error_handler.py`
+- **Handle WebSocket-specific errors.          Args:             player_id: The play** (1 connections) — `server/realtime/errors/error_handler.py`
+- **Handle authentication-related errors.          Args:             player_id: The** (1 connections) — `server/realtime/errors/error_handler.py`
+- **Handle security violations.          Args:             player_id: The player's I** (1 connections) — `server/realtime/errors/error_handler.py`
+- **Attempt to recover from an error state for a player.          Args:** (1 connections) — `server/realtime/errors/error_handler.py`
+- **Get error handling statistics.          Args:             online_players: Online** (1 connections) — `server/realtime/errors/error_handler.py`
 
 ## Relationships
 
-- [Persistence Container Extended](Persistence_Container_Extended.md) (4 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [Look Command Helpers](Look_Command_Helpers.md) (1 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (8 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_command_validator.py`
-- `server/validators/command_validator.py`
+- `server/realtime/errors/error_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 58 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

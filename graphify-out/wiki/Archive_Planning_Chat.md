@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_learn_command_no_player()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test learn command when player is not found.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_get_subscription_count()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test get_subscription_count returns count.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

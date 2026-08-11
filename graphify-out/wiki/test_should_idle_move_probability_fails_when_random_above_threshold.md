@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_should_idle_move_probability_fails_when_random_above_threshold()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Movement is skipped when random.random() > idle_movement_probability.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_process_combat_attack_queue_failure()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test _process_combat_attack falls back to immediate execution when queuing fails** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
 
 ## Relationships
 
-- [Cursor Bug Agents](Cursor_Bug_Agents.md) (1 shared connections)
-- [NPC Movement Integration](NPC_Movement_Integration.md) (1 shared connections)
+- [Combat Disconnect Bug](Combat_Disconnect_Bug.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

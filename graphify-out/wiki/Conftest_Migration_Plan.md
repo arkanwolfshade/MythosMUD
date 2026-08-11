@@ -1,16 +1,25 @@
 # Conftest Migration Plan
 
-> 95 nodes
+> 122 nodes
 
 ## Key Concepts
 
+- **RoomCacheLoader** (29 connections) — `server/async_persistence_room_loader.py`
 - **Player** (22 connections)
 - **UUID** (21 connections)
 - **Any** (20 connections)
 - **._ensure_room_cache_loaded()** (13 connections) — `server/async_persistence.py`
+- **Any** (12 connections)
+- **.load()** (10 connections) — `server/async_persistence_room_loader.py`
 - **Delegate to room loader; exposed for unit tests.** (8 connections) — `server/async_persistence.py`
+- **._generate_room_id_from_zone_data()** (7 connections) — `server/async_persistence_room_loader.py`
 - **.get_player_by_id()** (6 connections) — `server/async_persistence.py`
+- **datetime** (6 connections)
+- **._process_combined_rows()** (6 connections) — `server/async_persistence_room_loader.py`
 - **.get_players_batch()** (5 connections) — `server/async_persistence.py`
+- **Profession** (5 connections)
+- **._build_room_data_from_row()** (5 connections) — `server/async_persistence_room_loader.py`
+- **._process_exit_rows()** (5 connections) — `server/async_persistence_room_loader.py`
 - **._process_exit_rows()** (4 connections) — `server/async_persistence.py`
 - **._build_room_objects()** (4 connections) — `server/async_persistence.py`
 - **._query_rooms_with_exits_async()** (4 connections) — `server/async_persistence.py`
@@ -20,34 +29,26 @@
 - **.get_player_by_name()** (4 connections) — `server/async_persistence.py`
 - **.get_players_by_user_id()** (4 connections) — `server/async_persistence.py`
 - **.get_active_players_by_user_id()** (4 connections) — `server/async_persistence.py`
-- **.get_player_by_user_id()** (4 connections) — `server/async_persistence.py`
-- **.list_players()** (4 connections) — `server/async_persistence.py`
-- **.get_players_in_room()** (4 connections) — `server/async_persistence.py`
-- **.update_player_last_active()** (4 connections) — `server/async_persistence.py`
-- **.apply_lucidity_loss()** (4 connections) — `server/async_persistence.py`
-- **.apply_fear()** (4 connections) — `server/async_persistence.py`
-- **.apply_corruption()** (4 connections) — `server/async_persistence.py`
-- **.heal_player()** (4 connections) — `server/async_persistence.py`
-- **.async_heal_player()** (4 connections) — `server/async_persistence.py`
-- *... and 70 more nodes in this community*
+- *... and 97 more nodes in this community*
 
 ## Relationships
 
-- [Magic Service Bundle](Magic_Service_Bundle.md) (47 shared connections)
-- [Persistence Item Instance](Persistence_Item_Instance.md) (5 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
-- [Async Persistence Types](Async_Persistence_Types.md) (3 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
-- [Container System Architecture](Container_System_Architecture.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (52 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (17 shared connections)
+- [Profession Get Mechanical Effects](Profession_Get_Mechanical_Effects.md) (2 shared connections)
+- [Maps API Endpoints](Maps_API_Endpoints.md) (1 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (1 shared connections)
+- [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
 
 ## Source Files
 
 - `server/async_persistence.py`
+- `server/async_persistence_room_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 287 (97%)
-- INFERRED: 10 (3%)
+- EXTRACTED: 404 (94%)
+- INFERRED: 26 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

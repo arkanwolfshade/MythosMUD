@@ -34,7 +34,7 @@
 ## Relationships
 
 - [Game State Provider](Game_State_Provider.md) (2 shared connections)
-- [Realtime WebSocket Auth](Realtime_WebSocket_Auth.md) (1 shared connections)
+- [Player Respawn Events](Player_Respawn_Events.md) (1 shared connections)
 
 ## Source Files
 

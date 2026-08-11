@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **sample_alias()** (3 connections) — `server/tests/unit/test_alias_storage.py`
-- **Create a sample alias for testing.** (1 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_build_room_occupants_message()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test build_room_occupants_message() builds correct message.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [Alias Expansion Logic](Alias_Expansion_Logic.md) (1 shared connections)
-- [Alias Storage Services](Alias_Storage_Services.md) (1 shared connections)
+- [Game Chat Moderation](Game_Chat_Moderation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_alias_storage.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

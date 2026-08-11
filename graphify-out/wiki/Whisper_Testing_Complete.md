@@ -34,7 +34,7 @@
 ## Relationships
 
 - [Quest Service Core](Quest_Service_Core.md) (4 shared connections)
-- [E2E Suite Spec Helpers](E2E_Suite_Spec_Helpers.md) (1 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
 
 ## Source Files
 

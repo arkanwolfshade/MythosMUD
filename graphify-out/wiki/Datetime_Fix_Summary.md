@@ -1,12 +1,14 @@
 # Datetime Fix Summary
 
-> 37 nodes
+> 39 nodes
 
 ## Key Concepts
 
 - **layout.ts** (41 connections) — `client/src/components/map/utils/layout.ts`
+- **useMapLayout.ts** (22 connections) — `client/src/components/map/hooks/useMapLayout.ts`
 - **runForceSimulationStep()** (7 connections) — `client/src/components/map/utils/layout.ts`
 - **applyForceLayout()** (7 connections) — `client/src/components/map/utils/layout.ts`
+- **applyGridLayout()** (7 connections) — `client/src/components/map/utils/layout.ts`
 - **applyForceLayout.test.ts** (6 connections) — `client/src/components/map/utils/__tests__/applyForceLayout.test.ts`
 - **applyGridLayout.test.ts** (6 connections) — `client/src/components/map/utils/__tests__/applyGridLayout.test.ts`
 - **calculateGridPosition.test.ts** (6 connections) — `client/src/components/map/utils/__tests__/calculateGridPosition.test.ts`
@@ -27,14 +29,14 @@
 - **applyMutualForce()** (3 connections) — `client/src/components/map/utils/layout.ts`
 - **applyChargeForces()** (3 connections) — `client/src/components/map/utils/layout.ts`
 - **doLineSegmentsIntersect()** (3 connections) — `client/src/components/map/utils/layout.ts`
-- **doesEdgeCrossNode()** (3 connections) — `client/src/components/map/utils/layout.ts`
-- **repelCrossingEdgePair()** (3 connections) — `client/src/components/map/utils/layout.ts`
-- *... and 12 more nodes in this community*
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
+- [Player Death Service Tests](Player_Death_Service_Tests.md) (14 shared connections)
 - [Command Input Utilities](Command_Input_Utilities.md) (13 shared connections)
-- [Player Death Service Tests](Player_Death_Service_Tests.md) (10 shared connections)
+- [Critical Coverage Improvement Plan](Critical_Coverage_Improvement_Plan.md) (2 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 169 (100%)
+- EXTRACTED: 198 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

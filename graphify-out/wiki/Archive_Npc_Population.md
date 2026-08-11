@@ -1,44 +1,50 @@
 # Archive Npc Population
 
-> 18 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **CorpseServiceError** (15 connections) — `server/services/corpse_lifecycle_service.py`
-- **CorpseNotFoundError** (7 connections) — `server/services/corpse_lifecycle_service.py`
-- **test_corpse_not_found_error()** (4 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_corpse_service_error()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_create_corpse_on_death_player_not_found()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_create_corpse_on_death_persistence_error()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_cleanup_decayed_corpse_not_found()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_cleanup_decayed_corpse_not_corpse()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_cleanup_decayed_corpse_delete_error()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **Base exception for corpse service operations.** (1 connections) — `server/services/corpse_lifecycle_service.py`
-- **Raised when a corpse container is not found.** (1 connections) — `server/services/corpse_lifecycle_service.py`
-- **Test CorpseServiceError exception.** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **Test CorpseNotFoundError exception.** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **Test create_corpse_on_death() raises error when player not found.** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **Test create_corpse_on_death() handles persistence errors.** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **Test cleanup_decayed_corpse() raises error when corpse not found.** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **Test cleanup_decayed_corpse() raises error when container is not a corpse.** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **Test cleanup_decayed_corpse() raises error when delete fails.** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **mock_container()** (12 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **_assign_container_get_instance()** (12 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_with_room_id()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_with_sub_zone()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_fallback()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_no_persistence()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_room_id_not_found()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_sub_zone_room_not_found()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_fallback_not_found()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_exception()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_no_container()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_arena_npcs_spawns_each_spawned_definition()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Create mock container.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **Attach a typed get_instance mock to a patched ApplicationContainer.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _determine_spawn_room() uses NPC's room_id when available.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _determine_spawn_room() uses sub_zone default when room_id not available.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _determine_spawn_room() uses fallback room when no other option.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _determine_spawn_room() returns None when persistence not available.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _determine_spawn_room() handles room_id not found in database.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _determine_spawn_room() handles sub-zone default room not found.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _determine_spawn_room() returns None when fallback room not found.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _determine_spawn_room() handles exceptions gracefully.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _determine_spawn_room() handles None container.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **One arena instance per definition_id present in required/optional spawned_npcs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Relationships
 
-- [Skill Service Tests](Skill_Service_Tests.md) (9 shared connections)
-- [Player State Factories](Player_State_Factories.md) (5 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
+- [NPC Occupant Verification](NPC_Occupant_Verification.md) (11 shared connections)
+- [Archive Bug Prevention](Archive_Bug_Prevention.md) (10 shared connections)
+- [Combat Player Broadcasts](Combat_Player_Broadcasts.md) (1 shared connections)
+- [Database Manager Tests](Database_Manager_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/corpse_lifecycle_service.py`
-- `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- `server/tests/unit/services/test_container_websocket_events.py`
+- `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (68%)
-- INFERRED: 17 (32%)
+- EXTRACTED: 66 (78%)
+- INFERRED: 19 (22%)
 - AMBIGUOUS: 0 (0%)
 
 ---

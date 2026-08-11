@@ -35,13 +35,12 @@
 
 - [Container Inventory Finders](Container_Inventory_Finders.md) (14 shared connections)
 - [FastAPI Auth Integration](FastAPI_Auth_Integration.md) (5 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (3 shared connections)
+- [Player Effects API](Player_Effects_API.md) (3 shared connections)
 - [Container Sync Remediation](Container_Sync_Remediation.md) (3 shared connections)
-- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (2 shared connections)
-- [FastAPI App Factory](FastAPI_App_Factory.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
-- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
-- [Player Creation Service](Player_Creation_Service.md) (1 shared connections)
+- [Character Creation Service](Character_Creation_Service.md) (2 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (2 shared connections)
+- [Quest Journal Commands](Quest_Journal_Commands.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 - [Game State Provider](Game_State_Provider.md) (1 shared connections)
 
 ## Source Files

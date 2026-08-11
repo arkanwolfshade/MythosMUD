@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_unequip_wearable_container_empty_allowed_roles()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_unequip_wearable_container when allowed_roles is empty list.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_nats_message_unknown_channel_defaults()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _handle_nats_message uses 'unknown' as default channel when missing.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [Exploration Command Factories](Exploration_Command_Factories.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_decayed_corpses_in_room_with_decayed()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **Test get_decayed_corpses_in_room() returns decayed corpses.** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_determine_direction_from_rooms_no_persistence()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test _determine_direction_from_rooms() returns None when persistence not availab** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- [Skill Service Tests](Skill_Service_Tests.md) (1 shared connections)
+- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 

@@ -4,22 +4,21 @@
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Initialize the memory leak metrics collector.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **test_subscribe_to_chat_subjects_no_subject_manager()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _subscribe_to_chat_subjects() raises error when subject manager not availab** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
-- [Party Service Management](Party_Service_Management.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/monitoring/memory_leak_metrics.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

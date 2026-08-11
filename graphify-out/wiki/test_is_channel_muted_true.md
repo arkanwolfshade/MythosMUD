@@ -4,22 +4,21 @@
 
 ## Key Concepts
 
-- **test_is_channel_muted_true()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test checking if channel is muted (returns True).** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_channel_muted_true()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test is_channel_muted() returns True when channel is muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [Combat Command Handler](Combat_Command_Handler.md) (1 shared connections)
-- [Async Persistence Delegates](Async_Persistence_Delegates.md) (1 shared connections)
+- [Player Preferences Service](Player_Preferences_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

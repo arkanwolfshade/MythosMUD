@@ -33,13 +33,11 @@
 
 ## Relationships
 
-- [Room Service Tests](Room_Service_Tests.md) (4 shared connections)
-- [Command Testing Guide](Command_Testing_Guide.md) (3 shared connections)
-- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (2 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
-- [Multiplayer Browser Helpers](Multiplayer_Browser_Helpers.md) (1 shared connections)
-- [Services Combat Persistence](Services_Combat_Persistence.md) (1 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [Command Testing Guide](Command_Testing_Guide.md) (5 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (4 shared connections)
+- [Realtime Event Delegation](Realtime_Event_Delegation.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 - [NATS Chat Broadcasting](NATS_Chat_Broadcasting.md) (1 shared connections)
 
 ## Source Files

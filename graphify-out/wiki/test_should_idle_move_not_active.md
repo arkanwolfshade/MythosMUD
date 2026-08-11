@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_should_idle_move_not_active()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test should_idle_move() returns False when NPC is not active.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_handle_equip_wearable_container_existing_id_uuid()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_equip_wearable_container when existing_id is already UUID.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [Cursor Bug Agents](Cursor_Bug_Agents.md) (1 shared connections)
-- [NPC Movement Integration](NPC_Movement_Integration.md) (1 shared connections)
+- [Exploration Command Factories](Exploration_Command_Factories.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

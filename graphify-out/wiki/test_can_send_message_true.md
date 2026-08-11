@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_can_send_message_true()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test can_send_message() returns True when player can send message.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_subscribe_player_to_room_error()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test subscribe_player_to_room() handles subscription errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [Player Preferences Service](Player_Preferences_Service.md) (1 shared connections)
+- [Game Chat Moderation](Game_Chat_Moderation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_user_manager.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

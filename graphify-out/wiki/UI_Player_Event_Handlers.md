@@ -1,49 +1,62 @@
 # UI Player Event Handlers
 
-> 51 nodes
+> 113 nodes
 
 ## Key Concepts
 
-- **Any** (10 connections)
-- **._handle_event_async()** (8 connections) — `server/events/event_bus.py`
-- **._stop_processing()** (7 connections) — `server/events/event_bus.py`
-- **._ensure_async_processing()** (6 connections) — `server/events/event_bus.py`
-- **._create_async_subscriber_tasks()** (6 connections) — `server/events/event_bus.py`
-- **.unsubscribe()** (6 connections) — `server/events/event_bus.py`
-- **._separate_subscribers()** (5 connections) — `server/events/event_bus.py`
-- **._process_sync_subscribers()** (5 connections) — `server/events/event_bus.py`
-- **._wait_for_async_subscribers()** (5 connections) — `server/events/event_bus.py`
-- **.subscribe()** (5 connections) — `server/events/event_bus.py`
-- **._process_events_async()** (4 connections) — `server/events/event_bus.py`
-- **._handle_task_result_async()** (4 connections) — `server/events/event_bus.py`
-- **.publish()** (4 connections) — `server/events/event_bus.py`
-- **.inject()** (4 connections) — `server/events/event_bus.py`
-- **.unsubscribe_all_for_service()** (4 connections) — `server/events/event_bus.py`
-- **.get_subscriber_stats()** (4 connections) — `server/events/event_bus.py`
-- **.shutdown()** (4 connections) — `server/events/event_bus.py`
-- **._ensure_processing_started()** (3 connections) — `server/events/event_bus.py`
-- **._signal_shutdown()** (3 connections) — `server/events/event_bus.py`
-- **._cancel_processing_task()** (3 connections) — `server/events/event_bus.py`
-- **._cancel_and_wait_for_active_tasks()** (3 connections) — `server/events/event_bus.py`
-- **._finalize_shutdown()** (3 connections) — `server/events/event_bus.py`
-- **Task** (3 connections)
-- **.get_all_subscriber_counts()** (3 connections) — `server/events/event_bus.py`
-- **.get_active_task_details()** (3 connections) — `server/events/event_bus.py`
-- *... and 26 more nodes in this community*
+- **test_admin_commands.py** (37 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **admin_commands.py** (33 connections) — `server/commands/admin_commands.py`
+- **admin_mute_commands.py** (29 connections) — `server/commands/admin_mute_commands.py`
+- **handle_mute_command()** (20 connections) — `server/commands/admin_mute_commands.py`
+- **Any** (16 connections)
+- **handle_admin_command()** (14 connections) — `server/commands/admin_commands.py`
+- **handle_unmute_command()** (13 connections) — `server/commands/admin_mute_commands.py`
+- **handle_add_admin_command()** (12 connections) — `server/commands/admin_mute_commands.py`
+- **handle_mutes_command()** (12 connections) — `server/commands/admin_mute_commands.py`
+- **handle_mute_global_command()** (10 connections) — `server/commands/admin_mute_commands.py`
+- **handle_unmute_global_command()** (10 connections) — `server/commands/admin_mute_commands.py`
+- **_handle_admin_status_command()** (9 connections) — `server/commands/admin_commands.py`
+- **_perform_mutes_list()** (7 connections) — `server/commands/admin_mute_commands.py`
+- **_handle_admin_time_command()** (6 connections) — `server/commands/admin_commands.py`
+- **_perform_mute()** (6 connections) — `server/commands/admin_mute_commands.py`
+- **_mute_command_app()** (5 connections) — `server/commands/admin_mute_commands.py`
+- **_format_mute_line()** (5 connections) — `server/commands/admin_mute_commands.py`
+- **_collect_mute_display_lines()** (5 connections) — `server/commands/admin_mute_commands.py`
+- **_extract_mute_target()** (4 connections) — `server/commands/admin_mute_commands.py`
+- **_parse_mute_duration_minutes()** (4 connections) — `server/commands/admin_mute_commands.py`
+- **_resolve_muter_and_target_players()** (4 connections) — `server/commands/admin_mute_commands.py`
+- **_mute_success_result()** (4 connections) — `server/commands/admin_mute_commands.py`
+- **_mute_display_target()** (4 connections) — `server/commands/admin_mute_commands.py`
+- **_resolve_current_player_id_for_mutes()** (4 connections) — `server/commands/admin_mute_commands.py`
+- **.is_admin()** (4 connections) — `server/commands/communication_commands_support.py`
+- *... and 88 more nodes in this community*
 
 ## Relationships
 
-- [Level and XP Curve](Level_and_XP_Curve.md) (24 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (8 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (18 shared connections)
+- [E2E Suite Overview](E2E_Suite_Overview.md) (15 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (11 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (10 shared connections)
+- [Client Event Store](Client_Event_Store.md) (6 shared connections)
+- [Client Security Utilities](Client_Security_Utilities.md) (3 shared connections)
+- [Admin Status Commands](Admin_Status_Commands.md) (3 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
+- [Container Repository CRUD](Container_Repository_CRUD.md) (3 shared connections)
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (1 shared connections)
+- [Commands System Help](Commands_System_Help.md) (1 shared connections)
+- [Quest Journal Commands](Quest_Journal_Commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/events/event_bus.py`
+- `server/commands/admin_commands.py`
+- `server/commands/admin_mute_commands.py`
+- `server/commands/communication_commands_support.py`
+- `server/tests/unit/commands/test_admin_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 142 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 367 (85%)
+- INFERRED: 65 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

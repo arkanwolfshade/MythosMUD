@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_update_default_channel_invalid_id()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test updating default channel with invalid ID.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_behavior_config_from_instance_public_attr()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test _get_behavior_config_from_instance() with public attribute.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- [Async Persistence Delegates](Async_Persistence_Delegates.md) (1 shared connections)
+- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 

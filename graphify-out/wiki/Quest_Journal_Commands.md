@@ -1,56 +1,63 @@
 # Quest Journal Commands
 
-> 36 nodes
+> 121 nodes
 
 ## Key Concepts
 
+- **test_communication_commands_flows.py** (41 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
+- **SimpleNamespace** (38 connections)
+- **communication_commands_flows.py** (33 connections) — `server/commands/communication_commands_flows.py`
+- **communication_commands.py** (31 connections) — `server/commands/communication_commands.py`
 - **test_communication_commands_support.py** (21 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **ChatCommandsProtocol** (18 connections) — `server/commands/communication_commands_support.py`
+- **PlayerResolutionProtocol** (16 connections) — `server/commands/communication_commands_support.py`
 - **communication_commands_support.py** (15 connections) — `server/commands/communication_commands_support.py`
 - **get_services_from_container()** (15 connections) — `server/commands/communication_commands_support.py`
+- **_chat_send_with_room_bundle()** (14 connections) — `server/commands/communication_commands_flows.py`
+- **flow_global_command()** (12 connections) — `server/commands/communication_commands_flows.py`
+- **handle_system_command()** (11 connections) — `server/commands/communication_commands.py`
+- **handle_reply_command()** (11 connections) — `server/commands/communication_commands.py`
+- **_message_from_command()** (11 connections) — `server/commands/communication_commands_flows.py`
+- **_RoomChannelOutcomeConfig** (11 connections) — `server/commands/communication_commands_flows.py`
 - **primary_id()** (11 connections) — `server/commands/communication_commands_support.py`
 - **chat_result_map()** (11 connections) — `server/commands/communication_commands_support.py`
+- **message_id_from_result()** (11 connections) — `server/commands/communication_commands_support.py`
+- **_require_chat_pair()** (10 connections) — `server/commands/communication_commands_flows.py`
+- **flow_say_command()** (10 connections) — `server/commands/communication_commands_flows.py`
+- **flow_reply_command()** (10 connections) — `server/commands/communication_commands_flows.py`
 - **app_from_request()** (10 connections) — `server/commands/communication_commands_support.py`
-- **get_pose_persistence()** (9 connections) — `server/commands/communication_commands_support.py`
-- **UserManagerProtocol** (7 connections) — `server/commands/communication_commands_support.py`
-- **AsyncPersistenceForPose** (6 connections) — `server/commands/communication_commands_support.py`
-- **Protocol** (5 connections)
-- **PlayerWithPose** (4 connections) — `server/commands/communication_commands_support.py`
-- **test_app_from_request_with_app()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_get_services_from_container_via_container()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_get_services_from_container_state_fallback()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_get_pose_persistence_from_container()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_get_pose_persistence_state_fallback()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **.get_player_by_name()** (2 connections) — `server/commands/communication_commands_support.py`
-- **.save_player()** (2 connections) — `server/commands/communication_commands_support.py`
-- **test_app_from_request_none()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_primary_id_prefers_id()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_primary_id_falls_back_to_player_id()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_get_services_from_container_no_app()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_chat_result_map_dict()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_chat_result_map_non_dict()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_message_id_from_result_nested()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- *... and 11 more nodes in this community*
+- **_str_error_from_chat_result()** (9 connections) — `server/commands/communication_commands_flows.py`
+- **_room_player_bundle()** (9 connections) — `server/commands/communication_commands_flows.py`
+- **_system_send_if_admin()** (9 connections) — `server/commands/communication_commands_flows.py`
+- *... and 96 more nodes in this community*
 
 ## Relationships
 
-- [FastAPI App Factory](FastAPI_App_Factory.md) (36 shared connections)
-- [Client Event Store](Client_Event_Store.md) (6 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (24 shared connections)
+- [Deprecated Logging Patterns](Deprecated_Logging_Patterns.md) (9 shared connections)
+- [Client Event Store](Client_Event_Store.md) (5 shared connections)
+- [Container Inventory Finders](Container_Inventory_Finders.md) (5 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (3 shared connections)
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (3 shared connections)
+- [Alias Command Models](Alias_Command_Models.md) (3 shared connections)
 - [Game State Provider](Game_State_Provider.md) (2 shared connections)
-- [Realtime Message Builders](Realtime_Message_Builders.md) (1 shared connections)
-- [NPC Database Sessions](NPC_Database_Sessions.md) (1 shared connections)
-- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (1 shared connections)
-- [Cursor Skills Harden](Cursor_Skills_Harden.md) (1 shared connections)
-- [Mythos Time HUD](Mythos_Time_HUD.md) (1 shared connections)
+- [Container Inventory Ops](Container_Inventory_Ops.md) (2 shared connections)
+- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (1 shared connections)
+- [Spell Effect Protocols](Spell_Effect_Protocols.md) (1 shared connections)
+- [Character Creation Service](Character_Creation_Service.md) (1 shared connections)
 
 ## Source Files
 
+- `server/commands/communication_commands.py`
+- `server/commands/communication_commands_flows.py`
 - `server/commands/communication_commands_support.py`
+- `server/tests/unit/commands/test_communication_commands_flows.py`
 - `server/tests/unit/commands/test_communication_commands_support.py`
 
 ## Audit Trail
 
-- EXTRACTED: 147 (92%)
-- INFERRED: 12 (8%)
+- EXTRACTED: 585 (89%)
+- INFERRED: 75 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,67 +1,62 @@
 # NATS Message Broker
 
-> 201 nodes
+> 111 nodes
 
 ## Key Concepts
 
-- **test_player_presence_tracker.py** (37 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
 - **test_player_disconnect_handlers.py** (34 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **player_presence_tracker.py** (31 connections) — `server/realtime/player_presence_tracker.py`
-- **track_player_disconnected_impl()** (29 connections) — `server/realtime/player_presence_tracker.py`
+- **player_disconnect_handlers.py** (27 connections) — `server/realtime/player_disconnect_handlers.py`
 - **disconnect_grace_period.py** (26 connections) — `server/realtime/disconnect_grace_period.py`
-- **player_disconnect_handlers.py** (26 connections) — `server/realtime/player_disconnect_handlers.py`
-- **player_connection_setup.py** (24 connections) — `server/realtime/player_connection_setup.py`
+- **is_player_in_grace_period()** (26 connections) — `server/realtime/disconnect_grace_period.py`
+- **start_grace_period()** (20 connections) — `server/realtime/disconnect_grace_period.py`
 - **_collect_disconnect_keys()** (19 connections) — `server/realtime/player_disconnect_handlers.py`
-- **handle_new_connection_setup()** (17 connections) — `server/realtime/player_connection_setup.py`
 - **handle_player_disconnect_broadcast()** (17 connections) — `server/realtime/player_disconnect_handlers.py`
-- **player_presence_utils.py** (16 connections) — `server/realtime/player_presence_utils.py`
-- **extract_player_name()** (16 connections) — `server/realtime/player_presence_utils.py`
-- **track_player_connected_impl()** (15 connections) — `server/realtime/player_presence_tracker.py`
+- **test_disconnect_grace_period.py** (17 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **cancel_grace_period()** (12 connections) — `server/realtime/disconnect_grace_period.py`
 - **_cleanup_player_references()** (11 connections) — `server/realtime/player_disconnect_handlers.py`
 - **age_off_disconnected_sessions()** (11 connections) — `server/realtime/player_disconnect_handlers.py`
 - **_remove_player_from_online_tracking()** (10 connections) — `server/realtime/player_disconnect_handlers.py`
-- **_build_player_info()** (10 connections) — `server/realtime/player_presence_tracker.py`
-- **broadcast_connection_message_impl()** (10 connections) — `server/realtime/player_presence_tracker.py`
-- **_broadcast_player_entered_game()** (9 connections) — `server/realtime/player_connection_setup.py`
-- **Any** (9 connections)
-- **_resolve_room_id()** (9 connections) — `server/realtime/player_presence_tracker.py`
-- **_should_skip_disconnect()** (9 connections) — `server/realtime/player_presence_tracker.py`
-- **_acquire_disconnect_lock()** (9 connections) — `server/realtime/player_presence_tracker.py`
-- **_trigger_quests_for_room_on_spawn()** (8 connections) — `server/realtime/player_connection_setup.py`
 - **UUID** (7 connections)
-- *... and 176 more nodes in this community*
+- **UUID** (4 connections)
+- **_get_session_maps_for_age_off()** (4 connections) — `server/realtime/player_disconnect_handlers.py`
+- **_purge_expired_sessions_from_maps()** (4 connections) — `server/realtime/player_disconnect_handlers.py`
+- **test_start_grace_period_reconnection_cancels()** (4 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **Any** (3 connections)
+- **_session_ids_past_age_off()** (3 connections) — `server/realtime/player_disconnect_handlers.py`
+- **test_start_grace_period_creates_task()** (3 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **test_start_grace_period_already_in_grace_period()** (3 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **test_start_grace_period_timer_expires()** (3 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **test_cancel_grace_period_not_in_grace_period()** (3 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **test_cancel_grace_period_cancels_task()** (3 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **test_is_player_in_grace_period_true()** (3 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- *... and 86 more nodes in this community*
 
 ## Relationships
 
-- [Realtime WebSocket Auth](Realtime_WebSocket_Auth.md) (19 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (15 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (15 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (10 shared connections)
-- [Room Occupant Events](Room_Occupant_Events.md) (7 shared connections)
-- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (3 shared connections)
-- [Player Respawn Events](Player_Respawn_Events.md) (3 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (3 shared connections)
-- [Spell Effects Tests](Spell_Effects_Tests.md) (2 shared connections)
+- [Rescue Service Tests](Rescue_Service_Tests.md) (12 shared connections)
+- [Chat Rate Limiter](Chat_Rate_Limiter.md) (9 shared connections)
+- [Client Event Store](Client_Event_Store.md) (9 shared connections)
+- [Realtime WebSocket Auth](Realtime_WebSocket_Auth.md) (7 shared connections)
+- [API Type Guards](API_Type_Guards.md) (6 shared connections)
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (3 shared connections)
+- [Look Player Command](Look_Player_Command.md) (3 shared connections)
+- [Room Look Formatting](Room_Look_Formatting.md) (3 shared connections)
+- [Room Occupant Events](Room_Occupant_Events.md) (3 shared connections)
+- [Player Respawn Events](Player_Respawn_Events.md) (2 shared connections)
+- [Character Stats Generator](Character_Stats_Generator.md) (2 shared connections)
 - [Game State Provider](Game_State_Provider.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
-- [Look Player Command](Look_Player_Command.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/disconnect_grace_period.py`
-- `server/realtime/player_connection_setup.py`
 - `server/realtime/player_disconnect_handlers.py`
-- `server/realtime/player_presence_tracker.py`
-- `server/realtime/player_presence_utils.py`
-- `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
+- `server/tests/unit/realtime/test_disconnect_grace_period.py`
 - `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- `server/tests/unit/realtime/test_player_presence_tracker.py`
-- `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 769 (98%)
-- INFERRED: 19 (2%)
+- EXTRACTED: 417 (99%)
+- INFERRED: 6 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,54 +1,66 @@
 # Character Creation E2E
 
-> 34 nodes
+> 37 nodes
 
 ## Key Concepts
 
-- **EquipCommand** (23 connections) — `server/models/command_inventory.py`
-- **test_equip_command_validate_search_term_empty_string()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_validate_requirements_neither_provided()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_validate_slot_empty_string()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_validate_slot_whitespace_only()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_index_validation_min()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_search_term_max_length()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_target_slot_max_length()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_with_index()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_with_search_term()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_with_target_slot()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_validate_search_term_strips()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_validate_search_term_whitespace_only()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_validate_slot_strips()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **.validate_search_term()** (2 connections) — `server/models/command_inventory.py`
-- **.validate_equip_requirements()** (2 connections) — `server/models/command_inventory.py`
-- **.validate_slot()** (2 connections) — `server/models/command_inventory.py`
-- **Command for equipping an item from inventory.** (1 connections) — `server/models/command_inventory.py`
-- **Strip and validate search term.** (1 connections) — `server/models/command_inventory.py`
-- **Ensure either index or search_term is provided.** (1 connections) — `server/models/command_inventory.py`
-- **Validate target slot value.          Args:             value: The target slot va** (1 connections) — `server/models/command_inventory.py`
-- **Test EquipCommand can be created with index.** (1 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **Test EquipCommand can be created with search_term.** (1 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **Test EquipCommand can have optional target_slot.** (1 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **Test EquipCommand strips whitespace from search_term.** (1 connections) — `server/tests/unit/models/test_command_inventory.py`
-- *... and 9 more nodes in this community*
+- **RoomMapEditorRuntime.hooks.ts** (38 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **RoomMapEditorRuntime.tsx** (34 connections) — `client/src/components/map/RoomMapEditorRuntime.tsx`
+- **RoomMapEditor()** (9 connections) — `client/src/components/map/RoomMapEditorRuntime.tsx`
+- **useRoomMapEditorEditing()** (7 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **RoomMapEditorEditingApi** (7 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **useRoomMapEditorModalHandlers()** (7 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **RoomMapEditorAliases.test.ts** (7 connections) — `client/src/components/map/__tests__/RoomMapEditorAliases.test.ts`
+- **RoomMapEditor.test.tsx** (6 connections) — `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
+- **useRoomMapEditorModals()** (5 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **RoomMapEditor.tsx** (4 connections) — `client/src/components/map/RoomMapEditor.tsx`
+- **RoomMapEditorScene.tsx** (4 connections) — `client/src/components/map/RoomMapEditorScene.tsx`
+- **MapEditToolbar.tsx** (3 connections) — `client/src/components/map/MapEditToolbar.tsx`
+- **RoomMapEditorCore.tsx** (3 connections) — `client/src/components/map/RoomMapEditorCore.tsx`
+- **RoomMapEditorFeature.tsx** (3 connections) — `client/src/components/map/RoomMapEditorFeature.tsx`
+- **RoomMapEditorImpl.tsx** (3 connections) — `client/src/components/map/RoomMapEditorImpl.tsx`
+- **useRoomMapEditorSelection()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **useRoomMapEditorModalState()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **createRoomMapEditorModalActions()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **buildModalPreviewHandler()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **buildModalCreateEdgeHandler()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **buildModalUpdateEdgeHandler()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **buildModalUpdateRoomHandler()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **MapEditToolbar()** (2 connections) — `client/src/components/map/MapEditToolbar.tsx`
+- **RoomMapEditorProps** (2 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **MAP_EDITOR_DIRECTIONS** (2 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [Admin Summon Command](Admin_Summon_Command.md) (15 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (7 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
-- [Emote Schema Validator](Emote_Schema_Validator.md) (1 shared connections)
-- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (1 shared connections)
-- [Base Command Models](Base_Command_Models.md) (1 shared connections)
+- [Command Input Utilities](Command_Input_Utilities.md) (18 shared connections)
+- [Player Death Service Tests](Player_Death_Service_Tests.md) (17 shared connections)
+- [Character Selection Screens](Character_Selection_Screens.md) (4 shared connections)
+- [Realtime Event Handlers](Realtime_Event_Handlers.md) (3 shared connections)
+- [Player GUID Formatter](Player_GUID_Formatter.md) (3 shared connections)
+- [Lie Ground Commands](Lie_Ground_Commands.md) (2 shared connections)
+- [PostgreSQL Audit Report](PostgreSQL_Audit_Report.md) (2 shared connections)
+- [Datetime Fix Summary](Datetime_Fix_Summary.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_inventory.py`
-- `server/tests/unit/models/test_command_inventory.py`
+- `client/src/components/map/MapEditToolbar.tsx`
+- `client/src/components/map/RoomMapEditor.tsx`
+- `client/src/components/map/RoomMapEditorCore.tsx`
+- `client/src/components/map/RoomMapEditorFeature.tsx`
+- `client/src/components/map/RoomMapEditorImpl.tsx`
+- `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- `client/src/components/map/RoomMapEditorRuntime.tsx`
+- `client/src/components/map/RoomMapEditorScene.tsx`
+- `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
+- `client/src/components/map/__tests__/RoomMapEditorAliases.test.ts`
+- `client/src/components/map/__tests__/roomMapEditorTestSetup.tsx`
+- `client/src/components/map/hooks/useRoomMapData.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 83 (90%)
-- INFERRED: 9 (10%)
+- EXTRACTED: 184 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

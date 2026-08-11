@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_is_cache_valid_false_expired()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test _is_cache_valid() returns False for expired cache.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_prepare_room_data_without_to_dict()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test _prepare_room_data() handles room without to_dict method.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [Player Preferences Service](Player_Preferences_Service.md) (1 shared connections)
+- [Game Chat Moderation](Game_Chat_Moderation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_user_manager.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

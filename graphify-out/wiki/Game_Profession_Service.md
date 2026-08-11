@@ -1,23 +1,30 @@
 # Game Profession Service
 
-> 2 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **mock_player_spell_repository()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Create a mock player spell repository.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **middleware()** (6 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_security_headers_middleware_non_http_scope()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_security_headers_middleware_adds_headers()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_security_headers_middleware_error_handling()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Create SecurityHeadersMiddleware instance.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test middleware passes through non-HTTP connections.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test middleware adds security headers to HTTP responses.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test middleware error handling.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
 
 ## Relationships
 
-- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
+- [Phase Three Complete Summary](Phase_Three_Complete_Summary.md) (4 shared connections)
+- [Graceful Degradation Plan](Graceful_Degradation_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/middleware/test_security_headers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

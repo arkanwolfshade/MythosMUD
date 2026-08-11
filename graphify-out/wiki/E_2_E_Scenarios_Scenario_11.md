@@ -1,28 +1,23 @@
 # E 2 E Scenarios Scenario
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.refresh_configuration()** (5 connections) — `server/services/combat_configuration_service.py`
-- **.clear_cache()** (3 connections) — `server/services/combat_configuration_service.py`
-- **refresh_combat_configuration()** (3 connections) — `server/services/combat_configuration_service.py`
-- **Refresh configuration from source.** (1 connections) — `server/services/combat_configuration_service.py`
-- **Clear configuration cache.** (1 connections) — `server/services/combat_configuration_service.py`
-- **Refresh combat configuration by clearing cache and reloading.** (1 connections) — `server/services/combat_configuration_service.py`
+- **test_process_validated_command_logging_error()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test process_validated_command handles logging errors gracefully.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
 
 ## Relationships
 
-- [Player Related Models](Player_Related_Models.md) (3 shared connections)
-- [Archive Frd Random](Archive_Frd_Random.md) (1 shared connections)
+- [NPC Population Control](NPC_Population_Control.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_configuration_service.py`
+- `server/tests/unit/commands/test_command_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

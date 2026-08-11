@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_spell_command_spell_not_found()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test spell command when spell is not found.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_connection_manager_property_injected()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test connection_manager property returns injected manager.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

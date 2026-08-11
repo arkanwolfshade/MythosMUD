@@ -33,16 +33,16 @@
 
 ## Relationships
 
-- [Combat Domain Events](Combat_Domain_Events.md) (9 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (7 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (11 shared connections)
+- [Client Event Store](Client_Event_Store.md) (7 shared connections)
 - [Dead Letter Queue](Dead_Letter_Queue.md) (4 shared connections)
-- [Chat Message Filtering](Chat_Message_Filtering.md) (3 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
 - [Game State Provider](Game_State_Provider.md) (2 shared connections)
-- [Pydantic Error Handlers](Pydantic_Error_Handlers.md) (2 shared connections)
-- [Game State Provider Tests](Game_State_Provider_Tests.md) (2 shared connections)
-- [CircuitBreakerOpen](CircuitBreakerOpen.md) (1 shared connections)
-- [Performance Optimization Summary](Performance_Optimization_Summary.md) (1 shared connections)
+- [Circuit Breaker Core](Circuit_Breaker_Core.md) (2 shared connections)
+- [Test Optimization Insights](Test_Optimization_Insights.md) (2 shared connections)
+- [Chat Message Filtering](Chat_Message_Filtering.md) (2 shared connections)
+- [Character Stats Generator](Character_Stats_Generator.md) (2 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (1 shared connections)
 - [Vim Editor Guidelines](Vim_Editor_Guidelines.md) (1 shared connections)
 - [NATS Message Schemas](NATS_Message_Schemas.md) (1 shared connections)
 

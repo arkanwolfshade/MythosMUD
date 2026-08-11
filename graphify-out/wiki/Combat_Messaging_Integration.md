@@ -1,16 +1,14 @@
 # Combat Messaging Integration
 
-> 82 nodes
+> 61 nodes
 
 ## Key Concepts
 
-- **GameClientV2ContainerView.tsx** (25 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
 - **useGameClientV2ContainerRefsAndBootstrap.ts** (25 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
 - **useGameClientV2Container.ts** (22 connections) — `client/src/components/ui-v2/hooks/useGameClientV2Container.ts`
 - **useGameClientV2ContainerNetworkPhase.ts** (21 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerNetworkPhase.ts`
 - **useGameClientV2ContainerLifecycle.ts** (20 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerLifecycle.ts`
 - **gameClientV2ContainerTypes.ts** (17 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerTypes.ts`
-- **useGameClientV2ContainerState.ts** (17 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerState.ts`
 - **gameClientV2ContainerBuildReturn.ts** (16 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerBuildReturn.ts`
 - **GameClientV2MergedSlice** (13 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerTypes.ts`
 - **useGameClientV2ContainerLogoutAndRespawn.ts** (13 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerLogoutAndRespawn.ts`
@@ -29,34 +27,29 @@
 - **useEventProcessing()** (7 connections) — `client/src/components/ui-v2/hooks/useEventProcessing.ts`
 - **useGameClientV2ContainerRefsAndBootstrap()** (7 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
 - **buildGameClientV2ContainerReturn()** (6 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerBuildReturn.ts`
-- *... and 57 more nodes in this community*
+- **useGameClientV2ContainerHealthSync.ts** (6 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerHealthSync.ts`
+- **useGameClientV2ContainerNetworkPhase()** (6 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerNetworkPhase.ts`
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [Communication Command Handlers](Communication_Command_Handlers.md) (37 shared connections)
-- [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (9 shared connections)
-- [Game Terminal Container](Game_Terminal_Container.md) (7 shared connections)
-- [Draggable Panel UI](Draggable_Panel_UI.md) (7 shared connections)
-- [Character Stats Model](Character_Stats_Model.md) (7 shared connections)
-- [Magic System Feature Plan](Magic_System_Feature_Plan.md) (5 shared connections)
+- [Communication Command Handlers](Communication_Command_Handlers.md) (34 shared connections)
+- [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (7 shared connections)
+- [Game Terminal Container](Game_Terminal_Container.md) (5 shared connections)
+- [Character Stats Model](Character_Stats_Model.md) (5 shared connections)
+- [Health Cold Resistance](Health_Cold_Resistance.md) (4 shared connections)
 - [Room Planning Archive](Room_Planning_Archive.md) (4 shared connections)
 - [Structured Error Logging Tasks](Structured_Error_Logging_Tasks.md) (3 shared connections)
+- [Magic System Feature Plan](Magic_System_Feature_Plan.md) (3 shared connections)
 - [Connection Disconnection Cleanup](Connection_Disconnection_Cleanup.md) (3 shared connections)
 - [Active Lucidity Service](Active_Lucidity_Service.md) (3 shared connections)
-- [Plan Cursor Plans](Plan_Cursor_Plans.md) (2 shared connections)
-- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (2 shared connections)
+- [API Test Fixtures](API_Test_Fixtures.md) (2 shared connections)
+- [Realtime Event Handlers](Realtime_Event_Handlers.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/components/DeathInterstitial.tsx`
-- `client/src/components/DeliriumInterstitial.tsx`
-- `client/src/components/MainMenuModal.tsx`
-- `client/src/components/__tests__/DeathInterstitial.test.tsx`
-- `client/src/components/__tests__/MainMenuModal.test.tsx`
 - `client/src/components/ui-v2/GameClientV2Container.tsx`
-- `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
 - `client/src/components/ui-v2/__tests__/GameClientV2Container.test.tsx`
-- `client/src/components/ui-v2/__tests__/GameClientV2ContainerView.test.tsx`
 - `client/src/components/ui-v2/hooks/__tests__/useCommandHandlers.test.ts`
 - `client/src/components/ui-v2/hooks/emptyOccupantsDiagnostics.ts`
 - `client/src/components/ui-v2/hooks/gameClientLogout.ts`
@@ -68,11 +61,18 @@
 - `client/src/components/ui-v2/hooks/useEventProcessing.ts`
 - `client/src/components/ui-v2/hooks/useGameClientV2Container.ts`
 - `client/src/components/ui-v2/hooks/useGameClientV2ContainerConnectionEffects.ts`
+- `client/src/components/ui-v2/hooks/useGameClientV2ContainerEscapeMenuEffect.ts`
+- `client/src/components/ui-v2/hooks/useGameClientV2ContainerHealthSync.ts`
+- `client/src/components/ui-v2/hooks/useGameClientV2ContainerLifecycle.ts`
+- `client/src/components/ui-v2/hooks/useGameClientV2ContainerLogoutAndRespawn.ts`
+- `client/src/components/ui-v2/hooks/useGameClientV2ContainerNetworkPhase.ts`
+- `client/src/components/ui-v2/hooks/useGameClientV2ContainerPlayerAndCommands.ts`
+- `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 509 (100%)
-- INFERRED: 2 (0%)
+- EXTRACTED: 421 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

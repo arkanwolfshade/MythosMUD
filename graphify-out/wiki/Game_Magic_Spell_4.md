@@ -1,31 +1,34 @@
 # Game Magic Spell
 
-> 10 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **TestValidateCommandBasics** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_validate_command_basics_empty()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_validate_command_basics_too_long()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_validate_command_basics_invalid_content()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_validate_command_basics_valid()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _validate_command_basics function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _validate_command_basics returns result for empty command.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _validate_command_basics returns result for command too long.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _validate_command_basics returns result for invalid command content.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _validate_command_basics returns None for valid command.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **test_config.py** (9 connections) — `server/tests/unit/config/test_config.py`
+- **test_get_config_returns_app_config()** (3 connections) — `server/tests/unit/config/test_config.py`
+- **test_get_config_test_mode_returns_fresh_instances()** (3 connections) — `server/tests/unit/config/test_config.py`
+- **test_get_config_has_server_config()** (3 connections) — `server/tests/unit/config/test_config.py`
+- **test_get_config_has_database_config()** (3 connections) — `server/tests/unit/config/test_config.py`
+- **test_get_config_has_game_config()** (3 connections) — `server/tests/unit/config/test_config.py`
+- **Unit tests for configuration system.** (1 connections) — `server/tests/unit/config/test_config.py`
+- **Test that get_config() returns an AppConfig object.** (1 connections) — `server/tests/unit/config/test_config.py`
+- **Test that get_config() returns fresh instances in test mode.** (1 connections) — `server/tests/unit/config/test_config.py`
+- **Test that config has server configuration.** (1 connections) — `server/tests/unit/config/test_config.py`
+- **Test that config has database configuration.** (1 connections) — `server/tests/unit/config/test_config.py`
+- **Test that config has game configuration.** (1 connections) — `server/tests/unit/config/test_config.py`
 
 ## Relationships
 
-- [Investigations Sessions Session](Investigations_Sessions_Session.md) (5 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (6 shared connections)
+- [chat_logger](chat_logger.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_validation.py`
+- `server/tests/unit/config/test_config.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 30 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

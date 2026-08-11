@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **movement_monitor()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **Create a MovementMonitor instance.** (1 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_subscribe_to_subzone_no_subject_manager()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test subscribe_to_subzone raises error when subject manager unavailable.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Relationships
 
-- [Movement Performance Monitor](Movement_Performance_Monitor.md) (1 shared connections)
-- [Cursor Subagents Docs](Cursor_Subagents_Docs.md) (1 shared connections)
+- [Connection State Hooks](Connection_State_Hooks.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_monitor.py`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_create_local_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_local_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_say_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_say_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 

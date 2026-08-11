@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_extract_name_from_occupant_invalid_type()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Test _extract_name_from_occupant() with invalid type.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_validate_combat_command_target_too_long_with_mock()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_combat_command target too long warning path (line 163).** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [Archive Lucidity System](Archive_Lucidity_System.md) (1 shared connections)
+- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 

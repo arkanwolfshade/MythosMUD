@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [Communication Command Flows](Communication_Command_Flows.md) (6 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (7 shared connections)
 
 ## Source Files
 

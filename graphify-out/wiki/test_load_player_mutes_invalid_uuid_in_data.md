@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_load_player_mutes_invalid_uuid_in_data()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test load_player_mutes() handles invalid UUID in data.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_send_room_update_to_player_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test send_room_update_to_player() skips when connection manager not available.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [Player Preferences Service](Player_Preferences_Service.md) (1 shared connections)
+- [Game Chat Moderation](Game_Chat_Moderation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_user_manager.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

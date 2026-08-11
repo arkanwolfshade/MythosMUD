@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
 
 ## Source Files
 

@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **check_users_schema.py** (1 connections) — `server/scripts/check_users_schema.py`
-- **main()** (1 connections) — `server/scripts/check_users_schema.py`
+- **test_echo_message_to_sender_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _echo_message_to_sender echoes message.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Loot All Endpoint](Loot_All_Endpoint.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/check_users_schema.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

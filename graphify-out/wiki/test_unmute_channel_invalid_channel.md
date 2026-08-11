@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_unmute_channel_invalid_channel()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test unmuting channel with invalid channel name.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_behavior_config_from_instance_private_attr()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test _get_behavior_config_from_instance() with private attribute.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- [Async Persistence Delegates](Async_Persistence_Delegates.md) (1 shared connections)
+- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 

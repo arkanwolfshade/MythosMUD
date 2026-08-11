@@ -1,65 +1,50 @@
 # Logging Correct Patterns
 
-> 82 nodes
+> 46 nodes
 
 ## Key Concepts
 
-- **combat_taunt.py** (32 connections) — `server/commands/combat_taunt.py`
-- **TargetType** (31 connections) — `server/schemas/shared/target_resolution.py`
-- **TauntCommandHandler** (29 connections) — `server/commands/combat_taunt.py`
-- **test_combat_taunt.py** (20 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **_validate_taunt_context()** (13 connections) — `server/commands/combat_taunt.py`
-- **run_handle_taunt_command()** (13 connections) — `server/commands/combat_taunt.py`
-- **__init__.py** (12 connections) — `server/schemas/shared/__init__.py`
-- **target_resolution.py** (11 connections) — `server/schemas/shared/target_resolution.py`
-- **_validate_taunt_target()** (9 connections) — `server/commands/combat_taunt.py`
-- **_resolve_taunt_combat_and_participant()** (9 connections) — `server/commands/combat_taunt.py`
-- **test_run_handle_taunt_success()** (7 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **Any** (6 connections)
-- **_resolve_taunt_room_and_player()** (6 connections) — `server/commands/combat_taunt.py`
-- **UUID** (6 connections)
-- **_validate_taunt_target_name()** (6 connections) — `server/commands/combat_taunt.py`
-- **.handle_npc_attack_on_player()** (6 connections) — `server/services/npc_combat_integration_service.py`
-- **_RoomWithIdOnly** (6 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **.handle_attack_command()** (5 connections) — `server/commands/combat_handler.py`
-- **.handle_taunt_command()** (5 connections) — `server/commands/combat_handler.py`
-- **test_validate_taunt_target_not_npc()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_validate_taunt_target_dead()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_run_handle_taunt_no_combat_service()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_run_handle_taunt_not_in_combat()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **.extract_combat_command_data()** (4 connections) — `server/commands/combat_handler.py`
-- **.handle_flee_command()** (4 connections) — `server/commands/combat_handler.py`
-- *... and 57 more nodes in this community*
+- **test_lucidity_models.py** (28 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_player_lucidity_creation()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_player_lucidity_defaults()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_player_lucidity_with_catatonia()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_player_lucidity_repr()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_player_lucidity_tiers()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_adjustment_log_creation()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_adjustment_log_with_location()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_adjustment_log_default_metadata()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_adjustment_log_repr()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_adjustment_log_positive_delta()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_adjustment_log_negative_delta()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_exposure_state_creation()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_exposure_state_default_encounter_count()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_exposure_state_repr()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_exposure_state_multiple_archetypes()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_cooldown_creation()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_cooldown_repr()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_cooldown_different_action_codes()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_player_lucidity_table_name()** (2 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_adjustment_log_table_name()** (2 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_exposure_state_table_name()** (2 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **test_lucidity_cooldown_table_name()** (2 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **Unit tests for lucidity models.  Tests the PlayerLucidity, LucidityAdjustmentLog** (1 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **Test PlayerLucidity can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [Combat Attack Service](Combat_Attack_Service.md) (23 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (17 shared connections)
-- [Client Event Store](Client_Event_Store.md) (12 shared connections)
-- [Rest Command Flow](Rest_Command_Flow.md) (9 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (7 shared connections)
-- [NPC Services Bundle](NPC_Services_Bundle.md) (7 shared connections)
-- [Container Component Capacity](Container_Component_Capacity.md) (5 shared connections)
-- [NPC Definition CRUD](NPC_Definition_CRUD.md) (4 shared connections)
-- [NPC Service Tests](NPC_Service_Tests.md) (4 shared connections)
-- [Combat Taunt Tests](Combat_Taunt_Tests.md) (3 shared connections)
-- [Config Cors](Config_Cors.md) (3 shared connections)
-- [NPC Utility Functions](NPC_Utility_Functions.md) (3 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (16 shared connections)
+- [Message Queue Cleanup](Message_Queue_Cleanup.md) (6 shared connections)
+- [Calendar NPC Schedule](Calendar_NPC_Schedule.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_handler.py`
-- `server/commands/combat_taunt.py`
-- `server/models/combat.py`
-- `server/schemas/shared/__init__.py`
-- `server/schemas/shared/target_resolution.py`
-- `server/services/npc_combat_integration_service.py`
-- `server/tests/unit/commands/test_combat_taunt.py`
+- `server/tests/unit/models/test_lucidity_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 340 (95%)
-- INFERRED: 17 (5%)
+- EXTRACTED: 113 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

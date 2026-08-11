@@ -1,22 +1,23 @@
 # Room Toolkit Validator
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **validate_prototypes.ps1** (0 connections) — `scripts/items/validate_prototypes.ps1`
+- **test_process_validated_command_unknown_command()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test process_validated_command handles unknown command type.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NPC Population Control](NPC_Population_Control.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/items/validate_prototypes.ps1`
+- `server/tests/unit/commands/test_command_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

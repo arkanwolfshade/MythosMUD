@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_container_overflow_room_id_empty_string()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_container_overflow handles empty string room_id.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_stop_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test stop() successfully stops handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [Exploration Command Factories](Exploration_Command_Factories.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

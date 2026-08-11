@@ -1,59 +1,50 @@
 # Test Modernization Plan
 
-> 40 nodes
+> 43 nodes
 
 ## Key Concepts
 
-- **test_look_item.py** (55 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_equipped_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_fallback()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_with_location_name()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_no_prototype()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_equipped_item_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_in_inventory()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_in_equipped()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_in_room_drops()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_with_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_exception_handling()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_fallback_name()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_in_equipped()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_player_no_get_equipped_items()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **mock_prototype_registry()** (2 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_room_drop()** (2 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_inventory_item()** (2 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_equipped_item()** (2 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Unit tests for item look functionality.  Tests the helper functions for looking** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a mock prototype registry.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a sample room drop item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a sample inventory item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a sample equipped item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- *... and 15 more nodes in this community*
+- **datetime** (15 connections)
+- **_ensure_utc()** (11 connections) — `server/time/time_service.py`
+- **.get_calendar_components()** (10 connections) — `server/time/time_service.py`
+- **ChronicleState** (9 connections) — `server/time/time_service.py`
+- **.get_current_mythos_datetime()** (9 connections) — `server/time/time_service.py`
+- **.get_daypart()** (8 connections) — `server/time/time_service.py`
+- **._load_state()** (8 connections) — `server/time/time_service.py`
+- **._persist_state()** (8 connections) — `server/time/time_service.py`
+- **.to_mythos_datetime()** (7 connections) — `server/time/time_service.py`
+- **.is_witching_hour()** (7 connections) — `server/time/time_service.py`
+- **.is_daytime()** (7 connections) — `server/time/time_service.py`
+- **._migrate_old_state_file()** (6 connections) — `server/time/time_service.py`
+- **.to_real_datetime()** (5 connections) — `server/time/time_service.py`
+- **.freeze()** (5 connections) — `server/time/time_service.py`
+- **._hours_between()** (5 connections) — `server/time/time_service.py`
+- **.format_clock()** (4 connections) — `server/time/time_service.py`
+- **.advance_mythos()** (4 connections) — `server/time/time_service.py`
+- **.get_current_mythos_datetime()** (3 connections) — `server/time/time_service.py`
+- **.format_clock()** (3 connections) — `server/time/time_service.py`
+- **.get_state_snapshot()** (3 connections) — `server/time/time_service.py`
+- **.get_last_freeze_state()** (3 connections) — `server/time/time_service.py`
+- **_season_for_month()** (3 connections) — `server/time/time_service.py`
+- **Snapshot of the chronicle's reference timestamps.      The last frozen real time** (1 connections) — `server/time/time_service.py`
+- **Normalize datetimes to UTC for deterministic math.** (1 connections) — `server/time/time_service.py`
+- **Get the current Mythos datetime.          Returns:             datetime: The cur** (1 connections) — `server/time/time_service.py`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [Archive Circuit Breaker](Archive_Circuit_Breaker.md) (27 shared connections)
-- [E2E Suite Overview](E2E_Suite_Overview.md) (8 shared connections)
-- [Nats Anti Patterns](Nats_Anti_Patterns.md) (5 shared connections)
-- [Archive Combat Health](Archive_Combat_Health.md) (2 shared connections)
-- [CleanupContext](CleanupContext.md) (1 shared connections)
-- [Cursor Agents Readme](Cursor_Agents_Readme.md) (1 shared connections)
-- [test_setup_session_tracking_no_session_id](test_setup_session_tracking_no_session_id.md) (1 shared connections)
-- [test_setup_connection_metadata_no_session_token](test_setup_connection_metadata_no_session_token.md) (1 shared connections)
-- [test_setup_player_and_room_no_player](test_setup_player_and_room_no_player.md) (1 shared connections)
-- [.check_and_cleanup](check_and_cleanup.md) (1 shared connections)
-- [.get_strategy](get_strategy.md) (1 shared connections)
-- [.prune_stale_players](prune_stale_players.md) (1 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (23 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (2 shared connections)
+- [Archive Frd Random](Archive_Frd_Random.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/time/time_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 128 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 162 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

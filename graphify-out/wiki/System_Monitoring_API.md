@@ -1,52 +1,62 @@
 # System Monitoring API
 
-> 38 nodes
+> 53 nodes
 
 ## Key Concepts
 
-- **format_player_location()** (13 connections) — `server/commands/who_commands.py`
-- **format_player_entry()** (13 connections) — `server/commands/who_commands.py`
-- **test_who_commands_helpers.py** (12 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_entry_error_handling()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_valid()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_invalid()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_none()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_entry_basic()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_entry_admin()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_entry_missing_attributes()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_short_format()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_non_string()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_filter_players_by_name_found()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_filter_players_by_name_not_found()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_filter_players_by_name_empty_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_location_valid()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_location_invalid()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_entry()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_entry_admin()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **Format player location as Zone: Sub-zone: Room from room ID.      Args:** (1 connections) — `server/commands/who_commands.py`
-- **Format a single player entry for the who command output.      Args:         play** (1 connections) — `server/commands/who_commands.py`
-- **Test formatting valid player location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test formatting invalid player location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test formatting None location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test formatting basic player entry.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- *... and 13 more nodes in this community*
+- **test_player_schemas.py** (21 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **player.py** (20 connections) — `server/schemas/players/player.py`
+- **ClassDefinition** (15 connections) — `server/schemas/players/class_definition.py`
+- **PlayerBase** (11 connections) — `server/schemas/players/player.py`
+- **PlayerCreate** (10 connections) — `server/schemas/players/player.py`
+- **CharacterInfo** (10 connections) — `server/schemas/players/player.py`
+- **PlayerUpdate** (9 connections) — `server/schemas/players/player.py`
+- **DeleteCharacterResponse** (9 connections) — `server/schemas/players/player.py`
+- **delete_character()** (8 connections) — `server/api/players.py`
+- **AvailableClassesResponse** (8 connections) — `server/schemas/players/player.py`
+- **get_available_classes()** (7 connections) — `server/api/players.py`
+- **_soft_delete_character()** (7 connections) — `server/api/players.py`
+- **BaseModel** (7 connections)
+- **MessageResponse** (7 connections) — `server/schemas/players/player.py`
+- **test_player_base_validation()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_create()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_create_custom_stats()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_read()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_read_defaults()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_base_rejects_extra_fields()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_create_rejects_extra_fields()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **class_definition.py** (3 connections) — `server/schemas/players/class_definition.py`
+- **test_player_base()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_character_info()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_character_info_defaults()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [Combat UUID Display Bug](Combat_UUID_Display_Bug.md) (19 shared connections)
-- [Commands System Help](Commands_System_Help.md) (2 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (19 shared connections)
+- [Disconnect Grace Period](Disconnect_Grace_Period.md) (8 shared connections)
+- [NPC Database Sessions](NPC_Database_Sessions.md) (6 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (5 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (5 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (3 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (2 shared connections)
+- [Combat NPC Lookup](Combat_NPC_Lookup.md) (2 shared connections)
+- [WebSocket Command Handler](WebSocket_Command_Handler.md) (1 shared connections)
+- [Game Mechanics Service](Game_Mechanics_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/who_commands.py`
-- `server/tests/unit/commands/test_who_commands.py`
-- `server/tests/unit/commands/test_who_commands_helpers.py`
+- `server/api/players.py`
+- `server/schemas/players/class_definition.py`
+- `server/schemas/players/player.py`
+- `server/tests/unit/schemas/test_player_schemas.py`
 
 ## Audit Trail
 
-- EXTRACTED: 105 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 201 (91%)
+- INFERRED: 20 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_cast_command_with_target()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test cast command with target.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_subscribe_to_event_subjects_no_subject_manager()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test subscribe_to_event_subjects() raises error when subject manager not availab** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

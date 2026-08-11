@@ -1,6 +1,6 @@
 # App Lifespan Management
 
-> 86 nodes
+> 82 nodes
 
 ## Key Concepts
 
@@ -27,16 +27,16 @@
 - **test_delete_spawn_rule_success()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
 - **test_get_npc_definitions_by_type()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
 - **test_get_npc_definitions_by_sub_zone()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **npc_service()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
 - **sample_npc_definition()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
-- *... and 61 more nodes in this community*
+- **sample_spawn_rule()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [Command Parser Tests](Command_Parser_Tests.md) (6 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
-- [LRU Cache Manager](LRU_Cache_Manager.md) (3 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (5 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (4 shared connections)
+- [Plan Cursor Plans](Plan_Cursor_Plans.md) (3 shared connections)
+- [Command Parser Tests](Command_Parser_Tests.md) (2 shared connections)
 
 ## Source Files
 
@@ -44,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 272 (98%)
+- EXTRACTED: 264 (98%)
 - INFERRED: 6 (2%)
 - AMBIGUOUS: 0 (0%)
 

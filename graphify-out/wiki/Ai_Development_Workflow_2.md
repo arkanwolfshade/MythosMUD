@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [Error Handling Guide](Error_Handling_Guide.md) (3 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (2 shared connections)
 
 ## Source Files
 

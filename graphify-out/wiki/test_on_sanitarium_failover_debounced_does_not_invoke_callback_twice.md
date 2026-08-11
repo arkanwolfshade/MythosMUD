@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_combat_result_message_success_with_damage()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test get_combat_result_message with successful attack and damage.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_get_event_handler_map()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test _get_event_handler_map delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Relationships
 
-- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
+- [Connection State Hooks](Connection_State_Hooks.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 

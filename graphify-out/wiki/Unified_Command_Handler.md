@@ -4,7 +4,8 @@
 
 ## Key Concepts
 
-- **ConnectionCleaner** (28 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **ConnectionCleaner** (27 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **connection_cleaner.py** (22 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **test_connection_cleaner.py** (22 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 - **Any** (15 connections)
 - **UUID** (12 connections)
@@ -28,16 +29,18 @@
 - **._remove_ghost_players_from_room()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **__init__.py** (3 connections) — `server/realtime/maintenance/__init__.py`
 - **._identify_stale_connections()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._is_websocket_dead()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (9 shared connections)
-- [Players API Endpoints](Players_API_Endpoints.md) (5 shared connections)
-- [Room Occupant Events](Room_Occupant_Events.md) (4 shared connections)
-- [Message Broadcaster Core](Message_Broadcaster_Core.md) (2 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (11 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (6 shared connections)
+- [Room Occupant Events](Room_Occupant_Events.md) (5 shared connections)
+- [NATS Subject Patterns](NATS_Subject_Patterns.md) (3 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Realtime Payload Optimizer](Realtime_Payload_Optimizer.md) (1 shared connections)
+- [JSONB Column Parsing](JSONB_Column_Parsing.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +50,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 250 (97%)
+- EXTRACTED: 268 (97%)
 - INFERRED: 9 (3%)
 - AMBIGUOUS: 0 (0%)
 

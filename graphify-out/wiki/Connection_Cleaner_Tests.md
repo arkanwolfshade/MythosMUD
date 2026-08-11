@@ -33,12 +33,13 @@
 
 ## Relationships
 
-- [Communication Command Handlers](Communication_Command_Handlers.md) (19 shared connections)
+- [Communication Command Handlers](Communication_Command_Handlers.md) (14 shared connections)
 - [Structured Error Logging Tasks](Structured_Error_Logging_Tasks.md) (7 shared connections)
+- [API Test Fixtures](API_Test_Fixtures.md) (5 shared connections)
 - [Character Stats Model](Character_Stats_Model.md) (5 shared connections)
 - [Room Planning Archive](Room_Planning_Archive.md) (4 shared connections)
 - [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (2 shared connections)
-- [Client App State Hooks](Client_App_State_Hooks.md) (2 shared connections)
+- [Ground and Rescue Commands](Ground_and_Rescue_Commands.md) (2 shared connections)
 
 ## Source Files
 

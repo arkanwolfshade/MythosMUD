@@ -1,61 +1,55 @@
 # Spell Effects Tests
 
-> 38 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **test_login_grace_period_visual_indicator.py** (28 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **PlayerOccupantProcessor** (21 connections) — `server/realtime/player_occupant_processor.py`
-- **player_occupant_processor.py** (15 connections) — `server/realtime/player_occupant_processor.py`
-- **._create_player_occupant_info()** (7 connections) — `server/realtime/player_occupant_processor.py`
-- **.process_players_for_occupants()** (7 connections) — `server/realtime/player_occupant_processor.py`
-- **test_warded_indicator_removed_after_expiration()** (6 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **test_both_linkdead_and_warded_indicators()** (6 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **.__init__()** (5 connections) — `server/realtime/player_occupant_processor.py`
-- **UUID** (5 connections)
-- **test_warded_indicator_in_player_occupant_processor()** (5 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **._ensure_player_included_in_list()** (4 connections) — `server/realtime/player_occupant_processor.py`
-- **._convert_player_ids_to_uuids()** (4 connections) — `server/realtime/player_occupant_processor.py`
-- **test_warded_indicator_in_look_room()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **test_warded_indicator_in_look_player()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **test_warded_indicator_in_websocket_room_updates()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **test_warded_indicator_not_shown_for_reconnections()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **Any** (3 connections)
-- **test_player_occupant_processor_adds_linkdead_indicator()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **test_player_occupant_processor_no_linkdead_when_not_in_grace_period()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **Player occupant processing utilities.  This module handles querying and processi** (1 connections) — `server/realtime/player_occupant_processor.py`
-- **Processes player occupants for rooms.** (1 connections) — `server/realtime/player_occupant_processor.py`
-- **Initialize player occupant processor.          Args:             connection_mana** (1 connections) — `server/realtime/player_occupant_processor.py`
-- **Ensure a player is included in the player ID strings list if specified.** (1 connections) — `server/realtime/player_occupant_processor.py`
-- **Convert player ID strings to UUIDs for batch loading.          Args:** (1 connections) — `server/realtime/player_occupant_processor.py`
-- *... and 13 more nodes in this community*
+- **HolidayCollection** (37 connections) — `server/schemas/calendar/calendar.py`
+- **TestHolidayService** (20 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_init_with_collection()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_refresh_active_activates_matching_holiday()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_refresh_active_no_matches()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_refresh_active_expires_old_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_refresh_active_caps_duration()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_active_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_active_holiday_names()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_upcoming_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_upcoming_holidays_wraps_around()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_upcoming_summary()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_day_ordinal()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_collection_property()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_last_refresh_property()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.id_map()** (3 connections) — `server/schemas/calendar/calendar.py`
+- **.collection()** (3 connections) — `server/services/holiday_service.py`
+- **.sample_holidays()** (3 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_init_without_persistence_raises()** (3 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.ensure_unique_ids()** (2 connections) — `server/schemas/calendar/calendar.py`
+- **.mock_chronicle()** (2 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **Wrapper for the complete holiday JSON payload.** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Create a mapping of holiday IDs to holiday entries.          Returns:** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Ensure all holiday IDs are unique.          Raises:             ValueError: If d** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Get the holiday collection.          Returns:             HolidayCollection: The** (1 connections) — `server/services/holiday_service.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [Player Respawn Events](Player_Respawn_Events.md) (15 shared connections)
-- [Character Stats Generator](Character_Stats_Generator.md) (8 shared connections)
-- [Look Player Command](Look_Player_Command.md) (7 shared connections)
-- [Realtime WebSocket Auth](Realtime_WebSocket_Auth.md) (5 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (5 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
-- [API Type Guards](API_Type_Guards.md) (3 shared connections)
-- [Room Look Formatting](Room_Look_Formatting.md) (3 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (3 shared connections)
-- [NATS Message Broker](NATS_Message_Broker.md) (2 shared connections)
-- [NATS Retry Handler](NATS_Retry_Handler.md) (1 shared connections)
-- [Game State Provider](Game_State_Provider.md) (1 shared connections)
+- [Player Respawn Service](Player_Respawn_Service.md) (24 shared connections)
+- [ASCII Map API](ASCII_Map_API.md) (5 shared connections)
+- [Async Room Loading Tests](Async_Room_Loading_Tests.md) (4 shared connections)
+- [Player Command Developer Guide](Player_Command_Developer_Guide.md) (4 shared connections)
+- [Cursor Skills Critique](Cursor_Skills_Critique.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_occupant_processor.py`
-- `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- `server/tests/unit/realtime/test_visual_indicator.py`
+- `server/schemas/calendar/calendar.py`
+- `server/services/holiday_service.py`
+- `server/tests/unit/services/test_holiday_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 156 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 145 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

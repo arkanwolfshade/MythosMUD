@@ -1,23 +1,25 @@
 # Schemas Calendar Schedule
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **__init__.py** (0 connections) — `server/tests/unit/schemas/__init__.py`
+- **test_handle_event_async_sync_subscriber_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test _handle_event_async() handles sync subscriber errors.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (1 shared connections)
+- [Services Rescue Service](Services_Rescue_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/schemas/__init__.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

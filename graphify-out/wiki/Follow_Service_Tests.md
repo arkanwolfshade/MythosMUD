@@ -1,57 +1,63 @@
 # Follow Service Tests
 
-> 65 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **rescue_commands.py** (33 connections) — `server/commands/rescue_commands.py`
-- **handle_ground_command()** (28 connections) — `server/commands/rescue_commands.py`
-- **test_rescue_commands.py** (23 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **send_rescue_update_event()** (18 connections) — `server/services/lucidity_event_dispatcher.py`
-- **handle_rescue_command()** (14 connections) — `server/commands/rescue_commands.py`
-- **Any** (9 connections)
-- **_run_ground_session()** (9 connections) — `server/commands/rescue_commands.py`
-- **_apply_grounding_adjustment()** (7 connections) — `server/commands/rescue_commands.py`
-- **UUID** (6 connections)
-- **_get_ground_services()** (5 connections) — `server/commands/rescue_commands.py`
-- **_validate_ground_context()** (5 connections) — `server/commands/rescue_commands.py`
-- **_normalize_player_ids()** (5 connections) — `server/commands/rescue_commands.py`
-- **_send_grounding_failure_events()** (5 connections) — `server/commands/rescue_commands.py`
-- **_send_grounding_success_events()** (5 connections) — `server/commands/rescue_commands.py`
-- **_complete_ground_command()** (5 connections) — `server/commands/rescue_commands.py`
-- **_validate_ground_target()** (4 connections) — `server/commands/rescue_commands.py`
-- **_send_grounding_channeling_events()** (4 connections) — `server/commands/rescue_commands.py`
-- **test_handle_ground_command_not_catatonic()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_ground_command_success()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_ground_command_target_player_key()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_ground_command_apply_lucidity_error()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_rescue_command()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_rescue_command_no_target()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_rescue_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_rescue_command_target_player_key()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- *... and 40 more nodes in this community*
+- **useGameConnectionRefactored.ts** (18 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
+- **useGameConnection()** (12 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
+- **useConnectionStateMachine.ts** (8 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **useConnectionState.ts** (7 connections) — `client/src/hooks/useConnectionState.ts`
+- **useSessionManagement.ts** (7 connections) — `client/src/hooks/useSessionManagement.ts`
+- **useGameConnection.ts** (5 connections) — `client/src/hooks/useGameConnection.ts`
+- **useConnectionState()** (4 connections) — `client/src/hooks/useConnectionState.ts`
+- **connectionMachine** (4 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **useGameConnection.test.ts** (4 connections) — `client/src/hooks/useGameConnection.test.ts`
+- **useSessionManagement()** (4 connections) — `client/src/hooks/useSessionManagement.ts`
+- **useGameConnection.export.test.ts** (3 connections) — `client/src/hooks/__tests__/useGameConnection.export.test.ts`
+- **ConnectionContext** (3 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **UseGameConnectionOptions** (3 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
+- **useConnectionState.test.ts** (2 connections) — `client/src/hooks/__tests__/useConnectionState.test.ts`
+- **useConnectionStateMachine.test.ts** (2 connections) — `client/src/hooks/__tests__/useConnectionStateMachine.test.ts`
+- **useSessionManagement.test.ts** (2 connections) — `client/src/hooks/__tests__/useSessionManagement.test.ts`
+- **UseConnectionStateResult** (2 connections) — `client/src/hooks/useConnectionState.ts`
+- **useConnectionStateMachine.test.ts** (2 connections) — `client/src/hooks/useConnectionStateMachine.test.ts`
+- **generateSecureSessionId()** (2 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
+- **ConnectionState** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **ConnectionEvent** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **ConnectionMachineInput** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **mockWebSocket** (1 connections) — `client/src/hooks/useGameConnection.test.ts`
+- **NOTE: JWT tokens are passed via query string, not subprotocol, because JWT conta** (1 connections) — `client/src/hooks/useGameConnection.test.ts`
+- **GameEvent** (1 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (15 shared connections)
-- [Client Event Store](Client_Event_Store.md) (12 shared connections)
-- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (9 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
-- [Message Queue Cleanup](Message_Queue_Cleanup.md) (4 shared connections)
-- [Player Death Service](Player_Death_Service.md) (3 shared connections)
-- [Combat Messaging Tests](Combat_Messaging_Tests.md) (2 shared connections)
-- [Game State Provider](Game_State_Provider.md) (2 shared connections)
+- [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (4 shared connections)
+- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (3 shared connections)
+- [Communication Command Handlers](Communication_Command_Handlers.md) (2 shared connections)
+- [Realtime Event Handlers](Realtime_Event_Handlers.md) (2 shared connections)
+- [Combat Messaging Integration](Combat_Messaging_Integration.md) (1 shared connections)
+- [Cursor Bug Agents](Cursor_Bug_Agents.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/rescue_commands.py`
-- `server/services/lucidity_event_dispatcher.py`
-- `server/tests/unit/commands/test_rescue_commands.py`
+- `client/src/hooks/__tests__/useConnectionState.test.ts`
+- `client/src/hooks/__tests__/useConnectionStateMachine.test.ts`
+- `client/src/hooks/__tests__/useGameConnection.export.test.ts`
+- `client/src/hooks/__tests__/useSessionManagement.test.ts`
+- `client/src/hooks/useConnectionState.ts`
+- `client/src/hooks/useConnectionStateMachine.test.ts`
+- `client/src/hooks/useConnectionStateMachine.ts`
+- `client/src/hooks/useGameConnection.test.ts`
+- `client/src/hooks/useGameConnection.ts`
+- `client/src/hooks/useGameConnectionRefactored.ts`
+- `client/src/hooks/useSessionManagement.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 260 (96%)
-- INFERRED: 11 (4%)
+- EXTRACTED: 102 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

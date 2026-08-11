@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_broadcast_player_respawn()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_player_respawn broadcasts respawn message.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_subscribe_to_subject_no_nats_service()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _subscribe_to_subject returns False when nats_service is None.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [Database Pool Configuration](Database_Pool_Configuration.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

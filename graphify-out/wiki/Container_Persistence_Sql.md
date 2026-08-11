@@ -1,28 +1,24 @@
 # Container Persistence Sql
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **conftest.py** (5 connections) — `server/tests/unit/infrastructure/conftest.py`
-- **async_persistence_layer()** (3 connections) — `server/tests/unit/infrastructure/conftest.py`
-- **mock_event_bus()** (2 connections) — `server/tests/unit/infrastructure/conftest.py`
-- **Shared fixtures for unit tests in the infrastructure package.** (1 connections) — `server/tests/unit/infrastructure/conftest.py`
-- **Create a mock event bus.** (1 connections) — `server/tests/unit/infrastructure/conftest.py`
-- **Create an AsyncPersistenceLayer instance with skipped room cache.** (1 connections) — `server/tests/unit/infrastructure/conftest.py`
+- **test_select_exit_empty_dict()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test select_exit() with empty exit dict.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [Magic Service Bundle](Magic_Service_Bundle.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
+- [NPC Movement Integration](NPC_Movement_Integration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/conftest.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

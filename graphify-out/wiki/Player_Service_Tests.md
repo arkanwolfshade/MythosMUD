@@ -19,18 +19,18 @@
 
 ## Relationships
 
-- [Magic Service Bundle](Magic_Service_Bundle.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 - [Npc Idle Movement](Npc_Idle_Movement.md) (1 shared connections)
 - [handle_player_left_room_impl](handle_player_left_room_impl.md) (1 shared connections)
 - [.test_init](test_init.md) (1 shared connections)
-- [.test_get_snapshot_empty](test_get_snapshot_empty.md) (1 shared connections)
+- [test_get_player_info_invalid_player_id](test_get_player_info_invalid_player_id.md) (1 shared connections)
 - [.test_get_combat_start_messages_single_occupant](test_get_combat_start_messages_single_occupant.md) (1 shared connections)
 - [.test_init_with_failover_callback](test_init_with_failover_callback.md) (1 shared connections)
 - [.test_on_catatonia_entered_with_uuid](test_on_catatonia_entered_with_uuid.md) (1 shared connections)
-- [.test_on_sanitarium_failover_debounced_does_not_invoke_callback_twice](test_on_sanitarium_failover_debounced_does_not_invoke_callback_twice.md) (1 shared connections)
+- [test_normalize_event_ids_both_provided](test_normalize_event_ids_both_provided.md) (1 shared connections)
 - [.test_should_trigger_sanitarium_failover_never_triggered](test_should_trigger_sanitarium_failover_never_triggered.md) (1 shared connections)
 - [.test_should_trigger_sanitarium_failover_within_debounce_window](test_should_trigger_sanitarium_failover_within_debounce_window.md) (1 shared connections)
-- [.test_get_combat_end_messages_loser_perspective](test_get_combat_end_messages_loser_perspective.md) (1 shared connections)
+- [test_normalize_event_ids_string_ids](test_normalize_event_ids_string_ids.md) (1 shared connections)
 
 ## Source Files
 

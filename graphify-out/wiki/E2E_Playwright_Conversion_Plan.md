@@ -1,50 +1,41 @@
 # E2E Playwright Conversion Plan
 
-> 22 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **_NPCCombatIntegrationDeps** (14 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **._process_combat_attack()** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **.start_new_combat_for_mixin()** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **._apply_npc_attack_damage_for_npc_initiated_combat()** (7 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **._broadcast_room_after_npc_death()** (7 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **.get_combat_service()** (6 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **UUID** (6 connections)
-- **.get_data_provider()** (5 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **.get_messaging_integration()** (4 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **.start_new_combat_for_mixin()** (4 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **._broadcast_npc_attack_on_player_started()** (3 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **Protocol** (1 connections)
-- **Attributes supplied by NPCCombatIntegrationService (mixin cannot initialize them** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **Return combat service dependency.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **Return data provider dependency.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **Return messaging integration dependency.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **Start a new combat from mixin combat pipeline.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **Resolve participant combat data and apply the initial attack damage through Comb** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **Structured logging / observability trail when NPC-initiated combat begins.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **Process combat attack, starting new combat or continuing existing one.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **Start a new combat and process initial attack.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **Broadcast room occupants update to killer's room after NPC death. Swallows error** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **lifespan_shutdown.py** (15 connections) — `server/app/lifespan_shutdown.py`
+- **shutdown_services()** (12 connections) — `server/app/lifespan_shutdown.py`
+- **FastAPI** (5 connections)
+- **_shutdown_mythos_chronicle()** (4 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_nats_handler()** (4 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_connection_manager()** (4 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_mythos_tick_scheduler()** (4 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_task_registry()** (4 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_event_bus()** (4 connections) — `server/app/lifespan_shutdown.py`
+- **Application shutdown logic.  This module handles graceful shutdown of all servic** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Shutdown and persist mythos chronicle state.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Shutdown NATS message handler if present.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Shutdown connection manager if present.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Shutdown mythos tick scheduler if present.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Shutdown task registry if present.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Shutdown event bus and clean up all service subscriptions.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Handle graceful shutdown of all services.** (1 connections) — `server/app/lifespan_shutdown.py`
 
 ## Relationships
 
-- [Magic Service Bundle](Magic_Service_Bundle.md) (9 shared connections)
-- [Health Check Models](Health_Check_Models.md) (3 shared connections)
-- [Combat Attack Service](Combat_Attack_Service.md) (2 shared connections)
-- [Invite and User Schemas](Invite_and_User_Schemas.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (7 shared connections)
+- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_integration_combat_mixin.py`
+- `server/app/lifespan_shutdown.py`
 
 ## Audit Trail
 
-- EXTRACTED: 78 (94%)
-- INFERRED: 5 (6%)
+- EXTRACTED: 64 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

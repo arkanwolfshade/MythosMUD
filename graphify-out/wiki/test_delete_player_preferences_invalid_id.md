@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_delete_player_preferences_invalid_id()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test deleting player preferences with invalid ID.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_behavior_config_from_instance_none()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test _get_behavior_config_from_instance() when config is not found.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- [Async Persistence Delegates](Async_Persistence_Delegates.md) (1 shared connections)
+- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 

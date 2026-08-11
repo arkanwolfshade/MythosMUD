@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_occupant_formatter_process_string_occupant_for_update_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_string_occupant_for_update() skips UUID string.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_get_valid_exits_empty_room()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test get_valid_exits() with room having no exits.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [Contexts Themecontext Hooks](Contexts_Themecontext_Hooks.md) (1 shared connections)
-- [Room Occupant Formatter](Room_Occupant_Formatter.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
+- [NPC Movement Integration](NPC_Movement_Integration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 

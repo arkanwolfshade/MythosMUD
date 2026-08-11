@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (6 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
-- [Room Data Fixer](Room_Data_Fixer.md) (1 shared connections)
+- [Caching Lru Cache](Caching_Lru_Cache.md) (6 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (3 shared connections)
+- [Room Data Fixer](Room_Data_Fixer.md) (2 shared connections)
 
 ## Source Files
 

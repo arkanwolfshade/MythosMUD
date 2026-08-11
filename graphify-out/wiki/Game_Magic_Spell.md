@@ -1,32 +1,39 @@
 # Game Magic Spell
 
-> 9 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **bench_cache.py** (6 connections) — `scripts/bench_cache.py`
-- **_FakePersistence** (6 connections) — `scripts/bench_cache.py`
-- **bench_room_cache()** (5 connections) — `scripts/bench_cache.py`
-- **.async_get_room()** (2 connections) — `scripts/bench_cache.py`
-- **Any** (2 connections)
-- **main()** (2 connections) — `scripts/bench_cache.py`
-- **.__init__()** (1 connections) — `scripts/bench_cache.py`
-- **Lightweight cache benchmark for CI artifacts.  Measures miss vs. hit timings for** (1 connections) — `scripts/bench_cache.py`
-- **Fake persistence layer providing async_get_room with simulated latency.** (1 connections) — `scripts/bench_cache.py`
+- **.load_player_mutes()** (12 connections) — `server/services/user_manager.py`
+- **._load_player_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
+- **._load_global_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
+- **._convert_mute_info_timestamps()** (5 connections) — `server/services/user_manager.py`
+- **._convert_mute_info_uuids()** (5 connections) — `server/services/user_manager.py`
+- **._load_channel_mutes_from_data()** (5 connections) — `server/services/user_manager.py`
+- **user_manager()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Convert timestamp strings in mute_info to datetime objects.** (1 connections) — `server/services/user_manager.py`
+- **Convert UUID strings in mute_info to UUID objects.** (1 connections) — `server/services/user_manager.py`
+- **Load player mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
+- **Load channel mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
+- **Load global mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
+- **Load mute data for a specific player from JSON file.          Args:** (1 connections) — `server/services/user_manager.py`
+- **Create a UserManager instance.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [Cache and NPC Cache](Cache_and_NPC_Cache.md) (3 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
+- [Player Mute Persistence](Player_Mute_Persistence.md) (17 shared connections)
+- [Commands Time](Commands_Time.md) (1 shared connections)
+- [Player Preferences Service](Player_Preferences_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/bench_cache.py`
+- `server/services/user_manager.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (88%)
-- INFERRED: 3 (12%)
+- EXTRACTED: 49 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

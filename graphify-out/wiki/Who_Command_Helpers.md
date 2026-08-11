@@ -32,10 +32,9 @@
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (7 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (7 shared connections)
-- [Player Creation Service](Player_Creation_Service.md) (4 shared connections)
-- [Container System Architecture](Container_System_Architecture.md) (1 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (13 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 
 ## Source Files
 

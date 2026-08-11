@@ -4,23 +4,22 @@
 
 ## Key Concepts
 
-- **test_handle_whisper_command_whisper_to_self()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **Test handle_whisper_command when trying to whisper to self.** (1 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **test_subscribe_to_subject_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _subscribe_to_subject() raises error on failure.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [Deprecated Logging Patterns](Deprecated_Logging_Patterns.md) (1 shared connections)
-- [Disconnect Grace Period](Disconnect_Grace_Period.md) (1 shared connections)
-- [Caching Lru Cache](Caching_Lru_Cache.md) (1 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

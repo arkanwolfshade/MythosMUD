@@ -13,7 +13,7 @@
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
 
 ## Source Files
 

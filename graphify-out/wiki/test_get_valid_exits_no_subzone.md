@@ -1,23 +1,24 @@
 # test_get_valid_exits_no_subzone
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_create_mutes_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_mutes_command delegates to moderation factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **description** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [Edge Creation Modal](Edge_Creation_Modal.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `db/static/schemas/room.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

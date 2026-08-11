@@ -31,13 +31,14 @@
 
 ## Relationships
 
-- [Command Input Validator](Command_Input_Validator.md) (9 shared connections)
-- [Client App State Hooks](Client_App_State_Hooks.md) (7 shared connections)
+- [Command Input Validator](Command_Input_Validator.md) (8 shared connections)
+- [Client App State Hooks](Client_App_State_Hooks.md) (5 shared connections)
 - [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (3 shared connections)
-- [Communication Command Handlers](Communication_Command_Handlers.md) (3 shared connections)
-- [Rescue Service Tests](Rescue_Service_Tests.md) (2 shared connections)
-- [Realtime Event Handlers](Realtime_Event_Handlers.md) (1 shared connections)
-- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (1 shared connections)
+- [Ground and Rescue Commands](Ground_and_Rescue_Commands.md) (3 shared connections)
+- [Fresh Session Test Guide](Fresh_Session_Test_Guide.md) (2 shared connections)
+- [NPC Combat Integration](NPC_Combat_Integration.md) (2 shared connections)
+- [Realtime Event Handlers](Realtime_Event_Handlers.md) (2 shared connections)
+- [Draggable Panel UI](Draggable_Panel_UI.md) (1 shared connections)
 
 ## Source Files
 

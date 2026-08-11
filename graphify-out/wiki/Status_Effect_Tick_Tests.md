@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [Communication Command Handlers](Communication_Command_Handlers.md) (19 shared connections)
-- [Warning Remediation Plan](Warning_Remediation_Plan.md) (10 shared connections)
-- [Combat Messaging Integration](Combat_Messaging_Integration.md) (9 shared connections)
-- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (8 shared connections)
+- [Communication Command Handlers](Communication_Command_Handlers.md) (16 shared connections)
+- [Warning Remediation Plan](Warning_Remediation_Plan.md) (8 shared connections)
+- [Combat Messaging Integration](Combat_Messaging_Integration.md) (7 shared connections)
+- [Map Editing Hooks](Map_Editing_Hooks.md) (4 shared connections)
 - [Character Stats Model](Character_Stats_Model.md) (4 shared connections)
+- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (4 shared connections)
+- [Follow Service Tests](Follow_Service_Tests.md) (4 shared connections)
 - [Realtime Event Handlers](Realtime_Event_Handlers.md) (4 shared connections)
-- [Map Editing Hooks](Map_Editing_Hooks.md) (2 shared connections)
+- [API Test Fixtures](API_Test_Fixtures.md) (3 shared connections)
 - [Argon2 Security Review](Argon2_Security_Review.md) (2 shared connections)
 - [E2E Whisper Fix Report](E2E_Whisper_Fix_Report.md) (2 shared connections)
-- [Chat Channel Design Spec](Chat_Channel_Design_Spec.md) (2 shared connections)
-- [Health Cold Resistance](Health_Cold_Resistance.md) (2 shared connections)
-- [Connection Cleaner Tests](Connection_Cleaner_Tests.md) (2 shared connections)
+- [Game Terminal Container](Game_Terminal_Container.md) (2 shared connections)
 
 ## Source Files
 

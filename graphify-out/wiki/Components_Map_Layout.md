@@ -13,7 +13,7 @@
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Graceful Degradation Plan](Graceful_Degradation_Plan.md) (2 shared connections)
 
 ## Source Files
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_target_exists_partial_match()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_target_exists with partial match.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_send_messages_to_players_invalid_player_id()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _send_messages_to_players handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
+- [Loot All Endpoint](Loot_All_Endpoint.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

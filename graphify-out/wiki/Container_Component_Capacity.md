@@ -1,66 +1,66 @@
 # Container Component Capacity
 
-> 148 nodes
+> 129 nodes
 
 ## Key Concepts
 
-- **CombatInstance** (169 connections) — `server/models/combat.py`
-- **combat_flee_handler.py** (23 connections) — `server/services/combat_flee_handler.py`
-- **UUID** (20 connections)
-- **test_combat_flee_handler.py** (17 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **execute_voluntary_flee()** (15 connections) — `server/services/combat_flee_handler.py`
-- **try_voluntary_flee_roll()** (11 connections) — `server/services/combat_flee_handler.py`
-- **_make_participant()** (11 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **_check_involuntary_flee_with_session()** (8 connections) — `server/services/combat_flee_handler.py`
-- **lucidity_command_disruption.py** (8 connections) — `server/services/lucidity_command_disruption.py`
-- **_handle_failed_voluntary_flee()** (6 connections) — `server/services/combat_flee_handler.py`
-- **check_involuntary_flee()** (6 connections) — `server/services/combat_flee_handler.py`
-- **.validate_melee_or_end_combat()** (6 connections) — `server/services/combat_service.py`
-- **.finalize_attack_result()** (6 connections) — `server/services/combat_service.py`
-- **.is_dead()** (5 connections) — `server/models/combat.py`
-- **.get_alive_participants()** (5 connections) — `server/models/combat.py`
-- **UUID** (5 connections)
-- **_involuntary_flee_on_cooldown()** (5 connections) — `server/services/combat_flee_handler.py`
-- **._handle_player_dp_update()** (5 connections) — `server/services/combat_service.py`
-- **.validate_and_get_combat_participants()** (5 connections) — `server/services/combat_service.py`
-- **.apply_attack_damage()** (5 connections) — `server/services/combat_service.py`
-- **.handle_attack_events_and_xp()** (5 connections) — `server/services/combat_service.py`
-- **test_try_voluntary_flee_roll_zero_exits_returns_false()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **test_try_voluntary_flee_roll_roll_above_chance_fails()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **test_try_voluntary_flee_roll_roll_below_chance_succeeds()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **test_try_voluntary_flee_roll_opponents_reduce_chance()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- *... and 123 more nodes in this community*
+- **__init__.py** (47 connections) — `server/services/__init__.py`
+- **InventoryService** (43 connections) — `server/services/inventory_service.py`
+- **container_service.py** (37 connections) — `server/services/container_service.py`
+- **InventoryStack** (34 connections) — `server/services/inventory_service.py`
+- **inventory_service.py** (29 connections) — `server/services/inventory_service.py`
+- **InventoryCapacityError** (29 connections) — `server/services/inventory_service.py`
+- **SlotValidationError** (22 connections) — `server/services/equipment_service.py`
+- **test_equipment_service.py** (22 connections) — `server/tests/unit/services/test_equipment_service.py`
+- **equipment_service.py** (21 connections) — `server/services/equipment_service.py`
+- **test_inventory_service.py** (20 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **EquipmentService** (18 connections) — `server/services/equipment_service.py`
+- **MutationDecision** (18 connections) — `server/services/inventory_mutation_guard.py`
+- **EquipmentCapacityError** (17 connections) — `server/services/equipment_service.py`
+- **InventoryValidationError** (13 connections) — `server/services/inventory_service.py`
+- **InventorySplitError** (13 connections) — `server/services/inventory_service.py`
+- **EquipmentServiceError** (10 connections) — `server/services/equipment_service.py`
+- **.equip_from_inventory()** (10 connections) — `server/services/equipment_service.py`
+- **InventoryServiceError** (9 connections) — `server/services/inventory_service.py`
+- **._clone_stack()** (9 connections) — `server/services/inventory_service.py`
+- **.unequip_to_inventory()** (8 connections) — `server/services/equipment_service.py`
+- **.add_stack()** (8 connections) — `server/services/inventory_service.py`
+- **.split_stack()** (8 connections) — `server/services/inventory_service.py`
+- **Any** (7 connections)
+- **._validate_and_clone_optional_fields()** (7 connections) — `server/services/inventory_service.py`
+- **._clone_with_quantity()** (7 connections) — `server/services/inventory_service.py`
+- *... and 104 more nodes in this community*
 
 ## Relationships
 
-- [Rest Command Flow](Rest_Command_Flow.md) (68 shared connections)
-- [Combat Attack Service](Combat_Attack_Service.md) (32 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (28 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (22 shared connections)
-- [Health Check Models](Health_Check_Models.md) (11 shared connections)
-- [Player Left Room Tests](Player_Left_Room_Tests.md) (10 shared connections)
-- [Combat Taunt Tests](Combat_Taunt_Tests.md) (8 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (7 shared connections)
-- [Logging Correct Patterns](Logging_Correct_Patterns.md) (5 shared connections)
-- [Commands Look Item](Commands_Look_Item.md) (5 shared connections)
-- [Flee Command Tests](Flee_Command_Tests.md) (4 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (4 shared connections)
+- [Character Creation Service](Character_Creation_Service.md) (40 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (28 shared connections)
+- [Magic Command Handlers](Magic_Command_Handlers.md) (20 shared connections)
+- [Player Effects API](Player_Effects_API.md) (9 shared connections)
+- [Combat Player Broadcasts](Combat_Player_Broadcasts.md) (9 shared connections)
+- [Schedule Service Loader](Schedule_Service_Loader.md) (6 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (5 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Admin NPC Schemas](Admin_NPC_Schemas.md) (4 shared connections)
+- [Alias Storage Layer](Alias_Storage_Layer.md) (3 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (3 shared connections)
 
 ## Source Files
 
-- `server/models/combat.py`
-- `server/services/combat_cleanup_handler.py`
-- `server/services/combat_flee_handler.py`
-- `server/services/combat_service.py`
-- `server/services/lucidity_command_disruption.py`
-- `server/tests/unit/models/test_combat.py`
-- `server/tests/unit/services/test_combat_cleanup_handler.py`
-- `server/tests/unit/services/test_combat_flee_handler.py`
+- `server/services/__init__.py`
+- `server/services/container_service.py`
+- `server/services/equipment_service.py`
+- `server/services/inventory_mutation_guard.py`
+- `server/services/inventory_service.py`
+- `server/services/passive_lucidity_flux_service.py`
+- `server/tests/unit/services/test_equipment_service.py`
+- `server/tests/unit/services/test_inventory_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 585 (97%)
-- INFERRED: 19 (3%)
+- EXTRACTED: 548 (82%)
+- INFERRED: 118 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

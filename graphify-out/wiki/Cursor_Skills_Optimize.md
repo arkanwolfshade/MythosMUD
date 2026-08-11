@@ -1,29 +1,24 @@
 # Cursor Skills Optimize
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **TestGetNPCPopulationController** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_npc_population_controller_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_npc_population_controller_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_npc_population_controller dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_npc_population_controller returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_npc_population_controller raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **test_process_message_with_retry_failure()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _process_message_with_retry adds to DLQ on failure.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
+- [Loot All Endpoint](Loot_All_Endpoint.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

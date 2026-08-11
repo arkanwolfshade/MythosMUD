@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_is_valid_target_name_valid()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test _is_valid_target_name with valid target name.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_handle_player_attacked_event()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test _handle_player_attacked_event delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Relationships
 
-- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
+- [Connection State Hooks](Connection_State_Hooks.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 

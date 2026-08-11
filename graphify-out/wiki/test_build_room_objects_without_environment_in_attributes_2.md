@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_container_overflow_partial_spill()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_container_overflow handles partial inventory spill.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_update_timing_metrics()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **Test _update_timing_metrics updates average and max duration.** (1 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
 
 ## Relationships
 
-- [Exploration Command Factories](Exploration_Command_Factories.md) (1 shared connections)
+- [Rate Limiter Service](Rate_Limiter_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/services/test_combat_monitoring_service.py`
 
 ## Audit Trail
 

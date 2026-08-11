@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_create_unequip_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_unequip_command delegates to inventory factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_subscribe_to_event_subjects_partial_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test subscribe_to_event_subjects handles partial failure.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (1 shared connections)
+- [Connection State Hooks](Connection_State_Hooks.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [Player Death Service Tests](Player_Death_Service_Tests.md) (17 shared connections)
+- [Player Death Service Tests](Player_Death_Service_Tests.md) (14 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (3 shared connections)
 - [Command Input Utilities](Command_Input_Utilities.md) (3 shared connections)
 
 ## Source Files

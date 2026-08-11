@@ -35,7 +35,7 @@
 
 - [Logging Structured Handlers](Logging_Structured_Handlers.md) (4 shared connections)
 - [Logging File Setup](Logging_File_Setup.md) (4 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
 
 ## Source Files
 

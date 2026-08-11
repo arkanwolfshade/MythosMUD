@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_is_rate_limited()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test _is_rate_limited (currently always returns False).** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_handle_npc_died_event()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test _handle_npc_died_event delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Relationships
 
-- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
+- [Connection State Hooks](Connection_State_Hooks.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 

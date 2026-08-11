@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_should_idle_move_true_when_not_in_combat_and_probability_succeeds()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **When combat service is empty and probability passes, idle move is allowed.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_handle_player_attack_on_npc_login_grace_period_blocked()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test handle_player_attack_on_npc blocks attack when player is in login grace per** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
 
 ## Relationships
 
-- [Cursor Bug Agents](Cursor_Bug_Agents.md) (1 shared connections)
-- [NPC Movement Integration](NPC_Movement_Integration.md) (1 shared connections)
+- [Combat Disconnect Bug](Combat_Disconnect_Bug.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_handle_spells_command_wrapper_no_spell_registry()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test handle_spells_command wrapper when spell registry is not available.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_start_without_event_subscriptions()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test start() works without event subscriptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
-- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

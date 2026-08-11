@@ -1,42 +1,41 @@
 # Logging System Planning
 
-> 14 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **_should_include_npc()** (14 connections) — `server/commands/look_npc.py`
-- **test_should_include_npc_alive_with_name()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_should_include_npc_dead()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_should_include_npc_no_name()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_should_include_npc()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_should_include_npc_no_name()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_should_include_npc_not_alive()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Check if an NPC should be included in the results (has name and is alive).** (1 connections) — `server/commands/look_npc.py`
-- **Test should_include_npc for alive NPC with name.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test should_include_npc for dead NPC.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test should_include_npc for NPC without name.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test _should_include_npc() returns True for valid NPC.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _should_include_npc() returns False when no name.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _should_include_npc() returns False when not alive.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_players_quests.py** (13 connections) — `server/tests/unit/api/test_players_quests.py`
+- **test_get_player_quests_403_when_not_owner()** (4 connections) — `server/tests/unit/api/test_players_quests.py`
+- **test_get_player_quests_returns_quest_log()** (3 connections) — `server/tests/unit/api/test_players_quests.py`
+- **test_get_player_quests_include_completed_false()** (3 connections) — `server/tests/unit/api/test_players_quests.py`
+- **mock_request()** (2 connections) — `server/tests/unit/api/test_players_quests.py`
+- **mock_user()** (2 connections) — `server/tests/unit/api/test_players_quests.py`
+- **player_id()** (2 connections) — `server/tests/unit/api/test_players_quests.py`
+- **mock_player_service()** (2 connections) — `server/tests/unit/api/test_players_quests.py`
+- **mock_quest_service()** (2 connections) — `server/tests/unit/api/test_players_quests.py`
+- **Unit tests for GET /api/players/{player_id}/quests (quest log).  Tests get_playe** (1 connections) — `server/tests/unit/api/test_players_quests.py`
+- **Minimal request for endpoint (not used for quest logic).** (1 connections) — `server/tests/unit/api/test_players_quests.py`
+- **Character (player) UUID.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
+- **PlayerService that validates character access.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
+- **QuestService that returns quest log entries.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
+- **GET quests returns QuestLogResponse with entries when access allowed.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
+- **GET quests with include_completed=False passes to get_quest_log.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
+- **GET quests raises 403 when validate_character_access returns not ok.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
 
 ## Relationships
 
-- [Look NPC Command](Look_NPC_Command.md) (4 shared connections)
-- [Player State Command Factory](Player_State_Command_Factory.md) (4 shared connections)
-- [Container Repository CRUD](Container_Repository_CRUD.md) (2 shared connections)
-- [Archive Bug Fix](Archive_Bug_Fix.md) (2 shared connections)
-- [Combat Death Handling](Combat_Death_Handling.md) (1 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (5 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (2 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/look_npc.py`
-- `server/tests/unit/commands/test_look_npc.py`
-- `server/tests/unit/commands/test_look_npc_helpers.py`
+- `server/tests/unit/api/test_players_quests.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 40 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

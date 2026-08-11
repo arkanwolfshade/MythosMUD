@@ -25,8 +25,8 @@
 
 ## Relationships
 
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (6 shared connections)
-- [Command Parser Tests](Command_Parser_Tests.md) (1 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (6 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
 
 ## Source Files
 

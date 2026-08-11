@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_equip_wearable_container_existing_id_uuid()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_equip_wearable_container when existing_id is already UUID.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_connection_manager_property_injected_returns_none()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test connection_manager property falls back when injected manager resolves to No** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [Exploration Command Factories](Exploration_Command_Factories.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

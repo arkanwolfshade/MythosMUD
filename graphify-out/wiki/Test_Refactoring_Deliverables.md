@@ -1,47 +1,54 @@
 # Test Refactoring Deliverables
 
-> 21 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **migrate_combat_data.py** (21 connections) — `server/scripts/migrate_combat_data.py`
-- **validate_npc_combat_data()** (13 connections) — `server/schemas/combat/combat_schema.py`
-- **Any** (9 connections)
-- **_migrate_one_npc()** (9 connections) — `server/scripts/migrate_combat_data.py`
-- **migrate_npc_combat_data()** (8 connections) — `server/scripts/migrate_combat_data.py`
-- **rollback_migration()** (8 connections) — `server/scripts/migrate_combat_data.py`
-- **validate_migration_results()** (7 connections) — `server/scripts/migrate_combat_data.py`
-- **_record_npc_error()** (6 connections) — `server/scripts/migrate_combat_data.py`
-- **_rollback_one_npc()** (6 connections) — `server/scripts/migrate_combat_data.py`
-- **main()** (6 connections) — `server/scripts/migrate_combat_data.py`
-- **AsyncSession** (5 connections)
-- **_validate_one_npc()** (5 connections) — `server/scripts/migrate_combat_data.py`
-- **_npc_has_full_combat_data()** (3 connections) — `server/scripts/migrate_combat_data.py`
-- **_npc_has_combat_data()** (3 connections) — `server/scripts/migrate_combat_data.py`
-- **Validate combat data for an NPC definition.      Args:         npc_definition: N** (1 connections) — `server/schemas/combat/combat_schema.py`
-- **Exception** (1 connections)
-- **Combat data migration script.  This script adds default combat data to existing** (1 connections) — `server/scripts/migrate_combat_data.py`
-- **Migrate combat data for all NPC definitions.      Args:         session: Databas** (1 connections) — `server/scripts/migrate_combat_data.py`
-- **Validate that migration was successful.      Args:         session: Database ses** (1 connections) — `server/scripts/migrate_combat_data.py`
-- **Rollback combat data migration by removing combat fields.      Args:         ses** (1 connections) — `server/scripts/migrate_combat_data.py`
-- **Main migration function.** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **CommandService** (20 connections) — `server/commands/command_service.py`
+- **Any** (10 connections)
+- **._extract_parsed_fields()** (7 connections) — `server/commands/command_service.py`
+- **.process_command()** (7 connections) — `server/commands/command_service.py`
+- **._execute_command_handler()** (6 connections) — `server/commands/command_service.py`
+- **.process_validated_command()** (5 connections) — `server/commands/command_service.py`
+- **._parse_command_string()** (5 connections) — `server/commands/command_service.py`
+- **._prepare_command_data()** (5 connections) — `server/commands/command_service.py`
+- **._fallback_parsed_fields()** (4 connections) — `server/commands/command_service.py`
+- **._log_parsed_command_inspection()** (4 connections) — `server/commands/command_service.py`
+- **._log_model_dump_result()** (4 connections) — `server/commands/command_service.py`
+- **.register_command_handler()** (3 connections) — `server/commands/command_service.py`
+- **.get_available_commands()** (2 connections) — `server/commands/command_service.py`
+- **.unregister_command_handler()** (2 connections) — `server/commands/command_service.py`
+- **CommandHandler** (1 connections)
+- **Main command processing service for MythosMUD.      This service handles command** (1 connections) — `server/commands/command_service.py`
+- **Process a validated command with routing.          Args:             command_dat** (1 connections) — `server/commands/command_service.py`
+- **Parse and validate command string.          Returns:             tuple of (parse** (1 connections) — `server/commands/command_service.py`
+- **Prepare command_data dictionary by merging parsed command fields.          Retur** (1 connections) — `server/commands/command_service.py`
+- **Extract non-private, non-callable attributes from parsed_command, excluding keys** (1 connections) — `server/commands/command_service.py`
+- **Extract fields from parsed_command using model_dump or fallback method.** (1 connections) — `server/commands/command_service.py`
+- **Log parsed command object inspection details.** (1 connections) — `server/commands/command_service.py`
+- **Log model_dump result details.** (1 connections) — `server/commands/command_service.py`
+- **Execute command handler with error handling.          Returns:             dict:** (1 connections) — `server/commands/command_service.py`
+- **Process a command with full validation and routing.          Args:             c** (1 connections) — `server/commands/command_service.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [Weapon Resolution Helpers](Weapon_Resolution_Helpers.md) (14 shared connections)
-- [Command Parser Tests](Command_Parser_Tests.md) (9 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
-- [Realtime Errors Error](Realtime_Errors_Error.md) (2 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (3 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (3 shared connections)
+- [NPC Population Control](NPC_Population_Control.md) (2 shared connections)
+- [Async Audit Cursor](Async_Audit_Cursor.md) (1 shared connections)
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (1 shared connections)
+- [Chat Panel Components](Chat_Panel_Components.md) (1 shared connections)
+- [Command Parser](Command_Parser.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/combat/combat_schema.py`
-- `server/scripts/migrate_combat_data.py`
+- `server/commands/command_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 113 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 98 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

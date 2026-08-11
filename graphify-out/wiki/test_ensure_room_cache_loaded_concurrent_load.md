@@ -4,20 +4,22 @@
 
 ## Key Concepts
 
-- **test_ensure_room_cache_loaded_concurrent_load()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _ensure_room_cache_loaded handles concurrent load scenario (double-check pa** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **mock_combat_service()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **Create mock combat service.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
 
 ## Relationships
 
-- [Mythosmud Obsidian Raw](Mythosmud_Obsidian_Raw.md) (1 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (1 shared connections)
+- [NATS Docs Review](NATS_Docs_Review.md) (1 shared connections)
+- [Combat Disconnect Bug](Combat_Disconnect_Bug.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/services/test_npc_combat_integration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

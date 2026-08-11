@@ -1,9 +1,10 @@
 # Client ASCII Map API
 
-> 31 nodes
+> 45 nodes
 
 ## Key Concepts
 
+- **PlayerChannelPreferences** (30 connections) — `server/models/player.py`
 - **PlayerPreferencesService** (19 connections) — `server/services/player_preferences_service.py`
 - **._is_valid_player_id()** (11 connections) — `server/services/player_preferences_service.py`
 - **UUID** (10 connections)
@@ -19,34 +20,38 @@
 - **.get_muted_channels()** (7 connections) — `server/services/player_preferences_service.py`
 - **.delete_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
 - **._is_valid_channel()** (6 connections) — `server/services/player_preferences_service.py`
+- **test_player_channel_preferences_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **test_player_channel_preferences_defaults()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **test_player_channel_preferences_with_muted_channels()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **test_player_channel_preferences_repr()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **preferences_service()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **sample_preferences()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 - **.__init__()** (2 connections) — `server/services/player_preferences_service.py`
 - **._is_valid_json_array()** (2 connections) — `server/services/player_preferences_service.py`
-- **Player Preferences Service for Advanced Chat Channels.  This module provides fun** (1 connections) — `server/services/player_preferences_service.py`
-- **Service for managing player channel preferences.      This service handles:** (1 connections) — `server/services/player_preferences_service.py`
-- **Initialize the PlayerPreferencesService.          Note: This service now uses Po** (1 connections) — `server/services/player_preferences_service.py`
-- **Create default preferences for a new player.          Args:             session:** (1 connections) — `server/services/player_preferences_service.py`
-- **Get preferences for a player.          Args:             session: Database sessi** (1 connections) — `server/services/player_preferences_service.py`
-- **Update a player's default channel.          Args:             session: Database** (1 connections) — `server/services/player_preferences_service.py`
-- **Mute a channel for a player.          Args:             session: Database sessio** (1 connections) — `server/services/player_preferences_service.py`
-- **Unmute a channel for a player.          Args:             session: Database sess** (1 connections) — `server/services/player_preferences_service.py`
-- *... and 6 more nodes in this community*
+- **Player channel preferences model for Advanced Chat Channels.      Stores player** (1 connections) — `server/models/player.py`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [Quality Audit Report](Quality_Audit_Report.md) (10 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [Async Persistence Delegates](Async_Persistence_Delegates.md) (3 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (11 shared connections)
+- [Dependency Upgrade Report](Dependency_Upgrade_Report.md) (5 shared connections)
+- [Async Persistence Delegates](Async_Persistence_Delegates.md) (5 shared connections)
+- [Plan Modernization Archive](Plan_Modernization_Archive.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Message Queue Cleanup](Message_Queue_Cleanup.md) (1 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
 
 ## Source Files
 
+- `server/models/player.py`
 - `server/services/player_preferences_service.py`
+- `server/tests/unit/models/test_player_related_models.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 140 (94%)
-- INFERRED: 9 (6%)
+- EXTRACTED: 174 (85%)
+- INFERRED: 30 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

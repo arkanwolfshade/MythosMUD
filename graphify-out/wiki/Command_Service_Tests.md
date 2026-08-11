@@ -1,11 +1,12 @@
 # Command Service Tests
 
-> 62 nodes
+> 64 nodes
 
 ## Key Concepts
 
 - **test_quest_service.py** (34 connections) — `server/tests/unit/game/test_quest_service.py`
 - **_make_definition_row()** (17 connections) — `server/tests/unit/game/test_quest_service.py`
+- **quest_service()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
 - **_make_turn_in_definition_row()** (6 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_turn_in_inventory_full_blocks_item_reward()** (4 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_resolve_name_to_quest_id_found()** (3 connections) — `server/tests/unit/game/test_quest_service.py`
@@ -28,14 +29,17 @@
 - **test_turn_in_no_active_instance_returns_error()** (3 connections) — `server/tests/unit/game/test_quest_service.py`
 - **mock_def_repo()** (2 connections) — `server/tests/unit/game/test_quest_service.py`
 - **mock_instance_repo()** (2 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_resolve_name_to_quest_id_not_found()** (2 connections) — `server/tests/unit/game/test_quest_service.py`
-- *... and 37 more nodes in this community*
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [Quest Service Core](Quest_Service_Core.md) (2 shared connections)
-- [E2E Suite Spec Helpers](E2E_Suite_Spec_Helpers.md) (1 shared connections)
-- [Chat Archive Advanced](Chat_Archive_Advanced.md) (1 shared connections)
+- [Quest Service Core](Quest_Service_Core.md) (3 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
+- [Character Creation Service](Character_Creation_Service.md) (1 shared connections)
+- [Legacy Error Sanitization](Legacy_Error_Sanitization.md) (1 shared connections)
+- [NPC Service Tests](NPC_Service_Tests.md) (1 shared connections)
+- [Game State Provider](Game_State_Provider.md) (1 shared connections)
+- [Chat Rate Limiter](Chat_Rate_Limiter.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 164 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 168 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

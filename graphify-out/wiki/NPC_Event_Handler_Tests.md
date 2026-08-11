@@ -1,13 +1,23 @@
 # NPC Event Handler Tests
 
-> 50 nodes
+> 68 nodes
 
 ## Key Concepts
 
 - **PlayerPositionService** (45 connections) — `server/services/player_position_service.py`
 - **test_player_position_service.py** (27 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **.change_position()** (10 connections) — `server/services/player_position_service.py`
+- **Any** (7 connections)
+- **._get_player_for_position_change()** (5 connections) — `server/services/player_position_service.py`
+- **._update_player_position()** (5 connections) — `server/services/player_position_service.py`
+- **._extract_player_info()** (4 connections) — `server/services/player_position_service.py`
+- **._get_current_position()** (4 connections) — `server/services/player_position_service.py`
+- **._update_connection_manager()** (4 connections) — `server/services/player_position_service.py`
 - **test_change_position_database_error()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
 - **test_change_position_save_error()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **.__init__()** (3 connections) — `server/services/player_position_service.py`
+- **.ensure_default_aliases()** (3 connections) — `server/services/player_position_service.py`
+- **._validate_position()** (3 connections) — `server/services/player_position_service.py`
 - **test_player_position_service_init()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
 - **test_player_position_service_init_none_values()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
 - **test_ensure_default_aliases_no_storage()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
@@ -19,28 +29,18 @@
 - **test_change_position_no_persistence()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
 - **test_change_position_player_not_found()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
 - **test_change_position_already_in_position()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_success()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_no_get_stats()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_get_stats_error()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_updates_connection_manager()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_updates_existing_connection_info()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_all_positions()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_update_connection_manager_no_manager()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_update_connection_manager_no_online_players()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_update_connection_manager_updates_by_display_name()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_update_connection_manager_handles_errors()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
-- *... and 25 more nodes in this community*
+- *... and 43 more nodes in this community*
 
 ## Relationships
 
-- [Archive Planning Aliases](Archive_Planning_Aliases.md) (9 shared connections)
-- [Client Event Store](Client_Event_Store.md) (4 shared connections)
-- [NPC Utility Functions](NPC_Utility_Functions.md) (3 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
-- [Player Death Service](Player_Death_Service.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
-- [Cache and NPC Cache](Cache_and_NPC_Cache.md) (1 shared connections)
-- [Status Effect Model](Status_Effect_Model.md) (1 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (5 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (2 shared connections)
+- [Player State Factories](Player_State_Factories.md) (2 shared connections)
+- [Player Respawn Handlers](Player_Respawn_Handlers.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 166 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 220 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

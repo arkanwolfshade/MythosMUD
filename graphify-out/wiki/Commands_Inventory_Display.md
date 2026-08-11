@@ -1,55 +1,32 @@
 # Commands Inventory Display
 
-> 34 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **resolve_weapon_attack_from_equipped()** (24 connections) — `server/game/weapons.py`
-- **test_weapons.py** (18 connections) — `server/tests/unit/game/test_weapons.py`
-- **weapons.py** (14 connections) — `server/game/weapons.py`
-- **test_combat_weapon_resolution.py** (12 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
-- **WeaponAttackInfo** (10 connections) — `server/game/weapons.py`
-- **test_resolve_weapon_attack_from_equipped_no_weapon_metadata_returns_none()** (5 connections) — `server/tests/unit/game/test_weapons.py`
-- **test_resolve_weapon_attack_from_equipped_weapon_missing_min_max_returns_none()** (5 connections) — `server/tests/unit/game/test_weapons.py`
-- **test_resolve_weapon_attack_from_equipped_weapon_returns_info_in_range()** (5 connections) — `server/tests/unit/game/test_weapons.py`
-- **test_resolve_weapon_attack_from_equipped_weapon_with_modifier()** (5 connections) — `server/tests/unit/game/test_weapons.py`
-- **test_resolve_weapon_attack_from_equipped_empty_damage_types_uses_physical()** (5 connections) — `server/tests/unit/game/test_weapons.py`
-- **_roll_weapon_attack()** (4 connections) — `server/game/weapons.py`
-- **test_weapon_resolution_switchblade_damage_in_range()** (4 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
-- **test_resolve_weapon_attack_from_equipped_none_stack_returns_none()** (4 connections) — `server/tests/unit/game/test_weapons.py`
-- **test_resolve_weapon_attack_from_equipped_missing_prototype_id_returns_none()** (4 connections) — `server/tests/unit/game/test_weapons.py`
-- **_weapon_damage_bounds()** (3 connections) — `server/game/weapons.py`
-- **Any** (3 connections)
-- **test_weapon_resolution_switchblade_no_main_hand_returns_none()** (3 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
-- **test_resolve_weapon_attack_from_equipped_none_registry_returns_none()** (3 connections) — `server/tests/unit/game/test_weapons.py`
-- **NamedTuple** (1 connections)
-- **Weapon resolution helpers for combat.  Resolves equipped main-hand items to weap** (1 connections) — `server/game/weapons.py`
-- **Result of resolving an equipped item to a weapon attack.      base_damage: Rolle** (1 connections) — `server/game/weapons.py`
-- **Resolve equipped main-hand stack to weapon attack info, or None if unarmed.** (1 connections) — `server/game/weapons.py`
-- **Integration tests for combat weapon resolution.  Verifies that the switchblade p** (1 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
-- **With switchblade equipped, resolved damage is in [1, 4] and damage_type is slash** (1 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
-- **When main_hand is empty, resolve returns None.** (1 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
-- *... and 9 more nodes in this community*
+- **schedule_end_combat_if_npc_died_best_effort()** (8 connections) — `server/npc/npc_combat_schedule.py`
+- **test_npc_combat_schedule.py** (5 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **test_schedule_end_combat_if_npc_died_no_service()** (3 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **test_schedule_end_combat_if_npc_died_no_running_loop()** (3 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **Schedule end_combat_if_npc_died so the slain NPC no longer gets combat turns (be** (1 connections) — `server/npc/npc_combat_schedule.py`
+- **Unit tests for best-effort NPC combat cleanup scheduling.** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **When combat service is missing, scheduling is a no-op.** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **Without a running asyncio loop, scheduling fails quietly (RuntimeError path).** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
 
 ## Relationships
 
-- [Commands Look Item](Commands_Look_Item.md) (13 shared connections)
-- [Quest Instance Repository](Quest_Instance_Repository.md) (10 shared connections)
-- [Command Integration Summary](Command_Integration_Summary.md) (8 shared connections)
-- [Combat Attack Flow](Combat_Attack_Flow.md) (3 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (3 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/weapons.py`
-- `server/tests/integration/test_combat_weapon_resolution.py`
-- `server/tests/unit/game/test_weapons.py`
+- `server/npc/npc_combat_schedule.py`
+- `server/tests/unit/npc/test_npc_combat_schedule.py`
 
 ## Audit Trail
 
-- EXTRACTED: 131 (89%)
-- INFERRED: 16 (11%)
+- EXTRACTED: 23 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

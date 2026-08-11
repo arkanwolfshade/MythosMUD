@@ -1,53 +1,43 @@
 # Combat Client Crash Report
 
-> 19 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **MovementService** (45 connections) — `server/game/movement_service.py`
-- **Any** (7 connections)
-- **._resolve_player_for_movement()** (6 connections) — `server/game/movement_service.py`
-- **.__init__()** (5 connections) — `server/game/movement_service.py`
-- **._persist_player_location()** (4 connections) — `server/game/movement_service.py`
-- **._handle_tutorial_exit_if_applicable()** (4 connections) — `server/game/movement_service.py`
-- **._record_move_validation_failure()** (4 connections) — `server/game/movement_service.py`
-- **movement_service()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_movement_service_init_no_persistence()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **.set_player_combat_service()** (2 connections) — `server/game/movement_service.py`
-- **Service for handling atomic player movement operations.      This class provides** (1 connections) — `server/game/movement_service.py`
-- **Initialize the movement service.          Args:             event_bus: Optional** (1 connections) — `server/game/movement_service.py`
-- **Set the player combat service after initialization.          This allows the com** (1 connections) — `server/game/movement_service.py`
-- **Resolve player by ID or name and return player object and resolved ID.** (1 connections) — `server/game/movement_service.py`
-- **Update player location in database.** (1 connections) — `server/game/movement_service.py`
-- **If player exited tutorial instance (moved to fixed exit room), clear and destroy** (1 connections) — `server/game/movement_service.py`
-- **Record timing and monitor stats when movement validation fails.** (1 connections) — `server/game/movement_service.py`
-- **Create a MovementService instance.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test MovementService initialization without persistence raises error.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **create_error_context()** (10 connections) — `server/api/player_helpers.py`
+- **player_helpers.py** (9 connections) — `server/api/player_helpers.py`
+- **create_context_from_request()** (7 connections) — `server/utils/error_logging.py`
+- **test_player_helpers.py** (5 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **test_create_error_context_without_user_sets_metadata()** (3 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **test_create_error_context_with_user_sets_user_id_and_metadata()** (3 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **Request** (1 connections)
+- **Any** (1 connections)
+- **Shared helper functions for player API endpoints.** (1 connections) — `server/api/player_helpers.py`
+- **Create error context from request and user.      Helper function to reduce dupli** (1 connections) — `server/api/player_helpers.py`
+- **Unit tests for server.api.player_helpers (error context helper).** (1 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **When current_user is None, context gets metadata only.** (1 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **When current_user is set, user_id is populated and metadata merged.** (1 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **Request** (1 connections)
+- **Create error context from a FastAPI request. Delegates to create_enhanced_error_** (1 connections) — `server/utils/error_logging.py`
 
 ## Relationships
 
-- [Room Map Viewer UI](Room_Map_Viewer_UI.md) (14 shared connections)
-- [Command Request App State](Command_Request_App_State.md) (4 shared connections)
-- [NPC Utility Functions](NPC_Utility_Functions.md) (3 shared connections)
-- [NPC Service Tests](NPC_Service_Tests.md) (3 shared connections)
-- [Game Magic Spell](Game_Magic_Spell.md) (3 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (3 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (3 shared connections)
-- [Calendar Holiday Schemas](Calendar_Holiday_Schemas.md) (3 shared connections)
-- [Error Logging Implementation](Error_Logging_Implementation.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Claude Agents Deps](Claude_Agents_Deps.md) (2 shared connections)
-- [Cache and NPC Cache](Cache_and_NPC_Cache.md) (1 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (3 shared connections)
+- [Active Lucidity Service](Active_Lucidity_Service.md) (3 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (2 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (1 shared connections)
+- [Fastapi Code Review](Fastapi_Code_Review.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/movement_service.py`
-- `server/tests/unit/game/test_movement_service.py`
+- `server/api/player_helpers.py`
+- `server/tests/unit/api/test_player_helpers.py`
+- `server/utils/error_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 46 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,21 +4,22 @@
 
 ## Key Concepts
 
-- **test_handle_cast_command_no_player()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test cast command when player is not found.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_nats_message_handler_init()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test NATSMessageHandler initialization.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
+- [Vim Editor Guidelines](Vim_Editor_Guidelines.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

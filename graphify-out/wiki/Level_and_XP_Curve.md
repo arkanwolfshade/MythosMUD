@@ -1,78 +1,51 @@
 # Level and XP Curve
 
-> 499 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **EventBus** (129 connections) — `server/events/event_bus.py`
-- **time.py** (89 connections) — `server/container/bundles/time.py`
-- **NPCBase** (82 connections) — `server/npc/npc_base.py`
-- **get_npc_instance_service()** (79 connections) — `server/services/npc_instance_service.py`
-- **NPCLifecycleManager** (76 connections) — `server/npc/lifecycle_manager.py`
-- **event_types.py** (74 connections) — `server/events/event_types.py`
-- **NPCEnteredRoom** (51 connections) — `server/events/event_types.py`
-- **lifecycle_manager.py** (48 connections) — `server/npc/lifecycle_manager.py`
-- **threading.py** (47 connections) — `server/npc/threading.py`
-- **NPCLeftRoom** (46 connections) — `server/events/event_types.py`
-- **population_control.py** (42 connections) — `server/npc/population_control.py`
-- **npc_base.py** (41 connections) — `server/npc/npc_base.py`
-- **AggressiveMobNPC** (32 connections) — `server/npc/aggressive_mob_npc.py`
-- **npc_instance_service.py** (32 connections) — `server/services/npc_instance_service.py`
-- **room.py** (31 connections) — `server/models/room.py`
-- **event_bus.py** (29 connections) — `server/events/event_bus.py`
-- **PassiveMobNPC** (29 connections) — `server/npc/passive_mob_npc.py`
-- **event_reaction_system.py** (27 connections) — `server/npc/event_reaction_system.py`
-- **NPCDied** (25 connections) — `server/events/event_types.py`
-- **combat_integration.py** (25 connections) — `server/npc/combat_integration.py`
-- **NPCThreadManager** (25 connections) — `server/npc/threading.py`
-- **NPCMovementIntegration** (24 connections) — `server/npc/movement_integration.py`
-- **lifecycle_death.py** (23 connections) — `server/npc/lifecycle_death.py`
-- **__init__.py** (22 connections) — `server/npc/__init__.py`
-- **NPCEventReactionSystem** (21 connections) — `server/npc/event_reaction_system.py`
-- *... and 474 more nodes in this community*
+- **npc_config_parsing.py** (14 connections) — `server/npc/npc_config_parsing.py`
+- **.__init__()** (11 connections) — `server/npc/npc_base.py`
+- **to_int_or_default()** (7 connections) — `server/npc/npc_config_parsing.py`
+- **get_combat_stats_dict()** (7 connections) — `server/npc/npc_config_parsing.py`
+- **normalize_determination_points()** (5 connections) — `server/npc/npc_config_parsing.py`
+- **parse_behavior_config()** (5 connections) — `server/npc/npc_config_parsing.py`
+- **_safe_stat_int()** (5 connections) — `server/npc/npc_config_parsing.py`
+- **._safe_get()** (4 connections) — `server/npc/npc_base.py`
+- **._apply_definition_attributes()** (4 connections) — `server/npc/npc_base.py`
+- **.heal()** (4 connections) — `server/npc/npc_base.py`
+- **parse_stats()** (4 connections) — `server/npc/npc_config_parsing.py`
+- **parse_ai_config()** (4 connections) — `server/npc/npc_config_parsing.py`
+- **_compute_max_dp()** (4 connections) — `server/npc/npc_config_parsing.py`
+- **._setup_base_behavior_rules()** (3 connections) — `server/npc/npc_base.py`
+- **._safe_stat_int()** (3 connections) — `server/npc/npc_base.py`
+- **.get_combat_stats()** (3 connections) — `server/npc/npc_base.py`
+- **._sync_dp_stats()** (3 connections) — `server/npc/npc_base.py`
+- **apply_dp_from_source()** (3 connections) — `server/npc/npc_config_parsing.py`
+- **apply_idle_movement_defaults()** (3 connections) — `server/npc/npc_config_parsing.py`
+- **Initialize the NPC base class.** (1 connections) — `server/npc/npc_base.py`
+- **Get attribute from obj with default to avoid lazy-loading issues.** (1 connections) — `server/npc/npc_base.py`
+- **Set npc_type, name, current_room, spawn_room_id from definition.** (1 connections) — `server/npc/npc_base.py`
+- **Setup base behavior rules common to all NPCs.** (1 connections) — `server/npc/npc_base.py`
+- **Return stats[key] as int, or default if missing/None.** (1 connections) — `server/npc/npc_base.py`
+- **Return current_dp, max_dp, dexterity for CombatParticipantData.** (1 connections) — `server/npc/npc_base.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [Communication Command Flows](Communication_Command_Flows.md) (84 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (80 shared connections)
-- [LRU Cache Manager](LRU_Cache_Manager.md) (71 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (45 shared connections)
-- [Spell Effect Protocols](Spell_Effect_Protocols.md) (44 shared connections)
-- [Command Parser Tests](Command_Parser_Tests.md) (37 shared connections)
-- [Who Command Tests](Who_Command_Tests.md) (25 shared connections)
-- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (24 shared connections)
-- [NPC Utility Functions](NPC_Utility_Functions.md) (17 shared connections)
-- [Help and WebSocket Core](Help_and_WebSocket_Core.md) (16 shared connections)
-- [Archive Advanced Chat](Archive_Advanced_Chat.md) (14 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (13 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (16 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Quest Instance Repository](Quest_Instance_Repository.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/run_test_ci.py`
-- `server/container/bundles/time.py`
-- `server/events/__init__.py`
-- `server/events/event_bus.py`
-- `server/events/event_types.py`
-- `server/game/instance_manager.py`
-- `server/models/room.py`
-- `server/npc/__init__.py`
-- `server/npc/aggressive_mob_npc.py`
-- `server/npc/behavior_engine.py`
-- `server/npc/behaviors.py`
-- `server/npc/combat_integration.py`
-- `server/npc/communication_integration.py`
-- `server/npc/event_reaction_system.py`
-- `server/npc/idle_movement.py`
-- `server/npc/lifecycle_death.py`
-- `server/npc/lifecycle_despawn.py`
-- `server/npc/lifecycle_manager.py`
-- `server/npc/lifecycle_types.py`
-- `server/npc/movement_integration.py`
+- `server/npc/npc_base.py`
+- `server/npc/npc_config_parsing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2339 (91%)
-- INFERRED: 236 (9%)
+- EXTRACTED: 115 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

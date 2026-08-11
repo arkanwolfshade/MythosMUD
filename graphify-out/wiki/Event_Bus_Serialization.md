@@ -12,7 +12,7 @@
 - **._convert_target_id_to_uuid()** (6 connections) — `server/npc/combat_integration_base.py`
 - **._handle_npc_attack_core()** (6 connections) — `server/npc/combat_integration_base.py`
 - **NpcCombatServiceProtocol** (6 connections) — `server/npc/combat_integration_protocols.py`
-- **.__init__()** (5 connections) — `server/npc/combat_integration_base.py`
+- **_resolve_npc_combat_service_raw()** (5 connections) — `server/npc/combat_integration_base.py`
 - **._try_delegate_npc_attack_to_combat_service()** (5 connections) — `server/npc/combat_integration_base.py`
 - **._handle_attribute_error()** (4 connections) — `server/npc/combat_integration_base.py`
 - **._handle_validation_error()** (4 connections) — `server/npc/combat_integration_base.py`
@@ -33,17 +33,15 @@
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
-- [Archive Frd Random](Archive_Frd_Random.md) (3 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (2 shared connections)
-- [LRU Cache Manager](LRU_Cache_Manager.md) (2 shared connections)
-- [Game State Provider](Game_State_Provider.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (6 shared connections)
+- [Game State Provider](Game_State_Provider.md) (3 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (3 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (3 shared connections)
 - [Player Respawn Events](Player_Respawn_Events.md) (2 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (1 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
-- [Database Error Handling](Database_Error_Handling.md) (1 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
+- [Multiplayer Browser Helpers](Multiplayer_Browser_Helpers.md) (1 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (1 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (1 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 151 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 149 (95%)
+- INFERRED: 8 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

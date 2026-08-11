@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_decayed_corpses_in_room_empty()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **Test get_decayed_corpses_in_room() returns empty list when no containers.** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_get_npc_name_no_service()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test _get_npc_name() returns None when service not available.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- [Skill Service Tests](Skill_Service_Tests.md) (1 shared connections)
+- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 

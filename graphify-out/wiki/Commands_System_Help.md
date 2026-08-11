@@ -1,60 +1,33 @@
 # Commands System Help
 
-> 25 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **utility_commands.py** (20 connections) — `server/commands/utility_commands.py`
-- **handle_emote_command()** (15 connections) — `server/commands/emote_commands.py`
-- **emote_commands.py** (14 connections) — `server/commands/emote_commands.py`
-- **_get_emote_services()** (7 connections) — `server/commands/emote_commands.py`
-- **test_emote_commands.py** (6 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **Any** (5 connections)
-- **_extract_emote_action()** (4 connections) — `server/commands/emote_commands.py`
-- **_validate_player_for_emote()** (4 connections) — `server/commands/emote_commands.py`
-- **_format_emote_messages()** (4 connections) — `server/commands/emote_commands.py`
-- **_handle_emote_result()** (4 connections) — `server/commands/emote_commands.py`
-- **test_handle_emote_command()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **test_handle_emote_command_no_message()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **test_handle_emote_command_no_chat_service()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **Emote command handlers for MythosMUD.  This module contains handlers for the emo** (1 connections) — `server/commands/emote_commands.py`
-- **Extract action from command_data.      Args:         command_data: Command data** (1 connections) — `server/commands/emote_commands.py`
-- **Get chat service and player service from app state.      Args:         request:** (1 connections) — `server/commands/emote_commands.py`
-- **Validate player and extract required information for emote.      Args:         p** (1 connections) — `server/commands/emote_commands.py`
-- **Format emote messages for predefined or custom emotes.      Args:         action** (1 connections) — `server/commands/emote_commands.py`
-- **Handle the result from chat service after sending emote.      Args:         resu** (1 connections) — `server/commands/emote_commands.py`
-- **Handle the emote command for performing emotes.      Args:         command_data:** (1 connections) — `server/commands/emote_commands.py`
-- **Utility commands for MythosMUD.  This module contains handlers for utility comma** (1 connections) — `server/commands/utility_commands.py`
-- **Unit tests for emote command handlers.  Tests the emote command functionality.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **Test handle_emote_command() processes emote.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **Test handle_emote_command() handles missing message.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **Test handle_emote_command() handles missing chat service.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **validate_shutdown_admin_permission()** (9 connections) — `server/commands/admin_shutdown_command.py`
+- **test_validate_shutdown_admin_permission_no_player()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_validate_shutdown_admin_permission_not_admin()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_validate_shutdown_admin_permission_admin()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Validate that a player has admin permissions for server shutdown.      Args:** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Test validate_shutdown_admin_permission() returns False when player is None.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test validate_shutdown_admin_permission() returns False when player is not admin** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test validate_shutdown_admin_permission() returns True when player is admin.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (7 shared connections)
-- [Logging Migration Examples](Logging_Migration_Examples.md) (3 shared connections)
-- [Combat UUID Display Bug](Combat_UUID_Display_Bug.md) (3 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Status Command Handlers](Status_Command_Handlers.md) (2 shared connections)
-- [Logger Client Add To](Logger_Client_Add_To.md) (2 shared connections)
-- [System Monitoring API](System_Monitoring_API.md) (2 shared connections)
-- [Cursor Skills Harden](Cursor_Skills_Harden.md) (1 shared connections)
-- [Mythos Time HUD](Mythos_Time_HUD.md) (1 shared connections)
-- [Game State Provider](Game_State_Provider.md) (1 shared connections)
-- [Cursor Plans Pydantic](Cursor_Plans_Pydantic.md) (1 shared connections)
+- [Services Lucidity Repository](Services_Lucidity_Repository.md) (4 shared connections)
+- [Room Drop Renderer](Room_Drop_Renderer.md) (3 shared connections)
+- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/emote_commands.py`
-- `server/commands/utility_commands.py`
-- `server/tests/unit/commands/test_emote_commands.py`
+- `server/commands/admin_shutdown_command.py`
+- `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 100 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 21 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

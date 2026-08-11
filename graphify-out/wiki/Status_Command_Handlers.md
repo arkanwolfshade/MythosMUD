@@ -1,6 +1,6 @@
 # Status Command Handlers
 
-> 79 nodes
+> 83 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,7 @@
 - **handle_status_command()** (14 connections) — `server/commands/status_commands.py`
 - **test_status_commands_helpers.py** (13 connections) — `server/tests/unit/commands/test_status_commands_helpers.py`
 - **_add_additional_stats_lines()** (12 connections) — `server/commands/status_commands.py`
+- **handle_whoami_command()** (12 connections) — `server/commands/status_commands.py`
 - **_build_base_status_lines()** (11 connections) — `server/commands/status_commands.py`
 - **_add_profession_lines()** (11 connections) — `server/commands/status_commands.py`
 - **_get_profession_info()** (10 connections) — `server/commands/status_commands.py`
@@ -28,16 +29,17 @@
 - **test_get_combat_status_player_not_in_combat()** (3 connections) — `server/tests/unit/commands/test_status_commands.py`
 - **test_build_base_status_lines()** (3 connections) — `server/tests/unit/commands/test_status_commands.py`
 - **test_build_base_status_lines_in_combat()** (3 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **test_add_profession_lines_with_profession()** (3 connections) — `server/tests/unit/commands/test_status_commands.py`
-- *... and 54 more nodes in this community*
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (6 shared connections)
-- [Logger Client Add To](Logger_Client_Add_To.md) (5 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Commands System Help](Commands_System_Help.md) (2 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (3 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (3 shared connections)
+- [Combat UUID Display Bug](Combat_UUID_Display_Bug.md) (3 shared connections)
+- [Logger Client Add To](Logger_Client_Add_To.md) (3 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (2 shared connections)
+- [Container Repository CRUD](Container_Repository_CRUD.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 273 (99%)
-- INFERRED: 4 (1%)
+- EXTRACTED: 286 (97%)
+- INFERRED: 8 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

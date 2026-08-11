@@ -1,54 +1,56 @@
 # Container Data Models
 
-> 54 nodes
+> 53 nodes
 
 ## Key Concepts
 
-- **test_async_persistence_delegates.py** (35 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **reset_async_persistence()** (6 connections) — `server/async_persistence.py`
-- **test_validate_and_fix_player_room_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_apply_lucidity_loss_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_apply_fear_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_apply_corruption_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_heal_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_async_heal_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_damage_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_async_damage_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_async_persistence_creates_instance()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_async_persistence_returns_same_instance()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_reset_async_persistence()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_player_by_user_id_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_container_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_containers_by_room_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_containers_by_entity_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_update_container_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_decayed_containers_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_decayed_containers_none_time()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_delete_container_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_create_item_instance_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_ensure_item_instance_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_item_instance_exists_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_soft_delete_player_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- *... and 29 more nodes in this community*
+- **test_websocket_room_updates.py** (32 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **get_player_occupants()** (11 connections) — `server/realtime/websocket_room_updates.py`
+- **test_warded_indicator_in_websocket_room_updates()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **test_get_player_occupants_handles_exception()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_from_lifecycle_manager_handles_exception()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_broadcast_room_update_fallback_npc_method()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_player_occupants_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_player_occupants_empty()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_from_lifecycle_manager_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_from_lifecycle_manager_filters_dead()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_from_lifecycle_manager_wrong_room()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_from_lifecycle_manager_no_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_fallback_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_fallback_filters_dead()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_fallback_no_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_build_room_update_event()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_build_room_update_event_with_drops()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_update_player_room_subscription_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_update_player_room_subscription_same_room()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_update_player_room_subscription_no_player()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_broadcast_room_update_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_broadcast_room_update_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_broadcast_room_update_room_not_found()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_broadcast_room_update_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_broadcast_room_update_handles_exception()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [Magic Service Bundle](Magic_Service_Bundle.md) (21 shared connections)
-- [Player Creation Service](Player_Creation_Service.md) (10 shared connections)
-- [WebSocket Initial State](WebSocket_Initial_State.md) (4 shared connections)
-- [Container System Architecture](Container_System_Architecture.md) (3 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
+- [NPC Service Tests](NPC_Service_Tests.md) (22 shared connections)
+- [Look Display Helpers](Look_Display_Helpers.md) (3 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (3 shared connections)
+- [Player Respawn Events](Player_Respawn_Events.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [API Type Guards](API_Type_Guards.md) (2 shared connections)
+- [NATS Message Broker](NATS_Message_Broker.md) (1 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
-- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- `server/realtime/websocket_room_updates.py`
+- `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- `server/tests/unit/realtime/test_websocket_room_updates.py`
 
 ## Audit Trail
 
-- EXTRACTED: 144 (94%)
-- INFERRED: 9 (6%)
+- EXTRACTED: 142 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

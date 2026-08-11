@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_get_enum_value_string()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **Test _get_enum_value() with string.** (1 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_determine_direction_from_rooms_room_not_found()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test _determine_direction_from_rooms() returns None when room not found.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- [Player State Factories](Player_State_Factories.md) (1 shared connections)
-- [Skill Service Tests](Skill_Service_Tests.md) (1 shared connections)
+- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

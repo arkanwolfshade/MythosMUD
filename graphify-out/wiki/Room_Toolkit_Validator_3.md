@@ -1,25 +1,25 @@
 # Room Toolkit Validator
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.to_dict()** (3 connections) — `server/game/chat_message.py`
-- **Any** (1 connections)
-- **Convert message to dictionary for serialization.** (1 connections) — `server/game/chat_message.py`
+- **test_extract_parsed_fields_handles_missing_attributes()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test _extract_parsed_fields handles missing attributes gracefully.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
 
 ## Relationships
 
-- [Chat Message Helpers](Chat_Message_Helpers.md) (1 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (1 shared connections)
+- [NPC Population Control](NPC_Population_Control.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_message.py`
+- `server/tests/unit/commands/test_command_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

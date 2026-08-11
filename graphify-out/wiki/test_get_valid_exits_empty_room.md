@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **test_get_valid_exits_empty_room()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test get_valid_exits() with room having no exits.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_handle_player_attack_on_npc_grace_period_check_fails()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test handle_player_attack_on_npc continues when grace period check fails.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
 
 ## Relationships
 
-- [Cursor Bug Agents](Cursor_Bug_Agents.md) (1 shared connections)
-- [NPC Movement Integration](NPC_Movement_Integration.md) (1 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (1 shared connections)
+- [Combat Disconnect Bug](Combat_Disconnect_Bug.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 

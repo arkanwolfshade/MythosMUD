@@ -1,48 +1,58 @@
 # Memory Threshold Monitor
 
-> 28 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **TestNPCCombatMemory** (16 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **.test_get_attacker_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **.test_get_attacker_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **.test_record_attack_first_engagement()** (3 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **.test_record_attack_subsequent_engagement()** (3 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **.test_record_attack_overwrites_previous()** (3 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **.test_clear_memory_exists()** (3 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **.test_clear_memory_not_exists()** (3 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **.test_has_memory_true()** (3 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **.test_has_memory_false()** (3 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **.test_has_memory_after_clear()** (3 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **.test_multiple_npcs()** (3 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **.test_same_player_attacks_multiple_npcs()** (3 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **Test suite for NPCCombatMemory class.** (1 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **Test NPCCombatMemory initialization.** (1 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **Test get_attacker returns None when no memory exists.** (1 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **Test get_attacker returns attacker ID when memory exists.** (1 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **Test record_attack returns True for first engagement.** (1 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **Test record_attack returns False for subsequent engagement.** (1 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **Test record_attack overwrites previous attacker.** (1 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **Test clear_memory removes memory when it exists.** (1 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **Test clear_memory returns False when memory doesn't exist.** (1 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **Test has_memory returns True when memory exists.** (1 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **Test has_memory returns False when no memory exists.** (1 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- *... and 3 more nodes in this community*
+- **lucidity_recovery_commands.py** (26 connections) — `server/commands/lucidity_recovery_commands.py`
+- **_perform_recovery_action()** (11 connections) — `server/commands/lucidity_recovery_commands.py`
+- **handle_meditate_command()** (11 connections) — `server/commands/lucidity_recovery_commands.py`
+- **handle_group_solace_command()** (10 connections) — `server/commands/lucidity_recovery_commands.py`
+- **Any** (9 connections)
+- **handle_therapy_command()** (9 connections) — `server/commands/lucidity_recovery_commands.py`
+- **handle_folk_tonic_command()** (9 connections) — `server/commands/lucidity_recovery_commands.py`
+- **_run_recovery_session()** (8 connections) — `server/commands/lucidity_recovery_commands.py`
+- **_validate_recovery_context()** (5 connections) — `server/commands/lucidity_recovery_commands.py`
+- **_restore_mp_for_action()** (5 connections) — `server/commands/lucidity_recovery_commands.py`
+- **_format_cooldown_message()** (4 connections) — `server/commands/lucidity_recovery_commands.py`
+- **mp_regeneration_service()** (4 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **_format_recovery_success_message()** (3 connections) — `server/commands/lucidity_recovery_commands.py`
+- **datetime** (2 connections)
+- **Recovery rituals that steady a mind frayed by eldritch exposure.** (1 connections) — `server/commands/lucidity_recovery_commands.py`
+- **Validate persistence and player for recovery action.** (1 connections) — `server/commands/lucidity_recovery_commands.py`
+- **Format cooldown error message with remaining time.** (1 connections) — `server/commands/lucidity_recovery_commands.py`
+- **Restore MP for meditation and pray actions, returning message if MP was restored** (1 connections) — `server/commands/lucidity_recovery_commands.py`
+- **Format success message for recovery action.** (1 connections) — `server/commands/lucidity_recovery_commands.py`
+- **Common execution path for LCD recovery commands.** (1 connections) — `server/commands/lucidity_recovery_commands.py`
+- **Invoke the meditation rite to anchor the mind.** (1 connections) — `server/commands/lucidity_recovery_commands.py`
+- **Share solace among nearby allies to salve frayed nerves.** (1 connections) — `server/commands/lucidity_recovery_commands.py`
+- **Undertake sanctioned therapy under Arkham Sanitarium protocols.** (1 connections) — `server/commands/lucidity_recovery_commands.py`
+- **Swallow a dubious folk tonic brewed by cautiously reliable apothecaries.** (1 connections) — `server/commands/lucidity_recovery_commands.py`
+- **Create an MPRegenerationService instance.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [Magic Service Bundle](Magic_Service_Bundle.md) (15 shared connections)
+- [Container Open Events](Container_Open_Events.md) (15 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (10 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (6 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Alias Storage Layer](Alias_Storage_Layer.md) (3 shared connections)
+- [Profession Get Mechanical Effects](Profession_Get_Mechanical_Effects.md) (2 shared connections)
+- [Npc Behavior Engine](Npc_Behavior_Engine.md) (2 shared connections)
+- [NATS Subject Manager](NATS_Subject_Manager.md) (1 shared connections)
+- [Container Repository CRUD](Container_Repository_CRUD.md) (1 shared connections)
+- [Server Process Termination](Server_Process_Termination.md) (1 shared connections)
+- [Cursor Agents Quick](Cursor_Agents_Quick.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_combat_memory.py`
+- `server/commands/lucidity_recovery_commands.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 68 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 120 (94%)
+- INFERRED: 7 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

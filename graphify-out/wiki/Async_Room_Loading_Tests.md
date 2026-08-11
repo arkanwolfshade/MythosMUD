@@ -1,51 +1,50 @@
 # Async Room Loading Tests
 
-> 23 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **CommandProcessor** (15 connections) — `server/utils/command_processor.py`
-- **.extract_command_data()** (5 connections) — `server/utils/command_processor.py`
-- **command_processor()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_get_command_processor()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **.process_command_string()** (4 connections) — `server/utils/command_processor.py`
-- **._extract_attributes()** (4 connections) — `server/utils/command_processor.py`
-- **._is_combat_command()** (4 connections) — `server/utils/command_processor.py`
-- **test_process_command_string_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **.__init__()** (3 connections) — `server/utils/command_processor.py`
-- **Any** (3 connections)
-- **.validate_command_safety()** (2 connections) — `server/utils/command_processor.py`
-- **.get_command_help()** (2 connections) — `server/utils/command_processor.py`
-- **Create a CommandProcessor instance.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **Test process_command_string handles Pydantic validation errors.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **Test get_command_processor returns global instance.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **Command processor that integrates Pydantic validation with existing command infr** (1 connections) — `server/utils/command_processor.py`
-- **Initialize the command processor.** (1 connections) — `server/utils/command_processor.py`
-- **Process a raw command string through the new validation system.          Args:** (1 connections) — `server/utils/command_processor.py`
-- **Extract attributes from validated command using a mapping configuration.** (1 connections) — `server/utils/command_processor.py`
-- **Check if a command type is a combat command.          Args:             command_** (1 connections) — `server/utils/command_processor.py`
-- **Extract command data from a validated Pydantic command object.          This met** (1 connections) — `server/utils/command_processor.py`
-- **Perform additional safety validation on command input.          This provides an** (1 connections) — `server/utils/command_processor.py`
-- **Get help information for commands.          Args:             command_name: Spec** (1 connections) — `server/utils/command_processor.py`
+- **ScheduleCollection** (12 connections) — `server/schemas/calendar/calendar.py`
+- **__init__.py** (10 connections) — `server/schemas/calendar/__init__.py`
+- **calendar.py** (9 connections) — `server/schemas/calendar/calendar.py`
+- **load_schedule_directory()** (8 connections) — `server/schemas/calendar/calendar.py`
+- **extract_observance_ids()** (8 connections) — `server/schemas/calendar/calendar.py`
+- **slugify_observance()** (6 connections) — `server/schemas/calendar/calendar.py`
+- **.load_file()** (5 connections) — `server/schemas/calendar/calendar.py`
+- **.load_file()** (5 connections) — `server/schemas/calendar/calendar.py`
+- **BaseModel** (4 connections)
+- **test_schedule_collection()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **Path** (3 connections)
+- **Calendar domain schemas: holidays, schedules, and Mythos calendar.** (1 connections) — `server/schemas/calendar/__init__.py`
+- **Calendar ingestion schemas for MythosMUD.  These models provide a typed wrapper** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Load holiday collection from JSON file.** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Wrapper around an array of schedule entries.** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Load schedule collection from a JSON file.          Args:             path: Path** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Utility for loading every schedule file within a directory.** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Normalize document observance names into snake_case ids.** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Parse table rows from MYTHOS_HOLIDAY_CANDIDATES.md into slug ids.** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Test ScheduleCollection can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
 
 ## Relationships
 
-- [Cursor Agents Analyzer](Cursor_Agents_Analyzer.md) (4 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [Cursor Plans Login](Cursor_Plans_Login.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
-- [Schedule Service Loader](Schedule_Service_Loader.md) (1 shared connections)
-- [Emote Schema Validator](Emote_Schema_Validator.md) (1 shared connections)
+- [Player Command Developer Guide](Player_Command_Developer_Guide.md) (8 shared connections)
+- [ASCII Map API](ASCII_Map_API.md) (5 shared connections)
+- [Spell Effects Tests](Spell_Effects_Tests.md) (4 shared connections)
+- [WebSocket Code Review](WebSocket_Code_Review.md) (4 shared connections)
+- [Player Respawn Service](Player_Respawn_Service.md) (3 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_processor.py`
-- `server/utils/command_processor.py`
+- `server/schemas/calendar/__init__.py`
+- `server/schemas/calendar/calendar.py`
+- `server/tests/unit/schemas/test_calendar_schemas.py`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (94%)
-- INFERRED: 4 (6%)
+- EXTRACTED: 83 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

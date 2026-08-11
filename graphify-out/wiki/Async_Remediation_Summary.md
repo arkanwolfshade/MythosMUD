@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [Player Creation Service](Player_Creation_Service.md) (2 shared connections)
-- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (3 shared connections)
 
 ## Source Files
 

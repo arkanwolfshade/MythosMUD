@@ -1,55 +1,53 @@
 # Party Service Management
 
-> 29 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **MemoryLeakMetricsCollector** (33 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Any** (10 connections)
-- **.collect_all_metrics()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.check_alerts()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_connection_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_event_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_cache_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_task_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_nats_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._calculate_single_growth_rate()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.calculate_growth_rates()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_connection_alerts()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_cache_alerts()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_subscriber_alerts()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_task_alerts()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Unified metrics collector for memory leak detection.      Aggregates metrics fro** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect all metrics from all sources.          Returns:             Dictionary c** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect connection metrics from ConnectionManager.          Returns:** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect event metrics from EventBus.          Returns:             Dictionary wi** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect cache metrics from CacheManager.          Returns:             Dictionar** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect task metrics from TaskRegistry.          Returns:             Dictionary** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect NATS subscription metrics from NATSService.          Returns:** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Calculate growth rate for a single metric.          Args:             current: C** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Calculate growth rates for metrics over time.          Returns:             Dict** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Check connection-related alerts and append to alerts list.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- *... and 4 more nodes in this community*
+- **test_rest_command.py** (38 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **handle_rest_command()** (22 connections) — `server/commands/rest_command.py`
+- **test_handle_rest_command_no_app()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_handle_rest_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_handle_rest_command_no_connection_manager()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_handle_rest_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_handle_rest_command_already_resting()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_handle_rest_command_in_combat()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_handle_rest_command_rest_location_instant()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_handle_rest_command_starts_countdown()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_check_player_in_combat_true()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_check_player_in_combat_false()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_check_player_in_combat_no_service()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_check_rest_location_true()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_check_rest_location_false()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_check_rest_location_no_room()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_check_rest_location_no_persistence()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_disconnect_player_intentionally()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_start_rest_countdown_creates_task()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_start_rest_countdown_timer_expires()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_cancel_rest_countdown_cancels_task()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_cancel_rest_countdown_not_resting()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_is_player_resting_true()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_is_player_resting_false()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_is_player_resting_no_manager_attribute()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [Monitoring Response Models](Monitoring_Response_Models.md) (8 shared connections)
-- [Memory Leak Metrics](Memory_Leak_Metrics.md) (6 shared connections)
-- [Test Optimization Insights](Test_Optimization_Insights.md) (3 shared connections)
-- [Target Resolution Service](Target_Resolution_Service.md) (2 shared connections)
-- [NPC Occupant Verification](NPC_Occupant_Verification.md) (2 shared connections)
-- [Enhanced Logging Guide](Enhanced_Logging_Guide.md) (1 shared connections)
-- [Combat Turn Processor](Combat_Turn_Processor.md) (1 shared connections)
-- [Cache and NPC Cache](Cache_and_NPC_Cache.md) (1 shared connections)
+- [Player State Factories](Player_State_Factories.md) (26 shared connections)
+- [Realtime WebSocket Auth](Realtime_WebSocket_Auth.md) (5 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (2 shared connections)
+- [Architecture Api Openapi](Architecture_Api_Openapi.md) (2 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
 
 ## Source Files
 
-- `server/monitoring/memory_leak_metrics.py`
+- `server/commands/rest_command.py`
+- `server/tests/unit/commands/test_rest_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 116 (95%)
-- INFERRED: 6 (5%)
+- EXTRACTED: 165 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

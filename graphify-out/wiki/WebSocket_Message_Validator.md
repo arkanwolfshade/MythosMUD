@@ -1,32 +1,41 @@
 # WebSocket Message Validator
 
-> 8 nodes
+> 54 nodes
 
 ## Key Concepts
 
 - **test_active_lucidity_service.py** (34 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **active_lucidity_service()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 - **test_active_lucidity_service_init()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_active_lucidity_service_init_with_now_provider()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_unknown_category()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_perform_recovery_action_naive_datetime_cooldown()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **mock_session()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 - **sample_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_get_action_cooldown_lowercases_action_code()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Unit tests for active lucidity service.  Tests the ActiveLucidityService class f** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Create a sample player ID.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test ActiveLucidityService initialization.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test get_action_cooldown() lowercases action_code.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_first_encounter()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_repeat_encounter()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_acclimated()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_invalid_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_horrific_category()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_cosmic_category()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_with_location()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_perform_recovery_action_success()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_perform_recovery_action_cooldown_expired()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_perform_recovery_action_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_perform_recovery_action_invalid_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_perform_recovery_action_all_actions()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_perform_recovery_action_sets_cooldown()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_perform_recovery_action_with_location()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_get_action_cooldown_success()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_get_action_cooldown_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (6 shared connections)
-- [active_lucidity_service](active_lucidity_service_3.md) (1 shared connections)
-- [mock_session](mock_session.md) (1 shared connections)
-- [test_active_lucidity_service_init_with_now_provider](test_active_lucidity_service_init_with_now_provider.md) (1 shared connections)
-- [test_apply_encounter_lucidity_loss_acclimated](test_apply_encounter_lucidity_loss_acclimated.md) (1 shared connections)
-- [test_apply_encounter_lucidity_loss_cosmic_category](test_apply_encounter_lucidity_loss_cosmic_category.md) (1 shared connections)
-- [test_apply_encounter_lucidity_loss_first_encounter](test_apply_encounter_lucidity_loss_first_encounter.md) (1 shared connections)
-- [test_apply_encounter_lucidity_loss_horrific_category](test_apply_encounter_lucidity_loss_horrific_category.md) (1 shared connections)
-- [test_apply_encounter_lucidity_loss_invalid_string_player_id](test_apply_encounter_lucidity_loss_invalid_string_player_id.md) (1 shared connections)
-- [test_apply_encounter_lucidity_loss_repeat_encounter](test_apply_encounter_lucidity_loss_repeat_encounter.md) (1 shared connections)
-- [test_apply_encounter_lucidity_loss_string_player_id](test_apply_encounter_lucidity_loss_string_player_id.md) (1 shared connections)
-- [test_apply_encounter_lucidity_loss_unknown_category](test_apply_encounter_lucidity_loss_unknown_category.md) (1 shared connections)
+- [Alias Storage Layer](Alias_Storage_Layer.md) (8 shared connections)
+- [Npc Behavior Engine](Npc_Behavior_Engine.md) (2 shared connections)
+- [Container Open Events](Container_Open_Events.md) (2 shared connections)
 
 ## Source Files
 
@@ -34,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 117 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

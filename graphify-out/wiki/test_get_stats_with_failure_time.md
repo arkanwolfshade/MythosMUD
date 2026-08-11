@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_get_stats_with_failure_time()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test get_stats() includes failure time when set.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_create_ground_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_ground_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [Performance Optimization Summary](Performance_Optimization_Summary.md) (1 shared connections)
-- [Circuit Breaker Core](Circuit_Breaker_Core.md) (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_circuit_breaker.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

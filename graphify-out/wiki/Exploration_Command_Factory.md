@@ -1,54 +1,44 @@
 # Exploration Command Factory
 
-> 26 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **test_connection_state_machine.py** (39 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_connected_successfully_from_reconnecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_connection_failed_from_reconnecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_start_reconnect()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_open_circuit()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_can_attempt_connection_disconnected()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_can_attempt_connection_connecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_should_open_circuit_under_threshold()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_get_stats_no_connected_time()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_reconnect_attempts_reset_on_success()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_total_connections_increment()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_last_error_set()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_connection_event_enum()** (2 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Unit tests for connection state machine.  Tests the NATSConnectionStateMachine c** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test ConnectionEvent enum values.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test connected_successfully() transition from reconnecting to connected.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test connection_failed() transition from reconnecting to disconnected.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test start_reconnect() transition from disconnected to reconnecting.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test open_circuit() transition from reconnecting to circuit_open.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test can_attempt_connection() returns True when disconnected.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test can_attempt_connection() returns True when connecting.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test should_open_circuit() returns False when under threshold.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test get_stats() handles None connected time.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test reconnect_attempts resets on successful connection.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test total_connections increments on successful connection.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- *... and 1 more nodes in this community*
+- **get_calendar_paths_for_environment()** (14 connections) — `server/utils/project_paths.py`
+- **project_paths.py** (12 connections) — `server/utils/project_paths.py`
+- **test_project_paths.py** (10 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **get_project_root()** (10 connections) — `server/utils/project_paths.py`
+- **get_environment_data_dir()** (10 connections) — `server/utils/project_paths.py`
+- **._get_project_root()** (4 connections) — `server/container/main.py`
+- **test_get_project_root()** (3 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **test_normalize_environment()** (3 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **test_get_environment_data_dir()** (3 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **test_get_calendar_paths_for_environment()** (3 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **Path** (3 connections)
+- **Path** (2 connections)
+- **Return and cache the repository root directory.** (1 connections) — `server/container/main.py`
+- **Unit tests for project_paths utilities.  Tests path resolution functions.** (1 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **Test get_project_root() returns project root path.** (1 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **Test normalize_environment() normalizes environment names.** (1 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **Test get_environment_data_dir() returns data directory.** (1 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **Test get_calendar_paths_for_environment() returns calendar paths.** (1 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **Project path resolution helpers used across runtime code and tooling.** (1 connections) — `server/utils/project_paths.py`
+- **Return the repository root (directory containing pyproject.toml).** (1 connections) — `server/utils/project_paths.py`
+- **Compute the base data directory for the provided environment.** (1 connections) — `server/utils/project_paths.py`
+- **Return (holidays_file, schedules_dir) for the requested environment.** (1 connections) — `server/utils/project_paths.py`
 
 ## Relationships
 
-- [Room Subscription Helpers](Room_Subscription_Helpers.md) (12 shared connections)
-- [Realtime Connection](Realtime_Connection.md) (2 shared connections)
-- [test_can_attempt_connection_circuit_open](test_can_attempt_connection_circuit_open.md) (1 shared connections)
-- [test_can_attempt_connection_connected](test_can_attempt_connection_connected.md) (1 shared connections)
-- [test_can_attempt_connection_reconnecting](test_can_attempt_connection_reconnecting.md) (1 shared connections)
-- [test_close_circuit](test_close_circuit.md) (1 shared connections)
-- [test_connect_transition](test_connect_transition.md) (1 shared connections)
-- [test_connected_successfully_from_connecting](test_connected_successfully_from_connecting.md) (1 shared connections)
-- [test_connection_failed_from_connecting](test_connection_failed_from_connecting.md) (1 shared connections)
-- [test_degrade](test_degrade.md) (1 shared connections)
-- [test_disconnect_from_connected](test_disconnect_from_connected.md) (1 shared connections)
-- [test_disconnect_from_degraded](test_disconnect_from_degraded.md) (1 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (17 shared connections)
+- [ASCII Map API](ASCII_Map_API.md) (5 shared connections)
+- [Player Respawn Service](Player_Respawn_Service.md) (2 shared connections)
+- [Cursor Skills Critique](Cursor_Skills_Critique.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_state_machine.py`
+- `server/container/main.py`
+- `server/tests/unit/utils/test_project_paths.py`
+- `server/utils/project_paths.py`
 
 ## Audit Trail
 

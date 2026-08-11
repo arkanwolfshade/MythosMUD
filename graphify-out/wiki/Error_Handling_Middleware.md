@@ -33,12 +33,16 @@
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (5 shared connections)
-- [Container API Endpoints](Container_API_Endpoints.md) (4 shared connections)
+- [Player Position Service](Player_Position_Service.md) (4 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (4 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (2 shared connections)
 - [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Container API Endpoints](Container_API_Endpoints.md) (1 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (1 shared connections)
+- [Cursor Skills Frontend](Cursor_Skills_Frontend.md) (1 shared connections)
 - [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
 
 ## Source Files
 

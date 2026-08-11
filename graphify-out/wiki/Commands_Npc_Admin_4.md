@@ -1,20 +1,25 @@
 # Commands Npc Admin
 
-> 15 nodes
+> 20 nodes
 
 ## Key Concepts
 
+- **ComprehensiveLoggingMiddleware** (10 connections) — `server/middleware/comprehensive_logging.py`
 - **.__call__()** (8 connections) — `server/middleware/comprehensive_logging.py`
 - **.dispatch()** (7 connections) — `server/middleware/comprehensive_logging.py`
 - **._log_request_start()** (5 connections) — `server/middleware/comprehensive_logging.py`
 - **._log_request_success_with_status()** (5 connections) — `server/middleware/comprehensive_logging.py`
 - **._log_request_error()** (5 connections) — `server/middleware/comprehensive_logging.py`
 - **Request** (4 connections)
+- **.__init__()** (3 connections) — `server/middleware/comprehensive_logging.py`
+- **ASGIApp** (1 connections)
 - **Scope** (1 connections)
 - **Receive** (1 connections)
 - **Send** (1 connections)
 - **Any** (1 connections)
 - **Exception** (1 connections)
+- **Pure ASGI middleware that combines access, error, and request logging.      This** (1 connections) — `server/middleware/comprehensive_logging.py`
+- **Initialize comprehensive logging middleware.          Args:             app: ASG** (1 connections) — `server/middleware/comprehensive_logging.py`
 - **ASGI application interface.          Args:             scope: ASGI connection sc** (1 connections) — `server/middleware/comprehensive_logging.py`
 - **Backward-compatible dispatch method for BaseHTTPMiddleware interface.          T** (1 connections) — `server/middleware/comprehensive_logging.py`
 - **Log request start information.** (1 connections) — `server/middleware/comprehensive_logging.py`
@@ -22,7 +27,9 @@
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (1 shared connections)
+- [Cursor Skills Frontend](Cursor_Skills_Frontend.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
@@ -30,8 +37,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 58 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

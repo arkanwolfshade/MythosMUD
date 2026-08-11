@@ -1,58 +1,46 @@
 # Multiplayer Browser Helpers
 
-> 23 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **nats_broker.py** (17 connections) — `server/infrastructure/nats_broker.py`
-- **MessageBrokerError** (13 connections) — `server/infrastructure/message_broker.py`
-- **message_broker.py** (11 connections) — `server/infrastructure/message_broker.py`
-- **RequestError** (9 connections) — `server/infrastructure/message_broker.py`
-- **MessageBrokerConnectionError** (8 connections) — `server/infrastructure/message_broker.py`
-- **UnsubscribeError** (8 connections) — `server/infrastructure/message_broker.py`
-- **test_connect_failure()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_disconnect_error_handling()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_unsubscribe_failure()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_request_not_connected()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_request_failure()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **Exception** (1 connections)
-- **Message Broker abstraction for MythosMUD.  This module defines the MessageBroker** (1 connections) — `server/infrastructure/message_broker.py`
-- **Base exception for message broker errors.** (1 connections) — `server/infrastructure/message_broker.py`
-- **Exception raised when connection to message broker fails.** (1 connections) — `server/infrastructure/message_broker.py`
-- **Exception raised when unsubscribing from subject fails.** (1 connections) — `server/infrastructure/message_broker.py`
-- **Exception raised when request-reply fails.** (1 connections) — `server/infrastructure/message_broker.py`
-- **NATS implementation of MessageBroker protocol.  This module provides a concret** (1 connections) — `server/infrastructure/nats_broker.py`
-- **Test connect() raises ConnectionError on failure.** (1 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **Test disconnect() raises MessageBrokerError on disconnect failure.** (1 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **Test unsubscribe() raises UnsubscribeError on failure.** (1 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **Test request() raises RequestError when not connected.** (1 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **Test request() raises RequestError on failure.** (1 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **WebSocket** (8 connections)
+- **Any** (8 connections)
+- **.handle_message()** (7 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (6 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.get_handler()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (4 connections) — `server/realtime/message_handler_factory.py`
+- **Handle a specific message type.          Args:             websocket: The WebSoc** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle command message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle chat message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle ping message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle follow_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle party_invite_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle client_error_report message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Get a handler for the specified message type.          Args:             message** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle a WebSocket message using the appropriate handler.          Args:** (1 connections) — `server/realtime/message_handler_factory.py`
 
 ## Relationships
 
-- [Combat Monitoring Service](Combat_Monitoring_Service.md) (11 shared connections)
-- [Realtime Event Delegation](Realtime_Event_Delegation.md) (6 shared connections)
-- [Services Combat Persistence](Services_Combat_Persistence.md) (4 shared connections)
-- [Realtime Maintenance Connection](Realtime_Maintenance_Connection.md) (3 shared connections)
-- [Infrastructure Message Broker](Infrastructure_Message_Broker.md) (2 shared connections)
-- [Cursor Skills Mythosmud](Cursor_Skills_Mythosmud.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Combat Service Bundle](Combat_Service_Bundle.md) (1 shared connections)
-- [Inventory Command Models](Inventory_Command_Models.md) (1 shared connections)
-- [NATS Message Schemas](NATS_Message_Schemas.md) (1 shared connections)
-- [Cursor Rules Docker](Cursor_Rules_Docker.md) (1 shared connections)
-- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (1 shared connections)
+- [Rate Limiter Utilities](Rate_Limiter_Utilities.md) (8 shared connections)
+- [Game State Provider Tests](Game_State_Provider_Tests.md) (6 shared connections)
+- [Database Error Handling](Database_Error_Handling.md) (2 shared connections)
+- [Event Bus Serialization](Event_Bus_Serialization.md) (1 shared connections)
+- [Container API Endpoints](Container_API_Endpoints.md) (1 shared connections)
 
 ## Source Files
 
-- `server/infrastructure/message_broker.py`
-- `server/infrastructure/nats_broker.py`
-- `server/tests/unit/infrastructure/test_nats_broker.py`
+- `server/realtime/message_handler_factory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 79 (85%)
-- INFERRED: 14 (15%)
+- EXTRACTED: 71 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

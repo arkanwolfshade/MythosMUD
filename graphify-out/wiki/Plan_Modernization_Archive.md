@@ -1,47 +1,41 @@
 # Plan Modernization Archive
 
-> 18 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **get_occupant_names()** (11 connections) — `server/realtime/websocket_helpers.py`
-- **prepare_room_data_with_occupants()** (9 connections) — `server/realtime/websocket_initial_state.py`
-- **._prepare_room_data_for_respawn()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **_accumulate_valid_occupant_name()** (4 connections) — `server/realtime/websocket_helpers.py`
-- **test_get_occupant_names_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_occupant_names_filters_uuid()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_occupant_names_empty()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_occupant_names_none()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_prepare_room_data_with_occupants()** (3 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **Prepare room data with NPC and player names for a respawn event.** (1 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **Parse one occupant row: append display name or log when it looks like a UUID.** (1 connections) — `server/realtime/websocket_helpers.py`
-- **Extract and validate occupant names from room occupants list.** (1 connections) — `server/realtime/websocket_helpers.py`
-- **Prepare room data and get occupant names.** (1 connections) — `server/realtime/websocket_initial_state.py`
-- **Test get_occupant_names() extracts valid occupant names.** (1 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **Test get_occupant_names() filters out UUID strings.** (1 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **Test get_occupant_names() returns empty list for empty occupants.** (1 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **Test get_occupant_names() handles None occupants.** (1 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **Test prepare_room_data_with_occupants() prepares room data and occupant names.** (1 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
+- **channel_commands.py** (16 connections) — `server/commands/channel_commands.py`
+- **handle_channel_command()** (10 connections) — `server/commands/channel_commands.py`
+- **_handle_default_channel_setting()** (6 connections) — `server/commands/channel_commands.py`
+- **_get_persistence_and_player()** (5 connections) — `server/commands/channel_commands.py`
+- **Any** (4 connections)
+- **_extract_channel_from_command()** (4 connections) — `server/commands/channel_commands.py`
+- **_validate_channel_name()** (3 connections) — `server/commands/channel_commands.py`
+- **Channel management commands for Advanced Chat Channels.  This module provides ha** (1 connections) — `server/commands/channel_commands.py`
+- **Get persistence and player. Returns (persistence, player) or (None, None) if not** (1 connections) — `server/commands/channel_commands.py`
+- **Extract channel name from command_data. Returns channel name or None.** (1 connections) — `server/commands/channel_commands.py`
+- **Handle setting default channel. Returns result dict or None if not a default com** (1 connections) — `server/commands/channel_commands.py`
+- **Validate channel name. Returns error dict if invalid, None if valid.** (1 connections) — `server/commands/channel_commands.py`
+- **Handle the channel command for switching channels or setting default channel.** (1 connections) — `server/commands/channel_commands.py`
 
 ## Relationships
 
-- [WebSocket Initial State](WebSocket_Initial_State.md) (7 shared connections)
-- [Combat Aggro Threat](Combat_Aggro_Threat.md) (7 shared connections)
-- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (5 shared connections)
-- [Async Persistence Layer](Async_Persistence_Layer.md) (2 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Client ASCII Map API](Client_ASCII_Map_API.md) (3 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (2 shared connections)
+- [Profession Get Mechanical Effects](Profession_Get_Mechanical_Effects.md) (2 shared connections)
+- [NATS Subject Manager](NATS_Subject_Manager.md) (1 shared connections)
+- [Container Repository CRUD](Container_Repository_CRUD.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_event_handlers_respawn.py`
-- `server/realtime/websocket_helpers.py`
-- `server/realtime/websocket_initial_state.py`
-- `server/tests/unit/realtime/test_websocket_helpers.py`
-- `server/tests/unit/realtime/test_websocket_initial_state.py`
+- `server/commands/channel_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 52 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

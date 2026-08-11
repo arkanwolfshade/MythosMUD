@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **mock_logger()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Create a mock logger.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_validate_combat_state_not_in_combat_required()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_combat_state when not in combat but combat required.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [Archive Lucidity System](Archive_Lucidity_System.md) (1 shared connections)
+- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 

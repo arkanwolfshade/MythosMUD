@@ -1,40 +1,29 @@
 # E 2 E Cleanup Troubleshooting
 
-> 15 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **_emit_close_container_event()** (14 connections) — `server/api/container_events.py`
-- **UUID** (5 connections)
-- **.test_emit_close_container_event_success()** (3 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_close_container_event_no_connection_manager()** (3 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_close_container_event_no_container_data()** (3 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_close_container_event_no_room_id()** (3 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_close_container_event_persistence_error()** (3 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_close_container_event_emission_error()** (3 connections) — `server/tests/unit/api/test_container_events.py`
-- **Emit WebSocket event for container closing.      Args:         connection_manage** (1 connections) — `server/api/container_events.py`
-- **Test _emit_close_container_event successfully emits event.** (1 connections) — `server/tests/unit/api/test_container_events.py`
-- **Test _emit_close_container_event handles None connection_manager.** (1 connections) — `server/tests/unit/api/test_container_events.py`
-- **Test _emit_close_container_event handles None container data.** (1 connections) — `server/tests/unit/api/test_container_events.py`
-- **Test _emit_close_container_event handles container without room_id.** (1 connections) — `server/tests/unit/api/test_container_events.py`
-- **Test _emit_close_container_event handles persistence errors gracefully.** (1 connections) — `server/tests/unit/api/test_container_events.py`
-- **Test _emit_close_container_event handles emission errors gracefully.** (1 connections) — `server/tests/unit/api/test_container_events.py`
+- **broadcast_shutdown_notification()** (7 connections) — `server/commands/admin_shutdown_command.py`
+- **test_broadcast_shutdown_notification_success()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_broadcast_shutdown_notification_failure()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Broadcast shutdown notification to all players.      Args:         connection_ma** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Test broadcast_shutdown_notification() successfully broadcasts.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test broadcast_shutdown_notification() handles errors.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Relationships
 
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (12 shared connections)
-- [Npc Behavior Engine](Npc_Behavior_Engine.md) (2 shared connections)
-- [Product Requirements Document](Product_Requirements_Document.md) (1 shared connections)
-- [E 2 E Testing Guide](E_2_E_Testing_Guide.md) (1 shared connections)
+- [Room Drop Renderer](Room_Drop_Renderer.md) (3 shared connections)
+- [Services Lucidity Repository](Services_Lucidity_Repository.md) (3 shared connections)
 
 ## Source Files
 
-- `server/api/container_events.py`
-- `server/tests/unit/api/test_container_events.py`
+- `server/commands/admin_shutdown_command.py`
+- `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

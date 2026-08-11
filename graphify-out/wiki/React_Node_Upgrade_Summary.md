@@ -1,54 +1,57 @@
 # React Node Upgrade Summary
 
-> 28 nodes
+> 53 nodes
 
 ## Key Concepts
 
-- **ChatPoseManager** (11 connections) — `server/game/chat_pose_manager.py`
-- **ChatWhisperTracker** (10 connections) — `server/game/chat_whisper_tracker.py`
-- **.__init__()** (7 connections) — `server/game/chat_service.py`
-- **.normalize_player_id()** (5 connections) — `server/game/chat_pose_manager.py`
-- **.set_pose()** (3 connections) — `server/game/chat_pose_manager.py`
-- **.get_pose()** (3 connections) — `server/game/chat_pose_manager.py`
-- **.clear_pose()** (3 connections) — `server/game/chat_pose_manager.py`
-- **.__init__()** (2 connections) — `server/game/chat_pose_manager.py`
-- **.get_all_poses()** (2 connections) — `server/game/chat_pose_manager.py`
-- **.__init__()** (2 connections) — `server/game/chat_whisper_tracker.py`
-- **.store_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
-- **.get_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
-- **.clear_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
-- **.get_all_trackings()** (2 connections) — `server/game/chat_whisper_tracker.py`
-- **Manages in-memory storage of player poses.** (1 connections) — `server/game/chat_pose_manager.py`
-- **Initialize the pose manager.** (1 connections) — `server/game/chat_pose_manager.py`
-- **Normalize player identifiers to string form.** (1 connections) — `server/game/chat_pose_manager.py`
-- **Set a player's pose in memory.          Args:             player_id: ID of the p** (1 connections) — `server/game/chat_pose_manager.py`
-- **Get a player's current pose.          Args:             player_id: ID of the pla** (1 connections) — `server/game/chat_pose_manager.py`
-- **Clear a player's pose.          Args:             player_id: ID of the player** (1 connections) — `server/game/chat_pose_manager.py`
-- **Get all poses (for testing/debugging).          Returns:             Dictionary** (1 connections) — `server/game/chat_pose_manager.py`
-- **Initialize chat service.          Args:             persistence: Database persis** (1 connections) — `server/game/chat_service.py`
-- **Tracks last whisper senders for reply functionality.** (1 connections) — `server/game/chat_whisper_tracker.py`
-- **Initialize the whisper tracker.** (1 connections) — `server/game/chat_whisper_tracker.py`
-- **Store the last whisper sender for a player.          Args:             receiver_** (1 connections) — `server/game/chat_whisper_tracker.py`
-- *... and 3 more nodes in this community*
+- **SchemaValidator** (29 connections) — `schemas/validator.py`
+- **.get_player_aliases()** (8 connections) — `server/alias_storage.py`
+- **Any** (7 connections)
+- **._get_alias_file_path()** (7 connections) — `server/alias_storage.py`
+- **.save_player_aliases()** (7 connections) — `server/alias_storage.py`
+- **._validate_alias_payload()** (7 connections) — `server/alias_storage.py`
+- **.validate_data()** (6 connections) — `schemas/validator.py`
+- **.validate_room()** (6 connections) — `schemas/validator.py`
+- **._load_alias_data()** (6 connections) — `server/alias_storage.py`
+- **._save_alias_data()** (6 connections) — `server/alias_storage.py`
+- **.add_alias()** (6 connections) — `server/alias_storage.py`
+- **Path** (5 connections)
+- **.__init__()** (4 connections) — `schemas/validator.py`
+- **.validate_room_file()** (4 connections) — `schemas/validator.py`
+- **.validate_room_database()** (4 connections) — `schemas/validator.py`
+- **.validate_alias_bundle()** (4 connections) — `schemas/validator.py`
+- **.validate_emote_file()** (4 connections) — `schemas/validator.py`
+- **Any** (4 connections)
+- **.remove_alias()** (4 connections) — `server/alias_storage.py`
+- **.get_alias()** (4 connections) — `server/alias_storage.py`
+- **.backup_aliases()** (4 connections) — `server/alias_storage.py`
+- **._load_schema()** (3 connections) — `schemas/validator.py`
+- **Path** (3 connections)
+- **.get_exit_target()** (3 connections) — `schemas/validator.py`
+- **.get_exit_flags()** (3 connections) — `schemas/validator.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [NPC Definition Admin API](NPC_Definition_Admin_API.md) (4 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Chat Message Helpers](Chat_Message_Helpers.md) (2 shared connections)
-- [Chat Moderation Service](Chat_Moderation_Service.md) (1 shared connections)
-- [chat_logger](chat_logger.md) (1 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (16 shared connections)
+- [Client Event Store](Client_Event_Store.md) (5 shared connections)
+- [Health Endpoint Spec](Health_Endpoint_Spec.md) (4 shared connections)
+- [Alias Expansion Logic](Alias_Expansion_Logic.md) (4 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (2 shared connections)
+- [Room Schema Validator](Room_Schema_Validator.md) (2 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
+- [Room Fixer Toolkit](Room_Fixer_Toolkit.md) (1 shared connections)
+- [Alias Storage Services](Alias_Storage_Services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_pose_manager.py`
-- `server/game/chat_service.py`
-- `server/game/chat_whisper_tracker.py`
+- `schemas/validator.py`
+- `server/alias_storage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 169 (93%)
+- INFERRED: 13 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

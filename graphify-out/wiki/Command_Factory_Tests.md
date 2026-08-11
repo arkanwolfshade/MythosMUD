@@ -4,46 +4,50 @@
 
 ## Key Concepts
 
-- **test_player_combat_service.py** (37 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_player_combat_service_init()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_track_player_combat_state()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_get_player_combat_state()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_get_player_combat_state_not_found()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_clear_player_combat_state()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_is_player_in_combat_sync_false()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_is_player_in_combat()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_get_players_in_combat()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_handle_combat_start()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_handle_combat_end()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_award_xp_on_npc_death_success()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_award_xp_on_npc_death_player_not_found()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_award_xp_on_npc_death_error()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_calculate_xp_reward_from_mapping()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_calculate_xp_reward_from_database()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_calculate_xp_reward_default()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_get_combat_stats()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_get_combat_stats_multiple_combats()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_handle_npc_death_error()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_award_xp_on_npc_death_delegates_to_rewards_when_available()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_award_xp_on_npc_death_no_player_combat_service()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_handle_combat_start_tracks_state()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_handle_combat_end_clears_state()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_player_combat_state_post_init()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **combat_service_npc.py** (30 connections) — `server/services/combat_service_npc.py`
+- **get_combat_id_for_npc()** (13 connections) — `server/services/combat_service_npc.py`
+- **UUID** (11 connections)
+- **get_npc_participant_current_room()** (11 connections) — `server/services/combat_service_npc.py`
+- **spell_effects_internal.py** (10 connections) — `server/game/magic/spell_effects_internal.py`
+- **_get_uuid_mapping()** (10 connections) — `server/services/combat_service_npc.py`
+- **find_participant_uuid_by_string_id()** (10 connections) — `server/services/combat_service_npc.py`
+- **resolve_npc_participant_id_in_combat()** (9 connections) — `server/services/combat_service_npc.py`
+- **UUIDMappingProtocol** (8 connections) — `server/services/combat_service_npc.py`
+- **DataProviderProtocol** (8 connections) — `server/services/combat_service_npc.py`
+- **get_combat_id_for_npc_via_mapping()** (8 connections) — `server/services/combat_service_npc.py`
+- **_fallback_find_combat_id_for_npc()** (8 connections) — `server/services/combat_service_npc.py`
+- **get_participant_current_room()** (8 connections) — `server/services/combat_service_npc.py`
+- **.get_uuid_for_string_id()** (7 connections) — `server/services/combat_service_npc.py`
+- **combat_room_id_for_npc_spell()** (6 connections) — `server/game/magic/spell_effects_internal.py`
+- **.get_original_string_id()** (6 connections) — `server/services/combat_service_npc.py`
+- **_get_data_provider()** (6 connections) — `server/services/combat_service_npc.py`
+- **_iter_active_combats()** (6 connections) — `server/services/combat_service_npc.py`
+- **sync_npc_participant_dp_after_spell_damage()** (6 connections) — `server/services/combat_service_npc.py`
+- **get_combat_by_participant()** (6 connections) — `server/services/combat_service_npc.py`
+- **_participant_matches_npc_id()** (6 connections) — `server/services/combat_service_npc.py`
+- **npc_in_combat_by_string_id_mapping()** (6 connections) — `server/services/combat_service_npc.py`
+- **is_npc_in_combat_sync()** (6 connections) — `server/services/combat_service_npc.py`
+- **.end_combat_if_npc_died()** (5 connections) — `server/services/combat_service.py`
+- **NPCInstanceWithRoomProtocol** (5 connections) — `server/services/combat_service_npc.py`
 - *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [Magic Service Bundle](Magic_Service_Bundle.md) (31 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (30 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (15 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (11 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_combat_service.py`
+- `server/game/magic/spell_effects_internal.py`
+- `server/services/combat_service.py`
+- `server/services/combat_service_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 151 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 255 (95%)
+- INFERRED: 13 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

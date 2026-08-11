@@ -1,51 +1,58 @@
 # Container Open Events
 
-> 50 nodes
+> 52 nodes
 
 ## Key Concepts
 
-- **test_config_models.py** (19 connections) — `server/tests/unit/config/test_config_models.py`
-- **DatabaseConfig** (14 connections) — `server/config/models/server_db.py`
-- **ServerConfig** (12 connections) — `server/config/models/server_db.py`
-- **_parse_env_list()** (11 connections) — `server/config/models/_helpers.py`
-- **_default_cors_origins()** (7 connections) — `server/config/models/_helpers.py`
-- **.ensure_url_set()** (4 connections) — `server/config/models/server_db.py`
-- **_parse_list_from_string()** (3 connections) — `server/config/models/_helpers.py`
-- **test_parse_env_list_none()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_parse_env_list_empty_string()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_parse_env_list_json()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_parse_env_list_csv()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_default_cors_origins_no_env()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_default_cors_origins_with_env()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_server_config_default_host()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_server_config_validate_port_valid()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_server_config_validate_port_invalid_low()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_server_config_validate_port_invalid_high()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_database_config_validate_url_postgresql()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_database_config_validate_url_empty()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_database_config_validate_pool_config_positive()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_database_config_validate_pool_config_invalid()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **BaseSettings** (2 connections)
-- **.validate_port()** (2 connections) — `server/config/models/server_db.py`
-- **.validate_database_url()** (2 connections) — `server/config/models/server_db.py`
-- **.validate_pool_config()** (2 connections) — `server/config/models/server_db.py`
-- *... and 25 more nodes in this community*
+- **test_lucidity_recovery_commands.py** (34 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **handle_pray_command()** (22 connections) — `server/commands/lucidity_recovery_commands.py`
+- **LucidityActionOnCooldownError** (16 connections) — `server/services/active_lucidity_service.py`
+- **test_handle_pray_command_cooldown()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_cooldown_no_expiry()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_cooldown_no_cooldown_object()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_cooldown_naive_datetime()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_meditate_command_cooldown()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_no_room()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_success()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_with_mp_restoration()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_meditate_command_delegates()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_group_solace_command_delegates()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_therapy_command_delegates()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_folk_tonic_command_delegates()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_os_error()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_negative_delta()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_meditate_command_with_mp_restoration()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_mp_restored_zero()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_no_app()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_perform_recovery_action_on_cooldown()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **mock_request()** (2 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (13 shared connections)
-- [Archive Frd Random](Archive_Frd_Random.md) (2 shared connections)
+- [Memory Threshold Monitor](Memory_Threshold_Monitor.md) (15 shared connections)
+- [Npc Behavior Engine](Npc_Behavior_Engine.md) (5 shared connections)
+- [Alias Storage Layer](Alias_Storage_Layer.md) (4 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (2 shared connections)
+- [WebSocket Message Validator](WebSocket_Message_Validator.md) (2 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
+- [Container Component Capacity](Container_Component_Capacity.md) (1 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/models/_helpers.py`
-- `server/config/models/server_db.py`
-- `server/tests/unit/config/test_config_models.py`
+- `server/commands/lucidity_recovery_commands.py`
+- `server/services/active_lucidity_service.py`
+- `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 143 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 165 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,12 +33,13 @@
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (6 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (3 shared connections)
-- [Client Security Utilities](Client_Security_Utilities.md) (3 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (2 shared connections)
-- [Cursor Skills Harden](Cursor_Skills_Harden.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (3 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (3 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (3 shared connections)
+- [E2E Suite Overview](E2E_Suite_Overview.md) (3 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (2 shared connections)
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (1 shared connections)
 
 ## Source Files
 

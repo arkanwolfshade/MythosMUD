@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (5 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
-- [Room Occupant Events](Room_Occupant_Events.md) (2 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (6 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,49 +1,59 @@
 # API Type Guards
 
-> 48 nodes
+> 84 nodes
 
 ## Key Concepts
 
+- **test_login_grace_period_visual_indicator.py** (28 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
 - **test_player_occupant_processor.py** (26 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **PlayerOccupantProcessor** (21 connections) — `server/realtime/player_occupant_processor.py`
+- **player_occupant_processor.py** (15 connections) — `server/realtime/player_occupant_processor.py`
+- **._create_player_occupant_info()** (7 connections) — `server/realtime/player_occupant_processor.py`
+- **.process_players_for_occupants()** (7 connections) — `server/realtime/player_occupant_processor.py`
+- **test_warded_indicator_removed_after_expiration()** (6 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **test_both_linkdead_and_warded_indicators()** (6 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **.__init__()** (5 connections) — `server/realtime/player_occupant_processor.py`
+- **UUID** (5 connections)
+- **test_warded_indicator_in_player_occupant_processor()** (5 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **._ensure_player_included_in_list()** (4 connections) — `server/realtime/player_occupant_processor.py`
+- **._convert_player_ids_to_uuids()** (4 connections) — `server/realtime/player_occupant_processor.py`
+- **test_warded_indicator_in_look_room()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **test_warded_indicator_in_look_player()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **test_warded_indicator_not_shown_for_reconnections()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **Any** (3 connections)
 - **processor()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
 - **test_create_player_occupant_info_grace_period_exception()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_player_occupant_processor_adds_linkdead_indicator()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
+- **test_player_occupant_processor_no_linkdead_when_not_in_grace_period()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
 - **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
 - **mock_name_extractor()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
 - **test_processor_init()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_ensure_player_included_in_list()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_ensure_player_included_in_list_already_present()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_convert_player_ids_to_uuids()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_create_player_occupant_info()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_process_players_for_occupants()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_ensure_player_included_in_list_none()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_convert_player_ids_to_uuids_value_error()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_convert_player_ids_to_uuids_mixed_types()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_convert_player_ids_to_uuids_already_uuid()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_create_player_occupant_info_invalid_name()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_create_player_occupant_info_linkdead()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_create_player_occupant_info_warded()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_create_player_occupant_info_both_indicators()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_create_player_occupant_info_online()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_create_player_occupant_info_default_level()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_process_players_for_occupants_with_player_not_found()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_process_players_for_occupants_with_invalid_name()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_process_players_for_occupants_with_uuid_ensure_player()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **Unit tests for player occupant processor.  Tests the PlayerOccupantProcessor cla** (1 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- *... and 23 more nodes in this community*
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [Spell Effects Tests](Spell_Effects_Tests.md) (3 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [Player Respawn Events](Player_Respawn_Events.md) (15 shared connections)
+- [Character Stats Generator](Character_Stats_Generator.md) (12 shared connections)
+- [Look Player Command](Look_Player_Command.md) (7 shared connections)
+- [NATS Message Broker](NATS_Message_Broker.md) (6 shared connections)
+- [Client Event Store](Client_Event_Store.md) (6 shared connections)
+- [Room Look Formatting](Room_Look_Formatting.md) (3 shared connections)
+- [Container Data Models](Container_Data_Models.md) (2 shared connections)
+- [Game State Provider](Game_State_Provider.md) (1 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (1 shared connections)
 
 ## Source Files
 
+- `server/realtime/player_occupant_processor.py`
+- `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
 - `server/tests/unit/realtime/test_player_occupant_processor.py`
+- `server/tests/unit/realtime/test_visual_indicator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 97 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 248 (99%)
+- INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

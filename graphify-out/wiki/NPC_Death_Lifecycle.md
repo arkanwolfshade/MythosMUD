@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [Emote Schema Validator](Emote_Schema_Validator.md) (10 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (37 shared connections)
 - [NPC Occupant Processor](NPC_Occupant_Processor.md) (8 shared connections)
+- [Emote Schema Validator](Emote_Schema_Validator.md) (8 shared connections)
 - [Communication Command Models](Communication_Command_Models.md) (8 shared connections)
-- [Zone Config Loader](Zone_Config_Loader.md) (7 shared connections)
-- [Game Terminal Panels](Game_Terminal_Panels.md) (6 shared connections)
 - [Environmental Container Scenario](Environmental_Container_Scenario.md) (6 shared connections)
-- [Cursor Plans Disconnect](Cursor_Plans_Disconnect.md) (6 shared connections)
-- [Combat Configuration Service](Combat_Configuration_Service.md) (6 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (5 shared connections)
-- [Admin Summon Command](Admin_Summon_Command.md) (5 shared connections)
-- [Command Helper Utilities](Command_Helper_Utilities.md) (5 shared connections)
-- [NATS Subject Metrics](NATS_Subject_Metrics.md) (5 shared connections)
+- [Admin Summon Command](Admin_Summon_Command.md) (6 shared connections)
+- [Game Terminal Panels](Game_Terminal_Panels.md) (5 shared connections)
+- [Integer Coercion Utils](Integer_Coercion_Utils.md) (4 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (4 shared connections)
+- [Command Helper Utilities](Command_Helper_Utilities.md) (3 shared connections)
+- [Realtime Errors Error](Realtime_Errors_Error.md) (2 shared connections)
+- [Command Parser](Command_Parser.md) (2 shared connections)
 
 ## Source Files
 

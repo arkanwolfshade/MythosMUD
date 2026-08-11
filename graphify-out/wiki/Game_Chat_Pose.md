@@ -1,29 +1,33 @@
 # Game Chat Pose
 
-> 6 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **TestGetMPRegenerationService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_mp_regeneration_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_mp_regeneration_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_mp_regeneration_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_mp_regeneration_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_mp_regeneration_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **TestCheckCastingState** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_casting_state_allowed_command()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_casting_state_no_magic_service()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_casting_state_player_casting()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_casting_state_handles_error()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_casting_state function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_casting_state allows stop/interrupt/status during casting.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_casting_state returns None when no magic service.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_casting_state returns block result when player is casting.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_casting_state returns None on error.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
 
 ## Relationships
 
-- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (4 shared connections)
+- [Catatonia Check Logic](Catatonia_Check_Logic.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 23 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

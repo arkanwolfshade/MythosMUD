@@ -1,38 +1,45 @@
 # Cursor Plans Best
 
-> 12 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **GameClientV2Dock.test.tsx** (13 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **GameClientV2()** (5 connections) — `client/src/components/ui-v2/GameClientV2.tsx`
-- **mockPanelRecord()** (4 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **mockUsePanelManagerValue()** (3 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **mockPanelRecordCore()** (2 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **mockPanelRecordFlags()** (2 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **mockUsePanelManagerNoops()** (2 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **dockTest** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **chatHistoryLayoutIdentity** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **chatHistoryLayoutState** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **defaultChatHistoryLayoutKey** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **mockDefaultPanelLayout()** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **NPCSpawnRuleCRUDMixin** (10 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **._execute_create_spawn_rule()** (8 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **_row_to_npc_spawn_rule()** (8 connections) — `server/services/npc_service_models.py`
+- **.create_spawn_rule()** (7 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **.get_spawn_rules()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **AsyncSession** (6 connections)
+- **.get_spawn_rule()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **._validate_spawn_rule_inputs()** (4 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **.delete_spawn_rule()** (4 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Any** (2 connections)
+- **Any** (2 connections)
+- **Mixin providing NPC spawn rule CRUD operations.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Get all NPC spawn rules.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Get a specific NPC spawn rule by ID.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Create a new NPC spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Validate NPC definition existence and population counts for spawn rule creation.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Execute create_spawn_rule stored procedure and return the created spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Delete an NPC spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Map procedure result row to NPCSpawnRule model.** (1 connections) — `server/services/npc_service_models.py`
 
 ## Relationships
 
-- [Draggable Panel UI](Draggable_Panel_UI.md) (3 shared connections)
-- [Combat Messaging Integration](Combat_Messaging_Integration.md) (1 shared connections)
-- [Communication Command Handlers](Communication_Command_Handlers.md) (1 shared connections)
-- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (1 shared connections)
+- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (5 shared connections)
+- [Command Parser Tests](Command_Parser_Tests.md) (5 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (2 shared connections)
+- [Plan Cursor Plans](Plan_Cursor_Plans.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/GameClientV2.tsx`
-- `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- `server/services/npc_service/spawn_rule_crud.py`
+- `server/services/npc_service_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 70 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_perform_recovery_action_naive_datetime_cooldown()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test perform_recovery_action() handles naive datetime in cooldown.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **idle_movement_handler()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Create an IdleMovementHandler instance.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
-- [WebSocket Message Validator](WebSocket_Message_Validator.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
+- [NPC Movement Integration](NPC_Movement_Integration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 

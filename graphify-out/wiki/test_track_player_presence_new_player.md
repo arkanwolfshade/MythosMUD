@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_track_player_presence_new_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _track_player_presence() tracks new player.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_create_admin_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_admin_command delegates to moderation factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [Logging Structured Setup](Logging_Structured_Setup.md) (1 shared connections)
-- [WebSocket Connection Setup](WebSocket_Connection_Setup.md) (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

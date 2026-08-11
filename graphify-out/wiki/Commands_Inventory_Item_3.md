@@ -1,13 +1,12 @@
 # Commands Inventory Item
 
-> 64 nodes
+> 62 nodes
 
 ## Key Concepts
 
 - **test_skill_service.py** (36 connections) — `server/tests/unit/game/test_skill_service.py`
 - **_occupation_slots_9()** (11 connections) — `server/tests/unit/game/test_skill_service.py`
 - **_personal_interest_4()** (8 connections) — `server/tests/unit/game/test_skill_service.py`
-- **skill_service()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
 - **test_set_player_skills_valid_creates_rows()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
 - **test_set_player_skills_own_language_not_allocated_equals_edu()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
 - **test_set_player_skills_cthulhu_mythos_in_occupation_rejected()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
@@ -29,14 +28,15 @@
 - **test_record_successful_skill_use_calls_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
 - **test_get_skills_used_this_level_returns_repo_result()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
 - **test_run_improvement_rolls_previous_level_under_1_no_op()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- *... and 39 more nodes in this community*
+- **test_run_improvement_rolls_no_skills_used_no_updates()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
-- [Game Mechanics Service](Game_Mechanics_Service.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (3 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
+- [Game Mechanics Service](Game_Mechanics_Service.md) (1 shared connections)
+- [NATS Subject Admin API](NATS_Subject_Admin_API.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 162 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 158 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

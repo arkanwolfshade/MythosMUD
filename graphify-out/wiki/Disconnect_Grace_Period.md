@@ -1,53 +1,66 @@
 # Disconnect Grace Period
 
-> 36 nodes
+> 112 nodes
 
 ## Key Concepts
 
-- **request_with_app_container()** (28 connections) — `server/tests/unit/commands/communication_commands_mocks.py`
-- **test_communication_commands_say_me_pose.py** (22 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_delegates_broadcast_to_chat_service_with_ids()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_pose_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_pose_command_clear_pose()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_pose_command_set_pose()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_no_room()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_no_player_id()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_chat_service_failure()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_exception()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_reply_command_no_last_whisper_sender()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_say_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_me_command_no_action()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_me_command_success()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_pose_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **Return (request, container) with request.app.state.container wired.      Typed M** (1 connections) — `server/tests/unit/commands/communication_commands_mocks.py`
-- **Unit tests for say, me, and pose communication command handlers.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **Test handle_say_command with no message.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **Test handle_say_command when services are not available.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **Test handle_say_command when player is not found.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **Test handle_say_command successful execution.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **Room say must call chat_service.send_say_message(player_id, message) for broadca** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- *... and 11 more nodes in this community*
+- **__init__.py** (38 connections) — `server/schemas/players/__init__.py`
+- **player_effects.py** (30 connections) — `server/api/player_effects.py`
+- **test_player_requests.py** (29 connections) — `server/tests/unit/schemas/test_player_requests.py`
+- **test_player_effects_endpoints.py** (28 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **player_requests.py** (14 connections) — `server/schemas/players/player_requests.py`
+- **apply_lucidity_loss()** (12 connections) — `server/api/player_effects.py`
+- **EffectResponse** (12 connections) — `server/schemas/players/player_effects.py`
+- **LucidityLossRequest** (12 connections) — `server/schemas/players/player_requests.py`
+- **DamageRequest** (12 connections) — `server/schemas/players/player_requests.py`
+- **apply_fear()** (11 connections) — `server/api/player_effects.py`
+- **apply_corruption()** (11 connections) — `server/api/player_effects.py`
+- **gain_occult_knowledge()** (11 connections) — `server/api/player_effects.py`
+- **heal_player()** (11 connections) — `server/api/player_effects.py`
+- **damage_player()** (11 connections) — `server/api/player_effects.py`
+- **BaseModel** (11 connections)
+- **FearRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **CorruptionRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **OccultKnowledgeRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **HealRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **SelectCharacterRequest** (8 connections) — `server/schemas/players/player_requests.py`
+- **_user()** (8 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **UUID** (7 connections)
+- **profession.py** (7 connections) — `server/schemas/players/profession.py`
+- **ProfessionListResponse** (7 connections) — `server/schemas/players/profession.py`
+- **ProfessionResponse** (7 connections) — `server/schemas/players/profession.py`
+- *... and 87 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (28 shared connections)
-- [Caching Lru Cache](Caching_Lru_Cache.md) (7 shared connections)
-- [E 2 E Execution Guards](E_2_E_Execution_Guards.md) (1 shared connections)
-- [E 2 E Scenario Template](E_2_E_Scenario_Template.md) (1 shared connections)
+- [Game Mechanics Service](Game_Mechanics_Service.md) (18 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (10 shared connections)
+- [Client Event Store](Client_Event_Store.md) (10 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (9 shared connections)
+- [System Monitoring API](System_Monitoring_API.md) (8 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (7 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (6 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (6 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (5 shared connections)
+- [Container API Endpoints](Container_API_Endpoints.md) (4 shared connections)
+- [Logout and Quit Commands](Logout_and_Quit_Commands.md) (3 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/communication_commands_mocks.py`
-- `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- `server/api/player_effects.py`
+- `server/schemas/players/__init__.py`
+- `server/schemas/players/player_effects.py`
+- `server/schemas/players/player_requests.py`
+- `server/schemas/players/player_respawn.py`
+- `server/schemas/players/profession.py`
+- `server/tests/unit/api/test_player_effects_endpoints.py`
+- `server/tests/unit/schemas/test_player_requests.py`
 
 ## Audit Trail
 
-- EXTRACTED: 127 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 521 (98%)
+- INFERRED: 8 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

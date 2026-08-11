@@ -1,35 +1,39 @@
 # Investigations Sessions Xx
 
-> 9 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **PlayerRespawnWrapper** (8 connections) — `server/game/player_respawn_wrapper.py`
-- **.respawn_player_from_delirium_by_user_id()** (7 connections) — `server/game/player_respawn_wrapper.py`
-- **.respawn_player_by_user_id()** (6 connections) — `server/game/player_respawn_wrapper.py`
-- **.__init__()** (3 connections) — `server/game/player_respawn_wrapper.py`
-- **Any** (3 connections)
-- **Wrapper service for player respawn operations.** (1 connections) — `server/game/player_respawn_wrapper.py`
-- **Initialize with a persistence layer.** (1 connections) — `server/game/player_respawn_wrapper.py`
-- **Respawn a dead player by user ID.          This method handles the complete resp** (1 connections) — `server/game/player_respawn_wrapper.py`
-- **Respawn a delirious player by user ID.          This method handles the complete** (1 connections) — `server/game/player_respawn_wrapper.py`
+- **_process_session_dp_decay_and_death()** (8 connections) — `server/app/game_tick_processing.py`
+- **AsyncSession** (7 connections)
+- **_process_mp_regeneration()** (6 connections) — `server/app/game_tick_processing.py`
+- **_process_mortally_wounded_players()** (5 connections) — `server/app/game_tick_processing.py`
+- **_process_single_player_mp_regeneration()** (5 connections) — `server/app/game_tick_processing.py`
+- **_process_dead_players()** (5 connections) — `server/app/game_tick_processing.py`
+- **_process_passive_lucidity_flux()** (4 connections) — `server/app/game_tick_processing.py`
+- **_validate_mp_regeneration_services()** (3 connections) — `server/app/game_tick_processing.py`
+- **Process all mortally wounded players.** (1 connections) — `server/app/game_tick_processing.py`
+- **Process passive lucidity flux service if available.** (1 connections) — `server/app/game_tick_processing.py`
+- **Validate that required services exist for MP regeneration.      Args:         co** (1 connections) — `server/app/game_tick_processing.py`
+- **Process MP regeneration for a single player.      Args:         mp_service: MP r** (1 connections) — `server/app/game_tick_processing.py`
+- **Process MP regeneration for online players.** (1 connections) — `server/app/game_tick_processing.py`
+- **Process dead players and move them to limbo if needed.** (1 connections) — `server/app/game_tick_processing.py`
+- **Process DP decay and death for a single database session.** (1 connections) — `server/app/game_tick_processing.py`
 
 ## Relationships
 
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (5 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (2 shared connections)
-- [Player Creation Service](Player_Creation_Service.md) (2 shared connections)
-- [Panel Layout Libraries Spec](Panel_Layout_Libraries_Spec.md) (1 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
+- [Command Alias Handling](Command_Alias_Handling.md) (8 shared connections)
+- [Connection Room Presence Utils](Connection_Room_Presence_Utils.md) (5 shared connections)
+- [Invite and User Schemas](Invite_and_User_Schemas.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/player_respawn_wrapper.py`
+- `server/app/game_tick_processing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (81%)
-- INFERRED: 6 (19%)
+- EXTRACTED: 50 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

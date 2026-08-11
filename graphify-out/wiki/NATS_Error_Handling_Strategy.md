@@ -24,7 +24,7 @@
 
 - [Async Room Cache Tests](Async_Room_Cache_Tests.md) (3 shared connections)
 - [Package Dependencies Dompurify](Package_Dependencies_Dompurify.md) (1 shared connections)
-- [Client App State Hooks](Client_App_State_Hooks.md) (1 shared connections)
+- [Fresh Session Test Guide](Fresh_Session_Test_Guide.md) (1 shared connections)
 
 ## Source Files
 

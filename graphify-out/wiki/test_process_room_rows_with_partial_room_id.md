@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_room_rows_with_partial_room_id()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_room_rows with stable_id that needs room ID generation.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_check_resource_thresholds_memory()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **Test _check_resource_thresholds generates alert for high memory.** (1 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
 
 ## Relationships
 
-- [Mythosmud Obsidian Raw](Mythosmud_Obsidian_Raw.md) (1 shared connections)
+- [Rate Limiter Service](Rate_Limiter_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/services/test_combat_monitoring_service.py`
 
 ## Audit Trail
 

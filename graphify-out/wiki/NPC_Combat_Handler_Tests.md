@@ -33,9 +33,8 @@
 
 ## Relationships
 
+- [Realtime Event Handlers](Realtime_Event_Handlers.md) (3 shared connections)
 - [Command Input Validator](Command_Input_Validator.md) (2 shared connections)
-- [Player Death Service Tests](Player_Death_Service_Tests.md) (2 shared connections)
-- [Realtime Event Handlers](Realtime_Event_Handlers.md) (1 shared connections)
 - [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (1 shared connections)
 
 ## Source Files

@@ -9,7 +9,7 @@
 
 ## Relationships
 
-- [Cursor Bug Agents](Cursor_Bug_Agents.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
 - [NPC Movement Integration](NPC_Movement_Integration.md) (1 shared connections)
 
 ## Source Files

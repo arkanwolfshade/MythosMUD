@@ -1,52 +1,52 @@
 # Test Value Distribution
 
-> 44 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **PlayerRoomEventHandler** (30 connections) — `server/realtime/player_event_handlers_room.py`
-- **UUID** (12 connections)
-- **Any** (10 connections)
-- **.handle_player_entered()** (9 connections) — `server/realtime/player_event_handlers_room.py`
-- **.__init__()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_occupants_snapshot_to_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_room_updates_to_entering_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **.handle_player_left()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **._prepare_room_data()** (6 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_room_update_to_player()** (6 connections) — `server/realtime/player_event_handlers_room.py`
-- **.log_player_movement()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **._send_room_name_message()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **._log_occupants_info()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.query_room_occupants_snapshot()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_room_state_to_player()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.get_room_state_event()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.broadcast_player_entered_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **.subscribe_player_to_room()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **.build_room_occupants_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **._process_player_entered_event()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **.unsubscribe_player_from_room()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **.broadcast_player_left_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **player_room_event_handler()** (3 connections) — `server/tests/unit/realtime/conftest.py`
-- **Handles room-related player events (entered, left, occupants).** (1 connections) — `server/realtime/player_event_handlers_room.py`
-- **Initialize room event handler.          Args:             connection_manager: Co** (1 connections) — `server/realtime/player_event_handlers_room.py`
-- *... and 19 more nodes in this community*
+- **CombatConfiguration** (31 connections) — `server/services/combat_configuration_service.py`
+- **CombatConfigurationService** (19 connections) — `server/services/combat_configuration_service.py`
+- **.update_combat_configuration()** (10 connections) — `server/services/combat_configuration_service.py`
+- **.to_dict()** (7 connections) — `server/services/combat_configuration_service.py`
+- **.get_combat_configuration_for_scope()** (7 connections) — `server/services/combat_configuration_service.py`
+- **.validate_configuration()** (7 connections) — `server/services/combat_configuration_service.py`
+- **.get_combat_settings_summary()** (7 connections) — `server/services/combat_configuration_service.py`
+- **get_combat_configuration()** (7 connections) — `server/services/combat_configuration_service.py`
+- **Any** (5 connections)
+- **.from_dict()** (5 connections) — `server/services/combat_configuration_service.py`
+- **.get_active_overrides()** (5 connections) — `server/services/combat_configuration_service.py`
+- **.is_combat_available()** (5 connections) — `server/services/combat_configuration_service.py`
+- **.validate()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.get_combat_configuration()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.clear_all_overrides()** (2 connections) — `server/services/combat_configuration_service.py`
+- **Combat configuration data class.** (1 connections) — `server/services/combat_configuration_service.py`
+- **Convert to dictionary.** (1 connections) — `server/services/combat_configuration_service.py`
+- **Create from dictionary.** (1 connections) — `server/services/combat_configuration_service.py`
+- **Validate configuration and return list of errors.** (1 connections) — `server/services/combat_configuration_service.py`
+- **Centralized combat configuration management service.      Provides type-safe acc** (1 connections) — `server/services/combat_configuration_service.py`
+- **Get current combat configuration.          Returns:             CombatConfigurat** (1 connections) — `server/services/combat_configuration_service.py`
+- **Get combat configuration for a specific scope.          Args:             scope:** (1 connections) — `server/services/combat_configuration_service.py`
+- **Update combat configuration.          Args:             updates: Dictionary of c** (1 connections) — `server/services/combat_configuration_service.py`
+- **Clear all configuration overrides.** (1 connections) — `server/services/combat_configuration_service.py`
+- **Get all active configuration overrides.          Returns:             Dict[str,** (1 connections) — `server/services/combat_configuration_service.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [Communication Command Flows](Communication_Command_Flows.md) (11 shared connections)
-- [Pydantic Error Handlers](Pydantic_Error_Handlers.md) (5 shared connections)
-- [Character Stats Generator](Character_Stats_Generator.md) (2 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [Client Lifecycle Metrics](Client_Lifecycle_Metrics.md) (15 shared connections)
+- [NPC Room Event Handlers](NPC_Room_Event_Handlers.md) (9 shared connections)
+- [Player Related Models](Player_Related_Models.md) (9 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (2 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_event_handlers_room.py`
-- `server/tests/unit/realtime/conftest.py`
+- `server/services/combat_configuration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 174 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 130 (94%)
+- INFERRED: 9 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_target_alive_alive()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_target_alive when target is alive.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_on_player_disconnect_not_in_party_no_op()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **Disconnect of player not in a party is a no-op.** (1 connections) — `server/tests/unit/game/test_party_service.py`
 
 ## Relationships
 
-- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
+- [Command Alias Model](Command_Alias_Model.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 

@@ -1,31 +1,37 @@
 # Archive Effects System
 
-> 8 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **.extract_command_name()** (5 connections) — `server/validators/command_validator.py`
-- **test_command_validator_extract_command_name()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_command_validator_extract_command_name_with_slash()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_command_validator_extract_command_name_empty()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.extract_command_name extracts command name.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.extract_command_name handles slash prefix.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.extract_command_name returns None for empty command.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Extract the base command name from a command string.          Handles various fo** (1 connections) — `server/validators/command_validator.py`
+- **test_room_id_utils.py** (15 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **.normalize_room_id_for_comparison()** (7 connections) — `server/realtime/room_id_utils.py`
+- **test_normalize_room_id_for_comparison_none()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_normalize_room_id_for_comparison_string()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_normalize_room_id_for_comparison_whitespace()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_normalize_room_id_for_comparison_empty()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **Normalize room ID for comparison.          Args:             rid: Room ID to nor** (1 connections) — `server/realtime/room_id_utils.py`
+- **Unit tests for room ID utilities.  Tests the RoomIDUtils class for room ID norma** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **Test normalize_room_id_for_comparison with None.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **Test normalize_room_id_for_comparison with string.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **Test normalize_room_id_for_comparison strips whitespace.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **Test normalize_room_id_for_comparison returns None for empty string.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
 
 ## Relationships
 
-- [Persistence Container Extended](Persistence_Container_Extended.md) (3 shared connections)
+- [NATS Retry Handler](NATS_Retry_Handler.md) (6 shared connections)
+- [Realtime Npc Event](Realtime_Npc_Event.md) (3 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (2 shared connections)
 - [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_command_validator.py`
-- `server/validators/command_validator.py`
+- `server/realtime/room_id_utils.py`
+- `server/tests/unit/realtime/test_room_id_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 40 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

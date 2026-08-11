@@ -1,38 +1,34 @@
 # Realtime Npc Event
 
-> 16 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **_format_room_posture_message()** (10 connections) — `server/commands/position_commands.py`
-- **test_position_commands_helpers.py** (9 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
-- **test_format_room_posture_message_sitting()** (3 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
-- **test_format_room_posture_message_lying()** (3 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
-- **test_format_room_posture_message_standing_from_lying()** (3 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
-- **test_format_room_posture_message_standing_from_sitting()** (3 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
-- **test_format_room_posture_message_standing_no_previous()** (3 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
-- **test_format_room_posture_message_unknown()** (3 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
-- **Create a descriptive room message for posture changes.** (1 connections) — `server/commands/position_commands.py`
-- **Unit tests for position command helper functions.  Tests helper functions in pos** (1 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
-- **Test _format_room_posture_message() formats sitting message.** (1 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
-- **Test _format_room_posture_message() formats lying message.** (1 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
-- **Test _format_room_posture_message() formats standing from lying message.** (1 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
-- **Test _format_room_posture_message() formats standing from sitting message.** (1 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
-- **Test _format_room_posture_message() formats standing with no previous position.** (1 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
-- **Test _format_room_posture_message() handles unknown position.** (1 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
+- **.check_normalized_ids_match()** (5 connections) — `server/realtime/room_id_utils.py`
+- **.check_normalized_room_matches()** (5 connections) — `server/realtime/room_id_utils.py`
+- **test_check_normalized_ids_match()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_normalized_ids_match_none()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_normalized_room_matches()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **Check if two normalized room IDs match.          Args:             id1: First no** (1 connections) — `server/realtime/room_id_utils.py`
+- **Check if normalized NPC room IDs match normalized target room IDs.          Args** (1 connections) — `server/realtime/room_id_utils.py`
+- **Test check_normalized_ids_match returns True for matching IDs.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **Test check_normalized_ids_match returns False when either ID is None.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **Test check_normalized_room_matches checks all combinations.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
 
 ## Relationships
 
-- [Player Death Service](Player_Death_Service.md) (3 shared connections)
+- [Archive Effects System](Archive_Effects_System.md) (3 shared connections)
+- [NATS Retry Handler](NATS_Retry_Handler.md) (2 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/position_commands.py`
-- `server/tests/unit/commands/test_position_commands_helpers.py`
+- `server/realtime/room_id_utils.py`
+- `server/tests/unit/realtime/test_room_id_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -28,7 +28,7 @@
 ## Relationships
 
 - [Player Mute Persistence](Player_Mute_Persistence.md) (16 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 - [Commands Time](Commands_Time.md) (1 shared connections)
 
 ## Source Files

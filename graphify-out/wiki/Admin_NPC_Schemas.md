@@ -1,6 +1,6 @@
 # Admin NPC Schemas
 
-> 55 nodes
+> 60 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,7 @@
 - **command_result_text()** (17 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
 - **PickupTestWiring** (17 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
 - **test_inventory_commands_pickup.py** (17 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- **handle_inventory_command()** (14 connections) — `server/commands/inventory_commands.py`
 - **inventory_commands_test_support.py** (7 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
 - **test_handle_pickup_command()** (7 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
 - **test_handle_pickup_command_inventory_capacity_error()** (7 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
@@ -28,20 +29,21 @@
 - **test_handle_put_command_no_target()** (4 connections) — `server/tests/unit/commands/test_inventory_commands.py`
 - **test_handle_get_command_no_target()** (4 connections) — `server/tests/unit/commands/test_inventory_commands.py`
 - **test_handle_inventory_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
-- **test_handle_equip_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
-- *... and 30 more nodes in this community*
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [Container Sync Remediation](Container_Sync_Remediation.md) (9 shared connections)
-- [FastAPI Auth Integration](FastAPI_Auth_Integration.md) (6 shared connections)
-- [Client Event Store](Client_Event_Store.md) (5 shared connections)
-- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (4 shared connections)
+- [Container Sync Remediation](Container_Sync_Remediation.md) (11 shared connections)
+- [FastAPI Auth Integration](FastAPI_Auth_Integration.md) (10 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (4 shared connections)
 - [Character Creation Service](Character_Creation_Service.md) (4 shared connections)
-- [Chat Service Whispers](Chat_Service_Whispers.md) (4 shared connections)
+- [Container Component Capacity](Container_Component_Capacity.md) (4 shared connections)
+- [Async Task Registry](Async_Task_Registry.md) (3 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (2 shared connections)
 
 ## Source Files
 
+- `server/commands/inventory_commands.py`
 - `server/commands/inventory_pickup_command.py`
 - `server/tests/unit/commands/inventory_commands_test_support.py`
 - `server/tests/unit/commands/test_inventory_commands.py`
@@ -49,8 +51,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 199 (90%)
-- INFERRED: 21 (10%)
+- EXTRACTED: 215 (90%)
+- INFERRED: 25 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

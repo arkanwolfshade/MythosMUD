@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [Room Occupant Events](Room_Occupant_Events.md) (2 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
 
 ## Source Files
 

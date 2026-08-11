@@ -1,66 +1,49 @@
 # Pydantic Error Handlers
 
-> 209 nodes
+> 60 nodes
 
 ## Key Concepts
 
-- **PlayerEventHandlerUtils** (42 connections) — `server/realtime/player_event_handlers_utils.py`
 - **test_player_event_handlers_respawn.py** (34 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_player_event_handlers_state.py** (33 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **player_event_handlers_state.py** (23 connections) — `server/realtime/player_event_handlers_state.py`
-- **conftest.py** (22 connections) — `server/tests/unit/realtime/conftest.py`
-- **player_event_handlers_utils.py** (16 connections) — `server/realtime/player_event_handlers_utils.py`
-- **PlayerStateEventHandler** (14 connections) — `server/realtime/player_event_handlers_state.py`
-- **_dispatch_player_dp_updated_payload()** (10 connections) — `server/realtime/player_event_handlers_state.py`
-- **test_player_event_handlers_utils_grace_period.py** (9 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
-- **._initialize_handlers()** (7 connections) — `server/realtime/player_event_handlers.py`
-- **_send_player_death_notification()** (7 connections) — `server/realtime/player_event_handlers_state.py`
-- **Any** (7 connections)
-- **_player_snapshot_for_dp()** (6 connections) — `server/realtime/player_event_handlers_state.py`
-- **UUID** (6 connections)
-- **.__init__()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.__init__()** (5 connections) — `server/realtime/player_event_handlers_state.py`
-- **.get_player_info()** (5 connections) — `server/realtime/player_event_handlers_utils.py`
-- **.process_dict_occupant()** (5 connections) — `server/realtime/player_event_handlers_utils.py`
-- **BoundLogger** (4 connections)
-- **_dp_player_update_payload()** (4 connections) — `server/realtime/player_event_handlers_state.py`
-- **.handle_player_xp_awarded()** (4 connections) — `server/realtime/player_event_handlers_state.py`
-- **.handle_player_dp_updated()** (4 connections) — `server/realtime/player_event_handlers_state.py`
-- **.handle_player_died()** (4 connections) — `server/realtime/player_event_handlers_state.py`
-- **.handle_player_dp_decay()** (4 connections) — `server/realtime/player_event_handlers_state.py`
-- **.__init__()** (4 connections) — `server/realtime/player_event_handlers_utils.py`
-- *... and 184 more nodes in this community*
+- **mock_utils()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **player_respawn_event_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_send_respawn_event_with_retry_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **mock_logger()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_player_respawn_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_update_connection_manager_position_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_update_connection_manager_position_player_not_online()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_update_connection_manager_position_no_online_players_attr()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_no_persistence()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_player_not_found()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_send_respawn_event_with_retry_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_send_respawn_event_with_retry_waits_for_connection()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_send_respawn_event_with_retry_timeout()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_handle_player_respawned_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_handle_player_respawned_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_current_lucidity_found()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_current_lucidity_not_found()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_delirium_respawn_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_delirium_respawn_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_delirium_respawn_player_not_found()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [Communication Command Flows](Communication_Command_Flows.md) (36 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (13 shared connections)
-- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (11 shared connections)
-- [Test Value Distribution](Test_Value_Distribution.md) (5 shared connections)
+- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (4 shared connections)
 - [Character Stats Generator](Character_Stats_Generator.md) (3 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (2 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (2 shared connections)
-- [Archive Lucidity System](Archive_Lucidity_System.md) (2 shared connections)
-- [NATS Chat Broadcasting](NATS_Chat_Broadcasting.md) (2 shared connections)
-- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
-- [Player Creation Service](Player_Creation_Service.md) (1 shared connections)
-- [Room Occupant Events](Room_Occupant_Events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_event_handlers.py`
-- `server/realtime/player_event_handlers_respawn.py`
-- `server/realtime/player_event_handlers_state.py`
-- `server/realtime/player_event_handlers_utils.py`
-- `server/tests/unit/realtime/conftest.py`
 - `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 570 (98%)
-- INFERRED: 10 (2%)
+- EXTRACTED: 125 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

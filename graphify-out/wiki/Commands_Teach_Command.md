@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_update_wearable_container_items()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test update_wearable_container_items updates items.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_process_single_message_event_data_only()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _process_single_message handles event messages with only event_data.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [Exploration Command Factories](Exploration_Command_Factories.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

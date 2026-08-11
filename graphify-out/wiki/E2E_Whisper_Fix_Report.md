@@ -28,7 +28,7 @@
 
 ## Relationships
 
-- [Warning Remediation Plan](Warning_Remediation_Plan.md) (5 shared connections)
+- [Map Editing Hooks](Map_Editing_Hooks.md) (5 shared connections)
 - [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (2 shared connections)
 
 ## Source Files

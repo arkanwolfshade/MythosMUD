@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_load_room_cache_success()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _load_room_cache successfully loads rooms.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_end_turn_monitoring()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **Test end_turn_monitoring updates metrics.** (1 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
 
 ## Relationships
 
-- [Mythosmud Obsidian Raw](Mythosmud_Obsidian_Raw.md) (1 shared connections)
+- [Rate Limiter Service](Rate_Limiter_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/services/test_combat_monitoring_service.py`
 
 ## Audit Trail
 

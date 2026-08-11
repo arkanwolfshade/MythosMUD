@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **.test_start_already_running()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **Test start returns True when already running.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **test_get_user_manager_injected()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test _get_user_manager returns injected manager.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Relationships
 
-- [Combat Health Persistence Fix](Combat_Health_Persistence_Fix.md) (1 shared connections)
-- [AnyIO Code Review](AnyIO_Code_Review.md) (1 shared connections)
+- [Connection State Hooks](Connection_State_Hooks.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_game_tick_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

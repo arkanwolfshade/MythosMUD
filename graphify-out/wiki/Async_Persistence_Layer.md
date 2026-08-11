@@ -1,6 +1,6 @@
 # Async Persistence Layer
 
-> 58 nodes
+> 59 nodes
 
 ## Key Concepts
 
@@ -15,7 +15,7 @@
 - **UUID** (6 connections)
 - **_ensure_player_in_room_occupancy()** (6 connections) — `server/realtime/websocket_helpers.py`
 - **_get_tracked_player_from_connection_manager()** (5 connections) — `server/realtime/websocket_helpers.py`
-- **_fetch_room_for_tracked_player()** (4 connections) — `server/realtime/websocket_helpers.py`
+- **.model_dump()** (4 connections) — `server/models/alias.py`
 - **_AppStateForPlayerService** (3 connections) — `server/realtime/websocket_helpers.py`
 - **test_get_player_service_from_connection_manager_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
 - **test_get_player_service_from_connection_manager_no_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
@@ -29,31 +29,32 @@
 - **test_prepare_player_data_with_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
 - **test_prepare_player_data_no_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
 - **test_prepare_player_data_service_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- *... and 33 more nodes in this community*
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [Combat Aggro Threat](Combat_Aggro_Threat.md) (10 shared connections)
-- [WebSocket Initial State](WebSocket_Initial_State.md) (7 shared connections)
-- [Combat Command Helpers](Combat_Command_Helpers.md) (3 shared connections)
-- [Game Mechanics Service](Game_Mechanics_Service.md) (2 shared connections)
-- [Player Creation Service](Player_Creation_Service.md) (2 shared connections)
-- [Logout and Quit Commands](Logout_and_Quit_Commands.md) (2 shared connections)
-- [Plan Modernization Archive](Plan_Modernization_Archive.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
+- [WebSocket Initial State](WebSocket_Initial_State.md) (9 shared connections)
+- [Combat Aggro Threat](Combat_Aggro_Threat.md) (9 shared connections)
+- [Container API Endpoints](Container_API_Endpoints.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (2 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (2 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (2 shared connections)
 - [Game State Provider](Game_State_Provider.md) (2 shared connections)
 - [Dependency Injection Tests](Dependency_Injection_Tests.md) (2 shared connections)
-- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
+- [Alias Expansion Logic](Alias_Expansion_Logic.md) (1 shared connections)
+- [Services Lucidity Repository](Services_Lucidity_Repository.md) (1 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
 
 ## Source Files
 
+- `server/models/alias.py`
 - `server/realtime/websocket_helpers.py`
 - `server/tests/unit/realtime/test_websocket_helpers_player.py`
 
 ## Audit Trail
 
-- EXTRACTED: 212 (96%)
+- EXTRACTED: 213 (96%)
 - INFERRED: 9 (4%)
 - AMBIGUOUS: 0 (0%)
 

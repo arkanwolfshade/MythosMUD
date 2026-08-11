@@ -34,10 +34,10 @@
 ## Relationships
 
 - [Combat Configuration Service](Combat_Configuration_Service.md) (5 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
-- [Chat Message Helpers](Chat_Message_Helpers.md) (2 shared connections)
-- [NPC Definition Admin API](NPC_Definition_Admin_API.md) (1 shared connections)
-- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Who Command Tests](Who_Command_Tests.md) (2 shared connections)
+- [Chat Mute Admin API](Chat_Mute_Admin_API.md) (1 shared connections)
+- [WebSocket Request Context](WebSocket_Request_Context.md) (1 shared connections)
 
 ## Source Files
 

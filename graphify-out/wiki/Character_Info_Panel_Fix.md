@@ -1,42 +1,54 @@
 # Character Info Panel Fix
 
-> 14 nodes
+> 52 nodes
 
 ## Key Concepts
 
-- **_get_npc_room_id()** (14 connections) — `server/commands/look_npc.py`
-- **test_get_npc_room_id_from_current_room_id()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_get_npc_room_id_from_current_room()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_get_npc_room_id_none()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_get_npc_room_id_from_current_room_id()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_get_npc_room_id_from_current_room()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_get_npc_room_id_none()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Get the room ID from an NPC instance, checking both current_room and current_roo** (1 connections) — `server/commands/look_npc.py`
-- **Test getting NPC room ID from current_room_id.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test getting NPC room ID from current_room when current_room_id is None.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test getting NPC room ID when both are None.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test _get_npc_room_id() returns current_room_id when available.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _get_npc_room_id() returns current_room when current_room_id is None.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _get_npc_room_id() returns None when both are None.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **fastapi_integration.py** (27 connections) — `docs/examples/logging/fastapi_integration.py`
+- **websocket_endpoint()** (9 connections) — `docs/examples/logging/fastapi_integration.py`
+- **update_player_background_task()** (8 connections) — `docs/examples/logging/fastapi_integration.py`
+- **HTTPException** (6 connections)
+- **upload_avatar()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
+- **add_request_context()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **create_player()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **http_exception_handler()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **general_exception_handler()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **update_player_background()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **list_players()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **WebSocket** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **Request** (4 connections)
+- **get_player()** (4 connections) — `docs/examples/logging/fastapi_integration.py`
+- **get_current_user()** (4 connections) — `docs/examples/logging/fastapi_integration.py`
+- **log_api_requests()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **auth_service()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **process_websocket_message()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.verify_token()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **BackgroundTasks** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **UploadFile** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **Exception** (2 connections)
+- **.create_player()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.get_player()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.list_players()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [Look NPC Command](Look_NPC_Command.md) (4 shared connections)
-- [Player State Command Factory](Player_State_Command_Factory.md) (4 shared connections)
-- [Container Repository CRUD](Container_Repository_CRUD.md) (2 shared connections)
-- [Archive Bug Fix](Archive_Bug_Fix.md) (2 shared connections)
-- [Combat Death Handling](Combat_Death_Handling.md) (1 shared connections)
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (6 shared connections)
+- [Memory Leak Metrics](Memory_Leak_Metrics.md) (6 shared connections)
+- [Player Movement Service](Player_Movement_Service.md) (6 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (3 shared connections)
+- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (3 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_npc.py`
-- `server/tests/unit/commands/test_look_npc.py`
-- `server/tests/unit/commands/test_look_npc_helpers.py`
+- `docs/examples/logging/fastapi_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 155 (95%)
+- INFERRED: 9 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

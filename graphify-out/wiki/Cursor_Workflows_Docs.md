@@ -25,7 +25,7 @@
 
 - [WebSocket Handler Tests](WebSocket_Handler_Tests.md) (9 shared connections)
 - [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (3 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 - [Services Combat Initialization](Services_Combat_Initialization.md) (2 shared connections)
 - [Persistence Player Effect](Persistence_Player_Effect.md) (1 shared connections)
 - [Plan Cursor Plans](Plan_Cursor_Plans.md) (1 shared connections)

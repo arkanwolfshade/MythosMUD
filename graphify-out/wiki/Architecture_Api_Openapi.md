@@ -18,7 +18,7 @@
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Party Service Management](Party_Service_Management.md) (2 shared connections)
 
 ## Source Files
 

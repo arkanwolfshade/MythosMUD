@@ -1,6 +1,6 @@
 # Communication Command Models
 
-> 104 nodes
+> 96 nodes
 
 ## Key Concepts
 
@@ -22,36 +22,35 @@
 - **test_admin_command_validate_subcommand_invalid()** (4 connections) — `server/tests/unit/models/test_command_moderation.py`
 - **test_admin_command_subcommand_min_length()** (4 connections) — `server/tests/unit/models/test_command_moderation.py`
 - **test_admin_command_subcommand_max_length()** (4 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **.validate_player_name_field()** (3 connections) — `server/models/command_admin.py`
+- **.validate_player_name_field()** (3 connections) — `server/models/command_admin.py`
 - **.validate_player_name_field()** (3 connections) — `server/models/command_moderation.py`
 - **.validate_player_name_field()** (3 connections) — `server/models/command_moderation.py`
 - **.validate_player_name_field()** (3 connections) — `server/models/command_moderation.py`
 - **.validate_player_name_field()** (3 connections) — `server/models/command_moderation.py`
 - **.validate_player_name_field()** (3 connections) — `server/models/command_moderation.py`
-- **test_mute_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
-- **test_mute_command_with_duration()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
-- *... and 79 more nodes in this community*
+- *... and 71 more nodes in this community*
 
 ## Relationships
 
+- [Zone Config Loader](Zone_Config_Loader.md) (20 shared connections)
 - [Chat Panel Components](Chat_Panel_Components.md) (13 shared connections)
-- [Emote Schema Validator](Emote_Schema_Validator.md) (9 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (8 shared connections)
 - [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (8 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (8 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (8 shared connections)
 - [Admin Command Models](Admin_Command_Models.md) (7 shared connections)
-- [Game Terminal Panels](Game_Terminal_Panels.md) (3 shared connections)
-- [Zone Config Loader](Zone_Config_Loader.md) (2 shared connections)
+- [Game Terminal Panels](Game_Terminal_Panels.md) (2 shared connections)
 
 ## Source Files
 
+- `server/models/command_admin.py`
 - `server/models/command_moderation.py`
+- `server/models/command_player_state.py`
 - `server/tests/unit/models/test_command_moderation.py`
-- `server/tests/unit/validators/test_security_validator.py`
 - `server/validators/security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 323 (93%)
+- EXTRACTED: 307 (93%)
 - INFERRED: 23 (7%)
 - AMBIGUOUS: 0 (0%)
 

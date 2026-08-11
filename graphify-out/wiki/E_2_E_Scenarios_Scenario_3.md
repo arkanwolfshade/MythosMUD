@@ -1,19 +1,10 @@
 # E 2 E Scenarios Scenario
 
-> 10 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **_fix_last6.py** (9 connections) — `docs/investigations/_fix_last6.py`
-- **lw()** (7 connections) — `docs/investigations/_fix_last6.py`
-- **main()** (7 connections) — `docs/investigations/_fix_last6.py`
-- **fix_inventory()** (3 connections) — `docs/investigations/_fix_last6.py`
-- **fix_dashboard()** (3 connections) — `docs/investigations/_fix_last6.py`
-- **fix_monitoring_api()** (3 connections) — `docs/investigations/_fix_last6.py`
-- **fix_prototype()** (3 connections) — `docs/investigations/_fix_last6.py`
-- **fix_item_factory()** (3 connections) — `docs/investigations/_fix_last6.py`
-- **fix_loot()** (3 connections) — `docs/investigations/_fix_last6.py`
-- **Fix last six lizard files.** (1 connections) — `docs/investigations/_fix_last6.py`
+- **mythosmud** (0 connections) — `pyproject.toml`
 
 ## Relationships
 
@@ -21,11 +12,11 @@
 
 ## Source Files
 
-- `docs/investigations/_fix_last6.py`
+- `pyproject.toml`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

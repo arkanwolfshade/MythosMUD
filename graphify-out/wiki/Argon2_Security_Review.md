@@ -28,8 +28,8 @@
 
 ## Relationships
 
-- [Draggable Panel UI](Draggable_Panel_UI.md) (2 shared connections)
-- [Memory Leak Metrics Tests](Memory_Leak_Metrics_Tests.md) (2 shared connections)
+- [Magic System Feature Plan](Magic_System_Feature_Plan.md) (2 shared connections)
+- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (2 shared connections)
 - [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (2 shared connections)
 
 ## Source Files

@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [E2E Suite Spec Helpers](E2E_Suite_Spec_Helpers.md) (6 shared connections)
-- [Player Creation Service](Player_Creation_Service.md) (3 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (6 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (3 shared connections)
 - [Quest Service Core](Quest_Service_Core.md) (1 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 

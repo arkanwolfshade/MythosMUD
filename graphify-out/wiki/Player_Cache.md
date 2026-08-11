@@ -1,38 +1,34 @@
 # Player Cache
 
-> 16 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **EdgeCreationModalParts.tsx** (22 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
-- **EdgeCreationModalViewProps** (6 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
-- **EdgeModalValidationMessagesProps** (2 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
-- **EdgeModalDirectionSelect()** (2 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
-- **EdgeModalCustomDirectionInput()** (2 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
-- **EdgeModalDirectionFields()** (2 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
-- **EdgeModalTargetRoomField()** (2 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
-- **EdgeModalFlagsField()** (2 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
-- **EdgeCreationModalView()** (2 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
-- **EdgeModalValidationMessages()** (1 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
-- **EDGE_MODAL_MESSAGE_TONE_CLASSES** (1 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
-- **EdgeModalMessageList()** (1 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
-- **EdgeModalDirectionFieldsProps** (1 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
-- **EDGE_EXIT_FLAGS** (1 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
-- **EdgeModalFormActions()** (1 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
-- **EdgeCreationModalForm()** (1 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
+- **test_skills.py** (14 connections) — `server/tests/unit/api/test_skills.py`
+- **mock_user()** (3 connections) — `server/tests/unit/api/test_skills.py`
+- **sample_skills()** (3 connections) — `server/tests/unit/api/test_skills.py`
+- **mock_request()** (2 connections) — `server/tests/unit/api/test_skills.py`
+- **mock_skill_repository()** (2 connections) — `server/tests/unit/api/test_skills.py`
+- **Unit tests for skills catalog API (GET /v1/skills).  Character creation revamp 4** (1 connections) — `server/tests/unit/api/test_skills.py`
+- **Create a mock request object.** (1 connections) — `server/tests/unit/api/test_skills.py`
+- **Create a mock user for auth.** (1 connections) — `server/tests/unit/api/test_skills.py`
+- **Sample skills for catalog response.** (1 connections) — `server/tests/unit/api/test_skills.py`
+- **Mock SkillRepository that returns sample skills.** (1 connections) — `server/tests/unit/api/test_skills.py`
 
 ## Relationships
 
-- [Player Death Service Tests](Player_Death_Service_Tests.md) (7 shared connections)
-- [Character Selection Screens](Character_Selection_Screens.md) (2 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (5 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (3 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (2 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/EdgeCreationModalParts.tsx`
+- `server/tests/unit/api/test_skills.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

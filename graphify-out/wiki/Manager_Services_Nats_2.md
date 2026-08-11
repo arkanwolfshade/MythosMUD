@@ -1,54 +1,24 @@
 # Manager Services Nats
 
-> 67 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_metrics.py** (27 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **SubjectManagerMetrics** (16 connections) — `server/services/nats_subject_manager/metrics.py`
-- **._calculate_percentile()** (6 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.__init__()** (5 connections) — `server/services/nats_subject_manager/manager.py`
-- **.get_metrics()** (4 connections) — `server/services/nats_subject_manager/metrics.py`
-- **metrics()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_subject_manager_metrics_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_calculate_percentile_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_calculate_percentile_single_value()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_calculate_percentile_multiple_values()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **.record_validation()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.record_build()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.record_error()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.reset()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
-- **test_record_validation_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_validation_failure()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_validation_cache_hit()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_validation_multiple()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_validation_stores_times()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_build_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_build_failure()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_build_multiple()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_build_stores_times()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_error_pattern_not_found()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_error_missing_parameter()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- *... and 42 more nodes in this community*
+- **test_register_command_handler()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test register_command_handler adds new handler.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
 
 ## Relationships
 
-- [Cursor Rules Docker](Cursor_Rules_Docker.md) (4 shared connections)
-- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (2 shared connections)
-- [NATS Pattern Matcher](NATS_Pattern_Matcher.md) (1 shared connections)
-- [Cursor Setup Guide](Cursor_Setup_Guide.md) (1 shared connections)
-- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (1 shared connections)
+- [NPC Population Control](NPC_Population_Control.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_subject_manager/manager.py`
-- `server/services/nats_subject_manager/metrics.py`
-- `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- `server/tests/unit/commands/test_command_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 152 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

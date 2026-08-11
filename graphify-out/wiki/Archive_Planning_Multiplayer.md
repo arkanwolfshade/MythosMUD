@@ -1,38 +1,29 @@
 # Archive Planning Multiplayer
 
-> 14 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **UUID** (5 connections)
-- **.get_npc_combat_data()** (5 connections) — `server/services/npc_combat_data_provider.py`
-- **Any** (4 connections)
-- **.get_npc_instance()** (4 connections) — `server/services/npc_combat_data_provider.py`
-- **.get_player_combat_data()** (4 connections) — `server/services/npc_combat_data_provider.py`
-- **.__init__()** (3 connections) — `server/services/npc_combat_data_provider.py`
-- **.get_player_name()** (3 connections) — `server/services/npc_combat_data_provider.py`
-- **.get_player_room_id()** (3 connections) — `server/services/npc_combat_data_provider.py`
-- **Initialize the data provider.          Args:             async_persistence: A** (1 connections) — `server/services/npc_combat_data_provider.py`
-- **Get NPC instance from the spawning service.          Args:             npc_id** (1 connections) — `server/services/npc_combat_data_provider.py`
-- **Get player name for messaging.          Args:             player_id: ID of th** (1 connections) — `server/services/npc_combat_data_provider.py`
-- **Get the current room ID for a player.          Args:             player_id: I** (1 connections) — `server/services/npc_combat_data_provider.py`
-- **Get player combat participant data from persistence.          Args:** (1 connections) — `server/services/npc_combat_data_provider.py`
-- **Get NPC combat participant data from NPC instance.          Args:** (1 connections) — `server/services/npc_combat_data_provider.py`
+- **TestGetSpellRegistry** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_spell_registry_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_spell_registry_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_spell_registry dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_spell_registry returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_spell_registry raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [Magic Service Bundle](Magic_Service_Bundle.md) (6 shared connections)
-- [Commands Look Item](Commands_Look_Item.md) (3 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (2 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_data_provider.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

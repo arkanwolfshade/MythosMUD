@@ -39,7 +39,8 @@
 - [Room File Fixer](Room_File_Fixer.md) (4 shared connections)
 - [Room Schema Validator](Room_Schema_Validator.md) (3 shared connections)
 - [Room Toolkit Validator](Room_Toolkit_Validator.md) (2 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (1 shared connections)
 - [Hierarchical Schema Tests](Hierarchical_Schema_Tests.md) (1 shared connections)
 
 ## Source Files

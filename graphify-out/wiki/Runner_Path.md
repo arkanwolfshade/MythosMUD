@@ -33,7 +33,7 @@
 ## Relationships
 
 - [CI Quality Scripts](CI_Quality_Scripts.md) (2 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
 
 ## Source Files
 

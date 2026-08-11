@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **mock_spell_registry()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Create a mock spell registry.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_handle_nats_message_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _handle_nats_message() successfully processes message.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

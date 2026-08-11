@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **mock_name_extractor()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Create a mock name extractor.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_is_valid_target_name_valid()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test _is_valid_target_name with valid target name.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [Archive Lucidity System](Archive_Lucidity_System.md) (1 shared connections)
+- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 

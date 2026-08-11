@@ -20,8 +20,8 @@
 
 ## Relationships
 
-- [Level and XP Curve](Level_and_XP_Curve.md) (4 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 
 ## Source Files
 

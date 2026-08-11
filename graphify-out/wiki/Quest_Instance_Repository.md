@@ -1,54 +1,57 @@
 # Quest Instance Repository
 
-> 18 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **prototype_registry.py** (19 connections) — `server/game/items/prototype_registry.py`
-- **PrototypeRegistryError** (19 connections) — `server/game/items/prototype_registry.py`
-- **validate_prototypes.py** (8 connections) — `server/scripts/validate_prototypes.py`
-- **models.py** (7 connections) — `server/game/items/models.py`
-- **test_resolve_weapon_attack_from_equipped_registry_error_returns_none()** (5 connections) — `server/tests/unit/game/test_weapons.py`
-- **test_weapon_from_prototype_registry_missing_prototype_returns_none()** (4 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
-- **parse_arguments()** (3 connections) — `server/scripts/validate_prototypes.py`
-- **main()** (3 connections) — `server/scripts/validate_prototypes.py`
-- **constants.py** (2 connections) — `server/game/items/constants.py`
-- **Constants supporting item prototype validation.  These enumerations anchor the s** (1 connections) — `server/game/items/constants.py`
-- **Pydantic models for item prototype validation.  This module defines the ItemProt** (1 connections) — `server/game/items/models.py`
-- **Exception** (1 connections)
-- **Prototype registry for managing item prototypes.  This module provides the Pro** (1 connections) — `server/game/items/prototype_registry.py`
-- **Raised when prototype registry lookups fail.** (1 connections) — `server/game/items/prototype_registry.py`
-- **Namespace** (1 connections)
-- **CLI entrypoint for validating MythosMUD item prototype definitions.** (1 connections) — `server/scripts/validate_prototypes.py`
-- **When prototype is not found, returns None.** (1 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
-- **When registry.get raises PrototypeRegistryError, returns None.** (1 connections) — `server/tests/unit/game/test_weapons.py`
+- **BehaviorEngine** (73 connections) — `server/npc/behavior_engine.py`
+- **.get_behavior_engine()** (3 connections) — `server/npc/npc_base.py`
+- **test_add_rule_replaces_existing()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_add_rule_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_get_rules()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_equality_true()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_numeric_comparison_non_numeric()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_get_applicable_rules_matching()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_get_applicable_rules_priority_order()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **.__init__()** (2 connections) — `server/npc/behavior_engine.py`
+- **.remove_rule()** (2 connections) — `server/npc/behavior_engine.py`
+- **Deterministic behavior engine for NPCs.      This engine evaluates rules based o** (1 connections) — `server/npc/behavior_engine.py`
+- **Initialize the behavior engine.** (1 connections) — `server/npc/behavior_engine.py`
+- **Remove a behavior rule from the engine.          Args:             rule_name: Na** (1 connections) — `server/npc/behavior_engine.py`
+- **Get the behavior engine for this NPC.** (1 connections) — `server/npc/npc_base.py`
+- **Test add_rule() replaces existing rule with same name.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test add_rule() handles exceptions gracefully.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test get_rules() returns copy of rules.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_equality() returns True for matching condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_numeric_comparison() raises ValueError for non-numeric values.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test get_applicable_rules() returns matching rules.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test get_applicable_rules() returns rules in priority order.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [Commands Inventory Display](Commands_Inventory_Display.md) (10 shared connections)
-- [Typography Layout Spec](Typography_Layout_Spec.md) (7 shared connections)
-- [Commands Look Item](Commands_Look_Item.md) (6 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
-- [test_profession_meets_stat_requirements_multiple_not_met](test_profession_meets_stat_requirements_multiple_not_met.md) (4 shared connections)
-- [Command Integration Summary](Command_Integration_Summary.md) (3 shared connections)
-- [Character Creation Service](Character_Creation_Service.md) (2 shared connections)
-- [Memory Leak Metrics](Memory_Leak_Metrics.md) (2 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (2 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
+- [WebSocket Message Handlers](WebSocket_Message_Handlers.md) (21 shared connections)
+- [Real-Time Architecture Docs](Real-Time_Architecture_Docs.md) (12 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (5 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
+- [test_apply_encounter_lucidity_loss_acclimated](test_apply_encounter_lucidity_loss_acclimated.md) (1 shared connections)
+- [test_is_player_disconnecting_no_connection_manager](test_is_player_disconnecting_no_connection_manager.md) (1 shared connections)
+- [test_process_dict_occupant_with_name](test_process_dict_occupant_with_name.md) (1 shared connections)
+- [test_apply_encounter_lucidity_loss_with_location](test_apply_encounter_lucidity_loss_with_location.md) (1 shared connections)
+- [test_perform_recovery_action_success](test_perform_recovery_action_success.md) (1 shared connections)
+- [test_is_player_disconnecting_no_disconnecting_players_attr](test_is_player_disconnecting_no_disconnecting_players_attr.md) (1 shared connections)
+- [test_normalize_player_id_uuid](test_normalize_player_id_uuid.md) (1 shared connections)
+- [test_player_event_handler_utils_init](test_player_event_handler_utils_init.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/items/constants.py`
-- `server/game/items/models.py`
-- `server/game/items/prototype_registry.py`
-- `server/scripts/validate_prototypes.py`
-- `server/tests/unit/game/test_player_schema_converter_weapon.py`
-- `server/tests/unit/game/test_weapons.py`
+- `server/npc/behavior_engine.py`
+- `server/npc/npc_base.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 74 (94%)
-- INFERRED: 5 (6%)
+- EXTRACTED: 111 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

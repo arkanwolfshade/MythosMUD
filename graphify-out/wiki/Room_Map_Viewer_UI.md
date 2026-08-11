@@ -1,48 +1,59 @@
 # Room Map Viewer UI
 
-> 19 nodes
+> 69 nodes
 
 ## Key Concepts
 
+- **MovementService** (45 connections) — `server/game/movement_service.py`
 - **UUID** (18 connections)
+- **movement_helpers.py** (16 connections) — `server/game/movement_helpers.py`
 - **._execute_move_locked()** (14 connections) — `server/game/movement_service.py`
+- **validate_player_room_membership()** (9 connections) — `server/game/movement_helpers.py`
+- **check_combat_state()** (8 connections) — `server/game/movement_helpers.py`
 - **._handle_movement_error()** (8 connections) — `server/game/movement_service.py`
 - **.move_player()** (8 connections) — `server/game/movement_service.py`
+- **._validate_movement()** (8 connections) — `server/game/movement_service.py`
+- **check_player_posture()** (7 connections) — `server/game/movement_helpers.py`
+- **validate_exit()** (7 connections) — `server/game/movement_helpers.py`
+- **Any** (7 connections)
+- **.add_player_to_room()** (7 connections) — `server/game/movement_service.py`
+- **extract_player_id()** (6 connections) — `server/game/movement_helpers.py`
 - **._validate_move_params()** (6 connections) — `server/game/movement_service.py`
+- **._resolve_player_for_movement()** (6 connections) — `server/game/movement_service.py`
 - **._get_rooms_for_movement()** (6 connections) — `server/game/movement_service.py`
-- **._execute_room_transfer()** (5 connections) — `server/game/movement_service.py`
-- **._mark_room_explored()** (5 connections) — `server/game/movement_service.py`
-- **._log_successful_move_timing()** (4 connections) — `server/game/movement_service.py`
-- **Room** (2 connections)
-- **Exception** (1 connections)
-- **Validate movement parameters. Returns False if validation fails (same room), rai** (1 connections) — `server/game/movement_service.py`
-- **Get and validate rooms for movement.** (1 connections) — `server/game/movement_service.py`
-- **Execute the atomic room transfer.** (1 connections) — `server/game/movement_service.py`
-- **Mark destination room as explored (non-blocking).** (1 connections) — `server/game/movement_service.py`
-- **Handle movement errors with monitoring.** (1 connections) — `server/game/movement_service.py`
-- **Run movement logic while holding the service lock.** (1 connections) — `server/game/movement_service.py`
-- **Log movement timing breakdown after a successful move.** (1 connections) — `server/game/movement_service.py`
-- **Move a player from one room to another atomically.          This operation ensur** (1 connections) — `server/game/movement_service.py`
+- **._resolve_posture_player()** (6 connections) — `server/game/movement_service.py`
+- **._validate_movement_rooms()** (6 connections) — `server/game/movement_service.py`
+- **._validate_add_player_ids()** (6 connections) — `server/game/movement_service.py`
+- **._validate_remove_player_params()** (6 connections) — `server/game/movement_service.py`
+- **.remove_player_from_room()** (6 connections) — `server/game/movement_service.py`
+- **.get_player_room()** (6 connections) — `server/game/movement_service.py`
+- **Any** (5 connections)
+- **UUID** (5 connections)
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [Combat Client Crash Report](Combat_Client_Crash_Report.md) (14 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (6 shared connections)
-- [Game Magic Spell](Game_Magic_Spell.md) (3 shared connections)
-- [Command Request App State](Command_Request_App_State.md) (3 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (2 shared connections)
-- [Claude Agents Deps](Claude_Agents_Deps.md) (2 shared connections)
-- [Monitoring Response Models](Monitoring_Response_Models.md) (2 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (21 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (21 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (8 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (4 shared connections)
+- [Calendar Holiday Schemas](Calendar_Holiday_Schemas.md) (4 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
+- [Player Left Room Tests](Player_Left_Room_Tests.md) (2 shared connections)
+- [Command Field Validators](Command_Field_Validators.md) (2 shared connections)
+- [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
+- [Player Respawn Handlers](Player_Respawn_Handlers.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
 
 ## Source Files
 
+- `server/game/movement_helpers.py`
 - `server/game/movement_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 81 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 288 (94%)
+- INFERRED: 20 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

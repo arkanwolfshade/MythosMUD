@@ -2,7 +2,7 @@
 
 > God node · 540 connections · `server/exceptions.py`
 
-**Community:** [Room Service Tests](Room_Service_Tests.md)
+**Community:** [Command Parser Helpers](Command_Parser_Helpers.md)
 
 ## Connections by Relation
 

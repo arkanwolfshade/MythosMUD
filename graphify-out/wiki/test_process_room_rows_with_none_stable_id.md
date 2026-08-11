@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_handle_spell_command_wrapper_success()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test handle_spell_command wrapper success.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_handle_nats_message_success_path_metrics()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _handle_nats_message records metrics on successful processing.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
-- [NPC Admin Commands](NPC_Admin_Commands.md) (1 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

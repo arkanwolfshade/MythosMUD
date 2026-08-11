@@ -1,29 +1,24 @@
 # Magic Game Healing
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **_get_death_location_name()** (4 connections) — `server/realtime/websocket_initial_state.py`
-- **.item_instance_exists()** (3 connections) — `server/async_persistence.py`
-- **Get the global async persistence instance.      DEPRECATED: Use ApplicationConta** (2 connections) — `server/async_persistence.py`
-- **Check if an item instance exists. Delegates to ItemRepository.** (1 connections) — `server/async_persistence.py`
-- **Room** (1 connections)
-- **Extract death location name from room object or dict.** (1 connections) — `server/realtime/websocket_initial_state.py`
+- **test_on_player_entered_room_moves_followers()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
+- **When followed player moves, followers are moved same from_room -> to_room.** (1 connections) — `server/tests/unit/game/test_follow_service.py`
 
 ## Relationships
 
-- [WebSocket Initial State](WebSocket_Initial_State.md) (3 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [NPC Utility Functions](NPC_Utility_Functions.md) (1 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
-- `server/realtime/websocket_initial_state.py`
+- `server/tests/unit/game/test_follow_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

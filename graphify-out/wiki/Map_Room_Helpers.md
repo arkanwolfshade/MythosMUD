@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [Minimap Fallback Helpers](Minimap_Fallback_Helpers.md) (7 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (7 shared connections)
+- [Minimap Fallback Helpers](Minimap_Fallback_Helpers.md) (9 shared connections)
+- [Container Persistence Ops](Container_Persistence_Ops.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 
 ## Source Files
 

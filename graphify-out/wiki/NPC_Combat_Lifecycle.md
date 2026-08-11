@@ -1,65 +1,76 @@
 # NPC Combat Lifecycle
 
-> 151 nodes
+> 207 nodes
 
 ## Key Concepts
 
-- **combat_turn_participant_actions.py** (46 connections) — `server/services/combat_turn_participant_actions.py`
-- **test_aggro_threat.py** (29 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **aggro_threat.py** (28 connections) — `server/services/aggro_threat.py`
-- **update_aggro()** (24 connections) — `server/services/aggro_threat.py`
-- **_make_combat()** (23 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **add_damage_threat()** (20 connections) — `server/services/aggro_threat.py`
-- **get_or_create_hate_list()** (19 connections) — `server/services/aggro_threat.py`
-- **add_heal_threat()** (14 connections) — `server/services/aggro_threat.py`
-- **test_aggro_flow.py** (14 connections) — `server/tests/integration/test_aggro_flow.py`
-- **_make_participant()** (13 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **apply_taunt()** (12 connections) — `server/services/aggro_threat.py`
-- **test_combat_turn_participant_actions.py** (12 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
-- **UUID** (11 connections)
-- **combat_service_end.py** (11 connections) — `server/services/combat_service_end.py`
-- **_weapon_damage_from_equipped_player()** (11 connections) — `server/services/combat_turn_participant_actions.py`
-- **_resolve_npc_target()** (11 connections) — `server/services/combat_turn_participant_actions.py`
-- **process_npc_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
-- **process_player_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
-- **_apply_taunt_and_maybe_broadcast()** (9 connections) — `server/commands/combat_taunt.py`
-- **resolve_player_attack_damage()** (9 connections) — `server/services/combat_turn_participant_actions.py`
-- **_make_participant()** (9 connections) — `server/tests/integration/test_aggro_flow.py`
-- **get_npc_current_target()** (8 connections) — `server/services/aggro_threat.py`
-- **_get_combat_container_services()** (8 connections) — `server/services/combat_turn_participant_actions.py`
-- **_make_combat()** (8 connections) — `server/tests/integration/test_aggro_flow.py`
-- **_get_aggro_config()** (7 connections) — `server/services/aggro_threat.py`
-- *... and 126 more nodes in this community*
+- **User** (314 connections) — `server/models/user.py`
+- **Result** (52 connections) — `scripts/run_test_ci.py`
+- **endpoints.py** (52 connections) — `server/auth/endpoints.py`
+- **test_endpoints.py** (51 connections) — `server/tests/unit/auth/test_endpoints.py`
+- **register_user()** (28 connections) — `server/auth/endpoints.py`
+- **login_user()** (28 connections) — `server/auth/endpoints.py`
+- **UserCreate** (27 connections) — `server/auth/endpoints.py`
+- **InviteManager** (24 connections) — `server/auth/invites.py`
+- **LoginRequest** (22 connections) — `server/auth/endpoints.py`
+- **invites.py** (16 connections) — `server/auth/invites.py`
+- **get_shutdown_blocking_message()** (13 connections) — `server/commands/admin_shutdown_command.py`
+- **RestartInvalidatingJWTStrategy** (12 connections) — `server/auth/jwt_strategy.py`
+- **test_user.py** (11 connections) — `server/tests/unit/models/test_user.py`
+- **list_invites()** (10 connections) — `server/auth/endpoints.py`
+- **InviteRead** (10 connections) — `server/schemas/auth/invite.py`
+- **create_invite()** (9 connections) — `server/auth/endpoints.py`
+- **test_jwt_strategy.py** (9 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
+- **_check_shutdown_status()** (8 connections) — `server/auth/endpoints.py`
+- **Request** (8 connections)
+- **token_epoch.py** (8 connections) — `server/auth/token_epoch.py`
+- **get_auth_epoch()** (8 connections) — `server/auth/token_epoch.py`
+- **LoginResponse** (7 connections) — `server/auth/endpoints.py`
+- **_validate_invite_code()** (7 connections) — `server/auth/endpoints.py`
+- **_check_username_exists()** (7 connections) — `server/auth/endpoints.py`
+- **_find_user_by_username()** (7 connections) — `server/auth/endpoints.py`
+- *... and 182 more nodes in this community*
 
 ## Relationships
 
-- [Rest Command Flow](Rest_Command_Flow.md) (38 shared connections)
-- [Container Component Capacity](Container_Component_Capacity.md) (28 shared connections)
-- [Combat Attack Service](Combat_Attack_Service.md) (13 shared connections)
-- [Commands Look Item](Commands_Look_Item.md) (10 shared connections)
-- [Archive Frd Random](Archive_Frd_Random.md) (8 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (8 shared connections)
-- [Logging Correct Patterns](Logging_Correct_Patterns.md) (7 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (7 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (6 shared connections)
-- [Health Check Models](Health_Check_Models.md) (3 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (3 shared connections)
-- [Commands Inventory Display](Commands_Inventory_Display.md) (3 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (72 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (48 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (27 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (27 shared connections)
+- [Async Persistence Delegates](Async_Persistence_Delegates.md) (25 shared connections)
+- [Game Mechanics Service](Game_Mechanics_Service.md) (21 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (18 shared connections)
+- [NATS Metrics API](NATS_Metrics_API.md) (14 shared connections)
+- [Container Persistence Ops](Container_Persistence_Ops.md) (12 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (11 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (10 shared connections)
+- [Client Event Store](Client_Event_Store.md) (9 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_taunt.py`
-- `server/services/aggro_threat.py`
-- `server/services/combat_service_end.py`
-- `server/services/combat_turn_participant_actions.py`
-- `server/tests/integration/test_aggro_flow.py`
-- `server/tests/unit/services/test_aggro_threat.py`
-- `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- `scripts/run_test_ci.py`
+- `server/auth/endpoints.py`
+- `server/auth/invites.py`
+- `server/auth/jwt_strategy.py`
+- `server/auth/token_epoch.py`
+- `server/commands/admin_shutdown_command.py`
+- `server/models/user.py`
+- `server/schemas/auth/invite.py`
+- `server/tests/integration/test_db_connectivity.py`
+- `server/tests/unit/api/conftest.py`
+- `server/tests/unit/api/test_container_exception_handlers.py`
+- `server/tests/unit/api/test_container_helpers.py`
+- `server/tests/unit/api/test_container_helpers_loot.py`
+- `server/tests/unit/api/test_containers.py`
+- `server/tests/unit/auth/test_endpoints.py`
+- `server/tests/unit/auth/test_jwt_strategy.py`
+- `server/tests/unit/models/test_user.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 710 (99%)
-- INFERRED: 10 (1%)
+- EXTRACTED: 1036 (84%)
+- INFERRED: 193 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

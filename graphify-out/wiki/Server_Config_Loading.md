@@ -1,9 +1,10 @@
 # Server Config Loading
 
-> 35 nodes
+> 37 nodes
 
 ## Key Concepts
 
+- **handle_quest_command()** (21 connections) — `server/commands/quest_commands.py`
 - **test_quest_commands.py** (20 connections) — `server/tests/unit/commands/test_quest_commands.py`
 - **_enter_quest_command_patches()** (7 connections) — `server/tests/unit/commands/test_quest_commands.py`
 - **ExitStack** (5 connections)
@@ -22,27 +23,29 @@
 - **test_quest_ask_usage_when_no_npc()** (3 connections) — `server/tests/unit/commands/test_quest_commands.py`
 - **current_user()** (2 connections) — `server/tests/unit/commands/test_quest_commands.py`
 - **mock_request()** (2 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **Handle quest command subcommands: abandon, ask, turnin.      Usage:       quest** (1 connections) — `server/commands/quest_commands.py`
 - **Unit tests for quest commands: journal/quests (quest log) and quest abandon.  Te** (1 connections) — `server/tests/unit/commands/test_quest_commands.py`
 - **Minimal current_user dict for command handlers.** (1 connections) — `server/tests/unit/commands/test_quest_commands.py`
 - **Request with app.state.container (set per test).** (1 connections) — `server/tests/unit/commands/test_quest_commands.py`
 - **Journal returns message when container/persistence not available.** (1 connections) — `server/tests/unit/commands/test_quest_commands.py`
 - **Journal returns formatted quest log when services available.** (1 connections) — `server/tests/unit/commands/test_quest_commands.py`
-- **Journal returns error when character not found.** (1 connections) — `server/tests/unit/commands/test_quest_commands.py`
-- **Quest command returns usage when args empty or not 'abandon'.** (1 connections) — `server/tests/unit/commands/test_quest_commands.py`
-- *... and 10 more nodes in this community*
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [Combat Death Handling](Combat_Death_Handling.md) (16 shared connections)
+- [Legacy Error Sanitization](Legacy_Error_Sanitization.md) (11 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (2 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
 
 ## Source Files
 
+- `server/commands/quest_commands.py`
 - `server/tests/unit/commands/test_quest_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 100 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 121 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

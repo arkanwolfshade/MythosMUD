@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_player_info_player_not_found()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Test get_player_info() returns None when player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_is_rate_limited()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test _is_rate_limited (currently always returns False).** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [Archive Lucidity System](Archive_Lucidity_System.md) (1 shared connections)
+- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 

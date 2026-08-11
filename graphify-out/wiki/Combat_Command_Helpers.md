@@ -1,66 +1,53 @@
 # Combat Command Helpers
 
-> 69 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **websocket_handler.py** (64 connections) — `server/realtime/websocket_handler.py`
-- **websocket_handler_message_loop.py** (25 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **handle_message_loop_exception()** (10 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **test_websocket_handler_error_handling.py** (9 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **send_websocket_error_response()** (7 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **WebSocket** (7 connections)
-- **test_websocket_handler_rate_limit.py** (7 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **handle_json_decode_error()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **UUID** (6 connections)
-- **handle_websocket_runtime_error()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **handle_websocket_generic_exception()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **process_exception_in_message_loop()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **handle_websocket_message_loop()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **is_websocket_disconnect_message()** (6 connections) — `server/realtime/websocket_helpers.py`
-- **process_websocket_inbound_message()** (5 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **handle_websocket_disconnect()** (4 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **test_websocket_handler_disconnect.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **test_websocket_handler_helpers.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
-- **test_websocket_handler_json_error.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **Exception** (3 connections)
-- **test_handle_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **test_handle_websocket_disconnect_no_connection_id()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **test_send_error_response_success()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **test_send_error_response_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- *... and 44 more nodes in this community*
+- **safe_run_static()** (17 connections) — `scripts/utils/safe_subprocess.py`
+- **worktree-ops.py** (9 connections) — `scripts/worktree-ops.py`
+- **get_project_root()** (8 connections) — `scripts/worktree-ops.py`
+- **get_current_worktree()** (7 connections) — `scripts/worktree-ops.py`
+- **install_dependencies()** (6 connections) — `scripts/worktree-ops.py`
+- **run_tests()** (6 connections) — `scripts/worktree-ops.py`
+- **run_lint()** (6 connections) — `scripts/worktree-ops.py`
+- **run_format()** (6 connections) — `scripts/worktree-ops.py`
+- **show_status()** (6 connections) — `scripts/worktree-ops.py`
+- **main()** (6 connections) — `scripts/worktree-ops.py`
+- **sqlint.py** (4 connections) — `scripts/sqlint.py`
+- **_resolve_sqlint_cmd()** (4 connections) — `scripts/sqlint.py`
+- **run_command()** (4 connections) — `scripts/worktree-ops.py`
+- **_is_tool_crash()** (3 connections) — `scripts/sqlint.py`
+- **_skip_sqlint()** (1 connections) — `scripts/sqlint.py`
+- **Return True when sqlint failed to start rather than reporting SQL issues.** (1 connections) — `scripts/sqlint.py`
+- **Return sqlint command argv when the tool is installed and runnable.** (1 connections) — `scripts/sqlint.py`
+- **Execute a command with static arguments (safest option).      This is the safest** (1 connections) — `scripts/utils/safe_subprocess.py`
+- **Determine the project root based on current working directory** (1 connections) — `scripts/worktree-ops.py`
+- **Get the current worktree name** (1 connections) — `scripts/worktree-ops.py`
+- **Run a command with proper error handling** (1 connections) — `scripts/worktree-ops.py`
+- **Install dependencies (worktree-aware)** (1 connections) — `scripts/worktree-ops.py`
+- **Run tests (worktree-aware)** (1 connections) — `scripts/worktree-ops.py`
+- **Run linting (worktree-aware)** (1 connections) — `scripts/worktree-ops.py`
+- **Run formatting (worktree-aware)** (1 connections) — `scripts/worktree-ops.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [Standardized Error Responses](Standardized_Error_Responses.md) (12 shared connections)
-- [Player Combat XP](Player_Combat_XP.md) (12 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (10 shared connections)
-- [Database Helper Tests](Database_Helper_Tests.md) (8 shared connections)
-- [Logout and Quit Commands](Logout_and_Quit_Commands.md) (6 shared connections)
-- [WebSocket Initial State](WebSocket_Initial_State.md) (4 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (4 shared connections)
-- [Async Persistence Layer](Async_Persistence_Layer.md) (3 shared connections)
-- [Room Occupant Events](Room_Occupant_Events.md) (2 shared connections)
-- [Combat Aggro Threat](Combat_Aggro_Threat.md) (2 shared connections)
-- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (1 shared connections)
-- [Combat Feature Flags](Combat_Feature_Flags.md) (1 shared connections)
+- [CI Quality Scripts](CI_Quality_Scripts.md) (8 shared connections)
+- [Dependency Risk Analyzer](Dependency_Risk_Analyzer.md) (2 shared connections)
+- [Linting Results Comparator](Linting_Results_Comparator.md) (1 shared connections)
+- [Grype Command Handle Result](Grype_Command_Handle_Result.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_handler.py`
-- `server/realtime/websocket_handler_message_loop.py`
-- `server/realtime/websocket_helpers.py`
-- `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- `server/tests/unit/realtime/test_websocket_handler_helpers.py`
-- `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- `scripts/sqlint.py`
+- `scripts/utils/safe_subprocess.py`
+- `scripts/worktree-ops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 260 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 86 (83%)
+- INFERRED: 18 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

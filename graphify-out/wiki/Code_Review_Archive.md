@@ -27,8 +27,8 @@
 
 - [Game Level Service](Game_Level_Service.md) (3 shared connections)
 - [Cursor Commands Remediation](Cursor_Commands_Remediation.md) (2 shared connections)
-- [Cache and NPC Cache](Cache_and_NPC_Cache.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 

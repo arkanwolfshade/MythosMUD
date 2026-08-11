@@ -1,10 +1,14 @@
 # Catatonia Check Logic
 
-> 61 nodes
+> 76 nodes
 
 ## Key Concepts
 
+- **catatonia_check.py** (25 connections) — `server/command_handler/catatonia_check.py`
+- **test_command_validation.py** (22 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **TestCatatoniaChecks** (21 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **check_catatonia_block()** (17 connections) — `server/command_handler/catatonia_check.py`
+- **_load_player_for_catatonia_check()** (11 connections) — `server/command_handler/catatonia_check.py`
 - **_is_catatonic()** (10 connections) — `server/command_handler/catatonia_check.py`
 - **_check_catatonia_registry()** (9 connections) — `server/command_handler/catatonia_check.py`
 - **_query_lucidity_record()** (9 connections) — `server/command_handler/catatonia_check.py`
@@ -13,7 +17,9 @@
 - **UUID** (8 connections)
 - **_fetch_lucidity_record()** (8 connections) — `server/command_handler/catatonia_check.py`
 - **_registry_player_id_value()** (7 connections) — `server/command_handler/catatonia_check.py`
+- **_PersistenceGetPlayerByName** (6 connections) — `server/command_handler/catatonia_check.py`
 - **_convert_player_id_to_uuid()** (4 connections) — `server/command_handler/catatonia_check.py`
+- **TestCheckRateLimit** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **CommandExecutionRequest** (3 connections)
 - **.test_registry_player_id_value_preserves_uuid_and_str()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **.test_registry_player_id_value_stringifies_non_string_ids()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
@@ -23,24 +29,22 @@
 - **.test_is_catatonic_not_catatonic()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **.test_is_catatonic_none()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **.test_fetch_lucidity_record()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_query_lucidity_record_success()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_catatonia_database_catatonic()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_catatonia_database_not_catatonic()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_catatonia_registry_catatonic()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_catatonia_registry_not_catatonic()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_catatonia_registry_slotted_state_object()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- *... and 36 more nodes in this community*
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [Investigations Sessions Session](Investigations_Sessions_Session.md) (16 shared connections)
-- [Test Refactoring Summary](Test_Refactoring_Summary.md) (11 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (3 shared connections)
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (18 shared connections)
+- [Test Refactoring Summary](Test_Refactoring_Summary.md) (5 shared connections)
+- [Message Queue Cleanup](Message_Queue_Cleanup.md) (4 shared connections)
+- [Async Audit Cursor](Async_Audit_Cursor.md) (3 shared connections)
+- [Profession Get Mechanical Effects](Profession_Get_Mechanical_Effects.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [NATS Subject Manager](NATS_Subject_Manager.md) (1 shared connections)
+- [Calendar NPC Schedule](Calendar_NPC_Schedule.md) (1 shared connections)
 - [Catatonia Registry Service](Catatonia_Registry_Service.md) (1 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
-- [Manager Services Nats](Manager_Services_Nats.md) (1 shared connections)
-- [Async Audit Cursor](Async_Audit_Cursor.md) (1 shared connections)
+- [Npc Behavior Engine](Npc_Behavior_Engine.md) (1 shared connections)
+- [Game Chat Pose](Game_Chat_Pose.md) (1 shared connections)
+- [Game Quest Service](Game_Quest_Service.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,8 +53,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 174 (92%)
-- INFERRED: 15 (8%)
+- EXTRACTED: 271 (95%)
+- INFERRED: 14 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

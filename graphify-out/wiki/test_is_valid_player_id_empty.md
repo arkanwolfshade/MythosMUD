@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_is_valid_player_id_empty()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test _is_valid_player_id with empty value.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_parse_behavior_config_string()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test _parse_behavior_config() with JSON string.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- [Async Persistence Delegates](Async_Persistence_Delegates.md) (1 shared connections)
+- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 

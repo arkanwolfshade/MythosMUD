@@ -1,6 +1,6 @@
 # Command Helper Utilities
 
-> 62 nodes
+> 58 nodes
 
 ## Key Concepts
 
@@ -8,8 +8,6 @@
 - **CastCommand** (20 connections) — `server/models/command_magic.py`
 - **SpellCommand** (13 connections) — `server/models/command_magic.py`
 - **LearnCommand** (13 connections) — `server/models/command_magic.py`
-- **command_magic.py** (10 connections) — `server/models/command_magic.py`
-- **SpellsCommand** (8 connections) — `server/models/command_magic.py`
 - **test_cast_command_validate_spell_name_empty()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
 - **test_cast_command_validate_spell_name_whitespace_only()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
 - **test_cast_command_spell_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
@@ -29,14 +27,16 @@
 - **test_spell_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
 - **test_spell_command_validate_spell_name_valid()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
 - **test_spells_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- *... and 37 more nodes in this community*
+- **test_learn_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_learn_command_validate_spell_name_valid()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [Room Service Tests](Room_Service_Tests.md) (15 shared connections)
-- [Emote Schema Validator](Emote_Schema_Validator.md) (6 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (5 shared connections)
-- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (5 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (12 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (10 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (4 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (3 shared connections)
 
 ## Source Files
 
@@ -45,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 185 (91%)
-- INFERRED: 18 (9%)
+- EXTRACTED: 167 (91%)
+- INFERRED: 16 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

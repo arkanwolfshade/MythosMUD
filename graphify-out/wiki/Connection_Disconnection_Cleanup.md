@@ -1,6 +1,6 @@
 # Connection Disconnection Cleanup
 
-> 86 nodes
+> 84 nodes
 
 ## Key Concepts
 
@@ -8,12 +8,12 @@
 - **useContainerSplitPane.ts** (19 connections) — `client/src/components/containers/useContainerSplitPane.ts`
 - **CorpseOverlay.tsx** (17 connections) — `client/src/components/containers/CorpseOverlay.tsx`
 - **ContainerSplitPaneView.tsx** (16 connections) — `client/src/components/containers/ContainerSplitPaneView.tsx`
-- **CorpseCard.tsx** (15 connections) — `client/src/components/containers/CorpseCard.tsx`
 - **ContainerKeyboardAccessibility.test.tsx** (15 connections) — `client/src/components/containers/__tests__/ContainerKeyboardAccessibility.test.tsx`
 - **ContainerSplitPane.tsx** (13 connections) — `client/src/components/containers/ContainerSplitPane.tsx`
 - **BackpackTab.tsx** (12 connections) — `client/src/components/containers/BackpackTab.tsx`
 - **ContainerComponent** (12 connections) — `client/src/stores/containerStore.ts`
 - **InventoryStack** (11 connections) — `client/src/stores/containerStore.ts`
+- **useGameStore** (11 connections) — `client/src/stores/gameStore.ts`
 - **ContainerItemRow.tsx** (10 connections) — `client/src/components/containers/ContainerItemRow.tsx`
 - **BackpackTab.test.tsx** (10 connections) — `client/src/components/containers/__tests__/BackpackTab.test.tsx`
 - **corpseOverlayUtils.ts** (10 connections) — `client/src/components/containers/corpseOverlayUtils.ts`
@@ -29,16 +29,18 @@
 - **useContainerDragHandlers()** (5 connections) — `client/src/components/containers/useContainerSplitPane.ts`
 - **containerStore.test.ts** (5 connections) — `client/src/stores/__tests__/containerStore.test.ts`
 - **ContainerItemRow()** (4 connections) — `client/src/components/containers/ContainerItemRow.tsx`
-- *... and 61 more nodes in this community*
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [Command Input Validator](Command_Input_Validator.md) (12 shared connections)
-- [Combat Attack Handler](Combat_Attack_Handler.md) (9 shared connections)
+- [Command Input Validator](Command_Input_Validator.md) (15 shared connections)
+- [Command Input Utilities](Command_Input_Utilities.md) (5 shared connections)
 - [WebSocket Message Validation](WebSocket_Message_Validation.md) (4 shared connections)
 - [Combat Messaging Integration](Combat_Messaging_Integration.md) (3 shared connections)
 - [Quest Flow Integration](Quest_Flow_Integration.md) (2 shared connections)
 - [Realtime Event Handlers](Realtime_Event_Handlers.md) (2 shared connections)
+- [Combat Attack Handler](Combat_Attack_Handler.md) (2 shared connections)
+- [Async Code Audit](Async_Code_Audit.md) (1 shared connections)
 
 ## Source Files
 
@@ -56,12 +58,14 @@
 - `client/src/components/containers/corpseOverlayUtils.ts`
 - `client/src/components/containers/useContainerSplitPane.ts`
 - `client/src/stores/__tests__/containerStore.test.ts`
+- `client/src/stores/__tests__/gameStore.test.ts`
 - `client/src/stores/containerStore.ts`
+- `client/src/stores/gameStore.ts`
 - `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 360 (100%)
+- EXTRACTED: 350 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

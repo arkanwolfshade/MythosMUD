@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [Combat Command Handler](Combat_Command_Handler.md) (2 shared connections)
-- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
-- [Mythos Time HUD](Mythos_Time_HUD.md) (1 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (2 shared connections)
+- [Player Movement Service](Player_Movement_Service.md) (1 shared connections)
+- [Memory Leak Metrics](Memory_Leak_Metrics.md) (1 shared connections)
 
 ## Source Files
 

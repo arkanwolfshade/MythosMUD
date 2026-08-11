@@ -1,53 +1,63 @@
 # Command Field Validators
 
-> 79 nodes
+> 125 nodes
 
 ## Key Concepts
 
-- **test_connection_helpers_impl.py** (35 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **convert_uuids_to_strings()** (18 connections) — `server/realtime/connection_helpers.py`
-- **send_personal_message_old_impl()** (13 connections) — `server/realtime/connection_helpers.py`
-- **_optimize_payload()** (11 connections) — `server/realtime/connection_helpers.py`
-- **_send_to_websockets()** (11 connections) — `server/realtime/connection_helpers.py`
-- **Any** (10 connections)
-- **test_connection_helpers.py** (9 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **_update_delivery_status()** (8 connections) — `server/realtime/connection_helpers.py`
-- **_queue_message_if_needed()** (6 connections) — `server/realtime/connection_helpers.py`
-- **broadcast_room_event_impl()** (6 connections) — `server/realtime/connection_helpers.py`
-- **broadcast_global_event_impl()** (6 connections) — `server/realtime/connection_helpers.py`
-- **test_send_to_websockets_websocket_error()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_optimize_payload_optimization_failure()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_convert_uuids_to_strings_uuid()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_dict()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_list()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_nested()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_string()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_int()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_optimize_payload()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_send_to_websockets()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_send_to_websockets_no_connections()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_queue_message_if_needed()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_update_delivery_status_success()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_update_delivery_status_failed()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- *... and 54 more nodes in this community*
+- **monitoring.py** (62 connections) — `server/api/monitoring.py`
+- **test_monitoring_endpoints.py** (57 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
+- **monitoring_models.py** (22 connections) — `server/api/monitoring_models.py`
+- **MovementMonitor** (22 connections) — `server/game/movement_monitor.py`
+- **Request** (19 connections)
+- **BaseModel** (19 connections)
+- **_resolve_connection_manager_from_request()** (14 connections) — `server/api/monitoring.py`
+- **get_movement_monitor()** (14 connections) — `server/game/movement_monitor.py`
+- **movement_monitor.py** (12 connections) — `server/game/movement_monitor.py`
+- **_resolve_event_bus_from_request()** (11 connections) — `server/api/monitoring.py`
+- **_request_with_container()** (11 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
+- **get_memory_stats()** (10 connections) — `server/api/monitoring.py`
+- **_resolve_memory_leak_collector()** (10 connections) — `server/api/monitoring.py`
+- **get_movement_metrics()** (9 connections) — `server/api/monitoring.py`
+- **validate_room_integrity()** (9 connections) — `server/api/monitoring.py`
+- **get_dual_connection_stats()** (9 connections) — `server/api/monitoring.py`
+- **get_connection_health_stats()** (9 connections) — `server/api/monitoring.py`
+- **_resolve_cache_manager_from_request()** (9 connections) — `server/api/monitoring.py`
+- **get_system_alerts()** (8 connections) — `server/api/monitoring.py`
+- **reset_metrics()** (8 connections) — `server/api/monitoring.py`
+- **get_performance_summary()** (8 connections) — `server/api/monitoring.py`
+- **get_memory_alerts()** (8 connections) — `server/api/monitoring.py`
+- **force_memory_cleanup()** (8 connections) — `server/api/monitoring.py`
+- **get_performance_stats()** (8 connections) — `server/api/monitoring.py`
+- **get_eventbus_metrics()** (8 connections) — `server/api/monitoring.py`
+- *... and 100 more nodes in this community*
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (17 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (5 shared connections)
-- [Room Occupant Events](Room_Occupant_Events.md) (3 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
+- [Monitoring Response Models](Monitoring_Response_Models.md) (21 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (18 shared connections)
+- [Client Event Store](Client_Event_Store.md) (13 shared connections)
+- [Room Occupant Manager Tests](Room_Occupant_Manager_Tests.md) (13 shared connections)
+- [Movement Performance Monitor](Movement_Performance_Monitor.md) (10 shared connections)
+- [Cursor Subagents Docs](Cursor_Subagents_Docs.md) (7 shared connections)
+- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (4 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (2 shared connections)
+- [Grace Period Blocking Tests](Grace_Period_Blocking_Tests.md) (2 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (2 shared connections)
+- [Room Map Viewer UI](Room_Map_Viewer_UI.md) (2 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_helpers.py`
-- `server/tests/unit/realtime/test_connection_helpers.py`
-- `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- `server/api/monitoring.py`
+- `server/api/monitoring_models.py`
+- `server/game/movement_monitor.py`
+- `server/tests/unit/api/test_monitoring_endpoints.py`
+- `server/tests/unit/game/test_movement_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 255 (98%)
-- INFERRED: 5 (2%)
+- EXTRACTED: 637 (99%)
+- INFERRED: 4 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

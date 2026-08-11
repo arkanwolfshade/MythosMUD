@@ -1,34 +1,78 @@
 # Schemas Maps Map
 
-> 10 nodes
+> 256 nodes
 
 ## Key Concepts
 
-- **player_repository_room.py** (7 connections) — `server/persistence/repositories/player_repository_room.py`
-- **validate_and_fix_player_room()** (7 connections) — `server/persistence/repositories/player_repository_room.py`
-- **validate_and_fix_player_room_with_persistence()** (7 connections) — `server/persistence/repositories/player_repository_room.py`
-- **should_skip_room_validation()** (5 connections) — `server/persistence/repositories/player_repository_room.py`
-- **Any** (3 connections)
-- **Player** (3 connections)
-- **Player room validation helpers for PlayerRepository.  Validates and fixes invali** (1 connections) — `server/persistence/repositories/player_repository_room.py`
-- **Return True if room validation should be skipped (cache empty, instanced, or tut** (1 connections) — `server/persistence/repositories/player_repository_room.py`
-- **Validate player's current room and fix if invalid.      Args:         room_cache** (1 connections) — `server/persistence/repositories/player_repository_room.py`
-- **Validate and fix player room, persisting the fix if needed.      Args:         r** (1 connections) — `server/persistence/repositories/player_repository_room.py`
+- **DatabaseError** (434 connections) — `server/exceptions.py`
+- **exceptions.py** (196 connections) — `server/exceptions.py`
+- **log_and_raise()** (174 connections) — `server/utils/error_logging.py`
+- **get_session_maker()** (91 connections) — `server/database.py`
+- **error_logging.py** (55 connections) — `server/utils/error_logging.py`
+- **__init__.py** (32 connections) — `server/persistence/__init__.py`
+- **PlayerRepository** (31 connections) — `server/persistence/repositories/player_repository.py`
+- **__init__.py** (28 connections) — `server/persistence/repositories/__init__.py`
+- **player_repository.py** (28 connections) — `server/persistence/repositories/player_repository.py`
+- **CreateItemInstanceInput** (23 connections) — `server/async_persistence_constants.py`
+- **skill_service.py** (20 connections) — `server/game/skill_service.py`
+- **item_instance_persistence.py** (20 connections) — `server/persistence/item_instance_persistence.py`
+- **player_spell_repository.py** (20 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **emote_service.py** (19 connections) — `server/game/emote_service.py`
+- **SkillRepository** (19 connections) — `server/persistence/repositories/skill_repository.py`
+- **item_instance_persistence_async.py** (18 connections) — `server/persistence/item_instance_persistence_async.py`
+- **row_to_player()** (18 connections) — `server/persistence/repositories/player_repository_mappers.py`
+- **player_skill_repository.py** (18 connections) — `server/persistence/repositories/player_skill_repository.py`
+- **PlayerSkillRepository** (17 connections) — `server/persistence/repositories/player_skill_repository.py`
+- **profession_repository.py** (17 connections) — `server/persistence/repositories/profession_repository.py`
+- **skill_repository.py** (17 connections) — `server/persistence/repositories/skill_repository.py`
+- **ExperienceRepository** (16 connections) — `server/persistence/repositories/experience_repository.py`
+- **health_repository.py** (16 connections) — `server/persistence/repositories/health_repository.py`
+- **experience_repository.py** (15 connections) — `server/persistence/repositories/experience_repository.py`
+- **item_repository.py** (14 connections) — `server/persistence/repositories/item_repository.py`
+- *... and 231 more nodes in this community*
 
 ## Relationships
 
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
-- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
-- [Player Creation Service](Player_Creation_Service.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (92 shared connections)
+- [Maps API Endpoints](Maps_API_Endpoints.md) (78 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (53 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (43 shared connections)
+- [NATS Subject Manager](NATS_Subject_Manager.md) (38 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (38 shared connections)
+- [Player Save Preparer](Player_Save_Preparer.md) (27 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (25 shared connections)
+- [Lucidity Event Dispatcher](Lucidity_Event_Dispatcher.md) (23 shared connections)
+- [Profession Get Mechanical Effects](Profession_Get_Mechanical_Effects.md) (21 shared connections)
+- [Room Map Viewer UI](Room_Map_Viewer_UI.md) (21 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (20 shared connections)
 
 ## Source Files
 
-- `server/persistence/repositories/player_repository_room.py`
+- `server/async_persistence.py`
+- `server/async_persistence_constants.py`
+- `server/async_persistence_room_loader.py`
+- `server/database.py`
+- `server/exceptions.py`
+- `server/game/emote_service.py`
+- `server/game/mechanics.py`
+- `server/game/skill_service.py`
+- `server/persistence/__init__.py`
+- `server/persistence/item_instance_persistence.py`
+- `server/persistence/item_instance_persistence_async.py`
+- `server/persistence/repositories/__init__.py`
+- `server/persistence/repositories/experience_repository.py`
+- `server/persistence/repositories/health_repository.py`
+- `server/persistence/repositories/item_repository.py`
+- `server/persistence/repositories/player_effect_repository.py`
+- `server/persistence/repositories/player_repository.py`
+- `server/persistence/repositories/player_repository_mappers.py`
+- `server/persistence/repositories/player_skill_repository.py`
+- `server/persistence/repositories/player_spell_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1788 (82%)
+- INFERRED: 395 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

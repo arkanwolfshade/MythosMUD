@@ -30,7 +30,7 @@
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 - [Magic Command Handlers](Magic_Command_Handlers.md) (1 shared connections)
 
 ## Source Files

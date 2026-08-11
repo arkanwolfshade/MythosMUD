@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **.reset_metrics()** (3 connections) — `server/game/movement_monitor.py`
-- **Reset all metrics (useful for testing).** (1 connections) — `server/game/movement_monitor.py`
+- **test_get_player_lucidity_tier()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _get_player_lucidity_tier gets tier.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [Movement Performance Monitor](Movement_Performance_Monitor.md) (1 shared connections)
-- [Monitoring Response Models](Monitoring_Response_Models.md) (1 shared connections)
+- [Loot All Endpoint](Loot_All_Endpoint.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/movement_monitor.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

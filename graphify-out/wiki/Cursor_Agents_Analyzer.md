@@ -1,12 +1,24 @@
 # Cursor Agents Analyzer
 
-> 58 nodes
+> 85 nodes
 
 ## Key Concepts
 
 - **test_command_processor.py** (39 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **CommandProcessor** (15 connections) — `server/utils/command_processor.py`
+- **command_processor.py** (13 connections) — `server/utils/command_processor.py`
+- **get_command_processor()** (7 connections) — `server/utils/command_processor.py`
+- **.extract_command_data()** (5 connections) — `server/utils/command_processor.py`
+- **command_processor()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_get_command_processor()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **.process_command_string()** (4 connections) — `server/utils/command_processor.py`
+- **._extract_attributes()** (4 connections) — `server/utils/command_processor.py`
+- **._is_combat_command()** (4 connections) — `server/utils/command_processor.py`
+- **test_process_command_string_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_process_command_string_attribute_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_get_command_help_attribute_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **.__init__()** (3 connections) — `server/utils/command_processor.py`
+- **Any** (3 connections)
 - **test_command_processor_initialization()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_process_command_string_success()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_process_command_string_value_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
@@ -17,37 +29,29 @@
 - **test_extract_attributes_missing_attribute()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_is_combat_command_attack()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_is_combat_command_punch()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_is_combat_command_kick()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_is_combat_command_strike()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_is_combat_command_non_combat()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_command_data_basic()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_command_data_with_target()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_command_data_combat_target()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_command_data_player_name()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_command_data_multiple_attributes()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_validate_command_safety_safe()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_validate_command_safety_unsafe()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_get_command_help_success()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_get_command_help_none()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- *... and 33 more nodes in this community*
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
-- [Async Room Loading Tests](Async_Room_Loading_Tests.md) (4 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
-- [Cursor Skills Delight](Cursor_Skills_Delight.md) (1 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Command Parser](Command_Parser.md) (5 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (3 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (2 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (2 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (2 shared connections)
+- [Async Audit Cursor](Async_Audit_Cursor.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Archive Planning E 2 E](Archive_Planning_E_2_E.md) (1 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (1 shared connections)
 
 ## Source Files
 
 - `server/tests/unit/utils/test_command_processor.py`
+- `server/utils/command_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 124 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 205 (97%)
+- INFERRED: 7 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

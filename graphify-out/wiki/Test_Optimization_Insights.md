@@ -1,64 +1,59 @@
 # Test Optimization Insights
 
-> 42 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **lifespan.py** (42 connections) — `server/app/lifespan.py`
-- **lifespan()** (15 connections) — `server/app/lifespan.py`
-- **_startup_application()** (13 connections) — `server/app/lifespan.py`
-- **lifespan_event_subscriptions.py** (11 connections) — `server/app/lifespan_event_subscriptions.py`
-- **setup_connection_manager()** (11 connections) — `server/app/lifespan_startup.py`
-- **_shutdown_with_error_handling()** (10 connections) — `server/app/lifespan.py`
-- **subscribe_quest_events()** (9 connections) — `server/app/lifespan_event_subscriptions.py`
-- **update_logging_with_player_service()** (8 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **subscribe_room_occupants_refresh()** (7 connections) — `server/app/lifespan_event_subscriptions.py`
-- **TestLifespan** (6 connections) — `server/tests/unit/test_main.py`
-- **_cleanup_container_on_error()** (5 connections) — `server/app/lifespan.py`
-- **_calculate_metrics_delta()** (4 connections) — `server/app/lifespan.py`
-- **_persist_metrics_to_file()** (4 connections) — `server/app/lifespan.py`
-- **_log_memory_metrics_periodically()** (4 connections) — `server/app/lifespan.py`
-- **FastAPI** (4 connections)
-- **_persist_mythos_state_on_error()** (4 connections) — `server/app/lifespan.py`
-- **.test_lifespan_success()** (4 connections) — `server/tests/unit/test_main.py`
-- **.test_lifespan_shutdown()** (4 connections) — `server/tests/unit/test_main.py`
-- **Any** (3 connections)
-- **test_setup_connection_manager()** (3 connections) — `server/tests/unit/app/test_lifespan_startup.py`
-- **test_setup_connection_manager_no_manager()** (3 connections) — `server/tests/unit/app/test_lifespan_startup.py`
-- **.test_lifespan_initialization_failure()** (3 connections) — `server/tests/unit/test_main.py`
-- **Application lifecycle management for MythosMUD server.  This module handles appl** (1 connections) — `server/app/lifespan.py`
-- **Calculate metrics delta between startup and shutdown.** (1 connections) — `server/app/lifespan.py`
-- **Persist metrics to file in JSON format.** (1 connections) — `server/app/lifespan.py`
-- *... and 17 more nodes in this community*
+- **EventHandler** (22 connections) — `server/realtime/event_handlers.py`
+- **.__init__()** (7 connections) — `server/realtime/nats_message_handler.py`
+- **_as_event_data_dict()** (6 connections) — `server/realtime/event_handlers.py`
+- **.handle_event_message()** (5 connections) — `server/realtime/event_handlers.py`
+- **test_event_handlers_combat.py** (4 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **.__init__()** (3 connections) — `server/realtime/event_handlers.py`
+- **.get_event_handler_map()** (3 connections) — `server/realtime/event_handlers.py`
+- **.validate_event_message()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_combat_started_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_combat_ended_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_player_attacked_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_npc_attacked_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_npc_took_damage_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_npc_died_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **test_handle_npc_took_damage_flattens_event_data_for_websocket()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **.handle_player_entered_event()** (2 connections) — `server/realtime/event_handlers.py`
+- **.handle_player_left_event()** (2 connections) — `server/realtime/event_handlers.py`
+- **.handle_game_tick_event()** (2 connections) — `server/realtime/event_handlers.py`
+- **Normalize NATS event_data payload to a string-keyed dict.** (1 connections) — `server/realtime/event_handlers.py`
+- **Handler for NATS event messages.** (1 connections) — `server/realtime/event_handlers.py`
+- **Initialize event handler.          Args:             connection_manager: Conn** (1 connections) — `server/realtime/event_handlers.py`
+- **Get mapping of event types to their handler methods.          Returns:** (1 connections) — `server/realtime/event_handlers.py`
+- **Validate that event message has required fields.          Args:             e** (1 connections) — `server/realtime/event_handlers.py`
+- **Handle incoming event messages from NATS.          Args:             message_** (1 connections) — `server/realtime/event_handlers.py`
+- **Handle player_entered event.          Args:             data: Event data cont** (1 connections) — `server/realtime/event_handlers.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [MP Regeneration Service](MP_Regeneration_Service.md) (12 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (10 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (9 shared connections)
-- [Memory Leak Metrics](Memory_Leak_Metrics.md) (7 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (7 shared connections)
-- [Invite and User Schemas](Invite_and_User_Schemas.md) (5 shared connections)
-- [Monitoring Response Models](Monitoring_Response_Models.md) (4 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (4 shared connections)
-- [Combat Command Handler](Combat_Command_Handler.md) (3 shared connections)
-- [Party Service Management](Party_Service_Management.md) (3 shared connections)
-- [Who Command Tests](Who_Command_Tests.md) (3 shared connections)
-- [Merge Refactoring Summary](Merge_Refactoring_Summary.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (2 shared connections)
+- [NATS Chat Broadcasting](NATS_Chat_Broadcasting.md) (2 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (2 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [NPC Service Tests](NPC_Service_Tests.md) (1 shared connections)
+- [Circuit Breaker Core](Circuit_Breaker_Core.md) (1 shared connections)
+- [Dead Letter Queue](Dead_Letter_Queue.md) (1 shared connections)
+- [Chat Message Filtering](Chat_Message_Filtering.md) (1 shared connections)
+- [Vim Editor Guidelines](Vim_Editor_Guidelines.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan.py`
-- `server/app/lifespan_event_subscriptions.py`
-- `server/app/lifespan_startup.py`
-- `server/structured_logging/enhanced_logging_config.py`
-- `server/tests/unit/app/test_lifespan_startup.py`
-- `server/tests/unit/test_main.py`
+- `server/realtime/event_handlers.py`
+- `server/realtime/nats_message_handler.py`
+- `server/tests/unit/realtime/test_event_handlers_combat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 188 (95%)
-- INFERRED: 9 (5%)
+- EXTRACTED: 95 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

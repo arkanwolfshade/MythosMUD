@@ -1,26 +1,24 @@
 # Investigations Sessions Xx
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **rename_used_to_is_active.py** (4 connections) — `server/scripts/rename_used_to_is_active.py`
-- **apply_migration()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
-- **main()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
-- **Apply the migration to rename used back to is_active.      Args:         databas** (1 connections) — `server/scripts/rename_used_to_is_active.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/rename_used_to_is_active.py`
+- **test_echo_message_to_sender_exception()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _echo_message_to_sender handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (2 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (1 shared connections)
+- [Loot All Endpoint](Loot_All_Endpoint.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/rename_used_to_is_active.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

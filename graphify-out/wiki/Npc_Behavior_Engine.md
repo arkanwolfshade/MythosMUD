@@ -1,43 +1,40 @@
 # Npc Behavior Engine
 
-> 17 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **emit_container_opened_events()** (16 connections) — `server/api/container_events.py`
-- **Any** (4 connections)
-- **.test_emit_container_opened_events_success()** (3 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_container_opened_events_no_connection_manager()** (3 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_container_opened_events_no_room_id()** (3 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_container_opened_events_validation_error()** (3 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_container_opened_events_emission_error()** (3 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_container_opened_events_missing_mutation_token()** (3 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_container_opened_events_room_emission_error()** (3 connections) — `server/tests/unit/api/test_container_events.py`
-- **Emit WebSocket events for container opening.      Args:         connection_manag** (1 connections) — `server/api/container_events.py`
-- **Test emit_container_opened_events successfully emits events.** (1 connections) — `server/tests/unit/api/test_container_events.py`
-- **Test emit_container_opened_events handles None connection_manager.** (1 connections) — `server/tests/unit/api/test_container_events.py`
-- **Test emit_container_opened_events handles container without room_id.** (1 connections) — `server/tests/unit/api/test_container_events.py`
-- **Test emit_container_opened_events handles validation errors gracefully.** (1 connections) — `server/tests/unit/api/test_container_events.py`
-- **Test emit_container_opened_events handles emission errors gracefully.** (1 connections) — `server/tests/unit/api/test_container_events.py`
-- **Test emit_container_opened_events handles missing mutation_token gracefully.** (1 connections) — `server/tests/unit/api/test_container_events.py`
-- **Test emit_container_opened_events handles room emission errors separately.** (1 connections) — `server/tests/unit/api/test_container_events.py`
+- **UnknownLucidityActionError** (12 connections) — `server/services/active_lucidity_service.py`
+- **LucidityActionError** (7 connections) — `server/services/active_lucidity_service.py`
+- **test_handle_pray_command_unknown_action()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_group_solace_command_unknown_action()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_perform_recovery_action_unknown_action()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **RuntimeError** (2 connections)
+- **Base error for lucidity action operations.** (1 connections) — `server/services/active_lucidity_service.py`
+- **Raised when an unrecognised recovery action is requested.** (1 connections) — `server/services/active_lucidity_service.py`
+- **Test handle_pray_command with unknown action.** (1 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **Test handle_group_solace_command with unknown action.** (1 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **Test perform_recovery_action() raises error for unknown action.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Relationships
 
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (12 shared connections)
-- [E 2 E Cleanup Troubleshooting](E_2_E_Cleanup_Troubleshooting.md) (2 shared connections)
-- [E 2 E Testing Guide](E_2_E_Testing_Guide.md) (2 shared connections)
-- [Product Requirements Document](Product_Requirements_Document.md) (1 shared connections)
+- [Container Open Events](Container_Open_Events.md) (5 shared connections)
+- [Alias Storage Layer](Alias_Storage_Layer.md) (4 shared connections)
+- [Container Component Capacity](Container_Component_Capacity.md) (2 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (2 shared connections)
+- [Memory Threshold Monitor](Memory_Threshold_Monitor.md) (2 shared connections)
+- [WebSocket Message Validator](WebSocket_Message_Validator.md) (2 shared connections)
 
 ## Source Files
 
-- `server/api/container_events.py`
-- `server/tests/unit/api/test_container_events.py`
+- `server/services/active_lucidity_service.py`
+- `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 33 (89%)
+- INFERRED: 4 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,58 +1,65 @@
 # Spell Registry Costs
 
-> 121 nodes
+> 298 nodes
 
 ## Key Concepts
 
 - **.get_instance()** (88 connections) — `server/database.py`
 - **.reset_instance()** (87 connections) — `server/database.py`
+- **test_database_helpers.py** (46 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_database_extended.py** (43 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
 - **test_database_error_handling.py** (41 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
 - **test_database_init.py** (36 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **test_database_manager_init_raises_when_instance_exists()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_config_validation_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_config_runtime_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_none_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_unsupported_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_value_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_type_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_connection_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_os_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_generic_exception()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_get_database_path_unsupported_raises()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_get_database_path_none_url_raises()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_close_handles_attribute_error_during_dispose()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_import_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **test_initialize_database_config_validation_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **test_initialize_database_config_runtime_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **test_initialize_database_none_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **test_initialize_database_unsupported_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **test_initialize_database_value_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **test_initialize_database_type_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **test_initialize_database_connection_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- *... and 96 more nodes in this community*
+- **database_helpers.py** (30 connections) — `server/database_helpers.py`
+- **DatabaseManager** (29 connections) — `server/database.py`
+- **reset_database()** (16 connections) — `server/database.py`
+- **get_database_path()** (16 connections) — `server/database_helpers.py`
+- **get_database_path()** (12 connections) — `server/database.py`
+- **get_async_session()** (12 connections) — `server/database_helpers.py`
+- **close_db()** (9 connections) — `server/database.py`
+- **get_engine()** (9 connections) — `server/database_helpers.py`
+- **get_session_maker()** (9 connections) — `server/database_helpers.py`
+- **close_db()** (9 connections) — `server/database_helpers.py`
+- **get_engine()** (8 connections) — `server/database.py`
+- **reset_database()** (8 connections) — `server/database_helpers.py`
+- **init_db()** (8 connections) — `server/database_helpers.py`
+- **test_database.py** (7 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **.get_database_path()** (6 connections) — `server/database.py`
+- **Path** (6 connections)
+- **get_database_url()** (6 connections) — `server/database.py`
+- **get_database_url()** (6 connections) — `server/database_helpers.py`
+- **ensure_database_directory()** (6 connections) — `server/database_helpers.py`
+- *... and 273 more nodes in this community*
 
 ## Relationships
 
-- [Holiday Persistence Models](Holiday_Persistence_Models.md) (39 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (18 shared connections)
-- [Container Loot Helpers](Container_Loot_Helpers.md) (13 shared connections)
-- [Combat Services Messaging](Combat_Services_Messaging.md) (13 shared connections)
-- [Rate Limiter Utilities](Rate_Limiter_Utilities.md) (12 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (9 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (39 shared connections)
+- [NATS Subject Manager](NATS_Subject_Manager.md) (35 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (20 shared connections)
+- [Profession Get Mechanical Effects](Profession_Get_Mechanical_Effects.md) (6 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (4 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Container Persistence Ops](Container_Persistence_Ops.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
+- [Message Queue Cleanup](Message_Queue_Cleanup.md) (1 shared connections)
 
 ## Source Files
 
 - `server/database.py`
-- `server/services/exploration_service.py`
+- `server/database_helpers.py`
+- `server/tests/unit/infrastructure/test_database.py`
 - `server/tests/unit/infrastructure/test_database_error_handling.py`
+- `server/tests/unit/infrastructure/test_database_extended.py`
+- `server/tests/unit/infrastructure/test_database_helpers.py`
 - `server/tests/unit/infrastructure/test_database_init.py`
 
 ## Audit Trail
 
-- EXTRACTED: 539 (96%)
-- INFERRED: 24 (4%)
+- EXTRACTED: 1155 (96%)
+- INFERRED: 52 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

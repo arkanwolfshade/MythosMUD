@@ -1,65 +1,60 @@
 # Memory Leak Metrics
 
-> 106 nodes
+> 84 nodes
 
 ## Key Concepts
 
-- **MonitoringDashboard** (33 connections) — `server/monitoring/monitoring_dashboard.py`
-- **monitoring_dashboard.py** (25 connections) — `server/monitoring/monitoring_dashboard.py`
 - **PerformanceMonitor** (25 connections) — `server/monitoring/performance_monitor.py`
+- **websocket_integration.py** (22 connections) — `docs/examples/logging/websocket_integration.py`
 - **performance_monitor.py** (20 connections) — `server/monitoring/performance_monitor.py`
-- **get_monitoring_dashboard()** (19 connections) — `server/monitoring/monitoring_dashboard.py`
-- **Alert** (14 connections) — `server/monitoring/monitoring_dashboard.py`
+- **measure_performance()** (20 connections) — `server/monitoring/performance_monitor.py`
 - **get_performance_monitor()** (13 connections) — `server/monitoring/performance_monitor.py`
-- **ExceptionStats** (12 connections) — `server/monitoring/exception_tracker.py`
-- **__init__.py** (11 connections) — `server/monitoring/__init__.py`
-- **.get_system_health()** (11 connections) — `server/monitoring/monitoring_dashboard.py`
-- **PerformanceStats** (11 connections) — `server/monitoring/performance_monitor.py`
-- **LogAggregationStats** (10 connections) — `server/structured_logging/log_aggregator.py`
-- **.record_custom_alert()** (9 connections) — `server/monitoring/monitoring_dashboard.py`
 - **PerformanceMetric** (9 connections) — `server/monitoring/performance_monitor.py`
-- **_initialize_enhanced_systems()** (8 connections) — `server/app/lifespan.py`
-- **__getattr__()** (8 connections) — `server/monitoring/__init__.py`
-- **SystemHealth** (8 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.check_alerts()** (8 connections) — `server/monitoring/monitoring_dashboard.py`
+- **handle_websocket_message()** (8 connections) — `docs/examples/logging/websocket_integration.py`
 - **.record_metric()** (8 connections) — `server/monitoring/performance_monitor.py`
-- **.initialize()** (7 connections) — `server/container/bundles/monitoring.py`
-- **MonitoringSummary** (7 connections) — `server/monitoring/monitoring_dashboard.py`
-- **._generate_recommendations()** (7 connections) — `server/monitoring/monitoring_dashboard.py`
+- **WebSocketManager** (7 connections) — `docs/examples/logging/websocket_integration.py`
+- **websocket_endpoint()** (7 connections) — `docs/examples/logging/websocket_integration.py`
+- **.send_text()** (7 connections) — `docs/examples/logging/websocket_integration.py`
 - **get_performance_stats()** (7 connections) — `server/monitoring/performance_monitor.py`
-- **.__init__()** (6 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.get_monitoring_summary()** (6 connections) — `server/monitoring/monitoring_dashboard.py`
-- *... and 81 more nodes in this community*
+- **.disconnect()** (6 connections) — `docs/examples/logging/websocket_integration.py`
+- **handle_game_action()** (6 connections) — `docs/examples/logging/websocket_integration.py`
+- **chat_service** (6 connections) — `docs/examples/logging/websocket_integration.py`
+- **Any** (6 connections)
+- **.get_operation_stats()** (6 connections) — `server/monitoring/performance_monitor.py`
+- **record_performance_metric()** (6 connections) — `server/monitoring/performance_monitor.py`
+- **.connect()** (5 connections) — `docs/examples/logging/websocket_integration.py`
+- **handle_chat_message()** (5 connections) — `docs/examples/logging/websocket_integration.py`
+- **WebSocket** (5 connections) — `docs/examples/logging/websocket_integration.py`
+- **.get_all_stats()** (5 connections) — `server/monitoring/performance_monitor.py`
+- **._trigger_alert()** (5 connections) — `server/monitoring/performance_monitor.py`
+- **.export_metrics()** (5 connections) — `server/monitoring/performance_monitor.py`
+- **reset_performance_metrics()** (5 connections) — `server/monitoring/performance_monitor.py`
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (14 shared connections)
-- [Merge Refactoring Summary](Merge_Refactoring_Summary.md) (11 shared connections)
-- [Monitoring Bundle Services](Monitoring_Bundle_Services.md) (8 shared connections)
-- [Monitoring Response Models](Monitoring_Response_Models.md) (8 shared connections)
-- [Test Optimization Insights](Test_Optimization_Insights.md) (7 shared connections)
-- [Party Service Management](Party_Service_Management.md) (6 shared connections)
-- [Mythos Time HUD](Mythos_Time_HUD.md) (6 shared connections)
+- [Help and WebSocket Core](Help_and_WebSocket_Core.md) (8 shared connections)
+- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (7 shared connections)
+- [Character Info Panel Fix](Character_Info_Panel_Fix.md) (6 shared connections)
+- [Player Movement Service](Player_Movement_Service.md) (5 shared connections)
 - [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (5 shared connections)
-- [Magic Command Handlers](Magic_Command_Handlers.md) (4 shared connections)
-- [NPC Database Sessions](NPC_Database_Sessions.md) (3 shared connections)
-- [Quest Instance Repository](Quest_Instance_Repository.md) (2 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
+- [Test Migration Mapping](Test_Migration_Mapping.md) (4 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Realtime Errors Error](Realtime_Errors_Error.md) (2 shared connections)
+- [test_process_exits_for_room_no_direction](test_process_exits_for_room_no_direction.md) (1 shared connections)
+- [Quest Journal Commands](Quest_Journal_Commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan.py`
-- `server/container/bundles/monitoring.py`
-- `server/monitoring/__init__.py`
-- `server/monitoring/exception_tracker.py`
-- `server/monitoring/monitoring_dashboard.py`
+- `docs/examples/logging/websocket_integration.py`
 - `server/monitoring/performance_monitor.py`
-- `server/structured_logging/log_aggregator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 426 (89%)
-- INFERRED: 50 (11%)
+- EXTRACTED: 311 (95%)
+- INFERRED: 17 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

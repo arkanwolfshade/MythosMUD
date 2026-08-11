@@ -22,10 +22,12 @@
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (1 shared connections)
 - [Game State Provider](Game_State_Provider.md) (1 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
-- [Commands System Help](Commands_System_Help.md) (1 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
+- [Combat UUID Display Bug](Combat_UUID_Display_Bug.md) (1 shared connections)
 
 ## Source Files
 

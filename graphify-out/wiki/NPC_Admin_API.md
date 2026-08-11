@@ -1,19 +1,16 @@
 # NPC Admin API
 
-> 133 nodes
+> 79 nodes
 
 ## Key Concepts
 
-- **ZoneConfiguration** (55 connections) — `server/npc/zone_configuration.py`
 - **test_zone_config_loader.py** (35 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_zone_configuration.py** (23 connections) — `server/tests/unit/npc/test_zone_configuration.py`
 - **zone_config_loader.py** (22 connections) — `server/npc/zone_config_loader.py`
 - **process_zone_rows()** (13 connections) — `server/npc/zone_config_loader.py`
 - **async_load_zone_configurations()** (13 connections) — `server/npc/zone_config_loader.py`
 - **_empty_zone_load_result()** (13 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
 - **ZoneLoadResult** (12 connections) — `server/npc/zone_config_loader.py`
 - **parse_json_field()** (11 connections) — `server/npc/zone_config_loader.py`
-- **zone_configuration.py** (11 connections) — `server/npc/zone_configuration.py`
 - **extract_zone_name()** (9 connections) — `server/npc/zone_config_loader.py`
 - **_store_subzone_row()** (9 connections) — `server/npc/zone_config_loader.py`
 - **process_subzone_rows()** (9 connections) — `server/npc/zone_config_loader.py`
@@ -29,29 +26,29 @@
 - **test_process_zone_rows_empty()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
 - **test_process_zone_rows_json_strings()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
 - **test_process_subzone_rows_empty()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- *... and 108 more nodes in this community*
+- **test_async_load_zone_configurations_success()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_no_database_url()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_error()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- *... and 54 more nodes in this community*
 
 ## Relationships
 
-- [Command Parser Tests](Command_Parser_Tests.md) (12 shared connections)
-- [Plan Cursor Plans](Plan_Cursor_Plans.md) (7 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (6 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (3 shared connections)
-- [LRU Cache Manager](LRU_Cache_Manager.md) (3 shared connections)
+- [Command Parser Tests](Command_Parser_Tests.md) (14 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (4 shared connections)
 - [Test Migration Report](Test_Migration_Report.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [NATS Subject Manager](NATS_Subject_Manager.md) (1 shared connections)
 
 ## Source Files
 
 - `server/npc/zone_config_loader.py`
 - `server/npc/zone_configuration.py`
-- `server/tests/unit/npc/test_spawn_validator.py`
 - `server/tests/unit/npc/test_zone_config_loader.py`
-- `server/tests/unit/npc/test_zone_configuration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 475 (96%)
-- INFERRED: 20 (4%)
+- EXTRACTED: 297 (96%)
+- INFERRED: 12 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

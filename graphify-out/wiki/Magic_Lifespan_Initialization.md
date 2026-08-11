@@ -1,45 +1,47 @@
 # Magic Lifespan Initialization
 
-> 19 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **test_game_enums.py** (11 connections) — `server/tests/unit/models/test_game_enums.py`
-- **AttributeType** (8 connections) — `server/models/game.py`
-- **StrEnum** (3 connections)
-- **.get_attribute_modifier()** (3 connections) — `server/models/game.py`
-- **test_attribute_type_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_attribute_type_enum_all_types()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_status_effect_type_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_status_effect_type_enum_all_types()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_position_state_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_position_state_enum_all_states()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Core attribute types for the character system .** (1 connections) — `server/models/game.py`
-- **Get the modifier for a given attribute (standard D&D-style calculation).** (1 connections) — `server/models/game.py`
-- **Unit tests for game model enums.  Tests AttributeType, StatusEffectType, and Pos** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test AttributeType enum contains expected values.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test AttributeType enum contains all expected types.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test StatusEffectType enum contains expected values.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test StatusEffectType enum contains all expected types.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test PositionState enum contains expected values.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test PositionState enum contains all expected states.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
+- **coerce_int()** (37 connections) — `server/utils/int_coercion.py`
+- **int_coercion.py** (13 connections) — `server/utils/int_coercion.py`
+- **test_inventory_command_coercion.py** (12 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **test_coerce_int_string_parsing()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **test_coerce_int_bool_before_int()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **test_coerce_int_plain_int()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **test_coerce_int_float()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **test_coerce_int_float_nan_falls_back_to_default()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **test_coerce_int_float_inf_falls_back_to_default()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **test_coerce_int_unknown_type()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **_int_from_decimal_string()** (2 connections) — `server/utils/int_coercion.py`
+- **_int_from_float_safe()** (2 connections) — `server/utils/int_coercion.py`
+- **Unit tests for server.utils.int_coercion.coerce_int.** (1 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **Coerce object-shaped JSON/JSONB values to int (commands, models, stats).** (1 connections) — `server/utils/int_coercion.py`
+- **Parse integer fields from object-typed JSON/JSONB payloads.      Non-numeric str** (1 connections) — `server/utils/int_coercion.py`
 
 ## Relationships
 
-- [test_profession_meets_stat_requirements_multiple_not_met](test_profession_meets_stat_requirements_multiple_not_met.md) (4 shared connections)
-- [Game Mechanics Service](Game_Mechanics_Service.md) (3 shared connections)
-- [Player Creation Service](Player_Creation_Service.md) (2 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
+- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (6 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (6 shared connections)
+- [FastAPI Auth Integration](FastAPI_Auth_Integration.md) (4 shared connections)
+- [Container Sync Remediation](Container_Sync_Remediation.md) (4 shared connections)
+- [Connection Room Presence Utils](Connection_Room_Presence_Utils.md) (3 shared connections)
+- [Maps API Endpoints](Maps_API_Endpoints.md) (3 shared connections)
+- [WebSocket Initial State](WebSocket_Initial_State.md) (3 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Panel Layout Libraries Spec](Panel_Layout_Libraries_Spec.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
-- `server/tests/unit/models/test_game_enums.py`
+- `server/tests/unit/commands/test_inventory_command_coercion.py`
+- `server/utils/int_coercion.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 77 (93%)
+- INFERRED: 6 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

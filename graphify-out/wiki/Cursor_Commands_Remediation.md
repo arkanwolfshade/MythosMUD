@@ -23,7 +23,7 @@
 - [Game Level Service](Game_Level_Service.md) (3 shared connections)
 - [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (2 shared connections)
 - [Code Review Archive](Code_Review_Archive.md) (2 shared connections)
-- [Game Service Bundle](Game_Service_Bundle.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
