@@ -2,7 +2,7 @@
 
 > God node · 314 connections · `server/models/user.py`
 
-**Community:** [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md)
+**Community:** [Room Occupancy Class](Room_Occupancy_Class.md)
 
 ## Connections by Relation
 

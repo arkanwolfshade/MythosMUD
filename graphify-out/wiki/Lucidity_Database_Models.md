@@ -33,12 +33,15 @@
 
 ## Relationships
 
-- [Communication Command Flows](Communication_Command_Flows.md) (15 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (2 shared connections)
-- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (1 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
-- [NPC Service Tests](NPC_Service_Tests.md) (1 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (7 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (4 shared connections)
+- [Application Config Settings](Application_Config_Settings.md) (3 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (2 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (1 shared connections)
+- [Combat Aggro Threat](Combat_Aggro_Threat.md) (1 shared connections)
+- [Combat Messaging Base](Combat_Messaging_Base.md) (1 shared connections)
+- [Command Alias Model](Command_Alias_Model.md) (1 shared connections)
+- [Async Audit Cursor](Async_Audit_Cursor.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,29 +1,40 @@
 # Logging Structured Setup
 
-> 6 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **test_initiate_shutdown_countdown_success()** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_initiate_shutdown_countdown_supersedes()** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **_InitiateStateStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **_InitiateAppStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test initiate_shutdown_countdown() successfully initiates shutdown.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test initiate_shutdown_countdown() cancels existing shutdown.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **_make_mock_row()** (10 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_name_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **UUID** (3 connections)
+- **test_list_players_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_players_by_user_id_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_active_players_by_user_id_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_players_in_room_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_players_batch_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Create a mock procedure result row for row_to_player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test get_player_by_name successfully retrieves player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test list_players successfully retrieves players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test get_players_by_user_id successfully retrieves players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test get_active_players_by_user_id successfully retrieves active players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test get_players_in_room successfully retrieves players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test get_players_batch successfully retrieves multiple players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
 
 ## Relationships
 
-- [Services Lucidity Repository](Services_Lucidity_Repository.md) (4 shared connections)
-- [Room Drop Renderer](Room_Drop_Renderer.md) (2 shared connections)
+- [Lizard Complexity Findings](Lizard_Complexity_Findings.md) (8 shared connections)
+- [Services Player Respawn](Services_Player_Respawn.md) (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_admin_shutdown_command.py`
+- `server/tests/unit/persistence/test_player_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 37 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

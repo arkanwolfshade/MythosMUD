@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_contains_suspicious_patterns_clean()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test _contains_suspicious_patterns with clean target name.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_create_mutes_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_mutes_command delegates to moderation factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 

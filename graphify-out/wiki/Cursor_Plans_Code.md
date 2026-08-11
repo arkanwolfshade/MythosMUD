@@ -1,25 +1,26 @@
 # Cursor Plans Code
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **_strip_blank_lizard.py** (2 connections) — `docs/investigations/_strip_blank_lizard.py`
-- **lizard_warns()** (1 connections) — `docs/investigations/_strip_blank_lizard.py`
-- **strip_blank_in_func()** (1 connections) — `docs/investigations/_strip_blank_lizard.py`
+- **player_service()** (4 connections) — `server/tests/unit/game/test_player_service.py`
+- **Create a PlayerService instance.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
+- [Application DI Bundles](Application_DI_Bundles.md) (1 shared connections)
+- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/investigations/_strip_blank_lizard.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 4 (80%)
+- INFERRED: 1 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

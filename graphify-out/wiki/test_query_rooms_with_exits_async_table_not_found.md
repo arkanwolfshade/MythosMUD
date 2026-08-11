@@ -1,26 +1,24 @@
 # test_query_rooms_with_exits_async_table_not_found
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **_is_npc_follow_value()** (6 connections) — `server/game/follow_service.py`
-- **_FollowTargetValue** (1 connections)
-- **TypeGuard** (1 connections)
-- **True when v is the 3-tuple (target_id, 'npc', display_name).** (1 connections) — `server/game/follow_service.py`
+- **test_invalid_transition_raises_error()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test invalid state transitions raise errors.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [Player Respawn Handlers](Player_Respawn_Handlers.md) (1 shared connections)
+- [Room Subscription Helpers](Room_Subscription_Helpers.md) (1 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/follow_service.py`
+- `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

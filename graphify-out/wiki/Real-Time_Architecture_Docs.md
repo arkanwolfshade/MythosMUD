@@ -1,47 +1,50 @@
 # Real-Time Architecture Docs
 
-> 25 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **Any** (12 connections)
-- **._try_evaluators()** (7 connections) — `server/npc/behavior_engine.py`
-- **.evaluate_condition()** (6 connections) — `server/npc/behavior_engine.py`
-- **.get_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
-- **.execute_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_equality()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_inequality()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_numeric_comparison()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_boolean_condition()** (4 connections) — `server/npc/behavior_engine.py`
-- **.execute_action()** (4 connections) — `server/npc/behavior_engine.py`
-- **.add_rule()** (3 connections) — `server/npc/behavior_engine.py`
-- **.get_rules()** (3 connections) — `server/npc/behavior_engine.py`
-- **.register_action_handler()** (3 connections) — `server/npc/behavior_engine.py`
-- **Add a behavior rule to the engine.          Args:             rule: Rule diction** (1 connections) — `server/npc/behavior_engine.py`
-- **Get all behavior rules.** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate equality condition (==).          Returns:             bool if conditio** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate inequality condition (!=).          Returns:             bool if condit** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate numeric comparison conditions (>=, <=, >, <).          Args:** (1 connections) — `server/npc/behavior_engine.py`
-- **Try multiple evaluator methods in sequence.          Args:             condition** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate boolean conditions and variable lookups.          Args:             con** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate a condition string against context.          Args:             conditio** (1 connections) — `server/npc/behavior_engine.py`
-- **Get rules that are applicable given the current context.          Args:** (1 connections) — `server/npc/behavior_engine.py`
-- **Register an action handler for a specific action.          Args:             act** (1 connections) — `server/npc/behavior_engine.py`
-- **Execute a specific action.          Args:             action_name: Name of the a** (1 connections) — `server/npc/behavior_engine.py`
-- **Execute all applicable rules based on context.          Args:             contex** (1 connections) — `server/npc/behavior_engine.py`
+- **websocket_handler_connection.py** (17 connections) — `server/realtime/websocket_handler_connection.py`
+- **cleanup_websocket_connection()** (7 connections) — `server/realtime/websocket_handler_connection.py`
+- **setup_initial_connection_state()** (7 connections) — `server/realtime/websocket_handler_connection.py`
+- **PlayerDisconnectService** (6 connections) — `server/realtime/websocket_handler_connection.py`
+- **AsyncPersistenceRoomLookup** (6 connections) — `server/realtime/websocket_handler_connection.py`
+- **send_welcome_event()** (6 connections) — `server/realtime/websocket_handler_connection.py`
+- **UUID** (5 connections)
+- **_fetch_room_for_tracked_player()** (4 connections) — `server/realtime/websocket_helpers.py`
+- **.on_player_disconnect()** (3 connections) — `server/realtime/websocket_handler_connection.py`
+- **.get_room_by_id()** (3 connections) — `server/realtime/websocket_handler_connection.py`
+- **Protocol** (2 connections)
+- **WebSocket** (2 connections)
+- **WebSocket connection lifecycle: setup, welcome, and cleanup on disconnect.  Extr** (1 connections) — `server/realtime/websocket_handler_connection.py`
+- **Notify subsystems when a WebSocket session ends for a player.** (1 connections) — `server/realtime/websocket_handler_connection.py`
+- **Narrow persistence surface for loading ``Room`` by id in the WS handler.** (1 connections) — `server/realtime/websocket_handler_connection.py`
+- **Clean up connection, follow state, party state, and player mute data on disconne** (1 connections) — `server/realtime/websocket_handler_connection.py`
+- **Set up initial connection state and send initial game state.      Returns:** (1 connections) — `server/realtime/websocket_handler_connection.py`
+- **Send welcome event to the client.      Returns:         True if successful, Fals** (1 connections) — `server/realtime/websocket_handler_connection.py`
+- **Load the room instance for the player's current_room_id.      Returns:         (** (1 connections) — `server/realtime/websocket_helpers.py`
 
 ## Relationships
 
-- [Quest Instance Repository](Quest_Instance_Repository.md) (12 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (4 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (3 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (3 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Character Creation Service](Character_Creation_Service.md) (2 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
+- [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/behavior_engine.py`
+- `server/realtime/websocket_handler_connection.py`
+- `server/realtime/websocket_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 76 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 67 (89%)
+- INFERRED: 8 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

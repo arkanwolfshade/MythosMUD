@@ -4,21 +4,22 @@
 
 ## Key Concepts
 
-- **test_validate_chat_message_fields_sender_id_type_error()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _validate_chat_message_fields raises TypeError for invalid sender_id type.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_delete_player_persistence_fails()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test delete_player() when persistence.delete_player fails.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 
 ## Relationships
 
-- [Loot All Endpoint](Loot_All_Endpoint.md) (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
+- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

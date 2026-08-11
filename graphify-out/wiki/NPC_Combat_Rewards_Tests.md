@@ -1,63 +1,51 @@
 # NPC Combat Rewards Tests
 
-> 45 nodes
+> 25 nodes
 
 ## Key Concepts
 
 - **performance.test.tsx** (15 connections) — `client/src/components/__tests__/performance.test.tsx`
 - **PerformanceTester** (12 connections) — `client/src/utils/performanceTester.ts`
-- **ChatPanel()** (11 connections) — `client/src/components/panels/ChatPanelRuntime.tsx`
-- **ChatPanel.tsx** (9 connections) — `client/src/components/panels/ChatPanel.tsx`
-- **chat-panel.spec.tsx** (9 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
 - **performanceTester.ts** (8 connections) — `client/src/utils/performanceTester.ts`
-- **ChatPanel.test.tsx** (7 connections) — `client/src/components/__tests__/ChatPanel.test.tsx`
-- **chat-panel.test.tsx** (7 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
 - **usePerformanceTester()** (7 connections) — `client/src/utils/performanceTester.ts`
-- **ChatPanel.edgeCases.test.tsx** (6 connections) — `client/src/components/__tests__/ChatPanel.edgeCases.test.tsx`
-- **chatPanelTestHelpers.ts** (5 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
 - **performanceTester.test.ts** (4 connections) — `client/src/utils/__tests__/performanceTester.test.ts`
 - **.runTest()** (4 connections) — `client/src/utils/performanceTester.ts`
 - **.generateReport()** (4 connections) — `client/src/utils/performanceTester.ts`
-- **createChatPanelDefaultProps()** (3 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
-- **chatPanelTestSetup.tsx** (3 connections) — `client/src/components/__tests__/chatPanelTestSetup.tsx`
-- **mockConsoleLog** (3 connections) — `client/src/components/__tests__/chatPanelTestSetup.tsx`
-- **ChatPanelCore.tsx** (3 connections) — `client/src/components/panels/ChatPanelCore.tsx`
 - **.runComponentRenderTest()** (3 connections) — `client/src/utils/performanceTester.ts`
 - **.runMemoryTest()** (3 connections) — `client/src/utils/performanceTester.ts`
 - **.getResults()** (3 connections) — `client/src/utils/performanceTester.ts`
-- **mockMessages** (2 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
 - **PerformanceTestResult** (2 connections) — `client/src/utils/performanceTester.ts`
 - **.getAverageResults()** (2 connections) — `client/src/utils/performanceTester.ts`
-- **ChatPanelTestMessage** (1 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
-- *... and 20 more nodes in this community*
+- **TerminalButtonProps** (1 connections) — `client/src/components/__tests__/performance.test.tsx`
+- **PerformanceChartProps** (1 connections) — `client/src/components/__tests__/performance.test.tsx`
+- **MemoryUsageDisplayProps** (1 connections) — `client/src/components/__tests__/performance.test.tsx`
+- **TerminalInputProps** (1 connections) — `client/src/components/__tests__/performance.test.tsx`
+- **Channel** (1 connections) — `client/src/components/__tests__/performance.test.tsx`
+- **ChannelSelectorProps** (1 connections) — `client/src/components/__tests__/performance.test.tsx`
+- **ExtendedPerformance** (1 connections) — `client/src/utils/__tests__/performanceTester.test.ts`
+- **PerformanceTestConfig** (1 connections) — `client/src/utils/performanceTester.ts`
+- **PerformanceMemory** (1 connections) — `client/src/utils/performanceTester.ts`
+- **ExtendedPerformance** (1 connections) — `client/src/utils/performanceTester.ts`
+- **.getResultsByName()** (1 connections) — `client/src/utils/performanceTester.ts`
+- **.clearResults()** (1 connections) — `client/src/utils/performanceTester.ts`
+- **.exportResults()** (1 connections) — `client/src/utils/performanceTester.ts`
 
 ## Relationships
 
-- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (6 shared connections)
-- [Lucidity Rate Overrides](Lucidity_Rate_Overrides.md) (3 shared connections)
-- [Client App State Hooks](Client_App_State_Hooks.md) (3 shared connections)
-- [Command Input Validator](Command_Input_Validator.md) (2 shared connections)
-- [Magic System Feature Plan](Magic_System_Feature_Plan.md) (2 shared connections)
-- [Command Input Utilities](Command_Input_Utilities.md) (2 shared connections)
+- [Lucidity Rate Overrides](Lucidity_Rate_Overrides.md) (2 shared connections)
+- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (2 shared connections)
+- [Admin Shutdown Commands](Admin_Shutdown_Commands.md) (1 shared connections)
+- [Client App State Hooks](Client_App_State_Hooks.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/__tests__/ChatPanel.edgeCases.test.tsx`
-- `client/src/components/__tests__/ChatPanel.test.tsx`
-- `client/src/components/__tests__/chatPanelTestHelpers.ts`
-- `client/src/components/__tests__/chatPanelTestSetup.tsx`
 - `client/src/components/__tests__/performance.test.tsx`
-- `client/src/components/panels/ChatPanel.tsx`
-- `client/src/components/panels/ChatPanelCore.tsx`
-- `client/src/components/panels/ChatPanelRuntime.tsx`
-- `client/src/components/panels/__tests__/chat-panel.spec.tsx`
-- `client/src/components/panels/__tests__/chat-panel.test.tsx`
 - `client/src/utils/__tests__/performanceTester.test.ts`
 - `client/src/utils/performanceTester.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 156 (100%)
+- EXTRACTED: 80 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

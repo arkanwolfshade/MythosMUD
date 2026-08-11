@@ -30,8 +30,8 @@
 
 - [Command Input Utilities](Command_Input_Utilities.md) (4 shared connections)
 - [Realtime Event Handlers](Realtime_Event_Handlers.md) (4 shared connections)
-- [Character Creation E2E](Character_Creation_E2E.md) (2 shared connections)
-- [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (2 shared connections)
+- [Room Map Viewer UI](Room_Map_Viewer_UI.md) (2 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (2 shared connections)
 
 ## Source Files
 

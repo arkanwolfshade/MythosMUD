@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **test_event_bus_subscribe()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.subscribe() adds subscriber.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_get_player_by_id_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test get_player_by_id successfully retrieves player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
 
 ## Relationships
 
-- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (1 shared connections)
-- [Services Rescue Service](Services_Rescue_Service.md) (1 shared connections)
+- [Lizard Complexity Findings](Lizard_Complexity_Findings.md) (1 shared connections)
+- [Logging Structured Setup](Logging_Structured_Setup.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/events/test_event_bus.py`
+- `server/tests/unit/persistence/test_player_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

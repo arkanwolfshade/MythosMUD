@@ -1,27 +1,23 @@
 # Upgrade Archive Dependency
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.create_tracked_task()** (5 connections) — `server/app/tracked_task_manager.py`
-- **.create_supervised_task()** (5 connections) — `server/app/tracked_task_manager.py`
-- **Any** (2 connections)
-- **Task** (2 connections)
-- **Create a managed asyncio.Task with mandatory lifecycle tracking.          Args:** (1 connections) — `server/app/tracked_task_manager.py`
-- **Create a task with enhanced supervision for legacy cleanup scenarios.          A** (1 connections) — `server/app/tracked_task_manager.py`
+- **test_handle_admin_set_stat_command_dp_above_maximum()** (3 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
+- **Test DP above maximum (warn but allow).** (1 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
 
 ## Relationships
 
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
+- [Admin Status Commands](Admin_Status_Commands.md) (2 shared connections)
 
 ## Source Files
 
-- `server/app/tracked_task_manager.py`
+- `server/tests/unit/commands/test_admin_setstat_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

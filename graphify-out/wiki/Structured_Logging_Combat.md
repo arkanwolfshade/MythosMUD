@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
 
 ## Source Files
 

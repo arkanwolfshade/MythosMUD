@@ -30,7 +30,7 @@
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (3 shared connections)
 
 ## Source Files
 

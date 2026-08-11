@@ -1,51 +1,51 @@
 # Container System Architecture
 
-> 26 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **_format_container_display()** (19 connections) — `server/commands/look_container.py`
-- **test_format_container_display_basic()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_with_description()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_locked()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_sealed()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_with_contents()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_with_target_type()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_with_metadata_name()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_fallback_name()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_locked()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_format_container_display_sealed()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_format_container_display_with_look_in()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_format_container_display_with_target_type_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Format the complete container display text.** (1 connections) — `server/commands/look_container.py`
-- **Test formatting container display with basic info.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display with description.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display when locked.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display when sealed.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display with look_in flag.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display with target_type container.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display uses metadata name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display uses fallback when no metadata name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test _format_container_display() with locked container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _format_container_display() with sealed container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _format_container_display() with look_in flag.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- *... and 1 more nodes in this community*
+- **conftest.py** (22 connections) — `server/tests/unit/realtime/conftest.py`
+- **nats_message_handler()** (3 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_utils()** (3 connections) — `server/tests/unit/realtime/conftest.py`
+- **player_room_event_handler()** (3 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_nats_service()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_subject_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_ws_connection_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_user_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_room_sync_service()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_chat_logger()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_message_builder()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_name_extractor()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_occupant_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_logger()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **Shared fixtures for realtime unit tests.  Provides fixtures used by NATS message** (1 connections) — `server/tests/unit/realtime/conftest.py`
+- **Create a mock NATS service.** (1 connections) — `server/tests/unit/realtime/conftest.py`
+- **Create a mock subject manager.** (1 connections) — `server/tests/unit/realtime/conftest.py`
+- **Create a mock connection manager (NATS / general).** (1 connections) — `server/tests/unit/realtime/conftest.py`
+- **Create mock WebSocket for handler tests.** (1 connections) — `server/tests/unit/realtime/conftest.py`
+- **Create mock connection manager for WebSocket handler tests.** (1 connections) — `server/tests/unit/realtime/conftest.py`
+- **Create a mock user manager.** (1 connections) — `server/tests/unit/realtime/conftest.py`
+- **Create a NATSMessageHandler instance.** (1 connections) — `server/tests/unit/realtime/conftest.py`
+- **Create a mock room sync service.** (1 connections) — `server/tests/unit/realtime/conftest.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [Look Container Command](Look_Container_Command.md) (9 shared connections)
-- [Player Occupant Processor](Player_Occupant_Processor.md) (6 shared connections)
-- [Player State Command Factory](Player_State_Command_Factory.md) (3 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (3 shared connections)
+- [NATS Chat Broadcasting](NATS_Chat_Broadcasting.md) (2 shared connections)
+- [Services Combat Initialization](Services_Combat_Initialization.md) (2 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (1 shared connections)
+- [LRU Cache Manager](LRU_Cache_Manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_container.py`
-- `server/tests/unit/commands/test_look_container.py`
-- `server/tests/unit/commands/test_look_container_helpers.py`
+- `server/tests/unit/realtime/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 68 (100%)
+- EXTRACTED: 71 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

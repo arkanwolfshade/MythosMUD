@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_connection_manager_property_injected_returns_none()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test connection_manager property falls back when injected manager resolves to No** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_nats_connection_state_machine_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test NATSConnectionStateMachine initialization with defaults.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Relationships
 
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
+- [Room Subscription Helpers](Room_Subscription_Helpers.md) (1 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

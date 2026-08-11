@@ -1,49 +1,48 @@
 # NPC Room Event Handlers
 
-> 20 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **combat_configuration_service.py** (17 connections) — `server/services/combat_configuration_service.py`
-- **CombatConfigurationError** (11 connections) — `server/services/combat_configuration_service.py`
-- **CombatConfigurationScope** (9 connections) — `server/services/combat_configuration_service.py`
-- **test_combat_configuration_service.py** (8 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.clear_scope_override()** (4 connections) — `server/services/combat_configuration_service.py`
-- **.test_update_combat_configuration_global_raises()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_update_combat_configuration_invalid_raises()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_clear_scope_override_global_raises()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Enum** (2 connections)
-- **is_combat_available()** (2 connections) — `server/services/combat_configuration_service.py`
-- **Exception** (1 connections)
-- **Combat configuration management service for MythosMUD.  This service provides ce** (1 connections) — `server/services/combat_configuration_service.py`
-- **Exception raised for combat configuration errors.** (1 connections) — `server/services/combat_configuration_service.py`
-- **Scope for combat configuration changes.** (1 connections) — `server/services/combat_configuration_service.py`
-- **Clear configuration override for a specific scope.          Args:             sc** (1 connections) — `server/services/combat_configuration_service.py`
-- **Convenience function to check if combat is available.      Args:         player_** (1 connections) — `server/services/combat_configuration_service.py`
-- **Unit tests for combat configuration service.  Tests the CombatConfigurationServi** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test update_combat_configuration raises error for global scope.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test update_combat_configuration raises error for invalid config.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test clear_scope_override raises error for global scope.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **CombatDPSync** (11 connections) — `server/services/combat_hp_sync.py`
+- **UUID** (9 connections)
+- **._persist_player_dp_sync()** (8 connections) — `server/services/combat_hp_sync.py`
+- **._publish_player_dp_update_event()** (6 connections) — `server/services/combat_hp_sync.py`
+- **._publish_player_dp_correction_event()** (6 connections) — `server/services/combat_hp_sync.py`
+- **._get_persistence()** (5 connections) — `server/services/combat_hp_sync.py`
+- **._update_and_save_player_dp()** (5 connections) — `server/services/combat_hp_sync.py`
+- **._verify_player_save()** (4 connections) — `server/services/combat_hp_sync.py`
+- **._log_death_threshold_events()** (4 connections) — `server/services/combat_hp_sync.py`
+- **.__init__()** (3 connections) — `server/services/combat_hp_sync.py`
+- **._persist_player_dp_background()** (3 connections) — `server/services/combat_hp_sync.py`
+- **Any** (2 connections)
+- **Handles DP synchronization for combat operations.** (1 connections) — `server/services/combat_hp_sync.py`
+- **Initialize DP sync with reference to parent combat service.** (1 connections) — `server/services/combat_hp_sync.py`
+- **Persist player DP to database in background (fire-and-forget).          This met** (1 connections) — `server/services/combat_hp_sync.py`
+- **Get persistence layer from application container.          Args:             pla** (1 connections) — `server/services/combat_hp_sync.py`
+- **Verify that player DP was successfully saved to database.          Args:** (1 connections) — `server/services/combat_hp_sync.py`
+- **Log death threshold events based on DP changes.          Args:             curre** (1 connections) — `server/services/combat_hp_sync.py`
+- **Update player DP and save to database.          Args:             persistence: P** (1 connections) — `server/services/combat_hp_sync.py`
+- **Synchronously persist player DP to database.          This is the actual persist** (1 connections) — `server/services/combat_hp_sync.py`
+- **Publish a PlayerDPUpdated event for real-time UI updates.** (1 connections) — `server/services/combat_hp_sync.py`
+- **Publish a correction event when database persistence fails.** (1 connections) — `server/services/combat_hp_sync.py`
 
 ## Relationships
 
-- [Test Value Distribution](Test_Value_Distribution.md) (9 shared connections)
-- [Player Related Models](Player_Related_Models.md) (6 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (3 shared connections)
-- [Client Lifecycle Metrics](Client_Lifecycle_Metrics.md) (3 shared connections)
-- [Invite Registration Model](Invite_Registration_Model.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
+- [Application Config Settings](Application_Config_Settings.md) (2 shared connections)
+- [NPC Occupant Verification](NPC_Occupant_Verification.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_configuration_service.py`
-- `server/tests/unit/services/test_combat_configuration_service.py`
+- `server/services/combat_hp_sync.py`
 
 ## Audit Trail
 
-- EXTRACTED: 62 (86%)
-- INFERRED: 10 (14%)
+- EXTRACTED: 73 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

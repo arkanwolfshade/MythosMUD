@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **mock_feature_flags()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **Create mock feature flags.** (1 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_create_emote_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_emote_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [Rate Limiter Service](Rate_Limiter_Service.md) (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_monitoring_service.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 

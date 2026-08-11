@@ -1,6 +1,6 @@
 # Chat Message Helpers
 
-> 66 nodes
+> 52 nodes
 
 ## Key Concepts
 
@@ -17,27 +17,26 @@
 - **send_whisper_message()** (9 connections) — `server/game/chat_channel_message_senders.py`
 - **send_party_message()** (9 connections) — `server/game/chat_channel_message_senders.py`
 - **create_and_log_chat_message()** (9 connections) — `server/game/chat_message_helpers.py`
-- **Any** (9 connections)
-- **send_predefined_emote()** (9 connections) — `server/game/chat_message_senders.py`
-- **_publish_room_chat_response()** (9 connections) — `server/game/chat_message_senders.py`
 - **check_channel_permissions()** (9 connections) — `server/game/chat_validation_helpers.py`
-- **_publish_predefined_emote()** (8 connections) — `server/game/chat_message_senders.py`
 - **_resolve_room_chat_sender()** (7 connections) — `server/game/chat_message_senders.py`
 - **check_say_permissions()** (7 connections) — `server/game/chat_validation_helpers.py`
 - **store_message_in_room_history()** (6 connections) — `server/game/chat_message_helpers.py`
 - **Any** (6 connections)
 - **Any** (5 connections)
 - **UUID** (5 connections)
-- **_resolve_predefined_emote_sender()** (5 connections) — `server/game/chat_message_senders.py`
-- *... and 41 more nodes in this community*
+- **UUID** (5 connections)
+- **validate_say_message()** (5 connections) — `server/game/chat_validation_helpers.py`
+- **validate_emote_action()** (5 connections) — `server/game/chat_validation_helpers.py`
+- **validate_global_message()** (5 connections) — `server/game/chat_validation_helpers.py`
+- **check_global_level_requirement()** (5 connections) — `server/game/chat_validation_helpers.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [Who Command Tests](Who_Command_Tests.md) (16 shared connections)
-- [Typography Layout Spec](Typography_Layout_Spec.md) (10 shared connections)
-- [Client Event Store](Client_Event_Store.md) (6 shared connections)
-- [Health Endpoint Spec](Health_Endpoint_Spec.md) (2 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
+- [Who Command Tests](Who_Command_Tests.md) (22 shared connections)
+- [Health Endpoint Spec](Health_Endpoint_Spec.md) (16 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (7 shared connections)
+- [Async Persistence Types](Async_Persistence_Types.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 337 (100%)
+- EXTRACTED: 280 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

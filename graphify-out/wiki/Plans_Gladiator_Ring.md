@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_register_command_handler_overwrites_existing()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test register_command_handler overwrites existing handler.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_filter_online_players_all_online()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test filter_online_players with all players online.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
 
 ## Relationships
 
-- [NPC Population Control](NPC_Population_Control.md) (1 shared connections)
+- [Legacy Cleanup Summary](Legacy_Cleanup_Summary.md) (1 shared connections)
+- [Combat UUID Display Bug](Combat_UUID_Display_Bug.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/commands/test_who_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

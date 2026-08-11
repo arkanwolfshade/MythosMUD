@@ -1,35 +1,37 @@
 # Services Combat Persistence
 
-> 11 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **wrap_third_party_exception()** (6 connections) — `server/utils/error_logging.py`
-- **Any** (5 connections)
-- **log_error_with_context()** (5 connections) — `server/utils/error_logging.py`
-- **create_logged_http_exception()** (5 connections) — `server/utils/error_logging.py`
-- **log_and_raise_http()** (4 connections) — `server/utils/error_logging.py`
-- **Exception** (2 connections)
-- **HTTPException** (1 connections)
-- **Log HTTP error and raise HTTPException. Delegates to enhanced.** (1 connections) — `server/utils/error_logging.py`
-- **Wrap a third-party exception in a MythosMUD error. Delegates to enhanced.** (1 connections) — `server/utils/error_logging.py`
-- **Log an error with structured context. Delegates to log_structured_error.** (1 connections) — `server/utils/error_logging.py`
-- **Create an HTTPException with proper logging and return it. Delegates to enhanced** (1 connections) — `server/utils/error_logging.py`
+- **HallucinationFrequencyService** (10 connections) — `server/services/hallucination_frequency_service.py`
+- **.should_trigger_hallucination()** (7 connections) — `server/services/hallucination_frequency_service.py`
+- **._time_based_hallucination_due()** (6 connections) — `server/services/hallucination_frequency_service.py`
+- **.check_room_entry_hallucination()** (6 connections) — `server/services/hallucination_frequency_service.py`
+- **.check_time_based_hallucination()** (6 connections) — `server/services/hallucination_frequency_service.py`
+- **UUID** (5 connections)
+- **AsyncSession** (4 connections)
+- **.__init__()** (2 connections) — `server/services/hallucination_frequency_service.py`
+- **Any** (1 connections)
+- **Service for managing hallucination frequency checks based on player tier.** (1 connections) — `server/services/hallucination_frequency_service.py`
+- **Initialize the hallucination frequency service.** (1 connections) — `server/services/hallucination_frequency_service.py`
+- **Check if a hallucination should trigger based on tier and frequency rules.** (1 connections) — `server/services/hallucination_frequency_service.py`
+- **Check if hallucination should trigger on room entry (Uneasy tier).          Args** (1 connections) — `server/services/hallucination_frequency_service.py`
+- **Check if hallucination should trigger based on time (Fractured/Deranged tiers).** (1 connections) — `server/services/hallucination_frequency_service.py`
 
 ## Relationships
 
-- [Schemas Maps Map](Schemas_Maps_Map.md) (5 shared connections)
-- [Realtime Errors Error](Realtime_Errors_Error.md) (4 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (6 shared connections)
+- [Hallucination Trigger Service](Hallucination_Trigger_Service.md) (2 shared connections)
 
 ## Source Files
 
-- `server/utils/error_logging.py`
+- `server/services/hallucination_frequency_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 49 (94%)
+- INFERRED: 3 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

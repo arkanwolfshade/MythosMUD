@@ -1,50 +1,52 @@
 # Room Occupant Formatter
 
-> 18 nodes
+> 77 nodes
 
 ## Key Concepts
 
+- **OccupantFormatter** (37 connections) — `server/realtime/occupant_formatter.py`
 - **test_occupant_formatter.py** (29 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **._is_uuid_string()** (8 connections) — `server/realtime/occupant_formatter.py`
+- **._is_valid_name_for_occupant()** (7 connections) — `server/realtime/occupant_formatter.py`
+- **._process_dict_occupant_for_update()** (7 connections) — `server/realtime/occupant_formatter.py`
+- **occupant_formatter.py** (6 connections) — `server/realtime/occupant_formatter.py`
+- **._process_player_name_for_update()** (6 connections) — `server/realtime/occupant_formatter.py`
+- **._process_npc_name_for_update()** (6 connections) — `server/realtime/occupant_formatter.py`
+- **Any** (5 connections)
+- **.separate_occupants_by_type()** (5 connections) — `server/realtime/occupant_formatter.py`
+- **._add_valid_name_to_lists()** (4 connections) — `server/realtime/occupant_formatter.py`
+- **._process_string_occupant_for_update()** (4 connections) — `server/realtime/occupant_formatter.py`
+- **.__init__()** (3 connections) — `server/realtime/occupant_formatter.py`
+- **test_occupant_formatter_init()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_uuid_string_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_uuid_string_invalid_length()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_uuid_string_invalid_dashes()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_uuid_string_invalid_chars()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_is_valid_name_for_occupant_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_npc_name_for_update_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_dict_occupant_for_update_player()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_string_occupant_for_update_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_separate_occupants_by_type_dict_npcs()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_separate_occupants_by_type_strings()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_separate_occupants_by_type_mixed()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_separate_occupants_by_type_empty()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Unit tests for occupant formatter.  Tests the occupant_formatter module classes** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._is_valid_name_for_occupant() returns True for valid name** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_npc_name_for_update() adds valid NPC name.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_dict_occupant_for_update() processes player dict** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_string_occupant_for_update() adds valid string.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter.separate_occupants_by_type() separates dict NPCs.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter.separate_occupants_by_type() processes string occupants.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter.separate_occupants_by_type() handles mixed types.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter.separate_occupants_by_type() handles empty list.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_valid_name_for_occupant_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_valid_name_for_occupant_empty()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_valid_name_for_occupant_none()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_valid_name_for_occupant_non_string()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_add_valid_name_to_lists()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_process_player_name_for_update_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- *... and 52 more nodes in this community*
 
 ## Relationships
 
-- [Command Integration Summary](Command_Integration_Summary.md) (15 shared connections)
-- [Archive Circuit Breaker](Archive_Circuit_Breaker.md) (4 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
-- [test_validate_room_integrity_room_without_get_players](test_validate_room_integrity_room_without_get_players.md) (1 shared connections)
-- [test_get_movement_monitor_returns_singleton](test_get_movement_monitor_returns_singleton.md) (1 shared connections)
-- [test_get_alerts_slow_movement_time](test_get_alerts_slow_movement_time.md) (1 shared connections)
-- [test_get_alerts_high_failure_rate](test_get_alerts_high_failure_rate.md) (1 shared connections)
-- [test_get_metrics_with_data](test_get_metrics_with_data.md) (1 shared connections)
-- [test_validate_room_integrity_valid](test_validate_room_integrity_valid.md) (1 shared connections)
-- [test_get_metrics_integrity_rate](test_get_metrics_integrity_rate.md) (1 shared connections)
-- [test_get_alerts_no_alerts](test_get_alerts_no_alerts.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
+- [API Type Guards](API_Type_Guards.md) (2 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (1 shared connections)
+- [Warning Fixes Session](Warning_Fixes_Session.md) (1 shared connections)
 
 ## Source Files
 
+- `server/realtime/occupant_formatter.py`
 - `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 62 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 242 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

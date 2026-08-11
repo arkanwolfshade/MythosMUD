@@ -1,76 +1,64 @@
 # NPC Combat Lifecycle
 
-> 207 nodes
+> 117 nodes
 
 ## Key Concepts
 
-- **User** (314 connections) — `server/models/user.py`
 - **Result** (52 connections) — `scripts/run_test_ci.py`
 - **endpoints.py** (52 connections) — `server/auth/endpoints.py`
 - **test_endpoints.py** (51 connections) — `server/tests/unit/auth/test_endpoints.py`
 - **register_user()** (28 connections) — `server/auth/endpoints.py`
 - **login_user()** (28 connections) — `server/auth/endpoints.py`
 - **UserCreate** (27 connections) — `server/auth/endpoints.py`
-- **InviteManager** (24 connections) — `server/auth/invites.py`
 - **LoginRequest** (22 connections) — `server/auth/endpoints.py`
-- **invites.py** (16 connections) — `server/auth/invites.py`
+- **is_shutdown_pending()** (14 connections) — `server/commands/admin_shutdown_command.py`
 - **get_shutdown_blocking_message()** (13 connections) — `server/commands/admin_shutdown_command.py`
-- **RestartInvalidatingJWTStrategy** (12 connections) — `server/auth/jwt_strategy.py`
-- **test_user.py** (11 connections) — `server/tests/unit/models/test_user.py`
-- **list_invites()** (10 connections) — `server/auth/endpoints.py`
-- **InviteRead** (10 connections) — `server/schemas/auth/invite.py`
-- **create_invite()** (9 connections) — `server/auth/endpoints.py`
-- **test_jwt_strategy.py** (9 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
+- **_check_shutdown_status()** (8 connections) — `server/api/character_creation.py`
 - **_check_shutdown_status()** (8 connections) — `server/auth/endpoints.py`
 - **Request** (8 connections)
-- **token_epoch.py** (8 connections) — `server/auth/token_epoch.py`
-- **get_auth_epoch()** (8 connections) — `server/auth/token_epoch.py`
 - **LoginResponse** (7 connections) — `server/auth/endpoints.py`
 - **_validate_invite_code()** (7 connections) — `server/auth/endpoints.py`
 - **_check_username_exists()** (7 connections) — `server/auth/endpoints.py`
 - **_find_user_by_username()** (7 connections) — `server/auth/endpoints.py`
-- *... and 182 more nodes in this community*
+- **_authenticate_user_credentials()** (7 connections) — `server/auth/endpoints.py`
+- **test_register_user_duplicate_username()** (7 connections) — `server/tests/unit/auth/test_endpoints.py`
+- **test_register_user_integrity_error()** (7 connections) — `server/tests/unit/auth/test_endpoints.py`
+- **test_login_user_no_email()** (7 connections) — `server/tests/unit/auth/test_endpoints.py`
+- **test_login_user_id_mismatch()** (7 connections) — `server/tests/unit/auth/test_endpoints.py`
+- **test_login_user_generic_exception()** (7 connections) — `server/tests/unit/auth/test_endpoints.py`
+- **test_register_user_email_constraint_violation()** (7 connections) — `server/tests/unit/auth/test_endpoints.py`
+- **test_register_user_username_constraint_violation()** (7 connections) — `server/tests/unit/auth/test_endpoints.py`
+- **test_register_user_generic_constraint_violation()** (7 connections) — `server/tests/unit/auth/test_endpoints.py`
+- *... and 92 more nodes in this community*
 
 ## Relationships
 
-- [Combat Command Handler](Combat_Command_Handler.md) (72 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (48 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (27 shared connections)
-- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (27 shared connections)
-- [Async Persistence Delegates](Async_Persistence_Delegates.md) (25 shared connections)
-- [Game Mechanics Service](Game_Mechanics_Service.md) (21 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (18 shared connections)
-- [NATS Metrics API](NATS_Metrics_API.md) (14 shared connections)
-- [Container Persistence Ops](Container_Persistence_Ops.md) (12 shared connections)
-- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (11 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (10 shared connections)
-- [Client Event Store](Client_Event_Store.md) (9 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (67 shared connections)
+- [Who Command Helpers](Who_Command_Helpers.md) (19 shared connections)
+- [Room Drop Renderer](Room_Drop_Renderer.md) (8 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (5 shared connections)
+- [Services Lucidity Repository](Services_Lucidity_Repository.md) (4 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (4 shared connections)
+- [Plan Cursor Plans](Plan_Cursor_Plans.md) (3 shared connections)
+- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (3 shared connections)
+- [Archive Combat Health](Archive_Combat_Health.md) (2 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (2 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (2 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (2 shared connections)
 
 ## Source Files
 
 - `scripts/run_test_ci.py`
+- `server/api/character_creation.py`
 - `server/auth/endpoints.py`
-- `server/auth/invites.py`
-- `server/auth/jwt_strategy.py`
-- `server/auth/token_epoch.py`
 - `server/commands/admin_shutdown_command.py`
-- `server/models/user.py`
-- `server/schemas/auth/invite.py`
-- `server/tests/integration/test_db_connectivity.py`
-- `server/tests/unit/api/conftest.py`
-- `server/tests/unit/api/test_container_exception_handlers.py`
-- `server/tests/unit/api/test_container_helpers.py`
-- `server/tests/unit/api/test_container_helpers_loot.py`
-- `server/tests/unit/api/test_containers.py`
 - `server/tests/unit/auth/test_endpoints.py`
-- `server/tests/unit/auth/test_jwt_strategy.py`
-- `server/tests/unit/models/test_user.py`
 - `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1036 (84%)
-- INFERRED: 193 (16%)
+- EXTRACTED: 539 (83%)
+- INFERRED: 108 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

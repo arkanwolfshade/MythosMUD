@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_connection_manager_setter()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test connection_manager setter updates references.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_on_enter_state_logs()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test on_enter_state() logs state transitions.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Relationships
 
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
+- [Room Subscription Helpers](Room_Subscription_Helpers.md) (1 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

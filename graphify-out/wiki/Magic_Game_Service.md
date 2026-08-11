@@ -1,11 +1,10 @@
 # Magic Game Service
 
-> 17 nodes
+> 16 nodes
 
 ## Key Concepts
 
 - **commandStore.ts** (18 connections) — `client/src/stores/commandStore.ts`
-- **useCommandStore** (5 connections) — `client/src/stores/commandStore.ts`
 - **createCommandQueueAndAliasActions()** (4 connections) — `client/src/stores/commandStore.ts`
 - **createCommandStoreSlice()** (4 connections) — `client/src/stores/commandStore.ts`
 - **createInitialState()** (3 connections) — `client/src/stores/commandStore.ts`
@@ -24,8 +23,7 @@
 
 ## Relationships
 
-- [Combat Attack Handler](Combat_Attack_Handler.md) (3 shared connections)
-- [Async Code Audit](Async_Code_Audit.md) (2 shared connections)
+- [Combat Attack Handler](Combat_Attack_Handler.md) (4 shared connections)
 
 ## Source Files
 
@@ -34,8 +32,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 47 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 42 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_format_message_for_receiver()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _format_message_for_receiver formats message.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_ensure_room_cache_loaded_already_loaded()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded returns early when cache is already loaded.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [Loot All Endpoint](Loot_All_Endpoint.md) (1 shared connections)
+- [Mythosmud Obsidian Raw](Mythosmud_Obsidian_Raw.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 

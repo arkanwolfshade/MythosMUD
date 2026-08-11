@@ -1,60 +1,60 @@
 # Combat Persistence Events
 
-> 26 nodes
+> 111 nodes
 
 ## Key Concepts
 
-- **NATSConfig** (22 connections) — `server/config/models/nats.py`
+- **NATSService** (72 connections) — `server/services/nats_service.py`
+- **Any** (17 connections)
+- **.disconnect()** (11 connections) — `server/services/nats_service.py`
+- **.publish_with_pool()** (10 connections) — `server/services/nats_service.py`
+- **._create_tracked_task()** (9 connections) — `server/services/nats_service.py`
+- **.connect()** (8 connections) — `server/services/nats_service.py`
 - **.__init__()** (7 connections) — `server/services/nats_service.py`
-- **.__init__()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **test_connect_with_tls_enabled_passes_tls_options()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_nats_service_init_with_dict()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_service_init_with_none()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **.validate_tls_files()** (3 connections) — `server/config/models/nats.py`
-- **.validate_tls_config()** (3 connections) — `server/config/models/nats.py`
-- **nats_config()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **nats_config()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **.validate_max_payload()** (2 connections) — `server/config/models/nats.py`
-- **.validate_positive()** (2 connections) — `server/config/models/nats.py`
-- **BaseSettings** (1 connections)
-- **Any** (1 connections)
-- **NATS messaging configuration.** (1 connections) — `server/config/models/nats.py`
-- **Validate TLS file paths exist when TLS is enabled.** (1 connections) — `server/config/models/nats.py`
-- **Validate TLS configuration is complete when enabled.** (1 connections) — `server/config/models/nats.py`
-- **Validate max payload is reasonable.** (1 connections) — `server/config/models/nats.py`
-- **Validate value is positive.** (1 connections) — `server/config/models/nats.py`
-- **Initialize NATS message broker.          Args:             config: NATS confi** (1 connections) — `server/infrastructure/nats_broker.py`
-- **Initialize NATS service with state machine and connection pooling.          Args** (1 connections) — `server/services/nats_service.py`
-- **Create a NATSConfig instance.** (1 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **Test connect() passes TLS options to nats.connect when tls_enabled=True.** (1 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **Create a NATSConfig instance.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
-- **Test NATSService initialization with dict config.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
-- *... and 1 more nodes in this community*
+- **._flush_batch()** (7 connections) — `server/services/nats_service.py`
+- **._verify_subscription_cleanup()** (6 connections) — `server/services/nats_service.py`
+- **.publish_batch()** (6 connections) — `server/services/nats_service.py`
+- **._start_health_monitoring()** (5 connections) — `server/services/nats_service.py`
+- **.publish()** (5 connections) — `server/services/nats_service.py`
+- **._on_error()** (5 connections) — `server/services/nats_service.py`
+- **._get_connection()** (5 connections) — `server/services/nats_service.py`
+- **._retry_failed_batch_groups()** (5 connections) — `server/services/nats_service.py`
+- **nats_service()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_with_config()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **._build_connect_options()** (4 connections) — `server/services/nats_service.py`
+- **._configure_tls()** (4 connections) — `server/services/nats_service.py`
+- **._close_all_subscriptions()** (4 connections) — `server/services/nats_service.py`
+- **._health_check_loop()** (4 connections) — `server/services/nats_service.py`
+- **.subscribe()** (4 connections) — `server/services/nats_service.py`
+- **.unsubscribe()** (4 connections) — `server/services/nats_service.py`
+- **.request()** (4 connections) — `server/services/nats_service.py`
+- **._handle_error_async()** (4 connections) — `server/services/nats_service.py`
+- *... and 86 more nodes in this community*
 
 ## Relationships
 
-- [Inventory Command Models](Inventory_Command_Models.md) (5 shared connections)
-- [Archive Frd Random](Archive_Frd_Random.md) (4 shared connections)
-- [Combat Service Bundle](Combat_Service_Bundle.md) (4 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [Realtime Event Delegation](Realtime_Event_Delegation.md) (3 shared connections)
-- [Combat Monitoring Service](Combat_Monitoring_Service.md) (3 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (13 shared connections)
+- [Combat Service Bundle](Combat_Service_Bundle.md) (11 shared connections)
+- [Emote Schema Validator](Emote_Schema_Validator.md) (3 shared connections)
+- [Player Death Service](Player_Death_Service.md) (3 shared connections)
+- [WebSocket Code Review](WebSocket_Code_Review.md) (2 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (2 shared connections)
+- [Room Subscription Helpers](Room_Subscription_Helpers.md) (2 shared connections)
 - [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (2 shared connections)
-- [Room Subscription Helpers](Room_Subscription_Helpers.md) (1 shared connections)
-- [Combat Command Models](Combat_Command_Models.md) (1 shared connections)
+- [NPC Spawn Validator](NPC_Spawn_Validator.md) (1 shared connections)
+- [Health Check Models](Health_Check_Models.md) (1 shared connections)
+- [Container Exception Handlers](Container_Exception_Handlers.md) (1 shared connections)
+- [Command Helper Utilities](Command_Helper_Utilities.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/models/nats.py`
-- `server/infrastructure/nats_broker.py`
 - `server/services/nats_service.py`
-- `server/tests/unit/infrastructure/test_nats_broker.py`
 - `server/tests/unit/services/test_nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (93%)
-- INFERRED: 5 (7%)
+- EXTRACTED: 358 (96%)
+- INFERRED: 15 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

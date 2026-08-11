@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_pickup_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_pickup_command delegates to inventory factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_get_user_role_with_is_admin_attribute()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **Test get_user_role returns ADMIN for user with is_admin attribute.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [Player Model Inventory](Player_Model_Inventory.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Audit Trail
 

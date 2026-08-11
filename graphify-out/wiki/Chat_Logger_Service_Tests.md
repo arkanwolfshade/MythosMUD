@@ -1,37 +1,37 @@
 # Chat Logger Service Tests
 
-> 14 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **test_event_publisher_helpers.py** (9 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **event_publisher()** (3 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **mock_nats_service()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **test_create_event_message()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **test_get_next_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **test_reset_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **test_get_async_persistence()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **Unit tests for event publisher helper functions.  Tests the helper functions in** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **Create a mock NATS service.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **Create an EventPublisher instance.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **Test _create_event_message() creates event message.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **Test get_next_sequence_number() increments sequence.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **Test reset_sequence_number() resets to 0.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **Test _get_async_persistence() gets persistence from container.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **main()** (10 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **render_with_tcod()** (8 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **compute_bounds()** (7 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **Any** (6 connections)
+- **render_text()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **dump_ascii_to_file()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **_load_tileset()** (4 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **_handle_tcod_events()** (3 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **Compute the bounding box of a grid.      Args:         grid: Dictionary mappi** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **Load tileset for tcod rendering with fallback options.** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **Handle tcod events, return True if should exit.** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **Render a grid map using tcod (libtcodpy) library.      Creates a terminal wind** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **Fallback textual renderer using simple printing or rich if available.** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **Write grid map to an ASCII text file.      Converts the grid to a text represe** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **Main entry point for the map builder tool.      Loads room data from JSON file** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
 
 ## Relationships
 
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (17 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- `data/local/mythos_mud_mapbuilder.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 56 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

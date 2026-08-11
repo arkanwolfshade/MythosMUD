@@ -1,59 +1,66 @@
 # Room Map Viewer UI
 
-> 69 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **MovementService** (45 connections) — `server/game/movement_service.py`
-- **UUID** (18 connections)
-- **movement_helpers.py** (16 connections) — `server/game/movement_helpers.py`
-- **._execute_move_locked()** (14 connections) — `server/game/movement_service.py`
-- **validate_player_room_membership()** (9 connections) — `server/game/movement_helpers.py`
-- **check_combat_state()** (8 connections) — `server/game/movement_helpers.py`
-- **._handle_movement_error()** (8 connections) — `server/game/movement_service.py`
-- **.move_player()** (8 connections) — `server/game/movement_service.py`
-- **._validate_movement()** (8 connections) — `server/game/movement_service.py`
-- **check_player_posture()** (7 connections) — `server/game/movement_helpers.py`
-- **validate_exit()** (7 connections) — `server/game/movement_helpers.py`
-- **Any** (7 connections)
-- **.add_player_to_room()** (7 connections) — `server/game/movement_service.py`
-- **extract_player_id()** (6 connections) — `server/game/movement_helpers.py`
-- **._validate_move_params()** (6 connections) — `server/game/movement_service.py`
-- **._resolve_player_for_movement()** (6 connections) — `server/game/movement_service.py`
-- **._get_rooms_for_movement()** (6 connections) — `server/game/movement_service.py`
-- **._resolve_posture_player()** (6 connections) — `server/game/movement_service.py`
-- **._validate_movement_rooms()** (6 connections) — `server/game/movement_service.py`
-- **._validate_add_player_ids()** (6 connections) — `server/game/movement_service.py`
-- **._validate_remove_player_params()** (6 connections) — `server/game/movement_service.py`
-- **.remove_player_from_room()** (6 connections) — `server/game/movement_service.py`
-- **.get_player_room()** (6 connections) — `server/game/movement_service.py`
-- **Any** (5 connections)
-- **UUID** (5 connections)
-- *... and 44 more nodes in this community*
+- **RoomMapEditorRuntime.tsx** (34 connections) — `client/src/components/map/RoomMapEditorRuntime.tsx`
+- **EdgeDetailsPanel.tsx** (12 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **RoomMapEditor()** (9 connections) — `client/src/components/map/RoomMapEditorRuntime.tsx`
+- **RoomMapEditorAliases.test.ts** (7 connections) — `client/src/components/map/__tests__/RoomMapEditorAliases.test.ts`
+- **RoomMapEditor.test.tsx** (6 connections) — `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
+- **useRoomMapEditorModals()** (5 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **RoomMapEditor.tsx** (4 connections) — `client/src/components/map/RoomMapEditor.tsx`
+- **RoomMapEditorScene.tsx** (4 connections) — `client/src/components/map/RoomMapEditorScene.tsx`
+- **EdgeDetailsPanel.test.tsx** (4 connections) — `client/src/components/map/__tests__/EdgeDetailsPanel.test.tsx`
+- **EdgeDetailsPanel()** (3 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **MapEditToolbar.tsx** (3 connections) — `client/src/components/map/MapEditToolbar.tsx`
+- **RoomMapEditorCore.tsx** (3 connections) — `client/src/components/map/RoomMapEditorCore.tsx`
+- **RoomMapEditorFeature.tsx** (3 connections) — `client/src/components/map/RoomMapEditorFeature.tsx`
+- **RoomMapEditorImpl.tsx** (3 connections) — `client/src/components/map/RoomMapEditorImpl.tsx`
+- **useRoomMapEditorSelection()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **useRoomMapEditorModalState()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **EdgeDetailsPanelProps** (2 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **MapEditToolbar()** (2 connections) — `client/src/components/map/MapEditToolbar.tsx`
+- **RoomMapEditorProps** (2 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **MAP_EDITOR_DIRECTIONS** (2 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **resolveEditingEdgeData()** (2 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **roomMapEditorTestSetup.tsx** (2 connections) — `client/src/components/map/__tests__/roomMapEditorTestSetup.tsx`
+- **UseRoomMapDataOptions** (2 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
+- **EdgeFlagsSection()** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeDetailRow()** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (21 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (21 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (8 shared connections)
-- [Combat Attack Service](Combat_Attack_Service.md) (4 shared connections)
-- [Calendar Holiday Schemas](Calendar_Holiday_Schemas.md) (4 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
-- [Player Left Room Tests](Player_Left_Room_Tests.md) (2 shared connections)
-- [Command Field Validators](Command_Field_Validators.md) (2 shared connections)
-- [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
-- [Player Respawn Handlers](Player_Respawn_Handlers.md) (1 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Command Input Utilities](Command_Input_Utilities.md) (16 shared connections)
+- [Player Death Service Tests](Player_Death_Service_Tests.md) (12 shared connections)
+- [Player GUID Formatter](Player_GUID_Formatter.md) (3 shared connections)
+- [Lie Ground Commands](Lie_Ground_Commands.md) (2 shared connections)
+- [PostgreSQL Audit Report](PostgreSQL_Audit_Report.md) (2 shared connections)
+- [Archive Circuit Breaker](Archive_Circuit_Breaker.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/movement_helpers.py`
-- `server/game/movement_service.py`
+- `client/src/components/map/EdgeDetailsPanel.tsx`
+- `client/src/components/map/MapEditToolbar.tsx`
+- `client/src/components/map/RoomMapEditor.tsx`
+- `client/src/components/map/RoomMapEditorCore.tsx`
+- `client/src/components/map/RoomMapEditorFeature.tsx`
+- `client/src/components/map/RoomMapEditorImpl.tsx`
+- `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- `client/src/components/map/RoomMapEditorRuntime.tsx`
+- `client/src/components/map/RoomMapEditorScene.tsx`
+- `client/src/components/map/__tests__/EdgeDetailsPanel.test.tsx`
+- `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
+- `client/src/components/map/__tests__/RoomMapEditorAliases.test.ts`
+- `client/src/components/map/__tests__/roomMapEditorTestSetup.tsx`
+- `client/src/components/map/hooks/useRoomMapData.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 288 (94%)
-- INFERRED: 20 (6%)
+- EXTRACTED: 133 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

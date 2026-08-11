@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_subscribe_to_subject_no_nats_service()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _subscribe_to_subject returns False when nats_service is None.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_setup_session_tracking_no_session_id()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _setup_session_tracking() handles None session_id.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Relationships
 
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
+- [Architecture Review Plan](Architecture_Review_Plan.md) (1 shared connections)
+- [WebSocket Connection Setup](WebSocket_Connection_Setup.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

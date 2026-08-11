@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_ensure_follower_standing_sitting_stands()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **If follower is sitting and position service stands them, returns True.** (1 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_get_online_players()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test get_online_players() returns online players.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 
 ## Relationships
 
-- [NPC Utility Functions](NPC_Utility_Functions.md) (1 shared connections)
+- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_follow_service.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_spell_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_spell_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_get_player_by_user_id_not_found()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test get_player_by_user_id returns None when no players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [Lizard Complexity Findings](Lizard_Complexity_Findings.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/persistence/test_player_repository.py`
 
 ## Audit Trail
 

@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (2 shared connections)
 
 ## Source Files
 

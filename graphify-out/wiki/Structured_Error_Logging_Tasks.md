@@ -1,60 +1,49 @@
 # Structured Error Logging Tasks
 
-> 27 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **GameEvent** (19 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
-- **projector.ts** (18 connections) — `client/src/components/ui-v2/eventLog/projector.ts`
-- **useEventProcessing.ts** (13 connections) — `client/src/components/ui-v2/hooks/useEventProcessing.ts`
-- **projector.test.ts** (12 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.test.ts`
-- **index.ts** (11 connections) — `client/src/components/ui-v2/eventLog/index.ts`
-- **eventStore.ts** (9 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
-- **EventStore** (9 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
-- **types.ts** (9 connections) — `client/src/components/ui-v2/eventLog/types.ts`
-- **projectState()** (8 connections) — `client/src/components/ui-v2/eventLog/projector.ts`
-- **EventLog** (8 connections) — `client/src/components/ui-v2/eventLog/types.ts`
-- **IEventStore** (6 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
-- **eventStore.test.ts** (5 connections) — `client/src/components/ui-v2/eventLog/__tests__/eventStore.test.ts`
-- **projectEvent()** (5 connections) — `client/src/components/ui-v2/eventLog/projector.ts`
-- **projectorConstants.ts** (5 connections) — `client/src/components/ui-v2/eventLog/projectorConstants.ts`
-- **getInitialGameState()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorConstants.ts`
-- **EventLogEntry** (4 connections) — `client/src/components/ui-v2/eventLog/types.ts`
-- **PROJECTED_EVENT_TYPES** (3 connections) — `client/src/components/ui-v2/eventLog/projectorConstants.ts`
-- **.append()** (2 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
-- **.getLog()** (2 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
-- **.append()** (2 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
-- **.getLog()** (2 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
-- **EMPTY_LOG** (2 connections) — `client/src/components/ui-v2/eventLog/types.ts`
-- **UseEventProcessingParams** (2 connections) — `client/src/components/ui-v2/hooks/useEventProcessing.ts`
-- **makeEvent()** (1 connections) — `client/src/components/ui-v2/eventLog/__tests__/eventStore.test.ts`
-- **.clear()** (1 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
-- *... and 2 more nodes in this community*
+- **_find_item_in_inventory()** (18 connections) — `server/commands/look_item.py`
+- **test_find_item_in_inventory_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_by_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_with_name_field()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Find an item in player inventory by name or prototype_id.      Args:         inv** (1 connections) — `server/commands/look_item.py`
+- **Test finding item in inventory by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in inventory when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in inventory by item_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in inventory using 'name' field.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _find_item_in_inventory() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with empty list.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Relationships
 
-- [Communication Command Handlers](Communication_Command_Handlers.md) (23 shared connections)
-- [Connection Cleaner Tests](Connection_Cleaner_Tests.md) (7 shared connections)
-- [Combat Messaging Integration](Combat_Messaging_Integration.md) (3 shared connections)
-- [Room Planning Archive](Room_Planning_Archive.md) (2 shared connections)
-- [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (2 shared connections)
-- [API Test Fixtures](API_Test_Fixtures.md) (1 shared connections)
+- [Command Request App State](Command_Request_App_State.md) (8 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (5 shared connections)
+- [Error Handling Guide](Error_Handling_Guide.md) (4 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/eventHandlers/types.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/eventStore.test.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/projector.test.ts`
-- `client/src/components/ui-v2/eventLog/eventStore.ts`
-- `client/src/components/ui-v2/eventLog/index.ts`
-- `client/src/components/ui-v2/eventLog/projector.ts`
-- `client/src/components/ui-v2/eventLog/projectorConstants.ts`
-- `client/src/components/ui-v2/eventLog/types.ts`
-- `client/src/components/ui-v2/hooks/useEventProcessing.ts`
+- `server/commands/look_item.py`
+- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 164 (100%)
+- EXTRACTED: 63 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

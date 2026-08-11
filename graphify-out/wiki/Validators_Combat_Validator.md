@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_player_movement_new_subzone_none()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test handle_player_movement handles None new_subzone.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_check_connections_health_healthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **Test check_connections_health returns healthy status.** (1 connections) — `server/tests/unit/services/test_health_service.py`
 
 ## Relationships
 
-- [Connection State Hooks](Connection_State_Hooks.md) (1 shared connections)
+- [Monitoring Response Models](Monitoring_Response_Models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/services/test_health_service.py`
 
 ## Audit Trail
 

@@ -34,15 +34,14 @@
 ## Relationships
 
 - [Combat Monitoring Service](Combat_Monitoring_Service.md) (19 shared connections)
-- [Combat Persistence Events](Combat_Persistence_Events.md) (3 shared connections)
+- [Player Death Service](Player_Death_Service.md) (3 shared connections)
 - [Infrastructure Message Broker](Infrastructure_Message_Broker.md) (2 shared connections)
 - [NATS Message Schemas](NATS_Message_Schemas.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
 - [Components Ui Designtokens](Components_Ui_Designtokens.md) (2 shared connections)
-- [Inventory Command Models](Inventory_Command_Models.md) (1 shared connections)
-- [Cursor Setup Guide](Cursor_Setup_Guide.md) (1 shared connections)
-- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (1 shared connections)
-- [Rate Limiter Utilities](Rate_Limiter_Utilities.md) (1 shared connections)
+- [Combat Persistence Events](Combat_Persistence_Events.md) (1 shared connections)
+- [Database Error Handling](Database_Error_Handling.md) (1 shared connections)
 
 ## Source Files
 

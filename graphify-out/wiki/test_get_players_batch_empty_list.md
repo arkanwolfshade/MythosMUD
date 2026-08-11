@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_subscribe_to_subject_nats_error_returns_false()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _subscribe_to_subject returns False on NATSError.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_profession_meets_stat_requirements_empty_requirements()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test meets_stat_requirements returns True when requirements are empty.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [Inventory Command Models](Inventory_Command_Models.md) (1 shared connections)
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
+- [Cursor Plans Login](Cursor_Plans_Login.md) (1 shared connections)
+- [Profession Get Mechanical Effects](Profession_Get_Mechanical_Effects.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 

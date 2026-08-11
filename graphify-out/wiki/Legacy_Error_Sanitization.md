@@ -1,56 +1,59 @@
 # Legacy Error Sanitization
 
-> 36 nodes
+> 39 nodes
 
 ## Key Concepts
 
-- **quest_commands.py** (32 connections) — `server/commands/quest_commands.py`
-- **Any** (17 connections)
-- **handle_journal_command()** (15 connections) — `server/commands/quest_commands.py`
-- **_resolve_quest_command_context()** (10 connections) — `server/commands/quest_commands.py`
-- **_handle_quest_npc_sub()** (8 connections) — `server/commands/quest_commands.py`
-- **_get_quest_service()** (7 connections) — `server/commands/quest_commands.py`
-- **_resolve_npc_in_player_room()** (7 connections) — `server/commands/quest_commands.py`
-- **_resolve_player_id()** (6 connections) — `server/commands/quest_commands.py`
-- **UUID** (6 connections)
-- **_active_npc_ids_in_room()** (6 connections) — `server/commands/quest_commands.py`
-- **_quest_command_ready()** (6 connections) — `server/commands/quest_commands.py`
-- **_get_container_and_persistence()** (5 connections) — `server/commands/quest_commands.py`
-- **_format_one_quest_entry()** (5 connections) — `server/commands/quest_commands.py`
-- **_format_quest_log()** (5 connections) — `server/commands/quest_commands.py`
-- **_handle_quest_abandon()** (5 connections) — `server/commands/quest_commands.py`
-- **_parse_quest_subcommand()** (4 connections) — `server/commands/quest_commands.py`
-- **_format_goal_line()** (4 connections) — `server/commands/quest_commands.py`
-- **_npc_definition_id()** (4 connections) — `server/commands/quest_commands.py`
-- **_format_quest_action_results()** (4 connections) — `server/commands/quest_commands.py`
-- **Quest commands: journal / quests (quest log), quest abandon/ask/turnin.  Returns** (1 connections) — `server/commands/quest_commands.py`
-- **Get QuestService from request app container, or None if unavailable.** (1 connections) — `server/commands/quest_commands.py`
-- **Get container and async_persistence from request, or None.** (1 connections) — `server/commands/quest_commands.py`
-- **Extract player_id from player object as UUID, or None.** (1 connections) — `server/commands/quest_commands.py`
-- **Parse quest subcommand args.      Returns (subcommand, remainder, error_message)** (1 connections) — `server/commands/quest_commands.py`
-- **Resolve player, player_id and QuestService from request and current_user.     Re** (1 connections) — `server/commands/quest_commands.py`
-- *... and 11 more nodes in this community*
+- **game_tick_processing.py** (77 connections) — `server/app/game_tick_processing.py`
+- **FastAPI** (16 connections)
+- **game_tick_loop()** (14 connections) — `server/app/game_tick_processing.py`
+- **_validate_app_state_for_status_effects()** (12 connections) — `server/app/game_tick_processing.py`
+- **_process_single_effect()** (11 connections) — `server/app/game_tick_processing.py`
+- **process_status_effects()** (9 connections) — `server/app/game_tick_processing.py`
+- **broadcast_tick_event()** (9 connections) — `server/app/game_tick_processing.py`
+- **Any** (8 connections)
+- **_process_player_status_effects()** (7 connections) — `server/app/game_tick_processing.py`
+- **process_player_effects_expiration()** (7 connections) — `server/app/game_tick_processing.py`
+- **process_combat_tick()** (7 connections) — `server/app/game_tick_processing.py`
+- **cleanup_decayed_corpses()** (7 connections) — `server/app/game_tick_processing.py`
+- **_process_all_status_effects()** (6 connections) — `server/app/game_tick_processing.py`
+- **process_dp_decay_and_death()** (6 connections) — `server/app/game_tick_processing.py`
+- **_create_corpse_lifecycle_service()** (6 connections) — `server/app/game_tick_processing.py`
+- **_cleanup_single_decayed_corpse()** (6 connections) — `server/app/game_tick_processing.py`
+- **process_npc_maintenance()** (5 connections) — `server/app/game_tick_processing.py`
+- **_validate_and_get_player()** (4 connections) — `server/app/game_tick_processing.py`
+- **process_casting_progress()** (4 connections) — `server/app/game_tick_processing.py`
+- **_log_cleanup_results()** (3 connections) — `server/app/game_tick_processing.py`
+- **Game tick processing functions.  This module handles all game tick processing lo** (1 connections) — `server/app/game_tick_processing.py`
+- **Validate app state has required components for status effect processing.      Re** (1 connections) — `server/app/game_tick_processing.py`
+- **Process a single status effect.      Returns:         Tuple of (updated_effect_d** (1 connections) — `server/app/game_tick_processing.py`
+- **Validate container and retrieve player by ID.      Args:         container: Appl** (1 connections) — `server/app/game_tick_processing.py`
+- **Process all status effects for a player.      Args:         app: FastAPI applica** (1 connections) — `server/app/game_tick_processing.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [Server Config Loading](Server_Config_Loading.md) (11 shared connections)
-- [Look NPC Command](Look_NPC_Command.md) (7 shared connections)
-- [Chat NATS Publisher](Chat_NATS_Publisher.md) (4 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [Quest Service Core](Quest_Service_Core.md) (3 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (2 shared connections)
-- [NATS Connection State Machine](NATS_Connection_State_Machine.md) (2 shared connections)
-- [Container Repository CRUD](Container_Repository_CRUD.md) (2 shared connections)
-- [Command Service Tests](Command_Service_Tests.md) (1 shared connections)
+- [Command Alias Handling](Command_Alias_Handling.md) (21 shared connections)
+- [Multiplayer Browser Helpers](Multiplayer_Browser_Helpers.md) (16 shared connections)
+- [Combat DP Persistence Tests](Combat_DP_Persistence_Tests.md) (11 shared connections)
+- [Player Respawn Events](Player_Respawn_Events.md) (7 shared connections)
+- [Skill Service Tests](Skill_Service_Tests.md) (4 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (4 shared connections)
+- [E 2 E Di Migration](E_2_E_Di_Migration.md) (3 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (3 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (3 shared connections)
+- [Connection Health Monitor](Connection_Health_Monitor.md) (3 shared connections)
+- [Magic Command Handlers](Magic_Command_Handlers.md) (3 shared connections)
+- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (3 shared connections)
 
 ## Source Files
 
-- `server/commands/quest_commands.py`
+- `server/app/game_tick_processing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 169 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 243 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

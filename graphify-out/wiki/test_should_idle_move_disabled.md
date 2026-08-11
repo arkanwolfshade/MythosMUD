@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_strike_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_strike_command delegates to combat factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_check_connections_health_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **Test check_connections_health handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_health_service.py`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [Monitoring Response Models](Monitoring_Response_Models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/services/test_health_service.py`
 
 ## Audit Trail
 

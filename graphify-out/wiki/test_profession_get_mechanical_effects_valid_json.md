@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_event_subscription_count()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test get_event_subscription_count returns count.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_check_rate_limit_adds_request()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **Test _check_rate_limit adds current request.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Relationships
 
-- [Connection State Hooks](Connection_State_Hooks.md) (1 shared connections)
+- [Player Model Inventory](Player_Model_Inventory.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Audit Trail
 

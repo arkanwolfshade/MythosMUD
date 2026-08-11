@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **test_get_available_commands()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test get_available_commands returns list of registered commands.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_handle_admin_set_stat_command_case_insensitive_stat_names()** (3 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
+- **Test case-insensitive stat name handling.** (1 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
 
 ## Relationships
 
-- [NPC Population Control](NPC_Population_Control.md) (1 shared connections)
+- [Admin Status Commands](Admin_Status_Commands.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/commands/test_admin_setstat_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

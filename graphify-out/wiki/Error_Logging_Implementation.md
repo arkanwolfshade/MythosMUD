@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_process_command_success()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test process_command successfully processes command string.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_handle_item_look_player_no_get_inventory()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _handle_item_look() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [NPC Population Control](NPC_Population_Control.md) (1 shared connections)
+- [Error Handling Guide](Error_Handling_Guide.md) (1 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

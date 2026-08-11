@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [Chat Channel Logger](Chat_Channel_Logger.md) (2 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
-- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
+- [Performance Optimization Summary](Performance_Optimization_Summary.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Commands Time](Commands_Time.md) (1 shared connections)
 
 ## Source Files
 

@@ -20,7 +20,7 @@
 - [Respawn Persistence Bug](Respawn_Persistence_Bug.md) (3 shared connections)
 - [Channel Broadcast Strategies](Channel_Broadcast_Strategies.md) (3 shared connections)
 - [Emotes JSON Schema](Emotes_JSON_Schema.md) (2 shared connections)
-- [Combat Command Handler](Combat_Command_Handler.md) (2 shared connections)
+- [Container Repository CRUD](Container_Repository_CRUD.md) (2 shared connections)
 - [Transaction Boundaries Audit](Transaction_Boundaries_Audit.md) (1 shared connections)
 
 ## Source Files

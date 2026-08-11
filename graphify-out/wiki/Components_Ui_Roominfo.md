@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_should_idle_move_disabled()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test should_idle_move() returns False when idle movement is disabled.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_soft_delete_character_success()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test soft_delete_character() successfully soft deletes.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 
 ## Relationships
 
-- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
-- [NPC Movement Integration](NPC_Movement_Integration.md) (1 shared connections)
+- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,6 +1,6 @@
 # Quality Fragmentation Guard
 
-> 29 nodes
+> 24 nodes
 
 ## Key Concepts
 
@@ -18,8 +18,6 @@
 - **test_collect_repo_texts_reports_unreadable_files()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **_QualityGuardModule** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **_load_trends_module()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_run_cmd_decodes_subprocess_output_as_utf8()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_git_show_file_decodes_subprocess_output_as_utf8()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **Protocol** (3 connections)
 - **_QualityTrendsModule** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **test_append_rule_b_failure_for_fragmentation_limit()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
@@ -28,13 +26,13 @@
 - **test_is_safe_git_ref_rejects_suspicious_values()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **test_parse_lizard_output_maps_function_nodes()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **_ChangedFile** (2 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **MonkeyPatch** (2 connections)
-- *... and 4 more nodes in this community*
+- **ChangedFile** (1 connections)
+- **Point guard submodules at a temporary repo root for isolated scans.** (1 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 
 ## Relationships
 
-- [AI Quality Guardrails](AI_Quality_Guardrails.md) (12 shared connections)
-- [Quality Fragmentation Ci](Quality_Fragmentation_Ci.md) (2 shared connections)
+- [AI Quality Guardrails](AI_Quality_Guardrails.md) (11 shared connections)
+- [Quality Fragmentation Ci](Quality_Fragmentation_Ci.md) (3 shared connections)
 
 ## Source Files
 
@@ -43,8 +41,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 124 (86%)
-- INFERRED: 20 (14%)
+- EXTRACTED: 114 (86%)
+- INFERRED: 18 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

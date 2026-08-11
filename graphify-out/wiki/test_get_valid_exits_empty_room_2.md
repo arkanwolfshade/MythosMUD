@@ -1,24 +1,23 @@
 # test_get_valid_exits_empty_room
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **8. Error Handling and Debugging** (3 connections) — `.cursor/commands/server-test-remediation.md`
-- **Test Debugging** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Common Debug Commands** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **test_record_message()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test record_message adds timestamp to window.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [E 2 E Scenario Whisper](E_2_E_Scenario_Whisper.md) (1 shared connections)
+- [Postgresql Anti Patterns](Postgresql_Anti_Patterns.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/server-test-remediation.md`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

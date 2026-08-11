@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_unsubscribe_from_subject_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _unsubscribe_from_subject() successfully unsubscribes.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_soft_delete_player_success()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test soft_delete_player successfully soft deletes player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
 
 ## Relationships
 
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
+- [Lizard Complexity Findings](Lizard_Complexity_Findings.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/persistence/test_player_repository.py`
 
 ## Audit Trail
 

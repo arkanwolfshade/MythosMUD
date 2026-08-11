@@ -1,57 +1,58 @@
 # NPC Movement Integration
 
-> 24 nodes
+> 108 nodes
 
 ## Key Concepts
 
+- **IdleMovementHandler** (60 connections) — `server/npc/idle_movement.py`
 - **test_idle_movement.py** (35 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_not_alive()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_probability_passes_when_random_below_threshold()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_is_npc_in_combat_true()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_is_npc_in_combat_no_attribute()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_get_valid_exits_filters_exits_outside_subzone()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_get_valid_exits_all_exits_invalid_subzone_returns_empty()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_select_exit_single_exit()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_execute_idle_movement_no_exit_selected()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_execute_idle_movement_no_current_room()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **mock_persistence()** (2 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **mock_event_bus()** (2 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Unit tests for idle movement.  Tests the IdleMovementHandler class.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Create a mock event bus.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test should_idle_move() returns False when NPC is not alive.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Movement runs when random.random() <= idle_movement_probability (exclusive upper** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test _is_npc_in_combat() when NPC is in combat.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test _is_npc_in_combat() handles missing in_combat attribute.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Subzone boundary validation drops exits that would leave the NPC subzone.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **When every target fails boundary validation, valid exits dict is empty.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test select_exit() with single exit.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test execute_idle_movement() when no exit is selected.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test execute_idle_movement() when NPC has no current room.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **idle_movement.py** (17 connections) — `server/npc/idle_movement.py`
+- **._should_idle_move_inner()** (8 connections) — `server/npc/idle_movement.py`
+- **.execute_idle_movement()** (8 connections) — `server/npc/idle_movement.py`
+- **_npc_id_str()** (7 connections) — `server/npc/idle_movement.py`
+- **.select_exit()** (6 connections) — `server/npc/idle_movement.py`
+- **.is_active()** (5 connections) — `server/models/game.py`
+- **.should_idle_move()** (5 connections) — `server/npc/idle_movement.py`
+- **._calculate_exit_weights()** (5 connections) — `server/npc/idle_movement.py`
+- **_npc_alive_and_active()** (4 connections) — `server/npc/idle_movement.py`
+- **_passes_movement_probability()** (4 connections) — `server/npc/idle_movement.py`
+- **._npc_registered_in_combat()** (4 connections) — `server/npc/idle_movement.py`
+- **._is_npc_in_combat()** (4 connections) — `server/npc/idle_movement.py`
+- **._try_idle_room_change()** (4 connections) — `server/npc/idle_movement.py`
+- **.is_alive()** (4 connections) — `server/npc/npc_base.py`
+- **_cfg_bool()** (3 connections) — `server/npc/idle_movement.py`
+- **._check_npc_combat_via_uuid()** (3 connections) — `server/npc/idle_movement.py`
+- **._check_npc_combat_via_string_mapping()** (3 connections) — `server/npc/idle_movement.py`
+- **.get_valid_exits()** (3 connections) — `server/npc/idle_movement.py`
+- **._calculate_exit_weight()** (3 connections) — `server/npc/idle_movement.py`
+- **._select_weighted_exit()** (3 connections) — `server/npc/idle_movement.py`
+- **._calculate_distance_to_room()** (3 connections) — `server/npc/idle_movement.py`
+- **._log_idle_move_outcome()** (3 connections) — `server/npc/idle_movement.py`
+- **idle_movement_handler()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- *... and 83 more nodes in this community*
 
 ## Relationships
 
-- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (16 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
-- [test_perform_recovery_action_naive_datetime_cooldown](test_perform_recovery_action_naive_datetime_cooldown.md) (1 shared connections)
-- [test_get_action_cooldown_success](test_get_action_cooldown_success.md) (1 shared connections)
-- [Services Exploration Service](Services_Exploration_Service.md) (1 shared connections)
-- [test_perform_recovery_action_with_location](test_perform_recovery_action_with_location.md) (1 shared connections)
-- [Investigations Sessions Movement](Investigations_Sessions_Movement.md) (1 shared connections)
-- [Manual Dependency Analysis](Manual_Dependency_Analysis.md) (1 shared connections)
-- [test_perform_recovery_action_all_actions](test_perform_recovery_action_all_actions.md) (1 shared connections)
-- [test_perform_recovery_action_invalid_string_player_id](test_perform_recovery_action_invalid_string_player_id.md) (1 shared connections)
-- [test_get_action_cooldown_string_player_id](test_get_action_cooldown_string_player_id.md) (1 shared connections)
-- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (12 shared connections)
+- [System Monitoring API](System_Monitoring_API.md) (3 shared connections)
+- [Combat NPC Lookup](Combat_NPC_Lookup.md) (2 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
+- [Client Security Utilities](Client_Security_Utilities.md) (1 shared connections)
 
 ## Source Files
 
+- `server/models/game.py`
+- `server/npc/idle_movement.py`
+- `server/npc/npc_base.py`
 - `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 78 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 340 (97%)
+- INFERRED: 12 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

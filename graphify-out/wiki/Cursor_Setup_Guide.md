@@ -1,23 +1,17 @@
 # Cursor Setup Guide
 
-> 58 nodes
+> 45 nodes
 
 ## Key Concepts
 
-- **SubjectValidationError** (29 connections) — `server/services/nats_subject_manager/exceptions.py`
 - **SubjectValidator** (23 connections) — `server/services/nats_subject_manager/validation.py`
 - **manager.py** (20 connections) — `server/services/nats_subject_manager/manager.py`
 - **test_subscription_patterns.py** (14 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **exceptions.py** (13 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **__init__.py** (12 connections) — `server/services/nats_subject_manager/__init__.py`
 - **get_subscription_pattern()** (12 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
 - **subscription_patterns.py** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
 - **get_chat_subscription_patterns()** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
 - **get_event_subscription_patterns()** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
 - **validation.py** (7 connections) — `server/services/nats_subject_manager/validation.py`
-- **metrics.py** (5 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.validate_parameter_value()** (5 connections) — `server/services/nats_subject_manager/validation.py`
-- **.validate_pattern_params()** (4 connections) — `server/services/nats_subject_manager/validation.py`
 - **patterns.py** (3 connections) — `server/services/nats_subject_manager/patterns.py`
 - **Any** (3 connections)
 - **test_get_subscription_pattern_single_param()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
@@ -29,26 +23,26 @@
 - **test_get_event_subscription_patterns_missing_pattern()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
 - **test_get_chat_subscription_patterns_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
 - **test_get_event_subscription_patterns_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- *... and 33 more nodes in this community*
+- **.__init__()** (2 connections) — `server/services/nats_subject_manager/validation.py`
+- **.validate_subject_basic()** (2 connections) — `server/services/nats_subject_manager/validation.py`
+- **.validate_subject_components()** (2 connections) — `server/services/nats_subject_manager/validation.py`
+- **.validate_subscription_pattern()** (2 connections) — `server/services/nats_subject_manager/validation.py`
+- **NATS Subject Manager for MythosMUD.  This module provides centralized subject na** (1 connections) — `server/services/nats_subject_manager/manager.py`
+- **Predefined subject patterns for MythosMUD chat system.  This module contains all** (1 connections) — `server/services/nats_subject_manager/patterns.py`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat Events](NPC_Combat_Events.md) (15 shared connections)
-- [Cursor Rules Docker](Cursor_Rules_Docker.md) (14 shared connections)
-- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (8 shared connections)
-- [Inventory Test Support](Inventory_Test_Support.md) (5 shared connections)
-- [Manager Services Nats](Manager_Services_Nats.md) (4 shared connections)
+- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (15 shared connections)
+- [NPC Combat Events](NPC_Combat_Events.md) (8 shared connections)
 - [NATS Pattern Matcher](NATS_Pattern_Matcher.md) (3 shared connections)
-- [Typography Layout Spec](Typography_Layout_Spec.md) (2 shared connections)
-- [Realtime Event Delegation](Realtime_Event_Delegation.md) (1 shared connections)
-- [Inventory Command Models](Inventory_Command_Models.md) (1 shared connections)
+- [Manager Services Nats](Manager_Services_Nats.md) (2 shared connections)
+- [Cursor Skills Critique](Cursor_Skills_Critique.md) (2 shared connections)
+- [Inventory Test Support](Inventory_Test_Support.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_subject_manager/__init__.py`
-- `server/services/nats_subject_manager/exceptions.py`
 - `server/services/nats_subject_manager/manager.py`
-- `server/services/nats_subject_manager/metrics.py`
 - `server/services/nats_subject_manager/patterns.py`
 - `server/services/nats_subject_manager/subscription_patterns.py`
 - `server/services/nats_subject_manager/validation.py`
@@ -56,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 233 (95%)
-- INFERRED: 12 (5%)
+- EXTRACTED: 167 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

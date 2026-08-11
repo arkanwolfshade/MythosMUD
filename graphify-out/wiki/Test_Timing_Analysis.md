@@ -23,10 +23,9 @@
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
-- [Auth Token Utilities](Auth_Token_Utilities.md) (1 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
 
 ## Source Files
 

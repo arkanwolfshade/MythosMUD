@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [Communication Command Flows](Communication_Command_Flows.md) (7 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (6 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (1 shared connections)
 
 ## Source Files
 

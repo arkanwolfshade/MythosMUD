@@ -1,54 +1,58 @@
 # Invite and User Schemas
 
-> 49 nodes
+> 70 nodes
 
 ## Key Concepts
 
-- **test_game_tick_processing_async.py** (26 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **_process_damage_over_time_effect()** (11 connections) — `server/app/game_tick_processing.py`
-- **_process_single_effect()** (11 connections) — `server/app/game_tick_processing.py`
-- **Any** (8 connections)
-- **_process_heal_over_time_effect()** (8 connections) — `server/app/game_tick_processing.py`
-- **_update_player_status_effects()** (7 connections) — `server/app/game_tick_processing.py`
-- **_cleanup_single_decayed_corpse()** (6 connections) — `server/app/game_tick_processing.py`
-- **test_process_damage_over_time_effect_no_damage()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_damage_over_time_effect_no_remaining()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_damage_over_time_effect_success()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_heal_over_time_effect_no_healing()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_heal_over_time_effect_no_remaining()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_heal_over_time_effect_success()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_single_effect_damage_over_time()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_single_effect_heal_over_time()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_single_effect_expired()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_update_player_status_effects_no_changes()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_update_player_status_effects_changes()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_status_effects_no_container()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_status_effects_no_online_players()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_combat_tick_no_service()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_combat_tick_success()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **mock_app()** (2 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **mock_container()** (2 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **mock_player()** (2 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- *... and 24 more nodes in this community*
+- **test_admin_commands.py** (37 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **handle_admin_command()** (14 connections) — `server/commands/admin_commands.py`
+- **_handle_admin_status_command()** (9 connections) — `server/commands/admin_commands.py`
+- **_handle_admin_time_command()** (6 connections) — `server/commands/admin_commands.py`
+- **.is_admin()** (4 connections) — `server/commands/communication_commands_support.py`
+- **test_handle_mute_command_exception()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **Any** (3 connections)
+- **test_handle_admin_command_status()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_admin_command_time()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_admin_command_unknown()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_mute_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_mute_command_no_target()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_mute_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_unmute_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_unmute_command_no_target()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_unmute_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_unmute_command_idempotent_when_not_muted()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_mute_global_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_mute_global_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_unmute_global_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_unmute_global_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_add_admin_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_add_admin_command_no_target()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_add_admin_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_mutes_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- *... and 45 more nodes in this community*
 
 ## Relationships
 
-- [Command Alias Handling](Command_Alias_Handling.md) (18 shared connections)
-- [Connection Room Presence Utils](Connection_Room_Presence_Utils.md) (2 shared connections)
-- [Player Respawn Events](Player_Respawn_Events.md) (1 shared connections)
-- [Investigations Sessions Xx](Investigations_Sessions_Xx.md) (1 shared connections)
-- [Database Manager Tests](Database_Manager_Tests.md) (1 shared connections)
-- [Skill Service Tests](Skill_Service_Tests.md) (1 shared connections)
+- [Container Open Events](Container_Open_Events.md) (32 shared connections)
+- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (9 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
+- [Admin Status Commands](Admin_Status_Commands.md) (1 shared connections)
+- [Cursor Skills Harden](Cursor_Skills_Harden.md) (1 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
+- [Room Drop Renderer](Room_Drop_Renderer.md) (1 shared connections)
+- [Quest Journal Commands](Quest_Journal_Commands.md) (1 shared connections)
+- [Look NPC Command](Look_NPC_Command.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/game_tick_processing.py`
-- `server/tests/unit/app/test_game_tick_processing_async.py`
+- `server/commands/admin_commands.py`
+- `server/commands/communication_commands_support.py`
+- `server/tests/unit/commands/test_admin_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 152 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 168 (85%)
+- INFERRED: 30 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

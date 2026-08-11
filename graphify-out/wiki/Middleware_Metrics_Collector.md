@@ -30,8 +30,8 @@
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
-- [Magic Command Handlers](Magic_Command_Handlers.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Client Lifecycle Metrics](Client_Lifecycle_Metrics.md) (1 shared connections)
 
 ## Source Files
 

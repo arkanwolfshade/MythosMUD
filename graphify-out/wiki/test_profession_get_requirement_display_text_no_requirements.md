@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_get_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_get_command delegates to inventory factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_validate_permission_superuser_all_actions()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **Test validate_permission allows superuser all actions.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [Player Model Inventory](Player_Model_Inventory.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Audit Trail
 

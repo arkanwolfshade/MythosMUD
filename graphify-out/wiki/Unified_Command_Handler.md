@@ -1,57 +1,51 @@
 # Unified Command Handler
 
-> 82 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **ConnectionCleaner** (27 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **connection_cleaner.py** (22 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **test_connection_cleaner.py** (22 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **Any** (15 connections)
-- **UUID** (12 connections)
-- **.cleanup_ghost_players()** (9 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.prune_stale_players()** (8 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.cleanup_orphaned_data()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.cleanup_dead_connections()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._close_and_remove_stale_websocket()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._cleanup_dead_connections_for_player()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.check_and_cleanup()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._remove_stale_player_data()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._get_online_player_ids()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._filter_actual_ghost_players()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.force_cleanup()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **_stale_prune_max_age_seconds()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.__init__()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._identify_stale_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._get_player_id_from_metadata()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._get_players_to_check()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._get_potential_ghost_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._remove_ghost_players_from_room()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **__init__.py** (3 connections) — `server/realtime/maintenance/__init__.py`
-- **._identify_stale_connections()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- *... and 57 more nodes in this community*
+- **connection_cleaner()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_check_and_cleanup()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **mock_memory_monitor()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **mock_rate_limiter()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **mock_message_queue()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **mock_cleanup_dead_websocket()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **mock_has_websocket_connection()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **mock_get_async_persistence()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_connection_cleaner_init()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_prune_stale_players()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_prune_stale_players_not_stale()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_prune_stale_players_with_websockets()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_cleanup_orphaned_data()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_cleanup_dead_connections()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_cleanup_ghost_players()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_force_cleanup()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **Unit tests for connection cleaner.  Tests the ConnectionCleaner class.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **Create a mock memory monitor.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **Create a mock rate limiter.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **Create a mock message queue.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **Create a mock cleanup_dead_websocket callback.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **Create a mock has_websocket_connection callback.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [Schemas Maps Map](Schemas_Maps_Map.md) (11 shared connections)
-- [Players API Endpoints](Players_API_Endpoints.md) (6 shared connections)
-- [Room Occupant Events](Room_Occupant_Events.md) (5 shared connections)
-- [NATS Subject Patterns](NATS_Subject_Patterns.md) (3 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [Realtime Payload Optimizer](Realtime_Payload_Optimizer.md) (1 shared connections)
-- [JSONB Column Parsing](JSONB_Column_Parsing.md) (1 shared connections)
+- [Room Occupant Events](Room_Occupant_Events.md) (2 shared connections)
+- [Deprecated Logging Patterns](Deprecated_Logging_Patterns.md) (2 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/maintenance/__init__.py`
-- `server/realtime/maintenance/connection_cleaner.py`
 - `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 268 (97%)
-- INFERRED: 9 (3%)
+- EXTRACTED: 76 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

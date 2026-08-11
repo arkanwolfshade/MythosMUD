@@ -33,13 +33,13 @@
 
 ## Relationships
 
-- [Combat Messaging Integration](Combat_Messaging_Integration.md) (5 shared connections)
-- [Realtime Event Handlers](Realtime_Event_Handlers.md) (3 shared connections)
+- [Combat Messaging Integration](Combat_Messaging_Integration.md) (7 shared connections)
 - [WebSocket Message Schemas](WebSocket_Message_Schemas.md) (2 shared connections)
-- [Draggable Panel UI](Draggable_Panel_UI.md) (2 shared connections)
+- [Archive Circuit Breaker](Archive_Circuit_Breaker.md) (2 shared connections)
+- [Logout and Quit Commands](Logout_and_Quit_Commands.md) (2 shared connections)
 - [Plan Cursor Plans](Plan_Cursor_Plans.md) (2 shared connections)
-- [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (2 shared connections)
-- [Communication Command Handlers](Communication_Command_Handlers.md) (2 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (2 shared connections)
+- [Realtime Event Handlers](Realtime_Event_Handlers.md) (1 shared connections)
 - [API Test Fixtures](API_Test_Fixtures.md) (1 shared connections)
 
 ## Source Files

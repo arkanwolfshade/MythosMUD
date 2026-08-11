@@ -1,30 +1,29 @@
 # Uvicorn Code Review
 
-> 9 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Entries** (7 connections) — `docs/investigations/codacy_high_warning_progress.md`
-- **Codacy High+Warning (607) Remediation Progress** (2 connections) — `docs/investigations/codacy_high_warning_progress.md`
-- **codacy_high_warning_progress.md** (1 connections) — `docs/investigations/codacy_high_warning_progress.md`
-- **2026-08-07 — Wave 0 (Baseline)** (1 connections) — `docs/investigations/codacy_high_warning_progress.md`
-- **2026-08-07 — Wave 2 (non-Lizard Warnings)** (1 connections) — `docs/investigations/codacy_high_warning_progress.md`
-- **2026-08-07 — Wave 3 (Lizard config)** (1 connections) — `docs/investigations/codacy_high_warning_progress.md`
-- **2026-08-07 — Wave 4 (Lizard refactors)** (1 connections) — `docs/investigations/codacy_high_warning_progress.md`
-- **2026-08-07 — Wave 5 (Verification)** (1 connections) — `docs/investigations/codacy_high_warning_progress.md`
-- **2026-08-07 — Wave 4 (Lizard refactors)** (1 connections) — `docs/investigations/codacy_high_warning_progress.md`
+- **TestHandleSpecialCommandRouting** (5 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_handle_special_command_routing_alias_command()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_handle_special_command_routing_alias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_handle_special_command_routing_emote_conversion()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing handles alias management commands.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing returns error when alias storage unavailabl** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing converts single-word emotes.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (4 shared connections)
 
 ## Source Files
 
-- `docs/investigations/codacy_high_warning_progress.md`
+- `server/tests/unit/commands/test_command_aliases.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

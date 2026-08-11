@@ -1,43 +1,56 @@
 # NATS Retry Handler
 
-> 15 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **RoomIDUtils** (20 connections) — `server/realtime/room_id_utils.py`
-- **.__init__()** (3 connections) — `server/realtime/room_id_utils.py`
-- **test_room_id_utils_init()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **test_get_canonical_room_id()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **test_get_canonical_room_id_no_manager()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **test_check_npc_room_match()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **.get_canonical_room_id()** (2 connections) — `server/realtime/room_id_utils.py`
-- **Any** (1 connections)
-- **Utilities for room ID normalization and comparison.** (1 connections) — `server/realtime/room_id_utils.py`
-- **Initialize room ID utilities.          Args:             connection_manager: Con** (1 connections) — `server/realtime/room_id_utils.py`
-- **Get canonical room ID for consistent comparison.          Args:             room** (1 connections) — `server/realtime/room_id_utils.py`
-- **Test RoomIDUtils initialization.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **Test get_canonical_room_id returns canonical ID.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **Test get_canonical_room_id returns original when no manager.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **Test check_npc_room_match checks NPC room match.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **resolve_weapon_attack_from_equipped()** (24 connections) — `server/game/weapons.py`
+- **test_weapons.py** (18 connections) — `server/tests/unit/game/test_weapons.py`
+- **weapons.py** (14 connections) — `server/game/weapons.py`
+- **test_combat_weapon_resolution.py** (12 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
+- **WeaponAttackInfo** (10 connections) — `server/game/weapons.py`
+- **test_resolve_weapon_attack_from_equipped_registry_error_returns_none()** (5 connections) — `server/tests/unit/game/test_weapons.py`
+- **test_resolve_weapon_attack_from_equipped_no_weapon_metadata_returns_none()** (5 connections) — `server/tests/unit/game/test_weapons.py`
+- **test_resolve_weapon_attack_from_equipped_weapon_missing_min_max_returns_none()** (5 connections) — `server/tests/unit/game/test_weapons.py`
+- **test_resolve_weapon_attack_from_equipped_weapon_returns_info_in_range()** (5 connections) — `server/tests/unit/game/test_weapons.py`
+- **test_resolve_weapon_attack_from_equipped_weapon_with_modifier()** (5 connections) — `server/tests/unit/game/test_weapons.py`
+- **test_resolve_weapon_attack_from_equipped_empty_damage_types_uses_physical()** (5 connections) — `server/tests/unit/game/test_weapons.py`
+- **_roll_weapon_attack()** (4 connections) — `server/game/weapons.py`
+- **test_weapon_resolution_switchblade_damage_in_range()** (4 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
+- **test_resolve_weapon_attack_from_equipped_none_stack_returns_none()** (4 connections) — `server/tests/unit/game/test_weapons.py`
+- **test_resolve_weapon_attack_from_equipped_missing_prototype_id_returns_none()** (4 connections) — `server/tests/unit/game/test_weapons.py`
+- **_weapon_damage_bounds()** (3 connections) — `server/game/weapons.py`
+- **Any** (3 connections)
+- **test_weapon_resolution_switchblade_no_main_hand_returns_none()** (3 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
+- **test_resolve_weapon_attack_from_equipped_none_registry_returns_none()** (3 connections) — `server/tests/unit/game/test_weapons.py`
+- **NamedTuple** (1 connections)
+- **Weapon resolution helpers for combat.  Resolves equipped main-hand items to weap** (1 connections) — `server/game/weapons.py`
+- **Result of resolving an equipped item to a weapon attack.      base_damage: Rolle** (1 connections) — `server/game/weapons.py`
+- **Resolve equipped main-hand stack to weapon attack info, or None if unarmed.** (1 connections) — `server/game/weapons.py`
+- **Integration tests for combat weapon resolution.  Verifies that the switchblade p** (1 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
+- **With switchblade equipped, resolved damage is in [1, 4] and damage_type is slash** (1 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [Archive Effects System](Archive_Effects_System.md) (6 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [Admin Shutdown Commands](Admin_Shutdown_Commands.md) (2 shared connections)
-- [Investigations Sessions Session](Investigations_Sessions_Session.md) (2 shared connections)
-- [Realtime Npc Event](Realtime_Npc_Event.md) (2 shared connections)
-- [Character Stats Generator](Character_Stats_Generator.md) (2 shared connections)
+- [NATS Subject Admin API](NATS_Subject_Admin_API.md) (14 shared connections)
+- [App Creation Flow Screens](App_Creation_Flow_Screens.md) (8 shared connections)
+- [Upgrade Archive Dependency](Upgrade_Archive_Dependency.md) (5 shared connections)
+- [Npc Services Combat](Npc_Services_Combat.md) (4 shared connections)
+- [Combat Attack Flow](Combat_Attack_Flow.md) (3 shared connections)
+- [NATS Metrics API](NATS_Metrics_API.md) (3 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/room_id_utils.py`
-- `server/tests/unit/realtime/test_room_id_utils.py`
+- `server/game/weapons.py`
+- `server/tests/integration/test_combat_weapon_resolution.py`
+- `server/tests/unit/game/test_weapons.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 136 (89%)
+- INFERRED: 17 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,24 +4,25 @@
 
 ## Key Concepts
 
-- **load_test_10_players.spec.ts** (9 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **generateLoadTestCredential()** (2 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **registerPlayer()** (2 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **PlayerConfig** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **PLAYER_CONFIGS** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **INVITE_CODES** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **selectProfessionAndCreateCharacter()** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **executeCommand()** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **analyzeLogFiles()** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **NOTE: This test is designed to be executed using Playwright MCP tools for** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **alias_schema.json** (9 connections) — `schemas/alias_schema.json`
+- **required** (3 connections) — `schemas/alias_schema.json`
+- **$schema** (1 connections) — `schemas/alias_schema.json`
+- **$id** (1 connections) — `schemas/alias_schema.json`
+- **title** (1 connections) — `schemas/alias_schema.json`
+- **description** (1 connections) — `schemas/alias_schema.json`
+- **type** (1 connections) — `schemas/alias_schema.json`
+- **version** (1 connections) — `schemas/alias_schema.json`
+- **aliases** (1 connections) — `schemas/alias_schema.json`
+- **additionalProperties** (1 connections) — `schemas/alias_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Command Factories Moderation](Command_Factories_Moderation.md) (1 shared connections)
+- [Alias JSON Schema](Alias_JSON_Schema.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- `schemas/alias_schema.json`
 
 ## Audit Trail
 

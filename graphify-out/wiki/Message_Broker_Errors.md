@@ -24,8 +24,9 @@
 
 ## Relationships
 
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (4 shared connections)
-- [Quest Journal Commands](Quest_Journal_Commands.md) (1 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
+- [WebSocket Code Review](WebSocket_Code_Review.md) (1 shared connections)
+- [Schedule Service Loader](Schedule_Service_Loader.md) (1 shared connections)
 
 ## Source Files
 

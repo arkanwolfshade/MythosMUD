@@ -1,45 +1,51 @@
 # Combat Messaging Tests
 
-> 20 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **test_instance_manager.py** (15 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **instance_manager()** (4 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **room_cache()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_create_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_create_instance_raises_when_no_templates()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_destroy_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_get_first_room_id()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_get_exit_room_id()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_get_room_by_id_returns_none_for_non_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_get_room_by_id_returns_room_when_in_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Unit tests for InstanceManager.  Tests instance creation, destruction, room clon** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Room cache with tutorial template.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Create InstanceManager with tutorial template in cache.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test create_instance creates instance with cloned rooms.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test create_instance raises when no template rooms found.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test destroy_instance removes instance from store.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test get_first_room_id returns first room of instance.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test get_exit_room_id returns fixed exit room.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test get_room_by_id returns None for non-instance room IDs.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test get_room_by_id returns room when room is in an instance.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **admin_setstat_command.py** (28 connections) — `server/commands/admin_setstat_command.py`
+- **Any** (7 connections)
+- **_calculate_stat_warnings()** (6 connections) — `server/commands/admin_setstat_command.py`
+- **_parse_set_stat_args()** (5 connections) — `server/commands/admin_setstat_command.py`
+- **_notify_player_stat_change()** (5 connections) — `server/commands/admin_setstat_command.py`
+- **_resolve_admin_services_and_permissions()** (5 connections) — `server/commands/admin_setstat_command.py`
+- **_warning_for_cap_stat()** (4 connections) — `server/commands/admin_setstat_command.py`
+- **_get_app_or_error()** (4 connections) — `server/commands/admin_setstat_command.py`
+- **_parse_value_from_args()** (3 connections) — `server/commands/admin_setstat_command.py`
+- **_validate_set_stat_inputs()** (3 connections) — `server/commands/admin_setstat_command.py`
+- **_warning_for_stat_range()** (3 connections) — `server/commands/admin_setstat_command.py`
+- **Admin command to set player statistics.  This module provides the handler for th** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Parse value from args[2] when value_input is None and args has at least 3 elemen** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Parse stat name, target player, and value from command data.** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Validate stat name and value inputs.** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Return warning message if value exceeds DP or MP calculated maximum; else empty** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Return warning message if value is outside normal range for stat; else empty str** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Calculate warnings for stat values that exceed maximums or normal ranges.** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Notify target player of stat change and send player update event.** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Resolve required services and check admin permissions.** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Return (app, None) if request has app, else (None, error_dict).** (1 connections) — `server/commands/admin_setstat_command.py`
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
-- [Dependency Injection Tests](Dependency_Injection_Tests.md) (2 shared connections)
-- [Rescue Service Tests](Rescue_Service_Tests.md) (1 shared connections)
+- [Archive Effects System](Archive_Effects_System.md) (7 shared connections)
+- [Admin Status Commands](Admin_Status_Commands.md) (7 shared connections)
+- [Container Open Events](Container_Open_Events.md) (3 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (3 shared connections)
+- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
+- [Cursor Skills Harden](Cursor_Skills_Harden.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_instance_manager.py`
+- `server/commands/admin_setstat_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 82 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

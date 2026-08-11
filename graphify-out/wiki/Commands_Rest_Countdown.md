@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_following_returns_tuple()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **get_following returns (target_id, target_type).** (1 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_validate_player_name_valid()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test validate_player_name() with valid name.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 
 ## Relationships
 
-- [NPC Utility Functions](NPC_Utility_Functions.md) (1 shared connections)
+- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_follow_service.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 

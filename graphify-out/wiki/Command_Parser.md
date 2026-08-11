@@ -1,59 +1,65 @@
 # Command Parser
 
-> 143 nodes
+> 77 nodes
 
 ## Key Concepts
 
-- **test_command_parser.py** (45 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_command_parser_helpers.py** (24 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **parse_command()** (24 connections) — `server/utils/command_parser.py`
-- **CommandParser** (19 connections) — `server/utils/command_parser.py`
-- **test_command_parser_smoke.py** (8 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **.parse_command()** (7 connections) — `server/utils/command_parser.py`
-- **._create_command_object()** (7 connections) — `server/utils/command_parser.py`
-- **Command** (4 connections)
-- **._parse_command_parts()** (4 connections) — `server/utils/command_parser.py`
-- **._invoke_create_method()** (4 connections) — `server/utils/command_parser.py`
-- **test_parse_command_basic()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **test_parse_command_with_args()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **test_parse_command_with_pipes()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **command_parser()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_empty_string()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_whitespace_only()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_too_long()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_unknown_command()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_valid_look()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_valid_go()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_with_slash_prefix()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_spawn_alias()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_alias_l()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_alias_g()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_create_command_object_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- *... and 118 more nodes in this community*
+- **get_config()** (105 connections) — `server/config/__init__.py`
+- **AppConfig** (31 connections) — `server/config/models/app.py`
+- **__init__.py** (11 connections) — `server/config/__init__.py`
+- **reset_config()** (9 connections) — `server/config/__init__.py`
+- **test_config.py** (9 connections) — `server/tests/unit/config/test_config.py`
+- **test_config_init.py** (9 connections) — `server/tests/unit/config/test_config_init.py`
+- **.to_legacy_dict()** (7 connections) — `server/config/models/app.py`
+- **Any** (6 connections)
+- **_create_config_instance()** (5 connections) — `server/config/__init__.py`
+- **_get_config_cached()** (5 connections) — `server/config/__init__.py`
+- **_get_config_test()** (5 connections) — `server/config/__init__.py`
+- **.__init__()** (5 connections) — `server/config/models/app.py`
+- **._legacy_game_entries()** (5 connections) — `server/config/models/app.py`
+- **._legacy_nats_dict()** (5 connections) — `server/config/models/app.py`
+- **._legacy_chat_dict()** (5 connections) — `server/config/models/app.py`
+- **._legacy_cors_dict()** (5 connections) — `server/config/models/app.py`
+- **generate_unique_codes()** (5 connections) — `tools/invite_tools/generate_invites.py`
+- **_is_test_mode()** (4 connections) — `server/config/__init__.py`
+- **._sanitize_environment_for_nested_configs()** (4 connections) — `server/config/models/app.py`
+- **test_reset_config_clears_state()** (4 connections) — `server/tests/unit/config/test_config.py`
+- **test_reset_config_in_test_mode()** (4 connections) — `server/tests/unit/config/test_config_init.py`
+- **generate_invites.py** (4 connections) — `tools/invite_tools/generate_invites.py`
+- **._first_cors_origins_env()** (3 connections) — `server/config/models/app.py`
+- **reset_config_singleton()** (3 connections) — `server/tests/conftest.py`
+- **test_get_config_returns_app_config()** (3 connections) — `server/tests/unit/config/test_config.py`
+- *... and 52 more nodes in this community*
 
 ## Relationships
 
-- [Chat NATS Publisher](Chat_NATS_Publisher.md) (6 shared connections)
-- [Cursor Agents Analyzer](Cursor_Agents_Analyzer.md) (5 shared connections)
-- [Zone Config Loader](Zone_Config_Loader.md) (3 shared connections)
-- [Realtime Errors Error](Realtime_Errors_Error.md) (3 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (2 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (2 shared connections)
-- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (2 shared connections)
-- [Archive Planning E 2 E](Archive_Planning_E_2_E.md) (1 shared connections)
-- [Test Refactoring Deliverables](Test_Refactoring_Deliverables.md) (1 shared connections)
+- [Pydantic Error Handlers](Pydantic_Error_Handlers.md) (10 shared connections)
+- [NATS Metrics API](NATS_Metrics_API.md) (6 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (5 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (5 shared connections)
+- [Event Bus Serialization](Event_Bus_Serialization.md) (4 shared connections)
+- [Async Persistence Layer](Async_Persistence_Layer.md) (3 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (3 shared connections)
+- [Commands Time](Commands_Time.md) (3 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (3 shared connections)
+- [Map Editing Hooks](Map_Editing_Hooks.md) (3 shared connections)
+- [Archive Planning E 2 E](Archive_Planning_E_2_E.md) (2 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_command_parser_smoke.py`
-- `server/tests/unit/utils/test_command_parser.py`
-- `server/tests/unit/utils/test_command_parser_helpers.py`
-- `server/utils/command_parser.py`
+- `server/config/__init__.py`
+- `server/config/models/app.py`
+- `server/tests/conftest.py`
+- `server/tests/unit/config/test_config.py`
+- `server/tests/unit/config/test_config_init.py`
+- `server/tests/unit/test_config_smoke.py`
+- `tools/invite_tools/generate_invites.py`
 
 ## Audit Trail
 
-- EXTRACTED: 359 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 329 (97%)
+- INFERRED: 11 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

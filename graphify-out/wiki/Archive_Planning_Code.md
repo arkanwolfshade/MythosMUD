@@ -1,26 +1,25 @@
 # Archive Planning Code
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **SkillUseLog** (5 connections) — `server/models/skill_use_log.py`
-- **Base** (1 connections)
-- **.__repr__()** (1 connections) — `server/models/skill_use_log.py`
-- **One recorded successful use of a skill by a character at a given level.      cha** (1 connections) — `server/models/skill_use_log.py`
+- **.get_system_stats()** (3 connections) — `server/services/rate_limiter.py`
+- **Any** (2 connections)
+- **Get system-wide rate limiting statistics.          Returns:             Dictiona** (1 connections) — `server/services/rate_limiter.py`
 
 ## Relationships
 
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (2 shared connections)
+- [Npc Behavior Engine](Npc_Behavior_Engine.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/skill_use_log.py`
+- `server/services/rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (88%)
-- INFERRED: 1 (12%)
+- EXTRACTED: 6 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

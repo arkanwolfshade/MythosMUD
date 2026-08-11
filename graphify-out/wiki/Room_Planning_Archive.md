@@ -33,15 +33,14 @@
 
 ## Relationships
 
-- [Communication Command Handlers](Communication_Command_Handlers.md) (20 shared connections)
+- [Communication Command Handlers](Communication_Command_Handlers.md) (18 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (6 shared connections)
 - [Character Stats Model](Character_Stats_Model.md) (6 shared connections)
 - [API Test Fixtures](API_Test_Fixtures.md) (4 shared connections)
 - [Combat Messaging Integration](Combat_Messaging_Integration.md) (4 shared connections)
 - [Realtime Event Handlers](Realtime_Event_Handlers.md) (4 shared connections)
 - [Connection Cleaner Tests](Connection_Cleaner_Tests.md) (4 shared connections)
 - [Quest Flow Integration](Quest_Flow_Integration.md) (3 shared connections)
-- [Structured Error Logging Tasks](Structured_Error_Logging_Tasks.md) (2 shared connections)
-- [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (2 shared connections)
 - [Cursor Bug Agents](Cursor_Bug_Agents.md) (2 shared connections)
 - [Command Input Utilities](Command_Input_Utilities.md) (2 shared connections)
 

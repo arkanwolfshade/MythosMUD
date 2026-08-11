@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [Minimap Fallback Helpers](Minimap_Fallback_Helpers.md) (9 shared connections)
+- [Mythos Time HUD](Mythos_Time_HUD.md) (6 shared connections)
+- [Minimap Fallback Helpers](Minimap_Fallback_Helpers.md) (3 shared connections)
 - [Container Persistence Ops](Container_Persistence_Ops.md) (3 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
 
 ## Source Files
 

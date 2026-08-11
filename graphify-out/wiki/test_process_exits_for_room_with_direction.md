@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_connection_manager_property_resolution_error()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test connection_manager property handles resolution errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_profession_meets_stat_requirements_extra_stats()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test meets_stat_requirements returns True when stats exceed requirements.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
+- [Cursor Plans Login](Cursor_Plans_Login.md) (1 shared connections)
+- [Profession Get Mechanical Effects](Profession_Get_Mechanical_Effects.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

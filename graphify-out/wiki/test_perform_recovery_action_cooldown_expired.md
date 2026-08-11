@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_remove_rule_not_found()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test remove_rule() returns False when rule not found.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_record_message_error_handling()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test record_message handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [Quest Instance Repository](Quest_Instance_Repository.md) (1 shared connections)
-- [WebSocket Message Handlers](WebSocket_Message_Handlers.md) (1 shared connections)
+- [Postgresql Anti Patterns](Postgresql_Anti_Patterns.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_connection_manager_setter_updates_helpers()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test connection_manager setter updates filtering_helper and event_handler refere** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_validate_and_fix_player_room_invalid()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test validate_and_fix_player_room fixes invalid room.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
 
 ## Relationships
 
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
+- [Lizard Complexity Findings](Lizard_Complexity_Findings.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/persistence/test_player_repository.py`
 
 ## Audit Trail
 

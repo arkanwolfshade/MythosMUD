@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **.check_casting_progress()** (2 connections) — `server/game/magic/magic_service.py`
-- **Check and process casting progress for all active castings.          Called by** (1 connections) — `server/game/magic/magic_service.py`
+- **test_resolve_player_name_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test resolve_player_name() when player is found.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 
 ## Relationships
 
-- [Security Headers Middleware](Security_Headers_Middleware.md) (1 shared connections)
+- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/magic_service.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 

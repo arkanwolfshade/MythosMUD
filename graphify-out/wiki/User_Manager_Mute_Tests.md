@@ -1,78 +1,72 @@
 # User Manager Mute Tests
 
-> 560 nodes
+> 175 nodes
 
 ## Key Concepts
 
 - **ApplicationContainer** (151 connections) — `server/container/main.py`
-- **GameBundle** (45 connections) — `server/container/bundles/game.py`
-- **RealTimeEventHandler** (44 connections) — `server/realtime/event_handler.py`
-- **game.py** (42 connections) — `server/container/bundles/game.py`
-- **PrototypeRegistry** (37 connections) — `server/game/items/prototype_registry.py`
-- **.get_instance()** (34 connections) — `server/container/main.py`
-- **TaskRegistry** (33 connections) — `server/app/task_registry.py`
-- **main.py** (33 connections) — `server/container/main.py`
-- **ItemPrototypeModel** (28 connections) — `server/game/items/models.py`
-- **ScheduleService** (28 connections) — `server/services/schedule_service.py`
+- **lifespan_startup.py** (59 connections) — `server/app/lifespan_startup.py`
 - **test_application_container.py** (28 connections) — `server/tests/unit/test_application_container.py`
-- **MythosChronicle** (27 connections) — `server/time/time_service.py`
-- **schedule_service.py** (25 connections) — `server/services/schedule_service.py`
-- **time_service.py** (25 connections) — `server/time/time_service.py`
-- **resolve_weapon_attack_from_equipped()** (24 connections) — `server/game/weapons.py`
-- **time_event_consumer.py** (24 connections) — `server/time/time_event_consumer.py`
-- **get_mythos_chronicle()** (24 connections) — `server/time/time_service.py`
-- **MythosTimeEventConsumer** (23 connections) — `server/time/time_event_consumer.py`
-- **CombatBundle** (21 connections) — `server/container/bundles/combat.py`
-- **magic.py** (20 connections) — `server/container/bundles/magic.py`
-- **EventPublisher** (20 connections) — `server/realtime/event_publisher.py`
-- **__init__.py** (19 connections) — `server/container/bundles/__init__.py`
-- **MagicBundle** (19 connections) — `server/container/bundles/magic.py`
-- **InstanceManager** (19 connections) — `server/game/instance_manager.py`
-- **prototype_registry.py** (19 connections) — `server/game/items/prototype_registry.py`
-- *... and 535 more nodes in this community*
+- **test_lifespan_startup.py** (26 connections) — `server/tests/unit/app/test_lifespan_startup.py`
+- **get_container()** (17 connections) — `server/container/main.py`
+- **initialize_container_and_legacy_services()** (14 connections) — `server/app/lifespan_startup.py`
+- **NPCService** (14 connections) — `server/services/npc_service/__init__.py`
+- **FastAPI** (13 connections)
+- **lifespan_event_subscriptions.py** (11 connections) — `server/app/lifespan_event_subscriptions.py`
+- **setup_connection_manager()** (11 connections) — `server/app/lifespan_startup.py`
+- **initialize_combat_services()** (11 connections) — `server/app/lifespan_startup.py`
+- **initialize_npc_services()** (10 connections) — `server/app/lifespan_startup.py`
+- **initialize_npc_startup_spawning()** (10 connections) — `server/app/lifespan_startup.py`
+- **subscribe_quest_events()** (9 connections) — `server/app/lifespan_event_subscriptions.py`
+- **initialize_nats_and_combat_services()** (9 connections) — `server/app/lifespan_startup.py`
+- **initialize_chat_service()** (9 connections) — `server/app/lifespan_startup.py`
+- **initialize_mythos_time_consumer()** (8 connections) — `server/app/lifespan_startup.py`
+- **get_npc_startup_service()** (8 connections) — `server/services/npc_startup_service.py`
+- **subscribe_room_occupants_refresh()** (7 connections) — `server/app/lifespan_event_subscriptions.py`
+- **.initialize()** (7 connections) — `server/container/bundles/monitoring.py`
+- **.__init__()** (7 connections) — `server/container/main.py`
+- **_set_legacy_services()** (6 connections) — `server/app/lifespan_startup.py`
+- **_load_npc_definitions_and_rules()** (6 connections) — `server/app/lifespan_startup.py`
+- **.reset_instance()** (6 connections) — `server/container/main.py`
+- **test_application_container_set_instance()** (6 connections) — `server/tests/unit/test_application_container.py`
+- *... and 150 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (110 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (68 shared connections)
-- [Combat Attack Service](Combat_Attack_Service.md) (35 shared connections)
-- [NPC Service Tests](NPC_Service_Tests.md) (25 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (23 shared connections)
-- [WebSocket Code Review](WebSocket_Code_Review.md) (21 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (18 shared connections)
-- [Exploration Command Factory](Exploration_Command_Factory.md) (17 shared connections)
-- [Player Respawn Events](Player_Respawn_Events.md) (14 shared connections)
-- [Player Respawn Service](Player_Respawn_Service.md) (12 shared connections)
-- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (11 shared connections)
-- [Player Domain Model](Player_Domain_Model.md) (10 shared connections)
+- [WebSocket Code Review](WebSocket_Code_Review.md) (43 shared connections)
+- [Client Event Store](Client_Event_Store.md) (16 shared connections)
+- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (13 shared connections)
+- [NPC Occupant Verification](NPC_Occupant_Verification.md) (13 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (11 shared connections)
+- [Player Respawn Service](Player_Respawn_Service.md) (11 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (8 shared connections)
+- [Command Factory Tests](Command_Factory_Tests.md) (8 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (6 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (5 shared connections)
+- [Combat Schema Validation](Combat_Schema_Validation.md) (4 shared connections)
+- [Catatonia Registry Service](Catatonia_Registry_Service.md) (4 shared connections)
 
 ## Source Files
 
-- `server/app/task_registry.py`
-- `server/app/tracked_task_manager.py`
-- `server/container/__init__.py`
-- `server/container/bundles/__init__.py`
+- `server/app/lifespan_event_subscriptions.py`
+- `server/app/lifespan_startup.py`
 - `server/container/bundles/chat.py`
 - `server/container/bundles/combat.py`
-- `server/container/bundles/core.py`
-- `server/container/bundles/game.py`
-- `server/container/bundles/magic.py`
 - `server/container/bundles/monitoring.py`
-- `server/container/bundles/npc.py`
 - `server/container/bundles/realtime.py`
 - `server/container/bundles/time.py`
 - `server/container/main.py`
-- `server/container/utils.py`
-- `server/events/distributed_event_bus.py`
-- `server/events/event_types.py`
-- `server/game/instance_manager.py`
-- `server/game/items/__init__.py`
-- `server/game/items/component_hooks.py`
+- `server/services/npc_service/__init__.py`
+- `server/services/npc_startup_service.py`
+- `server/tests/unit/app/test_lifespan_startup.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/services/test_npc_service.py`
+- `server/tests/unit/test_application_container.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2305 (91%)
-- INFERRED: 221 (9%)
+- EXTRACTED: 734 (96%)
+- INFERRED: 29 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

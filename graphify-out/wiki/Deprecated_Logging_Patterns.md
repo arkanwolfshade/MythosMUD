@@ -1,52 +1,53 @@
 # Deprecated Logging Patterns
 
-> 47 nodes
+> 46 nodes
 
 ## Key Concepts
 
-- **handle_whisper_command()** (21 connections) — `server/commands/communication_commands.py`
-- **test_communication_commands_whisper_reply.py** (17 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_whisper_command.py** (13 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_handle_whisper_command_target_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_whisper_to_self()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_reply_command_no_last_whisper_sender()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_reply_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_chat_service_failure()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_no_target()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_reply_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_reply_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_whisper_command_missing_target()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_missing_message()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_no_player_service()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_sender_not_found()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_target_not_found()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_whisper_to_self()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_success()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **mock_request()** (2 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **mock_sender()** (2 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **mock_target()** (2 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **Unit tests for whisper and reply communication command handlers.** (1 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- *... and 22 more nodes in this community*
+- **ConnectionCleaner** (27 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Any** (15 connections)
+- **UUID** (12 connections)
+- **.cleanup_ghost_players()** (9 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.prune_stale_players()** (8 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.cleanup_orphaned_data()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.cleanup_dead_connections()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._close_and_remove_stale_websocket()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._cleanup_dead_connections_for_player()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.check_and_cleanup()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._remove_stale_player_data()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_online_player_ids()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._filter_actual_ghost_players()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.force_cleanup()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **_stale_prune_max_age_seconds()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.__init__()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._identify_stale_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_player_id_from_metadata()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_players_to_check()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_potential_ghost_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._remove_ghost_players_from_room()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **__init__.py** (3 connections) — `server/realtime/maintenance/__init__.py`
+- **._identify_stale_connections()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._is_websocket_dead()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Maintenance components for connection management.  This package provides modular** (1 connections) — `server/realtime/maintenance/__init__.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [Chat NATS Publisher](Chat_NATS_Publisher.md) (10 shared connections)
-- [Quest Journal Commands](Quest_Journal_Commands.md) (9 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (9 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (4 shared connections)
+- [Game State Provider Tests](Game_State_Provider_Tests.md) (2 shared connections)
+- [Unified Command Handler](Unified_Command_Handler.md) (2 shared connections)
+- [Room Occupant Events](Room_Occupant_Events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/communication_commands.py`
-- `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- `server/tests/unit/commands/test_whisper_command.py`
+- `server/realtime/maintenance/__init__.py`
+- `server/realtime/maintenance/connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 139 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 173 (95%)
+- INFERRED: 9 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

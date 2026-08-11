@@ -34,8 +34,7 @@
 ## Relationships
 
 - [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (16 shared connections)
-- [Message Queue Cleanup](Message_Queue_Cleanup.md) (6 shared connections)
-- [Calendar NPC Schedule](Calendar_NPC_Schedule.md) (1 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (7 shared connections)
 
 ## Source Files
 

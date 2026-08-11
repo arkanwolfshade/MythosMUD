@@ -1,25 +1,24 @@
 # Archive Npc Duplication
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **_fix_combat_tests.py** (2 connections) — `docs/investigations/_fix_combat_tests.py`
-- **repl()** (2 connections) — `docs/investigations/_fix_combat_tests.py`
-- **Match** (1 connections)
-- **Update test_npc_combat_handlers to use CombatResultCtx.** (1 connections) — `docs/investigations/_fix_combat_tests.py`
+- **test_handle_item_look_in_room_drops()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Error Handling Guide](Error_Handling_Guide.md) (1 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/investigations/_fix_combat_tests.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

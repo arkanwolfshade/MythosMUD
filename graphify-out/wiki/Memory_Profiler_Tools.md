@@ -1,12 +1,13 @@
 # Memory Profiler Tools
 
-> 59 nodes
+> 61 nodes
 
 ## Key Concepts
 
 - **MemoryProfiler** (32 connections) — `server/utils/memory_profiler.py`
 - **test_memory_profiler.py** (15 connections) — `server/tests/unit/utils/test_memory_profiler.py`
 - **benchmark_model_memory_usage()** (13 connections) — `server/utils/memory_profiler.py`
+- **memory_profiler.py** (10 connections) — `server/utils/memory_profiler.py`
 - **.measure_model_instantiation()** (8 connections) — `server/utils/memory_profiler.py`
 - **Any** (8 connections)
 - **.measure_model_deserialization()** (8 connections) — `server/utils/memory_profiler.py`
@@ -28,17 +29,16 @@
 - **test_memory_profiler_stop_profiling()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
 - **test_memory_profiler_get_current_memory_usage()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
 - **test_memory_profiler_get_memory_delta()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_get_memory_delta_no_baseline()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- *... and 34 more nodes in this community*
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [Monitoring Response Models](Monitoring_Response_Models.md) (6 shared connections)
-- [Alias Expansion Logic](Alias_Expansion_Logic.md) (2 shared connections)
-- [NPC Occupant Processor](NPC_Occupant_Processor.md) (1 shared connections)
-- [Emote Schema Validator](Emote_Schema_Validator.md) (1 shared connections)
-- [Combat NPC Lookup](Combat_NPC_Lookup.md) (1 shared connections)
-- [NPC Database Sessions](NPC_Database_Sessions.md) (1 shared connections)
+- [Monitoring Response Models](Monitoring_Response_Models.md) (5 shared connections)
+- [Alias Expansion Logic](Alias_Expansion_Logic.md) (3 shared connections)
+- [Combat NPC Lookup](Combat_NPC_Lookup.md) (2 shared connections)
+- [NPC Database Sessions](NPC_Database_Sessions.md) (2 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (2 shared connections)
+- [Player Creation Service](Player_Creation_Service.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 193 (93%)
+- EXTRACTED: 204 (93%)
 - INFERRED: 15 (7%)
 - AMBIGUOUS: 0 (0%)
 

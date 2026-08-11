@@ -9,7 +9,7 @@
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (1 shared connections)
 - [Database Pool Configuration](Database_Pool_Configuration.md) (1 shared connections)
 
 ## Source Files

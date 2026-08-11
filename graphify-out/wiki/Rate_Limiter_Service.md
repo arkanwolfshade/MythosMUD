@@ -23,8 +23,9 @@
 
 ## Relationships
 
-- [Schemas Maps Map](Schemas_Maps_Map.md) (5 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (3 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (3 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (2 shared connections)
 
 ## Source Files
 

@@ -1,55 +1,48 @@
 # App Creation Flow Screens
 
-> 57 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **NPCEventHandler** (25 connections) — `server/realtime/npc_event_handlers.py`
-- **test_npc_event_handlers_helpers.py** (14 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **.handle_npc_entered()** (8 connections) — `server/realtime/npc_event_handlers.py`
-- **._send_npc_left_message()** (8 connections) — `server/realtime/npc_event_handlers.py`
-- **._get_npc_spawn_message()** (7 connections) — `server/realtime/npc_event_handlers.py`
-- **._send_room_message()** (6 connections) — `server/realtime/npc_event_handlers.py`
-- **.handle_npc_left()** (6 connections) — `server/realtime/npc_event_handlers.py`
-- **.__init__()** (5 connections) — `server/realtime/npc_event_handlers.py`
-- **Any** (5 connections)
-- **._get_npc_instance()** (5 connections) — `server/realtime/npc_event_handlers.py`
-- **._get_npc_name()** (5 connections) — `server/realtime/npc_event_handlers.py`
-- **._get_behavior_config_from_instance()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **._parse_behavior_config()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **._extract_spawn_message_from_config()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **._determine_direction_from_rooms()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **._get_npc_departure_message()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **._validate_npc_left_room()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **._schedule_room_occupants_update()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **npc_event_handler()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **mock_message_builder()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_extract_spawn_message_from_config()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_extract_spawn_message_from_config_none()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_get_npc_spawn_message()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_get_npc_spawn_message_custom()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- *... and 32 more nodes in this community*
+- **ItemPrototypeModel** (28 connections) — `server/game/items/models.py`
+- **.find_by_tag()** (3 connections) — `server/game/items/prototype_registry.py`
+- **.all()** (3 connections) — `server/game/items/prototype_registry.py`
+- **switchblade_prototype()** (3 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
+- **.validate_item_type()** (2 connections) — `server/game/items/models.py`
+- **.validate_flags()** (2 connections) — `server/game/items/models.py`
+- **.validate_wear_slots()** (2 connections) — `server/game/items/models.py`
+- **.validate_effect_components()** (2 connections) — `server/game/items/models.py`
+- **.validate_tags()** (2 connections) — `server/game/items/models.py`
+- **BaseModel** (1 connections)
+- **Validated representation of an item prototype definition.      This model keeps** (1 connections) — `server/game/items/models.py`
+- **Validate that item_type is in the allowed list.          Args:             value** (1 connections) — `server/game/items/models.py`
+- **Validate that all flags are in the allowed list.          Args:             valu** (1 connections) — `server/game/items/models.py`
+- **Validate that all wear slots are in the allowed list.          Args:** (1 connections) — `server/game/items/models.py`
+- **Validate and normalize effect components.          Args:             value: The** (1 connections) — `server/game/items/models.py`
+- **Validate and normalize tags.          Args:             value: The list of tags** (1 connections) — `server/game/items/models.py`
+- **Find all prototypes that have a specific tag.          Args:             tag:** (1 connections) — `server/game/items/prototype_registry.py`
+- **Get all prototypes in the registry.          Returns:             Iterable[It** (1 connections) — `server/game/items/prototype_registry.py`
+- **Build ItemPrototypeModel for switchblade (weapon.main_hand.switchblade).** (1 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
 
 ## Relationships
 
-- [Communication Command Flows](Communication_Command_Flows.md) (10 shared connections)
-- [Client Event Store](Client_Event_Store.md) (4 shared connections)
-- [Character Stats Generator](Character_Stats_Generator.md) (3 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
-- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
-- [test_apply_encounter_lucidity_loss_first_encounter](test_apply_encounter_lucidity_loss_first_encounter.md) (1 shared connections)
-- [Pylint Unique Findings](Pylint_Unique_Findings.md) (1 shared connections)
+- [NATS Retry Handler](NATS_Retry_Handler.md) (8 shared connections)
+- [NATS Subject Admin API](NATS_Subject_Admin_API.md) (6 shared connections)
+- [Command Factory Tests](Command_Factory_Tests.md) (2 shared connections)
+- [Npc Services Combat](Npc_Services_Combat.md) (2 shared connections)
+- [Upgrade Archive Dependency](Upgrade_Archive_Dependency.md) (2 shared connections)
+- [WebSocket Code Review](WebSocket_Code_Review.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/npc_event_handlers.py`
-- `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
+- `server/game/items/models.py`
+- `server/game/items/prototype_registry.py`
+- `server/tests/integration/test_combat_weapon_resolution.py`
 
 ## Audit Trail
 
-- EXTRACTED: 171 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 49 (86%)
+- INFERRED: 8 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

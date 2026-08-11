@@ -1,35 +1,29 @@
 # Contexts Themecontext Hooks
 
-> 13 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **._is_valid_name_for_occupant()** (7 connections) — `server/realtime/occupant_formatter.py`
-- **._process_dict_occupant_for_update()** (7 connections) — `server/realtime/occupant_formatter.py`
-- **._process_player_name_for_update()** (6 connections) — `server/realtime/occupant_formatter.py`
-- **._process_npc_name_for_update()** (6 connections) — `server/realtime/occupant_formatter.py`
-- **Any** (5 connections)
-- **.separate_occupants_by_type()** (5 connections) — `server/realtime/occupant_formatter.py`
-- **._add_valid_name_to_lists()** (4 connections) — `server/realtime/occupant_formatter.py`
-- **Check if a name is valid for use as an occupant name.          Args:** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Add a valid name to both target list and all occupants list.          Args:** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Process a player name and add to appropriate lists if valid.          Args:** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Process an NPC name and add to appropriate lists if valid.          Args:** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Process a dictionary occupant and add to appropriate lists if valid.          Ar** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Separate occupants into players, NPCs, and all occupants lists.          Args:** (1 connections) — `server/realtime/occupant_formatter.py`
+- **AdminSession** (6 connections) — `server/services/admin_auth_service.py`
+- **test_admin_session_init()** (3 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **.__init__()** (2 connections) — `server/services/admin_auth_service.py`
+- **Represents an admin session.** (1 connections) — `server/services/admin_auth_service.py`
+- **Test AdminSession initialization.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Relationships
 
-- [Command Integration Summary](Command_Integration_Summary.md) (6 shared connections)
-- [Archive Circuit Breaker](Archive_Circuit_Breaker.md) (2 shared connections)
+- [Player State Factories](Player_State_Factories.md) (2 shared connections)
+- [Player Model Inventory](Player_Model_Inventory.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/occupant_formatter.py`
+- `server/services/admin_auth_service.py`
+- `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

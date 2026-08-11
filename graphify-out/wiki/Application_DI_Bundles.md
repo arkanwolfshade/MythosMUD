@@ -1,56 +1,64 @@
 # Application DI Bundles
 
-> 83 nodes
+> 101 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_validation_errors.py** (39 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **send_system_message()** (13 connections) — `server/realtime/websocket_handler.py`
-- **handle_websocket_message()** (10 connections) — `server/realtime/websocket_handler.py`
-- **test_websocket_handler_system_message.py** (8 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **WebSocket** (4 connections)
-- **test_send_system_message()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_websocket_message()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_websocket_message_chat()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_websocket_message_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_send_system_message_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **test_send_system_message_warning()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **test_send_system_message_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **test_send_system_message_disconnected()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **test_validate_message_validation_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_validate_message_restores_csrf_from_message_jwt_when_metadata_token_missing()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_game_command_with_broadcast()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_game_command_broadcast_no_player()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_game_command_broadcast_no_current_room_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_game_command_with_args()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_game_command_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_websocket_message_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_send_system_message_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_process_websocket_command_player_no_current_room_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **test_is_websocket_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- *... and 58 more nodes in this community*
+- **PlayerService** (141 connections) — `server/game/player_service.py`
+- **magic_service.py** (40 connections) — `server/game/magic/magic_service.py`
+- **magic_service_completion.py** (25 connections) — `server/game/magic/magic_service_completion.py`
+- **MagicServiceCompletionMixin** (21 connections) — `server/game/magic/magic_service_completion.py`
+- **CastingStateManager** (18 connections) — `server/game/magic/casting_state_manager.py`
+- **MagicServiceOptionalDeps** (18 connections) — `server/game/magic/magic_service.py`
+- **SpellCostsService** (14 connections) — `server/game/magic/spell_costs.py`
+- **UUID** (12 connections)
+- **spell_costs.py** (12 connections) — `server/game/magic/spell_costs.py`
+- **.__init__()** (11 connections) — `server/game/magic/magic_service.py`
+- **Any** (11 connections)
+- **Any** (11 connections)
+- **casting_state_manager.py** (9 connections) — `server/game/magic/casting_state_manager.py`
+- **._execute_casting_immediately()** (9 connections) — `server/game/magic/magic_service_completion.py`
+- **UUID** (8 connections)
+- **._complete_casting()** (8 connections) — `server/game/magic/magic_service_completion.py`
+- **._recreate_target_from_state()** (7 connections) — `server/game/magic/magic_service_completion.py`
+- **CastingState** (6 connections) — `server/game/magic/casting_state_manager.py`
+- **.start_casting()** (6 connections) — `server/game/magic/casting_state_manager.py`
+- **._try_queue_spell_for_combat()** (6 connections) — `server/game/magic/magic_service_completion.py`
+- **._try_complete_casting_via_combat()** (6 connections) — `server/game/magic/magic_service_completion.py`
+- **._get_player_and_room()** (5 connections) — `server/game/magic/magic_service_completion.py`
+- **._apply_spell_costs_and_effects()** (5 connections) — `server/game/magic/magic_service_completion.py`
+- **._parse_casting_target_id()** (5 connections) — `server/game/magic/magic_service_completion.py`
+- **.get_casting_state()** (4 connections) — `server/game/magic/casting_state_manager.py`
+- *... and 76 more nodes in this community*
 
 ## Relationships
 
-- [Player Combat XP](Player_Combat_XP.md) (12 shared connections)
-- [Container API Endpoints](Container_API_Endpoints.md) (7 shared connections)
-- [LRU Cache Manager](LRU_Cache_Manager.md) (4 shared connections)
-- [Database Helper Tests](Database_Helper_Tests.md) (4 shared connections)
-- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (1 shared connections)
-- [Pylint Unique Findings](Pylint_Unique_Findings.md) (1 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (37 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (36 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (25 shared connections)
+- [Player Respawn Service](Player_Respawn_Service.md) (22 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (14 shared connections)
+- [Security Headers Middleware](Security_Headers_Middleware.md) (11 shared connections)
+- [Connection Health Monitor](Connection_Health_Monitor.md) (10 shared connections)
+- [NPC Definition Admin API](NPC_Definition_Admin_API.md) (9 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (9 shared connections)
+- [Inventory Service Helpers](Inventory_Service_Helpers.md) (9 shared connections)
+- [Disconnect Grace Period](Disconnect_Grace_Period.md) (7 shared connections)
+- [Dual Connection API Reference](Dual_Connection_API_Reference.md) (5 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_handler.py`
-- `server/tests/unit/realtime/test_websocket_handler_core.py`
-- `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- `server/game/magic/casting_state_manager.py`
+- `server/game/magic/magic_service.py`
+- `server/game/magic/magic_service_completion.py`
+- `server/game/magic/spell_costs.py`
+- `server/game/player_service.py`
+- `server/tests/unit/test_dependency_injection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 201 (97%)
-- INFERRED: 6 (3%)
+- EXTRACTED: 468 (83%)
+- INFERRED: 93 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

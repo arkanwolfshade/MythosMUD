@@ -1,23 +1,28 @@
 # Archive Planning Unified
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_validate_chat_message_fields_type_errors()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _validate_chat_message_fields raises TypeError for invalid types.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **.get_stat_requirements()** (5 connections) — `server/models/profession.py`
+- **.meets_stat_requirements()** (3 connections) — `server/models/profession.py`
+- **.get_requirement_display_text()** (3 connections) — `server/models/profession.py`
+- **Get profession stat requirements as dictionary.** (1 connections) — `server/models/profession.py`
+- **Check if given stats meet the profession requirements.          Args:** (1 connections) — `server/models/profession.py`
+- **Get formatted text for displaying stat requirements.          Returns:** (1 connections) — `server/models/profession.py`
 
 ## Relationships
 
-- [Loot All Endpoint](Loot_All_Endpoint.md) (1 shared connections)
+- [Cursor Plans Login](Cursor_Plans_Login.md) (3 shared connections)
+- [E 2 E Cleanup Troubleshooting](E_2_E_Cleanup_Troubleshooting.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/models/profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

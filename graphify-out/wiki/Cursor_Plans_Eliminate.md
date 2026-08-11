@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_handle_nats_message_dlq_on_final_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _handle_nats_message() adds to DLQ on unhandled error.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_setup_player_and_room_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _setup_player_and_room() handles no persistence.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Relationships
 
-- [Inventory Command Models](Inventory_Command_Models.md) (1 shared connections)
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
+- [Architecture Review Plan](Architecture_Review_Plan.md) (1 shared connections)
+- [WebSocket Connection Setup](WebSocket_Connection_Setup.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Audit Trail
 

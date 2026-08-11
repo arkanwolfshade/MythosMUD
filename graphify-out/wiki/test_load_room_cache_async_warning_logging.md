@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_process_message_with_retry_success_path()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _process_message_with_retry succeeds when retry handler succeeds.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_player_repository_initialization_with_cache()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test PlayerRepository initializes with room cache.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
 
 ## Relationships
 
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
+- [Lizard Complexity Findings](Lizard_Complexity_Findings.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/persistence/test_player_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,55 +1,76 @@
 # WebSocket Code Review
 
-> 38 nodes
+> 172 nodes
 
 ## Key Concepts
 
-- **ScheduleEntry** (28 connections) — `server/schemas/calendar/calendar.py`
+- **game.py** (42 connections) — `server/container/bundles/game.py`
+- **main.py** (33 connections) — `server/container/main.py`
+- **ScheduleService** (28 connections) — `server/services/schedule_service.py`
+- **schedule_service.py** (25 connections) — `server/services/schedule_service.py`
+- **CombatBundle** (21 connections) — `server/container/bundles/combat.py`
+- **__init__.py** (19 connections) — `server/container/bundles/__init__.py`
+- **core.py** (18 connections) — `server/container/bundles/core.py`
+- **validate_calendar.py** (17 connections) — `scripts/validate_calendar.py`
+- **RealtimeBundle** (17 connections) — `server/container/bundles/realtime.py`
+- **normalize_environment()** (15 connections) — `server/utils/project_paths.py`
+- **TrackedTaskManager** (14 connections) — `server/app/tracked_task_manager.py`
+- **CoreBundle** (14 connections) — `server/container/bundles/core.py`
 - **TestScheduleService** (14 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_async_load_from_database_passes_search_path_for_mythos_e2e()** (5 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_init_loads_from_database()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_with_matches()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_boundary_conditions()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_wrong_day()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_entries_property()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_normalize_weekday_names_latin_to_standard()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_entry_count_property()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.apply_schedule_state()** (3 connections) — `server/npc/lifecycle_manager.py`
-- **.validate_duration()** (3 connections) — `server/schemas/calendar/calendar.py`
-- **.entries()** (3 connections) — `server/services/schedule_service.py`
-- **.test_init_with_collections()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_init_without_persistence_raises()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_no_matches()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.validate_days()** (2 connections) — `server/schemas/calendar/calendar.py`
-- **.validate_slug_list()** (2 connections) — `server/schemas/calendar/calendar.py`
-- **Record the schedule categories currently active for NPC routines.** (1 connections) — `server/npc/lifecycle_manager.py`
-- **Any** (1 connections)
-- **Single schedule block describing routine availability (`data/<env>/calendar/sche** (1 connections) — `server/schemas/calendar/calendar.py`
-- **Validate schedule entry days are standard English weekday names (Sunday, Monday,** (1 connections) — `server/schemas/calendar/calendar.py`
-- **Validate slug-formatted list entries.          Args:             value: Sequence** (1 connections) — `server/schemas/calendar/calendar.py`
-- **Ensure the schedule window moves time forward like the Chronology Tablets prescr** (1 connections) — `server/schemas/calendar/calendar.py`
-- **Get all schedule entries.          Returns:             list[ScheduleEntry]: Lis** (1 connections) — `server/services/schedule_service.py`
-- *... and 13 more nodes in this community*
+- **get_calendar_paths_for_environment()** (14 connections) — `server/utils/project_paths.py`
+- **combat.py** (13 connections) — `server/container/bundles/combat.py`
+- **MonitoringBundle** (13 connections) — `server/container/bundles/monitoring.py`
+- **.initialize()** (12 connections) — `server/container/bundles/core.py`
+- **realtime.py** (12 connections) — `server/container/bundles/realtime.py`
+- **DistributedEventBus** (12 connections) — `server/events/distributed_event_bus.py`
+- **project_paths.py** (12 connections) — `server/utils/project_paths.py`
+- **monitoring.py** (11 connections) — `server/container/bundles/monitoring.py`
+- **._initialize_primary_bundles()** (10 connections) — `server/container/main.py`
+- **test_project_paths.py** (10 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **get_project_root()** (10 connections) — `server/utils/project_paths.py`
+- **get_environment_data_dir()** (10 connections) — `server/utils/project_paths.py`
+- *... and 147 more nodes in this community*
 
 ## Relationships
 
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (21 shared connections)
-- [Async Room Loading Tests](Async_Room_Loading_Tests.md) (4 shared connections)
-- [Player Command Developer Guide](Player_Command_Developer_Guide.md) (3 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (43 shared connections)
+- [Spell Effects Tests](Spell_Effects_Tests.md) (35 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (20 shared connections)
+- [Command Factory Tests](Command_Factory_Tests.md) (14 shared connections)
+- [Client Security Utilities](Client_Security_Utilities.md) (11 shared connections)
+- [Player Respawn Events](Player_Respawn_Events.md) (6 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (6 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (6 shared connections)
+- [NPC Spawn Validator](NPC_Spawn_Validator.md) (6 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (5 shared connections)
+- [Client Event Store](Client_Event_Store.md) (5 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (5 shared connections)
 
 ## Source Files
 
-- `server/npc/lifecycle_manager.py`
-- `server/schemas/calendar/calendar.py`
+- `scripts/validate_calendar.py`
+- `server/app/tracked_task_manager.py`
+- `server/container/__init__.py`
+- `server/container/bundles/__init__.py`
+- `server/container/bundles/chat.py`
+- `server/container/bundles/combat.py`
+- `server/container/bundles/core.py`
+- `server/container/bundles/game.py`
+- `server/container/bundles/monitoring.py`
+- `server/container/bundles/realtime.py`
+- `server/container/bundles/time.py`
+- `server/container/main.py`
+- `server/container/utils.py`
+- `server/events/distributed_event_bus.py`
 - `server/services/schedule_service.py`
 - `server/tests/unit/services/test_schedule_service.py`
+- `server/tests/unit/utils/test_project_paths.py`
+- `server/utils/project_paths.py`
 
 ## Audit Trail
 
-- EXTRACTED: 114 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 749 (94%)
+- INFERRED: 50 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

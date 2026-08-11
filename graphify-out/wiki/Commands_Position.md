@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_chat_message_fields_sender_name_type_error()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _validate_chat_message_fields raises TypeError for invalid sender_name type** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_validate_player_name_invalid_characters()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test validate_player_name() with invalid characters.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 
 ## Relationships
 
-- [Loot All Endpoint](Loot_All_Endpoint.md) (1 shared connections)
+- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 

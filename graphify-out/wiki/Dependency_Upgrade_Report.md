@@ -4,41 +4,44 @@
 
 ## Key Concepts
 
-- **test_player_related_models.py** (19 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_defaults()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_with_data()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_repr()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_repr()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_multiple_rooms()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_channel_preferences_table_name()** (2 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_table_name()** (2 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_table_name()** (2 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Unit tests for Player-related SQLAlchemy models.  Tests PlayerChannelPreferences** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerChannelPreferences has correct table name.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerInventory can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerInventory has correct default values.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerInventory can have inventory and equipped data.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerInventory has correct table name.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerInventory __repr__ method.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerExploration can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerExploration has correct table name.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerExploration __repr__ method.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerExploration can track multiple rooms for same player.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **RoomInfoPanel.tsx** (22 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **RoomInfoPanel()** (10 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **validateAndFixRoomData()** (4 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **RoomInfoPanel.test.tsx** (4 connections) — `client/src/components/__tests__/RoomInfoPanel.test.tsx`
+- **RoomInfoPanel.test.tsx** (3 connections) — `client/src/components/RoomInfoPanel.test.tsx`
+- **applyRoomDefaultFields()** (2 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **fixOccupantCountMismatch()** (2 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **formatLocationName()** (2 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **formatDescription()** (2 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **formatExitDirections()** (2 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **logRoomInfoRenderDebug()** (2 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **mockConsoleLog** (1 connections) — `client/src/components/RoomInfoPanel.test.tsx`
+- **Room** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **RoomInfoPanelProps** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **KNOWN_LOCATION_PATTERNS** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **ROOM_DEFAULT_FIELD_FIXES** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **OccupantList()** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **RoomOccupantsSection()** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **DEV_FALLBACK_ROOM** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **RoomInfoEmptyState()** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **{ mockDebug }** (1 connections) — `client/src/components/__tests__/RoomInfoPanel.test.tsx`
+- **Room** (1 connections) — `client/src/components/__tests__/RoomInfoPanel.test.tsx`
 
 ## Relationships
 
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (10 shared connections)
-- [Client ASCII Map API](Client_ASCII_Map_API.md) (5 shared connections)
+- [Magic System Feature Plan](Magic_System_Feature_Plan.md) (2 shared connections)
+- [Memory Leak Metrics Tests](Memory_Leak_Metrics_Tests.md) (2 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_player_related_models.py`
+- `client/src/components/RoomInfoPanel.test.tsx`
+- `client/src/components/RoomInfoPanel.tsx`
+- `client/src/components/__tests__/RoomInfoPanel.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (100%)
+- EXTRACTED: 66 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

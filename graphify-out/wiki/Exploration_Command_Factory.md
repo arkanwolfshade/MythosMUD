@@ -1,48 +1,41 @@
 # Exploration Command Factory
 
-> 22 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **get_calendar_paths_for_environment()** (14 connections) — `server/utils/project_paths.py`
-- **project_paths.py** (12 connections) — `server/utils/project_paths.py`
-- **test_project_paths.py** (10 connections) — `server/tests/unit/utils/test_project_paths.py`
-- **get_project_root()** (10 connections) — `server/utils/project_paths.py`
-- **get_environment_data_dir()** (10 connections) — `server/utils/project_paths.py`
-- **._get_project_root()** (4 connections) — `server/container/main.py`
-- **test_get_project_root()** (3 connections) — `server/tests/unit/utils/test_project_paths.py`
-- **test_normalize_environment()** (3 connections) — `server/tests/unit/utils/test_project_paths.py`
-- **test_get_environment_data_dir()** (3 connections) — `server/tests/unit/utils/test_project_paths.py`
-- **test_get_calendar_paths_for_environment()** (3 connections) — `server/tests/unit/utils/test_project_paths.py`
-- **Path** (3 connections)
-- **Path** (2 connections)
-- **Return and cache the repository root directory.** (1 connections) — `server/container/main.py`
-- **Unit tests for project_paths utilities.  Tests path resolution functions.** (1 connections) — `server/tests/unit/utils/test_project_paths.py`
-- **Test get_project_root() returns project root path.** (1 connections) — `server/tests/unit/utils/test_project_paths.py`
-- **Test normalize_environment() normalizes environment names.** (1 connections) — `server/tests/unit/utils/test_project_paths.py`
-- **Test get_environment_data_dir() returns data directory.** (1 connections) — `server/tests/unit/utils/test_project_paths.py`
-- **Test get_calendar_paths_for_environment() returns calendar paths.** (1 connections) — `server/tests/unit/utils/test_project_paths.py`
-- **Project path resolution helpers used across runtime code and tooling.** (1 connections) — `server/utils/project_paths.py`
-- **Return the repository root (directory containing pyproject.toml).** (1 connections) — `server/utils/project_paths.py`
-- **Compute the base data directory for the provided environment.** (1 connections) — `server/utils/project_paths.py`
-- **Return (holidays_file, schedules_dir) for the requested environment.** (1 connections) — `server/utils/project_paths.py`
+- **format_player_location()** (13 connections) — `server/commands/who_commands.py`
+- **test_format_player_location_valid()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_location_invalid()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_location_none()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_location_short_format()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_location_non_string()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_location_invalid()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **Format player location as Zone: Sub-zone: Room from room ID.      Args:** (1 connections) — `server/commands/who_commands.py`
+- **Test formatting valid player location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test formatting invalid player location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test formatting None location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test format_player_location() with short room ID format.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test format_player_location() with non-string input.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test format_player_location() handles invalid room ID.** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
 
 ## Relationships
 
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (17 shared connections)
-- [ASCII Map API](ASCII_Map_API.md) (5 shared connections)
-- [Player Respawn Service](Player_Respawn_Service.md) (2 shared connections)
-- [Cursor Skills Critique](Cursor_Skills_Critique.md) (1 shared connections)
+- [Combat UUID Display Bug](Combat_UUID_Display_Bug.md) (6 shared connections)
+- [Realtime Health Monitor](Realtime_Health_Monitor.md) (3 shared connections)
+- [Async Persistence Types](Async_Persistence_Types.md) (1 shared connections)
+- [Legacy Cleanup Summary](Legacy_Cleanup_Summary.md) (1 shared connections)
+- [Plan Modernization Archive](Plan_Modernization_Archive.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/main.py`
-- `server/tests/unit/utils/test_project_paths.py`
-- `server/utils/project_paths.py`
+- `server/commands/who_commands.py`
+- `server/tests/unit/commands/test_who_commands.py`
+- `server/tests/unit/commands/test_who_commands_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 87 (100%)
+- EXTRACTED: 38 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

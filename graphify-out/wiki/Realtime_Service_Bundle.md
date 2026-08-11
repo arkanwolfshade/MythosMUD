@@ -1,68 +1,78 @@
 # Realtime Service Bundle
 
-> 67 nodes
+> 215 nodes
 
 ## Key Concepts
 
-- **container_endpoints_basic.py** (49 connections) — `server/api/container_endpoints_basic.py`
-- **transfer_items()** (25 connections) — `server/api/container_endpoints_basic.py`
-- **open_container()** (23 connections) — `server/api/container_endpoints_basic.py`
-- **close_container()** (19 connections) — `server/api/container_endpoints_basic.py`
-- **get_container_service()** (16 connections) — `server/api/container_helpers.py`
-- **_convert_container_dict_to_container_data()** (12 connections) — `server/api/container_endpoints_basic.py`
-- **_convert_inventory_list_to_inventory_stacks()** (11 connections) — `server/api/container_endpoints_basic.py`
-- **ContainerLootAllResponse** (11 connections) — `server/schemas/containers/container.py`
-- **ContainerOpenResponse** (10 connections) — `server/schemas/containers/container.py`
-- **ContainerTransferResponse** (10 connections) — `server/schemas/containers/container.py`
-- **ContainerCloseResponse** (10 connections) — `server/schemas/containers/container.py`
-- **InventoryStack** (10 connections) — `server/schemas/containers/container_data.py`
-- **ContainerData** (10 connections) — `server/schemas/containers/container_data.py`
-- **register_basic_endpoints()** (9 connections) — `server/api/container_endpoints_basic.py`
-- **container.py** (9 connections) — `server/schemas/containers/container.py`
-- **_build_container_data_from_dict()** (7 connections) — `server/api/container_endpoints_basic.py`
-- **WeaponStats** (7 connections) — `server/models/game.py`
-- **__init__.py** (7 connections) — `server/schemas/containers/__init__.py`
-- **container_data.py** (7 connections) — `server/schemas/containers/container_data.py`
-- **weapon.py** (7 connections) — `server/schemas/game/weapon.py`
-- **_build_loot_all_response()** (6 connections) — `server/api/container_endpoints_loot.py`
-- **Any** (5 connections)
-- **BaseModel** (5 connections)
-- **_convert_uuid_to_string()** (4 connections) — `server/api/container_endpoints_basic.py`
-- **_convert_datetime_to_iso()** (4 connections) — `server/api/container_endpoints_basic.py`
-- *... and 42 more nodes in this community*
+- **time.py** (89 connections) — `server/container/bundles/time.py`
+- **lifecycle_manager.py** (48 connections) — `server/npc/lifecycle_manager.py`
+- **threading.py** (47 connections) — `server/npc/threading.py`
+- **NPCLeftRoom** (46 connections) — `server/events/event_types.py`
+- **population_control.py** (42 connections) — `server/npc/population_control.py`
+- **npc_base.py** (41 connections) — `server/npc/npc_base.py`
+- **PassiveMobNPC** (29 connections) — `server/npc/passive_mob_npc.py`
+- **event_reaction_system.py** (27 connections) — `server/npc/event_reaction_system.py`
+- **NPCDied** (25 connections) — `server/events/event_types.py`
+- **combat_integration.py** (25 connections) — `server/npc/combat_integration.py`
+- **NPCThreadManager** (25 connections) — `server/npc/threading.py`
+- **lifecycle_death.py** (23 connections) — `server/npc/lifecycle_death.py`
+- **__init__.py** (22 connections) — `server/npc/__init__.py`
+- **NPCEventReactionSystem** (21 connections) — `server/npc/event_reaction_system.py`
+- **aggressive_mob_npc.py** (18 connections) — `server/npc/aggressive_mob_npc.py`
+- **movement_integration.py** (18 connections) — `server/npc/movement_integration.py`
+- **passive_mob_npc.py** (18 connections) — `server/npc/passive_mob_npc.py`
+- **behaviors.py** (17 connections) — `server/npc/behaviors.py`
+- **_SpawnTrackedNPC** (17 connections) — `server/npc/lifecycle_manager.py`
+- **NPCLifecycleRecord** (17 connections) — `server/npc/lifecycle_types.py`
+- **_LifecycleManagerForDeath** (16 connections) — `server/npc/lifecycle_death.py`
+- **_SpawningServiceProtocol** (16 connections) — `server/npc/lifecycle_manager.py`
+- **NPCAttacked** (14 connections) — `server/events/event_types.py`
+- **RoomOccupantsRefreshRequested** (14 connections) — `server/events/event_types.py`
+- **Any** (14 connections)
+- *... and 190 more nodes in this community*
 
 ## Relationships
 
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (32 shared connections)
-- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (29 shared connections)
-- [Combat Player Broadcasts](Combat_Player_Broadcasts.md) (10 shared connections)
-- [Client Event Store](Client_Event_Store.md) (8 shared connections)
-- [Database Manager Tests](Database_Manager_Tests.md) (7 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (5 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (4 shared connections)
-- [Archive Bug Fix](Archive_Bug_Fix.md) (4 shared connections)
-- [Player Effects API](Player_Effects_API.md) (4 shared connections)
-- [Combat NPC Lookup](Combat_NPC_Lookup.md) (4 shared connections)
-- [Combat Command Handler](Combat_Command_Handler.md) (2 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (52 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (46 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (43 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (41 shared connections)
+- [NPC Movement Integration](NPC_Movement_Integration.md) (12 shared connections)
+- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (12 shared connections)
+- [Command Parser Tests](Command_Parser_Tests.md) (9 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (8 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (8 shared connections)
+- [Player Position Service](Player_Position_Service.md) (8 shared connections)
+- [ASCII Map API](ASCII_Map_API.md) (8 shared connections)
+- [Combat Aggro Threat](Combat_Aggro_Threat.md) (7 shared connections)
 
 ## Source Files
 
-- `server/api/container_endpoints_basic.py`
-- `server/api/container_endpoints_loot.py`
-- `server/api/container_helpers.py`
-- `server/models/game.py`
-- `server/schemas/containers/__init__.py`
-- `server/schemas/containers/container.py`
-- `server/schemas/containers/container_data.py`
-- `server/schemas/game/weapon.py`
-- `server/tests/unit/api/test_container_helpers.py`
-- `server/tests/unit/api/test_containers.py`
+- `scripts/run_test_ci.py`
+- `server/container/bundles/time.py`
+- `server/events/event_types.py`
+- `server/npc/__init__.py`
+- `server/npc/aggressive_mob_npc.py`
+- `server/npc/behavior_engine.py`
+- `server/npc/behaviors.py`
+- `server/npc/combat_integration.py`
+- `server/npc/event_reaction_system.py`
+- `server/npc/lifecycle_death.py`
+- `server/npc/lifecycle_despawn.py`
+- `server/npc/lifecycle_manager.py`
+- `server/npc/lifecycle_types.py`
+- `server/npc/movement_integration.py`
+- `server/npc/npc_base.py`
+- `server/npc/npc_default_reactions.py`
+- `server/npc/passive_mob_npc.py`
+- `server/npc/population_control.py`
+- `server/npc/shopkeeper_npc.py`
+- `server/npc/threading.py`
 
 ## Audit Trail
 
-- EXTRACTED: 326 (90%)
-- INFERRED: 37 (10%)
+- EXTRACTED: 1110 (92%)
+- INFERRED: 102 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

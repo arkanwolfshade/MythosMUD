@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_validated_command_success()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test process_validated_command successfully routes to handler.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_get_player_by_id_not_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test get_player_by_id() when player is not found.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 
 ## Relationships
 
-- [NPC Population Control](NPC_Population_Control.md) (1 shared connections)
+- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 

@@ -1,27 +1,37 @@
 # Investigations Sessions Session
 
-> 5 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **2025_11_21_convert_players_player_id_to_uuid.py** (2 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
-- **upgrade()** (2 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
-- **downgrade()** (2 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
-- **Convert players.player_id from VARCHAR to UUID.      PostgreSQL can directly cas** (1 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
-- **Convert players.player_id from UUID back to VARCHAR.      This is a downgrade pa** (1 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
+- **get_game_status()** (7 connections) — `server/api/game.py`
+- **TestGetGameStatus** (5 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_game_status_success()** (4 connections) — `server/tests/unit/api/test_game.py`
+- **TestGetGameStatusLogger** (4 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_game_status_empty_connections()** (3 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_game_status_logs_debug()** (3 connections) — `server/tests/unit/api/test_game.py`
+- **Get current game status and connection information.** (1 connections) — `server/api/game.py`
+- **Test get_game_status endpoint.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **Test get_game_status returns game status data.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **Test get_game_status handles empty connections.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **Test logger calls in get_game_status.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **Test get_game_status logs debug messages.** (1 connections) — `server/tests/unit/api/test_game.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (3 shared connections)
+- [Realtime Npc Event](Realtime_Npc_Event.md) (2 shared connections)
 
 ## Source Files
 
-- `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
+- `server/api/game.py`
+- `server/tests/unit/api/test_game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 29 (91%)
+- INFERRED: 3 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

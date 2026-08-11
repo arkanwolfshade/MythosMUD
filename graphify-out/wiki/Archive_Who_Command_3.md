@@ -1,23 +1,25 @@
 # Archive Who Command
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **__init__.py** (0 connections) — `server/tests/unit/npc/__init__.py`
+- **test_get_muted_channels_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Test getting muted channels when preferences not found.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
+- [Async Persistence Delegates](Async_Persistence_Delegates.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/__init__.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

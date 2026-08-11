@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_start_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test start() successfully starts handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_profession_meets_stat_requirements_one_not_met()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test meets_stat_requirements returns False when one requirement is not met.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
+- [Cursor Plans Login](Cursor_Plans_Login.md) (1 shared connections)
+- [Profession Get Mechanical Effects](Profession_Get_Mechanical_Effects.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

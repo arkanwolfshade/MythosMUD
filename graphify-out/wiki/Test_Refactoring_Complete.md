@@ -1,28 +1,52 @@
 # Test Refactoring Complete
 
-> 7 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **migration_schema_checks.py** (3 connections) — `server/scripts/migration_schema_checks.py`
-- **table_exists()** (3 connections) — `server/scripts/migration_schema_checks.py`
-- **column_exists()** (3 connections) — `server/scripts/migration_schema_checks.py`
-- **AsyncConnection** (2 connections)
-- **Shared schema existence checks for one-off migration scripts.** (1 connections) — `server/scripts/migration_schema_checks.py`
-- **Return True if the named table exists in information_schema.** (1 connections) — `server/scripts/migration_schema_checks.py`
-- **Return True if the named column exists on the table.** (1 connections) — `server/scripts/migration_schema_checks.py`
+- **panelReducerHandlers.ts** (24 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
+- **panelManagerReducer.ts** (20 connections) — `client/src/components/ui-v2/PanelSystem/panelManagerReducer.ts`
+- **panelReducerHandlers.test.ts** (19 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
+- **savePanelLayout()** (13 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
+- **panelMinimizeDock.ts** (13 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
+- **panelMinimizeDock.test.ts** (9 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelMinimizeDock.test.ts`
+- **relayoutMinimizedDock()** (8 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
+- **handleToggleMinimize()** (8 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
+- **handleToggleMaximize()** (7 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
+- **handleScaleToViewport()** (6 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
+- **preparePanelForRestore()** (5 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
+- **getDefaultViewport()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
+- **computeMinimizedDockPosition()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
+- **preparePanelForMinimize()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
+- **PanelManagerState** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
+- **handleUpdatePosition()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
+- **handleUpdateSize()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
+- **handleSetVisibility()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
+- **handleFocusPanel()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
+- **handleClosePanel()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
+- **getMinimizedPanelIds()** (3 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
+- **handleInitPanels()** (3 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
+- **panelFixture()** (2 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
+- **stateFixture()** (2 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
+- **constrainPanelHeight()** (2 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [API Test Fixtures](API_Test_Fixtures.md) (24 shared connections)
 
 ## Source Files
 
-- `server/scripts/migration_schema_checks.py`
+- `client/src/components/ui-v2/PanelSystem/__tests__/panelMinimizeDock.test.ts`
+- `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
+- `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
+- `client/src/components/ui-v2/PanelSystem/panelManagerReducer.ts`
+- `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
+- `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 184 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

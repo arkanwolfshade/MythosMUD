@@ -1,53 +1,53 @@
 # Message Broadcaster Core
 
-> 65 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **MessageBroadcaster** (19 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **test_message_broadcaster.py** (17 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **message_broadcaster.py** (15 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **UUID** (9 connections)
-- **_stats_counter()** (7 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **.broadcast_global()** (7 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._process_batch_delivery_results()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._deliver_room_broadcast()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **.broadcast_to_room()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._process_global_batch_results()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **__init__.py** (5 connections) — `server/realtime/messaging/__init__.py`
-- **._build_target_mapping()** (5 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._fallback_individual_send()** (5 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._fallback_global_individual()** (5 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **_narrow_gather_delivery_dict()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **_global_targets_and_stats()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **.broadcast_room_event()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **.broadcast_global_event()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._prepare_room_targets()** (3 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **message_broadcaster()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **mock_send_personal_message()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_message_broadcaster_init()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_to_room()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_to_room_exclude_player()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- *... and 40 more nodes in this community*
+- **CombatAttackHandler** (19 connections) — `server/services/combat_attack_handler.py`
+- **._apply_damage()** (9 connections) — `server/services/combat_attack_handler.py`
+- **.validate_and_get_combat_participants()** (8 connections) — `server/services/combat_attack_handler.py`
+- **.apply_attack_damage()** (5 connections) — `server/services/combat_attack_handler.py`
+- **._find_combat_target()** (5 connections) — `server/services/combat_attack_handler.py`
+- **._validate_attack()** (4 connections) — `server/services/combat_attack_handler.py`
+- **._room_has_no_death()** (4 connections) — `server/services/combat_attack_handler.py`
+- **.__init__()** (3 connections) — `server/services/combat_attack_handler.py`
+- **UUID** (3 connections)
+- **._validate_target_can_be_attacked()** (3 connections) — `server/services/combat_attack_handler.py`
+- **attack_handler()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **Any** (1 connections)
+- **Handles combat attack processing and damage application.** (1 connections) — `server/services/combat_attack_handler.py`
+- **Initialize the attack handler.          Args:             combat_service: Refere** (1 connections) — `server/services/combat_attack_handler.py`
+- **Validate that attack is allowed.** (1 connections) — `server/services/combat_attack_handler.py`
+- **Apply damage to target and check death states.          Delegates domain logic t** (1 connections) — `server/services/combat_attack_handler.py`
+- **Check if room has no_death attribute (tutorial/safe zones).** (1 connections) — `server/services/combat_attack_handler.py`
+- **Apply damage to target and update combat state.          Args:             comba** (1 connections) — `server/services/combat_attack_handler.py`
+- **Validate attack and retrieve combat participants.          Args:             att** (1 connections) — `server/services/combat_attack_handler.py`
+- **Create CombatAttackHandler instance.** (1 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
 
 ## Relationships
 
-- [Players API Endpoints](Players_API_Endpoints.md) (6 shared connections)
-- [Pylint Unique Findings](Pylint_Unique_Findings.md) (4 shared connections)
-- [JSONB Column Parsing](JSONB_Column_Parsing.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Combat Death Handling](Combat_Death_Handling.md) (5 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (5 shared connections)
+- [Async Persistence Layer](Async_Persistence_Layer.md) (4 shared connections)
+- [Player Respawn Service](Player_Respawn_Service.md) (3 shared connections)
+- [Player Respawn Events](Player_Respawn_Events.md) (2 shared connections)
+- [Health Check Models](Health_Check_Models.md) (1 shared connections)
+- [Container Exception Handlers](Container_Exception_Handlers.md) (1 shared connections)
+- [Command Helper Utilities](Command_Helper_Utilities.md) (1 shared connections)
+- [Command Parser](Command_Parser.md) (1 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (1 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/messaging/__init__.py`
-- `server/realtime/messaging/message_broadcaster.py`
-- `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- `server/services/combat_attack_handler.py`
+- `server/tests/unit/services/test_combat_attack_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 198 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 73 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,38 +1,39 @@
 # Status Effect Model
 
-> 14 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **parse_shutdown_parameters()** (11 connections) — `server/commands/admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_no_args()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_cancel()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_seconds()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_invalid_negative()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_invalid_zero()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_invalid_string()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Parse shutdown command parameters.      Args:         command_data: Command data** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Test parse_shutdown_parameters() with no args defaults to 10 seconds.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test parse_shutdown_parameters() with cancel action.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test parse_shutdown_parameters() with seconds.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test parse_shutdown_parameters() with negative seconds.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test parse_shutdown_parameters() with zero seconds.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test parse_shutdown_parameters() with invalid string.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_combat_grace_period.py** (11 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
+- **test_attack_command_blocked_during_grace_period()** (4 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
+- **test_attack_command_works_when_not_in_grace_period()** (4 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
+- **test_attack_command_allowed_after_grace_period()** (3 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
+- **test_attack_command_blocked_when_incapacitated()** (3 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
+- **mock_request()** (2 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
+- **Unit tests for combat command blocking during login grace period.  Tests that co** (1 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
+- **Create a mock ConnectionManager.** (1 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
+- **Create a mock FastAPI request.** (1 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
+- **Test that attack commands are blocked during login grace period.** (1 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
+- **Test that attack commands work normally after grace period expires.** (1 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
+- **Test that attack commands work when player is not in grace period.** (1 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
+- **Attack command returns incapacitated message when player has 0 to -9 DP (prone,** (1 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
 
 ## Relationships
 
-- [Services Lucidity Repository](Services_Lucidity_Repository.md) (7 shared connections)
-- [Room Drop Renderer](Room_Drop_Renderer.md) (3 shared connections)
+- [Player Respawn Events](Player_Respawn_Events.md) (5 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (4 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_shutdown_command.py`
-- `server/tests/unit/commands/test_admin_shutdown_command.py`
+- `server/tests/unit/commands/test_combat_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 35 (90%)
+- INFERRED: 4 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

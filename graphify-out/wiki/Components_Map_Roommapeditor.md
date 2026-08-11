@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_unsubscribe_from_subject_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _unsubscribe_from_subject() handles errors.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_setup_connection_metadata_no_session_token()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _setup_connection_metadata() handles None session and token.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Relationships
 
-- [Inventory Command Models](Inventory_Command_Models.md) (1 shared connections)
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
+- [Architecture Review Plan](Architecture_Review_Plan.md) (1 shared connections)
+- [WebSocket Connection Setup](WebSocket_Connection_Setup.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Audit Trail
 

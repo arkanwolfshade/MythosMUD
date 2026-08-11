@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [Communication Command Flows](Communication_Command_Flows.md) (3 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
 - [Room Data Fixer](Room_Data_Fixer.md) (2 shared connections)
-- [Auth Token Utilities](Auth_Token_Utilities.md) (1 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (1 shared connections)
 
 ## Source Files
 

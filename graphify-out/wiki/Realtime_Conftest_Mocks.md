@@ -1,55 +1,41 @@
 # Realtime Conftest Mocks
 
-> 93 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **test_argon2_utils.py** (42 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **hash_password()** (28 connections) — `server/auth/argon2_utils.py`
-- **argon2_utils.py** (19 connections) — `server/auth/argon2_utils.py`
-- **verify_password()** (16 connections) — `server/auth/argon2_utils.py`
-- **create_hasher_with_params()** (11 connections) — `server/auth/argon2_utils.py`
-- **seed_e2e_users.py** (9 connections) — `scripts/seed_e2e_users.py`
-- **is_argon2_hash()** (9 connections) — `server/auth/argon2_utils.py`
-- **needs_rehash()** (7 connections) — `server/auth/argon2_utils.py`
-- **get_hash_info()** (6 connections) — `server/auth/argon2_utils.py`
-- **_ensure_player_for_user()** (5 connections) — `scripts/seed_e2e_users.py`
-- **_seed_e2e_users()** (4 connections) — `scripts/seed_e2e_users.py`
-- **_validate_password_for_hashing()** (4 connections) — `server/auth/argon2_utils.py`
-- **test_verify_password_success()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_verify_password_failure()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_hash_password_empty_string()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_verify_password_empty_string()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_hash_password_invalid_type()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_hash_password_non_string_type()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_verify_password_non_string_password()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_is_argon2_hash_valid()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_needs_rehash_valid_hash()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_get_hash_info_valid()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_hash_password_hashing_error()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_hash_password_type_error()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_needs_rehash_error_handling()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- *... and 68 more nodes in this community*
+- **generate_invites_db.py** (14 connections) — `tools/invite_tools/generate_invites_db.py`
+- **main()** (7 connections) — `tools/invite_tools/generate_invites_db.py`
+- **create_invite_in_db()** (6 connections) — `tools/invite_tools/generate_invites_db.py`
+- **_set_database_url_from_env()** (5 connections) — `tools/invite_tools/generate_invites_db.py`
+- **parse_expires_date()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
+- **generate_unique_codes()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
+- **get_existing_codes()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
+- **datetime** (3 connections)
+- **generate_invite_code()** (3 connections) — `tools/invite_tools/generate_invites_db.py`
+- **Parse YYYY-MM-DD to end-of-day UTC (naive). Invite valid through that date.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
+- **Generate a unique Mythos-themed invite code.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
+- **Generate a list of unique invite codes.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
+- **Get existing invite codes from the database.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
+- **Create an invite in the database.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
+- **Use DATABASE_URL so scripts can run without full AppConfig.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
+- **Generate invite codes and store them in the database.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
 
 ## Relationships
 
-- [Auth Token Utilities](Auth_Token_Utilities.md) (15 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (5 shared connections)
-- [Combat Command Handler](Combat_Command_Handler.md) (5 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (2 shared connections)
-- [Package Engines Node](Package_Engines_Node.md) (1 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (5 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (2 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/seed_e2e_users.py`
-- `server/auth/argon2_utils.py`
-- `server/tests/unit/auth/test_argon2_utils.py`
+- `tools/invite_tools/generate_invites_db.py`
 
 ## Audit Trail
 
-- EXTRACTED: 314 (97%)
-- INFERRED: 9 (3%)
+- EXTRACTED: 57 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

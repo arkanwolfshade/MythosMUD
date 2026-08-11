@@ -1,6 +1,6 @@
 # Room Data Fixer
 
-> 28 nodes
+> 26 nodes
 
 ## Key Concepts
 
@@ -10,7 +10,6 @@
 - **._handle_stale_room_data()** (6 connections) — `server/services/room_sync_service.py`
 - **._process_room_update_with_validation()** (4 connections) — `server/services/room_sync_service.py`
 - **._fetch_fresh_room_data()** (4 connections) — `server/services/room_sync_service.py`
-- **room_sync_service()** (4 connections) — `server/tests/unit/services/test_room_sync_service.py`
 - **.set_room_service()** (3 connections) — `server/services/room_sync_service.py`
 - **.process_event_with_ordering()** (3 connections) — `server/services/room_sync_service.py`
 - **._invalidate_stale_cache()** (3 connections) — `server/services/room_sync_service.py`
@@ -29,15 +28,16 @@
 - **Handle stale room data by requesting fresh data.          Args:             room** (1 connections) — `server/services/room_sync_service.py`
 - **Process room transition with proper ordering and validation.          Args:** (1 connections) — `server/services/room_sync_service.py`
 - **Get statistics about the room data cache.          Returns:             Dict[str** (1 connections) — `server/services/room_sync_service.py`
-- *... and 3 more nodes in this community*
+- **Clear room data cache.          Args:             room_id: Specific room ID to c** (1 connections) — `server/services/room_sync_service.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [Communication Command Flows](Communication_Command_Flows.md) (3 shared connections)
-- [Holiday Persistence Models](Holiday_Persistence_Models.md) (3 shared connections)
+- [Holiday Persistence Models](Holiday_Persistence_Models.md) (4 shared connections)
 - [Room Data Cache](Room_Data_Cache.md) (2 shared connections)
 - [Logging Testing Examples](Logging_Testing_Examples.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Async Persistence Core](Async_Persistence_Core.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 80 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 76 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

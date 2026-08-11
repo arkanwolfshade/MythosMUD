@@ -4,21 +4,22 @@
 
 ## Key Concepts
 
-- **test_disband_party_by_non_leader_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **Non-leader cannot disband.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_apply_corruption_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test apply_corruption() when player not found.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 
 ## Relationships
 
-- [Command Alias Model](Command_Alias_Model.md) (1 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (1 shared connections)
+- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

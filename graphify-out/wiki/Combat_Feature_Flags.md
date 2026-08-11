@@ -1,14 +1,12 @@
 # Combat Feature Flags
 
-> 56 nodes
+> 52 nodes
 
 ## Key Concepts
 
 - **test_websocket_handler_helpers_extended.py** (33 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_validate_message_failure()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
 - **test_handle_generic_exception_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
 - **test_handle_generic_exception_disconnected()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_process_message_validation_failed()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
 - **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
 - **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
 - **mock_validator()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
@@ -29,13 +27,15 @@
 - **test_process_message_rate_limit_exceeded()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
 - **test_process_message_success()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
 - **test_handle_message_loop_exception_json_decode_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- *... and 31 more nodes in this community*
+- **test_handle_message_loop_exception_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
+- **test_handle_message_loop_exception_runtime_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [Container API Endpoints](Container_API_Endpoints.md) (4 shared connections)
-- [Database Helper Tests](Database_Helper_Tests.md) (3 shared connections)
-- [Player Position Service](Player_Position_Service.md) (2 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (5 shared connections)
+- [Scenario Conversion Guide](Scenario_Conversion_Guide.md) (3 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 117 (98%)
+- EXTRACTED: 109 (98%)
 - INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 

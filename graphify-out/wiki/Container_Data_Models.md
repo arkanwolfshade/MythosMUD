@@ -1,56 +1,56 @@
 # Container Data Models
 
-> 53 nodes
+> 80 nodes
 
 ## Key Concepts
 
-- **test_websocket_room_updates.py** (32 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **get_player_occupants()** (11 connections) — `server/realtime/websocket_room_updates.py`
-- **test_warded_indicator_in_websocket_room_updates()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **test_get_player_occupants_handles_exception()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_get_npc_occupants_from_lifecycle_manager_handles_exception()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_broadcast_room_update_fallback_npc_method()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_get_player_occupants_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_get_player_occupants_empty()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_get_npc_occupants_from_lifecycle_manager_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_get_npc_occupants_from_lifecycle_manager_filters_dead()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_get_npc_occupants_from_lifecycle_manager_wrong_room()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_get_npc_occupants_from_lifecycle_manager_no_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_get_npc_occupants_fallback_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_get_npc_occupants_fallback_filters_dead()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_get_npc_occupants_fallback_no_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_build_room_update_event()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_build_room_update_event_with_drops()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_update_player_room_subscription_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_update_player_room_subscription_same_room()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_update_player_room_subscription_no_player()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_broadcast_room_update_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_broadcast_room_update_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_broadcast_room_update_room_not_found()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_broadcast_room_update_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_broadcast_room_update_handles_exception()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- *... and 28 more nodes in this community*
+- **test_npc_utils.py** (30 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **get_zone_key_from_room_id()** (17 connections) — `server/npc/npc_utils.py`
+- **extract_npc_metadata()** (12 connections) — `server/npc/npc_utils.py`
+- **extract_definition_id_from_npc()** (12 connections) — `server/npc/npc_utils.py`
+- **extract_room_id_from_npc()** (11 connections) — `server/npc/npc_utils.py`
+- **npc_utils.py** (8 connections) — `server/npc/npc_utils.py`
+- **.despawn_npc()** (8 connections) — `server/npc/population_control.py`
+- **._get_active_npcs_from_lifecycle_manager()** (6 connections) — `server/npc/population_control.py`
+- **._get_zone_key_from_room_id()** (5 connections) — `server/npc/population_control.py`
+- **._should_remove_inactive_npc()** (5 connections) — `server/npc/population_control.py`
+- **.cleanup_inactive_npcs()** (5 connections) — `server/npc/population_control.py`
+- **.is_required()** (4 connections) — `server/models/npc.py`
+- **._update_population_stats_for_despawn()** (4 connections) — `server/npc/population_control.py`
+- **Any** (3 connections)
+- **_stable_room_id_for_zone()** (3 connections) — `server/npc/npc_utils.py`
+- **.get_zone_population_summary()** (3 connections) — `server/npc/population_control.py`
+- **test_extract_room_id_from_npc_current_room()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_room_id_from_npc_current_room_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_room_id_from_npc_room_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_room_id_from_npc_not_found()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_room_id_from_npc_non_string()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_valid()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_non_string_type()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_truthy_required()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [NPC Service Tests](NPC_Service_Tests.md) (22 shared connections)
-- [Look Display Helpers](Look_Display_Helpers.md) (3 shared connections)
-- [Auth Token Utilities](Auth_Token_Utilities.md) (3 shared connections)
-- [Player Respawn Events](Player_Respawn_Events.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [API Type Guards](API_Type_Guards.md) (2 shared connections)
-- [NATS Message Broker](NATS_Message_Broker.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (7 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (5 shared connections)
+- [Nats Anti Patterns](Nats_Anti_Patterns.md) (2 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
+- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (1 shared connections)
+- [Command Parser Tests](Command_Parser_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_room_updates.py`
-- `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- `server/tests/unit/realtime/test_websocket_room_updates.py`
+- `server/models/npc.py`
+- `server/npc/npc_utils.py`
+- `server/npc/population_control.py`
+- `server/tests/unit/npc/test_npc_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 142 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 244 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

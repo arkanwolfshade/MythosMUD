@@ -4,51 +4,52 @@
 
 ## Key Concepts
 
-- **HealthService** (24 connections) — `server/services/health_service.py`
-- **.get_health_status()** (10 connections) — `server/services/health_service.py`
-- **.check_database_health_async()** (9 connections) — `server/services/health_service.py`
+- **WebSocketRequestContext** (26 connections) — `server/realtime/request_context.py`
+- **test_request_context.py** (16 connections) — `server/tests/unit/realtime/test_request_context.py`
 - **Any** (7 connections)
-- **._create_health_response()** (7 connections) — `server/services/health_service.py`
-- **.get_server_component_health()** (7 connections) — `server/services/health_service.py`
-- **.check_database_health()** (6 connections) — `server/services/health_service.py`
-- **._ping_database()** (5 connections) — `server/services/health_service.py`
-- **._health_from_pool()** (5 connections) — `server/services/health_service.py`
-- **.check_connections_health()** (5 connections) — `server/services/health_service.py`
-- **.get_database_component_health()** (5 connections) — `server/services/health_service.py`
-- **.get_connections_component_health()** (5 connections) — `server/services/health_service.py`
-- **.determine_overall_status()** (5 connections) — `server/services/health_service.py`
-- **room_service()** (5 connections) — `server/tests/unit/game/test_room_service.py`
-- **.get_server_uptime()** (4 connections) — `server/services/health_service.py`
-- **._status_from_query_ms()** (4 connections) — `server/services/health_service.py`
-- **.get_database_component_health_async()** (4 connections) — `server/services/health_service.py`
-- **.generate_alerts()** (4 connections) — `server/services/health_service.py`
-- **.__init__()** (3 connections) — `server/services/health_service.py`
-- **.get_memory_usage()** (3 connections) — `server/services/health_service.py`
-- **.get_cpu_usage()** (3 connections) — `server/services/health_service.py`
-- **HealthStatus** (3 connections)
-- **health_service()** (3 connections) — `server/tests/unit/services/test_health_service.py`
-- **Health monitoring service for MythosMUD server.      Provides comprehensive he** (1 connections) — `server/services/health_service.py`
-- **Initialize the health service.          Args:             connection_manager:** (1 connections) — `server/services/health_service.py`
+- **.set_app_state_services()** (4 connections) — `server/realtime/request_context.py`
+- **.get_event_bus()** (4 connections) — `server/realtime/request_context.py`
+- **.get_alias_storage()** (4 connections) — `server/realtime/request_context.py`
+- **test_create_websocket_request_context()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_create_websocket_request_context_no_user()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **.__init__()** (3 connections) — `server/realtime/request_context.py`
+- **.set_alias_storage()** (3 connections) — `server/realtime/request_context.py`
+- **.get_persistence()** (3 connections) — `server/realtime/request_context.py`
+- **test_websocket_request_context_init()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_init_no_user()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_set_alias_storage()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_set_app_state_services()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_set_app_state_services_none()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_get_persistence()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_get_event_bus()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_get_event_bus_none()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_get_alias_storage()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_get_alias_storage_not_set()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **Creates FastAPI Request-like objects for WebSocket commands.      This allows We** (1 connections) — `server/realtime/request_context.py`
+- **Initialize the WebSocket request context.          Args:             app_state:** (1 connections) — `server/realtime/request_context.py`
+- **Set the alias storage in the app state.          Args:             alias_storage** (1 connections) — `server/realtime/request_context.py`
+- **Set the app state services in the request context.         Note: This method is** (1 connections) — `server/realtime/request_context.py`
 - *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [Monitoring Response Models](Monitoring_Response_Models.md) (13 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
-- [Combat Turn Processor](Combat_Turn_Processor.md) (1 shared connections)
-- [Inventory Service Helpers](Inventory_Service_Helpers.md) (1 shared connections)
-- [ASCII Map Exit Tests](ASCII_Map_Exit_Tests.md) (1 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (6 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Catatonia Check Logic](Catatonia_Check_Logic.md) (2 shared connections)
+- [Persistence Container Extended](Persistence_Container_Extended.md) (1 shared connections)
+- [Cursor Skills Harden](Cursor_Skills_Harden.md) (1 shared connections)
+- [Player Left Room Tests](Player_Left_Room_Tests.md) (1 shared connections)
+- [Alias Storage Services](Alias_Storage_Services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/health_service.py`
-- `server/tests/unit/game/test_room_service.py`
-- `server/tests/unit/services/test_health_service.py`
+- `server/realtime/request_context.py`
+- `server/tests/unit/realtime/test_request_context.py`
 
 ## Audit Trail
 
-- EXTRACTED: 148 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 121 (95%)
+- INFERRED: 7 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

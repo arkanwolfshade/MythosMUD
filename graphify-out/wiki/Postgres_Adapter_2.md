@@ -1,11 +1,10 @@
 # Postgres Adapter
 
-> 25 nodes
+> 23 nodes
 
 ## Key Concepts
 
 - **TestPostgresConnectionPool** (13 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **PostgresConnectionPool** (10 connections) — `server/postgres_adapter.py`
 - **.get_pool()** (7 connections) — `server/postgres_adapter.py`
 - **.get_connection()** (6 connections) — `server/postgres_adapter.py`
 - **is_postgres_url()** (5 connections) — `server/postgres_adapter.py`
@@ -17,7 +16,6 @@
 - **.test_get_pool_normalizes_url()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 - **.test_get_connection_context_manager_exception()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 - **ThreadedConnectionPool** (1 connections)
-- **Thread-safe PostgreSQL connection pool.** (1 connections) — `server/postgres_adapter.py`
 - **Get or create a connection pool for the given database URL.** (1 connections) — `server/postgres_adapter.py`
 - **Get a connection from the pool.** (1 connections) — `server/postgres_adapter.py`
 - **Check if the database URL is PostgreSQL.** (1 connections) — `server/postgres_adapter.py`
@@ -32,10 +30,9 @@
 
 ## Relationships
 
-- [PostgreSQL Adapter Tests](PostgreSQL_Adapter_Tests.md) (4 shared connections)
-- [Postgres Connection Tests](Postgres_Connection_Tests.md) (4 shared connections)
-- [Postgres Adapter Infrastructure](Postgres_Adapter_Infrastructure.md) (4 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [PostgreSQL Adapter Tests](PostgreSQL_Adapter_Tests.md) (6 shared connections)
+- [Postgres Connection Tests](Postgres_Connection_Tests.md) (3 shared connections)
+- [Postgres Adapter Infrastructure](Postgres_Adapter_Infrastructure.md) (2 shared connections)
 
 ## Source Files
 
@@ -44,8 +41,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 66 (87%)
-- INFERRED: 10 (13%)
+- EXTRACTED: 60 (92%)
+- INFERRED: 5 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

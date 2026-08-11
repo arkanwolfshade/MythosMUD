@@ -1,55 +1,54 @@
 # Warning Fixes Session
 
-> 29 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **subject_controller.py** (27 connections) — `server/api/admin/subject_controller.py`
-- **register_pattern()** (10 connections) — `server/api/admin/subject_controller.py`
-- **validate_subject()** (7 connections) — `server/api/admin/subject_controller.py`
-- **BaseModel** (6 connections)
-- **get_subject_statistics()** (6 connections) — `server/api/admin/subject_controller.py`
-- **get_patterns()** (6 connections) — `server/api/admin/subject_controller.py`
-- **_register_pattern_try()** (6 connections) — `server/api/admin/subject_controller.py`
-- **RegisterPatternRequest** (5 connections) — `server/api/admin/subject_controller.py`
-- **RegisterPatternResponse** (5 connections) — `server/api/admin/subject_controller.py`
-- **ValidateSubjectRequest** (4 connections) — `server/api/admin/subject_controller.py`
-- **ValidateSubjectResponse** (4 connections) — `server/api/admin/subject_controller.py`
-- **SubjectStatisticsResponse** (4 connections) — `server/api/admin/subject_controller.py`
-- **PatternsResponse** (4 connections) — `server/api/admin/subject_controller.py`
-- **require_admin_user()** (4 connections) — `server/api/admin/subject_controller.py`
-- **get_subject_manager_dependency()** (3 connections) — `server/api/admin/subject_controller.py`
-- **NATS Subject Management API Controller for MythosMUD.  This module provides RE** (1 connections) — `server/api/admin/subject_controller.py`
-- **Request model for subject validation.** (1 connections) — `server/api/admin/subject_controller.py`
-- **Response model for subject validation.** (1 connections) — `server/api/admin/subject_controller.py`
-- **Request model for pattern registration.** (1 connections) — `server/api/admin/subject_controller.py`
-- **Response model for pattern registration.** (1 connections) — `server/api/admin/subject_controller.py`
-- **Response model for subject management statistics.** (1 connections) — `server/api/admin/subject_controller.py`
-- **Response model for pattern listing.** (1 connections) — `server/api/admin/subject_controller.py`
-- **Dependency function to inject NATSSubjectManager.      Returns:         Globa** (1 connections) — `server/api/admin/subject_controller.py`
-- **Dependency to require admin permissions.      Args:         current_user: Cur** (1 connections) — `server/api/admin/subject_controller.py`
-- **Get NATS subject management statistics and health status.      This endpoint p** (1 connections) — `server/api/admin/subject_controller.py`
-- *... and 4 more nodes in this community*
+- **NPCOccupantProcessor** (18 connections) — `server/realtime/npc_occupant_processor.py`
+- **Any** (11 connections)
+- **.__init__()** (9 connections) — `server/realtime/room_occupant_manager.py`
+- **.query_npcs_for_room()** (6 connections) — `server/realtime/npc_occupant_processor.py`
+- **.__init__()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **._get_npc_lifecycle_manager()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **._validate_npc_room_tracking()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **._should_include_npc_in_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **._scan_active_npcs_for_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **._get_lifecycle_manager_for_filtering()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **._filter_fallback_npcs()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **._get_fallback_npcs()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **._get_npc_room_id()** (4 connections) — `server/realtime/npc_occupant_processor.py`
+- **._filter_single_fallback_npc()** (4 connections) — `server/realtime/npc_occupant_processor.py`
+- **.get_room_occupants()** (4 connections) — `server/realtime/room_occupant_manager.py`
+- **.process_npcs_for_occupants()** (3 connections) — `server/realtime/npc_occupant_processor.py`
+- **Any** (3 connections)
+- **.separate_occupants_by_type()** (3 connections) — `server/realtime/room_occupant_manager.py`
+- **UUID** (2 connections)
+- **Processes NPC occupants for rooms.** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Initialize NPC occupant processor.          Args:             connection_manager** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Get and validate NPC lifecycle manager.          Args:             room_id: The** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Get NPC's current room ID from instance.          Args:             npc_instance** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Validate NPC has room tracking and get room ID.          Args:             npc_i** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Determine if NPC should be included in room query results.          Args:** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (7 shared connections)
-- [Active Lucidity Service](Active_Lucidity_Service.md) (6 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (6 shared connections)
-- [Cursor Rules Docker](Cursor_Rules_Docker.md) (4 shared connections)
-- [Combat Command Handler](Combat_Command_Handler.md) (3 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Combat Turn Processor](Combat_Turn_Processor.md) (4 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (4 shared connections)
+- [API Type Guards](API_Type_Guards.md) (3 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (2 shared connections)
+- [Room Occupant Formatter](Room_Occupant_Formatter.md) (1 shared connections)
+- [LRU Cache Manager](LRU_Cache_Manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/admin/subject_controller.py`
+- `server/realtime/npc_occupant_processor.py`
+- `server/realtime/room_occupant_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 113 (98%)
+- EXTRACTED: 121 (98%)
 - INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 

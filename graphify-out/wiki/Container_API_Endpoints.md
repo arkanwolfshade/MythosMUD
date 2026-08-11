@@ -1,68 +1,39 @@
 # Container API Endpoints
 
-> 122 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **websocket_handler.py** (64 connections) — `server/realtime/websocket_handler.py`
-- **ErrorType** (47 connections) — `server/error_types.py`
-- **ErrorMessages** (47 connections) — `server/error_types.py`
-- **error_types.py** (37 connections) — `server/error_types.py`
-- **standardized_responses.py** (32 connections) — `server/error_handlers/standardized_responses.py`
-- **create_websocket_error_response()** (32 connections) — `server/error_types.py`
-- **create_standard_error_response()** (27 connections) — `server/error_types.py`
-- **pydantic_error_handler.py** (25 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **websocket_handler_message_loop.py** (25 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **websocket_handler_validation.py** (21 connections) — `server/realtime/websocket_handler_validation.py`
-- **test_error_types.py** (21 connections) — `server/tests/unit/test_error_types.py`
-- **create_sse_error_response()** (17 connections) — `server/error_types.py`
-- **._handle_logged_http_exception()** (11 connections) — `server/error_handlers/standardized_responses.py`
-- **handle_message_loop_exception()** (10 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **ErrorResponseDetails** (9 connections) — `server/error_types.py`
-- **test_websocket_handler_error_handling.py** (9 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **_normalize_error_response_details()** (7 connections) — `server/error_types.py`
-- **send_websocket_error_response()** (7 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **WebSocket** (7 connections)
-- **TypedDict** (6 connections)
-- **handle_json_decode_error()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **UUID** (6 connections)
-- **handle_websocket_runtime_error()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **handle_websocket_generic_exception()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **process_exception_in_message_loop()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
-- *... and 97 more nodes in this community*
+- **MythosValidationError** (8 connections)
+- **test_parse_command_string_validation_error()** (4 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_create_command_object_re_raises_mythos_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_process_command_string_mythos_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_process_validated_command_validation_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test process_validated_command handles ValidationError.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test _parse_command_string handles ValidationError.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test _create_command_object re-raises MythosValidationError without wrapping.** (1 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **Test process_command_string handles MythosMUD validation errors.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
 
 ## Relationships
 
-- [Standardized Error Responses](Standardized_Error_Responses.md) (58 shared connections)
-- [Player Position Service](Player_Position_Service.md) (27 shared connections)
-- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (18 shared connections)
-- [Combat Death Handling](Combat_Death_Handling.md) (17 shared connections)
-- [Client Event Store](Client_Event_Store.md) (11 shared connections)
-- [Player Combat XP](Player_Combat_XP.md) (9 shared connections)
-- [Game Tick Processing](Game_Tick_Processing.md) (8 shared connections)
-- [Database Helper Tests](Database_Helper_Tests.md) (8 shared connections)
-- [Application DI Bundles](Application_DI_Bundles.md) (7 shared connections)
-- [Archive Bug Fix](Archive_Bug_Fix.md) (7 shared connections)
-- [Active Lucidity Service](Active_Lucidity_Service.md) (4 shared connections)
-- [Disconnect Grace Period](Disconnect_Grace_Period.md) (4 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (3 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (2 shared connections)
+- [NPC Population Control](NPC_Population_Control.md) (2 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
+- [Spell Effect Protocols](Spell_Effect_Protocols.md) (1 shared connections)
+- [Character Creation API](Character_Creation_API.md) (1 shared connections)
+- [Cursor Agents Analyzer](Cursor_Agents_Analyzer.md) (1 shared connections)
 
 ## Source Files
 
-- `server/error_handlers/pydantic_error_handler.py`
-- `server/error_handlers/standardized_responses.py`
-- `server/error_types.py`
-- `server/realtime/message_validator.py`
-- `server/realtime/websocket_handler.py`
-- `server/realtime/websocket_handler_message_loop.py`
-- `server/realtime/websocket_handler_validation.py`
-- `server/realtime/websocket_helpers.py`
-- `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- `server/tests/unit/test_error_types.py`
+- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/utils/test_command_parser.py`
+- `server/tests/unit/utils/test_command_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 646 (94%)
-- INFERRED: 43 (6%)
+- EXTRACTED: 17 (63%)
+- INFERRED: 10 (37%)
 - AMBIGUOUS: 0 (0%)
 
 ---

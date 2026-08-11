@@ -1,49 +1,60 @@
 # Async Room Loading Tests
 
-> 20 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **ScheduleCollection** (12 connections) — `server/schemas/calendar/calendar.py`
-- **__init__.py** (10 connections) — `server/schemas/calendar/__init__.py`
-- **calendar.py** (9 connections) — `server/schemas/calendar/calendar.py`
-- **load_schedule_directory()** (8 connections) — `server/schemas/calendar/calendar.py`
-- **extract_observance_ids()** (8 connections) — `server/schemas/calendar/calendar.py`
-- **slugify_observance()** (6 connections) — `server/schemas/calendar/calendar.py`
-- **.load_file()** (5 connections) — `server/schemas/calendar/calendar.py`
-- **.load_file()** (5 connections) — `server/schemas/calendar/calendar.py`
-- **BaseModel** (4 connections)
-- **test_schedule_collection()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **Path** (3 connections)
-- **Calendar domain schemas: holidays, schedules, and Mythos calendar.** (1 connections) — `server/schemas/calendar/__init__.py`
-- **Calendar ingestion schemas for MythosMUD.  These models provide a typed wrapper** (1 connections) — `server/schemas/calendar/calendar.py`
-- **Load holiday collection from JSON file.** (1 connections) — `server/schemas/calendar/calendar.py`
-- **Wrapper around an array of schedule entries.** (1 connections) — `server/schemas/calendar/calendar.py`
-- **Load schedule collection from a JSON file.          Args:             path: Path** (1 connections) — `server/schemas/calendar/calendar.py`
-- **Utility for loading every schedule file within a directory.** (1 connections) — `server/schemas/calendar/calendar.py`
-- **Normalize document observance names into snake_case ids.** (1 connections) — `server/schemas/calendar/calendar.py`
-- **Parse table rows from MYTHOS_HOLIDAY_CANDIDATES.md into slug ids.** (1 connections) — `server/schemas/calendar/calendar.py`
-- **Test ScheduleCollection can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **health.ts** (26 connections) — `client/src/types/health.ts`
+- **CharacterInfoPanel.tsx** (23 connections) — `client/src/components/ui-v2/panels/CharacterInfoPanel.tsx`
+- **characterInfoPanelOutline.ts** (13 connections) — `client/src/components/ui-v2/utils/characterInfoPanelOutline.ts`
+- **HealthMeter.tsx** (10 connections) — `client/src/components/health/HealthMeter.tsx`
+- **characterInfoPanelOutline.test.ts** (7 connections) — `client/src/components/ui-v2/utils/__tests__/characterInfoPanelOutline.test.ts`
+- **getCharacterInfoPanelOutlineClassName()** (7 connections) — `client/src/components/ui-v2/utils/characterInfoPanelOutline.ts`
+- **MagicPointsMeter.tsx** (6 connections) — `client/src/components/magic/MagicPointsMeter.tsx`
+- **HealthMeter.test.tsx** (5 connections) — `client/src/components/health/__tests__/HealthMeter.test.tsx`
+- **HealthMeter** (4 connections) — `client/src/components/health/HealthMeter.tsx`
+- **getGameInfoPanelCombatClassName()** (4 connections) — `client/src/components/ui-v2/utils/characterInfoPanelOutline.ts`
+- **MagicPointsStatus** (3 connections) — `client/src/components/magic/MagicPointsMeter.tsx`
+- **MagicPointsMeter** (3 connections) — `client/src/components/magic/MagicPointsMeter.tsx`
+- **MagicPointsMeter.test.tsx** (3 connections) — `client/src/components/magic/__tests__/MagicPointsMeter.test.tsx`
+- **CharacterInfoPanel()** (3 connections) — `client/src/components/ui-v2/panels/CharacterInfoPanel.tsx`
+- **getDpSeverity()** (2 connections) — `client/src/components/ui-v2/utils/characterInfoPanelOutline.ts`
+- **getMpSeverity()** (2 connections) — `client/src/components/ui-v2/utils/characterInfoPanelOutline.ts`
+- **getOutlineClassesForWorstSeverity()** (2 connections) — `client/src/components/ui-v2/utils/characterInfoPanelOutline.ts`
+- **HealthTier** (2 connections) — `client/src/types/health.ts`
+- **HealthMeterProps** (2 connections) — `client/src/types/health.ts`
+- **TierMetadata** (1 connections) — `client/src/components/health/HealthMeter.tsx`
+- **TIER_METADATA** (1 connections) — `client/src/components/health/HealthMeter.tsx`
+- **formatDelta()** (1 connections) — `client/src/components/health/HealthMeter.tsx`
+- **buildStatus()** (1 connections) — `client/src/components/health/__tests__/HealthMeter.test.tsx`
+- **MagicPointsMeterProps** (1 connections) — `client/src/components/magic/MagicPointsMeter.tsx`
+- **formatDelta()** (1 connections) — `client/src/components/magic/MagicPointsMeter.tsx`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [Player Command Developer Guide](Player_Command_Developer_Guide.md) (8 shared connections)
-- [ASCII Map API](ASCII_Map_API.md) (5 shared connections)
-- [Spell Effects Tests](Spell_Effects_Tests.md) (4 shared connections)
-- [WebSocket Code Review](WebSocket_Code_Review.md) (4 shared connections)
-- [Player Respawn Service](Player_Respawn_Service.md) (3 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Communication Command Handlers](Communication_Command_Handlers.md) (17 shared connections)
+- [API Test Fixtures](API_Test_Fixtures.md) (9 shared connections)
+- [Magic System Feature Plan](Magic_System_Feature_Plan.md) (8 shared connections)
+- [Logout and Quit Commands](Logout_and_Quit_Commands.md) (5 shared connections)
+- [Health Cold Resistance](Health_Cold_Resistance.md) (3 shared connections)
+- [Combat Messaging Integration](Combat_Messaging_Integration.md) (3 shared connections)
+- [Chat Channel Design Spec](Chat_Channel_Design_Spec.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/calendar/__init__.py`
-- `server/schemas/calendar/calendar.py`
-- `server/tests/unit/schemas/test_calendar_schemas.py`
+- `client/src/components/health/HealthMeter.tsx`
+- `client/src/components/health/__tests__/HealthMeter.test.tsx`
+- `client/src/components/magic/MagicPointsMeter.tsx`
+- `client/src/components/magic/__tests__/MagicPointsMeter.test.tsx`
+- `client/src/components/ui-v2/panels/CharacterInfoPanel.tsx`
+- `client/src/components/ui-v2/utils/__tests__/characterInfoPanelOutline.test.ts`
+- `client/src/components/ui-v2/utils/characterInfoPanelOutline.ts`
+- `client/src/types/health.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 83 (100%)
+- EXTRACTED: 140 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

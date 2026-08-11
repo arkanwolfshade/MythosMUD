@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_should_idle_move_true_when_not_in_combat_and_probability_succeeds()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **When combat service is empty and probability passes, idle move is allowed.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **.test_init_custom_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test GameTickService initialization with custom interval.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
 
 ## Relationships
 
-- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
-- [NPC Movement Integration](NPC_Movement_Integration.md) (1 shared connections)
+- [Combat Health Persistence Fix](Combat_Health_Persistence_Fix.md) (1 shared connections)
+- [AnyIO Code Review](AnyIO_Code_Review.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/tests/unit/services/test_game_tick_service.py`
 
 ## Audit Trail
 

@@ -33,13 +33,11 @@
 
 ## Relationships
 
-- [Command Parser Helpers](Command_Parser_Helpers.md) (14 shared connections)
-- [Realtime Errors Error](Realtime_Errors_Error.md) (12 shared connections)
-- [Zone Config Loader](Zone_Config_Loader.md) (9 shared connections)
-- [Emote Schema Validator](Emote_Schema_Validator.md) (3 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
-- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (1 shared connections)
-- [Environmental Container Scenario](Environmental_Container_Scenario.md) (1 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (14 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (13 shared connections)
+- [NPC Definition Admin API](NPC_Definition_Admin_API.md) (9 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (4 shared connections)
+- [Base Command Models](Base_Command_Models.md) (1 shared connections)
 
 ## Source Files
 

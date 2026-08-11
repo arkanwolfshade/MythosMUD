@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_user_manager_injected()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test _get_user_manager returns injected manager.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_log_audit_event_limits_size()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **Test _log_audit_event limits log size to 1000.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Relationships
 
-- [Connection State Hooks](Connection_State_Hooks.md) (1 shared connections)
+- [Player Model Inventory](Player_Model_Inventory.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Audit Trail
 

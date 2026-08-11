@@ -4,21 +4,22 @@
 
 ## Key Concepts
 
-- **test_remove_member_leave_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **Member can leave; party remains.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_mute_channel_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Test muting channel when preferences not found.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Relationships
 
-- [Command Alias Model](Command_Alias_Model.md) (1 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
+- [Async Persistence Delegates](Async_Persistence_Delegates.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

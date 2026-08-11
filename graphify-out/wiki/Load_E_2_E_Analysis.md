@@ -1,30 +1,33 @@
 # Load E 2 E Analysis
 
-> 9 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **Codacy High+Warning Baseline (607)** (8 connections) — `docs/investigations/codacy_high_warning_baseline_607.md`
-- **codacy_high_warning_baseline_607.md** (1 connections) — `docs/investigations/codacy_high_warning_baseline_607.md`
-- **Level split** (1 connections) — `docs/investigations/codacy_high_warning_baseline_607.md`
-- **By tool** (1 connections) — `docs/investigations/codacy_high_warning_baseline_607.md`
-- **By Lizard / pattern family** (1 connections) — `docs/investigations/codacy_high_warning_baseline_607.md`
-- **By top-level directory** (1 connections) — `docs/investigations/codacy_high_warning_baseline_607.md`
-- **High findings (8)** (1 connections) — `docs/investigations/codacy_high_warning_baseline_607.md`
-- **Non-Lizard Warning buckets (~63)** (1 connections) — `docs/investigations/codacy_high_warning_baseline_607.md`
-- **Related artifacts** (1 connections) — `docs/investigations/codacy_high_warning_baseline_607.md`
+- **TestPrepareCommandForProcessing** (7 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_rate_limited()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_validation_failed()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_empty_after_cleaning()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_empty_after_normalization()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_success()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing function.** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing returns rate limit result when rate limited** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing returns validation result when validation f** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing handles empty command after cleaning.** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing handles empty command after normalization.** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing successfully prepares command.** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (6 shared connections)
 
 ## Source Files
 
-- `docs/investigations/codacy_high_warning_baseline_607.md`
+- `server/tests/unit/commands/test_command_preparation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 28 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

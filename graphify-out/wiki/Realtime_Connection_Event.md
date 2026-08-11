@@ -20,7 +20,8 @@
 
 ## Relationships
 
-- [Communication Command Flows](Communication_Command_Flows.md) (3 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 

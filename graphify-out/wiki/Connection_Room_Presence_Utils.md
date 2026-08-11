@@ -1,56 +1,51 @@
 # Connection Room Presence Utils
 
-> 33 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **_stats_int()** (17 connections) — `server/models/player.py`
-- **.get_stats()** (13 connections) — `server/models/player.py`
+- **LucidityRepository** (14 connections) — `server/services/lucidity_repository.py`
+- **lucidity_repository.py** (11 connections) — `server/services/lucidity_repository.py`
 - **UUID** (9 connections)
-- **_handle_player_death_threshold()** (8 connections) — `server/app/game_tick_processing.py`
-- **_process_mortally_wounded_player()** (8 connections) — `server/app/game_tick_processing.py`
-- **.set_stats()** (6 connections) — `server/models/player.py`
-- **.apply_dp_decay()** (5 connections) — `server/models/player.py`
-- **.restore_to_full_health()** (5 connections) — `server/models/player.py`
-- **.apply_dp_change()** (5 connections) — `server/models/player.py`
-- **_player_in_active_combat()** (4 connections) — `server/app/game_tick_processing.py`
-- **.is_alive()** (4 connections) — `server/models/player.py`
-- **.is_mortally_wounded()** (4 connections) — `server/models/player.py`
-- **.is_dead()** (4 connections) — `server/models/player.py`
-- **.get_health_state()** (4 connections) — `server/models/player.py`
-- **.get_combat_stats()** (4 connections) — `server/models/player.py`
-- **.get_health_percentage()** (4 connections) — `server/models/player.py`
-- **test_stats_int_delegates_to_coerce_int()** (3 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **Return True when the player is in an active combat (skip passive DP decay).** (1 connections) — `server/app/game_tick_processing.py`
-- **Move player to limbo and publish authoritative DP when death threshold is reache** (1 connections) — `server/app/game_tick_processing.py`
-- **Process a single mortally wounded player's DP decay and death check.      CRITIC** (1 connections) — `server/app/game_tick_processing.py`
-- **Coerce a JSONB stat value to int for DP and combat helpers.** (1 connections) — `server/models/player.py`
-- **Get player stats as dictionary.          Returns a MutableDict instance that aut** (1 connections) — `server/models/player.py`
-- **Set player stats from dictionary.          Accepts both plain dict and MutableDi** (1 connections) — `server/models/player.py`
-- **Check if player is alive (DP > 0).** (1 connections) — `server/models/player.py`
-- **Check if player is mortally wounded (0 >= DP > -10).          Returns:** (1 connections) — `server/models/player.py`
-- *... and 8 more nodes in this community*
+- **.increment_exposure_state()** (6 connections) — `server/services/lucidity_repository.py`
+- **.set_cooldown()** (6 connections) — `server/services/lucidity_repository.py`
+- **.delete_cooldowns_by_action_code_pattern()** (6 connections) — `server/services/lucidity_repository.py`
+- **_utc_now()** (5 connections) — `server/services/lucidity_repository.py`
+- **.get_player_lucidity()** (5 connections) — `server/services/lucidity_repository.py`
+- **.get_or_create_player_lucidity()** (5 connections) — `server/services/lucidity_repository.py`
+- **.add_adjustment_log()** (5 connections) — `server/services/lucidity_repository.py`
+- **.get_exposure_state()** (5 connections) — `server/services/lucidity_repository.py`
+- **.get_cooldown()** (5 connections) — `server/services/lucidity_repository.py`
+- **datetime** (3 connections)
+- **.__init__()** (2 connections) — `server/services/lucidity_repository.py`
+- **AsyncSession** (1 connections)
+- **Repository layer for lucidity-related persistence.** (1 connections) — `server/services/lucidity_repository.py`
+- **Return naive UTC timestamp suitable for PostgreSQL TIMESTAMP WITHOUT TIME ZONE.** (1 connections) — `server/services/lucidity_repository.py`
+- **Data-access helpers for lucidity persistence.** (1 connections) — `server/services/lucidity_repository.py`
+- **Get player lucidity record.** (1 connections) — `server/services/lucidity_repository.py`
+- **Get existing player lucidity record or create a new one.** (1 connections) — `server/services/lucidity_repository.py`
+- **Add a lucidity adjustment log entry.** (1 connections) — `server/services/lucidity_repository.py`
+- **Get exposure state for a player and entity archetype.** (1 connections) — `server/services/lucidity_repository.py`
+- **Increment exposure state for a player and entity archetype.** (1 connections) — `server/services/lucidity_repository.py`
+- **Get cooldown state for a player and action.** (1 connections) — `server/services/lucidity_repository.py`
+- **Set or update cooldown for a player and action.** (1 connections) — `server/services/lucidity_repository.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (12 shared connections)
-- [Command Alias Handling](Command_Alias_Handling.md) (7 shared connections)
-- [Investigations Sessions Xx](Investigations_Sessions_Xx.md) (5 shared connections)
-- [Magic Lifespan Initialization](Magic_Lifespan_Initialization.md) (3 shared connections)
-- [Invite and User Schemas](Invite_and_User_Schemas.md) (2 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
-- [Async Persistence Layer](Async_Persistence_Layer.md) (1 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (9 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (8 shared connections)
+- [Grace Period Blocking Tests](Grace_Period_Blocking_Tests.md) (1 shared connections)
+- [Postgres Adapter Infrastructure](Postgres_Adapter_Infrastructure.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/game_tick_processing.py`
-- `server/models/player.py`
-- `server/tests/unit/commands/test_inventory_command_coercion.py`
+- `server/services/lucidity_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 122 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 95 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

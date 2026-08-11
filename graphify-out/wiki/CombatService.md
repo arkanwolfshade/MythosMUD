@@ -2,7 +2,7 @@
 
 > God node · 182 connections · `server/services/combat_service.py`
 
-**Community:** [Client Event Store](Client_Event_Store.md)
+**Community:** [Container Exception Handlers](Container_Exception_Handlers.md)
 
 ## Connections by Relation
 

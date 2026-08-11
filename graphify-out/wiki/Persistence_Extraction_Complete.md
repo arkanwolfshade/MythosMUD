@@ -1,38 +1,44 @@
 # Persistence Extraction Complete
 
-> 11 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **handle_system_command()** (10 connections) — `server/commands/system_commands.py`
-- **test_system_commands.py** (6 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **test_handle_system_command()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **test_handle_system_command_no_message()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **test_handle_system_command_no_chat_service()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **Any** (2 connections)
-- **Broadcast a system-level message via the chat service if available.** (1 connections) — `server/commands/system_commands.py`
-- **Unit tests for system command handlers.  Tests the system command functionality.** (1 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **Test handle_system_command() broadcasts system message.** (1 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **Test handle_system_command() handles missing message.** (1 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **Test handle_system_command() handles missing chat service.** (1 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **get_help_content()** (14 connections) — `server/help/help_content.py`
+- **test_websocket_handler_help.py** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+- **__init__.py** (3 connections) — `server/help/__init__.py`
+- **_get_general_help()** (3 connections) — `server/help/help_content.py`
+- **test_get_help_content()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_get_help_content_with_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_get_help_content_general()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+- **test_get_help_content_specific()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+- **Help system for MythosMUD.  This package provides help content and command docum** (1 connections) — `server/help/__init__.py`
+- **Get help content for commands.      Args:         command_name: Optional specifi** (1 connections) — `server/help/help_content.py`
+- **Get general help content with command categories.** (1 connections) — `server/help/help_content.py`
+- **Test get_help_content returns help content.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **Test get_help_content returns help for specific command.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **Unit tests for help content used in the realtime/WebSocket path.  Uses the canon** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+- **Test get_help_content() returns general help when no command specified.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+- **Test get_help_content() returns specific command help for look.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [Memory Leak Metrics](Memory_Leak_Metrics.md) (1 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
-- [Game State Provider](Game_State_Provider.md) (1 shared connections)
-- [Chat NATS Publisher](Chat_NATS_Publisher.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (4 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (3 shared connections)
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (2 shared connections)
+- [Container Open Events](Container_Open_Events.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/system_commands.py`
-- `server/tests/unit/commands/test_system_commands.py`
+- `server/help/__init__.py`
+- `server/help/help_content.py`
+- `server/tests/unit/realtime/test_websocket_handler_core.py`
+- `server/tests/unit/realtime/test_websocket_handler_help.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (94%)
-- INFERRED: 2 (6%)
+- EXTRACTED: 45 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

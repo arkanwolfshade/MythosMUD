@@ -1,28 +1,24 @@
 # Archive Planning Cursor
 
-> 7 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **generate_unique_codes()** (5 connections) — `tools/invite_tools/generate_invites.py`
-- **generate_invites.py** (4 connections) — `tools/invite_tools/generate_invites.py`
-- **generate_invite_code()** (3 connections) — `tools/invite_tools/generate_invites.py`
-- **main()** (3 connections) — `tools/invite_tools/generate_invites.py`
-- **Generate a unique Mythos-themed invite code.** (1 connections) — `tools/invite_tools/generate_invites.py`
-- **Generate a list of unique invite codes and store them in the database.** (1 connections) — `tools/invite_tools/generate_invites.py`
-- **Generate invite codes and store them in the database.** (1 connections) — `tools/invite_tools/generate_invites.py`
+- **test_get_stats()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test get_stats() returns comprehensive statistics.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Relationships
 
-- [Combat Domain Events](Combat_Domain_Events.md) (2 shared connections)
+- [Room Subscription Helpers](Room_Subscription_Helpers.md) (1 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/invite_tools/generate_invites.py`
+- `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

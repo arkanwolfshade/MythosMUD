@@ -1,63 +1,49 @@
 # Container Repository CRUD
 
-> 45 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **get_username_from_user()** (50 connections) — `server/utils/command_helpers.py`
-- **teach_command.py** (15 connections) — `server/commands/teach_command.py`
-- **handle_teach_command()** (14 connections) — `server/commands/teach_command.py`
-- **test_teach_command.py** (6 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **Any** (5 connections)
-- **_get_teach_services()** (4 connections) — `server/commands/teach_command.py`
-- **_resolve_npc_teacher()** (4 connections) — `server/commands/teach_command.py`
-- **_username_from_dict()** (4 connections) — `server/utils/command_helpers.py`
-- **_format_teach_result()** (3 connections) — `server/commands/teach_command.py`
-- **test_handle_teach_command()** (3 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_no_target()** (3 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_get_username_from_user_player_object()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_username_attribute()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_name_attribute()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_dict_username()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_dict_name()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_invalid()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_empty_dict()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_none()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_priority_player_over_username()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_with_name()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
-- **test_get_username_from_user_with_username()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
-- **test_get_username_from_user_dict()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
-- **Any** (2 connections)
-- *... and 20 more nodes in this community*
+- **UsernameAuthenticationBackend** (11 connections) — `server/auth/users.py`
+- **get_username_auth_backend()** (9 connections) — `server/auth/users.py`
+- **.parse_id()** (4 connections) — `server/auth/users.py`
+- **Any** (4 connections)
+- **test_username_authentication_backend_login()** (4 connections) — `server/tests/unit/auth/test_users.py`
+- **test_get_username_auth_backend_returns_username_authentication_backend()** (4 connections) — `server/tests/unit/auth/test_users.py`
+- **test_username_authentication_backend_init()** (4 connections) — `server/tests/unit/auth/test_users.py`
+- **.__init__()** (3 connections) — `server/auth/users.py`
+- **.login()** (3 connections) — `server/auth/users.py`
+- **test_get_username_auth_backend()** (3 connections) — `server/tests/unit/auth/test_users.py`
+- **test_get_username_auth_backend_jwt_strategy_uses_env_var()** (3 connections) — `server/tests/unit/auth/test_users.py`
+- **test_get_username_auth_backend_jwt_strategy_default_secret()** (3 connections) — `server/tests/unit/auth/test_users.py`
+- **AuthenticationBackend** (2 connections)
+- **Parse a value into a UUID instance.** (1 connections) — `server/auth/users.py`
+- **Custom authentication backend that uses username instead of email.** (1 connections) — `server/auth/users.py`
+- **Custom login that uses username.** (1 connections) — `server/auth/users.py`
+- **Get username-based authentication backend configuration.** (1 connections) — `server/auth/users.py`
+- **Test getting username-based authentication backend.** (1 connections) — `server/tests/unit/auth/test_users.py`
+- **Test UsernameAuthenticationBackend login method.** (1 connections) — `server/tests/unit/auth/test_users.py`
+- **Test that get_username_auth_backend returns UsernameAuthenticationBackend.** (1 connections) — `server/tests/unit/auth/test_users.py`
+- **Test that get_username_auth_backend uses environment variable for JWT secret.** (1 connections) — `server/tests/unit/auth/test_users.py`
+- **Test that get_username_auth_backend uses default secret when env var not set.** (1 connections) — `server/tests/unit/auth/test_users.py`
+- **Test UsernameAuthenticationBackend initialization.** (1 connections) — `server/tests/unit/auth/test_users.py`
 
 ## Relationships
 
-- [WebSocket Handler Helpers](WebSocket_Handler_Helpers.md) (16 shared connections)
-- [Client Event Store](Client_Event_Store.md) (8 shared connections)
-- [Chat NATS Publisher](Chat_NATS_Publisher.md) (7 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (3 shared connections)
-- [Admin Teleport Commands](Admin_Teleport_Commands.md) (3 shared connections)
-- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (3 shared connections)
-- [Player Event Handler Tests](Player_Event_Handler_Tests.md) (3 shared connections)
-- [Logging Migration Examples](Logging_Migration_Examples.md) (2 shared connections)
-- [Legacy Error Sanitization](Legacy_Error_Sanitization.md) (2 shared connections)
-- [MP Regeneration Service](MP_Regeneration_Service.md) (2 shared connections)
-- [Plan Modernization Archive](Plan_Modernization_Archive.md) (1 shared connections)
-- [Player State Factories](Player_State_Factories.md) (1 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (11 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (4 shared connections)
+- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (2 shared connections)
+- [Error Monitor Service](Error_Monitor_Service.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/teach_command.py`
-- `server/tests/unit/commands/test_teach_command.py`
-- `server/tests/unit/utils/test_command_helpers.py`
-- `server/tests/unit/utils/test_command_helpers_functions.py`
-- `server/utils/command_helpers.py`
+- `server/auth/users.py`
+- `server/tests/unit/auth/test_users.py`
 
 ## Audit Trail
 
-- EXTRACTED: 138 (80%)
-- INFERRED: 34 (20%)
+- EXTRACTED: 62 (93%)
+- INFERRED: 5 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

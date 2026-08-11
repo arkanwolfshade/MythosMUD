@@ -2,7 +2,7 @@
 
 > God node · 540 connections · `server/exceptions.py`
 
-**Community:** [Command Parser Helpers](Command_Parser_Helpers.md)
+**Community:** [Spell Registry Costs](Spell_Registry_Costs.md)
 
 ## Connections by Relation
 

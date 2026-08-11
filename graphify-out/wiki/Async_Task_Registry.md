@@ -23,13 +23,14 @@
 
 ## Relationships
 
+- [Container Component Capacity](Container_Component_Capacity.md) (5 shared connections)
 - [Container Inventory Finders](Container_Inventory_Finders.md) (4 shared connections)
-- [Character Creation Service](Character_Creation_Service.md) (3 shared connections)
-- [Container Component Capacity](Container_Component_Capacity.md) (3 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (2 shared connections)
-- [Admin NPC Schemas](Admin_NPC_Schemas.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
-- [Cache and NPC Cache](Cache_and_NPC_Cache.md) (1 shared connections)
+- [Container Open Events](Container_Open_Events.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (1 shared connections)
+- [Client Lifecycle Metrics](Client_Lifecycle_Metrics.md) (1 shared connections)
+- [Grace Period Blocking Tests](Grace_Period_Blocking_Tests.md) (1 shared connections)
 
 ## Source Files
 

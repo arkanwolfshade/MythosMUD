@@ -1,57 +1,52 @@
 # React Node Upgrade Summary
 
-> 53 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **SchemaValidator** (29 connections) — `schemas/validator.py`
-- **.get_player_aliases()** (8 connections) — `server/alias_storage.py`
-- **Any** (7 connections)
-- **._get_alias_file_path()** (7 connections) — `server/alias_storage.py`
-- **.save_player_aliases()** (7 connections) — `server/alias_storage.py`
-- **._validate_alias_payload()** (7 connections) — `server/alias_storage.py`
-- **.validate_data()** (6 connections) — `schemas/validator.py`
-- **.validate_room()** (6 connections) — `schemas/validator.py`
-- **._load_alias_data()** (6 connections) — `server/alias_storage.py`
-- **._save_alias_data()** (6 connections) — `server/alias_storage.py`
-- **.add_alias()** (6 connections) — `server/alias_storage.py`
-- **Path** (5 connections)
-- **.__init__()** (4 connections) — `schemas/validator.py`
-- **.validate_room_file()** (4 connections) — `schemas/validator.py`
-- **.validate_room_database()** (4 connections) — `schemas/validator.py`
-- **.validate_alias_bundle()** (4 connections) — `schemas/validator.py`
-- **.validate_emote_file()** (4 connections) — `schemas/validator.py`
+- **validate_room_data()** (16 connections) — `server/world_loader.py`
+- **get_room_environment()** (13 connections) — `server/world_loader.py`
+- **TestGetRoomEnvironment** (12 connections) — `server/tests/unit/test_world_loader.py`
+- **TestValidateRoomData** (11 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_strict_validation_raises()** (4 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_validation_exception_strict()** (4 connections) — `server/tests/unit/test_world_loader.py`
 - **Any** (4 connections)
-- **.remove_alias()** (4 connections) — `server/alias_storage.py`
-- **.get_alias()** (4 connections) — `server/alias_storage.py`
-- **.backup_aliases()** (4 connections) — `server/alias_storage.py`
-- **._load_schema()** (3 connections) — `schemas/validator.py`
-- **Path** (3 connections)
-- **.get_exit_target()** (3 connections) — `schemas/validator.py`
-- **.get_exit_flags()** (3 connections) — `schemas/validator.py`
-- *... and 28 more nodes in this community*
+- **.test_get_room_environment_from_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_from_subzone()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_from_zone()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_default()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_room_takes_priority()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_subzone_takes_priority_over_zone()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_subzone_none()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_zone_none()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_empty_string_in_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_validation_not_available()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_with_validator()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_creates_validator()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_with_errors()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_validator_creation_fails()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_validation_exception()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **SchemaValidator** (3 connections)
+- **Test get_room_environment() function.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test get_room_environment() returns room-specific environment.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [Player Schema Converter](Player_Schema_Converter.md) (16 shared connections)
-- [Client Event Store](Client_Event_Store.md) (5 shared connections)
-- [Health Endpoint Spec](Health_Endpoint_Spec.md) (4 shared connections)
-- [Alias Expansion Logic](Alias_Expansion_Logic.md) (4 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (2 shared connections)
-- [Room Schema Validator](Room_Schema_Validator.md) (2 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
-- [Room Fixer Toolkit](Room_Fixer_Toolkit.md) (1 shared connections)
-- [Alias Storage Services](Alias_Storage_Services.md) (1 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (7 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (6 shared connections)
+- [Async Persistence Types](Async_Persistence_Types.md) (3 shared connections)
+- [NPC Definition Admin API](NPC_Definition_Admin_API.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/validator.py`
-- `server/alias_storage.py`
+- `server/tests/unit/test_world_loader.py`
+- `server/world_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 169 (93%)
-- INFERRED: 13 (7%)
+- EXTRACTED: 124 (93%)
+- INFERRED: 9 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

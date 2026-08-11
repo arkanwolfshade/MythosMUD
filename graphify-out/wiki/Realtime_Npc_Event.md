@@ -1,35 +1,39 @@
 # Realtime Npc Event
 
-> 10 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **.check_normalized_ids_match()** (5 connections) — `server/realtime/room_id_utils.py`
-- **.check_normalized_room_matches()** (5 connections) — `server/realtime/room_id_utils.py`
-- **test_check_normalized_ids_match()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **test_check_normalized_ids_match_none()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **test_check_normalized_room_matches()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **Check if two normalized room IDs match.          Args:             id1: First no** (1 connections) — `server/realtime/room_id_utils.py`
-- **Check if normalized NPC room IDs match normalized target room IDs.          Args** (1 connections) — `server/realtime/room_id_utils.py`
-- **Test check_normalized_ids_match returns True for matching IDs.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **Test check_normalized_ids_match returns False when either ID is None.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **Test check_normalized_room_matches checks all combinations.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **GameStatusResponse** (9 connections) — `server/schemas/game/game.py`
+- **BroadcastMessageResponse** (9 connections) — `server/schemas/game/game.py`
+- **__init__.py** (7 connections) — `server/schemas/game/__init__.py`
+- **game.py** (7 connections) — `server/schemas/game/game.py`
+- **BroadcastStats** (6 connections) — `server/schemas/game/game.py`
+- **BaseModel** (4 connections)
+- **Game domain schemas: status, broadcast, Mythos time.** (1 connections) — `server/schemas/game/__init__.py`
+- **Game API response schemas for MythosMUD server.  This module provides Pydantic m** (1 connections) — `server/schemas/game/game.py`
+- **Response model for game status endpoint.** (1 connections) — `server/schemas/game/game.py`
+- **Statistics for a broadcast operation.** (1 connections) — `server/schemas/game/game.py`
+- **Response model for broadcast message endpoint.** (1 connections) — `server/schemas/game/game.py`
 
 ## Relationships
 
-- [Archive Effects System](Archive_Effects_System.md) (3 shared connections)
-- [NATS Retry Handler](NATS_Retry_Handler.md) (2 shared connections)
-- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (4 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (3 shared connections)
+- [Chat Panel Filtering](Chat_Panel_Filtering.md) (3 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
+- [Quality Audit Report](Quality_Audit_Report.md) (3 shared connections)
+- [Spell Effects Tests](Spell_Effects_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/room_id_utils.py`
-- `server/tests/unit/realtime/test_room_id_utils.py`
+- `server/schemas/game/__init__.py`
+- `server/schemas/game/game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 45 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

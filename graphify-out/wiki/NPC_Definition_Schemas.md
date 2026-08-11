@@ -30,9 +30,12 @@
 
 ## Relationships
 
-- [Communication Command Flows](Communication_Command_Flows.md) (11 shared connections)
-- [E 2 E Di Migration](E_2_E_Di_Migration.md) (2 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (5 shared connections)
+- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (3 shared connections)
 - [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [E 2 E Di Migration](E_2_E_Di_Migration.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Command Parser Tests](Command_Parser_Tests.md) (1 shared connections)
 
 ## Source Files
 

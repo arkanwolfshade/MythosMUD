@@ -1,63 +1,52 @@
 # Follow Service Tests
 
-> 28 nodes
+> 57 nodes
 
 ## Key Concepts
 
-- **useGameConnectionRefactored.ts** (18 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
-- **useGameConnection()** (12 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
-- **useConnectionStateMachine.ts** (8 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **useConnectionState.ts** (7 connections) — `client/src/hooks/useConnectionState.ts`
-- **useSessionManagement.ts** (7 connections) — `client/src/hooks/useSessionManagement.ts`
-- **useGameConnection.ts** (5 connections) — `client/src/hooks/useGameConnection.ts`
-- **useConnectionState()** (4 connections) — `client/src/hooks/useConnectionState.ts`
-- **connectionMachine** (4 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **useGameConnection.test.ts** (4 connections) — `client/src/hooks/useGameConnection.test.ts`
-- **useSessionManagement()** (4 connections) — `client/src/hooks/useSessionManagement.ts`
-- **useGameConnection.export.test.ts** (3 connections) — `client/src/hooks/__tests__/useGameConnection.export.test.ts`
-- **ConnectionContext** (3 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **UseGameConnectionOptions** (3 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
-- **useConnectionState.test.ts** (2 connections) — `client/src/hooks/__tests__/useConnectionState.test.ts`
-- **useConnectionStateMachine.test.ts** (2 connections) — `client/src/hooks/__tests__/useConnectionStateMachine.test.ts`
-- **useSessionManagement.test.ts** (2 connections) — `client/src/hooks/__tests__/useSessionManagement.test.ts`
-- **UseConnectionStateResult** (2 connections) — `client/src/hooks/useConnectionState.ts`
-- **useConnectionStateMachine.test.ts** (2 connections) — `client/src/hooks/useConnectionStateMachine.test.ts`
-- **generateSecureSessionId()** (2 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
-- **ConnectionState** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **ConnectionEvent** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **ConnectionMachineInput** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **mockWebSocket** (1 connections) — `client/src/hooks/useGameConnection.test.ts`
-- **NOTE: JWT tokens are passed via query string, not subprotocol, because JWT conta** (1 connections) — `client/src/hooks/useGameConnection.test.ts`
-- **GameEvent** (1 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
-- *... and 3 more nodes in this community*
+- **test_connection_statistics.py** (24 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **validate_player_presence_impl()** (11 connections) — `server/realtime/connection_statistics.py`
+- **get_online_player_by_display_name_impl()** (10 connections) — `server/realtime/connection_statistics.py`
+- **get_player_presence_info_impl()** (9 connections) — `server/realtime/connection_statistics.py`
+- **get_session_stats_impl()** (9 connections) — `server/realtime/connection_statistics.py`
+- **get_presence_statistics_impl()** (8 connections) — `server/realtime/connection_statistics.py`
+- **.get_player_presence_info()** (5 connections) — `server/realtime/connection_manager.py`
+- **.validate_player_presence()** (5 connections) — `server/realtime/connection_manager.py`
+- **Any** (5 connections)
+- **.get_session_stats()** (4 connections) — `server/realtime/connection_manager.py`
+- **.get_presence_statistics()** (4 connections) — `server/realtime/connection_manager.py`
+- **.get_online_player_by_display_name()** (4 connections) — `server/realtime/connection_manager.py`
+- **test_get_player_presence_info_impl_not_online()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_get_player_presence_info_impl_online()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_get_player_presence_info_impl_no_websockets()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_validate_player_presence_impl_consistent()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_validate_player_presence_impl_online_but_no_connections()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_validate_player_presence_impl_connections_but_not_online()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_validate_player_presence_impl_connection_count_mismatch()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_validate_player_presence_impl_error()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_get_presence_statistics_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_get_presence_statistics_impl_no_players()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_get_online_player_by_display_name_impl_found()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_get_online_player_by_display_name_impl_case_insensitive()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_get_online_player_by_display_name_impl_not_found()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (4 shared connections)
-- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (3 shared connections)
-- [Communication Command Handlers](Communication_Command_Handlers.md) (2 shared connections)
-- [Realtime Event Handlers](Realtime_Event_Handlers.md) (2 shared connections)
-- [Combat Messaging Integration](Combat_Messaging_Integration.md) (1 shared connections)
-- [Cursor Bug Agents](Cursor_Bug_Agents.md) (1 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (12 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (6 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (5 shared connections)
 
 ## Source Files
 
-- `client/src/hooks/__tests__/useConnectionState.test.ts`
-- `client/src/hooks/__tests__/useConnectionStateMachine.test.ts`
-- `client/src/hooks/__tests__/useGameConnection.export.test.ts`
-- `client/src/hooks/__tests__/useSessionManagement.test.ts`
-- `client/src/hooks/useConnectionState.ts`
-- `client/src/hooks/useConnectionStateMachine.test.ts`
-- `client/src/hooks/useConnectionStateMachine.ts`
-- `client/src/hooks/useGameConnection.test.ts`
-- `client/src/hooks/useGameConnection.ts`
-- `client/src/hooks/useGameConnectionRefactored.ts`
-- `client/src/hooks/useSessionManagement.ts`
+- `server/realtime/connection_manager.py`
+- `server/realtime/connection_statistics.py`
+- `server/tests/unit/realtime/test_connection_statistics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 102 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 177 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

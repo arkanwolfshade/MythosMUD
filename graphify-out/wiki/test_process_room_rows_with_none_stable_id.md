@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_handle_nats_message_success_path_metrics()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _handle_nats_message records metrics on successful processing.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_profession_get_mechanical_effects_valid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test get_mechanical_effects returns dict for valid JSON.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
+- [Cursor Plans Login](Cursor_Plans_Login.md) (1 shared connections)
+- [Profession Get Mechanical Effects](Profession_Get_Mechanical_Effects.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,61 +1,75 @@
 # Logout and Quit Commands
 
-> 26 nodes
+> 55 nodes
 
 ## Key Concepts
 
-- **player_respawn.py** (25 connections) — `server/api/player_respawn.py`
-- **test_player_respawn_handlers.py** (14 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **_handle_delirium_respawn_validation_error()** (12 connections) — `server/api/player_respawn.py`
-- **_handle_respawn_validation_error()** (11 connections) — `server/api/player_respawn.py`
-- **_run_player_respawn()** (10 connections) — `server/api/player_respawn.py`
-- **RespawnResponse** (9 connections) — `server/schemas/players/player_respawn.py`
-- **respawn_player_from_delirium()** (8 connections) — `server/api/player_respawn.py`
-- **respawn_player()** (8 connections) — `server/api/player_respawn.py`
-- **_user()** (8 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **Request** (5 connections)
-- **test_handle_respawn_validation_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_respawn_validation_must_be_dead()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_respawn_validation_generic_500()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_must_be_delirious()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_lucidity_keyword()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_generic_500()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **ValidationError** (2 connections)
-- **Any** (1 connections)
-- **Player respawn API endpoints.  This module handles endpoints for respawning play** (1 connections) — `server/api/player_respawn.py`
-- **Convert ValidationError to appropriate HTTPException for respawn.      Args:** (1 connections) — `server/api/player_respawn.py`
-- **Convert ValidationError to appropriate HTTPException for delirium respawn.** (1 connections) — `server/api/player_respawn.py`
-- **Execute a respawn service call inside a DB session with shared error handling.** (1 connections) — `server/api/player_respawn.py`
-- **Respawn a delirious player at the Sanitarium with restored lucidity.      This e** (1 connections) — `server/api/player_respawn.py`
-- **Respawn a dead player at their respawn location with full DP.      This endpoint** (1 connections) — `server/api/player_respawn.py`
-- *... and 1 more nodes in this community*
+- **GameClientV2.tsx** (52 connections) — `client/src/components/ui-v2/GameClientV2.tsx`
+- **GameInfoPanel.tsx** (17 connections) — `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
+- **GameClientV2Dock.test.tsx** (13 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **QuestLogPanel.tsx** (9 connections) — `client/src/components/ui-v2/panels/QuestLogPanel.tsx`
+- **panelLayout.ts** (9 connections) — `client/src/components/ui-v2/utils/panelLayout.ts`
+- **createDefaultPanelLayout()** (8 connections) — `client/src/components/ui-v2/utils/panelLayout.ts`
+- **GameClientV2Content()** (7 connections) — `client/src/components/ui-v2/GameClientV2.tsx`
+- **OccupantsPanel.tsx** (7 connections) — `client/src/components/ui-v2/panels/OccupantsPanel.tsx`
+- **LocationPanel.tsx** (6 connections) — `client/src/components/ui-v2/panels/LocationPanel.tsx`
+- **RoomDescriptionPanel.tsx** (6 connections) — `client/src/components/ui-v2/panels/RoomDescriptionPanel.tsx`
+- **deriveHealthStatusFromPlayer()** (6 connections) — `client/src/types/health.ts`
+- **GameClientV2()** (5 connections) — `client/src/components/ui-v2/GameClientV2.tsx`
+- **GameInfoPanel()** (5 connections) — `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
+- **mockPanelRecord()** (4 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **GameInfoPanel.test.tsx** (4 connections) — `client/src/components/ui-v2/panels/__tests__/GameInfoPanel.test.tsx`
+- **LocationPanel.test.tsx** (4 connections) — `client/src/components/ui-v2/panels/__tests__/LocationPanel.test.tsx`
+- **OccupantsPanel.test.tsx** (4 connections) — `client/src/components/ui-v2/panels/__tests__/OccupantsPanel.test.tsx`
+- **RoomDescriptionPanel.test.tsx** (4 connections) — `client/src/components/ui-v2/panels/__tests__/RoomDescriptionPanel.test.tsx`
+- **TentacleBackdrop.tsx** (3 connections) — `client/src/components/ui-v2/TentacleBackdrop.tsx`
+- **TentacleBackdrop()** (3 connections) — `client/src/components/ui-v2/TentacleBackdrop.tsx`
+- **mockUsePanelManagerValue()** (3 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **chatMessageVisibleInGameInfo()** (3 connections) — `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
+- **LocationPanel()** (3 connections) — `client/src/components/ui-v2/panels/LocationPanel.tsx`
+- **OccupantsPanel()** (3 connections) — `client/src/components/ui-v2/panels/OccupantsPanel.tsx`
+- **RoomDescriptionPanel()** (3 connections) — `client/src/components/ui-v2/panels/RoomDescriptionPanel.tsx`
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (12 shared connections)
-- [Client Event Store](Client_Event_Store.md) (9 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (9 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (6 shared connections)
-- [Disconnect Grace Period](Disconnect_Grace_Period.md) (3 shared connections)
-- [Combat Command Handler](Combat_Command_Handler.md) (2 shared connections)
-- [Profession Get Mechanical Effects](Profession_Get_Mechanical_Effects.md) (2 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (2 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
-- [Player Domain Model](Player_Domain_Model.md) (1 shared connections)
-- [Panel Layout Libraries Spec](Panel_Layout_Libraries_Spec.md) (1 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Communication Command Handlers](Communication_Command_Handlers.md) (25 shared connections)
+- [API Test Fixtures](API_Test_Fixtures.md) (22 shared connections)
+- [Async Room Loading Tests](Async_Room_Loading_Tests.md) (5 shared connections)
+- [Command Input Validator](Command_Input_Validator.md) (5 shared connections)
+- [Combat Messaging Integration](Combat_Messaging_Integration.md) (3 shared connections)
+- [Magic System Feature Plan](Magic_System_Feature_Plan.md) (3 shared connections)
+- [Holidays JSON Schema](Holidays_JSON_Schema.md) (3 shared connections)
+- [Character Stats Model](Character_Stats_Model.md) (2 shared connections)
+- [Commands System Help](Commands_System_Help.md) (2 shared connections)
+- [Game Terminal Container](Game_Terminal_Container.md) (2 shared connections)
+- [Fresh Session Test Guide](Fresh_Session_Test_Guide.md) (2 shared connections)
+- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/player_respawn.py`
-- `server/schemas/players/player_respawn.py`
-- `server/tests/unit/api/test_player_respawn_handlers.py`
+- `client/src/components/ui-v2/GameClientV2.tsx`
+- `client/src/components/ui-v2/TentacleBackdrop.tsx`
+- `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- `client/src/components/ui-v2/__tests__/TentacleBackdrop.test.tsx`
+- `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
+- `client/src/components/ui-v2/panels/LocationPanel.tsx`
+- `client/src/components/ui-v2/panels/OccupantsPanel.tsx`
+- `client/src/components/ui-v2/panels/QuestLogPanel.tsx`
+- `client/src/components/ui-v2/panels/RoomDescriptionPanel.tsx`
+- `client/src/components/ui-v2/panels/__tests__/GameInfoPanel.test.tsx`
+- `client/src/components/ui-v2/panels/__tests__/LocationPanel.test.tsx`
+- `client/src/components/ui-v2/panels/__tests__/OccupantsPanel.test.tsx`
+- `client/src/components/ui-v2/panels/__tests__/RoomDescriptionPanel.test.tsx`
+- `client/src/components/ui-v2/utils/__tests__/panelLayout.test.ts`
+- `client/src/components/ui-v2/utils/panelLayout.ts`
+- `client/src/types/health.ts`
+- `client/src/types/lucidity.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 144 (93%)
-- INFERRED: 11 (7%)
+- EXTRACTED: 239 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

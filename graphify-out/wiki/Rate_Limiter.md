@@ -19,8 +19,8 @@
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Command Parser](Command_Parser.md) (1 shared connections)
 
 ## Source Files
 

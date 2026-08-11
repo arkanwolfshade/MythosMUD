@@ -1,55 +1,72 @@
 # Tailwind UI Migration Plan
 
-> 22 nodes
+> 197 nodes
 
 ## Key Concepts
 
+- **BaseEvent** (75 connections) — `server/events/event_types.py`
+- **event_types.py** (74 connections) — `server/events/event_types.py`
+- **PlayerEnteredRoom** (68 connections) — `server/events/event_types.py`
 - **test_event_bus.py** (45 connections) — `server/tests/unit/events/test_event_bus.py`
-- **event_bus()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_init()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_shutdown()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_shutdown_idempotent()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_subscribe_invalid_event_type()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_publish_invalid_event()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_stop_processing_not_running()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_ensure_processing_started()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_unsubscribe_all_for_service_nonexistent()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_multiple_services_subscribe_same_events_integration()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Unit tests for event bus.  Tests the EventBus class.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Create an EventBus instance.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus initialization.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.shutdown() stops processing.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.shutdown() is idempotent.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test subscribe() raises error for invalid event type.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test publish() raises error for invalid event.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test _stop_processing() when not running.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test _ensure_processing_started() calls _ensure_async_processing.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.unsubscribe_all_for_service() with nonexistent service_id.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Integration test: Multiple services subscribing to same events and cleanup.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **event_bus.py** (29 connections) — `server/events/event_bus.py`
+- **MockEventClass** (29 connections) — `server/tests/unit/events/test_event_bus.py`
+- **NATSEventBusBridge** (16 connections) — `server/events/nats_event_bridge.py`
+- **event_serialization.py** (15 connections) — `server/events/event_serialization.py`
+- **test_event_serialization.py** (15 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **serialize_event()** (14 connections) — `server/events/event_serialization.py`
+- **deserialize_event()** (14 connections) — `server/events/event_serialization.py`
+- **._subscribe_to_events()** (14 connections) — `server/npc/event_reaction_system.py`
+- **tick_scheduler.py** (14 connections) — `server/time/tick_scheduler.py`
+- **nats_event_bridge.py** (13 connections) — `server/events/nats_event_bridge.py`
+- **test_follow_flow.py** (13 connections) — `server/tests/integration/test_follow_flow.py`
+- **__init__.py** (11 connections) — `server/events/__init__.py`
+- **NPCSpoke** (11 connections) — `server/events/event_types.py`
+- **NPCListened** (11 connections) — `server/events/event_types.py`
+- **communication_integration.py** (11 connections) — `server/npc/communication_integration.py`
+- **distributed_event_bus.py** (10 connections) — `server/events/distributed_event_bus.py`
+- **ObjectAddedToRoom** (9 connections) — `server/events/event_types.py`
+- **ObjectRemovedFromRoom** (9 connections) — `server/events/event_types.py`
+- **NPCTookDamage** (8 connections) — `server/events/event_types.py`
+- **test_nats_event_bridge.py** (7 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
+- **Any** (6 connections)
+- *... and 172 more nodes in this community*
 
 ## Relationships
 
-- [Services Rescue Service](Services_Rescue_Service.md) (8 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (5 shared connections)
-- [CleanupContext](CleanupContext.md) (1 shared connections)
-- [Game Quest Service](Game_Quest_Service.md) (1 shared connections)
-- [.prune_stale_players](prune_stale_players.md) (1 shared connections)
-- [Archive Combat Health](Archive_Combat_Health.md) (1 shared connections)
-- [Nats Subject Patterns](Nats_Subject_Patterns_2.md) (1 shared connections)
-- [.check_and_cleanup](check_and_cleanup.md) (1 shared connections)
-- [test_setup_player_and_room_no_player](test_setup_player_and_room_no_player.md) (1 shared connections)
-- [Services Player Respawn](Services_Player_Respawn.md) (1 shared connections)
-- [Persistence Async Migration](Persistence_Async_Migration.md) (1 shared connections)
-- [E 2 E Remaining Work](E_2_E_Remaining_Work.md) (1 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (43 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (28 shared connections)
+- [Combat Aggro Threat](Combat_Aggro_Threat.md) (21 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (19 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (15 shared connections)
+- [Application Config Settings](Application_Config_Settings.md) (14 shared connections)
+- [Client Event Store](Client_Event_Store.md) (9 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (9 shared connections)
+- [Game Chat Moderation](Game_Chat_Moderation.md) (9 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (7 shared connections)
+- [Lucidity Database Models](Lucidity_Database_Models.md) (7 shared connections)
+- [Health Check Models](Health_Check_Models.md) (6 shared connections)
 
 ## Source Files
 
+- `server/events/__init__.py`
+- `server/events/distributed_event_bus.py`
+- `server/events/event_bus.py`
+- `server/events/event_serialization.py`
+- `server/events/event_types.py`
+- `server/events/nats_event_bridge.py`
+- `server/npc/communication_integration.py`
+- `server/npc/event_reaction_system.py`
+- `server/tests/integration/test_follow_flow.py`
 - `server/tests/unit/events/test_event_bus.py`
+- `server/tests/unit/events/test_event_serialization.py`
+- `server/tests/unit/events/test_nats_event_bridge.py`
+- `server/tests/unit/realtime/test_event_handler.py`
+- `server/time/tick_scheduler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 77 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 778 (88%)
+- INFERRED: 103 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

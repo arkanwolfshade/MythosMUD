@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_end_turn_monitoring_not_found()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **Test end_turn_monitoring when turn not found.** (1 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_create_whisper_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_whisper_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [Rate Limiter Service](Rate_Limiter_Service.md) (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_monitoring_service.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 

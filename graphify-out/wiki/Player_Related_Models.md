@@ -1,49 +1,54 @@
 # Player Related Models
 
-> 36 nodes
+> 115 nodes
 
 ## Key Concepts
 
+- **CombatConfiguration** (31 connections) — `server/services/combat_configuration_service.py`
 - **TestCombatConfigurationService** (26 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.service()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_for_scope_global()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_for_scope_room()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_for_scope_player()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_for_scope_temporary()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_configuration_custom()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.mock_config()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_init()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_caching()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_update_combat_configuration()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_clear_scope_override()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_clear_all_overrides()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_active_overrides()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_configuration()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_is_combat_available()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_is_combat_available_with_override()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test suite for CombatConfigurationService class.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Create a mock config object.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Create a CombatConfigurationService instance for testing.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test CombatConfigurationService initialization.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test get_combat_configuration returns configuration.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test get_combat_configuration caches configuration.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test get_combat_configuration_for_scope with global scope.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- *... and 11 more nodes in this community*
+- **CombatConfigurationService** (19 connections) — `server/services/combat_configuration_service.py`
+- **TestCombatConfiguration** (19 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **combat_configuration_service.py** (17 connections) — `server/services/combat_configuration_service.py`
+- **CombatConfigurationError** (11 connections) — `server/services/combat_configuration_service.py`
+- **.update_combat_configuration()** (10 connections) — `server/services/combat_configuration_service.py`
+- **CombatConfigurationScope** (9 connections) — `server/services/combat_configuration_service.py`
+- **test_combat_configuration_service.py** (8 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.to_dict()** (7 connections) — `server/services/combat_configuration_service.py`
+- **.get_combat_configuration_for_scope()** (7 connections) — `server/services/combat_configuration_service.py`
+- **.validate_configuration()** (7 connections) — `server/services/combat_configuration_service.py`
+- **.get_combat_settings_summary()** (7 connections) — `server/services/combat_configuration_service.py`
+- **get_combat_configuration()** (7 connections) — `server/services/combat_configuration_service.py`
+- **Any** (5 connections)
+- **.from_dict()** (5 connections) — `server/services/combat_configuration_service.py`
+- **.get_active_overrides()** (5 connections) — `server/services/combat_configuration_service.py`
+- **.is_combat_available()** (5 connections) — `server/services/combat_configuration_service.py`
+- **.validate()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.__init__()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.get_combat_configuration()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.clear_scope_override()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.test_init_defaults()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_init_custom_values()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_to_dict()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- *... and 90 more nodes in this community*
 
 ## Relationships
 
-- [Test Value Distribution](Test_Value_Distribution.md) (9 shared connections)
-- [NPC Room Event Handlers](NPC_Room_Event_Handlers.md) (6 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (3 shared connections)
+- [Invite Registration Model](Invite_Registration_Model.md) (3 shared connections)
+- [Command Parser](Command_Parser.md) (2 shared connections)
+- [UI Animation Testing Standards](UI_Animation_Testing_Standards.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Combat Monitoring Service](Combat_Monitoring_Service.md) (1 shared connections)
 
 ## Source Files
 
+- `server/services/combat_configuration_service.py`
 - `server/tests/unit/services/test_combat_configuration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 76 (89%)
-- INFERRED: 9 (11%)
+- EXTRACTED: 341 (91%)
+- INFERRED: 32 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

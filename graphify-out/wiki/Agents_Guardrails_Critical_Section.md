@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **test_should_idle_move_probability_check()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test should_idle_move() respects movement probability (random > threshold fails)** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_soft_delete_character_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test soft_delete_character() when player not found.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 
 ## Relationships
 
-- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
-- [NPC Movement Integration](NPC_Movement_Integration.md) (1 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (1 shared connections)
+- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

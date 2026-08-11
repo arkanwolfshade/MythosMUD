@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_player_movement_different_subzone()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test handle_player_movement handles movement to different subzone.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_create_spawn_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_spawn_command produces NPCCommand for npc spawn subcommand.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [Connection State Hooks](Connection_State_Hooks.md) (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 

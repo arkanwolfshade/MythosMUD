@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_player_attack_on_npc_with_existing_combat()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **Test handle_player_attack_on_npc queues action when combat exists.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **mock_config()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Create a mock config with chat rate limits.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [Combat Disconnect Bug](Combat_Disconnect_Bug.md) (1 shared connections)
+- [Postgresql Anti Patterns](Postgresql_Anti_Patterns.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 

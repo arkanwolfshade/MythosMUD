@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_player_attack_on_npc_login_grace_period_blocked()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **Test handle_player_attack_on_npc blocks attack when player is in login grace per** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_log_audit_event()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **Test _log_audit_event logs event.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Relationships
 
-- [Combat Disconnect Bug](Combat_Disconnect_Bug.md) (1 shared connections)
+- [Player Model Inventory](Player_Model_Inventory.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Audit Trail
 

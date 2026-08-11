@@ -1,34 +1,38 @@
 # Security Issues And Fixes
 
-> 13 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **_safe_extract.py** (8 connections) — `docs/investigations/_safe_extract.py`
-- **find_func()** (6 connections) — `docs/investigations/_safe_extract.py`
-- **process_file()** (6 connections) — `docs/investigations/_safe_extract.py`
-- **lizard_warns()** (4 connections) — `docs/investigations/_safe_extract.py`
-- **split_long_impl()** (4 connections) — `docs/investigations/_safe_extract.py`
-- **main()** (4 connections) — `docs/investigations/_safe_extract.py`
-- **Path** (3 connections)
-- **wrap_once()** (3 connections) — `docs/investigations/_safe_extract.py`
-- **AST** (2 connections)
-- **FunctionDef** (1 connections)
-- **AsyncFunctionDef** (1 connections)
-- **One-shot body extract: wrap long funcs; never nest; split long impls by mid stat** (1 connections) — `docs/investigations/_safe_extract.py`
-- **Move a middle chunk of statements into a sibling helper.** (1 connections) — `docs/investigations/_safe_extract.py`
+- **._unwrap_string_inner_message_if_json()** (7 connections) — `server/realtime/message_validator.py`
+- **.parse_and_validate()** (7 connections) — `server/realtime/message_validator.py`
+- **._parse_outer_json_object()** (6 connections) — `server/realtime/message_validator.py`
+- **.validate_size()** (5 connections) — `server/realtime/message_validator.py`
+- **.validate_schema()** (5 connections) — `server/realtime/message_validator.py`
+- **._extract_csrf_token_string()** (5 connections) — `server/realtime/message_validator.py`
+- **.validate_csrf()** (5 connections) — `server/realtime/message_validator.py`
+- **BaseModel** (2 connections)
+- **Validate message size.          Args:             data: Raw message data as s** (1 connections) — `server/realtime/message_validator.py`
+- **Validate message against Pydantic schema.          Args:             message:** (1 connections) — `server/realtime/message_validator.py`
+- **Return the first string CSRF token from known keys, or None if absent.** (1 connections) — `server/realtime/message_validator.py`
+- **Validate CSRF token in message.          Args:             message: Parsed JS** (1 connections) — `server/realtime/message_validator.py`
+- **Parse raw payload to a dict; validate size and outer JSON structure.** (1 connections) — `server/realtime/message_validator.py`
+- **If ``message["message"]`` is a JSON string, parse and validate inner object.** (1 connections) — `server/realtime/message_validator.py`
+- **Parse and validate a complete WebSocket message.          This is the main ent** (1 connections) — `server/realtime/message_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Database Helper Tests](Database_Helper_Tests.md) (7 shared connections)
+- [Scenario Conversion Guide](Scenario_Conversion_Guide.md) (6 shared connections)
+- [Cursor Plans Best](Cursor_Plans_Best.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/investigations/_safe_extract.py`
+- `server/realtime/message_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
+- EXTRACTED: 49 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -2,7 +2,7 @@
 
 > God node · 434 connections · `server/exceptions.py`
 
-**Community:** [Schemas Maps Map](Schemas_Maps_Map.md)
+**Community:** [Optimization Archive Modernization](Optimization_Archive_Modernization.md)
 
 ## Connections by Relation
 
@@ -35,12 +35,12 @@
 - database.py `EXTRACTED`
 - async_persistence.py `EXTRACTED`
 - players.py `EXTRACTED`
-- connection_manager_methods.py `EXTRACTED`
 - maps.py `EXTRACTED`
 - test_container_persistence.py `EXTRACTED`
 - container_persistence.py `EXTRACTED`
 - test_player_service.py `EXTRACTED`
 - test_container_persistence_extended_row_helpers.py `EXTRACTED`
+- connection_manager_methods.py `EXTRACTED`
 - test_connection_delegates.py `EXTRACTED`
 - test_npc_service.py `EXTRACTED`
 - legacy_error_handlers.py `EXTRACTED`

@@ -13,7 +13,7 @@
 
 ## Relationships
 
-- [Container API Endpoints](Container_API_Endpoints.md) (1 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (1 shared connections)
 
 ## Source Files
 

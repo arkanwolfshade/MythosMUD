@@ -6,9 +6,9 @@
 
 - **test_alias_storage.py** (65 connections) — `server/tests/unit/test_alias_storage.py`
 - **_get_alias_validator()** (8 connections) — `server/alias_storage.py`
+- **alias.py** (6 connections) — `server/models/alias.py`
 - **Path** (6 connections)
 - **alias_storage()** (6 connections) — `server/tests/unit/test_alias_storage.py`
-- **.get_alias_storage()** (4 connections) — `server/realtime/request_context.py`
 - **temp_storage_dir()** (3 connections) — `server/tests/unit/test_alias_storage.py`
 - **test_alias_storage_init_with_storage_dir()** (3 connections) — `server/tests/unit/test_alias_storage.py`
 - **test_alias_storage_init_with_env_var()** (3 connections) — `server/tests/unit/test_alias_storage.py`
@@ -33,23 +33,23 @@
 
 ## Relationships
 
-- [Player Schema Converter](Player_Schema_Converter.md) (7 shared connections)
-- [Alias Expansion Logic](Alias_Expansion_Logic.md) (6 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [WebSocket Auth Integration](WebSocket_Auth_Integration.md) (2 shared connections)
-- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (1 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
+- [Container Open Events](Container_Open_Events.md) (10 shared connections)
+- [Alias Expansion Logic](Alias_Expansion_Logic.md) (7 shared connections)
+- [Async Persistence Types](Async_Persistence_Types.md) (2 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
+- [Command Factory Tests](Command_Factory_Tests.md) (1 shared connections)
+- [Config Model Tests](Config_Model_Tests.md) (1 shared connections)
 
 ## Source Files
 
 - `server/alias_storage.py`
-- `server/realtime/request_context.py`
+- `server/models/alias.py`
 - `server/tests/unit/test_alias_storage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 262 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 265 (99%)
+- INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

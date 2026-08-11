@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [Schemas Maps Map](Schemas_Maps_Map.md) (6 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (5 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
 - [Archive Bug Fix](Archive_Bug_Fix.md) (1 shared connections)
 
 ## Source Files

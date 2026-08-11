@@ -1,41 +1,44 @@
 # Logging System Planning
 
-> 17 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **test_players_quests.py** (13 connections) — `server/tests/unit/api/test_players_quests.py`
-- **test_get_player_quests_403_when_not_owner()** (4 connections) — `server/tests/unit/api/test_players_quests.py`
-- **test_get_player_quests_returns_quest_log()** (3 connections) — `server/tests/unit/api/test_players_quests.py`
-- **test_get_player_quests_include_completed_false()** (3 connections) — `server/tests/unit/api/test_players_quests.py`
-- **mock_request()** (2 connections) — `server/tests/unit/api/test_players_quests.py`
-- **mock_user()** (2 connections) — `server/tests/unit/api/test_players_quests.py`
-- **player_id()** (2 connections) — `server/tests/unit/api/test_players_quests.py`
-- **mock_player_service()** (2 connections) — `server/tests/unit/api/test_players_quests.py`
-- **mock_quest_service()** (2 connections) — `server/tests/unit/api/test_players_quests.py`
-- **Unit tests for GET /api/players/{player_id}/quests (quest log).  Tests get_playe** (1 connections) — `server/tests/unit/api/test_players_quests.py`
-- **Minimal request for endpoint (not used for quest logic).** (1 connections) — `server/tests/unit/api/test_players_quests.py`
-- **Character (player) UUID.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
-- **PlayerService that validates character access.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
-- **QuestService that returns quest log entries.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
-- **GET quests returns QuestLogResponse with entries when access allowed.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
-- **GET quests with include_completed=False passes to get_quest_log.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
-- **GET quests raises 403 when validate_character_access returns not ok.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
+- **CommunicationIntegrationProtocol** (10 connections) — `server/npc/npc_protocols.py`
+- **CombatIntegrationProtocol** (7 connections) — `server/npc/npc_protocols.py`
+- **.speak()** (4 connections) — `server/npc/npc_base.py`
+- **.listen()** (4 connections) — `server/npc/npc_base.py`
+- **npc_protocols.py** (4 connections) — `server/npc/npc_protocols.py`
+- **Protocol** (2 connections)
+- **.handle_npc_death()** (2 connections) — `server/npc/npc_protocols.py`
+- **.send_whisper_to_player()** (2 connections) — `server/npc/npc_protocols.py`
+- **.send_message_to_room()** (2 connections) — `server/npc/npc_protocols.py`
+- **.handle_player_message()** (2 connections) — `server/npc/npc_protocols.py`
+- **NPC speaks a message.** (1 connections) — `server/npc/npc_base.py`
+- **NPC receives/listens to a message.** (1 connections) — `server/npc/npc_base.py`
+- **Protocols for NPC combat and communication integration (used by NPCBase).** (1 connections) — `server/npc/npc_protocols.py`
+- **Protocol for combat integration handle_npc_death.** (1 connections) — `server/npc/npc_protocols.py`
+- **Handle NPC death in the combat integration layer.** (1 connections) — `server/npc/npc_protocols.py`
+- **Protocol for communication integration (whisper, room message, handle player mes** (1 connections) — `server/npc/npc_protocols.py`
+- **Send a private whisper from this NPC to a single player.** (1 connections) — `server/npc/npc_protocols.py`
+- **Send a message from this NPC to all players in a room.** (1 connections) — `server/npc/npc_protocols.py`
+- **Handle an incoming player message directed at this NPC.** (1 connections) — `server/npc/npc_protocols.py`
 
 ## Relationships
 
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (5 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (2 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (2 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (5 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (3 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/api/test_players_quests.py`
+- `server/npc/npc_base.py`
+- `server/npc/npc_protocols.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 41 (85%)
+- INFERRED: 7 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

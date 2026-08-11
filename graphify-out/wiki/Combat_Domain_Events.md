@@ -1,78 +1,66 @@
 # Combat Domain Events
 
-> 234 nodes
+> 175 nodes
 
 ## Key Concepts
 
-- **get_config()** (105 connections) — `server/config/__init__.py`
-- **combat.py** (50 connections) — `server/models/combat.py`
-- **CombatParticipantData** (38 connections) — `server/services/combat_types.py`
-- **test_combat_attack_handler.py** (37 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **CombatParticipantType** (35 connections) — `server/models/combat.py`
-- **combat_service_start.py** (27 connections) — `server/services/combat_service_start.py`
-- **combat_monitoring_service.py** (21 connections) — `server/services/combat_monitoring_service.py`
-- **combat_turn_processor.py** (19 connections) — `server/services/combat_turn_processor.py`
-- **npc_combat_data_provider.py** (18 connections) — `server/services/npc_combat_data_provider.py`
-- **test_combat_cleanup_handler.py** (18 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **combat_attack_handler.py** (17 connections) — `server/services/combat_attack_handler.py`
-- **.create_combat_instance()** (17 connections) — `server/services/combat_initialization.py`
-- **chat_logger.py** (15 connections) — `server/services/chat_logger.py`
-- **combat_initialization.py** (15 connections) — `server/services/combat_initialization.py`
-- **.connection_manager()** (15 connections) — `server/services/combat_messaging/base.py`
-- **TestCombatInitializer** (15 connections) — `server/tests/unit/services/test_combat_initialization.py`
-- **test_npc_combat_data_provider.py** (14 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **TestCombatParticipantData** (12 connections) — `server/tests/unit/services/test_combat_types.py`
-- **CombatStatus** (11 connections) — `server/models/combat.py`
-- **combat_service_end.py** (11 connections) — `server/services/combat_service_end.py`
-- **combat_types.py** (11 connections) — `server/services/combat_types.py`
-- **handle_new_login_impl()** (9 connections) — `server/realtime/connection_helpers.py`
-- **apply_target_rest_and_grace_checks()** (9 connections) — `server/services/combat_service_start.py`
-- **rate_limiter.py** (9 connections) — `server/services/rate_limiter.py`
-- **CombatInitializer** (8 connections) — `server/services/combat_initialization.py`
-- *... and 209 more nodes in this community*
+- **websocket_initial_state.py** (45 connections) — `server/realtime/websocket_initial_state.py`
+- **test_websocket_initial_state.py** (45 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
+- **RealTimeEventHandler** (44 connections) — `server/realtime/event_handler.py`
+- **player_event_handlers_respawn.py** (33 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **room.py** (31 connections) — `server/models/room.py`
+- **get_async_persistence()** (19 connections) — `server/async_persistence.py`
+- **send_initial_room_state()** (19 connections) — `server/realtime/websocket_initial_state.py`
+- **send_initial_game_state()** (15 connections) — `server/realtime/websocket_initial_state.py`
+- **validate_occupant_name()** (14 connections) — `server/realtime/websocket_helpers.py`
+- **check_and_send_death_notification()** (14 connections) — `server/realtime/websocket_initial_state.py`
+- **get_occupant_names()** (11 connections) — `server/realtime/websocket_helpers.py`
+- **send_game_state_event_safely()** (10 connections) — `server/realtime/websocket_initial_state.py`
+- **._extract_occupant_names()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **prepare_room_data_with_occupants()** (9 connections) — `server/realtime/websocket_initial_state.py`
+- **get_event_handler_for_initial_state()** (9 connections) — `server/realtime/websocket_initial_state.py`
+- **get_npc_lifecycle_manager_from_connection_manager()** (8 connections) — `server/realtime/websocket_initial_state.py`
+- **add_npc_occupants_to_list()** (8 connections) — `server/realtime/websocket_initial_state.py`
+- **send_occupants_snapshot_if_needed()** (8 connections) — `server/realtime/websocket_initial_state.py`
+- **._prepare_room_data_for_respawn()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **Protocol** (7 connections)
+- **_AppWithState** (7 connections) — `server/realtime/websocket_initial_state.py`
+- **_AppStateForEventHandler** (6 connections) — `server/realtime/websocket_initial_state.py`
+- **_NpcLifecycleManagerForOccupants** (6 connections) — `server/realtime/websocket_initial_state.py`
+- **_AppStateWithNpcLifecycle** (6 connections) — `server/realtime/websocket_initial_state.py`
+- **UUID** (6 connections)
+- *... and 150 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (86 shared connections)
-- [Rest Command Flow](Rest_Command_Flow.md) (73 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (13 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (11 shared connections)
-- [Archive Frd Random](Archive_Frd_Random.md) (7 shared connections)
-- [Player Respawn Events](Player_Respawn_Events.md) (7 shared connections)
-- [Invite Registration Model](Invite_Registration_Model.md) (6 shared connections)
-- [Game Magic Spell](Game_Magic_Spell.md) (6 shared connections)
-- [Realtime Maintenance Connection](Realtime_Maintenance_Connection.md) (6 shared connections)
-- [Inventory Command Models](Inventory_Command_Models.md) (6 shared connections)
-- [NATS Subject Manager](NATS_Subject_Manager.md) (5 shared connections)
-- [Combat Monitoring Service](Combat_Monitoring_Service.md) (5 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (13 shared connections)
+- [Party Service Management](Party_Service_Management.md) (13 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (12 shared connections)
+- [Character Creation Service](Character_Creation_Service.md) (10 shared connections)
+- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (10 shared connections)
+- [Application Config Settings](Application_Config_Settings.md) (9 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (9 shared connections)
+- [Dependency Injection Tests](Dependency_Injection_Tests.md) (8 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (7 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (6 shared connections)
+- [Investigations Sessions Xx](Investigations_Sessions_Xx.md) (5 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
 
 ## Source Files
 
-- `server/config/__init__.py`
-- `server/game/player_service.py`
-- `server/models/combat.py`
-- `server/realtime/connection_helpers.py`
-- `server/realtime/connection_manager.py`
-- `server/services/chat_logger.py`
-- `server/services/combat_attack_handler.py`
-- `server/services/combat_configuration_service.py`
-- `server/services/combat_initialization.py`
-- `server/services/combat_messaging/base.py`
-- `server/services/combat_monitoring_service.py`
-- `server/services/combat_service.py`
-- `server/services/combat_service_end.py`
-- `server/services/combat_service_start.py`
-- `server/services/combat_turn_processor.py`
-- `server/services/combat_types.py`
-- `server/services/npc_combat_data_provider.py`
-- `server/services/rate_limiter.py`
-- `server/tests/unit/models/test_combat.py`
-- `server/tests/unit/services/test_combat_attack_handler.py`
+- `server/async_persistence.py`
+- `server/models/room.py`
+- `server/realtime/event_handler.py`
+- `server/realtime/player_event_handlers_respawn.py`
+- `server/realtime/websocket_helpers.py`
+- `server/realtime/websocket_initial_state.py`
+- `server/tests/unit/realtime/test_event_handler.py`
+- `server/tests/unit/realtime/test_websocket_initial_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 929 (96%)
-- INFERRED: 41 (4%)
+- EXTRACTED: 652 (94%)
+- INFERRED: 45 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

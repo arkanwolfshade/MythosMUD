@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_user_manager_fallback()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test _get_user_manager falls back to global manager.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_get_active_sessions_filters_expired()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **Test get_active_sessions filters expired sessions.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Relationships
 
-- [Connection State Hooks](Connection_State_Hooks.md) (1 shared connections)
+- [Player Model Inventory](Player_Model_Inventory.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Audit Trail
 

@@ -1,59 +1,51 @@
 # Player Respawn Handlers
 
-> 28 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **FollowService** (36 connections) — `server/game/follow_service.py`
-- **UUID** (14 connections)
-- **_str_id()** (13 connections) — `server/game/follow_service.py`
-- **.request_follow()** (9 connections) — `server/game/follow_service.py`
-- **._send_result_to_player()** (8 connections) — `server/game/follow_service.py`
-- **Any** (7 connections)
-- **._expire_pending_requests()** (7 connections) — `server/game/follow_service.py`
-- **.accept_follow()** (7 connections) — `server/game/follow_service.py`
-- **.decline_follow()** (7 connections) — `server/game/follow_service.py`
-- **.get_followers()** (6 connections) — `server/game/follow_service.py`
-- **.get_following_display()** (6 connections) — `server/game/follow_service.py`
-- **._send_follow_request_to_target()** (5 connections) — `server/game/follow_service.py`
-- **.get_following()** (5 connections) — `server/game/follow_service.py`
-- **.get_following_display_name()** (5 connections) — `server/game/follow_service.py`
-- **.on_player_disconnect()** (4 connections) — `server/game/follow_service.py`
-- **Normalize ID to string for dict keys.** (1 connections) — `server/game/follow_service.py`
-- **In-memory follow state and movement propagation.      Subscribes to PlayerEntere** (1 connections) — `server/game/follow_service.py`
-- **Remove expired pending requests and notify requestors.** (1 connections) — `server/game/follow_service.py`
-- **Send a command_response-style message to a single player.** (1 connections) — `server/game/follow_service.py`
-- **Request to follow a player (pending acceptance) or start following an NPC immedi** (1 connections) — `server/game/follow_service.py`
-- **Send follow_request event to the target player only.** (1 connections) — `server/game/follow_service.py`
-- **Accept a follow request. Target is the player who accepted (the followee).** (1 connections) — `server/game/follow_service.py`
-- **Decline a follow request.** (1 connections) — `server/game/follow_service.py`
-- **Return list of follower player IDs (for movement propagation).** (1 connections) — `server/game/follow_service.py`
-- **Return (target_id, target_type) if following someone, else None.** (1 connections) — `server/game/follow_service.py`
-- *... and 3 more nodes in this community*
+- **test_command_parser_helpers.py** (24 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_removes_slash_prefix()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_cleans_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_strips_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_no_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_simple()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_with_args()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_lowercases_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_empty_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_whitespace_only_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_get_command_help_specific_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_get_command_help_unknown_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_get_command_help_none()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_with_alias_l()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_with_alias_g()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_with_alias_w()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_unsupported_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_pydantic_validation_error()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_value_error()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Unit tests for command_parser helper methods.  Tests the helper methods in Comma** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() removes leading slash.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() cleans multiple whitespace.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() strips leading/trailing whitespace.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() handles command without slash.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _parse_command_parts() parses simple command.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [Architecture Review Plan](Architecture_Review_Plan.md) (20 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (6 shared connections)
-- [Client Event Store](Client_Event_Store.md) (5 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
-- [NPC Utility Functions](NPC_Utility_Functions.md) (2 shared connections)
-- [Room Map Viewer UI](Room_Map_Viewer_UI.md) (1 shared connections)
-- [Archive Bug Fix](Archive_Bug_Fix.md) (1 shared connections)
-- [NPC Event Handler Tests](NPC_Event_Handler_Tests.md) (1 shared connections)
-- [Player Mute Persistence](Player_Mute_Persistence.md) (1 shared connections)
-- [test_setup_connection_metadata_no_session_token](test_setup_connection_metadata_no_session_token.md) (1 shared connections)
-- [Combat Turn Processor](Combat_Turn_Processor.md) (1 shared connections)
-- [Pylint Unique Findings](Pylint_Unique_Findings.md) (1 shared connections)
+- [Playwright Remediation Plan](Playwright_Remediation_Plan.md) (2 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (1 shared connections)
+- [Container Open Events](Container_Open_Events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/follow_service.py`
+- `server/tests/unit/utils/test_command_parser_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 144 (95%)
-- INFERRED: 8 (5%)
+- EXTRACTED: 79 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

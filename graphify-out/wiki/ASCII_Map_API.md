@@ -1,43 +1,51 @@
 # ASCII Map API
 
-> 19 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **validate_calendar.py** (17 connections) — `scripts/validate_calendar.py`
-- **run_validation()** (9 connections) — `scripts/validate_calendar.py`
-- **_get_calendar_paths()** (7 connections) — `scripts/validate_calendar.py`
-- **Path** (6 connections)
-- **_load_and_validate_holidays()** (6 connections) — `scripts/validate_calendar.py`
-- **_check_holiday_coverage()** (6 connections) — `scripts/validate_calendar.py`
-- **_validate_schedule_files()** (6 connections) — `scripts/validate_calendar.py`
-- **_print_success_message()** (5 connections) — `scripts/validate_calendar.py`
-- **parse_args()** (4 connections) — `scripts/validate_calendar.py`
-- **load_document_ids()** (4 connections) — `scripts/validate_calendar.py`
-- **Namespace** (3 connections)
-- **_print_errors()** (3 connections) — `scripts/validate_calendar.py`
-- **main()** (3 connections) — `scripts/validate_calendar.py`
-- **Get holidays and schedules paths.** (1 connections) — `scripts/validate_calendar.py`
-- **Load and validate holidays.** (1 connections) — `scripts/validate_calendar.py`
-- **Check if holidays cover documentation references.** (1 connections) — `scripts/validate_calendar.py`
-- **Load and validate schedule files.** (1 connections) — `scripts/validate_calendar.py`
-- **Print validation errors.** (1 connections) — `scripts/validate_calendar.py`
-- **Print success message if not quiet.** (1 connections) — `scripts/validate_calendar.py`
+- **npc_config_parsing.py** (14 connections) — `server/npc/npc_config_parsing.py`
+- **.__init__()** (11 connections) — `server/npc/npc_base.py`
+- **to_int_or_default()** (7 connections) — `server/npc/npc_config_parsing.py`
+- **get_combat_stats_dict()** (7 connections) — `server/npc/npc_config_parsing.py`
+- **normalize_determination_points()** (5 connections) — `server/npc/npc_config_parsing.py`
+- **parse_behavior_config()** (5 connections) — `server/npc/npc_config_parsing.py`
+- **_safe_stat_int()** (5 connections) — `server/npc/npc_config_parsing.py`
+- **._safe_get()** (4 connections) — `server/npc/npc_base.py`
+- **._apply_definition_attributes()** (4 connections) — `server/npc/npc_base.py`
+- **parse_stats()** (4 connections) — `server/npc/npc_config_parsing.py`
+- **parse_ai_config()** (4 connections) — `server/npc/npc_config_parsing.py`
+- **_compute_max_dp()** (4 connections) — `server/npc/npc_config_parsing.py`
+- **._setup_base_behavior_rules()** (3 connections) — `server/npc/npc_base.py`
+- **._safe_stat_int()** (3 connections) — `server/npc/npc_base.py`
+- **.get_combat_stats()** (3 connections) — `server/npc/npc_base.py`
+- **apply_dp_from_source()** (3 connections) — `server/npc/npc_config_parsing.py`
+- **apply_idle_movement_defaults()** (3 connections) — `server/npc/npc_config_parsing.py`
+- **Initialize the NPC base class.** (1 connections) — `server/npc/npc_base.py`
+- **Get attribute from obj with default to avoid lazy-loading issues.** (1 connections) — `server/npc/npc_base.py`
+- **Set npc_type, name, current_room, spawn_room_id from definition.** (1 connections) — `server/npc/npc_base.py`
+- **Setup base behavior rules common to all NPCs.** (1 connections) — `server/npc/npc_base.py`
+- **Return stats[key] as int, or default if missing/None.** (1 connections) — `server/npc/npc_base.py`
+- **Return current_dp, max_dp, dexterity for CombatParticipantData.** (1 connections) — `server/npc/npc_base.py`
+- **Parsing and normalization of NPC config (stats, behavior, AI) to keep npc_base N** (1 connections) — `server/npc/npc_config_parsing.py`
+- **Parse stats from JSON string. Returns default stats on parse error.** (1 connections) — `server/npc/npc_config_parsing.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [Async Room Loading Tests](Async_Room_Loading_Tests.md) (5 shared connections)
-- [Spell Effects Tests](Spell_Effects_Tests.md) (5 shared connections)
-- [Exploration Command Factory](Exploration_Command_Factory.md) (5 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (8 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (7 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [WebSocket Message Handlers](WebSocket_Message_Handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/validate_calendar.py`
+- `server/npc/npc_base.py`
+- `server/npc/npc_config_parsing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 85 (100%)
+- EXTRACTED: 106 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

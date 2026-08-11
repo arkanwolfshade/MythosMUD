@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **test_npc_models.py** (33 connections) — `server/tests/unit/models/test_npc_models.py`
+- **NPCDefinitionType** (10 connections) — `server/models/npc.py`
 - **NPCRelationship** (9 connections) — `server/models/npc.py`
-- **Base** (6 connections) — `server/models/npc.py`
 - **test_npc_definition_creation()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
 - **test_npc_definition_defaults()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
 - **test_npc_definition_get_base_stats()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
@@ -33,10 +33,11 @@
 
 ## Relationships
 
-- [Communication Command Flows](Communication_Command_Flows.md) (17 shared connections)
-- [Command Parser Tests](Command_Parser_Tests.md) (9 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
+- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (13 shared connections)
+- [Command Parser Tests](Command_Parser_Tests.md) (12 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (3 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (2 shared connections)
 
 ## Source Files
 
@@ -45,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 158 (100%)
+- EXTRACTED: 162 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

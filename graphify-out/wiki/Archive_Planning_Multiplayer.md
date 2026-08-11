@@ -1,29 +1,30 @@
 # Archive Planning Multiplayer
 
-> 6 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **TestGetSpellRegistry** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_spell_registry_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_spell_registry_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_spell_registry dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_spell_registry returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_spell_registry raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.__init__()** (5 connections) — `server/models/lucidity.py`
+- **.__init__()** (4 connections) — `server/models/lucidity.py`
+- **.__init__()** (4 connections) — `server/models/lucidity.py`
+- **Any** (3 connections)
+- **Initialize PlayerLucidity with defaults.** (1 connections) — `server/models/lucidity.py`
+- **Initialize LucidityAdjustmentLog with defaults.** (1 connections) — `server/models/lucidity.py`
+- **Initialize LucidityExposureState with defaults.** (1 connections) — `server/models/lucidity.py`
 
 ## Relationships
 
-- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (2 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/models/lucidity.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 19 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

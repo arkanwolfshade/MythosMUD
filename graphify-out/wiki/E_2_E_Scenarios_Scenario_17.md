@@ -1,24 +1,26 @@
 # E 2 E Scenarios Scenario
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.test_init_custom_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **Test GameTickService initialization with custom interval.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **test_add_correlation_id_existing()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **sample_event_dict()** (2 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **Create a sample event dictionary.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **Test add_correlation_id() preserves existing correlation_id.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
 
 ## Relationships
 
-- [Combat Health Persistence Fix](Combat_Health_Persistence_Fix.md) (1 shared connections)
-- [AnyIO Code Review](AnyIO_Code_Review.md) (1 shared connections)
+- [Test Refactoring Deliverables](Test_Refactoring_Deliverables.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_game_tick_service.py`
+- `server/tests/unit/structured_logging/test_logging_processors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

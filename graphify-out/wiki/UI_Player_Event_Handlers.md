@@ -1,62 +1,67 @@
 # UI Player Event Handlers
 
-> 113 nodes
+> 148 nodes
 
 ## Key Concepts
 
-- **test_admin_commands.py** (37 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **admin_commands.py** (33 connections) — `server/commands/admin_commands.py`
-- **admin_mute_commands.py** (29 connections) — `server/commands/admin_mute_commands.py`
-- **handle_mute_command()** (20 connections) — `server/commands/admin_mute_commands.py`
-- **Any** (16 connections)
-- **handle_admin_command()** (14 connections) — `server/commands/admin_commands.py`
-- **handle_unmute_command()** (13 connections) — `server/commands/admin_mute_commands.py`
-- **handle_add_admin_command()** (12 connections) — `server/commands/admin_mute_commands.py`
-- **handle_mutes_command()** (12 connections) — `server/commands/admin_mute_commands.py`
-- **handle_mute_global_command()** (10 connections) — `server/commands/admin_mute_commands.py`
-- **handle_unmute_global_command()** (10 connections) — `server/commands/admin_mute_commands.py`
-- **_handle_admin_status_command()** (9 connections) — `server/commands/admin_commands.py`
-- **_perform_mutes_list()** (7 connections) — `server/commands/admin_mute_commands.py`
-- **_handle_admin_time_command()** (6 connections) — `server/commands/admin_commands.py`
-- **_perform_mute()** (6 connections) — `server/commands/admin_mute_commands.py`
-- **_mute_command_app()** (5 connections) — `server/commands/admin_mute_commands.py`
-- **_format_mute_line()** (5 connections) — `server/commands/admin_mute_commands.py`
-- **_collect_mute_display_lines()** (5 connections) — `server/commands/admin_mute_commands.py`
-- **_extract_mute_target()** (4 connections) — `server/commands/admin_mute_commands.py`
-- **_parse_mute_duration_minutes()** (4 connections) — `server/commands/admin_mute_commands.py`
-- **_resolve_muter_and_target_players()** (4 connections) — `server/commands/admin_mute_commands.py`
-- **_mute_success_result()** (4 connections) — `server/commands/admin_mute_commands.py`
-- **_mute_display_target()** (4 connections) — `server/commands/admin_mute_commands.py`
-- **_resolve_current_player_id_for_mutes()** (4 connections) — `server/commands/admin_mute_commands.py`
-- **.is_admin()** (4 connections) — `server/commands/communication_commands_support.py`
-- *... and 88 more nodes in this community*
+- **admin_teleport_commands.py** (38 connections) — `server/commands/admin_teleport_commands.py`
+- **admin_summon_command.py** (34 connections) — `server/commands/admin_summon_command.py`
+- **admin_setlucidity_command.py** (30 connections) — `server/commands/admin_setlucidity_command.py`
+- **get_admin_actions_logger()** (25 connections) — `server/structured_logging/admin_actions_logger.py`
+- **teleport_helpers.py** (23 connections) — `server/commands/teleport_helpers.py`
+- **handle_teleport_command()** (20 connections) — `server/commands/admin_teleport_commands.py`
+- **goto_helpers.py** (20 connections) — `server/commands/goto_helpers.py`
+- **admin_actions_logger.py** (18 connections) — `server/structured_logging/admin_actions_logger.py`
+- **handle_goto_command()** (15 connections) — `server/commands/admin_teleport_commands.py`
+- **validate_admin_permission()** (13 connections) — `server/commands/admin_permission_utils.py`
+- **admin_teleport_utils.py** (13 connections) — `server/commands/admin_teleport_utils.py`
+- **create_teleport_effect_message()** (13 connections) — `server/commands/admin_teleport_utils.py`
+- **test_admin_commands_helpers.py** (13 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
+- **Any** (12 connections)
+- **_execute_lucidity_change()** (12 connections) — `server/commands/admin_setlucidity_command.py`
+- **_handle_admin_set_lucidity_command()** (11 connections) — `server/commands/admin_setlucidity_command.py`
+- **_resolve_summon_context()** (11 connections) — `server/commands/admin_summon_command.py`
+- **broadcast_teleport_effects()** (11 connections) — `server/commands/admin_teleport_utils.py`
+- **Any** (10 connections)
+- **handle_summon_command()** (10 connections) — `server/commands/admin_summon_command.py`
+- **get_online_player_by_display_name()** (10 connections) — `server/commands/admin_teleport_utils.py`
+- **notify_player_of_teleport()** (10 connections) — `server/commands/admin_teleport_utils.py`
+- **handle_confirm_teleport_command()** (9 connections) — `server/commands/admin_teleport_commands.py`
+- **handle_confirm_goto_command()** (9 connections) — `server/commands/admin_teleport_commands.py`
+- **execute_goto_teleport()** (9 connections) — `server/commands/goto_helpers.py`
+- *... and 123 more nodes in this community*
 
 ## Relationships
 
-- [Chat NATS Publisher](Chat_NATS_Publisher.md) (18 shared connections)
-- [E2E Suite Overview](E2E_Suite_Overview.md) (15 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (11 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (10 shared connections)
-- [Client Event Store](Client_Event_Store.md) (6 shared connections)
-- [Client Security Utilities](Client_Security_Utilities.md) (3 shared connections)
-- [Admin Status Commands](Admin_Status_Commands.md) (3 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
-- [Container Repository CRUD](Container_Repository_CRUD.md) (3 shared connections)
-- [Admin Teleport Commands](Admin_Teleport_Commands.md) (1 shared connections)
-- [Commands System Help](Commands_System_Help.md) (1 shared connections)
-- [Quest Journal Commands](Quest_Journal_Commands.md) (1 shared connections)
+- [Container Open Events](Container_Open_Events.md) (31 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (17 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (10 shared connections)
+- [Invite and User Schemas](Invite_and_User_Schemas.md) (9 shared connections)
+- [Spell Effect Protocols](Spell_Effect_Protocols.md) (7 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (7 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (5 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (5 shared connections)
+- [Structured Logging Admin](Structured_Logging_Admin.md) (4 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (3 shared connections)
+- [Npc Services Combat](Npc_Services_Combat.md) (2 shared connections)
+- [Room Occupant Manager Tests](Room_Occupant_Manager_Tests.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_commands.py`
-- `server/commands/admin_mute_commands.py`
-- `server/commands/communication_commands_support.py`
-- `server/tests/unit/commands/test_admin_commands.py`
+- `server/commands/admin_permission_utils.py`
+- `server/commands/admin_setlucidity_command.py`
+- `server/commands/admin_summon_command.py`
+- `server/commands/admin_teleport_commands.py`
+- `server/commands/admin_teleport_utils.py`
+- `server/commands/goto_helpers.py`
+- `server/commands/teleport_helpers.py`
+- `server/structured_logging/admin_actions_logger.py`
+- `server/tests/unit/commands/test_admin_commands_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 367 (85%)
-- INFERRED: 65 (15%)
+- EXTRACTED: 726 (98%)
+- INFERRED: 14 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

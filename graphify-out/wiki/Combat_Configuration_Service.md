@@ -1,6 +1,6 @@
 # Combat Configuration Service
 
-> 27 nodes
+> 26 nodes
 
 ## Key Concepts
 
@@ -15,7 +15,6 @@
 - **.is_globally_muted()** (2 connections) — `server/game/chat_moderation.py`
 - **.is_admin()** (2 connections) — `server/game/chat_moderation.py`
 - **.can_send_message()** (2 connections) — `server/game/chat_moderation.py`
-- **.get_player_mutes()** (2 connections) — `server/game/chat_moderation.py`
 - **.load_player_mutes()** (2 connections) — `server/game/chat_moderation.py`
 - **.mute_global()** (1 connections) — `server/game/chat_moderation.py`
 - **.unmute_global()** (1 connections) — `server/game/chat_moderation.py`
@@ -29,7 +28,8 @@
 - **Unmute a player for another player.** (1 connections) — `server/game/chat_moderation.py`
 - **Check if player is muted.** (1 connections) — `server/game/chat_moderation.py`
 - **Check if player is globally muted.** (1 connections) — `server/game/chat_moderation.py`
-- *... and 2 more nodes in this community*
+- **Check if player is admin.** (1 connections) — `server/game/chat_moderation.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
@@ -43,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 58 (98%)
+- EXTRACTED: 56 (98%)
 - INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 

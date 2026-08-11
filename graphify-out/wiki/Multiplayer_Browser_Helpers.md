@@ -1,46 +1,47 @@
 # Multiplayer Browser Helpers
 
-> 20 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **WebSocket** (8 connections)
-- **Any** (8 connections)
-- **.handle_message()** (7 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (6 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.get_handler()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (4 connections) — `server/realtime/message_handler_factory.py`
-- **Handle a specific message type.          Args:             websocket: The WebSoc** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle command message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle chat message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle ping message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle follow_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle party_invite_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle client_error_report message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Get a handler for the specified message type.          Args:             message** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle a WebSocket message using the appropriate handler.          Args:** (1 connections) — `server/realtime/message_handler_factory.py`
+- **UUID** (9 connections)
+- **_handle_player_death_threshold()** (8 connections) — `server/app/game_tick_processing.py`
+- **_process_mortally_wounded_player()** (8 connections) — `server/app/game_tick_processing.py`
+- **_process_session_dp_decay_and_death()** (8 connections) — `server/app/game_tick_processing.py`
+- **AsyncSession** (7 connections)
+- **_process_mp_regeneration()** (6 connections) — `server/app/game_tick_processing.py`
+- **_process_mortally_wounded_players()** (5 connections) — `server/app/game_tick_processing.py`
+- **_process_single_player_mp_regeneration()** (5 connections) — `server/app/game_tick_processing.py`
+- **_process_dead_players()** (5 connections) — `server/app/game_tick_processing.py`
+- **_player_in_active_combat()** (4 connections) — `server/app/game_tick_processing.py`
+- **_process_passive_lucidity_flux()** (4 connections) — `server/app/game_tick_processing.py`
+- **_validate_mp_regeneration_services()** (3 connections) — `server/app/game_tick_processing.py`
+- **Return True when the player is in an active combat (skip passive DP decay).** (1 connections) — `server/app/game_tick_processing.py`
+- **Move player to limbo and publish authoritative DP when death threshold is reache** (1 connections) — `server/app/game_tick_processing.py`
+- **Process a single mortally wounded player's DP decay and death check.      CRITIC** (1 connections) — `server/app/game_tick_processing.py`
+- **Process all mortally wounded players.** (1 connections) — `server/app/game_tick_processing.py`
+- **Process passive lucidity flux service if available.** (1 connections) — `server/app/game_tick_processing.py`
+- **Validate that required services exist for MP regeneration.      Args:         co** (1 connections) — `server/app/game_tick_processing.py`
+- **Process MP regeneration for a single player.      Args:         mp_service: MP r** (1 connections) — `server/app/game_tick_processing.py`
+- **Process MP regeneration for online players.** (1 connections) — `server/app/game_tick_processing.py`
+- **Process dead players and move them to limbo if needed.** (1 connections) — `server/app/game_tick_processing.py`
+- **Process DP decay and death for a single database session.** (1 connections) — `server/app/game_tick_processing.py`
 
 ## Relationships
 
-- [Rate Limiter Utilities](Rate_Limiter_Utilities.md) (8 shared connections)
-- [Game State Provider Tests](Game_State_Provider_Tests.md) (6 shared connections)
-- [Database Error Handling](Database_Error_Handling.md) (2 shared connections)
-- [Event Bus Serialization](Event_Bus_Serialization.md) (1 shared connections)
-- [Container API Endpoints](Container_API_Endpoints.md) (1 shared connections)
+- [Legacy Error Sanitization](Legacy_Error_Sanitization.md) (16 shared connections)
+- [Investigations Sessions Xx](Investigations_Sessions_Xx.md) (2 shared connections)
+- [Command Alias Handling](Command_Alias_Handling.md) (1 shared connections)
+- [Application Config Settings](Application_Config_Settings.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_handler_factory.py`
+- `server/app/game_tick_processing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 82 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

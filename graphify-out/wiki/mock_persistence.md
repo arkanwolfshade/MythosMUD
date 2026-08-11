@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_npc_instance_found()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _get_npc_instance() when NPC is found.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_create_mute_global_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_mute_global_command delegates to moderation factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_npc_event_handlers.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 

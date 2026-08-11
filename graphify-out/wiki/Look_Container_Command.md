@@ -1,6 +1,6 @@
 # Look Container Command
 
-> 50 nodes
+> 46 nodes
 
 ## Key Concepts
 
@@ -11,8 +11,6 @@
 - **test_find_container_via_inner_container()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
 - **test_find_container_via_inner_container_no_inner_container()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
 - **test_find_container_via_inner_container_invalid_uuid()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_contents_with_items()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_contents_empty()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
 - **test_get_container_description_from_container_metadata()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
 - **test_get_container_description_no_registry()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
 - **test_get_container_description_no_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
@@ -29,15 +27,17 @@
 - **test_find_container_in_room_or_equipped_no_get_equipped_items()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
 - **sample_equipped_container()** (2 connections) — `server/tests/unit/commands/test_look_container.py`
 - **mock_prototype_registry()** (2 connections) — `server/tests/unit/commands/test_look_container.py`
-- *... and 25 more nodes in this community*
+- **Get container description from prototype registry.** (1 connections) — `server/commands/look_container.py`
+- **Unit tests for container look functionality.  Tests the helper functions for loo** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [Player State Command Factory](Player_State_Command_Factory.md) (21 shared connections)
-- [Container System Architecture](Container_System_Architecture.md) (9 shared connections)
-- [Admin Command Models](Admin_Command_Models.md) (7 shared connections)
+- [Server Process Termination](Server_Process_Termination.md) (21 shared connections)
+- [Memory Threshold Monitor](Memory_Threshold_Monitor.md) (9 shared connections)
 - [Health Check Service](Health_Check_Service.md) (7 shared connections)
-- [Player Occupant Processor](Player_Occupant_Processor.md) (4 shared connections)
+- [Client ASCII Map API](Client_ASCII_Map_API.md) (7 shared connections)
+- [Chat Archive Advanced](Chat_Archive_Advanced.md) (4 shared connections)
 
 ## Source Files
 
@@ -46,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 156 (99%)
+- EXTRACTED: 148 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,6 +1,6 @@
 # Vim Editor Guidelines
 
-> 84 nodes
+> 88 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **test_nats_retry_handler.py** (34 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
 - **RetryableMessage** (13 connections) — `server/realtime/nats_retry_handler.py`
 - **RetryConfig** (10 connections) — `server/realtime/nats_retry_handler.py`
+- **nats_retry_handler.py** (9 connections) — `server/realtime/nats_retry_handler.py`
 - **.retry_async()** (5 connections) — `server/realtime/nats_retry_handler.py`
 - **.calculate_backoff()** (4 connections) — `server/realtime/nats_retry_handler.py`
 - **.should_retry()** (4 connections) — `server/realtime/nats_retry_handler.py`
@@ -25,30 +26,30 @@
 - **.get_retry_stats()** (3 connections) — `server/realtime/nats_retry_handler.py`
 - **.get_config()** (3 connections) — `server/realtime/nats_retry_handler.py`
 - **.update_config()** (3 connections) — `server/realtime/nats_retry_handler.py`
+- **test_nats_message_handler_init()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_retry_config_calculate_delay_base()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
 - **test_retry_config_calculate_delay_capped()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_config_defaults()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retryable_message_init()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- *... and 59 more nodes in this community*
+- *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (5 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (3 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
 - [NATS Chat Broadcasting](NATS_Chat_Broadcasting.md) (1 shared connections)
-- [Test Optimization Insights](Test_Optimization_Insights.md) (1 shared connections)
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
-- [Lucidity Utc Now](Lucidity_Utc_Now.md) (1 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Chat Message Filtering](Chat_Message_Filtering.md) (1 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/nats_retry_handler.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 - `server/tests/unit/realtime/test_nats_retry_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 262 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 275 (98%)
+- INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

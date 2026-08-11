@@ -1,42 +1,32 @@
 # Investigations Sessions Session
 
-> 14 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **quest_service.py** (26 connections) — `server/game/quest/quest_service.py`
-- **_consume_collect_goals_from_player()** (7 connections) — `server/game/quest/quest_service.py`
-- **_build_collect_n_progress()** (7 connections) — `server/game/quest/quest_service.py`
-- **_collect_goal_prototype_id()** (5 connections) — `server/game/quest/quest_service.py`
-- **_goal_activity_target()** (4 connections) — `server/game/quest/quest_service.py`
-- **_collect_goal_required_count()** (4 connections) — `server/game/quest/quest_service.py`
-- **__init__.py** (3 connections) — `server/game/quest/__init__.py`
-- **Quest subsystem: service, goal progression, rewards.** (1 connections) — `server/game/quest/__init__.py`
-- **Quest service: start, progress, complete, turn-in, abandon, and quest log.  Reso** (1 connections) — `server/game/quest/quest_service.py`
-- **Resolve the activity/npc target string for a progress goal.** (1 connections) — `server/game/quest/quest_service.py`
-- **Return collect_n prototype id from goal target or config.** (1 connections) — `server/game/quest/quest_service.py`
-- **Return required count for a collect_n goal.** (1 connections) — `server/game/quest/quest_service.py`
-- **Consume each collect_n goal from player holdings. Return error dict or None.** (1 connections) — `server/game/quest/quest_service.py`
-- **Recompute collect_n goal counters from holdings into a progress dict.** (1 connections) — `server/game/quest/quest_service.py`
+- **_update_player_connection_list()** (9 connections) — `server/realtime/connection_establishment.py`
+- **test_update_player_connection_list_no_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_update_player_connection_list_with_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_update_player_connection_list_no_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Update player's connection list to only include active connections.      Args:** (1 connections) — `server/realtime/connection_establishment.py`
+- **Test _update_player_connection_list() handles player not in player_websockets.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _update_player_connection_list() keeps active connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _update_player_connection_list() removes player when no active connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Relationships
 
-- [Quest Service Core](Quest_Service_Core.md) (18 shared connections)
-- [AI Agent Development Docs](AI_Agent_Development_Docs.md) (6 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [NPC Service Tests](NPC_Service_Tests.md) (1 shared connections)
-- [Command Service Tests](Command_Service_Tests.md) (1 shared connections)
-- [Whisper Testing Complete](Whisper_Testing_Complete.md) (1 shared connections)
+- [WebSocket Connection Setup](WebSocket_Connection_Setup.md) (4 shared connections)
+- [Architecture Review Plan](Architecture_Review_Plan.md) (3 shared connections)
+- [Archive Npc Population](Archive_Npc_Population.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/quest/__init__.py`
-- `server/game/quest/quest_service.py`
+- `server/realtime/connection_establishment.py`
+- `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

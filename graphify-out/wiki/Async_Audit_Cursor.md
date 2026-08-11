@@ -1,61 +1,49 @@
 # Async Audit Cursor
 
-> 29 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **processing.py** (25 connections) — `server/command_handler/processing.py`
-- **process_command_with_validation()** (11 connections) — `server/command_handler/processing.py`
-- **.is_security_sensitive()** (9 connections) — `server/validators/command_validator.py`
-- **_run_command_service_for_validated()** (6 connections) — `server/command_handler/processing.py`
-- **_dispatch_parsed_command()** (6 connections) — `server/command_handler/processing.py`
-- **_log_security_sensitive_command()** (6 connections) — `server/command_handler/processing.py`
-- **_handle_processing_error()** (6 connections) — `server/command_handler/processing.py`
-- **CommandExecutionRequest** (5 connections)
-- **_handle_validation_error()** (5 connections) — `server/command_handler/processing.py`
-- **_parse_command_line_or_client_error()** (3 connections) — `server/command_handler/processing.py`
-- **test_command_validator_is_security_sensitive_admin()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_command_validator_is_security_sensitive_case_insensitive()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_command_validator_is_security_sensitive_non_sensitive()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_command_validator_is_security_sensitive_empty()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **ValidationError** (2 connections)
-- **Exception** (2 connections)
-- **Command Processing Logic for MythosMUD.  This module contains the core command** (1 connections) — `server/command_handler/processing.py`
-- **Validate the raw command string via CommandProcessor.      Returns:         (** (1 connections) — `server/command_handler/processing.py`
-- **Extract structured command data, dispatch to CommandService, audit if needed.** (1 connections) — `server/command_handler/processing.py`
-- **Parse the command line; on success run CommandService (see ``_parse_command_line** (1 connections) — `server/command_handler/processing.py`
-- **Validate ``command_line`` via Click/Pydantic, dispatch to handlers; result dict** (1 connections) — `server/command_handler/processing.py`
-- **Log a security-sensitive command for auditing.** (1 connections) — `server/command_handler/processing.py`
-- **Handle a validation error during command processing.** (1 connections) — `server/command_handler/processing.py`
-- **Handle a general exception during command processing.** (1 connections) — `server/command_handler/processing.py`
-- **Test CommandValidator.is_security_sensitive detects admin commands.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- *... and 4 more nodes in this community*
+- **quest_service.py** (26 connections) — `server/game/quest/quest_service.py`
+- **QuestCompleted** (9 connections) — `server/events/event_types.py`
+- **_consume_collect_goals_from_player()** (7 connections) — `server/game/quest/quest_service.py`
+- **_build_collect_n_progress()** (7 connections) — `server/game/quest/quest_service.py`
+- **_collect_goal_prototype_id()** (5 connections) — `server/game/quest/quest_service.py`
+- **_goal_activity_target()** (4 connections) — `server/game/quest/quest_service.py`
+- **_collect_goal_required_count()** (4 connections) — `server/game/quest/quest_service.py`
+- **__init__.py** (3 connections) — `server/game/quest/__init__.py`
+- **Event fired when a quest instance is completed (rewards applied, state set to co** (1 connections) — `server/events/event_types.py`
+- **Quest subsystem: service, goal progression, rewards.** (1 connections) — `server/game/quest/__init__.py`
+- **Quest service: start, progress, complete, turn-in, abandon, and quest log.  Reso** (1 connections) — `server/game/quest/quest_service.py`
+- **Resolve the activity/npc target string for a progress goal.** (1 connections) — `server/game/quest/quest_service.py`
+- **Return collect_n prototype id from goal target or config.** (1 connections) — `server/game/quest/quest_service.py`
+- **Return required count for a collect_n goal.** (1 connections) — `server/game/quest/quest_service.py`
+- **Consume each collect_n goal from player holdings. Return error dict or None.** (1 connections) — `server/game/quest/quest_service.py`
+- **Recompute collect_n goal counters from holdings into a progress dict.** (1 connections) — `server/game/quest/quest_service.py`
 
 ## Relationships
 
-- [Admin Teleport Commands](Admin_Teleport_Commands.md) (11 shared connections)
-- [Persistence Container Extended](Persistence_Container_Extended.md) (4 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [Chat Panel Components](Chat_Panel_Components.md) (3 shared connections)
-- [Catatonia Check Logic](Catatonia_Check_Logic.md) (3 shared connections)
-- [Cursor Agents Analyzer](Cursor_Agents_Analyzer.md) (2 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
-- [Chat NATS Publisher](Chat_NATS_Publisher.md) (1 shared connections)
-- [Test Refactoring Deliverables](Test_Refactoring_Deliverables.md) (1 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (1 shared connections)
-- [Audit Logger Service](Audit_Logger_Service.md) (1 shared connections)
+- [Quest Service Core](Quest_Service_Core.md) (20 shared connections)
+- [AI Agent Development Docs](AI_Agent_Development_Docs.md) (6 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Lucidity Database Models](Lucidity_Database_Models.md) (1 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
+- [Command Service Tests](Command_Service_Tests.md) (1 shared connections)
+- [Whisper Testing Complete](Whisper_Testing_Complete.md) (1 shared connections)
 
 ## Source Files
 
-- `server/command_handler/processing.py`
-- `server/tests/unit/validators/test_command_validator.py`
-- `server/validators/command_validator.py`
+- `server/events/event_types.py`
+- `server/game/quest/__init__.py`
+- `server/game/quest/quest_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 107 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 71 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

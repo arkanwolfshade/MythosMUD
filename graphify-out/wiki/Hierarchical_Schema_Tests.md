@@ -34,7 +34,7 @@
 ## Relationships
 
 - [Room Schema Validator](Room_Schema_Validator.md) (3 shared connections)
-- [Room Fixer Toolkit](Room_Fixer_Toolkit.md) (1 shared connections)
+- [Async Persistence Types](Async_Persistence_Types.md) (1 shared connections)
 
 ## Source Files
 

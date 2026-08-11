@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_lie_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_lie_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_get_system_stats_no_players()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test get_system_stats handles no active players.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [Postgresql Anti Patterns](Postgresql_Anti_Patterns.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 

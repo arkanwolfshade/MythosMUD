@@ -1,10 +1,9 @@
 # Realtime WebSocket Auth
 
-> 41 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **test_rest_and_grace_period.py** (24 connections) — `server/tests/integration/test_rest_and_grace_period.py`
 - **MockPersistenceFull** (14 connections) — `server/tests/integration/test_rest_and_grace_period.py`
 - **test_unintentional_disconnect_starts_grace_period()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
 - **test_intentional_disconnect_no_grace_period()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
@@ -14,29 +13,28 @@
 - **test_rest_location_blocked_during_combat()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
 - **test_rest_countdown_completes_disconnect()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
 - **mock_persistence_full()** (3 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_interrupts_combat_action()** (3 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_reconnection_cancels_grace_period()** (3 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_grace_period_player_can_auto_attack()** (3 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_grace_period_player_cannot_use_commands()** (3 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_visual_indicator_in_grace_period()** (3 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **mock_app_with_services()** (2 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **mock_connection_manager_full()** (2 connections) — `server/tests/integration/test_rest_and_grace_period.py`
 - **.get_player_by_name()** (2 connections) — `server/tests/integration/test_rest_and_grace_period.py`
 - **.get_room_by_id()** (2 connections) — `server/tests/integration/test_rest_and_grace_period.py`
 - **.__setattr__()** (2 connections) — `server/tests/integration/test_rest_and_grace_period.py`
 - **.__init__()** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **Integration tests for rest command and disconnect grace period.  Tests the integ** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **Create a mock app with all required services.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **Create a fully configured mock connection manager.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
 - **Mock persistence layer with async methods for integration tests.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- *... and 16 more nodes in this community*
+- **Mock async method that uses configured mock.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **Mock method that uses configured mock.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **Allow setting get_player_by_name and get_room_by_id to mocks.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **Create a fully configured mock persistence layer.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **Test that unintentional disconnect starts grace period.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **Test that intentional disconnect does NOT start grace period.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **Test that /rest command is blocked during combat.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **Test that /rest command starts countdown when not in combat.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **Test that rest location provides instant disconnect when not in combat.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **Test that /rest in rest location is still blocked during combat.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **Test that rest countdown completes and disconnects player.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
 
 ## Relationships
 
-- [NATS Message Broker](NATS_Message_Broker.md) (7 shared connections)
-- [Party Service Management](Party_Service_Management.md) (5 shared connections)
-- [Player State Factories](Player_State_Factories.md) (4 shared connections)
-- [Rescue Service Tests](Rescue_Service_Tests.md) (3 shared connections)
+- [Container Persistence Queries](Container_Persistence_Queries.md) (9 shared connections)
+- [NPC Event Handler Tests](NPC_Event_Handler_Tests.md) (5 shared connections)
+- [Rescue Service Tests](Rescue_Service_Tests.md) (2 shared connections)
 
 ## Source Files
 
@@ -44,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 115 (100%)
+- EXTRACTED: 64 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

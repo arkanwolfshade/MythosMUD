@@ -1,56 +1,67 @@
 # Application Config Settings
 
-> 69 nodes
+> 150 nodes
 
 ## Key Concepts
 
 - **test_player_respawn_service.py** (48 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **player_respawn_service.py** (41 connections) — `server/services/player_respawn_service.py`
+- **test_event_handler.py** (41 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **PlayerDPUpdated** (39 connections) — `server/events/event_types.py`
+- **game.py** (32 connections) — `server/models/game.py`
+- **test_player_schemas.py** (21 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **PositionState** (20 connections) — `server/models/game.py`
+- **PlayerRespawnedEvent** (19 connections) — `server/events/event_types.py`
+- **PlayerDeliriumRespawnedEvent** (15 connections) — `server/events/event_types.py`
+- **._subscribe_to_events()** (13 connections) — `server/realtime/event_handler.py`
+- **test_game_enums.py** (11 connections) — `server/tests/unit/models/test_game_enums.py`
+- **AttributeType** (8 connections) — `server/models/game.py`
+- **LucidityActionCode** (8 connections) — `server/models/lucidity.py`
 - **_utc_now()** (7 connections) — `server/services/player_respawn_service.py`
 - **test_respawn_player_from_delirium_success()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
 - **test_respawn_player_from_delirium_database_error()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
 - **test_respawn_player_from_delirium_combat_clear_error()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **respawn_service()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **respawn_service_no_deps()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **sample_player()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **sample_dead_player()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_utc_now()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_move_player_to_limbo_success()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_move_player_to_limbo_refused_when_not_dead()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_move_player_to_limbo_player_not_found()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_move_player_to_limbo_database_error()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_get_respawn_room_custom()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_get_respawn_room_default()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_get_respawn_room_player_not_found()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_get_respawn_room_database_error()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_respawn_player_combat_clear_error()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_respawn_player_database_error()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_respawn_player_from_delirium_clears_combat_state()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_respawn_player_from_delirium_no_combat_service()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **datetime** (2 connections)
-- **mock_event_bus()** (2 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **mock_player_combat_service()** (2 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- *... and 44 more nodes in this community*
+- **StrEnum** (3 connections)
+- **test_event_handler_handle_npc_left()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_handle_player_dp_updated()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_handle_player_died()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_handle_player_dp_decay()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_handle_player_respawned()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_handle_player_delirium_respawned()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_player_base()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- *... and 125 more nodes in this community*
 
 ## Relationships
 
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (12 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (8 shared connections)
-- [Message Queue Cleanup](Message_Queue_Cleanup.md) (6 shared connections)
-- [Panel Layout Libraries Spec](Panel_Layout_Libraries_Spec.md) (5 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (3 shared connections)
-- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (2 shared connections)
-- [Calendar NPC Schedule](Calendar_NPC_Schedule.md) (1 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (30 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (15 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (15 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (14 shared connections)
+- [Panel Layout Libraries Spec](Panel_Layout_Libraries_Spec.md) (14 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (10 shared connections)
+- [NPC Database Sessions](NPC_Database_Sessions.md) (10 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (10 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (9 shared connections)
+- [Combat NPC Lookup](Combat_NPC_Lookup.md) (9 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (8 shared connections)
+- [Look Command Helpers](Look_Command_Helpers.md) (6 shared connections)
 
 ## Source Files
 
+- `server/events/event_types.py`
+- `server/models/game.py`
+- `server/models/lucidity.py`
+- `server/realtime/event_handler.py`
 - `server/services/player_respawn_service.py`
+- `server/tests/unit/models/test_game_enums.py`
+- `server/tests/unit/realtime/test_event_handler.py`
+- `server/tests/unit/schemas/test_player_schemas.py`
 - `server/tests/unit/services/test_player_respawn_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 164 (92%)
-- INFERRED: 14 (8%)
+- EXTRACTED: 507 (92%)
+- INFERRED: 47 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

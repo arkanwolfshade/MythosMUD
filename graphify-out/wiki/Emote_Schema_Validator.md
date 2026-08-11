@@ -1,57 +1,62 @@
 # Emote Schema Validator
 
-> 79 nodes
+> 93 nodes
 
 ## Key Concepts
 
-- **Direction** (22 connections) — `server/models/command_base.py`
-- **test_command_base.py** (22 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_exploration.py** (20 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **LookCommand** (19 connections) — `server/models/command_exploration.py`
-- **GoCommand** (14 connections) — `server/models/command_exploration.py`
-- **command_exploration.py** (9 connections) — `server/models/command_exploration.py`
-- **test_base_command_rejects_extra_fields()** (4 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_look_command_validate_direction_invalid()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_instance_number_validation_min()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_go_command_validate_direction_invalid()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_go_command_missing_direction()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **.validate_direction()** (3 connections) — `server/models/command_exploration.py`
-- **.validate_direction()** (3 connections) — `server/models/command_exploration.py`
-- **test_base_command_instantiation()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_base_command_model_config()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_base_command_slots()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_direction_enum_inheritance()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_inheritance()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_look_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_with_direction()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_validate_direction_valid()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_validate_direction_none()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_with_look_in()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_with_instance_number()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- *... and 54 more nodes in this community*
+- **test_combat_event_publisher.py** (37 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
+- **CombatEventPublisher** (30 connections) — `server/services/combat_event_publisher.py`
+- **combat_event_publisher.py** (22 connections) — `server/services/combat_event_publisher.py`
+- **CombatStartedEvent** (15 connections) — `server/events/combat_events.py`
+- **._publish_combat_payload()** (14 connections) — `server/services/combat_event_publisher.py`
+- **_CombatPublishJob** (13 connections) — `server/services/combat_event_publisher.py`
+- **CombatEndedEvent** (12 connections) — `server/events/combat_events.py`
+- **NPCAttackedEvent** (10 connections) — `server/events/combat_events.py`
+- **CombatTurnAdvancedEvent** (7 connections) — `server/events/combat_events.py`
+- **CombatTimeoutEvent** (7 connections) — `server/events/combat_events.py`
+- **.publish_combat_started()** (5 connections) — `server/services/combat_event_publisher.py`
+- **.publish_combat_ended()** (5 connections) — `server/services/combat_event_publisher.py`
+- **.publish_player_attacked()** (5 connections) — `server/services/combat_event_publisher.py`
+- **.publish_npc_attacked()** (5 connections) — `server/services/combat_event_publisher.py`
+- **.publish_npc_took_damage()** (5 connections) — `server/services/combat_event_publisher.py`
+- **.publish_npc_died()** (5 connections) — `server/services/combat_event_publisher.py`
+- **.publish_combat_turn_advanced()** (5 connections) — `server/services/combat_event_publisher.py`
+- **.publish_combat_timeout()** (5 connections) — `server/services/combat_event_publisher.py`
+- **._create_event_message()** (4 connections) — `server/services/combat_event_publisher.py`
+- **test_publish_combat_started_no_nats_service()** (4 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
+- **test_publish_combat_started_nats_error()** (4 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
+- **test_publish_combat_ended_no_nats_service()** (4 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
+- **test_publish_player_attacked_no_nats_service()** (4 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
+- **._nats_ready()** (3 connections) — `server/services/combat_event_publisher.py`
+- **.publish_combat_started_event()** (3 connections) — `server/services/combat_service.py`
+- *... and 68 more nodes in this community*
 
 ## Relationships
 
-- [Zone Config Loader](Zone_Config_Loader.md) (15 shared connections)
-- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (8 shared connections)
-- [Game Terminal Panels](Game_Terminal_Panels.md) (7 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (5 shared connections)
-- [Moderation Command Models](Moderation_Command_Models.md) (3 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
-- [Memory Profiler Tools](Memory_Profiler_Tools.md) (1 shared connections)
+- [Health Check Models](Health_Check_Models.md) (17 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (7 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (5 shared connections)
+- [Command Helper Utilities](Command_Helper_Utilities.md) (5 shared connections)
+- [Event Bus Serialization](Event_Bus_Serialization.md) (5 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (4 shared connections)
+- [Container Exception Handlers](Container_Exception_Handlers.md) (3 shared connections)
+- [Combat Persistence Events](Combat_Persistence_Events.md) (3 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (2 shared connections)
+- [Async Persistence Layer](Async_Persistence_Layer.md) (2 shared connections)
+- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/command_base.py`
-- `server/models/command_exploration.py`
-- `server/tests/unit/models/test_command_base.py`
-- `server/tests/unit/models/test_command_exploration.py`
+- `server/events/combat_events.py`
+- `server/services/combat_event_publisher.py`
+- `server/services/combat_service.py`
+- `server/tests/unit/services/test_combat_event_publisher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 215 (90%)
-- INFERRED: 25 (10%)
+- EXTRACTED: 323 (96%)
+- INFERRED: 14 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

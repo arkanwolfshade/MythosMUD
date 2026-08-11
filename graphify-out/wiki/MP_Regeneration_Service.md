@@ -1,58 +1,49 @@
 # MP Regeneration Service
 
-> 63 nodes
+> 74 nodes
 
 ## Key Concepts
 
-- **rescue_commands.py** (33 connections) — `server/commands/rescue_commands.py`
-- **handle_ground_command()** (28 connections) — `server/commands/rescue_commands.py`
-- **test_rescue_commands.py** (23 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **handle_rescue_command()** (14 connections) — `server/commands/rescue_commands.py`
-- **Any** (9 connections)
-- **_run_ground_session()** (9 connections) — `server/commands/rescue_commands.py`
-- **_apply_grounding_adjustment()** (7 connections) — `server/commands/rescue_commands.py`
-- **UUID** (6 connections)
-- **_get_ground_services()** (5 connections) — `server/commands/rescue_commands.py`
-- **_validate_ground_context()** (5 connections) — `server/commands/rescue_commands.py`
-- **_normalize_player_ids()** (5 connections) — `server/commands/rescue_commands.py`
-- **_send_grounding_failure_events()** (5 connections) — `server/commands/rescue_commands.py`
-- **_send_grounding_success_events()** (5 connections) — `server/commands/rescue_commands.py`
-- **_complete_ground_command()** (5 connections) — `server/commands/rescue_commands.py`
-- **_validate_ground_target()** (4 connections) — `server/commands/rescue_commands.py`
-- **_send_grounding_channeling_events()** (4 connections) — `server/commands/rescue_commands.py`
-- **test_handle_ground_command_not_catatonic()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_ground_command_success()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_ground_command_target_player_key()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_ground_command_apply_lucidity_error()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_rescue_command()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_rescue_command_no_target()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_rescue_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_rescue_command_target_player_key()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_rescue_command_no_app()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- *... and 38 more nodes in this community*
+- **test_npc_combat_integration_service.py** (44 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **_StubConfigRoot** (6 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **integration_service()** (6 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_integration_service_init_with_shared_player_combat_service()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_integration_service_init_creates_combat_service_when_none()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **_StubGameConfig** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_integration_service_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_get_integration_config()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_is_auto_progression_enabled()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_handle_player_attack_on_npc()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_validate_and_get_npc_instance_provided()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_validate_and_get_npc_instance_lookup()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_validate_and_get_npc_instance_dead()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_validate_combat_location()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_validate_combat_location_different_rooms()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_validate_combat_location_combat_room_mismatch()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_end_combat_if_participant_in_combat_ends_combat()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_end_combat_if_participant_in_combat_no_combat()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_handle_player_attack_on_npc_room_mismatch_ends_combat()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_handle_npc_death()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_handle_npc_death_broadcasts_room_update()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_handle_npc_death_broadcast_failure_non_fatal()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_get_npc_combat_memory()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_clear_npc_combat_memory()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_get_original_string_id()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- *... and 49 more nodes in this community*
 
 ## Relationships
 
-- [Message Queue Cleanup](Message_Queue_Cleanup.md) (11 shared connections)
-- [Chat NATS Publisher](Chat_NATS_Publisher.md) (9 shared connections)
-- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (8 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (3 shared connections)
-- [Profession Get Mechanical Effects](Profession_Get_Mechanical_Effects.md) (3 shared connections)
-- [Calendar NPC Schedule](Calendar_NPC_Schedule.md) (2 shared connections)
-- [Game State Provider](Game_State_Provider.md) (2 shared connections)
-- [Container Repository CRUD](Container_Repository_CRUD.md) (2 shared connections)
-- [NATS Subject Manager](NATS_Subject_Manager.md) (1 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (37 shared connections)
+- [Combat Configuration Service](Combat_Configuration_Service.md) (7 shared connections)
 
 ## Source Files
 
-- `server/commands/rescue_commands.py`
-- `server/tests/unit/commands/test_rescue_commands.py`
+- `server/tests/unit/services/test_npc_combat_integration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 241 (96%)
-- INFERRED: 11 (4%)
+- EXTRACTED: 194 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

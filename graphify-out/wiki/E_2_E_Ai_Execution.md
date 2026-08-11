@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_log_model_dump_result()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test _log_model_dump_result logs model dump.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_get_players_for_who_no_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test get_players_for_who without filter.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
 
 ## Relationships
 
-- [NPC Population Control](NPC_Population_Control.md) (1 shared connections)
+- [Legacy Cleanup Summary](Legacy_Cleanup_Summary.md) (1 shared connections)
+- [Combat UUID Display Bug](Combat_UUID_Display_Bug.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/commands/test_who_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

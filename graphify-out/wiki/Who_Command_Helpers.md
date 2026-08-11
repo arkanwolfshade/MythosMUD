@@ -1,49 +1,54 @@
 # Who Command Helpers
 
-> 25 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **HealthRepository** (20 connections) — `server/persistence/repositories/health_repository.py`
-- **.update_player_health()** (8 connections) — `server/persistence/repositories/health_repository.py`
-- **._damage_player_inner()** (7 connections) — `server/persistence/repositories/health_repository.py`
-- **Player** (6 connections)
-- **._heal_player_inner()** (6 connections) — `server/persistence/repositories/health_repository.py`
-- **._log_damage_error()** (5 connections) — `server/persistence/repositories/health_repository.py`
-- **._update_player_health_inner()** (5 connections) — `server/persistence/repositories/health_repository.py`
-- **.damage_player()** (5 connections) — `server/persistence/repositories/health_repository.py`
-- **_stats_int()** (4 connections) — `server/persistence/repositories/health_repository.py`
-- **UUID** (4 connections)
-- **.heal_player()** (4 connections) — `server/persistence/repositories/health_repository.py`
-- **.__init__()** (3 connections) — `server/persistence/repositories/health_repository.py`
-- **._calculate_effective_damage()** (3 connections) — `server/persistence/repositories/health_repository.py`
-- **Exception** (2 connections)
-- **Convert stat values to int with a safe fallback.** (1 connections) — `server/persistence/repositories/health_repository.py`
-- **Repository for player health persistence operations.      Handles damage, heal** (1 connections) — `server/persistence/repositories/health_repository.py`
-- **Initialize the health repository.          Args:             event_bus: Optio** (1 connections) — `server/persistence/repositories/health_repository.py`
-- **Calculate effective damage after applying simple resistance rules.          Cu** (1 connections) — `server/persistence/repositories/health_repository.py`
-- **Core damage logic without error handling wrapper.** (1 connections) — `server/persistence/repositories/health_repository.py`
-- **Log critical damage persistence failure.** (1 connections) — `server/persistence/repositories/health_repository.py`
-- **Execute atomic health update via update_player_health procedure.** (1 connections) — `server/persistence/repositories/health_repository.py`
-- **Damage a player and persist health changes atomically.          Args:** (1 connections) — `server/persistence/repositories/health_repository.py`
-- **Heal a player and persist health changes atomically.** (1 connections) — `server/persistence/repositories/health_repository.py`
-- **Core heal logic without error handling wrapper.** (1 connections) — `server/persistence/repositories/health_repository.py`
-- **Update player current_dp field atomically.          Args:             player_** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **InviteManager** (24 connections) — `server/auth/invites.py`
+- **list_invites()** (10 connections) — `server/auth/endpoints.py`
+- **create_invite()** (9 connections) — `server/auth/endpoints.py`
+- **.validate_invite()** (6 connections) — `server/auth/invites.py`
+- **get_invite_manager()** (6 connections) — `server/auth/invites.py`
+- **.use_invite()** (5 connections) — `server/auth/invites.py`
+- **.get_user_invites()** (4 connections) — `server/auth/invites.py`
+- **test_list_invites()** (4 connections) — `server/tests/unit/auth/test_endpoints.py`
+- **test_create_invite()** (4 connections) — `server/tests/unit/auth/test_endpoints.py`
+- **test_list_invites_empty_list()** (4 connections) — `server/tests/unit/auth/test_endpoints.py`
+- **test_list_invites_with_used_invite()** (4 connections) — `server/tests/unit/auth/test_endpoints.py`
+- **test_list_invites_with_expired_invite()** (4 connections) — `server/tests/unit/auth/test_endpoints.py`
+- **test_create_invite_success()** (4 connections) — `server/tests/unit/auth/test_endpoints.py`
+- **UUID** (3 connections)
+- **.get_unused_invites()** (3 connections) — `server/auth/invites.py`
+- **.cleanup_expired_invites()** (3 connections) — `server/auth/invites.py`
+- **.__init__()** (2 connections) — `server/auth/invites.py`
+- **AsyncSession** (2 connections)
+- **.list_invites()** (2 connections) — `server/auth/invites.py`
+- **List all invite codes.      This endpoint returns all invite codes in the system** (1 connections) — `server/auth/endpoints.py`
+- **Create a new invite code.      This endpoint creates a new invite code for user** (1 connections) — `server/auth/endpoints.py`
+- **Request** (1 connections)
+- **Manages invite creation, validation, and tracking.      Handles the invite-only** (1 connections) — `server/auth/invites.py`
+- **Validate an invite code.** (1 connections) — `server/auth/invites.py`
+- **Mark an invite as used by a specific user.** (1 connections) — `server/auth/invites.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [Schemas Maps Map](Schemas_Maps_Map.md) (13 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (4 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (19 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (16 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (7 shared connections)
+- [Plan Cursor Plans](Plan_Cursor_Plans.md) (2 shared connections)
+- [Combat Flee Command](Combat_Flee_Command.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/repositories/health_repository.py`
+- `server/auth/endpoints.py`
+- `server/auth/invites.py`
+- `server/tests/unit/auth/test_endpoints.py`
 
 ## Audit Trail
 
-- EXTRACTED: 87 (94%)
-- INFERRED: 6 (6%)
+- EXTRACTED: 113 (95%)
+- INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

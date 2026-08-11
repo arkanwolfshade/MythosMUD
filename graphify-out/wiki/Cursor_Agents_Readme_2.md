@@ -1,24 +1,23 @@
 # Cursor Agents Readme
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **📊 LINT ISSUE CATEGORIZATION GUIDE** (3 connections) — `.cursor/commands/lint-remediation.md`
-- **Python/Ruff Error Codes** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **React/ESLint Error Codes** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **test_get_server_component_health_unhealthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **Test get_server_component_health returns unhealthy status.** (1 connections) — `server/tests/unit/services/test_health_service.py`
 
 ## Relationships
 
-- [Common Troubleshooting Guide](Common_Troubleshooting_Guide.md) (1 shared connections)
+- [Monitoring Response Models](Monitoring_Response_Models.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/lint-remediation.md`
+- `server/tests/unit/services/test_health_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

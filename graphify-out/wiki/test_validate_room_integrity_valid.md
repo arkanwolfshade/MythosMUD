@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_occupant_formatter_process_player_name_for_update_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_player_name_for_update() adds valid player name.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_create_shutdown_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_shutdown_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [Command Integration Summary](Command_Integration_Summary.md) (1 shared connections)
-- [Room Occupant Formatter](Room_Occupant_Formatter.md) (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

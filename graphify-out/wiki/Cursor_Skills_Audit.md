@@ -13,7 +13,7 @@
 
 ## Relationships
 
-- [Character Creation Service](Character_Creation_Service.md) (1 shared connections)
+- [Container Component Capacity](Container_Component_Capacity.md) (1 shared connections)
 
 ## Source Files
 

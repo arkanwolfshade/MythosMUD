@@ -1,29 +1,31 @@
 # Archive Optimization Summary
 
-> 6 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **TestGetNPCLifecycleManager** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_npc_lifecycle_manager_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_npc_lifecycle_manager_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_npc_lifecycle_manager dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_npc_lifecycle_manager returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_npc_lifecycle_manager raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **_register_new_connection()** (9 connections) — `server/realtime/connection_establishment.py`
+- **test_register_new_connection()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_register_new_connection_existing_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **WebSocket** (2 connections)
+- **Register a new WebSocket connection.      Args:         websocket: The WebSocket** (1 connections) — `server/realtime/connection_establishment.py`
+- **Test _register_new_connection() registers new connection.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _register_new_connection() adds to existing player connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Relationships
 
-- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Architecture Review Plan](Architecture_Review_Plan.md) (5 shared connections)
+- [WebSocket Connection Setup](WebSocket_Connection_Setup.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/realtime/connection_establishment.py`
+- `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 20 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

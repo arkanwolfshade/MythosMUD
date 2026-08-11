@@ -1,66 +1,61 @@
 # Character Creation Service
 
-> 108 nodes
+> 59 nodes
 
 ## Key Concepts
 
-- **inventory_command_helpers.py** (48 connections) — `server/commands/inventory_command_helpers.py`
-- **inventory_equip_command.py** (45 connections) — `server/commands/inventory_equip_command.py`
-- **inventory_unequip_command.py** (32 connections) — `server/commands/inventory_unequip_command.py`
-- **persist_player()** (30 connections) — `server/commands/inventory_command_helpers.py`
-- **equipment_helpers.py** (28 connections) — `server/commands/equipment_helpers.py`
-- **test_inventory_commands_more_helpers.py** (23 connections) — `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
-- **inventory_item_matching.py** (22 connections) — `server/commands/inventory_item_matching.py`
-- **normalize_slot_name()** (19 connections) — `server/commands/inventory_item_matching.py`
-- **get_shared_services()** (19 connections) — `server/commands/inventory_service_helpers.py`
-- **clone_inventory()** (18 connections) — `server/commands/inventory_command_helpers.py`
-- **inventory_service_helpers.py** (16 connections) — `server/commands/inventory_service_helpers.py`
-- **handle_unequip_command()** (14 connections) — `server/commands/inventory_unequip_command.py`
-- **build_and_broadcast_inventory_event()** (13 connections) — `server/commands/inventory_command_helpers.py`
-- **_equip_build_work()** (13 connections) — `server/commands/inventory_equip_command.py`
-- **handle_equip_command()** (12 connections) — `server/commands/inventory_equip_command.py`
-- **_unequip_run_mutation()** (12 connections) — `server/commands/inventory_unequip_command.py`
-- **Player** (11 connections)
-- **add_pickup_to_inventory()** (10 connections) — `server/commands/inventory_command_helpers.py`
-- **normalize_inventory_slots()** (8 connections) — `server/commands/equipment_helpers.py`
-- **normalize_equipped_items()** (8 connections) — `server/commands/equipment_helpers.py`
-- **resolve_unequip_slot()** (8 connections) — `server/commands/equipment_helpers.py`
-- **_equip_run_mutation()** (8 connections) — `server/commands/inventory_equip_command.py`
-- **resolve_equip_item_index()** (7 connections) — `server/commands/equipment_helpers.py`
-- **handle_wearable_container_on_equip()** (7 connections) — `server/commands/equipment_helpers.py`
-- **handle_wearable_container_on_unequip()** (7 connections) — `server/commands/equipment_helpers.py`
-- *... and 83 more nodes in this community*
+- **websocket_helpers.py** (37 connections) — `server/realtime/websocket_helpers.py`
+- **test_websocket_helpers_player.py** (23 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **get_player_and_room()** (14 connections) — `server/realtime/websocket_helpers.py`
+- **prepare_player_data()** (12 connections) — `server/realtime/websocket_helpers.py`
+- **get_player_service_from_connection_manager()** (9 connections) — `server/realtime/websocket_helpers.py`
+- **get_player_stats_data()** (9 connections) — `server/realtime/websocket_helpers.py`
+- **convert_schema_to_dict()** (7 connections) — `server/realtime/websocket_helpers.py`
+- **build_basic_player_data()** (7 connections) — `server/realtime/websocket_helpers.py`
+- **UUID** (6 connections)
+- **_ensure_player_in_room_occupancy()** (6 connections) — `server/realtime/websocket_helpers.py`
+- **_get_tracked_player_from_connection_manager()** (5 connections) — `server/realtime/websocket_helpers.py`
+- **.model_dump()** (4 connections) — `server/models/alias.py`
+- **_AppStateForPlayerService** (3 connections) — `server/realtime/websocket_helpers.py`
+- **test_get_player_service_from_connection_manager_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **test_get_player_service_from_connection_manager_no_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **test_get_player_service_from_connection_manager_no_state()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **test_get_player_stats_data_with_get_stats()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **test_get_player_stats_data_string_stats()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **test_get_player_stats_data_adds_health()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **test_get_player_stats_data_no_get_stats()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **test_build_basic_player_data()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **test_build_basic_player_data_defaults()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **test_prepare_player_data_with_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **test_prepare_player_data_no_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **test_prepare_player_data_service_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [Container Component Capacity](Container_Component_Capacity.md) (40 shared connections)
-- [Async Task Registry](Async_Task_Registry.md) (30 shared connections)
-- [Spell Effect Protocols](Spell_Effect_Protocols.md) (29 shared connections)
-- [Container Sync Remediation](Container_Sync_Remediation.md) (27 shared connections)
-- [FastAPI Auth Integration](FastAPI_Auth_Integration.md) (17 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (13 shared connections)
-- [Client Event Store](Client_Event_Store.md) (10 shared connections)
-- [Services Inventory Mutation](Services_Inventory_Mutation.md) (6 shared connections)
-- [NPC Definition CRUD](NPC_Definition_CRUD.md) (5 shared connections)
-- [Container Inventory Finders](Container_Inventory_Finders.md) (5 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (4 shared connections)
-- [Admin NPC Schemas](Admin_NPC_Schemas.md) (4 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (10 shared connections)
+- [Party Service Management](Party_Service_Management.md) (9 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (5 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (2 shared connections)
+- [Real-Time Architecture Docs](Real-Time_Architecture_Docs.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Dependency Injection Tests](Dependency_Injection_Tests.md) (2 shared connections)
+- [Alias Expansion Logic](Alias_Expansion_Logic.md) (1 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (1 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
+- [WebSocket Initial State](WebSocket_Initial_State.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/equipment_helpers.py`
-- `server/commands/inventory_command_helpers.py`
-- `server/commands/inventory_equip_command.py`
-- `server/commands/inventory_item_matching.py`
-- `server/commands/inventory_service_helpers.py`
-- `server/commands/inventory_unequip_command.py`
-- `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
-- `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- `server/models/alias.py`
+- `server/realtime/websocket_helpers.py`
+- `server/tests/unit/realtime/test_websocket_helpers_player.py`
 
 ## Audit Trail
 
-- EXTRACTED: 632 (97%)
-- INFERRED: 21 (3%)
+- EXTRACTED: 213 (96%)
+- INFERRED: 9 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

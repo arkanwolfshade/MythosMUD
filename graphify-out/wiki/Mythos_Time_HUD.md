@@ -1,60 +1,64 @@
 # Mythos Time HUD
 
-> 44 nodes
+> 69 nodes
 
 ## Key Concepts
 
-- **test_exceptions.py** (43 connections) — `server/tests/unit/test_exceptions.py`
-- **LoggedException** (23 connections) — `server/exceptions.py`
-- **test_enhanced_logging_config.py** (9 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **_StubBoundLogger** (8 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **_as_bound_logger()** (6 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **test_log_exception_once_logged_exception_uses_mark_logged()** (6 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **test_log_exception_once_plain_exception_sets_flag_and_skips_repeat()** (5 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **test_logged_http_exception_initialization()** (5 connections) — `server/tests/unit/test_exceptions.py`
-- **test_logged_http_exception_inheritance()** (4 connections) — `server/tests/unit/test_exceptions.py`
-- **test_logged_exception_initialization()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_logged_exception_already_logged()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_logged_exception_mark_logged()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_authentication_error_initialization()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_database_error_initialization()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_database_error_without_table()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_validation_error_initialization()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_validation_error_without_field()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_rate_limit_error_initialization()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_rate_limit_error_without_retry_after()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_logged_http_exception_with_logger_name()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **.already_logged()** (2 connections) — `server/exceptions.py`
-- **BoundLogger** (2 connections)
-- **Marker base class indicating an exception has already produced a log entry.** (1 connections) — `server/exceptions.py`
-- **Return True if this exception instance has already been logged.** (1 connections) — `server/exceptions.py`
-- **.__init__()** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- *... and 19 more nodes in this community*
+- **map_minimap.py** (21 connections) — `server/api/map_minimap.py`
+- **room_service.py** (21 connections) — `server/game/room_service.py`
+- **test_map_minimap_helpers.py** (20 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
+- **generate_minimap_html()** (16 connections) — `server/api/map_minimap.py`
+- **exploration_service.py** (16 connections) — `server/services/exploration_service.py`
+- **_apply_exploration_filter_if_needed()** (13 connections) — `server/api/rooms.py`
+- **test_rooms_exploration_filter.py** (12 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
+- **_ensure_current_room_in_minimap_rooms()** (11 connections) — `server/api/map_minimap.py`
+- **_resolve_current_room_for_minimap()** (9 connections) — `server/api/map_minimap.py`
+- **_apply_minimap_fallback_coordinates()** (9 connections) — `server/api/map_minimap.py`
+- **_append_room_with_fallback_coords_if_needed()** (8 connections) — `server/api/map_minimap.py`
+- **TestApplyMinimapFallbackCoordinates** (8 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
+- **TestAppendRoomWithFallbackCoordsIfNeeded** (7 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
+- **test_apply_exploration_filter_superuser_bypasses_filter()** (6 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
+- **test_apply_exploration_filter_admin_sees_all_rooms_when_filter_requested()** (6 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
+- **test_apply_exploration_filter_non_admin_uses_room_service_intersection()** (6 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
+- **test_apply_exploration_filter_no_player_returns_unfiltered()** (6 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
+- **test_generate_minimap_html_admin_path()** (5 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
+- **test_generate_minimap_html_non_admin_filters_exploration()** (5 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
+- **RoomDictList** (5 connections)
+- **Any** (4 connections)
+- **AsyncSession** (3 connections)
+- **.test_appends_room_unchanged_when_has_coords()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
+- **.test_appends_copy_with_fallback_0_0_when_coords_missing()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
+- **.test_appends_fallback_when_only_one_coord_missing()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [Standardized Error Responses](Standardized_Error_Responses.md) (19 shared connections)
-- [Active Lucidity Service](Active_Lucidity_Service.md) (12 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (6 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (5 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (3 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (3 shared connections)
-- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (3 shared connections)
-- [Auth Token Utilities](Auth_Token_Utilities.md) (2 shared connections)
-- [Combat Death Handling](Combat_Death_Handling.md) (1 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
+- [Inventory Service Helpers](Inventory_Service_Helpers.md) (16 shared connections)
+- [Container Persistence Ops](Container_Persistence_Ops.md) (13 shared connections)
+- [Minimap Fallback Helpers](Minimap_Fallback_Helpers.md) (12 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (12 shared connections)
+- [Map Room Helpers](Map_Room_Helpers.md) (6 shared connections)
+- [ASCII Map Renderer](ASCII_Map_Renderer.md) (3 shared connections)
+- [Game Terminal Panels](Game_Terminal_Panels.md) (2 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (2 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (2 shared connections)
+- [Client Security Utilities](Client_Security_Utilities.md) (1 shared connections)
+- [E 2 E Testing Guide](E_2_E_Testing_Guide.md) (1 shared connections)
+- [ASCII Map Exit Tests](ASCII_Map_Exit_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/exceptions.py`
-- `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- `server/tests/unit/test_exceptions.py`
+- `server/api/map_minimap.py`
+- `server/api/rooms.py`
+- `server/game/room_service.py`
+- `server/services/exploration_service.py`
+- `server/tests/unit/api/test_map_minimap_helpers.py`
+- `server/tests/unit/api/test_rooms_exploration_filter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 160 (95%)
-- INFERRED: 8 (5%)
+- EXTRACTED: 277 (95%)
+- INFERRED: 14 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

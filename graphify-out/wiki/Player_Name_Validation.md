@@ -1,47 +1,59 @@
 # Player Name Validation
 
-> 23 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **MagicServiceCompletionMixin** (21 connections) — `server/game/magic/magic_service_completion.py`
-- **UUID** (12 connections)
-- **Any** (11 connections)
-- **._execute_casting_immediately()** (9 connections) — `server/game/magic/magic_service_completion.py`
-- **._complete_casting()** (8 connections) — `server/game/magic/magic_service_completion.py`
-- **._recreate_target_from_state()** (7 connections) — `server/game/magic/magic_service_completion.py`
-- **._try_queue_spell_for_combat()** (6 connections) — `server/game/magic/magic_service_completion.py`
-- **._try_complete_casting_via_combat()** (6 connections) — `server/game/magic/magic_service_completion.py`
-- **._get_player_and_room()** (5 connections) — `server/game/magic/magic_service_completion.py`
-- **._apply_spell_costs_and_effects()** (5 connections) — `server/game/magic/magic_service_completion.py`
-- **._parse_casting_target_id()** (5 connections) — `server/game/magic/magic_service_completion.py`
-- **_send_spell_completion_message()** (4 connections) — `server/game/magic/magic_service_completion.py`
-- **_is_heal_other_target()** (4 connections) — `server/game/magic/magic_service_completion.py`
-- **_send_healing_update_event()** (4 connections) — `server/game/magic/magic_service_completion.py`
-- **Mixin for MagicService: complete casting (player/room, target, costs/effects, co** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Get player and room_id for casting completion.          Returns:             Tup** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Recreate target from stored casting state.          Args:             casting_st** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Apply spell costs and process effects.          Args:             player_id: Pla** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Parse target_id from casting state. Returns None if missing or invalid.** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Apply costs and queue spell for next combat round. Returns True if queued, False** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Apply spell costs/effects, send completion message and healing event.** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **If in combat, try to queue spell for next round. Return True if queued, False ot** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Complete a casting and apply spell effects.          In combat, spells are queue** (1 connections) — `server/game/magic/magic_service_completion.py`
+- **test_connection_state_machine.py** (39 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_connected_successfully_from_reconnecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_connection_failed_from_reconnecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_start_reconnect()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_open_circuit()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_can_attempt_connection_disconnected()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_can_attempt_connection_connecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_should_open_circuit_under_threshold()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_get_stats_no_connected_time()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_reconnect_attempts_reset_on_success()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_total_connections_increment()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_last_error_set()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_connection_event_enum()** (2 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Unit tests for connection state machine.  Tests the NATSConnectionStateMachine c** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test ConnectionEvent enum values.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test connected_successfully() transition from reconnecting to connected.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test connection_failed() transition from reconnecting to disconnected.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test start_reconnect() transition from disconnected to reconnecting.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test open_circuit() transition from reconnecting to circuit_open.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test can_attempt_connection() returns True when disconnected.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test can_attempt_connection() returns True when connecting.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test should_open_circuit() returns False when under threshold.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test get_stats() handles None connected time.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test reconnect_attempts resets on successful connection.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test total_connections increments on successful connection.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (10 shared connections)
-- [Combat Attack Service](Combat_Attack_Service.md) (7 shared connections)
-- [Security Headers Middleware](Security_Headers_Middleware.md) (1 shared connections)
+- [Room Subscription Helpers](Room_Subscription_Helpers.md) (12 shared connections)
+- [Calendar NPC Schedule](Calendar_NPC_Schedule.md) (2 shared connections)
+- [Cursor Skills Animate](Cursor_Skills_Animate.md) (1 shared connections)
+- [Cursor Agents Readme](Cursor_Agents_Readme.md) (1 shared connections)
+- [Api Player](Api_Player.md) (1 shared connections)
+- [Logger Client Add To](Logger_Client_Add_To.md) (1 shared connections)
+- [test_build_room_objects_without_environment_in_attributes](test_build_room_objects_without_environment_in_attributes.md) (1 shared connections)
+- [test_invite_repr](test_invite_repr.md) (1 shared connections)
+- [test_invite_use_invite](test_invite_use_invite.md) (1 shared connections)
+- [Services Combat Attack](Services_Combat_Attack.md) (1 shared connections)
+- [Design Cursor Skills](Design_Cursor_Skills.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/magic_service_completion.py`
+- `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 106 (91%)
-- INFERRED: 10 (9%)
+- EXTRACTED: 87 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

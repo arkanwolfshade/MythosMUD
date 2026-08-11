@@ -1,30 +1,25 @@
 # E 2 E Scenarios Scenario
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.refresh_configuration()** (5 connections) — `server/services/combat_configuration_service.py`
-- **.clear_cache()** (3 connections) — `server/services/combat_configuration_service.py`
-- **refresh_combat_configuration()** (3 connections) — `server/services/combat_configuration_service.py`
-- **Refresh configuration from source.** (1 connections) — `server/services/combat_configuration_service.py`
-- **Clear configuration cache.** (1 connections) — `server/services/combat_configuration_service.py`
-- **Refresh combat configuration by clearing cache and reloading.** (1 connections) — `server/services/combat_configuration_service.py`
+- **test_delete_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test delete_player() when player not found.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 
 ## Relationships
 
-- [Test Value Distribution](Test_Value_Distribution.md) (2 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
-- [NPC Room Event Handlers](NPC_Room_Event_Handlers.md) (1 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (1 shared connections)
+- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_configuration_service.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

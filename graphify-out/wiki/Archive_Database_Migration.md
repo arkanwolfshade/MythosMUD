@@ -1,26 +1,37 @@
 # Archive Database Migration
 
-> 4 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **.interrupt_casting()** (5 connections) — `server/game/magic/magic_service.py`
-- **._perform_luck_check()** (4 connections) — `server/game/magic/magic_service.py`
-- **Interrupt a casting with LUCK check.          Args:             player_id: Pl** (1 connections) — `server/game/magic/magic_service.py`
-- **Perform a LUCK check for the player.          Args:             player_id: Pl** (1 connections) — `server/game/magic/magic_service.py`
+- **test_persistence_container_persistence.py** (8 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_none()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_string()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_dict()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_empty_string()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_list()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_parse_jsonb_column_invalid_json()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Unit tests for persistence.container_persistence module.  This module tests the** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing None JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing string JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing dict JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing empty string JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing list JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Test parsing invalid JSON string.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
 
 ## Relationships
 
-- [Security Headers Middleware](Security_Headers_Middleware.md) (5 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
+- [Maps API Endpoints](Maps_API_Endpoints.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/magic_service.py`
+- `server/tests/unit/persistence/test_persistence_container_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 27 (82%)
+- INFERRED: 6 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

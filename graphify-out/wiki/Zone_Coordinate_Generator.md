@@ -35,8 +35,8 @@
 
 - [Minimap Fallback Helpers](Minimap_Fallback_Helpers.md) (3 shared connections)
 - [Container Persistence Ops](Container_Persistence_Ops.md) (1 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
-- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Async Persistence Migration](Async_Persistence_Migration.md) (1 shared connections)
 
 ## Source Files
 

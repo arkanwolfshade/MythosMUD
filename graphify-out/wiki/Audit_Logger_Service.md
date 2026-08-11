@@ -1,6 +1,6 @@
 # Audit Logger Service
 
-> 48 nodes
+> 46 nodes
 
 ## Key Concepts
 
@@ -29,26 +29,25 @@
 - **datetime** (3 connections)
 - **.log_player_action()** (3 connections) — `server/utils/audit_logger.py`
 - **.log_alias_expansion()** (3 connections) — `server/utils/audit_logger.py`
-- *... and 23 more nodes in this community*
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [Combat Domain Events](Combat_Domain_Events.md) (3 shared connections)
-- [Admin Teleport Commands](Admin_Teleport_Commands.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [Combat Player Broadcasts](Combat_Player_Broadcasts.md) (1 shared connections)
-- [Async Audit Cursor](Async_Audit_Cursor.md) (1 shared connections)
-- [Container Component Capacity](Container_Component_Capacity.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (4 shared connections)
+- [Command Parser](Command_Parser.md) (2 shared connections)
+- [Container Open Events](Container_Open_Events.md) (1 shared connections)
+- [Persistence Container Extended](Persistence_Container_Extended.md) (1 shared connections)
+- [Admin Teleport Commands](Admin_Teleport_Commands.md) (1 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
 
 ## Source Files
 
 - `server/tests/unit/utils/test_audit_logger.py`
 - `server/utils/audit_logger.py`
-- `server/utils/log_time_formats.py`
 
 ## Audit Trail
 
-- EXTRACTED: 158 (100%)
+- EXTRACTED: 154 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

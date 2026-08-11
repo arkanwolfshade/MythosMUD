@@ -1,62 +1,47 @@
 # Active Lucidity Service
 
-> 55 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **ErrorContext** (54 connections) — `server/exceptions.py`
-- **create_error_context()** (33 connections) — `server/exceptions.py`
-- **.__init__()** (16 connections) — `server/exceptions.py`
-- **Any** (14 connections)
-- **.__init__()** (8 connections) — `server/exceptions.py`
-- **.mark_logged()** (5 connections) — `server/exceptions.py`
-- **test_handle_exception_standard_exception()** (5 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
-- **.__init__()** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.__init__()** (4 connections) — `server/exceptions.py`
-- **.to_dict()** (4 connections) — `server/exceptions.py`
-- **.__init__()** (4 connections) — `server/exceptions.py`
-- **.__init__()** (4 connections) — `server/exceptions.py`
-- **.__init__()** (4 connections) — `server/exceptions.py`
-- **.__init__()** (4 connections) — `server/exceptions.py`
-- **.__init__()** (4 connections) — `server/exceptions.py`
-- **.__init__()** (4 connections) — `server/exceptions.py`
-- **.__init__()** (4 connections) — `server/exceptions.py`
-- **.__init__()** (4 connections) — `server/exceptions.py`
-- **test_mythos_mud_error_initialization()** (4 connections) — `server/tests/unit/test_exceptions.py`
-- **test_mythos_mud_error_with_context()** (4 connections) — `server/tests/unit/test_exceptions.py`
-- **test_mythos_mud_error_to_dict()** (4 connections) — `server/tests/unit/test_exceptions.py`
-- **test_create_error_context()** (4 connections) — `server/tests/unit/test_exceptions.py`
-- **test_mythosmud_error_to_dict()** (4 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
-- **.to_dict()** (3 connections) — `server/exceptions.py`
-- **._log_error()** (3 connections) — `server/exceptions.py`
-- *... and 30 more nodes in this community*
+- **ShopkeeperNPC** (17 connections) — `server/npc/shopkeeper_npc.py`
+- **_shop_quantity()** (3 connections) — `server/npc/shopkeeper_npc.py`
+- **.__init__()** (3 connections) — `server/npc/shopkeeper_npc.py`
+- **._setup_shopkeeper_behavior_rules()** (3 connections) — `server/npc/shopkeeper_npc.py`
+- **.get_behavior_rules()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **.add_shop_item()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **.add_buyable_item()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **.buy_from_player()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **.sell_to_player()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **.calculate_price()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **._handle_greet_customer()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **._handle_restock_inventory()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **.get_shop_inventory()** (1 connections) — `server/npc/shopkeeper_npc.py`
+- **Coerce inventory quantity from JSON-shaped dict values to int (excludes bool).** (1 connections) — `server/npc/shopkeeper_npc.py`
+- **Shopkeeper NPC type with buy/sell functionality.** (1 connections) — `server/npc/shopkeeper_npc.py`
+- **Initialize shopkeeper NPC.** (1 connections) — `server/npc/shopkeeper_npc.py`
+- **Setup shopkeeper-specific behavior rules.** (1 connections) — `server/npc/shopkeeper_npc.py`
+- **Get shopkeeper-specific behavior rules.** (1 connections) — `server/npc/shopkeeper_npc.py`
+- **Add item to shop inventory.** (1 connections) — `server/npc/shopkeeper_npc.py`
+- **Add item to buyable items list.** (1 connections) — `server/npc/shopkeeper_npc.py`
+- **Buy item from player.** (1 connections) — `server/npc/shopkeeper_npc.py`
+- **Calculate final price with markup.** (1 connections) — `server/npc/shopkeeper_npc.py`
+- **Handle greeting customer action.** (1 connections) — `server/npc/shopkeeper_npc.py`
+- **Handle restocking inventory action.** (1 connections) — `server/npc/shopkeeper_npc.py`
 
 ## Relationships
 
-- [Standardized Error Responses](Standardized_Error_Responses.md) (39 shared connections)
-- [Mythos Time HUD](Mythos_Time_HUD.md) (12 shared connections)
-- [Warning Fixes Session](Warning_Fixes_Session.md) (6 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (5 shared connections)
-- [Container API Endpoints](Container_API_Endpoints.md) (4 shared connections)
-- [Realtime Errors Error](Realtime_Errors_Error.md) (4 shared connections)
-- [Combat Death Handling](Combat_Death_Handling.md) (3 shared connections)
-- [Combat Client Crash Report](Combat_Client_Crash_Report.md) (3 shared connections)
-- [Fastapi Code Review](Fastapi_Code_Review.md) (3 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (3 shared connections)
-- [Player Position Service](Player_Position_Service.md) (2 shared connections)
-- [Player Respawn Service](Player_Respawn_Service.md) (2 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (4 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
 
 ## Source Files
 
-- `server/error_handlers/pydantic_error_handler.py`
-- `server/exceptions.py`
-- `server/tests/unit/test_exceptions.py`
-- `server/tests/unit/test_exceptions_comprehensive.py`
+- `server/npc/shopkeeper_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 233 (94%)
-- INFERRED: 16 (6%)
+- EXTRACTED: 51 (94%)
+- INFERRED: 3 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

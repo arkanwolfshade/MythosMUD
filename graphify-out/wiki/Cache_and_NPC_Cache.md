@@ -1,55 +1,53 @@
 # Cache and NPC Cache
 
-> 53 nodes
+> 88 nodes
 
 ## Key Concepts
 
-- **LRUCache** (27 connections) — `server/caching/lru_cache.py`
-- **CacheManager** (12 connections) — `server/caching/lru_cache.py`
-- **.items()** (8 connections) — `server/caching/lru_cache.py`
-- **K** (7 connections)
-- **.get_or_set()** (7 connections) — `server/caching/lru_cache.py`
-- **.get()** (6 connections) — `server/caching/lru_cache.py`
-- **.put()** (6 connections) — `server/caching/lru_cache.py`
-- **V** (5 connections)
-- **.get_stats()** (5 connections) — `server/caching/lru_cache.py`
-- **.keys()** (5 connections) — `server/caching/lru_cache.py`
-- **.get_cache()** (5 connections) — `server/caching/lru_cache.py`
-- **.get_all_stats()** (5 connections) — `server/caching/lru_cache.py`
-- **._evict_expired_entries()** (4 connections) — `server/caching/lru_cache.py`
-- **.delete()** (4 connections) — `server/caching/lru_cache.py`
-- **Any** (4 connections)
-- **.values()** (4 connections) — `server/caching/lru_cache.py`
-- **._initialize_default_caches()** (4 connections) — `server/caching/lru_cache.py`
-- **.create_cache()** (4 connections) — `server/caching/lru_cache.py`
-- **.clear()** (3 connections) — `server/caching/lru_cache.py`
-- **.size()** (3 connections) — `server/caching/lru_cache.py`
-- **.__len__()** (3 connections) — `server/caching/lru_cache.py`
-- **.__contains__()** (3 connections) — `server/caching/lru_cache.py`
-- **.__repr__()** (3 connections) — `server/caching/lru_cache.py`
-- **.__init__()** (3 connections) — `server/caching/lru_cache.py`
-- **.clear_all_caches()** (3 connections) — `server/caching/lru_cache.py`
-- *... and 28 more nodes in this community*
+- **test_look_helpers.py** (30 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **test_look_helpers_functions.py** (23 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
+- **_get_health_label()** (17 connections) — `server/commands/look_helpers.py`
+- **_parse_instance_number()** (11 connections) — `server/commands/look_helpers.py`
+- **_is_direction()** (11 connections) — `server/commands/look_helpers.py`
+- **_get_wearable_container_service()** (9 connections) — `server/commands/look_helpers.py`
+- **test_parse_instance_number_hyphen_syntax()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **test_parse_instance_number_space_syntax()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **test_parse_instance_number_no_instance()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **test_parse_instance_number_multiple_spaces()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **test_get_health_label_healthy()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **test_get_health_label_wounded()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **test_get_health_label_critical()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **test_get_health_label_mortally_wounded()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **test_get_health_label_no_max_dp()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **test_get_health_label_zero_max_dp()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **test_get_lucidity_label_lucid()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **test_get_lucidity_label_disturbed()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **test_get_lucidity_label_unstable()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **test_get_lucidity_label_mad()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **test_get_lucidity_label_no_lucidity()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **test_get_visible_equipment_no_equipment()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **test_get_visible_equipment_with_equipment()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **test_is_direction_cardinal()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **test_is_direction_abbreviation()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [Grace Period Blocking Tests](Grace_Period_Blocking_Tests.md) (6 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [Alias Command Models](Alias_Command_Models.md) (1 shared connections)
-- [Lucidity Flux Performance Bug](Lucidity_Flux_Performance_Bug.md) (1 shared connections)
-- [Test Refactoring Status](Test_Refactoring_Status.md) (1 shared connections)
-- [Message Queue Cleanup](Message_Queue_Cleanup.md) (1 shared connections)
-- [Async Task Registry](Async_Task_Registry.md) (1 shared connections)
-- [Player Effects API](Player_Effects_API.md) (1 shared connections)
+- [Look Player Command](Look_Player_Command.md) (28 shared connections)
+- [Server Process Termination](Server_Process_Termination.md) (2 shared connections)
+- [Commands Command Look](Commands_Command_Look.md) (2 shared connections)
+- [Exploration Command Factories](Exploration_Command_Factories.md) (1 shared connections)
 
 ## Source Files
 
-- `server/caching/lru_cache.py`
+- `server/commands/look_helpers.py`
+- `server/tests/unit/commands/test_look_helpers.py`
+- `server/tests/unit/commands/test_look_helpers_functions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 167 (95%)
-- INFERRED: 8 (5%)
+- EXTRACTED: 259 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # Combat Flee Command
 
-> 67 nodes
+> 69 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **test_user_schemas.py** (13 connections) — `server/tests/unit/schemas/test_user_schemas.py`
 - **__init__.py** (12 connections) — `server/schemas/auth/__init__.py`
 - **InviteBase** (10 connections) — `server/schemas/auth/invite.py`
+- **InviteRead** (10 connections) — `server/schemas/auth/invite.py`
 - **SecureBaseModel** (10 connections) — `server/schemas/shared/base.py`
 - **InviteUpdate** (9 connections) — `server/schemas/auth/invite.py`
 - **user.py** (9 connections) — `server/schemas/auth/user.py`
@@ -28,15 +29,15 @@
 - **test_invite_create()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
 - **test_invite_create_no_expiry()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
 - **test_invite_read()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **test_invite_read_with_used_by()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- *... and 42 more nodes in this community*
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (6 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (6 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (4 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (7 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (4 shared connections)
 - [NPC Definition CRUD](NPC_Definition_CRUD.md) (3 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
+- [Who Command Helpers](Who_Command_Helpers.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,7 +50,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 227 (98%)
+- EXTRACTED: 238 (98%)
 - INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,56 +1,64 @@
 # Combat Death Handling
 
-> 43 nodes
+> 97 nodes
 
 ## Key Concepts
 
-- **PydanticErrorHandler** (23 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.handle_validation_error()** (14 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **__init__.py** (9 connections) — `server/error_handlers/__init__.py`
-- **handle_pydantic_error()** (9 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **convert_pydantic_error()** (9 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **_ExtractedErrorInfo** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._create_fallback_error_response()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.convert_to_mythos_error()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **ErrorContextInitKwargs** (8 connections) — `server/exceptions.py`
-- **ValidationError** (7 connections)
-- **._extract_error_info()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._generate_user_friendly_message()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._create_error_details()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.create_handler()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._determine_error_type()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._determine_severity()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._format_single_field_error_message()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **_ExtractedFieldErrorInfo** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._get_display_field_name()** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **StandardizedErrorResponseDict** (3 connections)
-- **._get_field_path()** (3 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **Unpack** (3 connections)
-- **TypedDict** (2 connections)
-- **Keyword arguments accepted by create_error_context and ErrorContext().** (2 connections) — `server/exceptions.py`
-- **Error handlers package for MythosMUD.  This package provides specialized error h** (1 connections) — `server/error_handlers/__init__.py`
-- *... and 18 more nodes in this community*
+- **CombatInstance** (169 connections) — `server/models/combat.py`
+- **combat_flee_handler.py** (23 connections) — `server/services/combat_flee_handler.py`
+- **test_combat_flee_handler.py** (17 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **execute_voluntary_flee()** (15 connections) — `server/services/combat_flee_handler.py`
+- **try_voluntary_flee_roll()** (11 connections) — `server/services/combat_flee_handler.py`
+- **_make_participant()** (11 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **_check_involuntary_flee_with_session()** (8 connections) — `server/services/combat_flee_handler.py`
+- **lucidity_command_disruption.py** (8 connections) — `server/services/lucidity_command_disruption.py`
+- **_handle_failed_voluntary_flee()** (6 connections) — `server/services/combat_flee_handler.py`
+- **check_involuntary_flee()** (6 connections) — `server/services/combat_flee_handler.py`
+- **UUID** (5 connections)
+- **_involuntary_flee_on_cooldown()** (5 connections) — `server/services/combat_flee_handler.py`
+- **._handle_player_dp_update()** (5 connections) — `server/services/combat_service.py`
+- **.apply_attack_damage()** (5 connections) — `server/services/combat_service.py`
+- **.apply_damage_and_check_involuntary_flee()** (5 connections) — `server/services/combat_service.py`
+- **test_try_voluntary_flee_roll_zero_exits_returns_false()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_try_voluntary_flee_roll_roll_above_chance_fails()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_try_voluntary_flee_roll_roll_below_chance_succeeds()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_try_voluntary_flee_roll_opponents_reduce_chance()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_try_voluntary_flee_roll_dead_opponent_not_counted()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_execute_voluntary_flee_no_room_returns_false()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_execute_voluntary_flee_no_exits_returns_false()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **UUID** (4 connections)
+- **.validate_melee_location()** (4 connections) — `server/services/combat_service.py`
+- **.check_involuntary_flee()** (4 connections) — `server/services/combat_service.py`
+- *... and 72 more nodes in this community*
 
 ## Relationships
 
-- [Container API Endpoints](Container_API_Endpoints.md) (17 shared connections)
-- [Player Position Service](Player_Position_Service.md) (9 shared connections)
-- [Active Lucidity Service](Active_Lucidity_Service.md) (3 shared connections)
-- [Archive Planning E 2 E](Archive_Planning_E_2_E.md) (2 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
-- [Mythos Time HUD](Mythos_Time_HUD.md) (1 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (53 shared connections)
+- [Async Persistence Layer](Async_Persistence_Layer.md) (21 shared connections)
+- [Container Exception Handlers](Container_Exception_Handlers.md) (21 shared connections)
+- [Lucidity State Models](Lucidity_State_Models.md) (14 shared connections)
+- [Health Check Models](Health_Check_Models.md) (12 shared connections)
+- [NATS Metrics API](NATS_Metrics_API.md) (12 shared connections)
+- [Command Helper Utilities](Command_Helper_Utilities.md) (10 shared connections)
+- [Combat Taunt Tests](Combat_Taunt_Tests.md) (8 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (7 shared connections)
+- [Game Client Container](Game_Client_Container.md) (6 shared connections)
+- [Message Broadcaster Core](Message_Broadcaster_Core.md) (5 shared connections)
+- [Flee Command Tests](Flee_Command_Tests.md) (4 shared connections)
 
 ## Source Files
 
-- `server/error_handlers/__init__.py`
-- `server/error_handlers/pydantic_error_handler.py`
-- `server/exceptions.py`
+- `server/models/combat.py`
+- `server/services/combat_flee_handler.py`
+- `server/services/combat_service.py`
+- `server/services/lucidity_command_disruption.py`
+- `server/tests/unit/models/test_combat.py`
+- `server/tests/unit/services/test_combat_flee_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 183 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 451 (97%)
+- INFERRED: 15 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

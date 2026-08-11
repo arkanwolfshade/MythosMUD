@@ -1,41 +1,37 @@
 # Investigations Sessions Session
 
-> 14 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **get_player_service_for_testing()** (9 connections) — `server/dependencies.py`
-- **TestGetPlayerServiceForTesting** (7 connections) — `server/tests/unit/test_dependency_injection.py`
-- **TestGetPlayerServiceForTesting** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_player_service_for_testing_creates_mock()** (4 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_player_service_for_testing_with_injection()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_player_service_for_testing_without_injection()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_player_service_for_testing_with_provided_service()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Get a PlayerService instance for testing purposes.      This function allows tes** (1 connections) — `server/dependencies.py`
-- **Tests for get_player_service_for_testing helper function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_player_service_for_testing returns provided service.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_player_service_for_testing creates PlayerService when None provided.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_player_service_for_testing() function.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
-- **Test get_player_service_for_testing() with injected service.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
-- **Test get_player_service_for_testing() creates mock when None.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
+- **_build_standardized_subject()** (8 connections) — `server/game/chat_nats_publisher.py`
+- **build_nats_subject()** (6 connections) — `server/game/chat_nats_publisher.py`
+- **_extract_subzone_from_room()** (5 connections) — `server/game/chat_nats_publisher.py`
+- **Any** (5 connections)
+- **_subject_whisper_standardized()** (4 connections) — `server/game/chat_nats_publisher.py`
+- **_subject_party_standardized()** (4 connections) — `server/game/chat_nats_publisher.py`
+- **_build_legacy_subject()** (4 connections) — `server/game/chat_nats_publisher.py`
+- **Extract subzone from room_id, returning 'unknown' if extraction fails.** (1 connections) — `server/game/chat_nats_publisher.py`
+- **Build whisper subject; returns fallback 'chat.whisper' if no target_id.** (1 connections) — `server/game/chat_nats_publisher.py`
+- **Build party subject; returns None if no party_id.** (1 connections) — `server/game/chat_nats_publisher.py`
+- **Build NATS subject using standardized patterns via subject_manager.** (1 connections) — `server/game/chat_nats_publisher.py`
+- **Build NATS subject using legacy construction (backward compatibility).** (1 connections) — `server/game/chat_nats_publisher.py`
+- **Build NATS subject using standardized patterns or fallback to legacy constructio** (1 connections) — `server/game/chat_nats_publisher.py`
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (6 shared connections)
-- [Player Domain Model](Player_Domain_Model.md) (5 shared connections)
-- [Inventory Service Helpers](Inventory_Service_Helpers.md) (1 shared connections)
-- [WebSocket Command Handler](WebSocket_Command_Handler.md) (1 shared connections)
+- [Who Command Tests](Who_Command_Tests.md) (8 shared connections)
+- [Monitoring API Endpoints](Monitoring_API_Endpoints.md) (1 shared connections)
+- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (1 shared connections)
 
 ## Source Files
 
-- `server/dependencies.py`
-- `server/tests/unit/infrastructure/test_dependencies.py`
-- `server/tests/unit/test_dependency_injection.py`
+- `server/game/chat_nats_publisher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (84%)
-- INFERRED: 7 (16%)
+- EXTRACTED: 41 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

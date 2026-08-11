@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_on_player_entered_room_moves_followers()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **When followed player moves, followers are moved same from_room -> to_room.** (1 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_validate_player_name_too_short()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test validate_player_name() with name too short.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 
 ## Relationships
 
-- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
-- [NPC Utility Functions](NPC_Utility_Functions.md) (1 shared connections)
+- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_follow_service.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

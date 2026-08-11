@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_mute_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_mute_command delegates to moderation factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_has_permission_admin()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **Test _has_permission for admin role.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [Player Model Inventory](Player_Model_Inventory.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Audit Trail
 

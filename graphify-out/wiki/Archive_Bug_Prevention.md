@@ -1,53 +1,35 @@
 # Archive Bug Prevention
 
-> 29 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **NPCStartupService** (53 connections) — `server/services/npc_startup_service.py`
-- **Any** (16 connections)
-- **._spawn_required_npcs()** (8 connections) — `server/services/npc_startup_service.py`
-- **._determine_spawn_room()** (8 connections) — `server/services/npc_startup_service.py`
-- **._run_startup_pass()** (7 connections) — `server/services/npc_startup_service.py`
-- **._spawn_optional_npcs()** (7 connections) — `server/services/npc_startup_service.py`
-- **._spawn_arena_npcs()** (7 connections) — `server/services/npc_startup_service.py`
-- **.spawn_npcs_on_startup()** (6 connections) — `server/services/npc_startup_service.py`
-- **_new_spawn_results()** (5 connections) — `server/services/npc_startup_service.py`
-- **._try_spawn_npc()** (5 connections) — `server/services/npc_startup_service.py`
-- **_record_spawned_npc()** (4 connections) — `server/services/npc_startup_service.py`
-- **._handle_required_no_room()** (4 connections) — `server/services/npc_startup_service.py`
-- **._warmup_room_cache_for_arena()** (4 connections) — `server/services/npc_startup_service.py`
-- **._spawn_one_arena_npc()** (4 connections) — `server/services/npc_startup_service.py`
-- **._get_persistence_for_spawn()** (4 connections) — `server/services/npc_startup_service.py`
-- **._try_sub_zone_room()** (4 connections) — `server/services/npc_startup_service.py`
-- **_merge_phase_into_startup()** (3 connections) — `server/services/npc_startup_service.py`
-- **._try_specific_room()** (3 connections) — `server/services/npc_startup_service.py`
-- **._try_fallback_room()** (3 connections) — `server/services/npc_startup_service.py`
-- **._get_default_room_for_sub_zone()** (3 connections) — `server/services/npc_startup_service.py`
-- **.__init__()** (2 connections) — `server/services/npc_startup_service.py`
-- **Service for automatic NPC spawning during server startup.      This service coor** (1 connections) — `server/services/npc_startup_service.py`
-- **Initialize the NPC startup service.** (1 connections) — `server/services/npc_startup_service.py`
-- **Spawn NPCs during server startup.          This method handles the automatic spa** (1 connections) — `server/services/npc_startup_service.py`
-- **Spawn all required NPCs.          Args:             required_npcs: List of requi** (1 connections) — `server/services/npc_startup_service.py`
-- *... and 4 more nodes in this community*
+- **logging_processors.py** (14 connections) — `server/structured_logging/logging_processors.py`
+- **_EnhancePlayerIdsTls** (4 connections) — `server/structured_logging/logging_processors.py`
+- **_database_error_type()** (3 connections) — `server/structured_logging/logging_processors.py`
+- **_PlayerServiceHolder** (2 connections) — `server/structured_logging/logging_processors.py`
+- **.__init__()** (1 connections) — `server/structured_logging/logging_processors.py`
+- **BaseException** (1 connections)
+- **Logging processors for structlog event processing.  This module provides proce** (1 connections) — `server/structured_logging/logging_processors.py`
+- **Thread-local recursion guard for enhance_player_ids (typed .active for static an** (1 connections) — `server/structured_logging/logging_processors.py`
 
 ## Relationships
 
-- [NPC Occupant Verification](NPC_Occupant_Verification.md) (23 shared connections)
-- [Archive Npc Population](Archive_Npc_Population.md) (10 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (6 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
-- [NPC Service Tests](NPC_Service_Tests.md) (1 shared connections)
-- [Combat Schema Validation](Combat_Schema_Validation.md) (1 shared connections)
+- [Logging Structured Processors](Logging_Structured_Processors.md) (4 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Test Refactoring Deliverables](Test_Refactoring_Deliverables.md) (2 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
+- [Archive Planning Aliases](Archive_Planning_Aliases.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_startup_service.py`
+- `server/structured_logging/logging_processors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 166 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 25 (93%)
+- INFERRED: 2 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

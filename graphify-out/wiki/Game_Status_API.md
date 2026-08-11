@@ -1,10 +1,11 @@
 # Game Status API
 
-> 62 nodes
+> 64 nodes
 
 ## Key Concepts
 
 - **test_room_subscription_manager_drops.py** (34 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **subscription_manager()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 - **test_list_room_drops()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 - **test_list_room_drops_empty()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 - **test_add_room_drop()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
@@ -28,13 +29,12 @@
 - **test_adjust_room_drop_index_out_of_range()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 - **test_adjust_room_drop_quantity_zero()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 - **test_adjust_room_drop_negative_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_adjust_room_drop_success()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- *... and 37 more nodes in this community*
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
 - [JSONB Column Parsing](JSONB_Column_Parsing.md) (2 shared connections)
-- [Players API Endpoints](Players_API_Endpoints.md) (1 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 125 (100%)
+- EXTRACTED: 129 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

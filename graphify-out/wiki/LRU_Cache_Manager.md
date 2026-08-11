@@ -1,56 +1,61 @@
 # LRU Cache Manager
 
-> 41 nodes
+> 166 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_coverage_gaps.py** (24 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **handle_chat_message()** (18 connections) — `server/realtime/websocket_handler.py`
-- **UUID** (3 connections)
-- **test_handle_chat_message()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_game_command_resolve_connection_manager_from_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_game_command_exception_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_game_command_runtime_error_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_process_websocket_command_resolve_connection_manager_from_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_chat_message_resolve_connection_manager_from_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_chat_message_exception_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_chat_message_runtime_error_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_chat_message_no_player()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_chat_message_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_message_loop_should_raise_exception()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_process_exception_in_message_loop()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_setup_initial_connection_state_should_exit()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_setup_initial_connection_state_with_room()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_setup_initial_connection_state_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_send_welcome_event_already_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_send_welcome_event_close_message_sent()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_send_welcome_event_cannot_call_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **Handle a chat message from a player.      Args:         websocket: The WebSocket** (1 connections) — `server/realtime/websocket_handler.py`
-- **Test handle_chat_message handles chat message.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **Unit tests to fill coverage gaps in websocket_handler.py.  These tests target sp** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **Test _handle_websocket_message_loop re-raises exception when should_raise is Tru** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- *... and 16 more nodes in this community*
+- **PlayerNameExtractor** (104 connections) — `server/realtime/player_name_utils.py`
+- **TestPlayerNameExtractor** (62 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **player_event_handlers_utils.py** (16 connections) — `server/realtime/player_event_handlers_utils.py`
+- **Any** (14 connections)
+- **player_name_utils.py** (13 connections) — `server/realtime/player_name_utils.py`
+- **UUID** (8 connections)
+- **._validate_name_not_uuid()** (8 connections) — `server/realtime/player_name_utils.py`
+- **.extract_and_validate_player_name()** (8 connections) — `server/realtime/player_name_utils.py`
+- **._try_fallback_name_sources()** (7 connections) — `server/realtime/player_name_utils.py`
+- **._is_uuid_string()** (6 connections) — `server/realtime/player_name_utils.py`
+- **._is_valid_name_string()** (6 connections) — `server/realtime/player_name_utils.py`
+- **._is_valid_name()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._try_player_username()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._try_user_object_name()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._validate_name_basic()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._log_uuid_validation_failure()** (5 connections) — `server/realtime/player_name_utils.py`
+- **.extract_player_name()** (5 connections) — `server/realtime/player_name_utils.py`
+- **.validate_player_name_not_uuid()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._extract_initial_player_name()** (4 connections) — `server/realtime/player_name_utils.py`
+- **._get_name_from_user_object()** (4 connections) — `server/realtime/player_name_utils.py`
+- **._check_uuid_string_matches()** (4 connections) — `server/realtime/player_name_utils.py`
+- **.is_valid_name_for_occupant()** (4 connections) — `server/realtime/player_name_utils.py`
+- **test_player_name_utils.py** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.test_extract_player_name_user_exception()** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.__init__()** (3 connections) — `server/realtime/player_name_utils.py`
+- *... and 141 more nodes in this community*
 
 ## Relationships
 
-- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (7 shared connections)
-- [Player Combat XP](Player_Combat_XP.md) (7 shared connections)
-- [Container API Endpoints](Container_API_Endpoints.md) (4 shared connections)
-- [Application DI Bundles](Application_DI_Bundles.md) (4 shared connections)
-- [Game State Provider Tests](Game_State_Provider_Tests.md) (2 shared connections)
-- [Pylint Unique Findings](Pylint_Unique_Findings.md) (1 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (14 shared connections)
+- [API Type Guards](API_Type_Guards.md) (12 shared connections)
+- [Services Combat Initialization](Services_Combat_Initialization.md) (5 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
+- [Container Persistence Queries](Container_Persistence_Queries.md) (2 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (2 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (1 shared connections)
+- [Container System Architecture](Container_System_Architecture.md) (1 shared connections)
+- [NPC Utility Functions](NPC_Utility_Functions.md) (1 shared connections)
+- [Look Command Helpers](Look_Command_Helpers.md) (1 shared connections)
+- [Archive Lucidity System](Archive_Lucidity_System.md) (1 shared connections)
+- [Warning Fixes Session](Warning_Fixes_Session.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_handler.py`
-- `server/tests/unit/realtime/test_websocket_handler_core.py`
-- `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- `server/realtime/player_event_handlers_utils.py`
+- `server/realtime/player_name_utils.py`
+- `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 107 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 564 (98%)
+- INFERRED: 9 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

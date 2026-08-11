@@ -1,61 +1,78 @@
 # NPC Death Lifecycle
 
-> 140 nodes
+> 563 nodes
 
 ## Key Concepts
 
 - **BaseCommand** (150 connections) — `server/models/command_base.py`
+- **command.py** (96 connections) — `server/models/command.py`
+- **CommandType** (84 connections) — `server/models/command_base.py`
 - **CommandFactory** (82 connections) — `server/utils/command_factories.py`
-- **_build_command_factory()** (6 connections) — `server/utils/command_parser.py`
-- **.create_npc_command()** (4 connections) — `server/utils/command_factories.py`
-- **.create_spawn_command()** (4 connections) — `server/utils/command_factories.py`
-- **_build_command_factory_part1()** (4 connections) — `server/utils/command_parser.py`
-- **_build_command_factory_part2()** (4 connections) — `server/utils/command_parser.py`
-- **.create_say_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_local_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_system_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_emote_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_me_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_pose_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_whisper_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_reply_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_channel_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_look_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_go_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_sit_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_stand_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_lie_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_ground_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_follow_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_unfollow_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_following_command()** (3 connections) — `server/utils/command_factories.py`
-- *... and 115 more nodes in this community*
+- **test_command_communication.py** (45 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_command_admin.py** (42 connections) — `server/tests/unit/models/test_command_admin.py`
+- **command_base.py** (23 connections) — `server/models/command_base.py`
+- **test_command_player_state.py** (23 connections) — `server/tests/unit/models/test_command_player_state.py`
+- **Direction** (22 connections) — `server/models/command_base.py`
+- **test_command_base.py** (22 connections) — `server/tests/unit/models/test_command_base.py`
+- **SummonCommand** (21 connections) — `server/models/command_admin.py`
+- **test_command_exploration.py** (20 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_command_utility.py** (20 connections) — `server/tests/unit/models/test_command_utility.py`
+- **command_communication.py** (19 connections) — `server/models/command_communication.py`
+- **LookCommand** (19 connections) — `server/models/command_exploration.py`
+- **TeleportCommand** (18 connections) — `server/models/command_admin.py`
+- **command_utility.py** (18 connections) — `server/models/command_utility.py`
+- **test_command_alias.py** (18 connections) — `server/tests/unit/models/test_command_alias.py`
+- **AliasCommand** (17 connections) — `server/models/command_alias.py`
+- **WhisperCommand** (15 connections) — `server/models/command_communication.py`
+- **command_player_state.py** (15 connections) — `server/models/command_player_state.py`
+- **LieCommand** (15 connections) — `server/models/command_player_state.py`
+- **command_admin.py** (14 connections) — `server/models/command_admin.py`
+- **command_combat.py** (14 connections) — `server/models/command_combat.py`
+- **GoCommand** (14 connections) — `server/models/command_exploration.py`
+- *... and 538 more nodes in this community*
 
 ## Relationships
 
-- [Zone Config Loader](Zone_Config_Loader.md) (37 shared connections)
-- [NPC Occupant Processor](NPC_Occupant_Processor.md) (8 shared connections)
-- [Emote Schema Validator](Emote_Schema_Validator.md) (8 shared connections)
-- [Communication Command Models](Communication_Command_Models.md) (8 shared connections)
-- [Environmental Container Scenario](Environmental_Container_Scenario.md) (6 shared connections)
-- [Admin Summon Command](Admin_Summon_Command.md) (6 shared connections)
-- [Game Terminal Panels](Game_Terminal_Panels.md) (5 shared connections)
-- [Integer Coercion Utils](Integer_Coercion_Utils.md) (4 shared connections)
-- [Chat NATS Publisher](Chat_NATS_Publisher.md) (4 shared connections)
-- [Command Helper Utilities](Command_Helper_Utilities.md) (3 shared connections)
-- [Realtime Errors Error](Realtime_Errors_Error.md) (2 shared connections)
-- [Command Parser](Command_Parser.md) (2 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (45 shared connections)
+- [Chat Panel Components](Chat_Panel_Components.md) (35 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (28 shared connections)
+- [Admin Summon Command](Admin_Summon_Command.md) (27 shared connections)
+- [Admin Command Models](Admin_Command_Models.md) (26 shared connections)
+- [NPC Definition Admin API](NPC_Definition_Admin_API.md) (22 shared connections)
+- [NPC Occupant Processor](NPC_Occupant_Processor.md) (21 shared connections)
+- [Moderation Command Models](Moderation_Command_Models.md) (13 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (11 shared connections)
+- [Container Open Events](Container_Open_Events.md) (5 shared connections)
+- [Character Creation API](Character_Creation_API.md) (3 shared connections)
+- [Base Command Models](Base_Command_Models.md) (3 shared connections)
 
 ## Source Files
 
+- `server/models/command.py`
+- `server/models/command_admin.py`
+- `server/models/command_alias.py`
 - `server/models/command_base.py`
-- `server/utils/command_factories.py`
-- `server/utils/command_parser.py`
+- `server/models/command_channel.py`
+- `server/models/command_combat.py`
+- `server/models/command_communication.py`
+- `server/models/command_exploration.py`
+- `server/models/command_follow.py`
+- `server/models/command_inventory.py`
+- `server/models/command_magic.py`
+- `server/models/command_party.py`
+- `server/models/command_player_state.py`
+- `server/models/command_utility.py`
+- `server/tests/unit/models/test_command_admin.py`
+- `server/tests/unit/models/test_command_alias.py`
+- `server/tests/unit/models/test_command_base.py`
+- `server/tests/unit/models/test_command_communication.py`
+- `server/tests/unit/models/test_command_exploration.py`
+- `server/tests/unit/models/test_command_player_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 441 (86%)
-- INFERRED: 72 (14%)
+- EXTRACTED: 1909 (87%)
+- INFERRED: 289 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

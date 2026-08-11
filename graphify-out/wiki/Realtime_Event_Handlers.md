@@ -8,7 +8,6 @@
 - **config.ts** (27 connections) — `client/src/utils/config.ts`
 - **logoutHandler.ts** (26 connections) — `client/src/utils/logoutHandler.ts`
 - **API_V1_BASE** (18 connections) — `client/src/utils/config.ts`
-- **getVersionedApiBaseUrl()** (15 connections) — `client/src/utils/config.ts`
 - **secureTokenStorage** (13 connections) — `client/src/utils/security.ts`
 - **logoutHandler()** (12 connections) — `client/src/utils/logoutHandler.ts`
 - **SkillsPage.tsx** (9 connections) — `client/src/pages/SkillsPage.tsx`
@@ -20,6 +19,7 @@
 - **config.test.ts** (5 connections) — `client/src/utils/__tests__/config.test.ts`
 - **secureTokenStorage.test.ts** (5 connections) — `client/src/utils/__tests__/secureTokenStorage.test.ts`
 - **readLogoutErrorMessage()** (5 connections) — `client/src/utils/logoutHandler.ts`
+- **startLoginGracePeriod.ts** (4 connections) — `client/src/mythosApp/startLoginGracePeriod.ts`
 - **csrfProtection.test.ts** (4 connections) — `client/src/utils/__tests__/csrfProtection.test.ts`
 - **logoutHandler.test.ts** (4 connections) — `client/src/utils/__tests__/logoutHandler.test.ts`
 - **security.test-utils.ts** (4 connections) — `client/src/utils/__tests__/security.test-utils.ts`
@@ -33,23 +33,24 @@
 
 ## Relationships
 
-- [WebSocket Player Helpers](WebSocket_Player_Helpers.md) (12 shared connections)
+- [Communication Command Classes](Communication_Command_Classes.md) (14 shared connections)
 - [Chat Panel Separation](Chat_Panel_Separation.md) (10 shared connections)
+- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (6 shared connections)
 - [Bug Investigation Guide](Bug_Investigation_Guide.md) (6 shared connections)
-- [Map Editing Hooks](Map_Editing_Hooks.md) (6 shared connections)
 - [Fresh Session Test Guide](Fresh_Session_Test_Guide.md) (5 shared connections)
 - [Character Creation Screens](Character_Creation_Screens.md) (4 shared connections)
-- [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (4 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (4 shared connections)
+- [Archive Circuit Breaker](Archive_Circuit_Breaker.md) (4 shared connections)
 - [Room Planning Archive](Room_Planning_Archive.md) (4 shared connections)
-- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (4 shared connections)
+- [WebSocket Player Helpers](WebSocket_Player_Helpers.md) (4 shared connections)
 - [Lie Ground Commands](Lie_Ground_Commands.md) (4 shared connections)
-- [WebSocket Message Schemas](WebSocket_Message_Schemas.md) (3 shared connections)
-- [Game Terminal Container](Game_Terminal_Container.md) (3 shared connections)
+- [Cursor Bug Agents](Cursor_Bug_Agents.md) (3 shared connections)
 
 ## Source Files
 
 - `client/src/__tests__/App.logout.test.tsx`
 - `client/src/__tests__/LogoutFlow.integration.test.tsx`
+- `client/src/mythosApp/startLoginGracePeriod.ts`
 - `client/src/pages/SkillsPage.tsx`
 - `client/src/pages/__tests__/SkillsPage.test.tsx`
 - `client/src/utils/__tests__/config.test.ts`
@@ -64,7 +65,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 285 (99%)
+- EXTRACTED: 274 (99%)
 - INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 

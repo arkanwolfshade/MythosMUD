@@ -21,7 +21,7 @@
 - [NPC Death Message Bug](NPC_Death_Message_Bug.md) (1 shared connections)
 - [E 2 E Phase Code](E_2_E_Phase_Code.md) (1 shared connections)
 - [Dependency Injection Dependencies](Dependency_Injection_Dependencies.md) (1 shared connections)
-- [test_get_valid_exits_empty_room](test_get_valid_exits_empty_room.md) (1 shared connections)
+- [NPCMaintenanceConfig](NPCMaintenanceConfig.md) (1 shared connections)
 - [Realtime Performance Tracker](Realtime_Performance_Tracker.md) (1 shared connections)
 
 ## Source Files

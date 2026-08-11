@@ -1,43 +1,34 @@
 # Cursor Plans Pydantic
 
-> 15 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **handle_time_command()** (14 connections) — `server/commands/time_commands.py`
-- **test_time_commands.py** (8 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_success()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_with_holidays()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_no_holidays()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_holiday_service_error()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_no_holiday_service()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Any** (1 connections)
-- **Handle the time command, exposing the current Mythos time and active holidays.** (1 connections) — `server/commands/time_commands.py`
-- **Unit tests for time command handlers.  Tests the time command functionality.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() returns time information.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() includes active holidays.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() handles no active holidays.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() handles holiday service errors.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() handles missing holiday service.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **.add_message()** (4 connections) — `server/realtime/message_queue.py`
+- **Any** (4 connections)
+- **.cleanup_old_messages()** (4 connections) — `server/realtime/message_queue.py`
+- **._is_message_recent()** (4 connections) — `server/realtime/message_queue.py`
+- **.get_messages()** (3 connections) — `server/realtime/message_queue.py`
+- **.get_stats()** (3 connections) — `server/realtime/message_queue.py`
+- **Add a message to a player's pending message queue.          Args:             pl** (1 connections) — `server/realtime/message_queue.py`
+- **Get all pending messages for a player and clear the queue.          Args:** (1 connections) — `server/realtime/message_queue.py`
+- **Clean up old messages to prevent memory bloat.          Args:             max_ag** (1 connections) — `server/realtime/message_queue.py`
+- **Check if a message is recent (within the specified age limit).          Args:** (1 connections) — `server/realtime/message_queue.py`
+- **Get message queue statistics.          Returns:             Dict[str, Any]: Stat** (1 connections) — `server/realtime/message_queue.py`
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
-- [Chat NATS Publisher](Chat_NATS_Publisher.md) (1 shared connections)
-- [Game State Provider](Game_State_Provider.md) (1 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
-- [Combat UUID Display Bug](Combat_UUID_Display_Bug.md) (1 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (5 shared connections)
+- [Async Persistence Migration](Async_Persistence_Migration.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/time_commands.py`
-- `server/tests/unit/commands/test_time_commands.py`
+- `server/realtime/message_queue.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 25 (93%)
+- INFERRED: 2 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

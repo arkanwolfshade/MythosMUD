@@ -1,8 +1,8 @@
 # get_logger()
 
-> God node · 509 connections · `server/structured_logging/enhanced_logging_config.py`
+> God node · 510 connections · `server/structured_logging/enhanced_logging_config.py`
 
-**Community:** [Client Event Store](Client_Event_Store.md)
+**Community:** [Room Occupancy Class](Room_Occupancy_Class.md)
 
 ## Connections by Relation
 
@@ -42,7 +42,6 @@
 - game_tick_processing.py `EXTRACTED`
 - async_persistence.py `EXTRACTED`
 - players.py `EXTRACTED`
-- connection_manager_methods.py `EXTRACTED`
 - alias_storage.py `EXTRACTED`
 - websocket_handler.py `EXTRACTED`
 - maps.py `EXTRACTED`
@@ -52,6 +51,7 @@
 - container_persistence.py `EXTRACTED`
 - endpoints.py `EXTRACTED`
 - command_handler_unified.py `EXTRACTED`
+- connection_manager_methods.py `EXTRACTED`
 
 ### rationale_for
 - Get a Structlog logger with the specified name.      This ensures all loggers ar `EXTRACTED`

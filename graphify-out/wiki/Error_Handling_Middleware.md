@@ -1,25 +1,19 @@
 # Error Handling Middleware
 
-> 53 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **error_handling_middleware.py** (19 connections) — `server/middleware/error_handling_middleware.py`
 - **ErrorHandlingMiddleware** (14 connections) — `server/middleware/error_handling_middleware.py`
 - **test_error_handling_middleware.py** (13 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
-- **register_error_handlers()** (11 connections) — `server/middleware/error_handling_middleware.py`
 - **._handle_exception()** (10 connections) — `server/middleware/error_handling_middleware.py`
-- **setup_error_handling()** (8 connections) — `server/middleware/error_handling_middleware.py`
 - **request_id_from_scope()** (7 connections) — `server/middleware/error_handling_middleware.py`
 - **.log_exception()** (7 connections) — `server/middleware/error_handling_middleware.py`
-- **__init__.py** (6 connections) — `server/middleware/__init__.py`
 - **extract_user_id_from_non_mapping()** (6 connections) — `server/middleware/error_handling_middleware.py`
 - **.__call__()** (6 connections) — `server/middleware/error_handling_middleware.py`
 - **.dispatch()** (6 connections) — `server/middleware/error_handling_middleware.py`
-- **add_error_handling_middleware()** (6 connections) — `server/middleware/error_handling_middleware.py`
 - **_error_log_kwargs()** (5 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
 - **_UserObjectWithId** (4 connections) — `server/middleware/error_handling_middleware.py`
-- **FastAPI** (4 connections)
 - **_UserWithGet** (4 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
 - **test_log_exception_adds_user_id_for_mapping_user()** (4 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
 - **Scope** (3 connections)
@@ -29,31 +23,28 @@
 - **test_log_exception_mapping_user_missing_id_sets_none()** (3 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
 - **Receive** (2 connections)
 - **Send** (2 connections)
-- *... and 28 more nodes in this community*
+- **Exception** (2 connections)
+- **Request** (2 connections)
+- **.__init__()** (2 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
+- **.get()** (2 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
+- **test_request_id_from_scope_non_str_coerced()** (2 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
+- **test_extract_user_id_from_non_mapping()** (2 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [Player Position Service](Player_Position_Service.md) (4 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (4 shared connections)
-- [Combat Command Handler](Combat_Command_Handler.md) (2 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [Container API Endpoints](Container_API_Endpoints.md) (1 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (1 shared connections)
-- [Cursor Skills Frontend](Cursor_Skills_Frontend.md) (1 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (9 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/middleware/__init__.py`
 - `server/middleware/error_handling_middleware.py`
 - `server/tests/unit/middleware/test_error_handling_middleware.py`
 
 ## Audit Trail
 
-- EXTRACTED: 179 (93%)
-- INFERRED: 14 (7%)
+- EXTRACTED: 126 (94%)
+- INFERRED: 8 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

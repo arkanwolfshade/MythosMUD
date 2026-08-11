@@ -1,40 +1,42 @@
 # SQLAlchemy Model Base
 
-> 16 nodes
+> 124 nodes
 
 ## Key Concepts
 
 - **test_nats_message_handler.py** (72 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_start_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_stop_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_standardized_chat_subjects_partial_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_subject_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_unsubscribe_from_subject_not_found()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_unsubscribe_from_subject_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_dlq_on_final_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_event_subjects_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_standardized_chat_subjects_nats_subscribe_error_handled()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_standardized_chat_subjects_nats_error_handled()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_subject_nats_error_returns_false()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_connection_manager_resolution_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_unknown_message_id_defaults()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_attribute_error_handled()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_connection_manager_property_injected()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_connection_manager_property_fallback()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_connection_manager_setter()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_start_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_start_without_event_subscriptions()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_stop_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_chat_subjects_no_subject_manager()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_subscribe_to_standardized_chat_subjects_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_subscribe_to_room_no_subject_manager()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_get_active_subjects()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_subscribe_to_subzone_already_subscribed()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_track_player_subzone_subscription()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_nats_message_runtime_error()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Unit tests for NATS message handler.  Tests the NATSMessageHandler class lifecyc** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _subscribe_to_standardized_chat_subjects() successfully subscribes.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _unsubscribe_from_subject() handles subscription not found.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test subscribe_to_room raises error when subject manager unavailable.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test get_active_subjects returns subjects.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test subscribe_to_subzone increments count when already subscribed.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test track_player_subzone_subscription tracks subscription.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _handle_nats_message handles RuntimeError and adds to DLQ.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_subject_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_unsubscribe_from_subject_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- *... and 99 more nodes in this community*
 
 ## Relationships
 
-- [Inventory Command Models](Inventory_Command_Models.md) (5 shared connections)
-- [Circuit Breaker Core](Circuit_Breaker_Core.md) (3 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [E 2 E Scenarios Lucidity](E_2_E_Scenarios_Lucidity.md) (2 shared connections)
-- [Vim Editor Guidelines](Vim_Editor_Guidelines.md) (1 shared connections)
-- [Components Map Performance](Components_Map_Performance.md) (1 shared connections)
-- [Services Environmental Container](Services_Environmental_Container.md) (1 shared connections)
-- [test_query_rooms_with_exits_async_other_error_raises](test_query_rooms_with_exits_async_other_error_raises.md) (1 shared connections)
-- [test_process_exits_for_room_with_direction](test_process_exits_for_room_with_direction.md) (1 shared connections)
-- [Persistence Async Migration](Persistence_Async_Migration.md) (1 shared connections)
-- [test_load_room_cache_async_other_error_raises](test_load_room_cache_async_other_error_raises.md) (1 shared connections)
-- [Archive Planning Chat](Archive_Planning_Chat.md) (1 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (15 shared connections)
+- [Circuit Breaker Core](Circuit_Breaker_Core.md) (4 shared connections)
+- [Vim Editor Guidelines](Vim_Editor_Guidelines.md) (3 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (2 shared connections)
 
 ## Source Files
 
@@ -42,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 95 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 267 (99%)
+- INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

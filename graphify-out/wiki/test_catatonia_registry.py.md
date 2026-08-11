@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_on_player_disconnect_not_in_party_no_op()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **Disconnect of player not in a party is a no-op.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_create_ground_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_ground_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [Command Alias Model](Command_Alias_Model.md) (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 

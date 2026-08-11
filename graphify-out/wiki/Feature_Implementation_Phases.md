@@ -23,7 +23,9 @@
 
 ## Relationships
 
-- [Communication Command Flows](Communication_Command_Flows.md) (6 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (4 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
 - [Chat Mute Admin API](Chat_Mute_Admin_API.md) (1 shared connections)
 
 ## Source Files

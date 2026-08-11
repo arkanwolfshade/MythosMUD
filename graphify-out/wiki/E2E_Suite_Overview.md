@@ -1,65 +1,50 @@
 # E2E Suite Overview
 
-> 94 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **admin_teleport_commands.py** (38 connections) — `server/commands/admin_teleport_commands.py`
-- **get_admin_actions_logger()** (25 connections) — `server/structured_logging/admin_actions_logger.py`
-- **teleport_helpers.py** (23 connections) — `server/commands/teleport_helpers.py`
-- **handle_teleport_command()** (20 connections) — `server/commands/admin_teleport_commands.py`
-- **goto_helpers.py** (20 connections) — `server/commands/goto_helpers.py`
-- **admin_actions_logger.py** (18 connections) — `server/structured_logging/admin_actions_logger.py`
-- **handle_goto_command()** (15 connections) — `server/commands/admin_teleport_commands.py`
-- **validate_admin_permission()** (13 connections) — `server/commands/admin_permission_utils.py`
-- **admin_teleport_utils.py** (13 connections) — `server/commands/admin_teleport_utils.py`
-- **create_teleport_effect_message()** (13 connections) — `server/commands/admin_teleport_utils.py`
-- **test_admin_commands_helpers.py** (13 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **broadcast_teleport_effects()** (11 connections) — `server/commands/admin_teleport_utils.py`
-- **get_online_player_by_display_name()** (10 connections) — `server/commands/admin_teleport_utils.py`
-- **notify_player_of_teleport()** (10 connections) — `server/commands/admin_teleport_utils.py`
-- **handle_confirm_teleport_command()** (9 connections) — `server/commands/admin_teleport_commands.py`
-- **handle_confirm_goto_command()** (9 connections) — `server/commands/admin_teleport_commands.py`
-- **execute_goto_teleport()** (9 connections) — `server/commands/goto_helpers.py`
-- **Any** (9 connections)
-- **execute_confirm_teleport()** (9 connections) — `server/commands/teleport_helpers.py`
-- **admin_permission_utils.py** (8 connections) — `server/commands/admin_permission_utils.py`
-- **execute_confirm_goto()** (8 connections) — `server/commands/goto_helpers.py`
-- **update_player_room_location()** (8 connections) — `server/commands/teleport_helpers.py`
-- **Any** (7 connections)
-- **log_goto_failure()** (7 connections) — `server/commands/goto_helpers.py`
-- **broadcast_teleport_updates()** (7 connections) — `server/commands/teleport_helpers.py`
-- *... and 69 more nodes in this community*
+- **container_helpers.py** (26 connections) — `server/persistence/container_helpers.py`
+- **update_container_items()** (10 connections) — `server/persistence/container_helpers.py`
+- **fetch_container_items()** (9 connections) — `server/persistence/container_helpers.py`
+- **_coerce_row_quantity()** (7 connections) — `server/persistence/container_helpers.py`
+- **build_update_query()** (6 connections) — `server/persistence/container_helpers.py`
+- **_item_dict_from_contents_row()** (5 connections) — `server/persistence/container_helpers.py`
+- **UUID** (3 connections)
+- **test_coerce_row_quantity()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- **_metadata_dict_from_cell()** (2 connections) — `server/persistence/container_helpers.py`
+- **PsycopgConnection** (2 connections)
+- **datetime** (2 connections)
+- **PsycopgCursor** (1 connections)
+- **Composed** (1 connections)
+- **Helper functions for container persistence operations.** (1 connections) — `server/persistence/container_helpers.py`
+- **Normalize quantity/position from DB row cells; bool -> 1 (not coerce_int(False)=** (1 connections) — `server/persistence/container_helpers.py`
+- **Fetch container items directly from normalized tables.      Queries container_** (1 connections) — `server/persistence/container_helpers.py`
+- **Update container items using stored procedures.      Args:         cursor: Da** (1 connections) — `server/persistence/container_helpers.py`
+- **Build SQL update query for container.      Args:         updates: List of upd** (1 connections) — `server/persistence/container_helpers.py`
+- **Row quantity/position coercion matches item quantity rules (PR #461 / int_coerci** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
 
 ## Relationships
 
-- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (15 shared connections)
-- [Client Event Store](Client_Event_Store.md) (13 shared connections)
-- [Spell Effect Protocols](Spell_Effect_Protocols.md) (6 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (6 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (5 shared connections)
-- [Chat NATS Publisher](Chat_NATS_Publisher.md) (5 shared connections)
-- [Pylint Unique Findings](Pylint_Unique_Findings.md) (4 shared connections)
-- [Client Security Utilities](Client_Security_Utilities.md) (4 shared connections)
-- [Structured Logging Admin](Structured_Logging_Admin.md) (4 shared connections)
-- [Admin Status Commands](Admin_Status_Commands.md) (3 shared connections)
-- [Room Drop Renderer](Room_Drop_Renderer.md) (1 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
+- [Maps API Endpoints](Maps_API_Endpoints.md) (10 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
+- [Player Save Preparer](Player_Save_Preparer.md) (3 shared connections)
+- [Investigations Sessions Xx](Investigations_Sessions_Xx.md) (3 shared connections)
+- [Communication Command Models](Communication_Command_Models.md) (3 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (2 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (2 shared connections)
+- [Draggable Panel UI](Draggable_Panel_UI.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_permission_utils.py`
-- `server/commands/admin_teleport_commands.py`
-- `server/commands/admin_teleport_utils.py`
-- `server/commands/goto_helpers.py`
-- `server/commands/teleport_helpers.py`
-- `server/structured_logging/admin_actions_logger.py`
-- `server/tests/unit/commands/test_admin_commands_helpers.py`
+- `server/persistence/container_helpers.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 472 (99%)
-- INFERRED: 6 (1%)
+- EXTRACTED: 81 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

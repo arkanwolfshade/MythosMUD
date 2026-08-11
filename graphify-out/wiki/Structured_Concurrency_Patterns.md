@@ -1,41 +1,45 @@
 # Structured Concurrency Patterns
 
-> 8 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **wearable_container_service.py** (20 connections) — `server/services/wearable_container_service.py`
-- **_get_enum_value()** (8 connections) — `server/services/wearable_container_service.py`
-- **test_get_enum_value_with_enum()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_get_enum_value_with_string()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Wearable container service for unified container system.  As documented in the r** (1 connections) — `server/services/wearable_container_service.py`
-- **Safely get enum value, handling both enum instances and string values.      When** (1 connections) — `server/services/wearable_container_service.py`
-- **Test _get_enum_value returns value from enum instance.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test _get_enum_value returns string value unchanged.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **ProfessionCacheService** (15 connections) — `server/caching/cache_service.py`
+- **bench_cache_professions.py** (7 connections) — `scripts/bench_cache_professions.py`
+- **bench_profession_cache()** (6 connections) — `scripts/bench_cache_professions.py`
+- **_FakePersistence** (5 connections) — `scripts/bench_cache_professions.py`
+- **.get_all_professions()** (5 connections) — `scripts/bench_cache_professions.py`
+- **_get_empty_dict()** (4 connections) — `scripts/bench_cache_professions.py`
+- **.__init__()** (4 connections) — `server/caching/cache_service.py`
+- **Any** (3 connections)
+- **main()** (2 connections) — `scripts/bench_cache_professions.py`
+- **.invalidate_professions()** (2 connections) — `server/caching/cache_service.py`
+- **.__init__()** (1 connections) — `scripts/bench_cache_professions.py`
+- **Professions cache micro-benchmark for CI artifacts. Measures miss vs. hit timing** (1 connections) — `scripts/bench_cache_professions.py`
+- **Helper function to return empty dict for mock methods.** (1 connections) — `scripts/bench_cache_professions.py`
+- **Service for caching profession data.** (1 connections) — `server/caching/cache_service.py`
+- **Initialize the profession cache service.          Args:             persistence:** (1 connections) — `server/caching/cache_service.py`
+- **Invalidate all profession caches.** (1 connections) — `server/caching/cache_service.py`
 
 ## Relationships
 
-- [Schedule Service Loader](Schedule_Service_Loader.md) (5 shared connections)
-- [Exploration Command Factories](Exploration_Command_Factories.md) (4 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (3 shared connections)
-- [Combat Player Broadcasts](Combat_Player_Broadcasts.md) (3 shared connections)
-- [Container Component Capacity](Container_Component_Capacity.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [Character Creation Service](Character_Creation_Service.md) (1 shared connections)
-- [Look Player Command](Look_Player_Command.md) (1 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
-- [E 2 E Testing Guide](E_2_E_Testing_Guide.md) (1 shared connections)
-- [Pre-commit Hook Analysis](Pre-commit_Hook_Analysis.md) (1 shared connections)
+- [Alias Command Models](Alias_Command_Models.md) (4 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
+- [Command Factory Tests](Command_Factory_Tests.md) (2 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
+- [Schedule Service Loader](Schedule_Service_Loader.md) (1 shared connections)
+- [Grace Period Blocking Tests](Grace_Period_Blocking_Tests.md) (1 shared connections)
+- [WebSocket Code Review](WebSocket_Code_Review.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/wearable_container_service.py`
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `scripts/bench_cache_professions.py`
+- `server/caching/cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 52 (88%)
+- INFERRED: 7 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

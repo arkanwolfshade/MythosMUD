@@ -1,60 +1,67 @@
 # Combat Aggro Threat
 
-> 64 nodes
+> 140 nodes
 
 ## Key Concepts
 
-- **test_websocket_helpers.py** (36 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **get_npc_name_from_instance()** (12 connections) — `server/realtime/websocket_helpers.py`
-- **check_shutdown_and_reject()** (12 connections) — `server/realtime/websocket_helpers.py`
-- **is_client_disconnected_exception()** (10 connections) — `server/realtime/websocket_helpers.py`
-- **load_player_mute_data()** (7 connections) — `server/realtime/websocket_helpers.py`
-- **test_get_npc_name_from_instance_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_npc_name_from_instance_not_found()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_npc_name_from_instance_no_name_attribute()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_npc_name_from_instance_import_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_npc_name_from_instance_runtime_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_check_shutdown_and_reject_not_shutting_down()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_check_shutdown_and_reject_shutting_down()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_check_shutdown_and_reject_websocket_disconnect()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_load_player_mute_data_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_load_player_mute_data_import_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_validate_occupant_name_valid()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_validate_occupant_name_uuid()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_validate_occupant_name_empty()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_validate_occupant_name_none()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_validate_occupant_name_not_string()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_occupant_names_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_occupant_names_filters_uuid()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_occupant_names_empty()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_occupant_names_none()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_convert_uuids_to_strings_dict()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- *... and 39 more nodes in this community*
+- **NPCEnteredRoom** (51 connections) — `server/events/event_types.py`
+- **test_follow_service.py** (38 connections) — `server/tests/unit/game/test_follow_service.py`
+- **FollowService** (36 connections) — `server/game/follow_service.py`
+- **follow_service.py** (24 connections) — `server/game/follow_service.py`
+- **UUID** (14 connections)
+- **_str_id()** (13 connections) — `server/game/follow_service.py`
+- **.__init__()** (10 connections) — `server/game/follow_service.py`
+- **.request_follow()** (9 connections) — `server/game/follow_service.py`
+- **._handle_player_follower_move()** (9 connections) — `server/game/follow_service.py`
+- **._handle_npc_follower_move()** (9 connections) — `server/game/follow_service.py`
+- **._send_result_to_player()** (8 connections) — `server/game/follow_service.py`
+- **._send_follow_state_to_player()** (8 connections) — `server/game/follow_service.py`
+- **.unfollow()** (8 connections) — `server/game/follow_service.py`
+- **Any** (7 connections)
+- **._expire_pending_requests()** (7 connections) — `server/game/follow_service.py`
+- **.accept_follow()** (7 connections) — `server/game/follow_service.py`
+- **.decline_follow()** (7 connections) — `server/game/follow_service.py`
+- **_is_npc_follow_value()** (6 connections) — `server/game/follow_service.py`
+- **.get_followers()** (6 connections) — `server/game/follow_service.py`
+- **.get_following_display()** (6 connections) — `server/game/follow_service.py`
+- **._ensure_follower_standing()** (6 connections) — `server/game/follow_service.py`
+- **._on_player_entered_room()** (6 connections) — `server/game/follow_service.py`
+- **._send_follow_request_to_target()** (5 connections) — `server/game/follow_service.py`
+- **.get_following()** (5 connections) — `server/game/follow_service.py`
+- **.get_following_display_name()** (5 connections) — `server/game/follow_service.py`
+- *... and 115 more nodes in this community*
 
 ## Relationships
 
-- [WebSocket Initial State](WebSocket_Initial_State.md) (16 shared connections)
-- [Async Persistence Layer](Async_Persistence_Layer.md) (9 shared connections)
-- [Container API Endpoints](Container_API_Endpoints.md) (3 shared connections)
-- [NPC Service Tests](NPC_Service_Tests.md) (2 shared connections)
-- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (2 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
-- [NATS Subject Patterns](NATS_Subject_Patterns.md) (1 shared connections)
-- [Game Tick Processing](Game_Tick_Processing.md) (1 shared connections)
-- [Player Combat XP](Player_Combat_XP.md) (1 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
-- [Services Lucidity Repository](Services_Lucidity_Repository.md) (1 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (21 shared connections)
+- [Client Event Store](Client_Event_Store.md) (11 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (7 shared connections)
+- [Archive Advanced Chat](Archive_Advanced_Chat.md) (6 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (5 shared connections)
+- [Calendar Holiday Schemas](Calendar_Holiday_Schemas.md) (4 shared connections)
+- [Connection Health Monitor](Connection_Health_Monitor.md) (4 shared connections)
+- [NPC Event Handler Tests](NPC_Event_Handler_Tests.md) (4 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (3 shared connections)
+- [Application Config Settings](Application_Config_Settings.md) (3 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (3 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_helpers.py`
-- `server/tests/unit/realtime/test_websocket_helpers.py`
+- `server/events/event_types.py`
+- `server/game/follow_service.py`
+- `server/npc/lifecycle_manager.py`
+- `server/npc/population_control.py`
+- `server/npc/spawning_service.py`
+- `server/tests/integration/test_follow_flow.py`
+- `server/tests/unit/game/test_follow_service.py`
+- `server/tests/unit/realtime/test_event_handler.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 188 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 465 (94%)
+- INFERRED: 28 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

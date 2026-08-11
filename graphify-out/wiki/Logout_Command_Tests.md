@@ -34,7 +34,7 @@
 ## Relationships
 
 - [Logging Migration Examples](Logging_Migration_Examples.md) (8 shared connections)
-- [Combat UUID Display Bug](Combat_UUID_Display_Bug.md) (1 shared connections)
+- [Async Persistence Types](Async_Persistence_Types.md) (1 shared connections)
 
 ## Source Files
 

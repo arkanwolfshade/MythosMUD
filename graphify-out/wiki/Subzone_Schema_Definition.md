@@ -1,47 +1,50 @@
 # Subzone Schema Definition
 
-> 23 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **GameTerminalContext.test.tsx** (18 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **useGameTerminalContext.ts** (9 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
-- **GameTerminalContext.tsx** (8 connections) — `client/src/contexts/GameTerminalContext.tsx`
-- **useGameTerminalContext()** (7 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
-- **ErrorBoundary** (4 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **useConnectionState()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
-- **useSessionState()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
-- **useGameState()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
-- **useGameActions()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
-- **GameTerminalProvider()** (3 connections) — `client/src/contexts/GameTerminalContext.tsx`
-- **GameTerminalContextType** (2 connections) — `client/src/contexts/GameTerminalContext.tsx`
-- **GameTerminalContext** (2 connections) — `client/src/contexts/GameTerminalContext.tsx`
-- **TestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **ConnectionTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **SessionTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **GameStateTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **GameActionsTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **GameTerminalProviderProps** (1 connections) — `client/src/contexts/GameTerminalContext.tsx`
-- **createDefaultGameTerminalState()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **useGameTerminalMock** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **.constructor()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **.getDerivedStateFromError()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **.render()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **test_message_handler_factory.py** (21 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **MessageHandlerFactory** (18 connections) — `server/realtime/message_handler_factory.py`
+- **CommandMessageHandler** (9 connections) — `server/realtime/message_handler_factory.py`
+- **test_message_handler_factory_get_handler_found()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_game_command_alias()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_command_message_handler_handle()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_init()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_register_handler()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_get_handler_not_found()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_handle_message_success()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_handle_message_unknown_type()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_handle_message_no_type()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_get_supported_message_types()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_global_message_handler_factory()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **.get_supported_message_types()** (2 connections) — `server/realtime/message_handler_factory.py`
+- **Handler for command messages.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Factory for creating and managing message handlers.      This factory pattern el** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Get a list of supported message types.          Returns:             List of sup** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Unit tests for message handler factory.  Tests the message_handler_factory modul** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **Test CommandMessageHandler.handle() calls handle_command_message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **Test MessageHandlerFactory.__init__() initializes with default handlers.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **Test MessageHandlerFactory.register_handler() registers new handler.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **Test MessageHandlerFactory.get_handler() returns handler when found.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **Test MessageHandlerFactory.get_handler() returns None when not found.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **Test MessageHandlerFactory.handle_message() successfully handles message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [Combat Attack Handler](Combat_Attack_Handler.md) (5 shared connections)
+- [Database Error Handling](Database_Error_Handling.md) (13 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (3 shared connections)
 
 ## Source Files
 
-- `client/src/contexts/GameTerminalContext.tsx`
-- `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- `client/src/contexts/hooks/useGameTerminalContext.ts`
+- `server/realtime/message_handler_factory.py`
+- `server/tests/unit/realtime/test_message_handler_factory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 85 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 94 (94%)
+- INFERRED: 6 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

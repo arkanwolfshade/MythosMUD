@@ -1,11 +1,12 @@
 # Monitoring API Endpoints
 
-> 42 nodes
+> 44 nodes
 
 ## Key Concepts
 
 - **test_room_utils.py** (22 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **room_utils.py** (9 connections) — `server/utils/room_utils.py`
+- **extract_subzone_from_room_id()** (15 connections) — `server/utils/room_utils.py`
+- **room_utils.py** (10 connections) — `server/utils/room_utils.py`
 - **get_zone_from_room_id()** (6 connections) — `server/utils/room_utils.py`
 - **get_plane_from_room_id()** (6 connections) — `server/utils/room_utils.py`
 - **get_local_channel_subject()** (6 connections) — `server/utils/room_utils.py`
@@ -28,12 +29,18 @@
 - **Unit tests for room_utils.  Tests utility functions for room operations.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
 - **Test extract_subzone_from_room_id() extracts subzone.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
 - **Test extract_subzone_from_room_id() extracts different subzone.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
-- **Test extract_subzone_from_room_id() returns None for invalid format.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
-- *... and 17 more nodes in this community*
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (7 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Who Command Tests](Who_Command_Tests.md) (1 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
+- [System Monitoring API](System_Monitoring_API.md) (1 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (1 shared connections)
+- [NATS Chat Broadcasting](NATS_Chat_Broadcasting.md) (1 shared connections)
+- [Game Tick Processing](Game_Tick_Processing.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 123 (100%)
+- EXTRACTED: 140 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

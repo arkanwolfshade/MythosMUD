@@ -1,34 +1,29 @@
 # Investigations Sessions Session
 
-> 11 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **.add_message()** (4 connections) — `server/realtime/message_queue.py`
-- **Any** (4 connections)
-- **.cleanup_old_messages()** (4 connections) — `server/realtime/message_queue.py`
-- **._is_message_recent()** (4 connections) — `server/realtime/message_queue.py`
-- **.get_messages()** (3 connections) — `server/realtime/message_queue.py`
-- **.get_stats()** (3 connections) — `server/realtime/message_queue.py`
-- **Add a message to a player's pending message queue.          Args:             pl** (1 connections) — `server/realtime/message_queue.py`
-- **Get all pending messages for a player and clear the queue.          Args:** (1 connections) — `server/realtime/message_queue.py`
-- **Clean up old messages to prevent memory bloat.          Args:             max_ag** (1 connections) — `server/realtime/message_queue.py`
-- **Check if a message is recent (within the specified age limit).          Args:** (1 connections) — `server/realtime/message_queue.py`
-- **Get message queue statistics.          Returns:             Dict[str, Any]: Stat** (1 connections) — `server/realtime/message_queue.py`
+- **.generate_fake_npc_tell()** (4 connections) — `server/services/fake_hallucination_service.py`
+- **.generate_room_text_overlay()** (4 connections) — `server/services/fake_hallucination_service.py`
+- **UUID** (3 connections)
+- **Any** (2 connections)
+- **Generate a fake NPC tell hallucination.          Args:             player_id: Pl** (1 connections) — `server/services/fake_hallucination_service.py`
+- **Generate a room text overlay hallucination.          Args:             player_id** (1 connections) — `server/services/fake_hallucination_service.py`
 
 ## Relationships
 
-- [NATS Subject Patterns](NATS_Subject_Patterns.md) (5 shared connections)
-- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (2 shared connections)
+- [Hallucination Trigger Service](Hallucination_Trigger_Service.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_queue.py`
+- `server/services/fake_hallucination_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (93%)
-- INFERRED: 2 (7%)
+- EXTRACTED: 15 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -18,9 +18,9 @@
 
 ## Relationships
 
-- [Command Alias Handling](Command_Alias_Handling.md) (3 shared connections)
+- [Legacy Error Sanitization](Legacy_Error_Sanitization.md) (3 shared connections)
 - [NPC Definition Schemas](NPC_Definition_Schemas.md) (2 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 

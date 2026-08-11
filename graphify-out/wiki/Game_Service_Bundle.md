@@ -1,6 +1,6 @@
 # Game Service Bundle
 
-> 174 nodes
+> 124 nodes
 
 ## Key Concepts
 
@@ -18,7 +18,6 @@
 - **Any** (10 connections)
 - **__init__.py** (9 connections) — `server/container_persistence/__init__.py`
 - **UUID** (9 connections)
-- **test_persistence_container_persistence.py** (8 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
 - **.__init__()** (4 connections) — `server/container_persistence/container_persistence.py`
 - **.to_dict()** (4 connections) — `server/container_persistence/container_persistence.py`
 - **test_create_container_invalid_source_type()** (4 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
@@ -29,28 +28,29 @@
 - **test_get_container_database_error()** (4 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
 - **test_create_container_success()** (4 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
 - **test_create_container_no_id_returned()** (4 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- *... and 149 more nodes in this community*
+- **test_create_container_capacity_too_high()** (4 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- *... and 99 more nodes in this community*
 
 ## Relationships
 
-- [Schemas Maps Map](Schemas_Maps_Map.md) (25 shared connections)
-- [Maps API Endpoints](Maps_API_Endpoints.md) (19 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (9 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (22 shared connections)
+- [Character Selection Screens](Character_Selection_Screens.md) (17 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (9 shared connections)
+- [Archive Database Migration](Archive_Database_Migration.md) (6 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (3 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Communication Command Models](Communication_Command_Models.md) (1 shared connections)
 
 ## Source Files
 
 - `server/container_persistence/__init__.py`
 - `server/container_persistence/container_persistence.py`
 - `server/tests/unit/container_persistence/test_container_persistence.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- `server/tests/unit/persistence/test_persistence_container_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 539 (87%)
-- INFERRED: 78 (13%)
+- EXTRACTED: 458 (89%)
+- INFERRED: 54 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

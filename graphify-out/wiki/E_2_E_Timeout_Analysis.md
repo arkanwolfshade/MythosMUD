@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_execute_command_handler_returns_non_dict()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test _execute_command_handler handles handler returning non-dict.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_handle_who_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test handle_who_command when persistence is not available.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
 
 ## Relationships
 
-- [NPC Population Control](NPC_Population_Control.md) (1 shared connections)
+- [Legacy Cleanup Summary](Legacy_Cleanup_Summary.md) (1 shared connections)
+- [Combat UUID Display Bug](Combat_UUID_Display_Bug.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/commands/test_who_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

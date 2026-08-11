@@ -1,37 +1,34 @@
 # Archive Effects System
 
-> 12 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **test_room_id_utils.py** (15 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **.normalize_room_id_for_comparison()** (7 connections) — `server/realtime/room_id_utils.py`
-- **test_normalize_room_id_for_comparison_none()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **test_normalize_room_id_for_comparison_string()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **test_normalize_room_id_for_comparison_whitespace()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **test_normalize_room_id_for_comparison_empty()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **Normalize room ID for comparison.          Args:             rid: Room ID to nor** (1 connections) — `server/realtime/room_id_utils.py`
-- **Unit tests for room ID utilities.  Tests the RoomIDUtils class for room ID norma** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **Test normalize_room_id_for_comparison with None.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **Test normalize_room_id_for_comparison with string.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **Test normalize_room_id_for_comparison strips whitespace.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **Test normalize_room_id_for_comparison returns None for empty string.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **_apply_stat_change_and_build_result()** (8 connections) — `server/commands/admin_setstat_command.py`
+- **_log_admin_set_stat()** (6 connections) — `server/commands/admin_setstat_command.py`
+- **_build_set_stat_error_response()** (6 connections) — `server/commands/admin_setstat_command.py`
+- **_AdminSetStatLogContext** (5 connections) — `server/commands/admin_setstat_command.py`
+- **_AdminSetStatApplyContext** (4 connections) — `server/commands/admin_setstat_command.py`
+- **BaseException** (1 connections)
+- **Context for logging an admin set-stat command (reduces parameter count).** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Context for applying an admin set-stat change (reduces parameter count).** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Log admin set stat command.** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Log error and admin action failure, return error result dict.** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Apply stat change, persist, notify, log; return success result dict.** (1 connections) — `server/commands/admin_setstat_command.py`
 
 ## Relationships
 
-- [NATS Retry Handler](NATS_Retry_Handler.md) (6 shared connections)
-- [Realtime Npc Event](Realtime_Npc_Event.md) (3 shared connections)
-- [Investigations Sessions Session](Investigations_Sessions_Session.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Combat Messaging Tests](Combat_Messaging_Tests.md) (7 shared connections)
+- [Admin Status Commands](Admin_Status_Commands.md) (3 shared connections)
+- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/room_id_utils.py`
-- `server/tests/unit/realtime/test_room_id_utils.py`
+- `server/commands/admin_setstat_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (100%)
+- EXTRACTED: 35 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

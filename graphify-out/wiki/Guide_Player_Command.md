@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_process_single_message_validation_error_type_error()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _process_single_message raises TypeError when field types are invalid.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_last_connected_time_set()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test last_connected_time is set on successful connection.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Relationships
 
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
+- [Room Subscription Helpers](Room_Subscription_Helpers.md) (1 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

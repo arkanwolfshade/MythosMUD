@@ -1,54 +1,50 @@
 # Character Selection Screens
 
-> 44 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **edgeModalLogic.ts** (25 connections) — `client/src/components/map/edgeModalLogic.ts`
-- **EdgeCreationModalParts.tsx** (22 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
-- **useEdgeCreationModal.ts** (19 connections) — `client/src/components/map/useEdgeCreationModal.ts`
-- **useEdgeCreationModal()** (15 connections) — `client/src/components/map/useEdgeCreationModal.ts`
-- **EdgeCreationModal.tsx** (13 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **EdgeValidationResult** (8 connections) — `client/src/components/map/hooks/useMapEditing.ts`
-- **EdgeCreationModal.test.tsx** (7 connections) — `client/src/components/map/__tests__/EdgeCreationModal.test.tsx`
-- **EdgeCreationData** (7 connections) — `client/src/components/map/hooks/useMapEditing.ts`
-- **EdgeCreationModalViewProps** (6 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
-- **EdgeCreationModalProps** (5 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **getInitialEdgeFormState()** (5 connections) — `client/src/components/map/edgeModalLogic.ts`
-- **EdgeCreationModal()** (4 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **filterNodesForTargetSelection()** (4 connections) — `client/src/components/map/edgeModalLogic.ts`
-- **resetEdgeFormFields()** (4 connections) — `client/src/components/map/edgeModalLogic.ts`
-- **isStandardExitDirection()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
-- **findRoomNodeById()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
-- **edgeFormStateFromExisting()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
-- **toggleStringFlag()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
-- **edgeFormCanSubmit()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
-- **deriveEdgeCreationData()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
-- **submitValidatedEdge()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
-- **runValidationAndPreviewSync()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
-- **subscribeEscapeToClose()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
-- **applyModalBodyScrollLock()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
-- **EdgeModalValidationMessagesProps** (2 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
-- *... and 19 more nodes in this community*
+- **test_container_persistence_extended_parse.py** (26 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_empty_list()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_empty_dict()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_string_list()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_string_dict()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_with_default()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_falsy_value()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_falsy_empty_string()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_falsy_empty_list()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_falsy_empty_dict()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_empty()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_missing_item_instance_id()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_non_dict_row()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_string_metadata()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_invalid_json_metadata()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_non_dict_metadata()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_missing_fields()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Unit tests for container persistence: JSONB parsing, item fetch, and ContainerDa** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Test parsing empty list JSONB column.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Test parsing empty dict JSONB column.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Test parsing string JSONB column containing list.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Test parsing string JSONB column containing dict.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Test parsing JSONB column with custom default.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Test parsing falsy but non-None value.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [Player Death Service Tests](Player_Death_Service_Tests.md) (16 shared connections)
-- [Character Creation E2E](Character_Creation_E2E.md) (4 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (17 shared connections)
+- [Communication Command Models](Communication_Command_Models.md) (7 shared connections)
+- [Maps API Endpoints](Maps_API_Endpoints.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/EdgeCreationModal.tsx`
-- `client/src/components/map/EdgeCreationModalParts.tsx`
-- `client/src/components/map/__tests__/EdgeCreationModal.test.tsx`
-- `client/src/components/map/edgeModalLogic.ts`
-- `client/src/components/map/hooks/useMapEditing.ts`
-- `client/src/components/map/useEdgeCreationModal.ts`
+- `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
 
 ## Audit Trail
 
-- EXTRACTED: 206 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 78 (82%)
+- INFERRED: 17 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,7 +33,7 @@
 ## Relationships
 
 - [CI Quality Scripts](CI_Quality_Scripts.md) (2 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 

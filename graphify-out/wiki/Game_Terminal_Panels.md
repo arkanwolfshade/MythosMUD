@@ -1,54 +1,58 @@
 # Game Terminal Panels
 
-> 82 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **test_command_admin.py** (42 connections) — `server/tests/unit/models/test_command_admin.py`
-- **SummonCommand** (21 connections) — `server/models/command_admin.py`
-- **TeleportCommand** (18 connections) — `server/models/command_admin.py`
-- **NPCCommand** (13 connections) — `server/models/command_admin.py`
-- **GotoCommand** (13 connections) — `server/models/command_admin.py`
-- **ShutdownCommand** (12 connections) — `server/models/command_admin.py`
-- **test_npc_command_subcommand_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_npc_command_subcommand_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_validate_prototype_id_invalid_characters()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_quantity_validation_min()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_quantity_validation_max()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_prototype_id_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_prototype_id_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_teleport_command_validate_direction_invalid()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_teleport_command_player_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_teleport_command_player_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_goto_command_player_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_goto_command_player_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **.validate_direction_field()** (3 connections) — `server/models/command_admin.py`
-- **test_npc_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_npc_command_with_subcommand()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_npc_command_with_args()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_validate_prototype_id_valid()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_validate_prototype_id_strips()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- *... and 57 more nodes in this community*
+- **update_room_position()** (14 connections) — `server/api/rooms.py`
+- **list_rooms()** (10 connections) — `server/api/rooms.py`
+- **RoomListResponse** (8 connections) — `server/schemas/rooms/room.py`
+- **RoomPositionUpdateResponse** (8 connections) — `server/schemas/rooms/room.py`
+- **RoomResponse** (8 connections) — `server/schemas/rooms/room.py`
+- **RoomData** (8 connections) — `server/schemas/rooms/room_data.py`
+- **_update_room_position_in_db()** (7 connections) — `server/api/rooms.py`
+- **get_room()** (7 connections) — `server/api/rooms.py`
+- **room.py** (7 connections) — `server/schemas/rooms/room.py`
+- **player_respawn.py** (6 connections) — `server/schemas/players/player_respawn.py`
+- **__init__.py** (6 connections) — `server/schemas/rooms/__init__.py`
+- **Request** (5 connections)
+- **AsyncSession** (4 connections)
+- **_invalidate_room_cache()** (4 connections) — `server/api/rooms.py`
+- **RoomPositionUpdate** (4 connections) — `server/api/rooms.py`
+- **RespawnPlayerData** (4 connections) — `server/schemas/players/player_respawn.py`
+- **room_data.py** (4 connections) — `server/schemas/rooms/room_data.py`
+- **BaseModel** (3 connections)
+- **BaseModel** (2 connections)
+- **BaseModel** (1 connections)
+- **Update room position in database and verify the update succeeded.** (1 connections) — `server/api/rooms.py`
+- **Invalidate room cache to force reload.** (1 connections) — `server/api/rooms.py`
+- **List rooms filtered by plane, zone, and optionally sub_zone.      Returns room d** (1 connections) — `server/api/rooms.py`
+- **Request model for updating room map coordinates.** (1 connections) — `server/api/rooms.py`
+- **Update room map coordinates (admin only).      Updates the map_x and map_y colum** (1 connections) — `server/api/rooms.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [Zone Config Loader](Zone_Config_Loader.md) (17 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (12 shared connections)
-- [Emote Schema Validator](Emote_Schema_Validator.md) (7 shared connections)
-- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (5 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (5 shared connections)
-- [Communication Command Models](Communication_Command_Models.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (20 shared connections)
+- [Inventory Service Helpers](Inventory_Service_Helpers.md) (4 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (4 shared connections)
+- [Mythos Time HUD](Mythos_Time_HUD.md) (2 shared connections)
+- [Disconnect Grace Period](Disconnect_Grace_Period.md) (2 shared connections)
+- [Postgres Adapter Infrastructure](Postgres_Adapter_Infrastructure.md) (1 shared connections)
+- [Container Persistence Ops](Container_Persistence_Ops.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_admin.py`
-- `server/tests/unit/models/test_command_admin.py`
+- `server/api/rooms.py`
+- `server/schemas/players/player_respawn.py`
+- `server/schemas/rooms/__init__.py`
+- `server/schemas/rooms/room.py`
+- `server/schemas/rooms/room_data.py`
 
 ## Audit Trail
 
-- EXTRACTED: 249 (90%)
-- INFERRED: 27 (10%)
+- EXTRACTED: 129 (95%)
+- INFERRED: 7 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

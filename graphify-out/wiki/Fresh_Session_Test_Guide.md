@@ -38,8 +38,8 @@
 - [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (3 shared connections)
 - [Holidays JSON Schema](Holidays_JSON_Schema.md) (2 shared connections)
 - [Client App State Hooks](Client_App_State_Hooks.md) (2 shared connections)
-- [Ground and Rescue Commands](Ground_and_Rescue_Commands.md) (2 shared connections)
-- [Command Input Validator](Command_Input_Validator.md) (2 shared connections)
+- [Commands System Help](Commands_System_Help.md) (2 shared connections)
+- [Logout and Quit Commands](Logout_and_Quit_Commands.md) (2 shared connections)
 - [NATS Error Handling Strategy](NATS_Error_Handling_Strategy.md) (1 shared connections)
 
 ## Source Files

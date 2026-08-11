@@ -6,6 +6,7 @@
 
 - **Room** (75 connections) — `server/models/room.py`
 - **test_room_class.py** (29 connections) — `server/tests/unit/models/test_room_class.py`
+- **movement_helpers.py** (16 connections) — `server/game/movement_helpers.py`
 - **.to_dict()** (8 connections) — `server/models/room.py`
 - **UUID** (6 connections)
 - **.__init__()** (5 connections) — `server/models/room.py`
@@ -24,7 +25,6 @@
 - **.npc_left()** (3 connections) — `server/models/room.py`
 - **.get_objects()** (3 connections) — `server/models/room.py`
 - **.is_empty()** (3 connections) — `server/models/room.py`
-- **tutorial_room()** (3 connections) — `server/tests/unit/game/test_instance_manager.py`
 - **test_room_init()** (3 connections) — `server/tests/unit/models/test_room_class.py`
 - **test_room_init_defaults()** (3 connections) — `server/tests/unit/models/test_room_class.py`
 - **test_room_player_entered()** (3 connections) — `server/tests/unit/models/test_room_class.py`
@@ -33,29 +33,29 @@
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (11 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (9 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (4 shared connections)
-- [Lucidity State Models](Lucidity_State_Models.md) (3 shared connections)
-- [WebSocket Initial State](WebSocket_Initial_State.md) (3 shared connections)
-- [Combat Messaging Tests](Combat_Messaging_Tests.md) (2 shared connections)
-- [Async Persistence Layer](Async_Persistence_Layer.md) (2 shared connections)
-- [Conftest Migration Plan](Conftest_Migration_Plan.md) (1 shared connections)
-- [Room Map Viewer UI](Room_Map_Viewer_UI.md) (1 shared connections)
-- [NATS Message Broker](NATS_Message_Broker.md) (1 shared connections)
-- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (1 shared connections)
-- [Archive Bug Fix](Archive_Bug_Fix.md) (1 shared connections)
+- [Calendar Holiday Schemas](Calendar_Holiday_Schemas.md) (8 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (8 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (5 shared connections)
+- [Player Occupant Processor](Player_Occupant_Processor.md) (3 shared connections)
+- [Integration DB Fixtures](Integration_DB_Fixtures.md) (3 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (3 shared connections)
+- [Client Security Utilities](Client_Security_Utilities.md) (2 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (2 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
+- [Quest Instance Repository](Quest_Instance_Repository.md) (2 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (2 shared connections)
+- [Character Creation Service](Character_Creation_Service.md) (2 shared connections)
 
 ## Source Files
 
+- `server/game/movement_helpers.py`
 - `server/models/room.py`
-- `server/tests/unit/game/test_instance_manager.py`
 - `server/tests/unit/models/test_room_class.py`
 - `server/tests/unit/realtime/test_websocket_initial_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 306 (97%)
+- EXTRACTED: 319 (97%)
 - INFERRED: 11 (3%)
 - AMBIGUOUS: 0 (0%)
 

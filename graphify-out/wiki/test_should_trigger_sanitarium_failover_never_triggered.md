@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_combat_status_message_in_combat()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test get_combat_status_message when in combat.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_create_time_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_time_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 

@@ -1,11 +1,10 @@
 # Async Code Audit
 
-> 25 nodes
+> 24 nodes
 
 ## Key Concepts
 
 - **stateNormalization.ts** (24 connections) — `client/src/stores/stateNormalization.ts`
-- **stateManagementIntegration.test.ts** (13 connections) — `client/src/stores/__tests__/stateManagementIntegration.test.ts`
 - **stateNormalization.basic.test.ts** (7 connections) — `client/src/stores/__tests__/stateNormalization.basic.test.ts`
 - **normalizeGameData()** (6 connections) — `client/src/stores/stateNormalization.ts`
 - **NormalizedGameData** (5 connections) — `client/src/stores/stateNormalization.ts`
@@ -32,14 +31,10 @@
 
 ## Relationships
 
-- [Combat Attack Handler](Combat_Attack_Handler.md) (4 shared connections)
-- [Command Input Utilities](Command_Input_Utilities.md) (3 shared connections)
-- [Magic Game Service](Magic_Game_Service.md) (2 shared connections)
-- [Connection Disconnection Cleanup](Connection_Disconnection_Cleanup.md) (1 shared connections)
+- [Combat Attack Handler](Combat_Attack_Handler.md) (3 shared connections)
 
 ## Source Files
 
-- `client/src/stores/__tests__/stateManagementIntegration.test.ts`
 - `client/src/stores/__tests__/stateNormalization.basic.test.ts`
 - `client/src/stores/__tests__/stateNormalization.edgeCases.test.ts`
 - `client/src/stores/__tests__/stateNormalization.normalize.test.ts`
@@ -49,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 106 (100%)
+- EXTRACTED: 93 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

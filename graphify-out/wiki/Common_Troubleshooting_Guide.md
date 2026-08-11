@@ -26,7 +26,7 @@
 
 - [Room Hierarchy FRD](Room_Hierarchy_FRD.md) (1 shared connections)
 - [Archive Player Protection](Archive_Player_Protection.md) (1 shared connections)
-- [Cursor Agents Readme](Cursor_Agents_Readme.md) (1 shared connections)
+- [Services Npc Startup](Services_Npc_Startup.md) (1 shared connections)
 - [Dual Connection Implementation Tasks](Dual_Connection_Implementation_Tasks.md) (1 shared connections)
 
 ## Source Files

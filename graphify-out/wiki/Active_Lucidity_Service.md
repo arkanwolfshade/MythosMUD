@@ -1,6 +1,6 @@
 # Active Lucidity Service
 
-> 53 nodes
+> 55 nodes
 
 ## Key Concepts
 
@@ -14,7 +14,9 @@
 - **MemorySnapshot** (7 connections) — `client/src/utils/memoryLeakDetector.ts`
 - **useMemoryLeakDetector()** (7 connections) — `client/src/utils/memoryLeakDetector.ts`
 - **.generateReport()** (7 connections) — `client/src/utils/memoryMonitor.ts`
+- **useGameClientV2MemoryMonitorEffect.ts** (6 connections) — `client/src/components/ui-v2/hooks/useGameClientV2MemoryMonitorEffect.ts`
 - **.registerComponent()** (6 connections) — `client/src/utils/memoryMonitor.ts`
+- **useGameClientV2MemoryMonitorEffect()** (5 connections) — `client/src/components/ui-v2/hooks/useGameClientV2MemoryMonitorEffect.ts`
 - **.constructor()** (4 connections) — `client/src/utils/memoryMonitor.ts`
 - **.start()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
 - **.setCallbacks()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
@@ -27,17 +29,18 @@
 - **.getOverallStats()** (3 connections) — `client/src/utils/memoryMonitor.ts`
 - **.startReporting()** (3 connections) — `client/src/utils/memoryMonitor.ts`
 - **.handleMemoryWarning()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- **.handleMemoryCritical()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- **.handleComponentMemoryWarning()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- *... and 28 more nodes in this community*
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [Chat Panel Separation](Chat_Panel_Separation.md) (4 shared connections)
 - [Combat Messaging Integration](Combat_Messaging_Integration.md) (3 shared connections)
+- [Connection Disconnection Cleanup](Connection_Disconnection_Cleanup.md) (3 shared connections)
+- [Chat Panel Separation](Chat_Panel_Separation.md) (2 shared connections)
+- [Warning Remediation Plan](Warning_Remediation_Plan.md) (2 shared connections)
 
 ## Source Files
 
+- `client/src/components/ui-v2/hooks/useGameClientV2MemoryMonitorEffect.ts`
 - `client/src/utils/__tests__/memoryLeakDetector.test.ts`
 - `client/src/utils/__tests__/memoryMonitor.test.ts`
 - `client/src/utils/memoryLeakDetector.ts`
@@ -45,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 189 (100%)
+- EXTRACTED: 200 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

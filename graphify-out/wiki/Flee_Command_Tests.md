@@ -1,6 +1,6 @@
 # Flee Command Tests
 
-> 35 nodes
+> 37 nodes
 
 ## Key Concepts
 
@@ -13,6 +13,7 @@
 - **_make_participant()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **_standing_player_id()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **test_get_combat_command_handler_includes_flee()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **handler()** (5 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **test_flee_not_in_combat_returns_message()** (5 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **test_flee_not_standing_forces_stand_and_returns_message()** (5 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **UUID** (3 connections)
@@ -28,15 +29,16 @@
 - **Unit tests for /flee command (handle_flee_command).** (1 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **Typed fixture bundle for CombatCommandHandler flee tests (mocks).** (1 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **CombatCommandHandler deps for flee: combat_service, movement_service, player_pos** (1 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **Player that is standing and in a room.** (1 connections) — `server/tests/unit/commands/test_flee_command.py`
-- *... and 10 more nodes in this community*
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (9 shared connections)
-- [Rest Command Flow](Rest_Command_Flow.md) (6 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (2 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (2 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (7 shared connections)
+- [Combat Death Handling](Combat_Death_Handling.md) (4 shared connections)
+- [Container Open Events](Container_Open_Events.md) (2 shared connections)
+- [Async Persistence Layer](Async_Persistence_Layer.md) (2 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (2 shared connections)
+- [Application Config Settings](Application_Config_Settings.md) (2 shared connections)
 
 ## Source Files
 
@@ -44,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 136 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 141 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

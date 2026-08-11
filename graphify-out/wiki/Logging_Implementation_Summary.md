@@ -21,7 +21,7 @@
 ## Relationships
 
 - [Room Hierarchy FRD](Room_Hierarchy_FRD.md) (1 shared connections)
-- [Phase 2: Categorize and Prioritize Lint Issues](Phase_2-_Categorize_and_Prioritize_Lint_Issues.md) (1 shared connections)
+- [Complexity Refactoring Plan](Complexity_Refactoring_Plan.md) (1 shared connections)
 
 ## Source Files
 

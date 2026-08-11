@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_target_exists_no_match()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_target_exists with no match.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_create_go_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_go_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 

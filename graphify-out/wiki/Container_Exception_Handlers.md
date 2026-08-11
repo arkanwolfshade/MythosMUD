@@ -1,51 +1,61 @@
 # Container Exception Handlers
 
-> 49 nodes
+> 121 nodes
 
 ## Key Concepts
 
-- **test_rate_limiter_utils.py** (22 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **RateLimiter** (10 connections) — `server/utils/rate_limiter.py`
-- **.enforce_rate_limit()** (5 connections) — `server/utils/rate_limiter.py`
-- **.get_rate_limit_info()** (4 connections) — `server/utils/rate_limiter.py`
-- **rate_limiter()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **test_enforce_rate_limit_raises_when_exceeded()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **test_enforce_rate_limit_includes_retry_after()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **__init__.py** (3 connections) — `server/utils/__init__.py`
-- **.check_rate_limit()** (3 connections) — `server/utils/rate_limiter.py`
-- **test_rate_limiter_initialization()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **test_check_rate_limit_first_request()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **test_check_rate_limit_multiple_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **test_check_rate_limit_exceeds_limit()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **test_check_rate_limit_different_users()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **test_check_rate_limit_removes_old_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **test_get_rate_limit_info_no_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **test_get_rate_limit_info_with_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **test_get_rate_limit_info_calculates_reset_time()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **test_get_rate_limit_info_calculates_retry_after()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **test_get_rate_limit_info_filters_old_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **test_enforce_rate_limit_allows_request()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **test_stats_roll_limiter_initialized()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **test_character_creation_limiter_initialized()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **.__init__()** (2 connections) — `server/utils/rate_limiter.py`
-- **Unit tests for rate limiting utilities.  Tests the simple in-memory rate limiter** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- *... and 24 more nodes in this community*
+- **CombatService** (182 connections) — `server/services/combat_service.py`
+- **combat_service_npc.py** (30 connections) — `server/services/combat_service_npc.py`
+- **UUID** (20 connections)
+- **get_combat_id_for_npc()** (13 connections) — `server/services/combat_service_npc.py`
+- **UUID** (11 connections)
+- **get_npc_participant_current_room()** (11 connections) — `server/services/combat_service_npc.py`
+- **spell_effects_internal.py** (10 connections) — `server/game/magic/spell_effects_internal.py`
+- **_get_uuid_mapping()** (10 connections) — `server/services/combat_service_npc.py`
+- **find_participant_uuid_by_string_id()** (10 connections) — `server/services/combat_service_npc.py`
+- **resolve_npc_participant_id_in_combat()** (9 connections) — `server/services/combat_service_npc.py`
+- **UUIDMappingProtocol** (8 connections) — `server/services/combat_service_npc.py`
+- **DataProviderProtocol** (8 connections) — `server/services/combat_service_npc.py`
+- **get_combat_id_for_npc_via_mapping()** (8 connections) — `server/services/combat_service_npc.py`
+- **_fallback_find_combat_id_for_npc()** (8 connections) — `server/services/combat_service_npc.py`
+- **get_participant_current_room()** (8 connections) — `server/services/combat_service_npc.py`
+- **.get_uuid_for_string_id()** (7 connections) — `server/services/combat_service_npc.py`
+- **combat_room_id_for_npc_spell()** (6 connections) — `server/game/magic/spell_effects_internal.py`
+- **.validate_melee_or_end_combat()** (6 connections) — `server/services/combat_service.py`
+- **.finalize_attack_result()** (6 connections) — `server/services/combat_service.py`
+- **.get_original_string_id()** (6 connections) — `server/services/combat_service_npc.py`
+- **_get_data_provider()** (6 connections) — `server/services/combat_service_npc.py`
+- **_iter_active_combats()** (6 connections) — `server/services/combat_service_npc.py`
+- **sync_npc_participant_dp_after_spell_damage()** (6 connections) — `server/services/combat_service_npc.py`
+- **get_combat_by_participant()** (6 connections) — `server/services/combat_service_npc.py`
+- **_participant_matches_npc_id()** (6 connections) — `server/services/combat_service_npc.py`
+- *... and 96 more nodes in this community*
 
 ## Relationships
 
-- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (8 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
+- [Health Check Models](Health_Check_Models.md) (34 shared connections)
+- [Combat Death Handling](Combat_Death_Handling.md) (21 shared connections)
+- [Player Respawn Service](Player_Respawn_Service.md) (14 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (14 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (12 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (11 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (10 shared connections)
+- [NATS Metrics API](NATS_Metrics_API.md) (8 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (6 shared connections)
+- [Game Client Container](Game_Client_Container.md) (6 shared connections)
+- [Combat Taunt Tests](Combat_Taunt_Tests.md) (5 shared connections)
+- [Application DI Bundles](Application_DI_Bundles.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_rate_limiter_utils.py`
-- `server/utils/__init__.py`
-- `server/utils/rate_limiter.py`
+- `server/game/magic/spell_effects_internal.py`
+- `server/services/combat_service.py`
+- `server/services/combat_service_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 109 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 536 (91%)
+- INFERRED: 56 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

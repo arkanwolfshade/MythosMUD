@@ -1,25 +1,24 @@
 # Archive Room Hierarchy
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **_shrink_lizard_docs.py** (3 connections) — `docs/investigations/_shrink_lizard_docs.py`
-- **main()** (3 connections) — `docs/investigations/_shrink_lizard_docs.py`
-- **lizard_warns()** (2 connections) — `docs/investigations/_shrink_lizard_docs.py`
-- **shrink_docstring()** (2 connections) — `docs/investigations/_shrink_lizard_docs.py`
+- **test_try_lookup_item_implicit_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test trying implicit lookup when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Error Handling Guide](Error_Handling_Guide.md) (1 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/investigations/_shrink_lizard_docs.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

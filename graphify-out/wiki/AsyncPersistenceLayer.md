@@ -2,7 +2,7 @@
 
 > God node · 185 connections · `server/async_persistence.py`
 
-**Community:** [Client Event Store](Client_Event_Store.md)
+**Community:** [Client Security Utilities](Client_Security_Utilities.md)
 
 ## Connections by Relation
 

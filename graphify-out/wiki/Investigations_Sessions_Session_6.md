@@ -1,32 +1,27 @@
 # Investigations Sessions Session
 
-> 10 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **alias_schema.json** (9 connections) — `schemas/alias_schema.json`
-- **required** (3 connections) — `schemas/alias_schema.json`
-- **$schema** (1 connections) — `schemas/alias_schema.json`
-- **$id** (1 connections) — `schemas/alias_schema.json`
-- **title** (1 connections) — `schemas/alias_schema.json`
-- **description** (1 connections) — `schemas/alias_schema.json`
-- **type** (1 connections) — `schemas/alias_schema.json`
-- **version** (1 connections) — `schemas/alias_schema.json`
-- **aliases** (1 connections) — `schemas/alias_schema.json`
-- **additionalProperties** (1 connections) — `schemas/alias_schema.json`
+- **schedules** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **properties** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **items** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **$ref** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [Command Factories Moderation](Command_Factories_Moderation.md) (1 shared connections)
-- [Alias JSON Schema](Alias_JSON_Schema.md) (1 shared connections)
+- [Archive Connection Termination](Archive_Connection_Termination.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/alias_schema.json`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

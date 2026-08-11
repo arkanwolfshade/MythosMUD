@@ -1,50 +1,55 @@
 # Database Error Handling
 
-> 32 nodes
+> 45 nodes
 
 ## Key Concepts
 
-- **test_message_handler_factory.py** (21 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **MessageHandlerFactory** (18 connections) — `server/realtime/message_handler_factory.py`
-- **test_message_handler_factory_get_handler_found()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_game_command_alias()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **MessageHandler** (14 connections) — `server/realtime/message_handler_factory.py`
+- **WebSocket** (8 connections)
+- **Any** (8 connections)
+- **.__init__()** (8 connections) — `server/realtime/message_handler_factory.py`
+- **ChatMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
+- **PingMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
+- **ClientErrorReportMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
+- **.handle_message()** (7 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (6 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **FollowResponseMessageHandler** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **PartyInviteResponseMessageHandler** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.get_handler()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (4 connections) — `server/realtime/message_handler_factory.py`
+- **.subscribe()** (3 connections) — `server/infrastructure/message_broker.py`
 - **.register_handler()** (3 connections) — `server/realtime/message_handler_factory.py`
-- **test_command_message_handler_handle()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_chat_message_handler_handle()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
 - **test_ping_message_handler_handle()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_init()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_register_handler()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_get_handler_not_found()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_handle_message_success()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_handle_message_unknown_type()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_handle_message_no_type()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_get_supported_message_types()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_global_message_handler_factory()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **.get_supported_message_types()** (2 connections) — `server/realtime/message_handler_factory.py`
-- **Factory for creating and managing message handlers.      This factory pattern el** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Register a new message handler.          Args:             message_type: The mes** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Get a list of supported message types.          Returns:             List of sup** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Unit tests for message handler factory.  Tests the message_handler_factory modul** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test CommandMessageHandler.handle() calls handle_command_message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test PingMessageHandler.handle() calls handle_ping_message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory.__init__() initializes with default handlers.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory.register_handler() registers new handler.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory.get_handler() returns handler when found.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- *... and 7 more nodes in this community*
+- **test_client_error_report_handler_logs()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **ABC** (2 connections)
+- **Subscribe to a subject/topic with a message handler.          Args:** (1 connections) — `server/infrastructure/message_broker.py`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [Rate Limiter Utilities](Rate_Limiter_Utilities.md) (14 shared connections)
-- [Multiplayer Browser Helpers](Multiplayer_Browser_Helpers.md) (2 shared connections)
+- [Subzone Schema Definition](Subzone_Schema_Definition.md) (13 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (8 shared connections)
+- [WebSocket Request Context](WebSocket_Request_Context.md) (6 shared connections)
+- [Infrastructure Message Broker](Infrastructure_Message_Broker.md) (1 shared connections)
+- [Realtime Event Delegation](Realtime_Event_Delegation.md) (1 shared connections)
+- [Event Bus Serialization](Event_Bus_Serialization.md) (1 shared connections)
 
 ## Source Files
 
+- `server/infrastructure/message_broker.py`
 - `server/realtime/message_handler_factory.py`
 - `server/tests/unit/realtime/test_message_handler_factory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 94 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 153 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

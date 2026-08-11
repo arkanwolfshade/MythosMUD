@@ -4,51 +4,56 @@
 
 ## Key Concepts
 
-- **test_look_container_helpers.py** (45 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **_format_container_contents()** (11 connections) — `server/commands/look_container.py`
-- **test_format_container_contents_with_quantity()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_via_inner_container_no_inner_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_via_inner_container_invalid_uuid()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_via_inner_container_no_get_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_item_instance_id_true()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_item_instance_id_false()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_item_instance_id_none()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_name_or_slot_slot_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_name_or_slot_name_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_name_or_slot_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_get_container_data_from_component_no_container_id()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_get_container_data_from_component_no_get_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_extract_container_metadata_no_metadata()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_format_container_contents_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_format_container_contents_with_quantity()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Format container contents as list of lines.** (1 connections) — `server/commands/look_container.py`
-- **Test formatting container contents with quantity > 1.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Unit tests for look container helper functions.  Tests the helper functions in l** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_via_inner_container() when item has no inner_container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_via_inner_container() with invalid UUID.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_via_inner_container() when persistence has no get_container** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _matches_item_instance_id() returns True when IDs match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _matches_item_instance_id() returns False when IDs don't match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_instance_manager.py** (15 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **instance_manager.py** (12 connections) — `server/game/instance_manager.py`
+- **seed_e2e_users.py** (9 connections) — `scripts/seed_e2e_users.py`
+- **_ensure_player_for_user()** (5 connections) — `scripts/seed_e2e_users.py`
+- **_seed_e2e_users()** (4 connections) — `scripts/seed_e2e_users.py`
+- **spawn_defaults.py** (4 connections) — `server/constants/spawn_defaults.py`
+- **main()** (3 connections) — `scripts/seed_e2e_users.py`
+- **tutorial_room()** (3 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **E2eUserSpec** (2 connections) — `scripts/seed_e2e_users.py`
+- **UUID** (2 connections)
+- **datetime** (2 connections)
+- **room_cache()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **test_create_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **test_create_instance_raises_when_no_templates()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **test_destroy_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **test_get_first_room_id()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **test_get_exit_room_id()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **test_get_room_by_id_returns_none_for_non_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **test_get_room_by_id_returns_room_when_in_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **Connection** (1 connections)
+- **One row in users plus optional default character for login E2E.** (1 connections) — `scripts/seed_e2e_users.py`
+- **Entry point: run E2E user seed via anyio.** (1 connections) — `scripts/seed_e2e_users.py`
+- **Shared spawn / respawn room identifiers used by gameplay and E2E seed scripts.** (1 connections) — `server/constants/spawn_defaults.py`
+- **InstanceManager for MythosMUD.  Manages instanced rooms: creates, stores, and de** (1 connections) — `server/game/instance_manager.py`
+- **Unit tests for InstanceManager.  Tests instance creation, destruction, room clon** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
 - *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [Player State Command Factory](Player_State_Command_Factory.md) (20 shared connections)
-- [Admin Command Models](Admin_Command_Models.md) (10 shared connections)
-- [Health Check Service](Health_Check_Service.md) (8 shared connections)
-- [Container System Architecture](Container_System_Architecture.md) (6 shared connections)
-- [Look Container Command](Look_Container_Command.md) (4 shared connections)
+- [Command Factory Tests](Command_Factory_Tests.md) (4 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (3 shared connections)
+- [Dependency Injection Tests](Dependency_Injection_Tests.md) (3 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Application Config Settings](Application_Config_Settings.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
+- [Rescue Service Tests](Rescue_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_container.py`
-- `server/tests/unit/commands/test_look_container.py`
-- `server/tests/unit/commands/test_look_container_helpers.py`
+- `scripts/seed_e2e_users.py`
+- `server/constants/spawn_defaults.py`
+- `server/game/instance_manager.py`
+- `server/tests/unit/game/test_instance_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 118 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 90 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

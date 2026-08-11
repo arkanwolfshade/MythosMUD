@@ -1,29 +1,27 @@
 # E 2 E Runtime Multiplayer
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **get_combat_monitoring()** (5 connections) — `server/services/combat_monitoring_service.py`
-- **test_get_combat_monitoring()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **Get the global combat monitoring service instance.      Returns:         CombatM** (1 connections) — `server/services/combat_monitoring_service.py`
-- **Test get_combat_monitoring returns global instance.** (1 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **Phase 2: Categorize and Prioritize Lint Issues** (5 connections) — `.cursor/commands/lint-remediation.md`
+- **🔴 CRITICAL (Fix First - Blocking Issues)** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🟡 HIGH PRIORITY (Fix Second - Core Functionality)** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🟢 MEDIUM PRIORITY (Fix Third - Enhancement)** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🔵 LOW PRIORITY (Fix Last - Polish)** (1 connections) — `.cursor/commands/lint-remediation.md`
 
 ## Relationships
 
-- [Combat Monitoring Service](Combat_Monitoring_Service.md) (2 shared connections)
-- [Rate Limiter Service](Rate_Limiter_Service.md) (2 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
+- [Dual Connection Implementation Tasks](Dual_Connection_Implementation_Tasks.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_monitoring_service.py`
-- `server/tests/unit/services/test_combat_monitoring_service.py`
+- `.cursor/commands/lint-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (91%)
-- INFERRED: 1 (9%)
+- EXTRACTED: 9 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

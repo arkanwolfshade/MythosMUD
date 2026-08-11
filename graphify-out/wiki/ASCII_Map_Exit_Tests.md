@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [Inventory Service Helpers](Inventory_Service_Helpers.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
-- [Config Model Tests](Config_Model_Tests.md) (1 shared connections)
+- [Inventory Service Helpers](Inventory_Service_Helpers.md) (3 shared connections)
+- [Mythos Time HUD](Mythos_Time_HUD.md) (1 shared connections)
 
 ## Source Files
 

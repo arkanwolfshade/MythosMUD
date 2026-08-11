@@ -1,24 +1,29 @@
 # Design Cursor Skills
 
-> 2 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_subscribe_to_event_subjects_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test subscribe_to_event_subjects() handles errors.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_error_logging.py** (5 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **test_create_error_context()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **test_create_error_context_with_metadata()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **test_error_context_to_dict()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **Unit tests for error_logging utilities.  Tests error logging helper functions.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **Test create_error_context() creates error context.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **Test create_error_context() can include metadata.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **Test error context to_dict() method.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
 
 ## Relationships
 
-- [Inventory Command Models](Inventory_Command_Models.md) (1 shared connections)
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/utils/test_error_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

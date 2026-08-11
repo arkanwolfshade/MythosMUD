@@ -1,51 +1,57 @@
 # Character Creation API
 
-> 65 nodes
+> 82 nodes
 
 ## Key Concepts
 
-- **test_alias_commands.py** (30 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **handle_alias_command()** (25 connections) — `server/commands/alias_commands.py`
-- **alias_commands.py** (15 connections) — `server/commands/alias_commands.py`
-- **_create_alias()** (5 connections) — `server/commands/alias_commands.py`
-- **_extract_alias_params()** (4 connections) — `server/commands/alias_commands.py`
-- **Any** (4 connections)
-- **_view_alias()** (4 connections) — `server/commands/alias_commands.py`
-- **_validate_alias_params()** (3 connections) — `server/commands/alias_commands.py`
-- **test_handle_alias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_no_args()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_view_existing()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_view_nonexistent()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_create_from_args()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_create_from_structured_data()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_invalid_name_too_long()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_invalid_command_too_long()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_circular_reference()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_create_error()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_aliases_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_aliases_command_no_aliases()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_aliases_command_with_aliases()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_aliases_command_error()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_unalias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_unalias_command_no_args()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_unalias_command_alias_not_found()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- *... and 40 more nodes in this community*
+- **test_command_parser.py** (45 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **parse_command()** (24 connections) — `server/utils/command_parser.py`
+- **test_command_parser_smoke.py** (8 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **test_parse_command_basic()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **test_parse_command_with_args()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **test_parse_command_with_pipes()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **test_parse_command_empty_string()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_whitespace_only()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_too_long()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_unknown_command()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_valid_look()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_valid_go()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_with_slash_prefix()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_spawn_alias()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_alias_l()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_alias_g()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_global_function()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_global_function_with_args()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_command_parser_initialization()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_normalize_command_removes_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_normalize_command_cleans_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_normalize_command_no_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_parts_basic()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_parts_no_args()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_parts_multiple_args()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [Chat NATS Publisher](Chat_NATS_Publisher.md) (20 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (4 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Container Open Events](Container_Open_Events.md) (5 shared connections)
+- [Playwright Remediation Plan](Playwright_Remediation_Plan.md) (4 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (3 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (1 shared connections)
+- [Container API Endpoints](Container_API_Endpoints.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Environmental Container Scenario](Environmental_Container_Scenario.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/alias_commands.py`
-- `server/tests/unit/commands/test_alias_commands.py`
+- `server/tests/unit/test_command_parser_smoke.py`
+- `server/tests/unit/utils/test_command_parser.py`
+- `server/utils/command_parser.py`
 
 ## Audit Trail
 
-- EXTRACTED: 194 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 209 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

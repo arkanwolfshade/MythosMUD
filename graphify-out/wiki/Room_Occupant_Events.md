@@ -1,6 +1,6 @@
 # Room Occupant Events
 
-> 154 nodes
+> 132 nodes
 
 ## Key Concepts
 
@@ -9,7 +9,6 @@
 - **connection_delegates.py** (21 connections) — `server/realtime/connection_delegates.py`
 - **Any** (15 connections)
 - **Any** (13 connections)
-- **validate_token_impl()** (13 connections) — `server/realtime/connection_delegates.py`
 - **delegate_error_handler()** (12 connections) — `server/realtime/connection_delegates.py`
 - **cleanup_dead_websocket_impl()** (11 connections) — `server/realtime/connection_delegates.py`
 - **delegate_connection_cleaner()** (11 connections) — `server/realtime/connection_delegates.py`
@@ -29,31 +28,31 @@
 - **handle_authentication_error_impl()** (7 connections) — `server/realtime/connection_manager_health_cleanup.py`
 - **handle_security_violation_impl()** (7 connections) — `server/realtime/connection_manager_health_cleanup.py`
 - **recover_from_error_impl()** (7 connections) — `server/realtime/connection_manager_health_cleanup.py`
-- *... and 129 more nodes in this community*
+- **cleanup_dead_connections_impl()** (7 connections) — `server/realtime/connection_manager_health_cleanup.py`
+- *... and 107 more nodes in this community*
 
 ## Relationships
 
-- [Distributed Event Bus](Distributed_Event_Bus.md) (36 shared connections)
-- [Archive Bug Fix](Archive_Bug_Fix.md) (17 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (5 shared connections)
-- [Unified Command Handler](Unified_Command_Handler.md) (5 shared connections)
-- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (45 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (16 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (4 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
 - [NATS Message Broker](NATS_Message_Broker.md) (3 shared connections)
-- [Auth Token Utilities](Auth_Token_Utilities.md) (2 shared connections)
+- [Unified Command Handler](Unified_Command_Handler.md) (2 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (1 shared connections)
+- [Deprecated Logging Patterns](Deprecated_Logging_Patterns.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/connection_delegates.py`
-- `server/realtime/connection_manager.py`
 - `server/realtime/connection_manager_health_cleanup.py`
 - `server/realtime/maintenance/connection_cleaner.py`
-- `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 - `server/tests/unit/realtime/test_connection_delegates.py`
 
 ## Audit Trail
 
-- EXTRACTED: 570 (100%)
-- INFERRED: 2 (0%)
+- EXTRACTED: 516 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

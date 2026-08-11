@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_occupant_formatter_separate_occupants_by_type_none()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter.separate_occupants_by_type() handles None input.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_command_factory_create_existing_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test CommandFactory.create_*() returns command for existing command.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [Command Integration Summary](Command_Integration_Summary.md) (1 shared connections)
-- [Room Occupant Formatter](Room_Occupant_Formatter.md) (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,54 +1,51 @@
 # Test Refactoring Deliverables
 
-> 28 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **CommandService** (20 connections) — `server/commands/command_service.py`
-- **Any** (10 connections)
-- **._extract_parsed_fields()** (7 connections) — `server/commands/command_service.py`
-- **.process_command()** (7 connections) — `server/commands/command_service.py`
-- **._execute_command_handler()** (6 connections) — `server/commands/command_service.py`
-- **.process_validated_command()** (5 connections) — `server/commands/command_service.py`
-- **._parse_command_string()** (5 connections) — `server/commands/command_service.py`
-- **._prepare_command_data()** (5 connections) — `server/commands/command_service.py`
-- **._fallback_parsed_fields()** (4 connections) — `server/commands/command_service.py`
-- **._log_parsed_command_inspection()** (4 connections) — `server/commands/command_service.py`
-- **._log_model_dump_result()** (4 connections) — `server/commands/command_service.py`
-- **.register_command_handler()** (3 connections) — `server/commands/command_service.py`
-- **.get_available_commands()** (2 connections) — `server/commands/command_service.py`
-- **.unregister_command_handler()** (2 connections) — `server/commands/command_service.py`
-- **CommandHandler** (1 connections)
-- **Main command processing service for MythosMUD.      This service handles command** (1 connections) — `server/commands/command_service.py`
-- **Process a validated command with routing.          Args:             command_dat** (1 connections) — `server/commands/command_service.py`
-- **Parse and validate command string.          Returns:             tuple of (parse** (1 connections) — `server/commands/command_service.py`
-- **Prepare command_data dictionary by merging parsed command fields.          Retur** (1 connections) — `server/commands/command_service.py`
-- **Extract non-private, non-callable attributes from parsed_command, excluding keys** (1 connections) — `server/commands/command_service.py`
-- **Extract fields from parsed_command using model_dump or fallback method.** (1 connections) — `server/commands/command_service.py`
-- **Log parsed command object inspection details.** (1 connections) — `server/commands/command_service.py`
-- **Log model_dump result details.** (1 connections) — `server/commands/command_service.py`
-- **Execute command handler with error handling.          Returns:             dict:** (1 connections) — `server/commands/command_service.py`
-- **Process a command with full validation and routing.          Args:             c** (1 connections) — `server/commands/command_service.py`
-- *... and 3 more nodes in this community*
+- **test_logging_processors.py** (36 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **sanitize_sensitive_data()** (14 connections) — `server/structured_logging/logging_processors.py`
+- **test_sanitize_sensitive_data_password()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_sanitize_sensitive_data_token()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_sanitize_sensitive_data_api_key()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_sanitize_sensitive_data_safe_fields()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_sanitize_sensitive_data_nested_dict()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_sanitize_sensitive_data_multiple_sensitive_fields()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_sanitize_sensitive_data_no_sensitive_fields()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_sanitize_sensitive_data_case_insensitive()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_add_correlation_id_missing()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **mock_player_service()** (2 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **sanitize_sensitive_data.** (1 connections) — `server/structured_logging/logging_processors.py`
+- **Unit tests for logging processors.  Tests the logging processors for sanitizing** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **Create a mock player service.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **Test sanitize_sensitive_data() redacts password fields.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **Test sanitize_sensitive_data() redacts token fields.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **Test sanitize_sensitive_data() redacts fields ending with _key.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **Test sanitize_sensitive_data() preserves safe fields.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **Test sanitize_sensitive_data() sanitizes nested dictionaries.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **Test sanitize_sensitive_data() redacts multiple sensitive fields.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **Test sanitize_sensitive_data() leaves non-sensitive fields unchanged.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **Test sanitize_sensitive_data() is case insensitive.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **Test add_correlation_id() adds correlation_id when missing.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
 
 ## Relationships
 
-- [Chat NATS Publisher](Chat_NATS_Publisher.md) (3 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (3 shared connections)
-- [NPC Population Control](NPC_Population_Control.md) (2 shared connections)
-- [Async Audit Cursor](Async_Audit_Cursor.md) (1 shared connections)
-- [Admin Teleport Commands](Admin_Teleport_Commands.md) (1 shared connections)
-- [Chat Panel Components](Chat_Panel_Components.md) (1 shared connections)
-- [Command Parser](Command_Parser.md) (1 shared connections)
+- [Logging Structured Processors](Logging_Structured_Processors.md) (15 shared connections)
+- [Archive Planning Aliases](Archive_Planning_Aliases.md) (6 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (4 shared connections)
+- [Archive Bug Prevention](Archive_Bug_Prevention.md) (2 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/command_service.py`
+- `server/structured_logging/logging_processors.py`
+- `server/tests/unit/structured_logging/test_logging_processors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 98 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 90 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

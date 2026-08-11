@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **properties** (10 connections) — `db/static/schemas/room.schema.json`
-- **id** (3 connections) — `db/static/schemas/room.schema.json`
 - **name** (3 connections) — `db/static/schemas/room.schema.json`
+- **description** (3 connections) — `db/static/schemas/room.schema.json`
 - **zone** (3 connections) — `db/static/schemas/room.schema.json`
 - **sub_zone** (3 connections) — `db/static/schemas/room.schema.json`
 - **attributes** (3 connections) — `db/static/schemas/room.schema.json`
@@ -26,8 +26,8 @@
 ## Relationships
 
 - [Optimized Security Validator Tests](Optimized_Security_Validator_Tests.md) (1 shared connections)
-- [test_get_valid_exits_no_subzone](test_get_valid_exits_no_subzone.md) (1 shared connections)
 - [Quest System Features](Quest_System_Features.md) (1 shared connections)
+- [Quality Audit Report](Quality_Audit_Report.md) (1 shared connections)
 - [Realtime Maintenance Connection](Realtime_Maintenance_Connection.md) (1 shared connections)
 
 ## Source Files

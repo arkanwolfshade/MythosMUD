@@ -1,54 +1,58 @@
 # Async Persistence Migration
 
-> 39 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **UUID** (14 connections)
-- **Any** (11 connections)
-- **.delete_player()** (9 connections) — `server/game/player_service.py`
-- **.get_player_by_id()** (8 connections) — `server/game/player_service.py`
-- **.convert_player_to_schema()** (8 connections) — `server/game/player_service.py`
-- **.soft_delete_character()** (7 connections) — `server/game/player_service.py`
-- **.create_player_with_stats()** (5 connections) — `server/game/player_service.py`
-- **.get_user_characters()** (5 connections) — `server/game/player_service.py`
-- **.validate_character_access()** (5 connections) — `server/game/player_service.py`
-- **.create_player()** (4 connections) — `server/game/player_service.py`
-- **.list_players()** (4 connections) — `server/game/player_service.py`
-- **.apply_lucidity_loss()** (4 connections) — `server/game/player_service.py`
-- **.apply_fear()** (4 connections) — `server/game/player_service.py`
-- **.apply_corruption()** (4 connections) — `server/game/player_service.py`
-- **.gain_occult_knowledge()** (4 connections) — `server/game/player_service.py`
-- **.heal_player()** (4 connections) — `server/game/player_service.py`
-- **.damage_player()** (4 connections) — `server/game/player_service.py`
-- **.set_item_prototype_registry()** (3 connections) — `server/game/player_service.py`
-- **.respawn_player_by_user_id()** (3 connections) — `server/game/player_service.py`
-- **.respawn_player_from_delirium_by_user_id()** (3 connections) — `server/game/player_service.py`
-- **Stats** (1 connections)
-- **Set the item prototype registry on the schema converter (e.g. after item service** (1 connections) — `server/game/player_service.py`
-- **Create a new player character.          Args:             name: The player's nam** (1 connections) — `server/game/player_service.py`
-- **Create a new player character with specific stats.          Args:             na** (1 connections) — `server/game/player_service.py`
-- **Get a player by their ID.          Args:             player_id: The player's ID** (1 connections) — `server/game/player_service.py`
-- *... and 14 more nodes in this community*
+- **deque** (24 connections)
+- **test_message_queue_get_messages_error()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_has_messages_empty_list()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages_removes_empty()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages_string_timestamp()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages_invalid_timestamp()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_large_structures()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **.__init__()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.cleanup_large_structures()** (3 connections) — `server/realtime/message_queue.py`
+- **.__init__()** (3 connections) — `server/services/nats_subject_manager/metrics.py`
+- **.__init__()** (2 connections) — `server/services/nats_metrics.py`
+- **Initialize the memory leak metrics collector.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Clean up large data structures to prevent memory bloat.          Args:** (1 connections) — `server/realtime/message_queue.py`
+- **Initialize metrics collection.** (1 connections) — `server/services/nats_subject_manager/metrics.py`
+- **Test MessageQueue.get_messages() handles errors.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **Test MessageQueue.has_messages() returns False for empty list.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **Test MessageQueue.cleanup_old_messages() removes old messages.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **Test MessageQueue.cleanup_old_messages() removes empty queues.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **Test MessageQueue.cleanup_old_messages() handles ISO string timestamps.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **Test MessageQueue.cleanup_old_messages() handles invalid timestamps.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **Test MessageQueue.cleanup_large_structures() trims large queues.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (20 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (7 shared connections)
-- [Realtime Errors Error](Realtime_Errors_Error.md) (3 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (2 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (2 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (9 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (7 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (5 shared connections)
+- [Help and WebSocket Core](Help_and_WebSocket_Core.md) (2 shared connections)
+- [Cursor Plans Pydantic](Cursor_Plans_Pydantic.md) (2 shared connections)
+- [Mythos Map Builder](Mythos_Map_Builder.md) (1 shared connections)
+- [Game State Provider Tests](Game_State_Provider_Tests.md) (1 shared connections)
+- [UI Animation Testing Standards](UI_Animation_Testing_Standards.md) (1 shared connections)
+- [Zone Coordinate Generator](Zone_Coordinate_Generator.md) (1 shared connections)
+- [Combat Service Bundle](Combat_Service_Bundle.md) (1 shared connections)
+- [Manager Services Nats](Manager_Services_Nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/player_service.py`
+- `server/monitoring/memory_leak_metrics.py`
+- `server/realtime/message_queue.py`
+- `server/services/nats_metrics.py`
+- `server/services/nats_subject_manager/metrics.py`
+- `server/tests/unit/realtime/test_message_queue.py`
 
 ## Audit Trail
 
-- EXTRACTED: 128 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 43 (59%)
+- INFERRED: 30 (41%)
 - AMBIGUOUS: 0 (0%)
 
 ---

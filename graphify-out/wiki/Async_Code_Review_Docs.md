@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (2 shared connections)
-- [Player Movement Service](Player_Movement_Service.md) (1 shared connections)
+- [Archive Environment Contamination](Archive_Environment_Contamination.md) (1 shared connections)
 - [Memory Leak Metrics](Memory_Leak_Metrics.md) (1 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
 
 ## Source Files
 

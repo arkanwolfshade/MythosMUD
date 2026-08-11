@@ -1,23 +1,24 @@
 # Services Npc Startup
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_echo_message_to_sender_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _echo_message_to_sender echoes message.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **📊 LINT ISSUE CATEGORIZATION GUIDE** (3 connections) — `.cursor/commands/lint-remediation.md`
+- **Python/Ruff Error Codes** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **React/ESLint Error Codes** (1 connections) — `.cursor/commands/lint-remediation.md`
 
 ## Relationships
 
-- [Loot All Endpoint](Loot_All_Endpoint.md) (1 shared connections)
+- [Common Troubleshooting Guide](Common_Troubleshooting_Guide.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `.cursor/commands/lint-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

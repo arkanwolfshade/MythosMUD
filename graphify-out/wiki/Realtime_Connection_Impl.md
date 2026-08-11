@@ -14,7 +14,7 @@
 ## Relationships
 
 - [Room Subscription Helpers](Room_Subscription_Helpers.md) (2 shared connections)
-- [Game State Provider](Game_State_Provider.md) (1 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
 
 ## Source Files
 

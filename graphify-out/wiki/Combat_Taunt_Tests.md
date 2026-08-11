@@ -1,6 +1,6 @@
 # Combat Taunt Tests
 
-> 82 nodes
+> 84 nodes
 
 ## Key Concepts
 
@@ -18,6 +18,7 @@
 - **combat_helpers.py** (7 connections) — `server/commands/combat_helpers.py`
 - **run_handle_flee_command()** (6 connections) — `server/commands/combat_flee.py`
 - **format_combat_status()** (6 connections) — `server/commands/combat_helpers.py`
+- **get_combat_target()** (6 connections) — `server/commands/combat_helpers.py`
 - **test_combat_helpers.py** (6 connections) — `server/tests/unit/commands/test_combat_helpers.py`
 - **test_validate_flee_combat_and_room_success()** (5 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
 - **.check_and_interrupt_rest()** (4 connections) — `server/commands/combat_flee.py`
@@ -28,15 +29,18 @@
 - **_participant()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
 - **Protocol** (3 connections)
 - **.change_position()** (3 connections) — `server/commands/combat_flee.py`
-- **.combat_service()** (3 connections) — `server/commands/combat_flee.py`
-- *... and 57 more nodes in this community*
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (20 shared connections)
-- [Rest Command Flow](Rest_Command_Flow.md) (10 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (3 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (2 shared connections)
+- [Combat Death Handling](Combat_Death_Handling.md) (8 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (6 shared connections)
+- [Container Exception Handlers](Container_Exception_Handlers.md) (5 shared connections)
+- [Container Open Events](Container_Open_Events.md) (5 shared connections)
+- [Async Persistence Layer](Async_Persistence_Layer.md) (3 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (2 shared connections)
+- [Application Config Settings](Application_Config_Settings.md) (2 shared connections)
+- [Health Check Models](Health_Check_Models.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,8 +51,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 281 (93%)
-- INFERRED: 22 (7%)
+- EXTRACTED: 286 (92%)
+- INFERRED: 24 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

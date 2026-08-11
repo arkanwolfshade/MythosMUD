@@ -1,6 +1,6 @@
 # Container Persistence Ops
 
-> 136 nodes
+> 117 nodes
 
 ## Key Concepts
 
@@ -17,33 +17,34 @@
 - **test_prepare_ascii_map_context_applies_exploration_filter()** (8 connections) — `server/tests/unit/api/test_maps.py`
 - **Any** (7 connections)
 - **_needs_coordinate_generation()** (7 connections) — `server/api/maps.py`
-- **.mark_room_as_explored()** (7 connections) — `server/services/exploration_service.py`
-- **UUID** (7 connections)
-- **._get_room_uuid_by_stable_id()** (7 connections) — `server/services/exploration_service.py`
-- **.is_room_explored()** (6 connections) — `server/services/exploration_service.py`
 - **_two_rooms()** (6 connections) — `server/tests/unit/api/test_maps.py`
 - **test_apply_exploration_filter_if_needed_skips_for_superuser()** (6 connections) — `server/tests/unit/api/test_maps.py`
 - **test_apply_exploration_filter_if_needed_calls_for_normal_user()** (6 connections) — `server/tests/unit/api/test_maps.py`
-- **_CoordGenCtx** (5 connections) — `server/api/maps.py`
 - **UUID** (5 connections)
-- **AsyncSession** (5 connections)
-- **._mark_explored_in_session()** (5 connections) — `server/services/exploration_service.py`
-- **.get_explored_rooms()** (5 connections) — `server/services/exploration_service.py`
-- *... and 111 more nodes in this community*
+- **test_filter_explored_rooms_calls_room_service()** (5 connections) — `server/tests/unit/api/test_maps.py`
+- **_async_session_maker_mock()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_room_uuid_by_stable_id_no_session()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **UUID** (4 connections)
+- **test_get_current_room_id_none_when_persistence_errors()** (4 connections) — `server/tests/unit/api/test_maps.py`
+- **test_get_player_and_exploration_returns_none_when_no_player()** (4 connections) — `server/tests/unit/api/test_maps.py`
+- **_row_scalar_one()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **_row_fetchall()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- *... and 92 more nodes in this community*
 
 ## Relationships
 
-- [Minimap Fallback Helpers](Minimap_Fallback_Helpers.md) (27 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (18 shared connections)
+- [Minimap Fallback Helpers](Minimap_Fallback_Helpers.md) (25 shared connections)
 - [Room Occupancy Class](Room_Occupancy_Class.md) (14 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (12 shared connections)
+- [Mythos Time HUD](Mythos_Time_HUD.md) (13 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (12 shared connections)
 - [Inventory Service Helpers](Inventory_Service_Helpers.md) (8 shared connections)
+- [Magic Lifespan Initialization](Magic_Lifespan_Initialization.md) (7 shared connections)
 - [Map Room Helpers](Map_Room_Helpers.md) (3 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
+- [Command Factory Tests](Command_Factory_Tests.md) (2 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (2 shared connections)
 - [Zone Coordinate Generator](Zone_Coordinate_Generator.md) (1 shared connections)
-- [Player Domain Model](Player_Domain_Model.md) (1 shared connections)
-- [Spell Registry Costs](Spell_Registry_Costs.md) (1 shared connections)
-- [Combat Command Handler](Combat_Command_Handler.md) (1 shared connections)
+- [Game Terminal Panels](Game_Terminal_Panels.md) (1 shared connections)
+- [WebSocket Code Review](WebSocket_Code_Review.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,8 +55,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 530 (93%)
-- INFERRED: 37 (7%)
+- EXTRACTED: 466 (93%)
+- INFERRED: 36 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

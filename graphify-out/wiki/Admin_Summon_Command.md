@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [Command Parser Helpers](Command_Parser_Helpers.md) (24 shared connections)
-- [Zone Config Loader](Zone_Config_Loader.md) (21 shared connections)
-- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (6 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (27 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (24 shared connections)
 - [Base Command Models](Base_Command_Models.md) (6 shared connections)
 
 ## Source Files

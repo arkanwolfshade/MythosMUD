@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [Auth Token Utilities](Auth_Token_Utilities.md) (2 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (3 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (2 shared connections)
 
 ## Source Files
 

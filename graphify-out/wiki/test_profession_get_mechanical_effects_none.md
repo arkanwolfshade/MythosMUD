@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_subscribe_to_standardized_chat_subjects_no_subject_manager()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _subscribe_to_standardized_chat_subjects raises RuntimeError when subject_m** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_validate_message_restores_csrf_from_message_jwt_when_metadata_token_missing()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **When metadata.token is missing, validate JWT from message and restore metadata.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
 
 ## Relationships
 
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
+- [Database Helper Tests](Database_Helper_Tests.md) (1 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

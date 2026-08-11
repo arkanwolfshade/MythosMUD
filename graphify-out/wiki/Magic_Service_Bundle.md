@@ -1,74 +1,67 @@
 # Magic Service Bundle
 
-> 318 nodes
+> 279 nodes
 
 ## Key Concepts
 
-- **NPCCombatIntegrationService** (90 connections) — `server/services/npc_combat_integration_service.py`
-- **test_npc_combat_integration_service.py** (44 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **NPCCombatUUIDMapping** (39 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **NPCCombatDataProvider** (30 connections) — `server/services/npc_combat_data_provider.py`
-- **NPCCombatMemory** (29 connections) — `server/services/npc_combat_memory.py`
-- **TestNPCCombatUUIDMapping** (22 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **_NPCCombatIntegrationValidationDeps** (19 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **NPCCombatRewards** (19 connections) — `server/services/npc_combat_rewards.py`
-- **NPCCombatHandlers** (18 connections) — `server/services/npc_combat_handlers.py`
-- **npc_combat_handlers.py** (16 connections) — `server/services/npc_combat_handlers.py`
-- **CombatResultCtx** (16 connections) — `server/services/npc_combat_handlers.py`
-- **NPCCombatLifecycle** (16 connections) — `server/services/npc_combat_lifecycle.py`
-- **TestNPCCombatMemory** (16 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
-- **NPCCombatIntegrationValidationMixin** (15 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.__init__()** (12 connections) — `server/services/npc_combat_integration_service.py`
-- **.store_npc_xp_mapping_for_mixin()** (10 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._init_npc_submodules()** (9 connections) — `server/services/npc_combat_integration_service.py`
-- **UUID** (8 connections)
-- **.__init__()** (7 connections) — `server/services/npc_combat_handlers.py`
-- **._handle_npc_death_on_combat_end()** (7 connections) — `server/services/npc_combat_handlers.py`
-- **npc_combat_lifecycle.py** (7 connections) — `server/services/npc_combat_lifecycle.py`
-- **._init_messaging_handlers_and_publisher()** (6 connections) — `server/services/npc_combat_integration_service.py`
-- **.handle_npc_attack_on_player()** (6 connections) — `server/services/npc_combat_integration_service.py`
-- **.get_data_provider()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_uuid_mapping()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- *... and 293 more nodes in this community*
+- **TargetMatch** (121 connections) — `server/schemas/shared/target_resolution.py`
+- **CombatCommandHandler** (54 connections) — `server/commands/combat_handler.py`
+- **TargetResolutionService** (53 connections) — `server/services/target_resolution_service.py`
+- **combat_handler.py** (47 connections) — `server/commands/combat_handler.py`
+- **TargetResolutionResult** (39 connections) — `server/schemas/shared/target_resolution.py`
+- **test_combat_handler.py** (37 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **TargetType** (31 connections) — `server/schemas/shared/target_resolution.py`
+- **CombatValidator** (28 connections) — `server/validators/combat_validator.py`
+- **target_resolution_service.py** (27 connections) — `server/services/target_resolution_service.py`
+- **test_target_resolution_service.py** (27 connections) — `server/tests/unit/services/test_target_resolution_service.py`
+- **CombatCommandHandlerExtras** (25 connections) — `server/commands/combat_handler.py`
+- **_handler_with_persistence()** (20 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **AppWithState** (17 connections) — `server/commands/combat_app_protocols.py`
+- **_NpcWithLife** (17 connections) — `server/commands/combat_handler.py`
+- **test_target_resolution.py** (16 connections) — `server/tests/unit/schemas/test_target_resolution.py`
+- **TargetMetadata** (12 connections) — `server/schemas/shared/target_metadata.py`
+- **.__init__()** (11 connections) — `server/commands/combat_handler.py`
+- **target_resolution.py** (11 connections) — `server/schemas/shared/target_resolution.py`
+- **_AppStatePersistence** (10 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_AppWithPersistence** (10 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **.resolve_target()** (9 connections) — `server/services/target_resolution_service.py`
+- **._search_npcs_in_room()** (8 connections) — `server/services/target_resolution_service.py`
+- **_CmdType** (8 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_as_app_with_state()** (8 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **._get_random_error_message()** (8 connections) — `server/validators/combat_validator.py`
+- *... and 254 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (64 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (13 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (11 shared connections)
-- [Container Persistence Queries](Container_Persistence_Queries.md) (8 shared connections)
-- [Alias Storage Layer](Alias_Storage_Layer.md) (6 shared connections)
-- [NATS Docs Review](NATS_Docs_Review.md) (4 shared connections)
-- [WebSocket Coverage Gaps](WebSocket_Coverage_Gaps.md) (4 shared connections)
-- [Exploration Command Models](Exploration_Command_Models.md) (4 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
-- [Rest Command Flow](Rest_Command_Flow.md) (3 shared connections)
-- [Combat Disconnect Bug](Combat_Disconnect_Bug.md) (3 shared connections)
-- [Health Check Models](Health_Check_Models.md) (2 shared connections)
+- [Player Respawn Service](Player_Respawn_Service.md) (38 shared connections)
+- [Game Client Container](Game_Client_Container.md) (21 shared connections)
+- [Container Open Events](Container_Open_Events.md) (21 shared connections)
+- [Player Creation Service](Player_Creation_Service.md) (15 shared connections)
+- [Player Event Handler Tests](Player_Event_Handler_Tests.md) (14 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (14 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (11 shared connections)
+- [Application DI Bundles](Application_DI_Bundles.md) (9 shared connections)
+- [Cursor Skills Harden](Cursor_Skills_Harden.md) (9 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (7 shared connections)
+- [NPC Services Bundle](NPC_Services_Bundle.md) (7 shared connections)
+- [Flee Command Tests](Flee_Command_Tests.md) (7 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_data_provider.py`
-- `server/services/npc_combat_handlers.py`
-- `server/services/npc_combat_integration_service.py`
-- `server/services/npc_combat_integration_validation_mixin.py`
-- `server/services/npc_combat_lifecycle.py`
-- `server/services/npc_combat_memory.py`
-- `server/services/npc_combat_rewards.py`
-- `server/services/npc_combat_uuid_mapping.py`
-- `server/services/player_combat_service_support.py`
-- `server/services/room_data_validator.py`
-- `server/tests/unit/services/test_npc_combat_data_provider.py`
-- `server/tests/unit/services/test_npc_combat_integration_service.py`
-- `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- `server/tests/unit/services/test_npc_combat_memory.py`
-- `server/tests/unit/services/test_npc_combat_rewards.py`
-- `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- `server/commands/combat_app_protocols.py`
+- `server/commands/combat_handler.py`
+- `server/schemas/shared/target_metadata.py`
+- `server/schemas/shared/target_resolution.py`
+- `server/services/target_resolution_service.py`
+- `server/tests/unit/commands/test_combat_handler.py`
+- `server/tests/unit/schemas/test_target_resolution.py`
+- `server/tests/unit/services/test_target_resolution_service.py`
+- `server/validators/combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1008 (93%)
-- INFERRED: 77 (7%)
+- EXTRACTED: 1088 (90%)
+- INFERRED: 127 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

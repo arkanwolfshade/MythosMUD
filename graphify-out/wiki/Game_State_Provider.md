@@ -1,11 +1,9 @@
 # Game State Provider
 
-> 43 nodes
+> 39 nodes
 
 ## Key Concepts
 
-- **.state()** (36 connections) — `server/realtime/connection_state_machine.py`
-- **GameStateProvider** (26 connections) — `server/realtime/integration/game_state_provider.py`
 - **UUID** (15 connections)
 - **Any** (13 connections)
 - **.send_initial_game_state()** (12 connections) — `server/realtime/integration/game_state_provider.py`
@@ -27,35 +25,36 @@
 - **.__init__()** (4 connections) — `server/realtime/integration/game_state_provider.py`
 - **.get_players_batch()** (4 connections) — `server/realtime/integration/game_state_provider.py`
 - **.get_npcs_batch()** (4 connections) — `server/realtime/integration/game_state_provider.py`
-- **Current FSM state as a single State.          Narrows base class type (Any | Mut** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Provides initial game state for newly connected players.      This class provide** (1 connections) — `server/realtime/integration/game_state_provider.py`
-- *... and 18 more nodes in this community*
+- **Initialize the game state provider.          Args:             room_manager: Roo** (1 connections) — `server/realtime/integration/game_state_provider.py`
+- **Get a player from the persistence layer (async version).          Args:** (1 connections) — `server/realtime/integration/game_state_provider.py`
+- **Get multiple players from the persistence layer in a single batch operation.** (1 connections) — `server/realtime/integration/game_state_provider.py`
+- **Get NPC names for multiple NPCs in a batch operation.          Args:** (1 connections) — `server/realtime/integration/game_state_provider.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [Player Respawn Events](Player_Respawn_Events.md) (8 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (3 shared connections)
-- [Event Bus Serialization](Event_Bus_Serialization.md) (3 shared connections)
-- [Players API Endpoints](Players_API_Endpoints.md) (3 shared connections)
-- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (2 shared connections)
-- [Admin Teleport Commands](Admin_Teleport_Commands.md) (2 shared connections)
-- [Spell Effect Protocols](Spell_Effect_Protocols.md) (2 shared connections)
-- [Quest Journal Commands](Quest_Journal_Commands.md) (2 shared connections)
-- [MP Regeneration Service](MP_Regeneration_Service.md) (2 shared connections)
-- [Player Combat XP](Player_Combat_XP.md) (2 shared connections)
-- [Async Persistence Layer](Async_Persistence_Layer.md) (2 shared connections)
-- [WebSocket Helper Utilities](WebSocket_Helper_Utilities.md) (2 shared connections)
+- [Game State Provider Tests](Game_State_Provider_Tests.md) (18 shared connections)
+- [Player Respawn Events](Player_Respawn_Events.md) (4 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (3 shared connections)
+- [Container Persistence Queries](Container_Persistence_Queries.md) (2 shared connections)
+- [NATS Chat Broadcasting](NATS_Chat_Broadcasting.md) (2 shared connections)
+- [Character Creation Service](Character_Creation_Service.md) (1 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
+- [Cursor Skills Harden](Cursor_Skills_Harden.md) (1 shared connections)
+- [3. Systematic Investigation Approach](3._Systematic_Investigation_Approach.md) (1 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (1 shared connections)
+- [Connection Health Monitor](Connection_Health_Monitor.md) (1 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_state_machine.py`
 - `server/realtime/integration/game_state_provider.py`
 - `server/realtime/nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 187 (80%)
-- INFERRED: 47 (20%)
+- EXTRACTED: 156 (92%)
+- INFERRED: 14 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,67 +1,53 @@
 # Profession Get Mechanical Effects
 
-> 157 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **Profession** (54 connections) — `server/models/profession.py`
-- **get_async_session()** (53 connections) — `server/database.py`
-- **test_async_persistence_core.py** (40 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
 - **test_profession.py** (30 connections) — `server/tests/unit/models/test_profession.py`
-- **async_persistence_direct_queries.py** (15 connections) — `server/async_persistence_direct_queries.py`
-- **profession.py** (10 connections) — `server/models/profession.py`
-- **fetch_user_by_username_case_insensitive()** (9 connections) — `server/async_persistence_direct_queries.py`
-- **fetch_professions()** (9 connections) — `server/async_persistence_direct_queries.py`
-- **Any** (8 connections)
-- **.get_stat_requirements()** (5 connections) — `server/models/profession.py`
-- **load_seed_data()** (4 connections) — `scripts/load_seed_using_project_db.py`
-- **.get_user_by_username_case_insensitive()** (4 connections) — `server/async_persistence.py`
-- **.get_professions()** (4 connections) — `server/async_persistence.py`
-- **add_flavor_text_column.py** (3 connections) — `scripts/add_flavor_text_column.py`
-- **add_flavor_text_column()** (3 connections) — `scripts/add_flavor_text_column.py`
-- **load_seed_using_project_db.py** (3 connections) — `scripts/load_seed_using_project_db.py`
-- **Profession** (3 connections)
-- **.set_stat_requirements()** (3 connections) — `server/models/profession.py`
-- **.get_mechanical_effects()** (3 connections) — `server/models/profession.py`
-- **.set_mechanical_effects()** (3 connections) — `server/models/profession.py`
-- **.get_stat_modifiers()** (3 connections) — `server/models/profession.py`
-- **.set_stat_modifiers()** (3 connections) — `server/models/profession.py`
-- **.get_skill_modifiers()** (3 connections) — `server/models/profession.py`
-- **.set_skill_modifiers()** (3 connections) — `server/models/profession.py`
-- **.meets_stat_requirements()** (3 connections) — `server/models/profession.py`
-- *... and 132 more nodes in this community*
+- **test_profession_get_stat_requirements_empty_string()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_set_stat_requirements()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_get_mechanical_effects_invalid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_get_mechanical_effects_empty_string()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_meets_stat_requirements_missing_stat()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_is_available_for_selection_true()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_is_available_for_selection_false()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_get_requirement_display_text_single_requirement()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_get_requirement_display_text_multiple_requirements()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Unit tests for the Profession model.  Tests the Profession model methods includi** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **Test get_stat_requirements returns empty dict for empty string.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **Test set_stat_requirements stores dict as JSON string.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **Test get_mechanical_effects returns empty dict for invalid JSON.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **Test get_mechanical_effects returns empty dict for empty string.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **Test meets_stat_requirements returns False when required stat is missing.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **Test is_available_for_selection returns True when is_available is True.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **Test is_available_for_selection returns False when is_available is False.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **Test get_requirement_display_text formats single requirement correctly.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **Test get_requirement_display_text formats multiple requirements correctly.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [Schemas Maps Map](Schemas_Maps_Map.md) (21 shared connections)
-- [Client Event Store](Client_Event_Store.md) (15 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (13 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (7 shared connections)
-- [NATS Subject Manager](NATS_Subject_Manager.md) (6 shared connections)
-- [Spell Registry Costs](Spell_Registry_Costs.md) (6 shared connections)
-- [Alias Storage Layer](Alias_Storage_Layer.md) (4 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (3 shared connections)
-- [Combat Command Handler](Combat_Command_Handler.md) (3 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
-- [MP Regeneration Service](MP_Regeneration_Service.md) (3 shared connections)
-- [Conftest Migration Plan](Conftest_Migration_Plan.md) (2 shared connections)
+- [Cursor Plans Login](Cursor_Plans_Login.md) (13 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
+- [Troubleshooting Guide](Troubleshooting_Guide.md) (1 shared connections)
+- [test_process_room_rows_with_none_stable_id](test_process_room_rows_with_none_stable_id.md) (1 shared connections)
+- [test_process_combined_rows_with_exits](test_process_combined_rows_with_exits.md) (1 shared connections)
+- [test_process_exits_for_room_no_direction](test_process_exits_for_room_no_direction.md) (1 shared connections)
+- [test_process_combined_rows_no_exits](test_process_combined_rows_no_exits.md) (1 shared connections)
+- [test_process_exits_for_room_multiple_exits](test_process_exits_for_room_multiple_exits.md) (1 shared connections)
+- [Game Enums](Game_Enums.md) (1 shared connections)
+- [test_get_players_batch_empty_list](test_get_players_batch_empty_list.md) (1 shared connections)
+- [Npc Idle Movement](Npc_Idle_Movement.md) (1 shared connections)
+- [test_process_exits_for_room_with_direction](test_process_exits_for_room_with_direction.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/add_flavor_text_column.py`
-- `scripts/load_seed_using_project_db.py`
-- `server/async_persistence.py`
-- `server/async_persistence_direct_queries.py`
-- `server/database.py`
-- `server/models/profession.py`
-- `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- `server/tests/unit/infrastructure/test_database_extended.py`
 - `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 492 (97%)
-- INFERRED: 17 (3%)
+- EXTRACTED: 67 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,77 +1,64 @@
 # Draggable Panel UI
 
-> 55 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **GameClientV2.tsx** (52 connections) — `client/src/components/ui-v2/GameClientV2.tsx`
-- **GameClientV2Dock.test.tsx** (13 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **QuestLogPanel.tsx** (9 connections) — `client/src/components/ui-v2/panels/QuestLogPanel.tsx`
-- **panelLayout.ts** (9 connections) — `client/src/components/ui-v2/utils/panelLayout.ts`
-- **usePanelManager.ts** (8 connections) — `client/src/components/ui-v2/PanelSystem/usePanelManager.ts`
-- **createDefaultPanelLayout()** (8 connections) — `client/src/components/ui-v2/utils/panelLayout.ts`
-- **GameClientV2Content()** (7 connections) — `client/src/components/ui-v2/GameClientV2.tsx`
-- **OccupantsPanel.tsx** (7 connections) — `client/src/components/ui-v2/panels/OccupantsPanel.tsx`
-- **usePanelManager()** (6 connections) — `client/src/components/ui-v2/PanelSystem/usePanelManager.ts`
-- **LocationPanel.tsx** (6 connections) — `client/src/components/ui-v2/panels/LocationPanel.tsx`
-- **RoomDescriptionPanel.tsx** (6 connections) — `client/src/components/ui-v2/panels/RoomDescriptionPanel.tsx`
-- **GameClientV2()** (5 connections) — `client/src/components/ui-v2/GameClientV2.tsx`
-- **usePanelManager.test.ts** (5 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/usePanelManager.test.ts`
-- **GameInfoPanel()** (5 connections) — `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
-- **PanelManagerContext** (4 connections) — `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
-- **mockPanelRecord()** (4 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **GameInfoPanel.test.tsx** (4 connections) — `client/src/components/ui-v2/panels/__tests__/GameInfoPanel.test.tsx`
-- **LocationPanel.test.tsx** (4 connections) — `client/src/components/ui-v2/panels/__tests__/LocationPanel.test.tsx`
-- **OccupantsPanel.test.tsx** (4 connections) — `client/src/components/ui-v2/panels/__tests__/OccupantsPanel.test.tsx`
-- **RoomDescriptionPanel.test.tsx** (4 connections) — `client/src/components/ui-v2/panels/__tests__/RoomDescriptionPanel.test.tsx`
-- **TentacleBackdrop.tsx** (3 connections) — `client/src/components/ui-v2/TentacleBackdrop.tsx`
-- **TentacleBackdrop()** (3 connections) — `client/src/components/ui-v2/TentacleBackdrop.tsx`
-- **mockUsePanelManagerValue()** (3 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- **LocationPanel()** (3 connections) — `client/src/components/ui-v2/panels/LocationPanel.tsx`
-- **OccupantsPanel()** (3 connections) — `client/src/components/ui-v2/panels/OccupantsPanel.tsx`
-- *... and 30 more nodes in this community*
+- **__init__.py** (32 connections) — `server/persistence/__init__.py`
+- **ContainerCreateParams** (20 connections) — `server/persistence/container_create_params.py`
+- **item_instance_persistence.py** (20 connections) — `server/persistence/item_instance_persistence.py`
+- **ensure_item_instance()** (10 connections) — `server/persistence/item_instance_persistence.py`
+- **create_item_instance()** (9 connections) — `server/persistence/item_instance_persistence.py`
+- **Any** (7 connections)
+- **container_create_params.py** (6 connections) — `server/persistence/container_create_params.py`
+- **_handle_item_instance_db_error()** (6 connections) — `server/persistence/item_instance_persistence.py`
+- **_execute_item_instance_upsert()** (6 connections) — `server/persistence/item_instance_persistence.py`
+- **test_create_container_uuid_string_conversion()** (6 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_create_container_success()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **_item_instance_row_values()** (4 connections) — `server/persistence/item_instance_persistence.py`
+- **get_item_instance()** (4 connections) — `server/persistence/item_instance_persistence.py`
+- **item_instance_exists()** (4 connections) — `server/persistence/item_instance_persistence.py`
+- **test_create_container_with_params()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_create_container_with_kwargs()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_create_container_wraps_psycopg2_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- **Persistence package for MythosMUD.  This package contains persistence utilities** (1 connections) — `server/persistence/__init__.py`
+- **# NOTE: PersistenceLayer and get_persistence removed - all code now uses AsyncPe** (1 connections) — `server/persistence/__init__.py`
+- **# NOTE: Removed PersistenceLayer, get_persistence, and reset_persistence from __** (1 connections) — `server/persistence/__init__.py`
+- **Shared parameters for container creation (sync DB and async repository paths).** (1 connections) — `server/persistence/container_create_params.py`
+- **Optional fields for creating a container row (beyond source_type).** (1 connections) — `server/persistence/container_create_params.py`
+- **Exception** (1 connections)
+- **Item instance persistence operations.  As documented in the restricted archives,** (1 connections) — `server/persistence/item_instance_persistence.py`
+- **Create a new item instance in the database.** (1 connections) — `server/persistence/item_instance_persistence.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [API Test Fixtures](API_Test_Fixtures.md) (24 shared connections)
-- [Communication Command Handlers](Communication_Command_Handlers.md) (23 shared connections)
-- [Health Cold Resistance](Health_Cold_Resistance.md) (8 shared connections)
-- [Command Input Validator](Command_Input_Validator.md) (4 shared connections)
-- [Character Stats Model](Character_Stats_Model.md) (2 shared connections)
-- [Ground and Rescue Commands](Ground_and_Rescue_Commands.md) (2 shared connections)
-- [Magic System Feature Plan](Magic_System_Feature_Plan.md) (2 shared connections)
-- [Game Terminal Container](Game_Terminal_Container.md) (2 shared connections)
-- [Combat Messaging Integration](Combat_Messaging_Integration.md) (1 shared connections)
-- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (1 shared connections)
-- [Holidays JSON Schema](Holidays_JSON_Schema.md) (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (26 shared connections)
+- [Maps API Endpoints](Maps_API_Endpoints.md) (16 shared connections)
+- [Communication Command Models](Communication_Command_Models.md) (12 shared connections)
+- [Integration DB Fixtures](Integration_DB_Fixtures.md) (3 shared connections)
+- [Client Security Utilities](Client_Security_Utilities.md) (3 shared connections)
+- [Conftest Migration Plan](Conftest_Migration_Plan.md) (3 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (2 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [E2E Suite Overview](E2E_Suite_Overview.md) (2 shared connections)
+- [Coverage Disconnect Grace](Coverage_Disconnect_Grace.md) (1 shared connections)
+- [Api Player Respawn](Api_Player_Respawn.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/GameClientV2.tsx`
-- `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
-- `client/src/components/ui-v2/PanelSystem/__tests__/usePanelManager.test.ts`
-- `client/src/components/ui-v2/PanelSystem/usePanelManager.ts`
-- `client/src/components/ui-v2/TentacleBackdrop.tsx`
-- `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
-- `client/src/components/ui-v2/__tests__/TentacleBackdrop.test.tsx`
-- `client/src/components/ui-v2/hooks/usePanelManager.ts`
-- `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
-- `client/src/components/ui-v2/panels/LocationPanel.tsx`
-- `client/src/components/ui-v2/panels/OccupantsPanel.tsx`
-- `client/src/components/ui-v2/panels/QuestLogPanel.tsx`
-- `client/src/components/ui-v2/panels/RoomDescriptionPanel.tsx`
-- `client/src/components/ui-v2/panels/__tests__/GameInfoPanel.test.tsx`
-- `client/src/components/ui-v2/panels/__tests__/LocationPanel.test.tsx`
-- `client/src/components/ui-v2/panels/__tests__/OccupantsPanel.test.tsx`
-- `client/src/components/ui-v2/panels/__tests__/RoomDescriptionPanel.test.tsx`
-- `client/src/components/ui-v2/utils/__tests__/panelLayout.test.ts`
-- `client/src/components/ui-v2/utils/panelLayout.ts`
-- `client/src/types/lucidity.ts`
+- `server/persistence/__init__.py`
+- `server/persistence/container_create_params.py`
+- `server/persistence/item_instance_persistence.py`
+- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 234 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 157 (95%)
+- INFERRED: 9 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

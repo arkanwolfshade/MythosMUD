@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_validated_command_no_command_type()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test process_validated_command handles missing command_type.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_delete_player_success()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test delete_player() successfully deletes player.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 
 ## Relationships
 
-- [NPC Population Control](NPC_Population_Control.md) (1 shared connections)
+- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 

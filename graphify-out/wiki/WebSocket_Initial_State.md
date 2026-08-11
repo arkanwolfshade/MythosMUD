@@ -1,61 +1,61 @@
 # WebSocket Initial State
 
-> 110 nodes
+> 73 nodes
 
 ## Key Concepts
 
-- **websocket_initial_state.py** (45 connections) — `server/realtime/websocket_initial_state.py`
-- **test_websocket_initial_state.py** (45 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **send_initial_room_state()** (19 connections) — `server/realtime/websocket_initial_state.py`
-- **send_initial_game_state()** (15 connections) — `server/realtime/websocket_initial_state.py`
-- **validate_occupant_name()** (14 connections) — `server/realtime/websocket_helpers.py`
-- **check_and_send_death_notification()** (14 connections) — `server/realtime/websocket_initial_state.py`
-- **get_occupant_names()** (11 connections) — `server/realtime/websocket_helpers.py`
-- **convert_uuids_to_strings()** (11 connections) — `server/realtime/websocket_helpers.py`
-- **send_game_state_event_safely()** (10 connections) — `server/realtime/websocket_initial_state.py`
-- **prepare_room_data_with_occupants()** (9 connections) — `server/realtime/websocket_initial_state.py`
-- **get_event_handler_for_initial_state()** (9 connections) — `server/realtime/websocket_initial_state.py`
-- **get_npc_lifecycle_manager_from_connection_manager()** (8 connections) — `server/realtime/websocket_initial_state.py`
-- **add_npc_occupants_to_list()** (8 connections) — `server/realtime/websocket_initial_state.py`
-- **send_occupants_snapshot_if_needed()** (8 connections) — `server/realtime/websocket_initial_state.py`
-- **Protocol** (7 connections)
-- **_AppWithState** (7 connections) — `server/realtime/websocket_initial_state.py`
-- **_AppStateForEventHandler** (6 connections) — `server/realtime/websocket_initial_state.py`
-- **_NpcLifecycleManagerForOccupants** (6 connections) — `server/realtime/websocket_initial_state.py`
-- **_AppStateWithNpcLifecycle** (6 connections) — `server/realtime/websocket_initial_state.py`
-- **UUID** (6 connections)
-- **_RealTimeHandlerContainer** (5 connections) — `server/realtime/websocket_initial_state.py`
-- **_NpcOccupantDisplay** (5 connections) — `server/realtime/websocket_initial_state.py`
-- **_ContainerWithNpcLifecycle** (5 connections) — `server/realtime/websocket_initial_state.py`
-- **WebSocket** (5 connections)
-- **_get_player_for_death_check()** (5 connections) — `server/realtime/websocket_initial_state.py`
-- *... and 85 more nodes in this community*
+- **websocket_room_updates.py** (32 connections) — `server/realtime/websocket_room_updates.py`
+- **test_websocket_room_updates.py** (32 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **broadcast_room_update()** (23 connections) — `server/realtime/websocket_room_updates.py`
+- **build_room_update_event()** (13 connections) — `server/realtime/websocket_room_updates.py`
+- **get_player_occupants()** (11 connections) — `server/realtime/websocket_room_updates.py`
+- **get_npc_occupants_from_lifecycle_manager()** (11 connections) — `server/realtime/websocket_room_updates.py`
+- **get_npc_occupants_fallback()** (9 connections) — `server/realtime/websocket_room_updates.py`
+- **update_player_room_subscription()** (7 connections) — `server/realtime/websocket_room_updates.py`
+- **test_websocket_room_updates_build_event.py** (6 connections) — `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
+- **_resolve_room_with_fallback()** (4 connections) — `server/realtime/websocket_room_updates.py`
+- **test_get_player_occupants_handles_exception()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_from_lifecycle_manager_handles_exception()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_broadcast_room_update_fallback_npc_method()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_player_occupants_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_player_occupants_empty()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_from_lifecycle_manager_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_from_lifecycle_manager_filters_dead()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_from_lifecycle_manager_wrong_room()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_from_lifecycle_manager_no_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_fallback_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_fallback_filters_dead()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_fallback_no_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_build_room_update_event()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_build_room_update_event_with_drops()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_update_player_room_subscription_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
-- [Combat Aggro Threat](Combat_Aggro_Threat.md) (16 shared connections)
-- [Archive Bug Fix](Archive_Bug_Fix.md) (10 shared connections)
-- [Async Persistence Layer](Async_Persistence_Layer.md) (9 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (8 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (8 shared connections)
-- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (6 shared connections)
-- [Client Event Store](Client_Event_Store.md) (5 shared connections)
-- [Pylint Unique Findings](Pylint_Unique_Findings.md) (5 shared connections)
-- [Container API Endpoints](Container_API_Endpoints.md) (4 shared connections)
-- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (3 shared connections)
-- [Dependency Injection Tests](Dependency_Injection_Tests.md) (3 shared connections)
-- [Magic Lifespan Initialization](Magic_Lifespan_Initialization.md) (3 shared connections)
+- [Party Service Management](Party_Service_Management.md) (5 shared connections)
+- [Look Display Helpers](Look_Display_Helpers.md) (5 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (4 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (4 shared connections)
+- [Container Persistence Queries](Container_Persistence_Queries.md) (3 shared connections)
+- [Player Respawn Events](Player_Respawn_Events.md) (3 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (3 shared connections)
+- [API Type Guards](API_Type_Guards.md) (3 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_helpers.py`
-- `server/realtime/websocket_initial_state.py`
-- `server/tests/unit/realtime/test_websocket_initial_state.py`
+- `server/realtime/websocket_room_updates.py`
+- `server/tests/unit/realtime/test_websocket_room_updates.py`
+- `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
 
 ## Audit Trail
 
-- EXTRACTED: 416 (93%)
-- INFERRED: 30 (7%)
+- EXTRACTED: 260 (99%)
+- INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

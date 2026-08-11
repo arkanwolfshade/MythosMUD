@@ -1,19 +1,17 @@
 # Investigations Sessions Session
 
-> 6 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **schedules** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **properties** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **items** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **id** (4 connections) — `schemas/calendar/schedule.schema.json`
 - **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **$ref** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **pattern** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [Archive Connection Termination](Archive_Connection_Termination.md) (1 shared connections)
+- [Contributing Guidelines](Contributing_Guidelines.md) (1 shared connections)
 
 ## Source Files
 
@@ -21,7 +19,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

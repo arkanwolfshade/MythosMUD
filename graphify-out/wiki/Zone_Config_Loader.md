@@ -1,72 +1,67 @@
 # Zone Config Loader
 
-> 138 nodes
+> 255 nodes
 
 ## Key Concepts
 
-- **command.py** (96 connections) — `server/models/command.py`
-- **CommandType** (84 connections) — `server/models/command_base.py`
-- **command_base.py** (23 connections) — `server/models/command_base.py`
-- **test_command_player_state.py** (23 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_command_utility.py** (20 connections) — `server/tests/unit/models/test_command_utility.py`
-- **command_communication.py** (19 connections) — `server/models/command_communication.py`
-- **command_utility.py** (18 connections) — `server/models/command_utility.py`
-- **command_player_state.py** (15 connections) — `server/models/command_player_state.py`
-- **LieCommand** (15 connections) — `server/models/command_player_state.py`
-- **command_admin.py** (14 connections) — `server/models/command_admin.py`
-- **command_combat.py** (14 connections) — `server/models/command_combat.py`
-- **command_inventory.py** (13 connections) — `server/models/command_inventory.py`
-- **HelpCommand** (13 connections) — `server/models/command_utility.py`
-- **WhoCommand** (13 connections) — `server/models/command_utility.py`
-- **GroundCommand** (12 connections) — `server/models/command_player_state.py`
-- **command_magic.py** (10 connections) — `server/models/command_magic.py`
-- **command_follow.py** (8 connections) — `server/models/command_follow.py`
-- **InventoryCommand** (8 connections) — `server/models/command_inventory.py`
-- **SpellsCommand** (8 connections) — `server/models/command_magic.py`
-- **QuitCommand** (8 connections) — `server/models/command_player_state.py`
-- **LogoutCommand** (8 connections) — `server/models/command_player_state.py`
-- **SitCommand** (8 connections) — `server/models/command_player_state.py`
-- **StandCommand** (8 connections) — `server/models/command_player_state.py`
-- **StatusCommand** (8 connections) — `server/models/command_utility.py`
-- **TimeCommand** (8 connections) — `server/models/command_utility.py`
-- *... and 113 more nodes in this community*
+- **Player** (200 connections) — `server/models/player.py`
+- **test_player_death_service.py** (52 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_player_model.py** (48 connections) — `server/tests/unit/models/test_player_model.py`
+- **PlayerDeathService** (29 connections) — `server/services/player_death_service.py`
+- **player_event_handlers_state.py** (23 connections) — `server/realtime/player_event_handlers_state.py`
+- **player_death_service.py** (20 connections) — `server/services/player_death_service.py`
+- **PlayerDiedEvent** (19 connections) — `server/events/event_types.py`
+- **PlayerDPDecayEvent** (16 connections) — `server/events/event_types.py`
+- **log_exception_once()** (15 connections) — `server/structured_logging/enhanced_logging_config.py`
+- **_dispatch_player_dp_updated_payload()** (10 connections) — `server/realtime/player_event_handlers_state.py`
+- **.handle_player_death()** (10 connections) — `server/services/player_death_service.py`
+- **PlayerLifecycleServices** (8 connections) — `server/services/combat_service_types.py`
+- **_send_player_death_notification()** (7 connections) — `server/realtime/player_event_handlers_state.py`
+- **combat_service_types.py** (7 connections) — `server/services/combat_service_types.py`
+- **.process_mortally_wounded_tick()** (7 connections) — `server/services/player_death_service.py`
+- **._publish_death_event()** (7 connections) — `server/services/player_death_service.py`
+- **test_health_repository_cold_resistance.py** (7 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
+- **_player_snapshot_for_dp()** (6 connections) — `server/realtime/player_event_handlers_state.py`
+- **.get_dead_players()** (6 connections) — `server/services/player_death_service.py`
+- **UUID** (6 connections)
+- **.get_mortally_wounded_players()** (5 connections) — `server/services/player_death_service.py`
+- **._ensure_player_posture_lying()** (5 connections) — `server/services/player_death_service.py`
+- **._clear_player_combat_state()** (5 connections) — `server/services/player_death_service.py`
+- **BoundLogger** (4 connections)
+- **_dp_player_update_payload()** (4 connections) — `server/realtime/player_event_handlers_state.py`
+- *... and 230 more nodes in this community*
 
 ## Relationships
 
-- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (37 shared connections)
-- [NPC Occupant Processor](NPC_Occupant_Processor.md) (25 shared connections)
-- [Admin Summon Command](Admin_Summon_Command.md) (21 shared connections)
-- [Communication Command Models](Communication_Command_Models.md) (20 shared connections)
-- [Game Terminal Panels](Game_Terminal_Panels.md) (17 shared connections)
-- [Environmental Container Scenario](Environmental_Container_Scenario.md) (16 shared connections)
-- [Emote Schema Validator](Emote_Schema_Validator.md) (15 shared connections)
-- [Chat Panel Components](Chat_Panel_Components.md) (15 shared connections)
-- [Command Helper Utilities](Command_Helper_Utilities.md) (12 shared connections)
-- [Cursor Plans Disconnect](Cursor_Plans_Disconnect.md) (11 shared connections)
-- [Integer Coercion Utils](Integer_Coercion_Utils.md) (9 shared connections)
-- [Moderation Command Models](Moderation_Command_Models.md) (9 shared connections)
+- [Application Config Settings](Application_Config_Settings.md) (30 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (22 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (12 shared connections)
+- [Investigations Sessions Xx](Investigations_Sessions_Xx.md) (11 shared connections)
+- [Panel Layout Libraries Spec](Panel_Layout_Libraries_Spec.md) (10 shared connections)
+- [Conftest Migration Plan](Conftest_Migration_Plan.md) (10 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (9 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (9 shared connections)
+- [Ground and Rescue Commands](Ground_and_Rescue_Commands.md) (9 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (7 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (6 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (6 shared connections)
 
 ## Source Files
 
-- `server/models/command.py`
-- `server/models/command_admin.py`
-- `server/models/command_base.py`
-- `server/models/command_channel.py`
-- `server/models/command_combat.py`
-- `server/models/command_communication.py`
-- `server/models/command_follow.py`
-- `server/models/command_inventory.py`
-- `server/models/command_magic.py`
-- `server/models/command_party.py`
-- `server/models/command_player_state.py`
-- `server/models/command_utility.py`
-- `server/tests/unit/models/test_command_player_state.py`
-- `server/tests/unit/models/test_command_utility.py`
+- `server/events/event_types.py`
+- `server/models/player.py`
+- `server/realtime/player_event_handlers_state.py`
+- `server/services/combat_service_types.py`
+- `server/services/player_death_service.py`
+- `server/structured_logging/enhanced_logging_config.py`
+- `server/tests/unit/models/test_player_model.py`
+- `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
+- `server/tests/unit/services/test_player_death_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 608 (84%)
-- INFERRED: 120 (16%)
+- EXTRACTED: 824 (89%)
+- INFERRED: 100 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

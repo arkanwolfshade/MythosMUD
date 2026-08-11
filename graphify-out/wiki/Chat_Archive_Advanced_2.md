@@ -1,31 +1,38 @@
 # Chat Archive Advanced
 
-> 8 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **calculate_notification_times()** (7 connections) — `server/commands/admin_shutdown_command.py`
-- **test_calculate_notification_times_short()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_calculate_notification_times_long()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_calculate_notification_times_sorted()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Calculate notification times for countdown.      Notifications occur:     - Ever** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Test calculate_notification_times() for short countdown.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test calculate_notification_times() for long countdown.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test calculate_notification_times() returns sorted descending.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **_format_container_contents()** (11 connections) — `server/commands/look_container.py`
+- **test_format_container_contents_with_items()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_format_container_contents_empty()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_format_container_contents_with_quantity()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_format_container_contents_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_format_container_contents_with_quantity()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Format container contents as list of lines.** (1 connections) — `server/commands/look_container.py`
+- **Test formatting container contents with items.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test formatting container contents when empty.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test formatting container contents with quantity > 1.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test _format_container_contents() with empty list.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _format_container_contents() with items having quantity.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
 
 ## Relationships
 
-- [Services Lucidity Repository](Services_Lucidity_Repository.md) (4 shared connections)
-- [Room Drop Renderer](Room_Drop_Renderer.md) (2 shared connections)
+- [Look Container Command](Look_Container_Command.md) (4 shared connections)
+- [Player State Command Factory](Player_State_Command_Factory.md) (3 shared connections)
+- [Server Process Termination](Server_Process_Termination.md) (2 shared connections)
+- [Memory Threshold Monitor](Memory_Threshold_Monitor.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_shutdown_command.py`
-- `server/tests/unit/commands/test_admin_shutdown_command.py`
+- `server/commands/look_container.py`
+- `server/tests/unit/commands/test_look_container.py`
+- `server/tests/unit/commands/test_look_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 32 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_combat_command_suspicious_patterns_with_mock()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command suspicious patterns path (line 158).** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_create_alias_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_alias_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 

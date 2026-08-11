@@ -1,43 +1,37 @@
 # Debuglogger Constructor Debug Logger
 
-> 18 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **test_metadata.py** (11 connections) — `server/tests/unit/test_metadata.py`
-- **metadata.py** (3 connections) — `server/metadata.py`
-- **npc_metadata.py** (3 connections) — `server/npc_metadata.py`
-- **test_base_is_declarative_base()** (3 connections) — `server/tests/unit/test_metadata.py`
-- **test_base_has_metadata()** (3 connections) — `server/tests/unit/test_metadata.py`
-- **test_base_can_be_instantiated()** (3 connections) — `server/tests/unit/test_metadata.py`
-- **test_metadata_is_metadata_instance()** (2 connections) — `server/tests/unit/test_metadata.py`
-- **test_npc_metadata_is_metadata_instance()** (2 connections) — `server/tests/unit/test_metadata.py`
-- **test_metadata_and_npc_metadata_are_different()** (2 connections) — `server/tests/unit/test_metadata.py`
-- **Shared SQLAlchemy metadata for MythosMUD models.  This module provides the share** (1 connections) — `server/metadata.py`
-- **NPC Database metadata for MythosMUD.  This module defines the SQLAlchemy metadat** (1 connections) — `server/npc_metadata.py`
-- **Unit tests for metadata modules.  Tests the shared SQLAlchemy metadata instances** (1 connections) — `server/tests/unit/test_metadata.py`
-- **Test that metadata is a MetaData instance.** (1 connections) — `server/tests/unit/test_metadata.py`
-- **Test that npc_metadata is a MetaData instance.** (1 connections) — `server/tests/unit/test_metadata.py`
-- **Test that metadata and npc_metadata are separate instances.** (1 connections) — `server/tests/unit/test_metadata.py`
-- **Test that Base is a DeclarativeBase subclass.** (1 connections) — `server/tests/unit/test_metadata.py`
-- **Test that Base has metadata attribute set to shared metadata.** (1 connections) — `server/tests/unit/test_metadata.py`
-- **Test that Base can be instantiated (though meant to be subclassed).** (1 connections) — `server/tests/unit/test_metadata.py`
+- **CoordinateValidator** (9 connections) — `server/services/coordinate_validator.py`
+- **coordinate_validator.py** (7 connections) — `server/services/coordinate_validator.py`
+- **.validate_coordinates()** (6 connections) — `server/services/coordinate_validator.py`
+- **._fetch_conflicts()** (4 connections) — `server/services/coordinate_validator.py`
+- **_conflict_from_row()** (3 connections) — `server/services/coordinate_validator.py`
+- **Any** (3 connections)
+- **.__init__()** (3 connections) — `server/services/coordinate_validator.py`
+- **_zone_pattern()** (2 connections) — `server/services/coordinate_validator.py`
+- **._count_coordinated_rooms()** (2 connections) — `server/services/coordinate_validator.py`
+- **AsyncSession** (1 connections)
+- **Coordinate validation service for ASCII maps.  This module provides conflict det** (1 connections) — `server/services/coordinate_validator.py`
+- **Validates room coordinates and detects conflicts.      A conflict occurs when mu** (1 connections) — `server/services/coordinate_validator.py`
+- **Initialize coordinate validator.          Args:             session: Database se** (1 connections) — `server/services/coordinate_validator.py`
+- **Validate coordinates for rooms in a zone/subzone and detect conflicts.** (1 connections) — `server/services/coordinate_validator.py`
 
 ## Relationships
 
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (6 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Minimap Fallback Helpers](Minimap_Fallback_Helpers.md) (4 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
 
 ## Source Files
 
-- `server/metadata.py`
-- `server/npc_metadata.py`
-- `server/tests/unit/test_metadata.py`
+- `server/services/coordinate_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 44 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

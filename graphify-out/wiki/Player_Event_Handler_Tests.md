@@ -33,12 +33,10 @@
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (13 shared connections)
-- [Chat NATS Publisher](Chat_NATS_Publisher.md) (8 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (4 shared connections)
-- [Combat Attack Service](Combat_Attack_Service.md) (4 shared connections)
-- [Container Repository CRUD](Container_Repository_CRUD.md) (3 shared connections)
-- [Admin Teleport Commands](Admin_Teleport_Commands.md) (1 shared connections)
+- [Container Open Events](Container_Open_Events.md) (16 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (14 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Cursor Skills Harden](Cursor_Skills_Harden.md) (1 shared connections)
 
 ## Source Files
 

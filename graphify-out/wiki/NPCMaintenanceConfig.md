@@ -1,23 +1,24 @@
 # NPCMaintenanceConfig
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_parse_command_string_success()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test _parse_command_string successfully parses command.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **8. Error Handling and Debugging** (3 connections) — `.cursor/commands/server-test-remediation.md`
+- **Test Debugging** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Common Debug Commands** (1 connections) — `.cursor/commands/server-test-remediation.md`
 
 ## Relationships
 
-- [NPC Population Control](NPC_Population_Control.md) (1 shared connections)
+- [E 2 E Scenario Whisper](E_2_E_Scenario_Whisper.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `.cursor/commands/server-test-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,24 +4,22 @@
 
 ## Key Concepts
 
-- **webhook()** (5 connections) — `monitoring/webhook-receiver.py`
-- **Request** (1 connections)
-- **Receive and log alert webhooks** (1 connections) — `monitoring/webhook-receiver.py`
+- **id** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
 
 ## Relationships
 
-- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
+- [Edge Creation Modal](Edge_Creation_Modal.md) (1 shared connections)
 
 ## Source Files
 
-- `monitoring/webhook-receiver.py`
+- `db/static/schemas/room.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (71%)
-- INFERRED: 2 (29%)
+- EXTRACTED: 5 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

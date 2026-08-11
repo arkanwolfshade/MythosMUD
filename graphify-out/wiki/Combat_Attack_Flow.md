@@ -1,6 +1,6 @@
 # Combat Attack Flow
 
-> 49 nodes
+> 39 nodes
 
 ## Key Concepts
 
@@ -12,13 +12,8 @@
 - **Any** (7 connections)
 - **_execute_combat_action()** (7 connections) — `server/commands/combat_attack.py`
 - **_validate_attack_preconditions()** (6 connections) — `server/commands/combat_attack.py`
-- **Any** (6 connections)
 - **_validate_attack_target_and_action()** (5 connections) — `server/commands/combat_attack.py`
 - **_get_combat_action_context()** (5 connections) — `server/commands/combat_attack.py`
-- **.handle_attack_command()** (5 connections) — `server/commands/combat_handler.py`
-- **.handle_taunt_command()** (5 connections) — `server/commands/combat_handler.py`
-- **.extract_combat_command_data()** (4 connections) — `server/commands/combat_handler.py`
-- **.handle_flee_command()** (4 connections) — `server/commands/combat_handler.py`
 - **test_validate_attack_player_and_room_missing_target()** (3 connections) — `server/tests/unit/commands/test_combat_attack.py`
 - **test_validate_attack_player_and_room_incapacitated()** (3 connections) — `server/tests/unit/commands/test_combat_attack.py`
 - **test_validate_attack_player_and_room_no_combat_zone()** (3 connections) — `server/tests/unit/commands/test_combat_attack.py`
@@ -29,27 +24,32 @@
 - **test_run_handle_attack_command_blocked_by_rest()** (3 connections) — `server/tests/unit/commands/test_combat_attack.py`
 - **test_run_handle_attack_command_success_path()** (3 connections) — `server/tests/unit/commands/test_combat_attack.py`
 - **mock_handler()** (2 connections) — `server/tests/unit/commands/test_combat_attack.py`
-- *... and 24 more nodes in this community*
+- **Attack command flow: validation and execution.  Extracted from combat.py to redu** (1 connections) — `server/commands/combat_attack.py`
+- **Validate target name, load player/room, check DP and no_combat.     Returns (pla** (1 connections) — `server/commands/combat_attack.py`
+- **Resolve combat target and validate action; return (target_match, npc_instance, N** (1 connections) — `server/commands/combat_attack.py`
+- **Run all attack pre-checks; return (player, room_id, target_match, npc_instance,** (1 connections) — `server/commands/combat_attack.py`
+- **Load player and resolve NPC instance/name for combat action.     Returns (player** (1 connections) — `server/commands/combat_attack.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (9 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (4 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (3 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (2 shared connections)
-- [Rest Command Flow](Rest_Command_Flow.md) (1 shared connections)
+- [NATS Retry Handler](NATS_Retry_Handler.md) (3 shared connections)
+- [Command Parser](Command_Parser.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (2 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
+- [Container Open Events](Container_Open_Events.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/combat_attack.py`
-- `server/commands/combat_handler.py`
 - `server/tests/unit/commands/test_combat_attack.py`
 
 ## Audit Trail
 
-- EXTRACTED: 158 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 131 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

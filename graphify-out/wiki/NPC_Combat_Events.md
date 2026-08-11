@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [Cursor Setup Guide](Cursor_Setup_Guide.md) (15 shared connections)
+- [Cursor Setup Guide](Cursor_Setup_Guide.md) (8 shared connections)
+- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (7 shared connections)
 
 ## Source Files
 

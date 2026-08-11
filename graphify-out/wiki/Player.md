@@ -2,7 +2,7 @@
 
 > God node · 200 connections · `server/models/player.py`
 
-**Community:** [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md)
+**Community:** [Zone Config Loader](Zone_Config_Loader.md)
 
 ## Connections by Relation
 

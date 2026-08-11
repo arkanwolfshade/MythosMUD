@@ -35,13 +35,11 @@
 
 - [Logging Path Utilities](Logging_Path_Utilities.md) (13 shared connections)
 - [Logging Structured Handlers](Logging_Structured_Handlers.md) (10 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (5 shared connections)
 - [Windows Log Rotation](Windows_Log_Rotation.md) (4 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (3 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (3 shared connections)
 - [Logging Structured Player](Logging_Structured_Player.md) (3 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
 - [Monitoring Bundle Services](Monitoring_Bundle_Services.md) (1 shared connections)
-- [Logging Structured Processors](Logging_Structured_Processors.md) (1 shared connections)
 - [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (1 shared connections)
 
 ## Source Files

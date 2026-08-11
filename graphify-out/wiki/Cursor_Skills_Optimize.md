@@ -1,23 +1,32 @@
 # Cursor Skills Optimize
 
-> 2 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **test_process_message_with_retry_failure()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _process_message_with_retry adds to DLQ on failure.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **add_used_by_user_id_column.py** (4 connections) — `server/scripts/add_used_by_user_id_column.py`
+- **rename_used_to_is_active.py** (4 connections) — `server/scripts/rename_used_to_is_active.py`
+- **apply_migration()** (3 connections) — `server/scripts/add_used_by_user_id_column.py`
+- **main()** (3 connections) — `server/scripts/add_used_by_user_id_column.py`
+- **apply_migration()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
+- **main()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
+- **Apply the migration to add used_by_user_id column.      Args:         database_u** (1 connections) — `server/scripts/add_used_by_user_id_column.py`
+- **Main entry point for the migration script.** (1 connections) — `server/scripts/add_used_by_user_id_column.py`
+- **Apply the migration to rename used back to is_active.      Args:         databas** (1 connections) — `server/scripts/rename_used_to_is_active.py`
+- **Main entry point for the migration script.** (1 connections) — `server/scripts/rename_used_to_is_active.py`
 
 ## Relationships
 
-- [Loot All Endpoint](Loot_All_Endpoint.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/scripts/add_used_by_user_id_column.py`
+- `server/scripts/rename_used_to_is_active.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

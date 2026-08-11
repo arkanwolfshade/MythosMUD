@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_stop_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test stop() handles failure.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_get_user_role_superuser()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **Test get_user_role returns SUPERUSER for superuser.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Relationships
 
-- [Inventory Command Models](Inventory_Command_Models.md) (1 shared connections)
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
+- [Player Model Inventory](Player_Model_Inventory.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

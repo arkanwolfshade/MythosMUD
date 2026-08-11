@@ -1,23 +1,25 @@
 # CircuitBreakerOpen
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_parse_command_string_with_subcommand()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test _parse_command_string handles subcommands.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **.__init__()** (3 connections) — `server/realtime/message_validator.py`
+- **.__init__()** (2 connections) — `server/realtime/message_validator.py`
+- **Initialize the message validator.          Args:             max_message_size** (1 connections) — `server/realtime/message_validator.py`
 
 ## Relationships
 
-- [NPC Population Control](NPC_Population_Control.md) (1 shared connections)
+- [Scenario Conversion Guide](Scenario_Conversion_Guide.md) (1 shared connections)
+- [Database Helper Tests](Database_Helper_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/realtime/message_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -35,8 +35,8 @@
 
 - [Realtime Event Handlers](Realtime_Event_Handlers.md) (4 shared connections)
 - [Bug Investigation Guide](Bug_Investigation_Guide.md) (2 shared connections)
-- [WebSocket Player Helpers](WebSocket_Player_Helpers.md) (2 shared connections)
-- [Map Editing Hooks](Map_Editing_Hooks.md) (2 shared connections)
+- [Communication Command Classes](Communication_Command_Classes.md) (2 shared connections)
+- [E2E Whisper Fix Report](E2E_Whisper_Fix_Report.md) (2 shared connections)
 - [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (1 shared connections)
 
 ## Source Files

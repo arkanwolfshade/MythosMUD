@@ -1,51 +1,52 @@
 # Admin Shutdown Commands
 
-> 27 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **NPCOccupantProcessor** (18 connections) — `server/realtime/npc_occupant_processor.py`
-- **Any** (11 connections)
-- **.query_npcs_for_room()** (6 connections) — `server/realtime/npc_occupant_processor.py`
-- **.__init__()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_npc_lifecycle_manager()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._validate_npc_room_tracking()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._should_include_npc_in_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._scan_active_npcs_for_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_lifecycle_manager_for_filtering()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._filter_fallback_npcs()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_fallback_npcs()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_npc_room_id()** (4 connections) — `server/realtime/npc_occupant_processor.py`
-- **._filter_single_fallback_npc()** (4 connections) — `server/realtime/npc_occupant_processor.py`
-- **.process_npcs_for_occupants()** (3 connections) — `server/realtime/npc_occupant_processor.py`
-- **Processes NPC occupants for rooms.** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Initialize NPC occupant processor.          Args:             connection_manager** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Get and validate NPC lifecycle manager.          Args:             room_id: The** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Get NPC's current room ID from instance.          Args:             npc_instance** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Validate NPC has room tracking and get room ID.          Args:             npc_i** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Determine if NPC should be included in room query results.          Args:** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Scan active NPCs to find those in the target room.          Args:             ac** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Query NPCs for a room from lifecycle manager.          Args:             room_id** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Get lifecycle manager for filtering fallback NPCs.          Returns:** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Check if a single fallback NPC should be included.          Args:             np** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Filter fallback NPCs to only include those in active_npcs and alive.          Ar** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- *... and 2 more nodes in this community*
+- **ChatPanel.tsx** (9 connections) — `client/src/components/panels/ChatPanel.tsx`
+- **chat-panel.spec.tsx** (9 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- **ChatPanel.test.tsx** (7 connections) — `client/src/components/__tests__/ChatPanel.test.tsx`
+- **chat-panel.test.tsx** (7 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
+- **ChatPanel.edgeCases.test.tsx** (6 connections) — `client/src/components/__tests__/ChatPanel.edgeCases.test.tsx`
+- **chatPanelTestHelpers.ts** (5 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
+- **createChatPanelDefaultProps()** (3 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
+- **chatPanelTestSetup.tsx** (3 connections) — `client/src/components/__tests__/chatPanelTestSetup.tsx`
+- **mockConsoleLog** (3 connections) — `client/src/components/__tests__/chatPanelTestSetup.tsx`
+- **mockMessages** (2 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
+- **ChatPanelTestMessage** (1 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
+- **TerminalButtonProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- **TerminalInputProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- **Channel** (1 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- **ChannelSelectorProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- **TerminalButtonProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
+- **Channel** (1 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
+- **ChannelSelectorProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [NATS Retry Handler](NATS_Retry_Handler.md) (2 shared connections)
-- [Character Stats Generator](Character_Stats_Generator.md) (2 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
+- [Client App State Hooks](Client_App_State_Hooks.md) (5 shared connections)
+- [Combat Attack Handler](Combat_Attack_Handler.md) (4 shared connections)
+- [Command Input Validator](Command_Input_Validator.md) (1 shared connections)
+- [Magic System Feature Plan](Magic_System_Feature_Plan.md) (1 shared connections)
+- [Memory Leak Metrics Tests](Memory_Leak_Metrics_Tests.md) (1 shared connections)
+- [NPC Combat Rewards Tests](NPC_Combat_Rewards_Tests.md) (1 shared connections)
+- [NPC Combat Integration](NPC_Combat_Integration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/npc_occupant_processor.py`
+- `client/src/components/__tests__/ChatPanel.edgeCases.test.tsx`
+- `client/src/components/__tests__/ChatPanel.test.tsx`
+- `client/src/components/__tests__/chatPanelTestHelpers.ts`
+- `client/src/components/__tests__/chatPanelTestSetup.tsx`
+- `client/src/components/panels/ChatPanel.tsx`
+- `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- `client/src/components/panels/__tests__/chat-panel.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 97 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 62 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

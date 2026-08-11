@@ -1,43 +1,36 @@
 # Command Factory Creators
 
-> 98 nodes
+> 12 nodes
 
 ## Key Concepts
 
 - **test_player_service.py** (54 connections) — `server/tests/unit/game/test_player_service.py`
-- **player_service()** (4 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_create_player_with_stats_character_limit()** (4 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_create_player_with_stats_name_exists()** (4 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_player_service_init()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_create_player_name_exists()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_create_player_with_stats_success()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_delete_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_update_player_location_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_soft_delete_character_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_soft_delete_character_wrong_user()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_delete_player_persistence_fails()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_soft_delete_character_persistence_fails()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_apply_lucidity_loss_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_apply_fear_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_apply_corruption_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_gain_occult_knowledge_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_heal_player_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_damage_player_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_player_service.py`
 - **test_create_player_success()** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_get_player_by_id_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_get_player_by_id_not_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_get_player_by_name_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_get_player_by_name_not_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- *... and 73 more nodes in this community*
+- **test_update_player_location_success()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_apply_corruption()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_gain_occult_knowledge()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_validate_player_name_empty()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **Unit tests for player service.  Tests the PlayerService class.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test create_player() successful creation.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test update_player_location() successfully updates location.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test apply_corruption() applies corruption.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test gain_occult_knowledge() increases occult knowledge.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test validate_player_name() with empty string.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 
 ## Relationships
 
-- [Command Parser Helpers](Command_Parser_Helpers.md) (14 shared connections)
-- [Client Event Store](Client_Event_Store.md) (4 shared connections)
-- [NPC Database Sessions](NPC_Database_Sessions.md) (4 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (3 shared connections)
-- [NPC Occupants Verification](NPC_Occupants_Verification.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (7 shared connections)
+- [Cursor Skills Frontend](Cursor_Skills_Frontend.md) (2 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (1 shared connections)
+- [NPC Definition Admin API](NPC_Definition_Admin_API.md) (1 shared connections)
+- [Application DI Bundles](Application_DI_Bundles.md) (1 shared connections)
+- [NPC Database Sessions](NPC_Database_Sessions.md) (1 shared connections)
+- [Invite Generate Invites](Invite_Generate_Invites.md) (1 shared connections)
+- [Cursor Plans Code](Cursor_Plans_Code.md) (1 shared connections)
+- [Plan Cursor Plans](Plan_Cursor_Plans.md) (1 shared connections)
+- [Container Persistence Sql](Container_Persistence_Sql.md) (1 shared connections)
+- [Cursor Plan Plans](Cursor_Plan_Plans.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +38,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 204 (93%)
-- INFERRED: 16 (7%)
+- EXTRACTED: 70 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **mock_lifecycle_manager()** (2 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Create a mock lifecycle manager.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_validate_player_name_too_short_one_char()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test validate_player_name() with name only 1 character.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 
 ## Relationships
 
-- [Look NPC Command](Look_NPC_Command.md) (1 shared connections)
+- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_npc.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 

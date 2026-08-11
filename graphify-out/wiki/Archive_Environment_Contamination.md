@@ -1,39 +1,58 @@
 # Archive Environment Contamination
 
-> 14 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **.send_message()** (8 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **UUID** (7 connections)
-- **._prepare_payload()** (7 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **Any** (6 connections)
-- **._queue_message_if_needed()** (6 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **._send_to_websocket()** (5 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **.__init__()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **.get_delivery_stats()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **Initialize the personal message sender.          Args:             message_queue** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **Prepare and optimize the payload for sending.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **Send message to a single WebSocket connection. Returns True if successful.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **Queue message if no active connections.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **Send a personal message to a player via WebSocket.          Args:             pl** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **Get message delivery statistics for a player.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **bind_request_context()** (15 connections) — `server/structured_logging/logging_context.py`
+- **clear_request_context()** (11 connections) — `server/structured_logging/logging_context.py`
+- **.__call__()** (8 connections) — `server/middleware/correlation_middleware.py`
+- **logging_context.py** (6 connections) — `server/structured_logging/logging_context.py`
+- **WebSocketCorrelationMiddleware** (5 connections) — `server/middleware/correlation_middleware.py`
+- **.__call__()** (5 connections) — `server/middleware/correlation_middleware.py`
+- **get_current_context()** (5 connections) — `server/structured_logging/logging_context.py`
+- **correct_request_context()** (4 connections) — `docs/examples/logging/correct_patterns.py`
+- **_get_header()** (4 connections) — `server/middleware/correlation_middleware.py`
+- **create_correlation_middleware()** (4 connections) — `server/middleware/correlation_middleware.py`
+- **migration_example_5()** (3 connections) — `docs/examples/logging/migration_examples.py`
+- **test_context_binding()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_logging_correlation_ids()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **create_websocket_correlation_middleware()** (3 connections) — `server/middleware/correlation_middleware.py`
+- **Any** (3 connections)
+- **Scope** (2 connections)
+- **.__init__()** (2 connections) — `server/middleware/correlation_middleware.py`
+- **Any** (2 connections)
+- **Demonstrate correct request context binding.** (1 connections) — `docs/examples/logging/correct_patterns.py`
+- **Example 5: Request context migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
+- **Test request context binding functionality.** (1 connections) — `docs/examples/logging/testing_examples.py`
+- **Test logging correlation IDs.** (1 connections) — `docs/examples/logging/testing_examples.py`
+- **Receive** (1 connections)
+- **Send** (1 connections)
+- **Return first header value for name (case-insensitive) from ASGI scope.** (1 connections) — `server/middleware/correlation_middleware.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [Players API Endpoints](Players_API_Endpoints.md) (7 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
-- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (10 shared connections)
+- [Character Info Panel Fix](Character_Info_Panel_Fix.md) (6 shared connections)
+- [Player Movement Service](Player_Movement_Service.md) (3 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (3 shared connections)
+- [Test Migration Mapping](Test_Migration_Mapping.md) (2 shared connections)
+- [Memory Leak Metrics](Memory_Leak_Metrics.md) (2 shared connections)
+- [Async Code Review Docs](Async_Code_Review_Docs.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/messaging/personal_message_sender.py`
+- `docs/examples/logging/correct_patterns.py`
+- `docs/examples/logging/migration_examples.py`
+- `docs/examples/logging/testing_examples.py`
+- `server/middleware/correlation_middleware.py`
+- `server/structured_logging/logging_context.py`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (94%)
-- INFERRED: 3 (6%)
+- EXTRACTED: 77 (73%)
+- INFERRED: 28 (27%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_single_message_event_data_only()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _process_single_message handles event messages with only event_data.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_validate_and_fix_player_room_valid()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test validate_and_fix_player_room returns False for valid room.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
 
 ## Relationships
 
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (1 shared connections)
+- [Lizard Complexity Findings](Lizard_Complexity_Findings.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/persistence/test_player_repository.py`
 
 ## Audit Trail
 

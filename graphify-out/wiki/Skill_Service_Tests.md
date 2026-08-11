@@ -33,15 +33,16 @@
 
 ## Relationships
 
-- [Combat Player Broadcasts](Combat_Player_Broadcasts.md) (27 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (8 shared connections)
-- [Client Event Store](Client_Event_Store.md) (7 shared connections)
-- [Command Alias Handling](Command_Alias_Handling.md) (3 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (2 shared connections)
+- [Combat Player Broadcasts](Combat_Player_Broadcasts.md) (24 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (5 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (5 shared connections)
+- [Command Helper Utilities](Command_Helper_Utilities.md) (5 shared connections)
+- [Legacy Error Sanitization](Legacy_Error_Sanitization.md) (4 shared connections)
+- [Magic Command Handlers](Magic_Command_Handlers.md) (3 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
 - [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
-- [Container Component Capacity](Container_Component_Capacity.md) (1 shared connections)
-- [Invite and User Schemas](Invite_and_User_Schemas.md) (1 shared connections)
-- [Rest Command Flow](Rest_Command_Flow.md) (1 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
+- [Async Persistence Layer](Async_Persistence_Layer.md) (1 shared connections)
 
 ## Source Files
 

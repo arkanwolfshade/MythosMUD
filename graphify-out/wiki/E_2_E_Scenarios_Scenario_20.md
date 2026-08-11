@@ -1,34 +1,25 @@
 # E 2 E Scenarios Scenario
 
-> 10 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **optimized_validate_security_comprehensive()** (8 connections) — `server/validators/optimized_security_validator.py`
-- **test_optimized_validate_security_comprehensive_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_security_comprehensive_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_security_comprehensive_dangerous_chars()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_security_comprehensive_injection()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test comprehensive security validation of empty string.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test comprehensive security validation of valid text.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test comprehensive security validation with dangerous characters.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test comprehensive security validation with injection pattern.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Optimized comprehensive security validation entry point.      Args:         valu** (1 connections) — `server/validators/optimized_security_validator.py`
+- **id** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Relationships
 
-- [WebSocket Handler Tests](WebSocket_Handler_Tests.md) (5 shared connections)
-- [Cursor Workflows Docs](Cursor_Workflows_Docs.md) (1 shared connections)
-- [Services Combat Initialization](Services_Combat_Initialization.md) (1 shared connections)
+- [Npc Event Reaction](Npc_Event_Reaction.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_optimized_security_validator.py`
-- `server/validators/optimized_security_validator.py`
+- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

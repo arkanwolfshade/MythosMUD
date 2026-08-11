@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [Quality Fragmentation Ci](Quality_Fragmentation_Ci.md) (19 shared connections)
-- [Quality Fragmentation Guard](Quality_Fragmentation_Guard.md) (12 shared connections)
+- [Quality Fragmentation Ci](Quality_Fragmentation_Ci.md) (20 shared connections)
+- [Quality Fragmentation Guard](Quality_Fragmentation_Guard.md) (11 shared connections)
 - [Cursor Plans Combat](Cursor_Plans_Combat.md) (3 shared connections)
 - [CI Quality Scripts](CI_Quality_Scripts.md) (3 shared connections)
 

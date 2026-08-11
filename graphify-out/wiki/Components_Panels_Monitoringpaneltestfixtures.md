@@ -12,7 +12,7 @@
 ## Relationships
 
 - [Combat Health Persistence Fix](Combat_Health_Persistence_Fix.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [E2E Session Report](E2E_Session_Report.md) (1 shared connections)
 
 ## Source Files
 

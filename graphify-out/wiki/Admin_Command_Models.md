@@ -1,51 +1,52 @@
 # Admin Command Models
 
-> 32 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **_find_container_in_room()** (22 connections) — `server/commands/look_container.py`
-- **test_find_container_in_room_success()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_in_room_by_container_id()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_in_room_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_in_room_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_in_room_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_in_room_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_in_room_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_instance_number_zero()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Find a container in room containers by name or container_id.      Args:** (1 connections) — `server/commands/look_container.py`
-- **Test finding container in room by name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding container in room by container_id.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding container in room when not found.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding container in room with multiple matches.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding container in room with instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding container in room with invalid instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test _find_container_in_room() finds container by name.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_in_room() returns None when container not found.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- *... and 7 more nodes in this community*
+- **format_metadata()** (15 connections) — `server/commands/inventory_display_helpers.py`
+- **inventory_display_helpers.py** (12 connections) — `server/commands/inventory_display_helpers.py`
+- **render_inventory()** (9 connections) — `server/commands/inventory_display_helpers.py`
+- **Any** (7 connections)
+- **test_inventory_commands_format_helpers.py** (6 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **build_inventory_lines()** (5 connections) — `server/commands/inventory_display_helpers.py`
+- **build_container_metadata()** (5 connections) — `server/commands/inventory_display_helpers.py`
+- **build_equipped_lines()** (5 connections) — `server/commands/inventory_display_helpers.py`
+- **get_equipped_item_identifiers()** (4 connections) — `server/commands/inventory_display_helpers.py`
+- **filter_non_equipped_inventory()** (4 connections) — `server/commands/inventory_display_helpers.py`
+- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_nested_dict()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_none()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_complex()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **Display and rendering helpers for inventory commands.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Format metadata for display.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Get sets of equipped item IDs and instance IDs for efficient lookup.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Filter out equipped items and container items from inventory.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Build inventory display lines.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Build and format metadata for equipped item with container.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Build equipped items display lines.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Render inventory display with equipped items and container contents.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [Player Occupant Processor](Player_Occupant_Processor.md) (10 shared connections)
-- [Look Container Command](Look_Container_Command.md) (7 shared connections)
-- [Player State Command Factory](Player_State_Command_Factory.md) (4 shared connections)
+- [Async Task Registry](Async_Task_Registry.md) (6 shared connections)
+- [Spell Effect Protocols](Spell_Effect_Protocols.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Container Open Events](Container_Open_Events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_container.py`
-- `server/tests/unit/commands/test_look_container.py`
-- `server/tests/unit/commands/test_look_container_helpers.py`
+- `server/commands/inventory_display_helpers.py`
+- `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- `server/tests/unit/commands/test_inventory_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 83 (100%)
+- EXTRACTED: 109 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

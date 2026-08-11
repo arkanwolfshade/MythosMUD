@@ -1,40 +1,53 @@
 # E2E Playwright Conversion Plan
 
-> 17 nodes
+> 65 nodes
 
 ## Key Concepts
 
-- **lifespan_shutdown.py** (15 connections) — `server/app/lifespan_shutdown.py`
-- **shutdown_services()** (12 connections) — `server/app/lifespan_shutdown.py`
-- **FastAPI** (5 connections)
-- **_shutdown_mythos_chronicle()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **_shutdown_nats_handler()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **_shutdown_connection_manager()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **_shutdown_mythos_tick_scheduler()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **_shutdown_task_registry()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **_shutdown_event_bus()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **Application shutdown logic.  This module handles graceful shutdown of all servic** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown and persist mythos chronicle state.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown NATS message handler if present.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown connection manager if present.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown mythos tick scheduler if present.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown task registry if present.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown event bus and clean up all service subscriptions.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Handle graceful shutdown of all services.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **MessageBroadcaster** (19 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **test_message_broadcaster.py** (17 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **message_broadcaster.py** (15 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **UUID** (9 connections)
+- **_stats_counter()** (7 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **.broadcast_global()** (7 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **._process_batch_delivery_results()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **._deliver_room_broadcast()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **.broadcast_to_room()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **._process_global_batch_results()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **__init__.py** (5 connections) — `server/realtime/messaging/__init__.py`
+- **._build_target_mapping()** (5 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **._fallback_individual_send()** (5 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **._fallback_global_individual()** (5 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **_narrow_gather_delivery_dict()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **_global_targets_and_stats()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **.broadcast_room_event()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **.broadcast_global_event()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **._prepare_room_targets()** (3 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **message_broadcaster()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **mock_send_personal_message()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_message_broadcaster_init()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_exclude_player()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- *... and 40 more nodes in this community*
 
 ## Relationships
 
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (7 shared connections)
-- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (3 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (4 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (3 shared connections)
+- [Game State Provider Tests](Game_State_Provider_Tests.md) (3 shared connections)
+- [JSONB Column Parsing](JSONB_Column_Parsing.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan_shutdown.py`
+- `server/realtime/messaging/__init__.py`
+- `server/realtime/messaging/message_broadcaster.py`
+- `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 
 ## Audit Trail
 
-- EXTRACTED: 64 (100%)
+- EXTRACTED: 198 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

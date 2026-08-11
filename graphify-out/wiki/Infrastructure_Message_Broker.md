@@ -1,13 +1,12 @@
 # Infrastructure Message Broker
 
-> 20 nodes
+> 18 nodes
 
 ## Key Concepts
 
 - **MessageBroker** (11 connections) — `server/infrastructure/message_broker.py`
 - **__init__.py** (3 connections) — `server/infrastructure/__init__.py`
 - **.publish()** (3 connections) — `server/infrastructure/message_broker.py`
-- **.subscribe()** (3 connections) — `server/infrastructure/message_broker.py`
 - **.request()** (3 connections) — `server/infrastructure/message_broker.py`
 - **.connect()** (2 connections) — `server/infrastructure/message_broker.py`
 - **.disconnect()** (2 connections) — `server/infrastructure/message_broker.py`
@@ -21,14 +20,13 @@
 - **Disconnect from the message broker.          Closes all subscriptions and releas** (1 connections) — `server/infrastructure/message_broker.py`
 - **Check if connected to the message broker.          Returns:             bool: Tr** (1 connections) — `server/infrastructure/message_broker.py`
 - **Publish a message to a subject/topic.          Args:             subject: Subjec** (1 connections) — `server/infrastructure/message_broker.py`
-- **Subscribe to a subject/topic with a message handler.          Args:** (1 connections) — `server/infrastructure/message_broker.py`
 - **Unsubscribe from a subject/topic.          Args:             subscription_id: ID** (1 connections) — `server/infrastructure/message_broker.py`
 - **Send a request and wait for a reply (request-reply pattern).          Args:** (1 connections) — `server/infrastructure/message_broker.py`
 
 ## Relationships
 
 - [Realtime Event Delegation](Realtime_Event_Delegation.md) (2 shared connections)
-- [Rate Limiter Utilities](Rate_Limiter_Utilities.md) (1 shared connections)
+- [Database Error Handling](Database_Error_Handling.md) (1 shared connections)
 
 ## Source Files
 
@@ -37,7 +35,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

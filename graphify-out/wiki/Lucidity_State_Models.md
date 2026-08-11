@@ -1,51 +1,61 @@
 # Lucidity State Models
 
-> 41 nodes
+> 97 nodes
 
 ## Key Concepts
 
-- **PlayerRepositoryProtocol** (21 connections) — `server/persistence/protocols.py`
-- **protocols.py** (11 connections) — `server/persistence/protocols.py`
-- **Player** (11 connections)
-- **RoomRepositoryProtocol** (9 connections) — `server/persistence/protocols.py`
-- **UUID** (6 connections)
-- **.get_players_batch()** (4 connections) — `server/persistence/protocols.py`
-- **.update_player_last_active()** (4 connections) — `server/persistence/protocols.py`
-- **.get_player_by_id()** (3 connections) — `server/persistence/protocols.py`
-- **.get_player_by_user_id()** (3 connections) — `server/persistence/protocols.py`
-- **.get_players_by_user_id()** (3 connections) — `server/persistence/protocols.py`
-- **.get_active_players_by_user_id()** (3 connections) — `server/persistence/protocols.py`
-- **.get_player_by_name()** (3 connections) — `server/persistence/protocols.py`
-- **.save_player()** (3 connections) — `server/persistence/protocols.py`
-- **.save_players()** (3 connections) — `server/persistence/protocols.py`
-- **.get_players_in_room()** (3 connections) — `server/persistence/protocols.py`
-- **.soft_delete_player()** (3 connections) — `server/persistence/protocols.py`
-- **.delete_player()** (3 connections) — `server/persistence/protocols.py`
-- **.validate_and_fix_player_room()** (3 connections) — `server/persistence/protocols.py`
-- **.get_room_by_id()** (3 connections) — `server/persistence/protocols.py`
-- **.list_rooms()** (3 connections) — `server/persistence/protocols.py`
-- **Protocol** (2 connections)
-- **.list_players()** (2 connections) — `server/persistence/protocols.py`
-- **datetime** (2 connections)
-- **Room** (2 connections)
-- **Repository protocols for MythosMUD persistence layer.  Explicit typing.Protocol** (1 connections) — `server/persistence/protocols.py`
-- *... and 16 more nodes in this community*
+- **test_aggro_threat.py** (29 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **aggro_threat.py** (28 connections) — `server/services/aggro_threat.py`
+- **update_aggro()** (24 connections) — `server/services/aggro_threat.py`
+- **_make_combat()** (23 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **add_damage_threat()** (20 connections) — `server/services/aggro_threat.py`
+- **get_or_create_hate_list()** (19 connections) — `server/services/aggro_threat.py`
+- **add_heal_threat()** (14 connections) — `server/services/aggro_threat.py`
+- **test_aggro_flow.py** (14 connections) — `server/tests/integration/test_aggro_flow.py`
+- **_make_participant()** (13 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **apply_taunt()** (12 connections) — `server/services/aggro_threat.py`
+- **UUID** (11 connections)
+- **combat_service_end.py** (11 connections) — `server/services/combat_service_end.py`
+- **_make_participant()** (9 connections) — `server/tests/integration/test_aggro_flow.py`
+- **get_npc_current_target()** (8 connections) — `server/services/aggro_threat.py`
+- **_make_combat()** (8 connections) — `server/tests/integration/test_aggro_flow.py`
+- **_get_aggro_config()** (7 connections) — `server/services/aggro_threat.py`
+- **apply_stealth_wipe()** (7 connections) — `server/services/aggro_threat.py`
+- **on_player_entered_stealth()** (7 connections) — `server/services/aggro_threat.py`
+- **test_aggro_healer_overpull_switches_target()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_taunt_from_next_room_no_effect()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_stealth_wipe_switches_to_next()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_passive_mob_no_damage_threat_taunt_switches()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_nightgaunt_like_damage_and_heal_threat()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **clear_aggro_for_combat()** (6 connections) — `server/services/aggro_threat.py`
+- **test_aggro_tank_swap_taunt_sequence()** (6 connections) — `server/tests/integration/test_aggro_flow.py`
+- *... and 72 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (4 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (4 shared connections)
-- [Dependency Injection Tests](Dependency_Injection_Tests.md) (3 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (3 shared connections)
+- [Combat Death Handling](Combat_Death_Handling.md) (14 shared connections)
+- [Async Persistence Layer](Async_Persistence_Layer.md) (10 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (10 shared connections)
+- [Game Client Container](Game_Client_Container.md) (5 shared connections)
+- [Health Check Models](Health_Check_Models.md) (5 shared connections)
+- [NATS Metrics API](NATS_Metrics_API.md) (5 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (4 shared connections)
+- [Command Parser](Command_Parser.md) (2 shared connections)
+- [Player Respawn Service](Player_Respawn_Service.md) (2 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
+- [Container Exception Handlers](Container_Exception_Handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/protocols.py`
+- `server/services/aggro_threat.py`
+- `server/services/combat_service_end.py`
+- `server/tests/integration/test_aggro_flow.py`
+- `server/tests/unit/services/test_aggro_threat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 126 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 480 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

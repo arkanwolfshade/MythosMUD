@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_handle_npc_entered_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test handle_npc_entered() handles missing connection_manager.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_create_teleport_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_teleport_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
-- [Archive Advanced Chat](Archive_Advanced_Chat.md) (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_npc_event_handlers.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

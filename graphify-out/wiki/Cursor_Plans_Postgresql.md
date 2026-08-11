@@ -1,27 +1,31 @@
 # Cursor Plans Postgresql
 
-> 6 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **_fix_rest11.py** (5 connections) — `docs/investigations/_fix_rest11.py`
-- **lizard_w()** (3 connections) — `docs/investigations/_fix_rest11.py`
-- **fix_passive()** (3 connections) — `docs/investigations/_fix_rest11.py`
-- **fix_player_creation()** (3 connections) — `docs/investigations/_fix_rest11.py`
-- **main()** (3 connections) — `docs/investigations/_fix_rest11.py`
-- **Fix remaining lizard files with targeted replacements.** (1 connections) — `docs/investigations/_fix_rest11.py`
+- **datetime** (8 connections)
+- **._filter_active_players()** (8 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._is_player_active()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._normalize_datetime_timezone()** (5 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._parse_last_active()** (4 connections) — `server/services/passive_lucidity_flux/service.py`
+- **Parse last_active from various formats.** (1 connections) — `server/services/passive_lucidity_flux/service.py`
+- **Normalize datetime to timezone-aware UTC.** (1 connections) — `server/services/passive_lucidity_flux/service.py`
+- **Check if player is active based on last_active and created_at.** (1 connections) — `server/services/passive_lucidity_flux/service.py`
+- **Filter players to only those active in the last 5 minutes.** (1 connections) — `server/services/passive_lucidity_flux/service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (10 shared connections)
+- [End-to-End Validation](End-to-End_Validation.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/investigations/_fix_rest11.py`
+- `server/services/passive_lucidity_flux/service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 35 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

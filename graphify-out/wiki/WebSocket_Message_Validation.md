@@ -1,35 +1,35 @@
 # WebSocket Message Validation
 
-> 36 nodes
+> 43 nodes
 
 ## Key Concepts
 
-- **CommandPanelTestSections.tsx** (21 connections) — `client/src/components/CommandPanelTestSections.tsx`
-- **MythosPanel.tsx** (19 connections) — `client/src/components/ui/MythosPanel.tsx`
+- **MythosPanel.tsx** (23 connections) — `client/src/components/ui/MythosPanel.tsx`
+- **MythosPanel()** (16 connections) — `client/src/components/ui/MythosPanel.tsx`
 - **CommandPanelTest.tsx** (14 connections) — `client/src/components/CommandPanelTest.tsx`
-- **MythosPanel()** (12 connections) — `client/src/components/ui/MythosPanel.tsx`
-- **CommandPanelTestData.ts** (7 connections) — `client/src/components/CommandPanelTestData.ts`
-- **CommandPanelTestView.tsx** (7 connections) — `client/src/components/CommandPanelTestView.tsx`
-- **CommandPanelTestSectionData.ts** (6 connections) — `client/src/components/CommandPanelTestSectionData.ts`
+- **CommandPanelTest.constants.ts** (13 connections) — `client/src/components/CommandPanelTest.constants.ts`
+- **CommandPanelTest.sidebar.tsx** (10 connections) — `client/src/components/CommandPanelTest.sidebar.tsx`
+- **CommandPanelTest.features.tsx** (9 connections) — `client/src/components/CommandPanelTest.features.tsx`
+- **CommandPanelTest.layout.tsx** (9 connections) — `client/src/components/CommandPanelTest.layout.tsx`
+- **CommandPanelTest.panels.tsx** (9 connections) — `client/src/components/CommandPanelTest.panels.tsx`
+- **CommandPanelTest.controls.tsx** (8 connections) — `client/src/components/CommandPanelTest.controls.tsx`
+- **CommandPanelTest.categories.tsx** (6 connections) — `client/src/components/CommandPanelTest.categories.tsx`
+- **CommandPanelTest.examples.tsx** (6 connections) — `client/src/components/CommandPanelTest.examples.tsx`
+- **CommandPanelTest.stats.tsx** (6 connections) — `client/src/components/CommandPanelTest.stats.tsx`
+- **CommandPanelTest.types.ts** (6 connections) — `client/src/components/CommandPanelTest.types.ts`
+- **CommandPanelTestViewModel** (5 connections) — `client/src/components/CommandPanelTest.types.ts`
+- **MOVEMENT_COMMANDS** (3 connections) — `client/src/components/CommandPanelTest.constants.ts`
+- **CommandPanelTestExamples()** (3 connections) — `client/src/components/CommandPanelTest.examples.tsx`
+- **CommandPanelTestFeatures()** (3 connections) — `client/src/components/CommandPanelTest.features.tsx`
+- **CommandPanelTestLayout()** (3 connections) — `client/src/components/CommandPanelTest.layout.tsx`
+- **CommandPanelTestSidebar()** (3 connections) — `client/src/components/CommandPanelTest.sidebar.tsx`
+- **CommandStats()** (3 connections) — `client/src/components/CommandPanelTest.stats.tsx`
 - **CommandPanelTest()** (3 connections) — `client/src/components/CommandPanelTest.tsx`
-- **CommandPanelTestViewModel** (3 connections) — `client/src/components/CommandPanelTestData.ts`
-- **appendCommands()** (3 connections) — `client/src/components/CommandPanelTestData.ts`
-- **MOVEMENT_COMMANDS** (3 connections) — `client/src/components/CommandPanelTestSectionData.ts`
-- **CommandPanelTestStatistics()** (3 connections) — `client/src/components/CommandPanelTestSections.tsx`
-- **CommandPanelTest.test.tsx** (2 connections) — `client/src/components/CommandPanelTest.test.tsx`
-- **DEFAULT_COMMAND_HISTORY** (2 connections) — `client/src/components/CommandPanelTestData.ts`
-- **SAMPLE_COMMANDS** (2 connections) — `client/src/components/CommandPanelTestData.ts`
-- **MYTHOS_COMMANDS** (2 connections) — `client/src/components/CommandPanelTestData.ts`
-- **COMMAND_CATEGORIES** (2 connections) — `client/src/components/CommandPanelTestSectionData.ts`
-- **FEATURES** (2 connections) — `client/src/components/CommandPanelTestSectionData.ts`
-- **SHORTCUTS** (2 connections) — `client/src/components/CommandPanelTestSectionData.ts`
-- **EXAMPLES** (2 connections) — `client/src/components/CommandPanelTestSectionData.ts`
-- **countCommands()** (2 connections) — `client/src/components/CommandPanelTestSections.tsx`
-- **CommandPanelTestSidebar()** (2 connections) — `client/src/components/CommandPanelTestSections.tsx`
-- **CommandPanelTestFeatures()** (2 connections) — `client/src/components/CommandPanelTestSections.tsx`
-- **CommandPanelTestExamples()** (2 connections) — `client/src/components/CommandPanelTestSections.tsx`
-- **CommandPanelTestView()** (2 connections) — `client/src/components/CommandPanelTestView.tsx`
-- *... and 11 more nodes in this community*
+- **CommandCategories()** (2 connections) — `client/src/components/CommandPanelTest.categories.tsx`
+- **DEFAULT_COMMAND_HISTORY** (2 connections) — `client/src/components/CommandPanelTest.constants.ts`
+- **SAMPLE_COMMANDS** (2 connections) — `client/src/components/CommandPanelTest.constants.ts`
+- **MYTHOS_COMMANDS** (2 connections) — `client/src/components/CommandPanelTest.constants.ts`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
@@ -40,18 +40,24 @@
 
 ## Source Files
 
+- `client/src/components/CommandPanelTest.categories.tsx`
+- `client/src/components/CommandPanelTest.constants.ts`
+- `client/src/components/CommandPanelTest.controls.tsx`
+- `client/src/components/CommandPanelTest.examples.tsx`
+- `client/src/components/CommandPanelTest.features.tsx`
+- `client/src/components/CommandPanelTest.layout.tsx`
+- `client/src/components/CommandPanelTest.panels.tsx`
+- `client/src/components/CommandPanelTest.sidebar.tsx`
+- `client/src/components/CommandPanelTest.stats.tsx`
 - `client/src/components/CommandPanelTest.test.tsx`
 - `client/src/components/CommandPanelTest.tsx`
-- `client/src/components/CommandPanelTestData.ts`
-- `client/src/components/CommandPanelTestSectionData.ts`
-- `client/src/components/CommandPanelTestSections.tsx`
-- `client/src/components/CommandPanelTestView.tsx`
+- `client/src/components/CommandPanelTest.types.ts`
 - `client/src/components/ui/MythosPanel.test.tsx`
 - `client/src/components/ui/MythosPanel.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 140 (100%)
+- EXTRACTED: 198 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

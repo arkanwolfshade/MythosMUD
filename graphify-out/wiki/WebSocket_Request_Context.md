@@ -1,54 +1,55 @@
 # WebSocket Request Context
 
-> 28 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **ChatPoseManager** (11 connections) — `server/game/chat_pose_manager.py`
-- **ChatWhisperTracker** (10 connections) — `server/game/chat_whisper_tracker.py`
-- **.__init__()** (7 connections) — `server/game/chat_service.py`
-- **.normalize_player_id()** (5 connections) — `server/game/chat_pose_manager.py`
-- **.set_pose()** (3 connections) — `server/game/chat_pose_manager.py`
-- **.get_pose()** (3 connections) — `server/game/chat_pose_manager.py`
-- **.clear_pose()** (3 connections) — `server/game/chat_pose_manager.py`
-- **.__init__()** (2 connections) — `server/game/chat_pose_manager.py`
-- **.get_all_poses()** (2 connections) — `server/game/chat_pose_manager.py`
-- **.__init__()** (2 connections) — `server/game/chat_whisper_tracker.py`
-- **.store_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
-- **.get_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
-- **.clear_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
-- **.get_all_trackings()** (2 connections) — `server/game/chat_whisper_tracker.py`
-- **Manages in-memory storage of player poses.** (1 connections) — `server/game/chat_pose_manager.py`
-- **Initialize the pose manager.** (1 connections) — `server/game/chat_pose_manager.py`
-- **Normalize player identifiers to string form.** (1 connections) — `server/game/chat_pose_manager.py`
-- **Set a player's pose in memory.          Args:             player_id: ID of the p** (1 connections) — `server/game/chat_pose_manager.py`
-- **Get a player's current pose.          Args:             player_id: ID of the pla** (1 connections) — `server/game/chat_pose_manager.py`
-- **Clear a player's pose.          Args:             player_id: ID of the player** (1 connections) — `server/game/chat_pose_manager.py`
-- **Get all poses (for testing/debugging).          Returns:             Dictionary** (1 connections) — `server/game/chat_pose_manager.py`
-- **Initialize chat service.          Args:             persistence: Database persis** (1 connections) — `server/game/chat_service.py`
-- **Tracks last whisper senders for reply functionality.** (1 connections) — `server/game/chat_whisper_tracker.py`
-- **Initialize the whisper tracker.** (1 connections) — `server/game/chat_whisper_tracker.py`
-- **Store the last whisper sender for a player.          Args:             receiver_** (1 connections) — `server/game/chat_whisper_tracker.py`
-- *... and 3 more nodes in this community*
+- **message_handlers.py** (14 connections) — `server/realtime/message_handlers.py`
+- **test_message_handlers.py** (12 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **handle_command_message()** (11 connections) — `server/realtime/message_handlers.py`
+- **handle_chat_message()** (10 connections) — `server/realtime/message_handlers.py`
+- **handle_ping_message()** (10 connections) — `server/realtime/message_handlers.py`
+- **handle_follow_response_message()** (9 connections) — `server/realtime/message_handlers.py`
+- **handle_party_invite_response_message()** (8 connections) — `server/realtime/message_handlers.py`
+- **handle_client_error_report_message()** (6 connections) — `server/realtime/message_handlers.py`
+- **WebSocket** (6 connections)
+- **Any** (6 connections)
+- **test_handle_command_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_command_message_no_command()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_command_message_no_args()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_chat_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_chat_message_no_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_ping_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_ping_message_with_data()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **Message handler implementations for WebSocket message routing.  This module cont** (1 connections) — `server/realtime/message_handlers.py`
+- **Handle client_error_report: log client-reported errors to errors.log (via ERROR-** (1 connections) — `server/realtime/message_handlers.py`
+- **Handle command message type.** (1 connections) — `server/realtime/message_handlers.py`
+- **Handle chat message type.** (1 connections) — `server/realtime/message_handlers.py`
+- **Handle ping message type.** (1 connections) — `server/realtime/message_handlers.py`
+- **Handle follow_response message (accept/decline follow request).** (1 connections) — `server/realtime/message_handlers.py`
+- **Handle party_invite_response message (accept/decline party invite).** (1 connections) — `server/realtime/message_handlers.py`
+- **Unit tests for message handlers.  Tests the message_handlers module functions.** (1 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [Chat Mute Admin API](Chat_Mute_Admin_API.md) (4 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [Who Command Tests](Who_Command_Tests.md) (2 shared connections)
-- [Chat Moderation Service](Chat_Moderation_Service.md) (1 shared connections)
-- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (6 shared connections)
+- [Database Error Handling](Database_Error_Handling.md) (6 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (4 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (3 shared connections)
+- [Connection Health Monitor](Connection_Health_Monitor.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/chat_pose_manager.py`
-- `server/game/chat_service.py`
-- `server/game/chat_whisper_tracker.py`
+- `server/realtime/message_handlers.py`
+- `server/tests/unit/realtime/test_message_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 127 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

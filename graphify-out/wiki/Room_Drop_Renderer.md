@@ -1,59 +1,59 @@
 # Room Drop Renderer
 
-> 34 nodes
+> 119 nodes
 
 ## Key Concepts
 
+- **test_admin_shutdown_command.py** (57 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **admin_shutdown_command.py** (35 connections) — `server/commands/admin_shutdown_command.py`
 - **Any** (20 connections)
 - **handle_shutdown_command()** (14 connections) — `server/commands/admin_shutdown_command.py`
+- **_await_shutdown_result()** (14 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **initiate_shutdown_countdown()** (13 connections) — `server/commands/admin_shutdown_command.py`
+- **cancel_shutdown_countdown()** (11 connections) — `server/commands/admin_shutdown_command.py`
+- **parse_shutdown_parameters()** (11 connections) — `server/commands/admin_shutdown_command.py`
+- **validate_shutdown_admin_permission()** (9 connections) — `server/commands/admin_shutdown_command.py`
+- **calculate_notification_times()** (7 connections) — `server/commands/admin_shutdown_command.py`
+- **broadcast_shutdown_notification()** (7 connections) — `server/commands/admin_shutdown_command.py`
 - **countdown_loop()** (7 connections) — `server/commands/admin_shutdown_command.py`
+- **test_is_shutdown_pending_true()** (6 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_is_shutdown_pending_false()** (6 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_cancel_shutdown_countdown_no_active()** (6 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_cancel_shutdown_countdown_success()** (6 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **_create_countdown_task()** (5 connections) — `server/commands/admin_shutdown_command.py`
 - **_store_shutdown_data()** (5 connections) — `server/commands/admin_shutdown_command.py`
 - **_clear_shutdown_state()** (5 connections) — `server/commands/admin_shutdown_command.py`
 - **_validate_shutdown_context()** (5 connections) — `server/commands/admin_shutdown_command.py`
 - **_handle_shutdown_cancel()** (5 connections) — `server/commands/admin_shutdown_command.py`
 - **_handle_shutdown_initiate()** (5 connections) — `server/commands/admin_shutdown_command.py`
-- **_cancel_existing_shutdown_task()** (4 connections) — `server/commands/admin_shutdown_command.py`
-- **_set_shutdown_pending_flag()** (4 connections) — `server/commands/admin_shutdown_command.py`
-- **_get_shutdown_state()** (4 connections) — `server/commands/admin_shutdown_command.py`
-- **_cancel_countdown_task()** (4 connections) — `server/commands/admin_shutdown_command.py`
-- **_broadcast_shutdown_cancellation()** (4 connections) — `server/commands/admin_shutdown_command.py`
-- **_get_shutdown_services()** (4 connections) — `server/commands/admin_shutdown_command.py`
-- **Task** (2 connections)
-- **Admin shutdown command for MythosMUD.  This module provides the /shutdown comman** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Cancel existing shutdown task if present.      Args:         app: FastAPI applic** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Set shutdown pending flag in container and app.state.      Args:         app: Fa** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Create countdown task from coroutine, handling task registry if available.** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Store shutdown data in container and app.state.      Args:         app: FastAPI** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Clear shutdown state in container and app.state.      Args:         app: FastAPI** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Main countdown loop that sends notifications and executes shutdown.      Args:** (1 connections) — `server/commands/admin_shutdown_command.py`
-- *... and 9 more nodes in this community*
+- **_ShutdownContainerStub** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_initiate_shutdown_countdown_success()** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_initiate_shutdown_countdown_supersedes()** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- *... and 94 more nodes in this community*
 
 ## Relationships
 
-- [Services Lucidity Repository](Services_Lucidity_Repository.md) (12 shared connections)
-- [Chat NATS Publisher](Chat_NATS_Publisher.md) (5 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [E 2 E Cleanup Troubleshooting](E_2_E_Cleanup_Troubleshooting.md) (3 shared connections)
-- [Status Effect Model](Status_Effect_Model.md) (3 shared connections)
-- [Commands System Help](Commands_System_Help.md) (3 shared connections)
+- [Container Open Events](Container_Open_Events.md) (11 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (8 shared connections)
 - [Persistence Refactoring Complete](Persistence_Refactoring_Complete.md) (3 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (2 shared connections)
-- [Chat Archive Advanced](Chat_Archive_Advanced.md) (2 shared connections)
-- [Logging Structured Setup](Logging_Structured_Setup.md) (2 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
-- [E2E Suite Overview](E2E_Suite_Overview.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (2 shared connections)
+- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (1 shared connections)
+- [Structured Logging Admin](Structured_Logging_Admin.md) (1 shared connections)
+- [Invite and User Schemas](Invite_and_User_Schemas.md) (1 shared connections)
+- [Manager Services Nats](Manager_Services_Nats.md) (1 shared connections)
+- [Services Lucidity Repository](Services_Lucidity_Repository.md) (1 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/admin_shutdown_command.py`
+- `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 160 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 450 (100%)
+- INFERRED: 2 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

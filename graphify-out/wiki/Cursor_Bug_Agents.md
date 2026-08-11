@@ -21,15 +21,14 @@
 ## Relationships
 
 - [Realtime Event Handlers](Realtime_Event_Handlers.md) (3 shared connections)
-- [Character Stats Model](Character_Stats_Model.md) (2 shared connections)
+- [Combat Messaging Integration](Combat_Messaging_Integration.md) (2 shared connections)
 - [Room Planning Archive](Room_Planning_Archive.md) (2 shared connections)
-- [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (1 shared connections)
-- [Map Editing Hooks](Map_Editing_Hooks.md) (1 shared connections)
+- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (2 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (1 shared connections)
+- [Chat Panel Separation](Chat_Panel_Separation.md) (1 shared connections)
 - [Communication Command Handlers](Communication_Command_Handlers.md) (1 shared connections)
 - [Chat Channel Design Spec](Chat_Channel_Design_Spec.md) (1 shared connections)
-- [Combat Messaging Integration](Combat_Messaging_Integration.md) (1 shared connections)
-- [Follow Service Tests](Follow_Service_Tests.md) (1 shared connections)
-- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (1 shared connections)
+- [Character Stats Model](Character_Stats_Model.md) (1 shared connections)
 
 ## Source Files
 

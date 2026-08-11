@@ -1,26 +1,23 @@
 # Plan Archive Character
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **._process_log_entry()** (5 connections) — `server/services/chat_logger.py`
-- **._writer_worker()** (3 connections) — `server/services/chat_logger.py`
-- **Background worker thread that handles all file writing operations.** (1 connections) — `server/services/chat_logger.py`
-- **Process a log entry from the queue and write it to the appropriate file.** (1 connections) — `server/services/chat_logger.py`
+- **test_process_exit_rows_empty_list()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _process_exit_rows with empty list.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [Chat Channel Logger](Chat_Channel_Logger.md) (3 shared connections)
-- [AnyIO vs Asyncio Guide](AnyIO_vs_Asyncio_Guide.md) (1 shared connections)
+- [Mythosmud Obsidian Raw](Mythosmud_Obsidian_Raw.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/chat_logger.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

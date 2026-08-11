@@ -4,39 +4,38 @@
 
 ## Key Concepts
 
-- **MythosValidationError** (8 connections)
-- **test_parse_command_string_validation_error()** (4 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_resolve_player_username_error()** (4 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
-- **test_create_command_object_re_raises_mythos_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_process_command_string_mythos_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_process_validated_command_validation_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test process_validated_command handles ValidationError.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test _parse_command_string handles ValidationError.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test _resolve_player when username resolution fails.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
-- **Test _create_command_object re-raises MythosValidationError without wrapping.** (1 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **Test process_command_string handles MythosMUD validation errors.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **npc_combat_grace.py** (13 connections) — `server/services/npc_combat_grace.py`
+- **_connection_manager_from_config_app()** (8 connections) — `server/services/npc_combat_grace.py`
+- **is_player_attack_blocked_by_login_grace_period()** (7 connections) — `server/services/npc_combat_grace.py`
+- **is_npc_attack_on_player_blocked_by_login_grace_period()** (7 connections) — `server/services/npc_combat_grace.py`
+- **get_app_instance()** (5 connections) — `server/config/__init__.py`
+- **UUID** (3 connections)
+- **Return the runtime app instance attached during lifespan startup.      This prov** (1 connections) — `server/config/__init__.py`
+- **Login grace-period checks for NPC combat integration (extracted to keep service** (1 connections) — `server/services/npc_combat_grace.py`
+- **Resolve connection_manager from the public config app accessor.      Uses geta** (1 connections) — `server/services/npc_combat_grace.py`
+- **True if the player should not attack (in login grace period). Fail-open on confi** (1 connections) — `server/services/npc_combat_grace.py`
+- **True if NPC attack on this player should be blocked (player in login grace perio** (1 connections) — `server/services/npc_combat_grace.py`
 
 ## Relationships
 
-- [Command Parser Helpers](Command_Parser_Helpers.md) (3 shared connections)
-- [Combat Death Handling](Combat_Death_Handling.md) (2 shared connections)
-- [NPC Population Control](NPC_Population_Control.md) (2 shared connections)
-- [Spell Effect Protocols](Spell_Effect_Protocols.md) (2 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
-- [Command Parser](Command_Parser.md) (1 shared connections)
-- [Cursor Agents Analyzer](Cursor_Agents_Analyzer.md) (1 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (5 shared connections)
+- [Player Respawn Events](Player_Respawn_Events.md) (4 shared connections)
+- [Command Parser](Command_Parser.md) (2 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (1 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
+- [Players API Endpoints](Players_API_Endpoints.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
-- `server/tests/unit/commands/test_inventory_helpers_extended.py`
-- `server/tests/unit/utils/test_command_parser.py`
-- `server/tests/unit/utils/test_command_processor.py`
+- `server/config/__init__.py`
+- `server/services/npc_combat_grace.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (66%)
-- INFERRED: 11 (34%)
+- EXTRACTED: 46 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

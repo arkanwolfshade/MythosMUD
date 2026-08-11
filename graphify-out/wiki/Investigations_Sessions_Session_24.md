@@ -1,29 +1,24 @@
 # Investigations Sessions Session
 
-> 8 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_error_logging.py** (5 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **test_create_error_context()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **test_create_error_context_with_metadata()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **test_error_context_to_dict()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **Unit tests for error_logging utilities.  Tests error logging helper functions.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **Test create_error_context() creates error context.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **Test create_error_context() can include metadata.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **Test error context to_dict() method.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **.test_stop_success()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test stop successfully stops the service.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
 
 ## Relationships
 
-- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
+- [Combat Health Persistence Fix](Combat_Health_Persistence_Fix.md) (1 shared connections)
+- [AnyIO Code Review](AnyIO_Code_Review.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_error_logging.py`
+- `server/tests/unit/services/test_game_tick_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

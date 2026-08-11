@@ -33,10 +33,12 @@
 
 ## Relationships
 
-- [Communication Command Flows](Communication_Command_Flows.md) (11 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (9 shared connections)
 - [Combat Schema Validation](Combat_Schema_Validation.md) (3 shared connections)
-- [End-to-End Validation](End-to-End_Validation.md) (1 shared connections)
+- [Command Parser Tests](Command_Parser_Tests.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
+- [Zone Schema Definition](Zone_Schema_Definition.md) (1 shared connections)
 - [NPC Definition CRUD](NPC_Definition_CRUD.md) (1 shared connections)
 
 ## Source Files

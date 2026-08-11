@@ -35,7 +35,7 @@
 
 - [Logging Structured Handlers](Logging_Structured_Handlers.md) (4 shared connections)
 - [Logging File Setup](Logging_File_Setup.md) (4 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 

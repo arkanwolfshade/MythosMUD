@@ -1,29 +1,37 @@
 # E 2 E Cleanup Troubleshooting
 
-> 6 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **broadcast_shutdown_notification()** (7 connections) — `server/commands/admin_shutdown_command.py`
-- **test_broadcast_shutdown_notification_success()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_broadcast_shutdown_notification_failure()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Broadcast shutdown notification to all players.      Args:         connection_ma** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Test broadcast_shutdown_notification() successfully broadcasts.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test broadcast_shutdown_notification() handles errors.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Any** (8 connections)
+- **.set_stat_requirements()** (3 connections) — `server/models/profession.py`
+- **.get_mechanical_effects()** (3 connections) — `server/models/profession.py`
+- **.set_mechanical_effects()** (3 connections) — `server/models/profession.py`
+- **.get_stat_modifiers()** (3 connections) — `server/models/profession.py`
+- **.set_stat_modifiers()** (3 connections) — `server/models/profession.py`
+- **.get_skill_modifiers()** (3 connections) — `server/models/profession.py`
+- **.set_skill_modifiers()** (3 connections) — `server/models/profession.py`
+- **Set profession stat requirements from dictionary.** (1 connections) — `server/models/profession.py`
+- **Get profession mechanical effects as dictionary.** (1 connections) — `server/models/profession.py`
+- **Set profession mechanical effects from dictionary.** (1 connections) — `server/models/profession.py`
+- **Get stat modifiers as list of {stat, value}.** (1 connections) — `server/models/profession.py`
+- **Set stat modifiers from list of {stat, value}.** (1 connections) — `server/models/profession.py`
+- **Get skill modifiers as list of {skill_key, value}.** (1 connections) — `server/models/profession.py`
+- **Set skill modifiers from list of {skill_key, value}.** (1 connections) — `server/models/profession.py`
 
 ## Relationships
 
-- [Room Drop Renderer](Room_Drop_Renderer.md) (3 shared connections)
-- [Services Lucidity Repository](Services_Lucidity_Repository.md) (3 shared connections)
+- [Cursor Plans Login](Cursor_Plans_Login.md) (7 shared connections)
+- [Archive Planning Unified](Archive_Planning_Unified.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_shutdown_command.py`
-- `server/tests/unit/commands/test_admin_shutdown_command.py`
+- `server/models/profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

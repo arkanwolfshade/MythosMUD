@@ -7,6 +7,7 @@
 - **CircuitBreaker** (41 connections) — `server/realtime/circuit_breaker.py`
 - **test_circuit_breaker.py** (31 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **CircuitBreakerOpen** (12 connections) — `server/realtime/circuit_breaker.py`
+- **circuit_breaker.py** (10 connections) — `server/realtime/circuit_breaker.py`
 - **.call()** (9 connections) — `server/realtime/circuit_breaker.py`
 - **CircuitState** (6 connections) — `server/realtime/circuit_breaker.py`
 - **._transition_to()** (6 connections) — `server/realtime/circuit_breaker.py`
@@ -28,15 +29,15 @@
 - **test_call_reopens_from_half_open_on_failure()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_on_success_resets_failure_count_closed()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_on_success_increments_success_count_half_open()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_on_failure_increments_failure_count()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (7 shared connections)
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (3 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (4 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (3 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
 - [NATS Chat Broadcasting](NATS_Chat_Broadcasting.md) (2 shared connections)
-- [Test Optimization Insights](Test_Optimization_Insights.md) (1 shared connections)
+- [Chat Message Filtering](Chat_Message_Filtering.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 261 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 268 (99%)
+- INFERRED: 4 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

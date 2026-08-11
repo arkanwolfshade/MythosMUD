@@ -1,12 +1,11 @@
 # Alias Expansion Logic
 
-> 81 nodes
+> 79 nodes
 
 ## Key Concepts
 
 - **Alias** (52 connections) — `server/models/alias.py`
 - **test_alias.py** (29 connections) — `server/tests/unit/models/test_alias.py`
-- **alias.py** (6 connections) — `server/models/alias.py`
 - **test_alias_rejects_extra_fields()** (4 connections) — `server/tests/unit/models/test_alias.py`
 - **test_alias_repr()** (3 connections) — `server/tests/unit/models/test_alias.py`
 - **test_alias_equality_same_name_and_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
@@ -29,19 +28,17 @@
 - **test_alias_get_expanded_command_no_args()** (3 connections) — `server/tests/unit/models/test_alias.py`
 - **test_alias_get_expanded_command_with_args()** (3 connections) — `server/tests/unit/models/test_alias.py`
 - **test_alias_model_dump()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- *... and 56 more nodes in this community*
+- **test_alias_model_dump_timestamps_isoformat()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- *... and 54 more nodes in this community*
 
 ## Relationships
 
-- [Alias Storage Services](Alias_Storage_Services.md) (6 shared connections)
-- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (4 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (2 shared connections)
-- [Memory Profiler Tools](Memory_Profiler_Tools.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
-- [Async Persistence Layer](Async_Persistence_Layer.md) (1 shared connections)
-- [Monitoring Response Models](Monitoring_Response_Models.md) (1 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (1 shared connections)
+- [Alias Storage Services](Alias_Storage_Services.md) (7 shared connections)
+- [Async Persistence Types](Async_Persistence_Types.md) (5 shared connections)
+- [Memory Profiler Tools](Memory_Profiler_Tools.md) (3 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
+- [Character Creation Service](Character_Creation_Service.md) (1 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 228 (98%)
+- EXTRACTED: 221 (98%)
 - INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 

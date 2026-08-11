@@ -1,62 +1,78 @@
 # Optimization Archive Modernization
 
-> 112 nodes
+> 464 nodes
 
 ## Key Concepts
 
+- **DatabaseError** (434 connections) — `server/exceptions.py`
+- **log_and_raise()** (174 connections) — `server/utils/error_logging.py`
+- **get_session_maker()** (91 connections) — `server/database.py`
+- **async_persistence.py** (74 connections) — `server/async_persistence.py`
+- **PlayerRepository** (31 connections) — `server/persistence/repositories/player_repository.py`
+- **__init__.py** (28 connections) — `server/persistence/repositories/__init__.py`
+- **player_repository.py** (28 connections) — `server/persistence/repositories/player_repository.py`
+- **CreateItemInstanceInput** (23 connections) — `server/async_persistence_constants.py`
+- **container_query_helpers_async.py** (23 connections) — `server/persistence/container_query_helpers_async.py`
+- **container_repository.py** (23 connections) — `server/persistence/repositories/container_repository.py`
 - **test_quest_instance_repository.py** (22 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
 - **QuestInstance** (21 connections) — `server/models/quest.py`
+- **player_effect_repository.py** (21 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **skill_service.py** (20 connections) — `server/game/skill_service.py`
+- **HealthRepository** (20 connections) — `server/persistence/repositories/health_repository.py`
+- **player_spell_repository.py** (20 connections) — `server/persistence/repositories/player_spell_repository.py`
 - **QuestInstanceRepository** (20 connections) — `server/persistence/repositories/quest_instance_repository.py`
 - **test_quest_definition_repository.py** (20 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
 - **quest_instance_repository.py** (19 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **QuestDefinitionRepository** (17 connections) — `server/persistence/repositories/quest_definition_repository.py`
-- **quest_definition_repository.py** (16 connections) — `server/persistence/repositories/quest_definition_repository.py`
-- **test_quest_flow.py** (15 connections) — `server/tests/integration/test_quest_flow.py`
-- **quest.py** (13 connections) — `server/models/quest.py`
-- **QuestDefinition** (13 connections) — `server/models/quest.py`
-- **_make_session_context()** (13 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **.create()** (11 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **_make_session_context()** (11 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **.get_by_player_and_quest()** (9 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **.list_active_by_player()** (9 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **.list_completed_by_player()** (9 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **UUID** (8 connections)
-- **_row_to_quest_instance()** (8 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **.update_state_and_progress()** (8 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **.get_by_id()** (7 connections) — `server/persistence/repositories/quest_definition_repository.py`
-- **.get_by_name()** (7 connections) — `server/persistence/repositories/quest_definition_repository.py`
-- **_str_player_id()** (7 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **test_quest_start_log_abandon_flow()** (7 connections) — `server/tests/integration/test_quest_flow.py`
-- **test_quest_start_by_trigger_then_abandon()** (7 connections) — `server/tests/integration/test_quest_flow.py`
-- **QuestOffer** (6 connections) — `server/models/quest.py`
-- *... and 87 more nodes in this community*
+- **SkillRepository** (19 connections) — `server/persistence/repositories/skill_repository.py`
+- **item_instance_persistence_async.py** (18 connections) — `server/persistence/item_instance_persistence_async.py`
+- **PlayerEffectRepository** (18 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **player_skill_repository.py** (18 connections) — `server/persistence/repositories/player_skill_repository.py`
+- **GameMechanicsService** (17 connections) — `server/game/mechanics.py`
+- **PlayerSkillRepository** (17 connections) — `server/persistence/repositories/player_skill_repository.py`
+- *... and 439 more nodes in this community*
 
 ## Relationships
 
-- [Schemas Maps Map](Schemas_Maps_Map.md) (53 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (10 shared connections)
-- [Quest Service Core](Quest_Service_Core.md) (9 shared connections)
-- [Client Event Store](Client_Event_Store.md) (6 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (6 shared connections)
-- [Container Persistence Layer](Container_Persistence_Layer.md) (3 shared connections)
-- [Investigations Sessions Session](Investigations_Sessions_Session.md) (2 shared connections)
-- [NATS Subject Manager](NATS_Subject_Manager.md) (2 shared connections)
-- [Combat Command Handler](Combat_Command_Handler.md) (1 shared connections)
-- [Message Queue Cleanup](Message_Queue_Cleanup.md) (1 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (74 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (73 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (72 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (62 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (30 shared connections)
+- [Player Save Preparer](Player_Save_Preparer.md) (28 shared connections)
+- [Client Security Utilities](Client_Security_Utilities.md) (27 shared connections)
+- [Draggable Panel UI](Draggable_Panel_UI.md) (26 shared connections)
+- [Communication Command Models](Communication_Command_Models.md) (25 shared connections)
+- [Game Service Bundle](Game_Service_Bundle.md) (22 shared connections)
+- [Calendar Holiday Schemas](Calendar_Holiday_Schemas.md) (20 shared connections)
+- [Maps API Endpoints](Maps_API_Endpoints.md) (14 shared connections)
 
 ## Source Files
 
+- `e2e-tests/load-tests/get_invite_codes.py`
+- `monitoring/webhook-receiver.py`
+- `server/async_persistence.py`
+- `server/async_persistence_constants.py`
+- `server/async_persistence_direct_queries.py`
+- `server/database.py`
+- `server/exceptions.py`
+- `server/game/mechanics.py`
+- `server/game/movement_service.py`
+- `server/game/skill_service.py`
 - `server/models/quest.py`
-- `server/persistence/repositories/quest_definition_repository.py`
-- `server/persistence/repositories/quest_instance_repository.py`
-- `server/tests/integration/test_quest_flow.py`
-- `server/tests/unit/persistence/test_quest_definition_repository.py`
-- `server/tests/unit/persistence/test_quest_instance_repository.py`
+- `server/persistence/container_persistence_async.py`
+- `server/persistence/container_query_helpers_async.py`
+- `server/persistence/item_instance_persistence_async.py`
+- `server/persistence/repositories/__init__.py`
+- `server/persistence/repositories/container_repository.py`
+- `server/persistence/repositories/experience_repository.py`
+- `server/persistence/repositories/health_repository.py`
+- `server/persistence/repositories/item_repository.py`
+- `server/persistence/repositories/player_effect_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 445 (93%)
-- INFERRED: 36 (7%)
+- EXTRACTED: 2373 (84%)
+- INFERRED: 463 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

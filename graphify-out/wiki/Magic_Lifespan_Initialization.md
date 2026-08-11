@@ -1,47 +1,42 @@
 # Magic Lifespan Initialization
 
-> 15 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **coerce_int()** (37 connections) — `server/utils/int_coercion.py`
-- **int_coercion.py** (13 connections) — `server/utils/int_coercion.py`
-- **test_inventory_command_coercion.py** (12 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_string_parsing()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_bool_before_int()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_plain_int()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_float()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_float_nan_falls_back_to_default()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_float_inf_falls_back_to_default()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_unknown_type()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **_int_from_decimal_string()** (2 connections) — `server/utils/int_coercion.py`
-- **_int_from_float_safe()** (2 connections) — `server/utils/int_coercion.py`
-- **Unit tests for server.utils.int_coercion.coerce_int.** (1 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **Coerce object-shaped JSON/JSONB values to int (commands, models, stats).** (1 connections) — `server/utils/int_coercion.py`
-- **Parse integer fields from object-typed JSON/JSONB payloads.      Non-numeric str** (1 connections) — `server/utils/int_coercion.py`
+- **.mark_room_as_explored()** (7 connections) — `server/services/exploration_service.py`
+- **UUID** (7 connections)
+- **._get_room_uuid_by_stable_id()** (7 connections) — `server/services/exploration_service.py`
+- **.is_room_explored()** (6 connections) — `server/services/exploration_service.py`
+- **AsyncSession** (5 connections)
+- **._mark_explored_in_session()** (5 connections) — `server/services/exploration_service.py`
+- **.get_explored_rooms()** (5 connections) — `server/services/exploration_service.py`
+- **.__init__()** (4 connections) — `server/services/exploration_service.py`
+- **.mark_room_as_explored_sync()** (4 connections) — `server/services/exploration_service.py`
+- **Any** (2 connections)
+- **Initialize the exploration service.          Args:             database_manager:** (1 connections) — `server/services/exploration_service.py`
+- **Mark a room as explored by a player.          This method inserts a record into** (1 connections) — `server/services/exploration_service.py`
+- **Get room UUID by stable_id (hierarchical room ID).          Args:             st** (1 connections) — `server/services/exploration_service.py`
+- **Mark room as explored using the provided session.          Args:             ses** (1 connections) — `server/services/exploration_service.py`
+- **Get list of room IDs that a player has explored.          Args:             play** (1 connections) — `server/services/exploration_service.py`
+- **Check if a player has explored a specific room.          Args:             playe** (1 connections) — `server/services/exploration_service.py`
+- **Synchronous wrapper for mark_room_as_explored.          This method is designed** (1 connections) — `server/services/exploration_service.py`
 
 ## Relationships
 
-- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (6 shared connections)
-- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (6 shared connections)
-- [FastAPI Auth Integration](FastAPI_Auth_Integration.md) (4 shared connections)
-- [Container Sync Remediation](Container_Sync_Remediation.md) (4 shared connections)
-- [Connection Room Presence Utils](Connection_Room_Presence_Utils.md) (3 shared connections)
-- [Maps API Endpoints](Maps_API_Endpoints.md) (3 shared connections)
-- [WebSocket Initial State](WebSocket_Initial_State.md) (3 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [Panel Layout Libraries Spec](Panel_Layout_Libraries_Spec.md) (2 shared connections)
+- [Container Persistence Ops](Container_Persistence_Ops.md) (7 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (1 shared connections)
+- [Mythos Time HUD](Mythos_Time_HUD.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_inventory_command_coercion.py`
-- `server/utils/int_coercion.py`
+- `server/services/exploration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 77 (93%)
-- INFERRED: 6 (7%)
+- EXTRACTED: 59 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

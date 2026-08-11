@@ -1,49 +1,58 @@
 # Plan Cursor Plans
 
-> 18 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **NPCService** (14 connections) — `server/services/npc_service/__init__.py`
-- **NPCQueryMixin** (7 connections) — `server/services/npc_service/queries.py`
-- **.get_npc_definitions_by_type()** (5 connections) — `server/services/npc_service/queries.py`
-- **.get_npc_definitions_by_sub_zone()** (5 connections) — `server/services/npc_service/queries.py`
-- **.get_system_statistics()** (5 connections) — `server/services/npc_service/queries.py`
-- **AsyncSession** (3 connections)
-- **npc_service()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_npc_service_init()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
-- **.__init__()** (2 connections) — `server/services/npc_service/__init__.py`
-- **Comprehensive NPC management service.      Handles CRUD operations for NPC defin** (1 connections) — `server/services/npc_service/__init__.py`
-- **Initialize the NPC service.** (1 connections) — `server/services/npc_service/__init__.py`
+- **create_app()** (16 connections) — `server/app/factory.py`
+- **CORSConfigDict** (6 connections) — `server/app/factory.py`
+- **_get_cors_config_from_app_config()** (6 connections) — `server/app/factory.py`
+- **_configure_cors()** (6 connections) — `server/app/factory.py`
+- **UserRead** (6 connections) — `server/auth/endpoints.py`
+- **UserUpdate** (6 connections) — `server/auth/endpoints.py`
+- **main()** (4 connections) — `scripts/generate_openapi_spec.py`
+- **_get_default_cors_config()** (4 connections) — `server/app/factory.py`
+- **_parse_cors_env_vars()** (4 connections) — `server/app/factory.py`
+- **main()** (4 connections) — `server/main.py`
+- **_create_get_app()** (4 connections) — `server/main.py`
+- **generate_openapi_spec.py** (3 connections) — `scripts/generate_openapi_spec.py`
+- **_sanitize_token_examples()** (3 connections) — `scripts/generate_openapi_spec.py`
+- **FastAPI** (3 connections)
+- **FastAPI** (2 connections)
+- **Replace auth token examples with clearly fake placeholders.** (1 connections) — `scripts/generate_openapi_spec.py`
+- **Generate and write OpenAPI spec to docs/openapi/openapi.json.** (1 connections) — `scripts/generate_openapi_spec.py`
+- **TypedDict** (1 connections)
 - **Any** (1 connections)
-- **Mixin providing NPC query operations.** (1 connections) — `server/services/npc_service/queries.py`
-- **Get NPC definitions by type.** (1 connections) — `server/services/npc_service/queries.py`
-- **Get NPC definitions by sub-zone.** (1 connections) — `server/services/npc_service/queries.py`
-- **Get system-wide NPC statistics.** (1 connections) — `server/services/npc_service/queries.py`
-- **Create NPCService instance.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
-- **Test NPCService initialization.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Type definition for CORS configuration dictionary.** (1 connections) — `server/app/factory.py`
+- **Get default CORS configuration values.      Returns:         CORSConfigDict: Dic** (1 connections) — `server/app/factory.py`
+- **Get CORS configuration from AppConfig, with fallback to defaults.      Returns:** (1 connections) — `server/app/factory.py`
+- **Parse CORS-related environment variables and return overrides.      Environment** (1 connections) — `server/app/factory.py`
+- **Configure CORS settings from config file and environment variables.      Precede** (1 connections) — `server/app/factory.py`
+- **Create and configure the FastAPI application.      This function sets up the Fas** (1 connections) — `server/app/factory.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (5 shared connections)
-- [App Lifespan Management](App_Lifespan_Management.md) (3 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (3 shared connections)
-- [NPC Service Tests](NPC_Service_Tests.md) (2 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
-- [Container Component Capacity](Container_Component_Capacity.md) (1 shared connections)
-- [Cursor Plans Best](Cursor_Plans_Best.md) (1 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (14 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (3 shared connections)
+- [Who Command Helpers](Who_Command_Helpers.md) (2 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (2 shared connections)
+- [Command Parser](Command_Parser.md) (1 shared connections)
+- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (1 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
+- [Graceful Degradation Plan](Graceful_Degradation_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_service/__init__.py`
-- `server/services/npc_service/queries.py`
-- `server/tests/unit/services/test_npc_service.py`
+- `scripts/generate_openapi_spec.py`
+- `server/app/factory.py`
+- `server/auth/endpoints.py`
+- `server/main.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (93%)
-- INFERRED: 4 (7%)
+- EXTRACTED: 79 (87%)
+- INFERRED: 12 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

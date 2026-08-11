@@ -1,38 +1,26 @@
 # Game Magic Spell
 
-> 14 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.load_player_mutes()** (12 connections) — `server/services/user_manager.py`
-- **._load_player_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
-- **._load_global_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
-- **._convert_mute_info_timestamps()** (5 connections) — `server/services/user_manager.py`
-- **._convert_mute_info_uuids()** (5 connections) — `server/services/user_manager.py`
-- **._load_channel_mutes_from_data()** (5 connections) — `server/services/user_manager.py`
-- **user_manager()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Convert timestamp strings in mute_info to datetime objects.** (1 connections) — `server/services/user_manager.py`
-- **Convert UUID strings in mute_info to UUID objects.** (1 connections) — `server/services/user_manager.py`
-- **Load player mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
-- **Load channel mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
-- **Load global mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
-- **Load mute data for a specific player from JSON file.          Args:** (1 connections) — `server/services/user_manager.py`
-- **Create a UserManager instance.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **_max_connection_age_seconds()** (3 connections) — `server/realtime/memory_monitor.py`
+- **.__init__()** (3 connections) — `server/realtime/memory_monitor.py`
+- **Connection age threshold (seconds). Higher in e2e/local to avoid mid-run drops.** (1 connections) — `server/realtime/memory_monitor.py`
+- **Initialize the memory monitor with default settings.** (1 connections) — `server/realtime/memory_monitor.py`
 
 ## Relationships
 
-- [Player Mute Persistence](Player_Mute_Persistence.md) (17 shared connections)
-- [Commands Time](Commands_Time.md) (1 shared connections)
-- [Player Preferences Service](Player_Preferences_Service.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Game State Provider Tests](Game_State_Provider_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/user_manager.py`
-- `server/tests/unit/services/test_user_manager.py`
+- `server/realtime/memory_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

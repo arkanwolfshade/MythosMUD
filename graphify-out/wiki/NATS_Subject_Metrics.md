@@ -1,41 +1,52 @@
 # NATS Subject Metrics
 
-> 18 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **._check_dict_condition()** (6 connections) — `server/models/npc.py`
-- **._spawn_value_allows_spawn()** (6 connections) — `server/models/npc.py`
-- **._single_spawn_condition_ok()** (5 connections) — `server/models/npc.py`
-- **.check_spawn_conditions()** (4 connections) — `server/models/npc.py`
-- **._check_missing_key_condition()** (3 connections) — `server/models/npc.py`
-- **._check_list_condition()** (3 connections) — `server/models/npc.py`
-- **._game_value_below_bound()** (3 connections) — `server/models/npc.py`
-- **._game_value_above_bound()** (3 connections) — `server/models/npc.py`
-- **._check_simple_condition()** (3 connections) — `server/models/npc.py`
-- **Check if missing key condition is acceptable.          Returns:             True** (1 connections) — `server/models/npc.py`
-- **Check list condition.          Returns:             True if condition passes, Fa** (1 connections) — `server/models/npc.py`
-- **True if numeric game_value is strictly below bound.** (1 connections) — `server/models/npc.py`
-- **True if numeric game_value is strictly above bound.** (1 connections) — `server/models/npc.py`
-- **Check dict (range) condition.** (1 connections) — `server/models/npc.py`
-- **Check simple value condition.          Returns:             True if condition pa** (1 connections) — `server/models/npc.py`
-- **Return False if this condition value blocks spawning; True otherwise.** (1 connections) — `server/models/npc.py`
-- **Evaluate one key from spawn_conditions; False means spawn blocked.** (1 connections) — `server/models/npc.py`
-- **Check if current game state meets spawn conditions.** (1 connections) — `server/models/npc.py`
+- **Any** (10 connections)
+- **.collect_all_metrics()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.check_alerts()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.collect_connection_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.collect_event_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.collect_cache_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.collect_task_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.collect_nats_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
+- **._calculate_single_growth_rate()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.calculate_growth_rates()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
+- **._check_connection_alerts()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
+- **._check_cache_alerts()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
+- **._check_subscriber_alerts()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
+- **._check_task_alerts()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Collect all metrics from all sources.          Returns:             Dictionary c** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Collect connection metrics from ConnectionManager.          Returns:** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Collect event metrics from EventBus.          Returns:             Dictionary wi** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Collect cache metrics from CacheManager.          Returns:             Dictionar** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Collect task metrics from TaskRegistry.          Returns:             Dictionary** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Collect NATS subscription metrics from NATSService.          Returns:** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Calculate growth rate for a single metric.          Args:             current: C** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Calculate growth rates for metrics over time.          Returns:             Dict** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Check connection-related alerts and append to alerts list.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Check subscriber growth rate alerts and append to alerts list.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Check cache-related alerts and append to alerts list.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [Command Parser Tests](Command_Parser_Tests.md) (9 shared connections)
-- [Look Command Helpers](Look_Command_Helpers.md) (2 shared connections)
+- [Help and WebSocket Core](Help_and_WebSocket_Core.md) (13 shared connections)
+- [NPC Occupant Verification](NPC_Occupant_Verification.md) (2 shared connections)
+- [Connection Health Monitor](Connection_Health_Monitor.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Command Field Validators](Command_Field_Validators.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/npc.py`
+- `server/monitoring/memory_leak_metrics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 87 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

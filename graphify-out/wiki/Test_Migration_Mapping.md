@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [Memory Leak Metrics](Memory_Leak_Metrics.md) (4 shared connections)
-- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (3 shared connections)
-- [Player Movement Service](Player_Movement_Service.md) (2 shared connections)
+- [Merge Refactoring Summary](Merge_Refactoring_Summary.md) (3 shared connections)
+- [Memory Leak Metrics](Memory_Leak_Metrics.md) (3 shared connections)
+- [Archive Environment Contamination](Archive_Environment_Contamination.md) (2 shared connections)
+- [Help and WebSocket Core](Help_and_WebSocket_Core.md) (1 shared connections)
 - [Coverage Improvement Summary](Coverage_Improvement_Summary.md) (1 shared connections)
 
 ## Source Files

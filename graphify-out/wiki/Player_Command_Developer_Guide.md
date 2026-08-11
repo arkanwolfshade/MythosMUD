@@ -1,52 +1,44 @@
 # Player Command Developer Guide
 
-> 28 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **test_calendar_schemas.py** (21 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_holiday_entry_validation_tradition()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_holiday_entry_validation_season()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_holiday_entry_validation_bonus_tags()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_holiday_collection()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_holiday_collection_id_map()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_holiday_collection_ensure_unique_ids()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_schedule_entry_validation_days()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_holiday_entry()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_holiday_collection_load_file()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_schedule_entry()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_schedule_collection_load_file()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_slugify_observance()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_extract_observance_ids()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **Unit tests for calendar schemas.  Tests the Pydantic models in calendar.py modul** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **Test HolidayEntry can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **Test HolidayEntry validates tradition.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **Test HolidayEntry validates season.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **Test HolidayEntry validates bonus_tags format.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **Test HolidayCollection can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **Test HolidayCollection.id_map property.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **Test HolidayCollection.load_file() loads from JSON.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **Test HolidayCollection.ensure_unique_ids() detects duplicates.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **Test ScheduleEntry can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **Test ScheduleEntry validates days.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- *... and 3 more nodes in this community*
+- **player_presence_utils.py** (16 connections) — `server/realtime/player_presence_utils.py`
+- **extract_player_name()** (16 connections) — `server/realtime/player_presence_utils.py`
+- **get_player_position()** (7 connections) — `server/realtime/player_presence_utils.py`
+- **_get_name_from_user()** (5 connections) — `server/realtime/player_presence_utils.py`
+- **_is_valid_name()** (4 connections) — `server/realtime/player_presence_utils.py`
+- **_is_uuid_string()** (3 connections) — `server/realtime/player_presence_utils.py`
+- **Player** (3 connections)
+- **UUID** (3 connections)
+- **Any** (1 connections)
+- **Utility functions for player presence tracking.  This module provides helper fun** (1 connections) — `server/realtime/player_presence_utils.py`
+- **Check if a value is a valid non-empty string name.      Args:         name: Valu** (1 connections) — `server/realtime/player_presence_utils.py`
+- **Check if a string is a UUID format.      Args:         value: String to check** (1 connections) — `server/realtime/player_presence_utils.py`
+- **Attempt to get player name from related User object.      Args:         player:** (1 connections) — `server/realtime/player_presence_utils.py`
+- **Extract and validate player name, ensuring it's never a UUID.      Args:** (1 connections) — `server/realtime/player_presence_utils.py`
+- **Get player position from stats.      Args:         player: The player object** (1 connections) — `server/realtime/player_presence_utils.py`
 
 ## Relationships
 
-- [Player Respawn Service](Player_Respawn_Service.md) (8 shared connections)
-- [Async Room Loading Tests](Async_Room_Loading_Tests.md) (8 shared connections)
-- [Spell Effects Tests](Spell_Effects_Tests.md) (4 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (4 shared connections)
-- [WebSocket Code Review](WebSocket_Code_Review.md) (3 shared connections)
+- [Rescue Service Tests](Rescue_Service_Tests.md) (6 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
+- [Container Persistence Queries](Container_Persistence_Queries.md) (3 shared connections)
+- [Chat Rate Limiter](Chat_Rate_Limiter.md) (3 shared connections)
+- [NATS Message Broker](NATS_Message_Broker.md) (3 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/schemas/test_calendar_schemas.py`
+- `server/realtime/player_presence_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 77 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 62 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

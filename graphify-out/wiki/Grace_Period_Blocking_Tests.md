@@ -1,61 +1,57 @@
 # Grace Period Blocking Tests
 
-> 67 nodes
+> 45 nodes
 
 ## Key Concepts
 
-- **RoomCacheService** (17 connections) — `server/caching/cache_service.py`
-- **get_cache_manager()** (16 connections) — `server/caching/lru_cache.py`
-- **ProfessionCacheService** (15 connections) — `server/caching/cache_service.py`
-- **Any** (13 connections)
-- **__init__.py** (12 connections) — `server/caching/__init__.py`
-- **CacheService** (8 connections) — `server/caching/cache_service.py`
-- **bench_cache_professions.py** (7 connections) — `scripts/bench_cache_professions.py`
-- **.__init__()** (7 connections) — `server/caching/cache_service.py`
-- **bench_cache.py** (6 connections) — `scripts/bench_cache.py`
-- **_FakePersistence** (6 connections) — `scripts/bench_cache.py`
-- **bench_profession_cache()** (6 connections) — `scripts/bench_cache_professions.py`
-- **bench_room_cache()** (5 connections) — `scripts/bench_cache.py`
-- **_FakePersistence** (5 connections) — `scripts/bench_cache_professions.py`
-- **.get_all_professions()** (5 connections) — `scripts/bench_cache_professions.py`
-- **cached()** (5 connections) — `server/caching/cache_service.py`
-- **.get_all_professions()** (5 connections) — `server/caching/cache_service.py`
-- **_get_empty_dict()** (4 connections) — `scripts/bench_cache_professions.py`
-- **.__init__()** (4 connections) — `server/caching/cache_service.py`
-- **.get_room_sync()** (4 connections) — `server/caching/cache_service.py`
-- **.__init__()** (4 connections) — `server/caching/cache_service.py`
-- **.__init__()** (4 connections) — `server/caching/cache_service.py`
-- **.get_profession_by_id()** (4 connections) — `server/caching/cache_service.py`
-- **.preload_frequently_accessed_data()** (4 connections) — `server/caching/cache_service.py`
-- **Any** (3 connections)
-- **.get_room()** (3 connections) — `server/caching/cache_service.py`
-- *... and 42 more nodes in this community*
+- **LRUCache** (27 connections) — `server/caching/lru_cache.py`
+- **.items()** (8 connections) — `server/caching/lru_cache.py`
+- **K** (7 connections)
+- **.get_or_set()** (7 connections) — `server/caching/lru_cache.py`
+- **.get()** (6 connections) — `server/caching/lru_cache.py`
+- **.put()** (6 connections) — `server/caching/lru_cache.py`
+- **V** (5 connections)
+- **.get_stats()** (5 connections) — `server/caching/lru_cache.py`
+- **.keys()** (5 connections) — `server/caching/lru_cache.py`
+- **.get_cache()** (5 connections) — `server/caching/lru_cache.py`
+- **.get_all_stats()** (5 connections) — `server/caching/lru_cache.py`
+- **._evict_expired_entries()** (4 connections) — `server/caching/lru_cache.py`
+- **.delete()** (4 connections) — `server/caching/lru_cache.py`
+- **Any** (4 connections)
+- **.values()** (4 connections) — `server/caching/lru_cache.py`
+- **.create_cache()** (4 connections) — `server/caching/lru_cache.py`
+- **.clear()** (3 connections) — `server/caching/lru_cache.py`
+- **.size()** (3 connections) — `server/caching/lru_cache.py`
+- **.__len__()** (3 connections) — `server/caching/lru_cache.py`
+- **.__contains__()** (3 connections) — `server/caching/lru_cache.py`
+- **.__repr__()** (3 connections) — `server/caching/lru_cache.py`
+- **.clear_all_caches()** (3 connections) — `server/caching/lru_cache.py`
+- **.__init__()** (2 connections) — `server/caching/lru_cache.py`
+- **.is_full()** (2 connections) — `server/caching/lru_cache.py`
+- **.get_cache_names()** (2 connections) — `server/caching/lru_cache.py`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (10 shared connections)
-- [Alias Command Models](Alias_Command_Models.md) (6 shared connections)
-- [Cache and NPC Cache](Cache_and_NPC_Cache.md) (6 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (6 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
-- [Command Field Validators](Command_Field_Validators.md) (2 shared connections)
-- [Room Occupant Manager Tests](Room_Occupant_Manager_Tests.md) (2 shared connections)
-- [Quest Journal Commands](Quest_Journal_Commands.md) (1 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
-- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (8 shared connections)
+- [Alias Command Models](Alias_Command_Models.md) (2 shared connections)
+- [E 2 E Testing Guide](E_2_E_Testing_Guide.md) (1 shared connections)
+- [Structured Concurrency Patterns](Structured_Concurrency_Patterns.md) (1 shared connections)
+- [Command Parser Helpers](Command_Parser_Helpers.md) (1 shared connections)
+- [Connection Room Presence Utils](Connection_Room_Presence_Utils.md) (1 shared connections)
+- [Message Queue Cleanup](Message_Queue_Cleanup.md) (1 shared connections)
+- [Realtime Errors Error](Realtime_Errors_Error.md) (1 shared connections)
+- [Async Task Registry](Async_Task_Registry.md) (1 shared connections)
+- [Player Effects API](Player_Effects_API.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/bench_cache.py`
-- `scripts/bench_cache_professions.py`
-- `server/caching/__init__.py`
-- `server/caching/cache_service.py`
 - `server/caching/lru_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 217 (94%)
-- INFERRED: 14 (6%)
+- EXTRACTED: 142 (95%)
+- INFERRED: 8 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

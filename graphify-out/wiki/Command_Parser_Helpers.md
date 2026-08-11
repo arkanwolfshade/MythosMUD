@@ -1,63 +1,50 @@
 # Command Parser Helpers
 
-> 78 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **ValidationError** (540 connections) — `server/exceptions.py`
-- **validate_room_data()** (16 connections) — `server/world_loader.py`
-- **get_room_environment()** (13 connections) — `server/world_loader.py`
-- **TestGetRoomEnvironment** (12 connections) — `server/tests/unit/test_world_loader.py`
-- **TestValidateRoomData** (11 connections) — `server/tests/unit/test_world_loader.py`
-- **test_world_loader.py** (10 connections) — `server/tests/unit/test_world_loader.py`
-- **generate_room_id()** (9 connections) — `server/world_loader.py`
-- **TestGenerateRoomId** (7 connections) — `server/tests/unit/test_world_loader.py`
-- **test_enhanced_error_logging.py** (7 connections) — `server/tests/unit/utils/test_enhanced_error_logging.py`
-- **.apply_fear()** (4 connections) — `server/game/mechanics.py`
-- **.apply_corruption()** (4 connections) — `server/game/mechanics.py`
-- **.heal_player()** (4 connections) — `server/game/mechanics.py`
-- **.damage_player()** (4 connections) — `server/game/mechanics.py`
-- **.gain_experience()** (4 connections) — `server/game/mechanics.py`
-- **.test_validate_room_data_strict_validation_raises()** (4 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_validation_exception_strict()** (4 connections) — `server/tests/unit/test_world_loader.py`
-- **test_log_and_raise_enhanced()** (4 connections) — `server/tests/unit/utils/test_enhanced_error_logging.py`
-- **test_log_and_raise_enhanced_with_metadata()** (4 connections) — `server/tests/unit/utils/test_enhanced_error_logging.py`
-- **Any** (4 connections)
-- **.test_generate_room_id_basic()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_generate_room_id_with_underscores()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_generate_room_id_empty_components()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_generate_room_id_special_characters()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_from_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_from_subzone()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- *... and 53 more nodes in this community*
+- **test_lru_cache.py** (16 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **cache_with_ttl()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **cache_without_ttl()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_put_expired_entries_removed_before_lru_eviction()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_put_expired_entries_removed_before_capacity_check()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_expired_entries_not_counted_in_evictions()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_expiration_check_only_when_ttl_enabled()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_expired_count_tracked_in_stats()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_expiration_rate_calculated()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_size_stays_within_bounds_after_expiration()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_expiration_performance_impact()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_expired_entries_removed_efficiently()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_mixed_expired_and_valid_entries()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Unit tests for LRU cache expiration and eviction.  Tests the LRUCache class, foc** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Create an LRUCache with TTL enabled.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Create an LRUCache without TTL.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that expired entries are removed before LRU eviction.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that expired entries are removed before checking if cache is full.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that expired entries are not counted as LRU evictions.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that expiration check is skipped when TTL is None.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that expired entry count is tracked in cache stats.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that expiration rate is calculated in stats.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that cache size stays within bounds after expiration cleanup.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that expiration checking doesn't significantly impact performance.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that expired entries are removed efficiently in bulk.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [Spell Registry Costs](Spell_Registry_Costs.md) (39 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (32 shared connections)
-- [Base Command Models](Base_Command_Models.md) (31 shared connections)
-- [Admin Summon Command](Admin_Summon_Command.md) (24 shared connections)
-- [Realtime Errors Error](Realtime_Errors_Error.md) (23 shared connections)
-- [Combat Schema Validation](Combat_Schema_Validation.md) (19 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (18 shared connections)
-- [Room Service Tests](Room_Service_Tests.md) (18 shared connections)
-- [Client Event Store](Client_Event_Store.md) (17 shared connections)
-- [NPC Occupant Processor](NPC_Occupant_Processor.md) (17 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (14 shared connections)
-- [Command Factory Creators](Command_Factory_Creators.md) (14 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Grace Period Blocking Tests](Grace_Period_Blocking_Tests.md) (1 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 
-- `server/exceptions.py`
-- `server/game/mechanics.py`
-- `server/tests/unit/test_world_loader.py`
-- `server/tests/unit/utils/test_enhanced_error_logging.py`
-- `server/world_loader.py`
+- `server/tests/unit/caching/test_lru_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 327 (43%)
-- INFERRED: 438 (57%)
+- EXTRACTED: 53 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

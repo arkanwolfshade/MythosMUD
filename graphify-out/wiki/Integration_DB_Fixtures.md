@@ -1,42 +1,53 @@
 # Integration DB Fixtures
 
-> 20 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **test_calendar.py** (13 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_holiday_model_creation()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_holiday_model_with_bonus_tags()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_holiday_model_repr()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_npc_schedule_model_creation()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_npc_schedule_model_with_notes()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_npc_schedule_model_repr()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_npc_schedule_model_empty_arrays()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_holiday_model_table_name()** (2 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_npc_schedule_model_table_name()** (2 connections) — `server/tests/unit/models/test_calendar.py`
-- **Unit tests for calendar models.  Tests the HolidayModel and NPCScheduleModel SQL** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test HolidayModel can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test HolidayModel can have bonus_tags.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test HolidayModel has correct table name.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test HolidayModel __repr__ method.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test NPCScheduleModel can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test NPCScheduleModel can have optional notes.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test NPCScheduleModel has correct table name.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test NPCScheduleModel __repr__ method.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test NPCScheduleModel can have empty arrays.** (1 connections) — `server/tests/unit/models/test_calendar.py`
+- **PlayerRepositoryProtocol** (21 connections) — `server/persistence/protocols.py`
+- **protocols.py** (11 connections) — `server/persistence/protocols.py`
+- **Player** (11 connections)
+- **RoomRepositoryProtocol** (9 connections) — `server/persistence/protocols.py`
+- **UUID** (6 connections)
+- **.get_players_batch()** (4 connections) — `server/persistence/protocols.py`
+- **.update_player_last_active()** (4 connections) — `server/persistence/protocols.py`
+- **.get_player_by_id()** (3 connections) — `server/persistence/protocols.py`
+- **.get_player_by_user_id()** (3 connections) — `server/persistence/protocols.py`
+- **.get_players_by_user_id()** (3 connections) — `server/persistence/protocols.py`
+- **.get_active_players_by_user_id()** (3 connections) — `server/persistence/protocols.py`
+- **.get_player_by_name()** (3 connections) — `server/persistence/protocols.py`
+- **.save_player()** (3 connections) — `server/persistence/protocols.py`
+- **.save_players()** (3 connections) — `server/persistence/protocols.py`
+- **.get_players_in_room()** (3 connections) — `server/persistence/protocols.py`
+- **.soft_delete_player()** (3 connections) — `server/persistence/protocols.py`
+- **.delete_player()** (3 connections) — `server/persistence/protocols.py`
+- **.validate_and_fix_player_room()** (3 connections) — `server/persistence/protocols.py`
+- **.get_room_by_id()** (3 connections) — `server/persistence/protocols.py`
+- **.list_rooms()** (3 connections) — `server/persistence/protocols.py`
+- **Protocol** (2 connections)
+- **.list_players()** (2 connections) — `server/persistence/protocols.py`
+- **datetime** (2 connections)
+- **Room** (2 connections)
+- **Repository protocols for MythosMUD persistence layer.  Explicit typing.Protocol** (1 connections) — `server/persistence/protocols.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (10 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (3 shared connections)
+- [Dependency Injection Tests](Dependency_Injection_Tests.md) (3 shared connections)
+- [Draggable Panel UI](Draggable_Panel_UI.md) (3 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_calendar.py`
+- `server/persistence/protocols.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 126 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

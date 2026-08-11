@@ -1,53 +1,50 @@
 # Pre-commit Hook Analysis
 
-> 28 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **WearableContainerServiceError** (25 connections) — `server/services/wearable_container_service.py`
-- **test_handle_equip_wearable_container_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_container_overflow_player_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_equip_wearable_container_creation_error()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_wrong_player()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_wrong_source_type()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_update_fails()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_update_fails()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_wrong_player()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_wrong_source_type()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Base exception for wearable container service operations.** (1 connections) — `server/services/wearable_container_service.py`
-- **Test handle_equip_wearable_container raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when container not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_container_overflow raises error when player not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_equip_wearable_container handles container creation error.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when container belongs to diff** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when container is not equipmen** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when update fails.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test update_wearable_container_items raises error when container not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test update_wearable_container_items raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- *... and 3 more nodes in this community*
+- **test_websocket_handler_commands.py** (28 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **validate_player_and_persistence()** (9 connections) — `server/realtime/websocket_handler_commands.py`
+- **parse_game_command_tokens()** (8 connections) — `server/realtime/websocket_handler_commands.py`
+- **_attach_room_state_to_result()** (8 connections) — `server/realtime/websocket_handler_commands.py`
+- **_resolve_get_room_state_callable()** (6 connections) — `server/realtime/websocket_handler_commands.py`
+- **test_process_websocket_command_attaches_room_state()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **test_process_websocket_command_room_state_get_room_fails_softly()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **_cm_with_player_and_app()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **Path** (4 connections)
+- **test_process_websocket_command_room_changed_no_player_handler_skips_room_state()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **_invoke_get_room_state_event()** (3 connections) — `server/realtime/websocket_handler_commands.py`
+- **test_handle_game_command_broadcasts_when_result_requests()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **test_attach_room_state_to_result_adds_room_state_when_available()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **test_attach_room_state_to_result_noop_when_room_not_changed()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **test_parse_game_command_tokens_splits_string()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **test_parse_game_command_tokens_empty_returns_none()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **test_parse_game_command_tokens_explicit_args()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **test_parse_game_command_tokens_single_word_no_args()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **test_resolve_websocket_connection_manager_uses_passed()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **test_resolve_get_room_state_callable_requires_player_handler_with_method()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **test_resolve_websocket_connection_manager_fallback_app_state()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **test_validate_player_and_persistence_not_found()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **test_validate_player_and_persistence_missing_room_attr()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **test_validate_player_and_persistence_no_persistence()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **test_validate_player_and_persistence_ok()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [Exploration Command Factories](Exploration_Command_Factories.md) (14 shared connections)
-- [Schedule Service Loader](Schedule_Service_Loader.md) (7 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
-- [Container Component Capacity](Container_Component_Capacity.md) (1 shared connections)
-- [Structured Concurrency Patterns](Structured_Concurrency_Patterns.md) (1 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (20 shared connections)
+- [Chat Rate Limiter](Chat_Rate_Limiter.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/wearable_container_service.py`
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/realtime/websocket_handler_commands.py`
+- `server/tests/unit/realtime/test_websocket_handler_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (58%)
-- INFERRED: 33 (42%)
+- EXTRACTED: 120 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

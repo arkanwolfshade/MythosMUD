@@ -1,45 +1,50 @@
 # NATS Subject Admin API
 
-> 16 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **skills_commands.py** (15 connections) — `server/commands/skills_commands.py`
-- **handle_skills_command()** (11 connections) — `server/commands/skills_commands.py`
-- **_get_container_services()** (6 connections) — `server/commands/skills_commands.py`
-- **Any** (5 connections)
-- **_resolve_player_id()** (5 connections) — `server/commands/skills_commands.py`
-- **_resolve_user_id()** (4 connections) — `server/commands/skills_commands.py`
-- **_format_skills_output()** (4 connections) — `server/commands/skills_commands.py`
-- **skill_service()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **UUID** (2 connections)
-- **Skills command handler (plan 10.7 V4).  Returns the active character's skills as** (1 connections) — `server/commands/skills_commands.py`
-- **Get container, persistence, and skill_service from request, or None if unavailab** (1 connections) — `server/commands/skills_commands.py`
-- **Extract and validate player_id from player object, returning UUID or None.** (1 connections) — `server/commands/skills_commands.py`
-- **Resolve user_id from current_user (auth user) or fallback to player.user_id.** (1 connections) — `server/commands/skills_commands.py`
-- **Format skills list as text output lines.** (1 connections) — `server/commands/skills_commands.py`
-- **Handle the /skills command: return the active character's skills as text.      R** (1 connections) — `server/commands/skills_commands.py`
-- **SkillService with mocks.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **PrototypeRegistry** (37 connections) — `server/game/items/prototype_registry.py`
+- **.load_from_path()** (7 connections) — `server/game/items/prototype_registry.py`
+- **._record_validation_failure()** (6 connections) — `server/game/items/prototype_registry.py`
+- **._load_one_prototype()** (6 connections) — `server/game/items/prototype_registry.py`
+- **.get()** (6 connections) — `server/game/items/prototype_registry.py`
+- **Any** (4 connections)
+- **.__init__()** (3 connections) — `server/game/items/item_factory.py`
+- **.__init__()** (3 connections) — `server/game/items/prototype_registry.py`
+- **Path** (3 connections)
+- **.invalid_entries()** (3 connections) — `server/game/items/prototype_registry.py`
+- **registry_with_switchblade()** (3 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
+- **Initialize the item factory with a prototype registry.          Args:** (1 connections) — `server/game/items/item_factory.py`
+- **ValidationError** (1 connections)
+- **In-memory registry for validated item prototypes.** (1 connections) — `server/game/items/prototype_registry.py`
+- **Load prototypes from a directory of JSON files.** (1 connections) — `server/game/items/prototype_registry.py`
+- **Get a prototype by ID.          Args:             prototype_id: The ID of the** (1 connections) — `server/game/items/prototype_registry.py`
+- **Get all invalid entries that failed validation.          Returns:** (1 connections) — `server/game/items/prototype_registry.py`
+- **PrototypeRegistry containing only the switchblade.** (1 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
 
 ## Relationships
 
-- [Chat NATS Publisher](Chat_NATS_Publisher.md) (4 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [Game Mechanics Service](Game_Mechanics_Service.md) (3 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (2 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
-- [Container Repository CRUD](Container_Repository_CRUD.md) (1 shared connections)
-- [Commands Inventory Item](Commands_Inventory_Item.md) (1 shared connections)
+- [NATS Retry Handler](NATS_Retry_Handler.md) (14 shared connections)
+- [Npc Services Combat](Npc_Services_Combat.md) (7 shared connections)
+- [App Creation Flow Screens](App_Creation_Flow_Screens.md) (6 shared connections)
+- [Upgrade Archive Dependency](Upgrade_Archive_Dependency.md) (3 shared connections)
+- [NATS Metrics API](NATS_Metrics_API.md) (3 shared connections)
+- [Command Factory Tests](Command_Factory_Tests.md) (2 shared connections)
+- [WebSocket Code Review](WebSocket_Code_Review.md) (1 shared connections)
+- [Room Occupant Manager Tests](Room_Occupant_Manager_Tests.md) (1 shared connections)
+- [Async Task Registry](Async_Task_Registry.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/skills_commands.py`
-- `server/tests/unit/game/test_skill_service.py`
+- `server/game/items/item_factory.py`
+- `server/game/items/prototype_registry.py`
+- `server/tests/integration/test_combat_weapon_resolution.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (94%)
-- INFERRED: 4 (6%)
+- EXTRACTED: 74 (84%)
+- INFERRED: 14 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

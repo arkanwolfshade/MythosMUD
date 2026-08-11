@@ -1,57 +1,62 @@
 # Client Security Utilities
 
-> 31 nodes
+> 146 nodes
 
 ## Key Concepts
 
-- **admin_setlucidity_command.py** (30 connections) — `server/commands/admin_setlucidity_command.py`
+- **AsyncPersistenceLayer** (185 connections) — `server/async_persistence.py`
+- **RoomCacheLoader** (29 connections) — `server/async_persistence_room_loader.py`
+- **Player** (22 connections)
+- **UUID** (21 connections)
+- **Any** (20 connections)
+- **._ensure_room_cache_loaded()** (13 connections) — `server/async_persistence.py`
 - **Any** (12 connections)
-- **_execute_lucidity_change()** (12 connections) — `server/commands/admin_setlucidity_command.py`
-- **_handle_admin_set_lucidity_command()** (11 connections) — `server/commands/admin_setlucidity_command.py`
-- **_setup_command_execution()** (7 connections) — `server/commands/admin_setlucidity_command.py`
-- **_get_current_lcd()** (6 connections) — `server/commands/admin_setlucidity_command.py`
-- **_apply_lucidity_change()** (6 connections) — `server/commands/admin_setlucidity_command.py`
-- **_validate_command_context()** (6 connections) — `server/commands/admin_setlucidity_command.py`
-- **UUID** (5 connections)
-- **LucidityChangeCtx** (5 connections) — `server/commands/admin_setlucidity_command.py`
-- **_log_lucidity_success()** (5 connections) — `server/commands/admin_setlucidity_command.py`
-- **_get_player_service_from_app()** (5 connections) — `server/commands/admin_setlucidity_command.py`
-- **_resolve_target_player()** (5 connections) — `server/commands/admin_setlucidity_command.py`
-- **_extract_command_args()** (4 connections) — `server/commands/admin_setlucidity_command.py`
-- **_validate_lcd_value()** (4 connections) — `server/commands/admin_setlucidity_command.py`
-- **_check_admin_permissions()** (4 connections) — `server/commands/admin_setlucidity_command.py`
-- **_get_catatonia_registry_from_app()** (4 connections) — `server/commands/admin_setlucidity_command.py`
-- **Admin command to set player lucidity levels for testing.  This module provides** (1 connections) — `server/commands/admin_setlucidity_command.py`
-- **Extract target_player and lcd_value from command_data.** (1 connections) — `server/commands/admin_setlucidity_command.py`
-- **Validate LCD value is integer and in valid range (-100 to 100).** (1 connections) — `server/commands/admin_setlucidity_command.py`
-- **Check if current player is admin and return player object.** (1 connections) — `server/commands/admin_setlucidity_command.py`
-- **Get current LCD value from database, defaulting to 100 if no record exists.** (1 connections) — `server/commands/admin_setlucidity_command.py`
-- **Bundle for _apply_lucidity_change (lizard PARAM).** (1 connections) — `server/commands/admin_setlucidity_command.py`
-- **Apply lucidity adjustment and return result message or None on error.** (1 connections) — `server/commands/admin_setlucidity_command.py`
-- **Get player service from container, fallback to app.state for backward compatibil** (1 connections) — `server/commands/admin_setlucidity_command.py`
-- *... and 6 more nodes in this community*
+- **.load()** (10 connections) — `server/async_persistence_room_loader.py`
+- **Delegate to room loader; exposed for unit tests.** (8 connections) — `server/async_persistence.py`
+- **._generate_room_id_from_zone_data()** (7 connections) — `server/async_persistence_room_loader.py`
+- **.get_player_by_id()** (6 connections) — `server/async_persistence.py`
+- **._process_combined_rows()** (6 connections) — `server/async_persistence_room_loader.py`
+- **.get_players_batch()** (5 connections) — `server/async_persistence.py`
+- **._build_room_data_from_row()** (5 connections) — `server/async_persistence_room_loader.py`
+- **._process_exit_rows()** (5 connections) — `server/async_persistence_room_loader.py`
+- **conftest.py** (5 connections) — `server/tests/unit/infrastructure/conftest.py`
+- **._process_exit_rows()** (4 connections) — `server/async_persistence.py`
+- **._build_room_objects()** (4 connections) — `server/async_persistence.py`
+- **._query_rooms_with_exits_async()** (4 connections) — `server/async_persistence.py`
+- **._parse_exits_json()** (4 connections) — `server/async_persistence.py`
+- **._process_exits_for_room()** (4 connections) — `server/async_persistence.py`
+- **._process_combined_rows()** (4 connections) — `server/async_persistence.py`
+- **.get_player_by_name()** (4 connections) — `server/async_persistence.py`
+- **.get_players_by_user_id()** (4 connections) — `server/async_persistence.py`
+- **.get_active_players_by_user_id()** (4 connections) — `server/async_persistence.py`
+- *... and 121 more nodes in this community*
 
 ## Relationships
 
-- [Schemas Maps Map](Schemas_Maps_Map.md) (4 shared connections)
-- [E2E Suite Overview](E2E_Suite_Overview.md) (4 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (3 shared connections)
-- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (3 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (2 shared connections)
-- [Profession Get Mechanical Effects](Profession_Get_Mechanical_Effects.md) (2 shared connections)
-- [Message Queue Cleanup](Message_Queue_Cleanup.md) (2 shared connections)
-- [NATS Subject Manager](NATS_Subject_Manager.md) (1 shared connections)
-- [Admin Teleport Commands](Admin_Teleport_Commands.md) (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (27 shared connections)
+- [Conftest Migration Plan](Conftest_Migration_Plan.md) (21 shared connections)
+- [WebSocket Code Review](WebSocket_Code_Review.md) (11 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (8 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (6 shared connections)
+- [NATS Metrics API](NATS_Metrics_API.md) (6 shared connections)
+- [Spell Effects Tests](Spell_Effects_Tests.md) (6 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (5 shared connections)
+- [Command Helper Utilities](Command_Helper_Utilities.md) (5 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (4 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (4 shared connections)
+- [Ground and Rescue Commands](Ground_and_Rescue_Commands.md) (4 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_setlucidity_command.py`
+- `server/async_persistence.py`
+- `server/async_persistence_room_loader.py`
+- `server/tests/unit/infrastructure/conftest.py`
+- `server/tests/unit/infrastructure/test_async_persistence_core.py`
 
 ## Audit Trail
 
-- EXTRACTED: 141 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 594 (91%)
+- INFERRED: 59 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

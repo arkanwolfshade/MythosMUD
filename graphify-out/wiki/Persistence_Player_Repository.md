@@ -1,23 +1,26 @@
 # Persistence Player Repository
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_broadcast_by_channel_type_exception()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _broadcast_by_channel_type handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **rename_invites_columns.py** (4 connections) — `server/scripts/rename_invites_columns.py`
+- **apply_migration()** (3 connections) — `server/scripts/rename_invites_columns.py`
+- **main()** (3 connections) — `server/scripts/rename_invites_columns.py`
+- **Apply the migration to rename columns.      Args:         database_url: PostgreS** (1 connections) — `server/scripts/rename_invites_columns.py`
+- **Main entry point for the migration script.** (1 connections) — `server/scripts/rename_invites_columns.py`
 
 ## Relationships
 
-- [Loot All Endpoint](Loot_All_Endpoint.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/scripts/rename_invites_columns.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

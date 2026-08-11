@@ -1,16 +1,18 @@
 # Migration Testing Strategy
 
-> 14 nodes
+> 16 nodes
 
 ## Key Concepts
 
 - **TestValidatorIntegration** (12 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **test_validator_integration.py** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 - **.test_validator_with_valid_rooms()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 - **.test_validator_with_invalid_rooms()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 - **.test_validator_json_output()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 - **.test_validator_zone_filtering()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 - **.test_validator_help_output()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 - **.test_validator_schema_only_flag()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **Integration tests for the main validator CLI.  Tests the complete validation pip** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 - **Integration tests for the main validator.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 - **Test validator with valid room files.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 - **Test validator with invalid room files.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
@@ -22,8 +24,8 @@
 ## Relationships
 
 - [Admin Set Stat Command](Admin_Set_Stat_Command.md) (2 shared connections)
+- [Room Definition Loader](Room_Definition_Loader.md) (2 shared connections)
 - [Room Validation Reporter](Room_Validation_Reporter.md) (1 shared connections)
-- [Room Definition Loader](Room_Definition_Loader.md) (1 shared connections)
 - [Room Schema Validator](Room_Schema_Validator.md) (1 shared connections)
 
 ## Source Files
@@ -32,8 +34,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 27 (87%)
-- INFERRED: 4 (13%)
+- EXTRACTED: 32 (89%)
+- INFERRED: 4 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

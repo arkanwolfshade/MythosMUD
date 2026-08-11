@@ -1,46 +1,44 @@
 # Argon2 Security Review
 
-> 21 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **RoomInfoPanel.tsx** (21 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **RoomInfoPanel()** (10 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **validateAndFixRoomData()** (4 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **RoomInfoPanel.test.tsx** (4 connections) — `client/src/components/__tests__/RoomInfoPanel.test.tsx`
-- **RoomInfoPanel.test.tsx** (3 connections) — `client/src/components/RoomInfoPanel.test.tsx`
-- **applyRoomDefaultFields()** (2 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **fixOccupantCountMismatch()** (2 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **formatLocationName()** (2 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **formatDescription()** (2 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **formatExitDirections()** (2 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **logRoomInfoRenderDebug()** (2 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **mockConsoleLog** (1 connections) — `client/src/components/RoomInfoPanel.test.tsx`
-- **Room** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **RoomInfoPanelProps** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **KNOWN_LOCATION_PATTERNS** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **OccupantList()** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **RoomOccupantsSection()** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **DEV_FALLBACK_ROOM** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **RoomInfoEmptyState()** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **{ mockDebug }** (1 connections) — `client/src/components/__tests__/RoomInfoPanel.test.tsx`
-- **Room** (1 connections) — `client/src/components/__tests__/RoomInfoPanel.test.tsx`
+- **test_room_subscription_manager_npcs.py** (13 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **subscription_manager()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_get_npc_name_from_lifecycle_manager()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_get_npc_name_from_lifecycle_manager_not_found()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_get_npc_name_from_lifecycle_manager_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_add_npc_to_occupants()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_query_npcs_from_lifecycle_manager()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_filter_fallback_npcs()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_filter_fallback_npcs_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_get_room_occupants_with_npcs()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_get_room_occupants_fallback_npcs()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Unit tests for room subscription manager NPC helpers.  Tests NPC-related helpers** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Create a RoomSubscriptionManager instance.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _get_npc_name_from_lifecycle_manager gets NPC name.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _get_npc_name_from_lifecycle_manager returns ID when NPC not found.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _get_npc_name_from_lifecycle_manager handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _add_npc_to_occupants adds NPC to list.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _query_npcs_from_lifecycle_manager queries NPCs.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _filter_fallback_npcs filters dead NPCs.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _filter_fallback_npcs handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test get_room_occupants() includes NPCs from lifecycle manager.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test get_room_occupants() falls back to room.get_npcs() when lifecycle manager f** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
 
 ## Relationships
 
-- [Magic System Feature Plan](Magic_System_Feature_Plan.md) (2 shared connections)
-- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (2 shared connections)
-- [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (2 shared connections)
+- [JSONB Column Parsing](JSONB_Column_Parsing.md) (2 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/RoomInfoPanel.test.tsx`
-- `client/src/components/RoomInfoPanel.tsx`
-- `client/src/components/__tests__/RoomInfoPanel.test.tsx`
+- `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
 
 ## Audit Trail
 
-- EXTRACTED: 64 (100%)
+- EXTRACTED: 45 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

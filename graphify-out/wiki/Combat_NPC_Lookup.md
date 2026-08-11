@@ -1,6 +1,6 @@
 # Combat NPC Lookup
 
-> 97 nodes
+> 129 nodes
 
 ## Key Concepts
 
@@ -8,51 +8,49 @@
 - **Player** (26 connections) — `server/models/game.py`
 - **test_game_player.py** (23 connections) — `server/tests/unit/models/test_game_player.py`
 - **InventoryItem** (19 connections) — `server/models/game.py`
+- **test_player_schema_converter_weapon.py** (19 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
+- **PlayerSchemaConverter** (16 connections) — `server/game/player_schema_converter.py`
 - **test_game_status_effect.py** (13 connections) — `server/tests/unit/models/test_game_status_effect.py`
+- **_weapon_from_prototype_registry()** (12 connections) — `server/game/player_schema_converter.py`
+- **.create_player_read_from_object()** (12 connections) — `server/game/player_schema_converter.py`
+- **Any** (11 connections)
 - **_inventory_item_with_weapon()** (11 connections) — `server/game/player_schema_converter.py`
+- **.create_player_read_from_dict()** (10 connections) — `server/game/player_schema_converter.py`
+- **.convert_player_to_schema()** (8 connections) — `server/game/player_schema_converter.py`
+- **WeaponStats** (7 connections) — `server/models/game.py`
+- **.get_position_state()** (6 connections) — `server/game/player_schema_converter.py`
 - **test_game_inventory_item.py** (6 connections) — `server/tests/unit/models/test_game_inventory_item.py`
-- **.is_active()** (5 connections) — `server/models/game.py`
+- **.item_prototype_registry()** (5 connections) — `server/commands/combat_handler.py`
+- **.check_player_combat_state()** (5 connections) — `server/game/player_schema_converter.py`
+- **.get_profession_details()** (5 connections) — `server/game/player_schema_converter.py`
+- **.compute_derived_stats_fields()** (5 connections) — `server/game/player_schema_converter.py`
+- **BaseModel** (5 connections)
 - **test_inventory_item_with_weapon_with_registry_weapon()** (5 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
+- **.get_player_data_methods()** (4 connections) — `server/game/player_schema_converter.py`
 - **.get_active_status_effects()** (4 connections) — `server/models/game.py`
-- **.__init__()** (4 connections) — `server/models/invite.py`
-- **_npc_alive_and_active()** (4 connections) — `server/npc/idle_movement.py`
-- **.is_alive()** (4 connections) — `server/npc/npc_base.py`
-- **test_inventory_item_with_weapon_minimal_dict()** (4 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
-- **test_inventory_item_quantity_validation_min()** (4 connections) — `server/tests/unit/models/test_game_inventory_item.py`
-- **test_player_add_item_existing()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_success()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_removes_when_zero()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_insufficient_quantity()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_add_status_effect()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_status_effect_success()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_get_active_status_effects()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_get_active_status_effects_all_active()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_can_carry_weight_true()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_can_carry_weight_false()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- *... and 72 more nodes in this community*
+- **test_weapon_from_prototype_registry_missing_prototype_returns_none()** (4 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
+- *... and 104 more nodes in this community*
 
 ## Relationships
 
-- [Combat Attack Service](Combat_Attack_Service.md) (7 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (7 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (6 shared connections)
-- [test_profession_meets_stat_requirements_multiple_not_met](test_profession_meets_stat_requirements_multiple_not_met.md) (5 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (5 shared connections)
-- [Client Event Store](Client_Event_Store.md) (4 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (4 shared connections)
-- [NPC Database Sessions](NPC_Database_Sessions.md) (3 shared connections)
-- [System Monitoring API](System_Monitoring_API.md) (2 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
-- [Monitoring Response Models](Monitoring_Response_Models.md) (1 shared connections)
-- [Memory Profiler Tools](Memory_Profiler_Tools.md) (1 shared connections)
+- [Application Config Settings](Application_Config_Settings.md) (9 shared connections)
+- [NPC Definition Admin API](NPC_Definition_Admin_API.md) (8 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (6 shared connections)
+- [NPC Database Sessions](NPC_Database_Sessions.md) (6 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (5 shared connections)
+- [Player Creation Service](Player_Creation_Service.md) (5 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
+- [NPC Service Tests](NPC_Service_Tests.md) (3 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (2 shared connections)
+- [NPC Movement Integration](NPC_Movement_Integration.md) (2 shared connections)
+- [Memory Profiler Tools](Memory_Profiler_Tools.md) (2 shared connections)
+- [Npc Services Combat](Npc_Services_Combat.md) (2 shared connections)
 
 ## Source Files
 
+- `server/commands/combat_handler.py`
 - `server/game/player_schema_converter.py`
 - `server/models/game.py`
-- `server/models/invite.py`
-- `server/npc/idle_movement.py`
-- `server/npc/npc_base.py`
 - `server/tests/unit/game/test_player_schema_converter_weapon.py`
 - `server/tests/unit/models/test_game_inventory_item.py`
 - `server/tests/unit/models/test_game_player.py`
@@ -60,8 +58,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 306 (95%)
-- INFERRED: 17 (5%)
+- EXTRACTED: 446 (95%)
+- INFERRED: 25 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

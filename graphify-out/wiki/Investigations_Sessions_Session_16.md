@@ -1,31 +1,41 @@
 # Investigations Sessions Session
 
-> 6 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **.check_npc_room_match()** (5 connections) — `server/realtime/room_id_utils.py`
-- **.check_fallback_room_matches()** (4 connections) — `server/realtime/room_id_utils.py`
-- **test_check_fallback_room_matches()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **Check if NPC room IDs match target room IDs using fallback comparison.** (1 connections) — `server/realtime/room_id_utils.py`
-- **Check if NPC room matches target room using normalized comparison.          Args** (1 connections) — `server/realtime/room_id_utils.py`
-- **Test check_fallback_room_matches checks fallback matches.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **conftest.py** (14 connections) — `server/tests/unit/api/conftest.py`
+- **mock_container_service()** (3 connections) — `server/tests/unit/api/conftest.py`
+- **mock_container()** (3 connections) — `server/tests/unit/api/conftest.py`
+- **mock_request()** (2 connections) — `server/tests/unit/api/conftest.py`
+- **mock_user()** (2 connections) — `server/tests/unit/api/conftest.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/api/conftest.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/api/conftest.py`
+- **mock_player()** (2 connections) — `server/tests/unit/api/conftest.py`
+- **Shared fixtures for API unit tests.  Provides mock fixtures for container loot e** (1 connections) — `server/tests/unit/api/conftest.py`
+- **Create a mock request object.** (1 connections) — `server/tests/unit/api/conftest.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/api/conftest.py`
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/api/conftest.py`
+- **Create a mock container service.** (1 connections) — `server/tests/unit/api/conftest.py`
+- **Create a mock container component.** (1 connections) — `server/tests/unit/api/conftest.py`
+- **Create a mock player.** (1 connections) — `server/tests/unit/api/conftest.py`
 
 ## Relationships
 
-- [NATS Retry Handler](NATS_Retry_Handler.md) (2 shared connections)
-- [Archive Effects System](Archive_Effects_System.md) (2 shared connections)
-- [Realtime Npc Event](Realtime_Npc_Event.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
+- [Combat Player Broadcasts](Combat_Player_Broadcasts.md) (2 shared connections)
+- [Player Effects API](Player_Effects_API.md) (2 shared connections)
+- [Magic Command Handlers](Magic_Command_Handlers.md) (1 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/room_id_utils.py`
-- `server/tests/unit/realtime/test_room_id_utils.py`
+- `server/tests/unit/api/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 35 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

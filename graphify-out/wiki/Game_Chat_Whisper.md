@@ -1,32 +1,25 @@
 # Game Chat Whisper
 
-> 9 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **pytest_asyncio_loop_factories()** (6 connections) — `server/tests/conftest.py`
-- **_create_test_event_loop()** (4 connections) — `server/tests/conftest.py`
-- **eslint.config.js** (3 connections) — `client/eslint.config.js`
-- **Config** (3 connections)
-- **AbstractEventLoop** (2 connections)
-- **jsxA11yRecommendedWarnRules** (1 connections) — `client/eslint.config.js`
-- **jsxA11yRulesOff** (1 connections) — `client/eslint.config.js`
-- **Create an event loop suitable for MythosMUD tests.      CRITICAL: On Windows, Se** (1 connections) — `server/tests/conftest.py`
-- **Register platform-appropriate loop factories for pytest-asyncio (Python 3.14+ sa** (1 connections) — `server/tests/conftest.py`
+- **test_soft_delete_character_persistence_fails()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test soft_delete_character() when persistence.soft_delete_player fails.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 
 ## Relationships
 
-- [ESLint Conftest Fixtures](ESLint_Conftest_Fixtures.md) (4 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
+- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
 
 ## Source Files
 
-- `client/eslint.config.js`
-- `server/tests/conftest.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (91%)
-- INFERRED: 2 (9%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

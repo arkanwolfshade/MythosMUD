@@ -27,7 +27,7 @@
 
 ## Relationships
 
-- [Magic Service Bundle](Magic_Service_Bundle.md) (4 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (4 shared connections)
 
 ## Source Files
 

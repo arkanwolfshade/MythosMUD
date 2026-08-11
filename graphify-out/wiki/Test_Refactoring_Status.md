@@ -1,49 +1,47 @@
 # Test Refactoring Status
 
-> 22 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **lucidity_repository.py** (11 connections) — `server/services/lucidity_repository.py`
-- **UUID** (9 connections)
-- **.increment_exposure_state()** (6 connections) — `server/services/lucidity_repository.py`
-- **.set_cooldown()** (6 connections) — `server/services/lucidity_repository.py`
-- **.delete_cooldowns_by_action_code_pattern()** (6 connections) — `server/services/lucidity_repository.py`
-- **_utc_now()** (5 connections) — `server/services/lucidity_repository.py`
-- **.get_player_lucidity()** (5 connections) — `server/services/lucidity_repository.py`
-- **.get_or_create_player_lucidity()** (5 connections) — `server/services/lucidity_repository.py`
-- **.add_adjustment_log()** (5 connections) — `server/services/lucidity_repository.py`
-- **.get_exposure_state()** (5 connections) — `server/services/lucidity_repository.py`
-- **.get_cooldown()** (5 connections) — `server/services/lucidity_repository.py`
-- **datetime** (3 connections)
-- **Repository layer for lucidity-related persistence.** (1 connections) — `server/services/lucidity_repository.py`
-- **Return naive UTC timestamp suitable for PostgreSQL TIMESTAMP WITHOUT TIME ZONE.** (1 connections) — `server/services/lucidity_repository.py`
-- **Get player lucidity record.** (1 connections) — `server/services/lucidity_repository.py`
-- **Get existing player lucidity record or create a new one.** (1 connections) — `server/services/lucidity_repository.py`
-- **Add a lucidity adjustment log entry.** (1 connections) — `server/services/lucidity_repository.py`
-- **Get exposure state for a player and entity archetype.** (1 connections) — `server/services/lucidity_repository.py`
-- **Increment exposure state for a player and entity archetype.** (1 connections) — `server/services/lucidity_repository.py`
-- **Get cooldown state for a player and action.** (1 connections) — `server/services/lucidity_repository.py`
-- **Set or update cooldown for a player and action.** (1 connections) — `server/services/lucidity_repository.py`
-- **Delete all cooldowns for a player matching an action code pattern.** (1 connections) — `server/services/lucidity_repository.py`
+- **test_statistics_aggregator.py** (14 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **statistics_aggregator()** (3 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **mock_memory_monitor()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **mock_rate_limiter()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **mock_message_queue()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **mock_performance_tracker()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_statistics_aggregator_init()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_get_memory_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_get_connection_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_get_connection_health_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_get_memory_alerts()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Unit tests for statistics aggregator.  Tests the StatisticsAggregator class.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a mock memory monitor.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a mock rate limiter.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a mock message queue.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a mock performance tracker.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a StatisticsAggregator instance.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Test StatisticsAggregator initialization.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Test get_memory_stats() returns comprehensive statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Test get_connection_stats() returns connection statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Test get_connection_health_stats() returns health statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Test get_memory_alerts() returns memory alerts.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
 
 ## Relationships
 
-- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (10 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (9 shared connections)
-- [Message Queue Cleanup](Message_Queue_Cleanup.md) (3 shared connections)
-- [Calendar NPC Schedule](Calendar_NPC_Schedule.md) (1 shared connections)
-- [Cache and NPC Cache](Cache_and_NPC_Cache.md) (1 shared connections)
-- [Postgres Adapter Infrastructure](Postgres_Adapter_Infrastructure.md) (1 shared connections)
+- [Connection Statistics Aggregator](Connection_Statistics_Aggregator.md) (2 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/lucidity_repository.py`
+- `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 78 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 49 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,56 +1,55 @@
 # Look Command Helpers
 
-> 155 nodes
+> 40 nodes
 
 ## Key Concepts
 
-- **test_player_combat_service.py** (37 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **player_combat_service_support.py** (19 connections) — `server/services/player_combat_service_support.py`
-- **UUID** (15 connections)
-- **PlayerCombatState** (14 connections) — `server/services/player_combat_service.py`
-- **_JSONDict** (10 connections)
-- **NPCCombatIntegrationReadApi** (10 connections) — `server/services/player_combat_service_support.py`
-- **EventBusPublish** (9 connections) — `server/services/player_combat_service_support.py`
-- **PlayerXpLike** (9 connections) — `server/services/player_combat_service_support.py`
-- **_loads_json_dict()** (7 connections) — `server/models/npc.py`
-- **.get_base_stats()** (6 connections) — `server/models/npc.py`
-- **._award_xp_via_persistence_fallback()** (6 connections) — `server/services/player_combat_service.py`
-- **.award_xp_on_npc_death()** (6 connections) — `server/services/player_combat_service.py`
-- **Protocol** (6 connections)
-- **NPCCombatRewardsLike** (6 connections) — `server/services/player_combat_service_support.py`
-- **UUIDMappingXP** (6 connections) — `server/services/player_combat_service_support.py`
-- **PersistenceWithNpcLifecycleManager** (6 connections) — `server/services/player_combat_service_support.py`
-- **.get_spawn_conditions()** (5 connections) — `server/models/npc.py`
-- **.track_player_combat_state()** (5 connections) — `server/services/player_combat_service.py`
-- **.clear_player_combat_state()** (5 connections) — `server/services/player_combat_service.py`
-- **._get_xp_from_lifecycle_manager()** (5 connections) — `server/services/player_combat_service.py`
-- **original_string_id_for_npc()** (5 connections) — `server/services/player_combat_service_support.py`
-- **lifecycle_lookup_id()** (5 connections) — `server/services/player_combat_service_support.py`
-- **async_load_lifecycle_manager()** (5 connections) — `server/services/player_combat_service_support.py`
-- **log_missing_lifecycle_npc()** (5 connections) — `server/services/player_combat_service_support.py`
-- **.get_behavior_config()** (4 connections) — `server/models/npc.py`
-- *... and 130 more nodes in this community*
+- **test_player_event_handlers_state.py** (33 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **mock_utils()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **player_state_event_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_updated_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_updated_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_updated_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_updated_player_no_get_stats()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_updated_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **mock_logger()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_player_state_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_died_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_died_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_died_no_death_location()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_died_invalid_player_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_died_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_decay_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_decay_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_decay_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_decay_no_player_id_attr()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **Unit tests for player state event handlers.  Tests the PlayerStateEventHandler c** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **Create a mock PlayerEventHandlerUtils.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **Create a mock logger.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **Create a PlayerStateEventHandler instance.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (59 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (25 shared connections)
-- [NATS Subject Metrics](NATS_Subject_Metrics.md) (2 shared connections)
-- [Command Parser Tests](Command_Parser_Tests.md) (2 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (2 shared connections)
-- [NPC Services Bundle](NPC_Services_Bundle.md) (1 shared connections)
+- [Application Config Settings](Application_Config_Settings.md) (6 shared connections)
+- [Redis to NATS Migration](Redis_to_NATS_Migration.md) (6 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (2 shared connections)
+- [Services Combat Initialization](Services_Combat_Initialization.md) (2 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (1 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (1 shared connections)
+- [LRU Cache Manager](LRU_Cache_Manager.md) (1 shared connections)
+- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/npc.py`
-- `server/services/player_combat_service.py`
-- `server/services/player_combat_service_support.py`
-- `server/tests/unit/services/test_player_combat_service.py`
+- `server/tests/unit/realtime/test_player_event_handlers_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 434 (95%)
-- INFERRED: 25 (5%)
+- EXTRACTED: 98 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

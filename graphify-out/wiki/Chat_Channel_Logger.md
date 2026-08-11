@@ -1,54 +1,50 @@
 # Chat Channel Logger
 
-> 45 nodes
+> 64 nodes
 
 ## Key Concepts
 
-- **ChatLogger** (42 connections) — `server/services/chat_logger.py`
-- **._write_log_entry()** (14 connections) — `server/services/chat_logger.py`
-- **Any** (12 connections)
-- **._queue_log_entry()** (8 connections) — `server/services/chat_logger.py`
-- **.log_local_channel_message()** (6 connections) — `server/services/chat_logger.py`
-- **.log_global_channel_message()** (5 connections) — `server/services/chat_logger.py`
-- **.log_system_channel_message()** (5 connections) — `server/services/chat_logger.py`
-- **.log_whisper_channel_message()** (5 connections) — `server/services/chat_logger.py`
-- **._get_local_channel_log_file()** (4 connections) — `server/services/chat_logger.py`
-- **.log_chat_message()** (4 connections) — `server/services/chat_logger.py`
-- **.log_moderation_event()** (4 connections) — `server/services/chat_logger.py`
-- **.log_system_event()** (4 connections) — `server/services/chat_logger.py`
-- **.get_log_stats()** (4 connections) — `server/services/chat_logger.py`
-- **.log_message_flagged()** (3 connections) — `server/services/chat_logger.py`
-- **.log_player_muted()** (3 connections) — `server/services/chat_logger.py`
-- **.log_player_unmuted()** (3 connections) — `server/services/chat_logger.py`
-- **.log_player_joined_room()** (3 connections) — `server/services/chat_logger.py`
-- **.log_player_left_room()** (3 connections) — `server/services/chat_logger.py`
-- **.log_rate_limit_violation()** (3 connections) — `server/services/chat_logger.py`
-- **._ensure_log_directories()** (2 connections) — `server/services/chat_logger.py`
-- **.shutdown()** (2 connections) — `server/services/chat_logger.py`
-- **.wait_for_queue_processing()** (2 connections) — `server/services/chat_logger.py`
-- **.cleanup_old_local_channel_logs()** (2 connections) — `server/services/chat_logger.py`
-- **Structured logging service for chat system events.      This logger creates JSON** (1 connections) — `server/services/chat_logger.py`
-- **Ensure log directory exists.** (1 connections) — `server/services/chat_logger.py`
-- *... and 20 more nodes in this community*
+- **test_skill_service.py** (36 connections) — `server/tests/unit/game/test_skill_service.py`
+- **_occupation_slots_9()** (11 connections) — `server/tests/unit/game/test_skill_service.py`
+- **_personal_interest_4()** (8 connections) — `server/tests/unit/game/test_skill_service.py`
+- **skill_service()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_valid_creates_rows()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_own_language_not_allocated_equals_edu()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_cthulhu_mythos_in_occupation_rejected()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_wrong_occupation_values_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_duplicate_occupation_skill_ids_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **catalog_with_own_language_and_mythos()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_cthulhu_mythos_in_personal_rejected()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_wrong_occupation_count_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_personal_interest_not_four_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_duplicate_personal_skill_ids_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_overlap_occupation_and_personal_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **mock_skill_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **mock_player_skill_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **mock_skill_use_log_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_get_skills_catalog_returns_list()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_get_player_skills_owner_returns_list()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_get_player_skills_non_owner_returns_none()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_record_successful_skill_use_calls_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_get_skills_used_this_level_returns_repo_result()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_run_improvement_rolls_previous_level_under_1_no_op()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [AnyIO vs Asyncio Guide](AnyIO_vs_Asyncio_Guide.md) (18 shared connections)
-- [Procedures Readme Semgrep](Procedures_Readme_Semgrep.md) (3 shared connections)
-- [Plan Archive Character](Plan_Archive_Character.md) (3 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [Admin Teleport FRD](Admin_Teleport_FRD.md) (2 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
-- [Player Mute Persistence](Player_Mute_Persistence.md) (1 shared connections)
-- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (3 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
+- [Container Open Events](Container_Open_Events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/chat_logger.py`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 164 (99%)
+- EXTRACTED: 162 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

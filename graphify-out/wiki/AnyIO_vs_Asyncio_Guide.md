@@ -1,46 +1,46 @@
 # AnyIO vs Asyncio Guide
 
-> 21 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **Path** (12 connections)
-- **._get_current_log_file()** (6 connections) — `server/services/chat_logger.py`
-- **.__init__()** (5 connections) — `server/services/chat_logger.py`
-- **.get_global_channel_log_stats()** (5 connections) — `server/services/chat_logger.py`
-- **.get_log_file_paths()** (4 connections) — `server/services/chat_logger.py`
-- **._get_global_channel_log_file()** (4 connections) — `server/services/chat_logger.py`
-- **._get_whisper_channel_log_file()** (4 connections) — `server/services/chat_logger.py`
-- **._get_system_channel_log_file()** (4 connections) — `server/services/chat_logger.py`
-- **.get_global_channel_log_files()** (4 connections) — `server/services/chat_logger.py`
-- **.cleanup_old_global_channel_logs()** (4 connections) — `server/services/chat_logger.py`
-- **._start_writer_thread()** (3 connections) — `server/services/chat_logger.py`
-- **Initialize chat logger.          Args:             log_dir: Directory for log fi** (1 connections) — `server/services/chat_logger.py`
-- **Start the background writer thread for thread-safe file writing.** (1 connections) — `server/services/chat_logger.py`
-- **Get the current log file path for the specified type.          Args:** (1 connections) — `server/services/chat_logger.py`
-- **Get paths to current log files.          Returns:             Dictionary mapping** (1 connections) — `server/services/chat_logger.py`
-- **Get the global channel log file path.          Returns:             Path to the** (1 connections) — `server/services/chat_logger.py`
-- **Get the whisper channel log file path.          Returns:             Path to the** (1 connections) — `server/services/chat_logger.py`
-- **Get the system channel log file path.          Returns:             Path to the** (1 connections) — `server/services/chat_logger.py`
-- **Get all global channel log files.          Returns:             List of string p** (1 connections) — `server/services/chat_logger.py`
-- **Get statistics for global channel log files.          Returns:             Dicti** (1 connections) — `server/services/chat_logger.py`
-- **Clean up old global channel log files.          Args:             days_to_keep:** (1 connections) — `server/services/chat_logger.py`
+- **NPCSpawnRuleCRUDMixin** (10 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **._execute_create_spawn_rule()** (8 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **_row_to_npc_spawn_rule()** (8 connections) — `server/services/npc_service_models.py`
+- **.create_spawn_rule()** (7 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **.get_spawn_rules()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **AsyncSession** (6 connections)
+- **.get_spawn_rule()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **._validate_spawn_rule_inputs()** (4 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **.delete_spawn_rule()** (4 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Any** (2 connections)
+- **Any** (2 connections)
+- **Mixin providing NPC spawn rule CRUD operations.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Get all NPC spawn rules.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Get a specific NPC spawn rule by ID.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Create a new NPC spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Validate NPC definition existence and population counts for spawn rule creation.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Execute create_spawn_rule stored procedure and return the created spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Delete an NPC spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Map procedure result row to NPCSpawnRule model.** (1 connections) — `server/services/npc_service_models.py`
 
 ## Relationships
 
-- [Chat Channel Logger](Chat_Channel_Logger.md) (18 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
-- [Plan Archive Character](Plan_Archive_Character.md) (1 shared connections)
-- [Procedures Readme Semgrep](Procedures_Readme_Semgrep.md) (1 shared connections)
+- [Command Parser Tests](Command_Parser_Tests.md) (6 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (2 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
+- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/chat_logger.py`
+- `server/services/npc_service/spawn_rule_crud.py`
+- `server/services/npc_service_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 70 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

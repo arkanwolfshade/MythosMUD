@@ -1,6 +1,6 @@
 # Monitoring Response Models
 
-> 130 nodes
+> 116 nodes
 
 ## Key Concepts
 
@@ -16,7 +16,6 @@
 - **get_health_status()** (12 connections) — `server/api/monitoring.py`
 - **HealthStatus** (11 connections) — `server/models/health.py`
 - **HealthErrorResponse** (10 connections) — `server/models/health.py`
-- **memory_profiler.py** (10 connections) — `server/utils/memory_profiler.py`
 - **get_health_service()** (9 connections) — `server/services/health_service.py`
 - **test_get_health_status_healthy_returns_model()** (7 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
 - **test_health_components_rejects_extra_fields()** (7 connections) — `server/tests/unit/models/test_health.py`
@@ -29,22 +28,23 @@
 - **test_generate_alerts_with_alerts()** (6 connections) — `server/tests/unit/services/test_health_service.py`
 - **test_determine_overall_status_healthy()** (6 connections) — `server/tests/unit/services/test_health_service.py`
 - **test_determine_overall_status_degraded()** (6 connections) — `server/tests/unit/services/test_health_service.py`
-- *... and 105 more nodes in this community*
+- **test_determine_overall_status_unhealthy()** (6 connections) — `server/tests/unit/services/test_health_service.py`
+- *... and 91 more nodes in this community*
 
 ## Relationships
 
 - [Command Field Validators](Command_Field_Validators.md) (21 shared connections)
-- [Config Model Tests](Config_Model_Tests.md) (13 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (7 shared connections)
-- [Memory Profiler Tools](Memory_Profiler_Tools.md) (6 shared connections)
+- [NATS Subject Patterns](NATS_Subject_Patterns.md) (14 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (8 shared connections)
+- [Memory Profiler Tools](Memory_Profiler_Tools.md) (5 shared connections)
 - [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (4 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (2 shared connections)
 - [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
 - [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
-- [Profession Get Mechanical Effects](Profession_Get_Mechanical_Effects.md) (1 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (1 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (1 shared connections)
+- [test_should_idle_move_disabled](test_should_idle_move_disabled.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,12 +54,11 @@
 - `server/tests/unit/api/test_monitoring_endpoints.py`
 - `server/tests/unit/models/test_health.py`
 - `server/tests/unit/services/test_health_service.py`
-- `server/utils/memory_profiler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 498 (97%)
-- INFERRED: 13 (3%)
+- EXTRACTED: 468 (98%)
+- INFERRED: 12 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

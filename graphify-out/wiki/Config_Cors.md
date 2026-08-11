@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_parse_command_string_unexpected_error()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test _parse_command_string handles unexpected errors.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **.validate_password()** (2 connections) — `server/auth/endpoints.py`
+- **Validate password length and content.** (1 connections) — `server/auth/endpoints.py`
 
 ## Relationships
 
-- [NPC Population Control](NPC_Population_Control.md) (1 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/auth/endpoints.py`
 
 ## Audit Trail
 

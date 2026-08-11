@@ -1,36 +1,39 @@
 # Player Service Tests
 
-> 12 nodes
+> 96 nodes
 
 ## Key Concepts
 
 - **test_combat_validator.py** (50 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **combat_validator()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_can_attack_target_no_party_service_allows()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_can_attack_target_same_party_blocks()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_can_attack_target_different_party_allows()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_combat_validator_init()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
 - **test_validate_combat_command_valid()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_attack_strength_success()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_random_error_message()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_random_error_message_unknown_type()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_combat_result_message_failure()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Unit tests for combat validator.  Tests the CombatValidator class for combat com** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command with valid command.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_attack_strength with successful validation.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test _get_random_error_message returns error message.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test _get_random_error_message with unknown error type.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test get_combat_result_message with failed attack.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_combat_command_invalid_command_type()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_combat_command_no_target()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_combat_command_invalid_target_name()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_combat_command_suspicious_patterns()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_combat_command_target_too_long()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_combat_command_rate_limited()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_combat_command_exception_handling()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_target_exists_exact_match()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_target_exists_case_insensitive()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_target_exists_partial_match()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_target_exists_no_match()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_target_exists_no_target_name()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_target_alive_alive()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_target_alive_dead()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_combat_state_in_combat_required()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_combat_state_not_in_combat_required()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_combat_state_in_combat_not_required()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_combat_state_not_in_combat_not_required()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- *... and 71 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [Npc Idle Movement](Npc_Idle_Movement.md) (1 shared connections)
-- [handle_player_left_room_impl](handle_player_left_room_impl.md) (1 shared connections)
-- [.test_init](test_init.md) (1 shared connections)
-- [test_get_player_info_invalid_player_id](test_get_player_info_invalid_player_id.md) (1 shared connections)
-- [.test_get_combat_start_messages_single_occupant](test_get_combat_start_messages_single_occupant.md) (1 shared connections)
-- [.test_init_with_failover_callback](test_init_with_failover_callback.md) (1 shared connections)
-- [.test_on_catatonia_entered_with_uuid](test_on_catatonia_entered_with_uuid.md) (1 shared connections)
-- [test_normalize_event_ids_both_provided](test_normalize_event_ids_both_provided.md) (1 shared connections)
-- [.test_should_trigger_sanitarium_failover_never_triggered](test_should_trigger_sanitarium_failover_never_triggered.md) (1 shared connections)
-- [.test_should_trigger_sanitarium_failover_within_debounce_window](test_should_trigger_sanitarium_failover_within_debounce_window.md) (1 shared connections)
-- [test_normalize_event_ids_string_ids](test_normalize_event_ids_string_ids.md) (1 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (6 shared connections)
 
 ## Source Files
 
@@ -38,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 66 (100%)
+- EXTRACTED: 196 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

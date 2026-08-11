@@ -1,34 +1,41 @@
 # Player Cache
 
-> 10 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **test_skills.py** (14 connections) — `server/tests/unit/api/test_skills.py`
-- **mock_user()** (3 connections) — `server/tests/unit/api/test_skills.py`
-- **sample_skills()** (3 connections) — `server/tests/unit/api/test_skills.py`
-- **mock_request()** (2 connections) — `server/tests/unit/api/test_skills.py`
-- **mock_skill_repository()** (2 connections) — `server/tests/unit/api/test_skills.py`
-- **Unit tests for skills catalog API (GET /v1/skills).  Character creation revamp 4** (1 connections) — `server/tests/unit/api/test_skills.py`
-- **Create a mock request object.** (1 connections) — `server/tests/unit/api/test_skills.py`
-- **Create a mock user for auth.** (1 connections) — `server/tests/unit/api/test_skills.py`
-- **Sample skills for catalog response.** (1 connections) — `server/tests/unit/api/test_skills.py`
-- **Mock SkillRepository that returns sample skills.** (1 connections) — `server/tests/unit/api/test_skills.py`
+- **lifespan_shutdown.py** (15 connections) — `server/app/lifespan_shutdown.py`
+- **shutdown_services()** (12 connections) — `server/app/lifespan_shutdown.py`
+- **FastAPI** (5 connections)
+- **_shutdown_mythos_chronicle()** (4 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_nats_handler()** (4 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_connection_manager()** (4 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_mythos_tick_scheduler()** (4 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_task_registry()** (4 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_event_bus()** (4 connections) — `server/app/lifespan_shutdown.py`
+- **Application shutdown logic.  This module handles graceful shutdown of all servic** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Shutdown and persist mythos chronicle state.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Shutdown NATS message handler if present.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Shutdown connection manager if present.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Shutdown mythos tick scheduler if present.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Shutdown task registry if present.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Shutdown event bus and clean up all service subscriptions.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Handle graceful shutdown of all services.** (1 connections) — `server/app/lifespan_shutdown.py`
 
 ## Relationships
 
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (5 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (3 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (2 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (4 shared connections)
+- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (3 shared connections)
+- [Test Modernization Plan](Test_Modernization_Plan.md) (3 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/api/test_skills.py`
+- `server/app/lifespan_shutdown.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
+- EXTRACTED: 64 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

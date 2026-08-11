@@ -1,64 +1,62 @@
 # Player Death Service Tests
 
-> 40 nodes
+> 63 nodes
 
 ## Key Concepts
 
-- **types.ts** (36 connections) — `client/src/components/map/types.ts`
+- **types.ts** (35 connections) — `client/src/components/map/types.ts`
 - **RoomNodeData** (33 connections) — `client/src/components/map/types.ts`
-- **ExitEdgeData** (21 connections) — `client/src/components/map/types.ts`
+- **edgeModalLogic.ts** (25 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **EdgeCreationModalParts.tsx** (22 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
 - **useMapEditing.ts** (20 connections) — `client/src/components/map/hooks/useMapEditing.ts`
-- **saveMapChanges.ts** (16 connections) — `client/src/components/map/utils/saveMapChanges.ts`
-- **EdgeDetailsPanel.tsx** (9 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
-- **EdgeDetailsPanelFields.tsx** (8 connections) — `client/src/components/map/EdgeDetailsPanelFields.tsx`
-- **saveMapChanges()** (7 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **ExitEdgeData** (20 connections) — `client/src/components/map/types.ts`
+- **useEdgeCreationModal.ts** (19 connections) — `client/src/components/map/useEdgeCreationModal.ts`
+- **useEdgeCreationModal()** (15 connections) — `client/src/components/map/useEdgeCreationModal.ts`
+- **EdgeCreationModal.tsx** (13 connections) — `client/src/components/map/EdgeCreationModal.tsx`
+- **EdgeValidationResult** (8 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **EdgeCreationModal.test.tsx** (7 connections) — `client/src/components/map/__tests__/EdgeCreationModal.test.tsx`
+- **EdgeCreationData** (7 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **EdgeCreationModalViewProps** (6 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
 - **useMapEditing()** (6 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **EdgeCreationModalProps** (5 connections) — `client/src/components/map/EdgeCreationModal.tsx`
+- **getInitialEdgeFormState()** (5 connections) — `client/src/components/map/edgeModalLogic.ts`
 - **useMapEditing.test.ts** (5 connections) — `client/src/components/map/hooks/__tests__/useMapEditing.test.ts`
 - **MapEditingChanges** (5 connections) — `client/src/components/map/hooks/useMapEditing.ts`
-- **saveMapChanges.test.ts** (5 connections) — `client/src/components/map/utils/__tests__/saveMapChanges.test.ts`
-- **EdgeDetailsPanel.test.tsx** (4 connections) — `client/src/components/map/__tests__/EdgeDetailsPanel.test.tsx`
-- **useMapLayout.test.ts** (4 connections) — `client/src/components/map/hooks/__tests__/useMapLayout.test.ts`
-- **saveNodePositions()** (4 connections) — `client/src/components/map/utils/saveMapChanges.ts`
-- **EdgeDetailsPanel()** (3 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
-- **UseMapEditingOptions** (3 connections) — `client/src/components/map/hooks/useMapEditing.ts`
-- **UseMapEditingResult** (3 connections) — `client/src/components/map/hooks/useMapEditing.ts`
-- **HistoryEntry** (3 connections) — `client/src/components/map/hooks/useMapEditing.ts`
-- **layout.test-fixtures.ts** (3 connections) — `client/src/components/map/utils/__tests__/layout.test-fixtures.ts`
-- **RoomMapData** (3 connections) — `client/src/components/map/utils/mapUtils.ts`
-- **EdgeDetailsPanelProps** (2 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
-- **EdgeDetailsFields()** (2 connections) — `client/src/components/map/EdgeDetailsPanelFields.tsx`
-- **UseMapLayoutResult** (2 connections) — `client/src/components/map/hooks/useMapLayout.ts`
-- **saveEdgeChanges()** (2 connections) — `client/src/components/map/utils/saveMapChanges.ts`
-- *... and 15 more nodes in this community*
+- **EdgeCreationModal()** (4 connections) — `client/src/components/map/EdgeCreationModal.tsx`
+- **filterNodesForTargetSelection()** (4 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **resetEdgeFormFields()** (4 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **isStandardExitDirection()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **findRoomNodeById()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **edgeFormStateFromExisting()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **toggleStringFlag()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [Character Creation E2E](Character_Creation_E2E.md) (17 shared connections)
-- [Character Selection Screens](Character_Selection_Screens.md) (16 shared connections)
-- [Datetime Fix Summary](Datetime_Fix_Summary.md) (14 shared connections)
+- [Command Input Utilities](Command_Input_Utilities.md) (23 shared connections)
 - [Player GUID Formatter](Player_GUID_Formatter.md) (14 shared connections)
-- [Command Input Utilities](Command_Input_Utilities.md) (8 shared connections)
+- [Room Map Viewer UI](Room_Map_Viewer_UI.md) (12 shared connections)
+- [Archive Circuit Breaker](Archive_Circuit_Breaker.md) (8 shared connections)
+- [Datetime Fix Summary](Datetime_Fix_Summary.md) (7 shared connections)
 - [PostgreSQL Audit Report](PostgreSQL_Audit_Report.md) (3 shared connections)
-- [Realtime Event Handlers](Realtime_Event_Handlers.md) (3 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/EdgeDetailsPanel.tsx`
-- `client/src/components/map/EdgeDetailsPanelFields.tsx`
-- `client/src/components/map/__tests__/EdgeDetailsPanel.test.tsx`
+- `client/src/components/map/EdgeCreationModal.tsx`
+- `client/src/components/map/EdgeCreationModalParts.tsx`
+- `client/src/components/map/__tests__/EdgeCreationModal.test.tsx`
+- `client/src/components/map/edgeModalLogic.ts`
 - `client/src/components/map/hooks/__tests__/useMapEditing.test.ts`
-- `client/src/components/map/hooks/__tests__/useMapLayout.test.ts`
 - `client/src/components/map/hooks/useMapEditing.ts`
 - `client/src/components/map/hooks/useMapLayout.ts`
 - `client/src/components/map/types.ts`
+- `client/src/components/map/useEdgeCreationModal.ts`
 - `client/src/components/map/utils/__tests__/layout.test-fixtures.ts`
-- `client/src/components/map/utils/__tests__/saveMapChanges.test.ts`
 - `client/src/components/map/utils/mapUtils.ts`
-- `client/src/components/map/utils/saveMapChanges.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 225 (100%)
+- EXTRACTED: 353 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,6 +1,6 @@
 # NATS Chat Broadcasting
 
-> 135 nodes
+> 133 nodes
 
 ## Key Concepts
 
@@ -29,32 +29,31 @@
 - **._subscribe_to_chat_subjects()** (4 connections) — `server/realtime/nats_message_handler.py`
 - **._process_message_with_retry()** (4 connections) — `server/realtime/nats_message_handler.py`
 - **._extract_chat_message_fields()** (4 connections) — `server/realtime/nats_message_handler.py`
-- *... and 110 more nodes in this community*
+- *... and 108 more nodes in this community*
 
 ## Relationships
 
-- [Inventory Command Models](Inventory_Command_Models.md) (11 shared connections)
-- [Client Event Store](Client_Event_Store.md) (7 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (15 shared connections)
 - [Dead Letter Queue](Dead_Letter_Queue.md) (4 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
+- [Chat Message Filtering](Chat_Message_Filtering.md) (3 shared connections)
 - [Game State Provider](Game_State_Provider.md) (2 shared connections)
+- [WebSocket Code Review](WebSocket_Code_Review.md) (2 shared connections)
 - [Circuit Breaker Core](Circuit_Breaker_Core.md) (2 shared connections)
-- [Test Optimization Insights](Test_Optimization_Insights.md) (2 shared connections)
-- [Chat Message Filtering](Chat_Message_Filtering.md) (2 shared connections)
-- [Character Stats Generator](Character_Stats_Generator.md) (2 shared connections)
+- [Container System Architecture](Container_System_Architecture.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [NPC Spawn Validator](NPC_Spawn_Validator.md) (1 shared connections)
 - [Archive Bug Fix](Archive_Bug_Fix.md) (1 shared connections)
+- [Test Optimization Insights](Test_Optimization_Insights.md) (1 shared connections)
 - [Vim Editor Guidelines](Vim_Editor_Guidelines.md) (1 shared connections)
-- [NATS Message Schemas](NATS_Message_Schemas.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/nats_message_handler.py`
 - `server/services/lucidity_communication_dampening.py`
-- `server/tests/unit/realtime/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 427 (96%)
+- EXTRACTED: 423 (96%)
 - INFERRED: 18 (4%)
 - AMBIGUOUS: 0 (0%)
 

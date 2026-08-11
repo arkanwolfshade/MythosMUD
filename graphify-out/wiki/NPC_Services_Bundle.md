@@ -1,54 +1,63 @@
 # NPC Services Bundle
 
-> 46 nodes
+> 113 nodes
 
 ## Key Concepts
 
-- **.resolve_target()** (9 connections) — `server/services/target_resolution_service.py`
-- **._search_npcs_in_room()** (8 connections) — `server/services/target_resolution_service.py`
-- **PersistenceProtocol** (7 connections) — `server/services/target_resolution_service.py`
-- **._gather_room_target_matches()** (7 connections) — `server/services/target_resolution_service.py`
-- **._search_players_in_room()** (7 connections) — `server/services/target_resolution_service.py`
-- **._match_npcs_by_name()** (7 connections) — `server/services/target_resolution_service.py`
-- **UUID** (6 connections)
-- **.get_room_by_id()** (6 connections) — `server/services/target_resolution_service.py`
-- **._get_player_from_persistence()** (6 connections) — `server/services/target_resolution_service.py`
-- **._validate_player_and_room()** (6 connections) — `server/services/target_resolution_service.py`
-- **._load_npc_ids_with_room_fallback()** (6 connections) — `server/services/target_resolution_service.py`
-- **.get_player_by_id()** (5 connections) — `server/services/target_resolution_service.py`
-- **Player** (5 connections)
-- **PlayerServiceProtocol** (5 connections) — `server/services/target_resolution_service.py`
-- **._fetch_players_in_room()** (5 connections) — `server/services/target_resolution_service.py`
-- **._add_disambiguation_suffixes()** (5 connections) — `server/services/target_resolution_service.py`
-- **._get_npcs_from_lifecycle_manager()** (5 connections) — `server/services/target_resolution_service.py`
-- **.get_players_in_room()** (4 connections) — `server/services/target_resolution_service.py`
-- **.__init__()** (4 connections) — `server/services/target_resolution_service.py`
-- **._validate_room_exists_async()** (4 connections) — `server/services/target_resolution_service.py`
-- **._npc_ids_in_room_from_active_map()** (4 connections) — `server/services/target_resolution_service.py`
-- **._clean_target_name()** (3 connections) — `server/services/target_resolution_service.py`
-- **._validate_room_exists()** (3 connections) — `server/services/target_resolution_service.py`
-- **._normalize_name_for_matching()** (3 connections) — `server/services/target_resolution_service.py`
-- **Protocol** (2 connections)
-- *... and 21 more nodes in this community*
+- **PlayerCombatService** (78 connections) — `server/services/player_combat_service.py`
+- **test_player_combat_service.py** (37 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **UUID** (15 connections)
+- **PlayerCombatState** (14 connections) — `server/services/player_combat_service.py`
+- **.get_base_stats()** (6 connections) — `server/models/npc.py`
+- **._award_xp_via_persistence_fallback()** (6 connections) — `server/services/player_combat_service.py`
+- **.award_xp_on_npc_death()** (6 connections) — `server/services/player_combat_service.py`
+- **player_combat_service()** (6 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **.__init__()** (5 connections) — `server/game/magic/spell_targeting.py`
+- **.track_player_combat_state()** (5 connections) — `server/services/player_combat_service.py`
+- **.clear_player_combat_state()** (5 connections) — `server/services/player_combat_service.py`
+- **._get_xp_from_lifecycle_manager()** (5 connections) — `server/services/player_combat_service.py`
+- **.get_player_combat_state()** (4 connections) — `server/services/player_combat_service.py`
+- **.handle_combat_start()** (4 connections) — `server/services/player_combat_service.py`
+- **.handle_combat_end()** (4 connections) — `server/services/player_combat_service.py`
+- **.handle_npc_death()** (4 connections) — `server/services/player_combat_service.py`
+- **._award_xp_via_npc_rewards()** (4 connections) — `server/services/player_combat_service.py`
+- **.calculate_xp_reward()** (4 connections) — `server/services/player_combat_service.py`
+- **test_is_player_in_combat_sync_true()** (4 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **test_cleanup_stale_combat_states()** (4 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **.set_player_combat_service()** (3 connections) — `server/services/combat_service.py`
+- **.is_player_in_combat_sync()** (3 connections) — `server/services/player_combat_service.py`
+- **.is_player_in_combat()** (3 connections) — `server/services/player_combat_service.py`
+- **.get_players_in_combat()** (3 connections) — `server/services/player_combat_service.py`
+- **.cleanup_stale_combat_states()** (3 connections) — `server/services/player_combat_service.py`
+- *... and 88 more nodes in this community*
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (25 shared connections)
-- [Combat Attack Service](Combat_Attack_Service.md) (5 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (3 shared connections)
-- [Look Command Helpers](Look_Command_Helpers.md) (1 shared connections)
-- [Rest Command Flow](Rest_Command_Flow.md) (1 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
-- [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
+- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (10 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (7 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (4 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (3 shared connections)
+- [Container Exception Handlers](Container_Exception_Handlers.md) (3 shared connections)
+- [Redis to NATS Migration](Redis_to_NATS_Migration.md) (3 shared connections)
+- [Mythos Calendar Time Service](Mythos_Calendar_Time_Service.md) (2 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (2 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
+- [Container Open Events](Container_Open_Events.md) (2 shared connections)
+- [WebSocket Code Review](WebSocket_Code_Review.md) (2 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/target_resolution_service.py`
+- `server/game/magic/spell_targeting.py`
+- `server/models/npc.py`
+- `server/services/combat_service.py`
+- `server/services/player_combat_service.py`
+- `server/tests/unit/services/test_player_combat_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 140 (92%)
-- INFERRED: 13 (8%)
+- EXTRACTED: 357 (94%)
+- INFERRED: 23 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

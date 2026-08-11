@@ -1,66 +1,54 @@
 # Ground and Rescue Commands
 
-> 47 nodes
+> 50 nodes
 
 ## Key Concepts
 
-- **ChatHistoryPanel.tsx** (35 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- **messageTypeUtils.ts** (24 connections) — `client/src/utils/messageTypeUtils.ts`
-- **extractChannelFromMessage()** (13 connections) — `client/src/utils/messageTypeUtils.ts`
-- **chatPanelChannelVisibility.ts** (11 connections) — `client/src/components/panels/chatPanelChannelVisibility.ts`
-- **chatPanelUnreadBump.ts** (10 connections) — `client/src/components/panels/chatPanelUnreadBump.ts`
-- **isChatContent()** (10 connections) — `client/src/utils/messageTypeUtils.ts`
-- **determineMessageType()** (8 connections) — `client/src/utils/messageTypeUtils.ts`
-- **isVisibleInChannelView()** (7 connections) — `client/src/components/panels/chatPanelChannelVisibility.ts`
-- **bumpUnreadCountForMessage()** (6 connections) — `client/src/components/panels/chatPanelUnreadBump.ts`
-- **chatPanelChannelFilter.ts** (5 connections) — `client/src/components/panels/chatPanelChannelFilter.ts`
-- **chatPanelUnreadCounts.ts** (5 connections) — `client/src/components/panels/chatPanelUnreadCounts.ts`
-- **matchesSelectedChannel()** (4 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- **filterChatHistoryMessages()** (4 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- **ChatHistoryPanel()** (4 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- **ChatHistoryMessageRow()** (4 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- **ChatHistoryPanel.test.tsx** (4 connections) — `client/src/components/ui-v2/panels/__tests__/ChatHistoryPanel.test.tsx`
-- **messageTypeUtils.test.ts** (4 connections) — `client/src/utils/__tests__/messageTypeUtils.test.ts`
-- **resolveMessageChannelForFilter()** (3 connections) — `client/src/components/panels/chatPanelChannelVisibility.ts`
-- **isGloballyExcludedFromChannelView()** (3 connections) — `client/src/components/panels/chatPanelChannelVisibility.ts`
-- **messageIsEligibleForUnreadCount()** (3 connections) — `client/src/components/panels/chatPanelUnreadBump.ts`
-- **unreadChannelIdForMessage()** (3 connections) — `client/src/components/panels/chatPanelUnreadBump.ts`
-- **resolveChatChannel()** (3 connections) — `client/src/utils/messageTypeUtils.ts`
-- **EXCLUDED_MESSAGE_TYPES_FOR_CHANNEL_VIEW** (2 connections) — `client/src/components/panels/chatPanelChannelVisibility.ts`
-- **matchesChannelSelection()** (2 connections) — `client/src/components/panels/chatPanelChannelVisibility.ts`
-- **canIncrementUnreadForChannel()** (2 connections) — `client/src/components/panels/chatPanelUnreadBump.ts`
-- *... and 22 more nodes in this community*
+- **test_async_persistence_core.py** (40 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_player_by_name_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_player_by_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_players_by_user_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_active_players_by_user_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_user_by_username_case_insensitive_success()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_user_by_username_case_insensitive_database_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_save_player_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_list_players_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_players_in_room_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_save_players_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_professions_database_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_professions_os_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_close()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_player_by_name_not_found()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_user_by_username_case_insensitive_not_found()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_room_by_id_delegates()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_room_by_id_not_found()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_list_rooms_delegates()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_async_list_rooms_delegates()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_delete_player_delegates()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_update_player_last_active_delegates()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_update_player_last_active_none()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_professions_empty()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_profession_by_id_not_found()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [Client App State Hooks](Client_App_State_Hooks.md) (15 shared connections)
-- [Command Input Validator](Command_Input_Validator.md) (5 shared connections)
-- [NPC Combat Integration](NPC_Combat_Integration.md) (5 shared connections)
-- [Chat Channel Design Spec](Chat_Channel_Design_Spec.md) (4 shared connections)
-- [Communication Command Handlers](Communication_Command_Handlers.md) (3 shared connections)
-- [Lucidity Rate Overrides](Lucidity_Rate_Overrides.md) (3 shared connections)
-- [Holidays JSON Schema](Holidays_JSON_Schema.md) (3 shared connections)
-- [Fresh Session Test Guide](Fresh_Session_Test_Guide.md) (2 shared connections)
-- [Draggable Panel UI](Draggable_Panel_UI.md) (2 shared connections)
-- [Rooms List SQL Bug](Rooms_List_SQL_Bug.md) (2 shared connections)
-- [API Test Fixtures](API_Test_Fixtures.md) (2 shared connections)
-- [Connection Cleaner Tests](Connection_Cleaner_Tests.md) (2 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (9 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (5 shared connections)
+- [Client Security Utilities](Client_Security_Utilities.md) (4 shared connections)
+- [Cursor Plans Login](Cursor_Plans_Login.md) (3 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (2 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/panels/chatPanelChannelFilter.ts`
-- `client/src/components/panels/chatPanelChannelVisibility.ts`
-- `client/src/components/panels/chatPanelUnreadBump.ts`
-- `client/src/components/panels/chatPanelUnreadCounts.ts`
-- `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- `client/src/components/ui-v2/panels/__tests__/ChatHistoryPanel.test.tsx`
-- `client/src/utils/__tests__/messageTypeUtils.test.ts`
-- `client/src/utils/messageTypeUtils.ts`
+- `server/tests/unit/infrastructure/test_async_persistence_core.py`
 
 ## Audit Trail
 
-- EXTRACTED: 206 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 114 (91%)
+- INFERRED: 11 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -34,7 +34,7 @@
 ## Relationships
 
 - [Realtime Event Delegation](Realtime_Event_Delegation.md) (19 shared connections)
-- [Combat Persistence Events](Combat_Persistence_Events.md) (3 shared connections)
+- [Player Death Service](Player_Death_Service.md) (3 shared connections)
 
 ## Source Files
 

@@ -1,41 +1,41 @@
 # Plan Modernization Archive
 
-> 13 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **channel_commands.py** (16 connections) — `server/commands/channel_commands.py`
-- **handle_channel_command()** (10 connections) — `server/commands/channel_commands.py`
-- **_handle_default_channel_setting()** (6 connections) — `server/commands/channel_commands.py`
-- **_get_persistence_and_player()** (5 connections) — `server/commands/channel_commands.py`
-- **Any** (4 connections)
-- **_extract_channel_from_command()** (4 connections) — `server/commands/channel_commands.py`
-- **_validate_channel_name()** (3 connections) — `server/commands/channel_commands.py`
-- **Channel management commands for Advanced Chat Channels.  This module provides ha** (1 connections) — `server/commands/channel_commands.py`
-- **Get persistence and player. Returns (persistence, player) or (None, None) if not** (1 connections) — `server/commands/channel_commands.py`
-- **Extract channel name from command_data. Returns channel name or None.** (1 connections) — `server/commands/channel_commands.py`
-- **Handle setting default channel. Returns result dict or None if not a default com** (1 connections) — `server/commands/channel_commands.py`
-- **Validate channel name. Returns error dict if invalid, None if valid.** (1 connections) — `server/commands/channel_commands.py`
-- **Handle the channel command for switching channels or setting default channel.** (1 connections) — `server/commands/channel_commands.py`
+- **format_player_entry()** (13 connections) — `server/commands/who_commands.py`
+- **test_format_player_entry_error_handling()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_entry_basic()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_entry_admin()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_entry_missing_attributes()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_entry()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **Format a single player entry for the who command output.      Args:         play** (1 connections) — `server/commands/who_commands.py`
+- **Test formatting basic player entry.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test formatting admin player entry.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test formatting player entry with missing attributes.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test format_player_entry() handles errors gracefully.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test format_player_entry() formats player entry.** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
 
 ## Relationships
 
-- [Chat NATS Publisher](Chat_NATS_Publisher.md) (4 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [Client ASCII Map API](Client_ASCII_Map_API.md) (3 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (2 shared connections)
-- [Profession Get Mechanical Effects](Profession_Get_Mechanical_Effects.md) (2 shared connections)
-- [NATS Subject Manager](NATS_Subject_Manager.md) (1 shared connections)
-- [Container Repository CRUD](Container_Repository_CRUD.md) (1 shared connections)
+- [Combat UUID Display Bug](Combat_UUID_Display_Bug.md) (5 shared connections)
+- [Realtime Health Monitor](Realtime_Health_Monitor.md) (3 shared connections)
+- [Legacy Cleanup Summary](Legacy_Cleanup_Summary.md) (2 shared connections)
+- [Async Persistence Types](Async_Persistence_Types.md) (1 shared connections)
+- [Exploration Command Factory](Exploration_Command_Factory.md) (1 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/channel_commands.py`
+- `server/commands/who_commands.py`
+- `server/tests/unit/commands/test_who_commands.py`
+- `server/tests/unit/commands/test_who_commands_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 34 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

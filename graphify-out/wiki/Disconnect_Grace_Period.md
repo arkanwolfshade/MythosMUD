@@ -1,6 +1,6 @@
 # Disconnect Grace Period
 
-> 112 nodes
+> 105 nodes
 
 ## Key Concepts
 
@@ -27,24 +27,20 @@
 - **_user()** (8 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
 - **UUID** (7 connections)
 - **profession.py** (7 connections) — `server/schemas/players/profession.py`
-- **ProfessionListResponse** (7 connections) — `server/schemas/players/profession.py`
 - **ProfessionResponse** (7 connections) — `server/schemas/players/profession.py`
-- *... and 87 more nodes in this community*
+- **FastAPIRequest** (6 connections)
+- *... and 80 more nodes in this community*
 
 ## Relationships
 
-- [Game Mechanics Service](Game_Mechanics_Service.md) (18 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (10 shared connections)
-- [Client Event Store](Client_Event_Store.md) (10 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (9 shared connections)
-- [System Monitoring API](System_Monitoring_API.md) (8 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (7 shared connections)
-- [Combat Command Handler](Combat_Command_Handler.md) (6 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (6 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (5 shared connections)
-- [Container API Endpoints](Container_API_Endpoints.md) (4 shared connections)
-- [Logout and Quit Commands](Logout_and_Quit_Commands.md) (3 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (44 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (16 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (10 shared connections)
+- [Application DI Bundles](Application_DI_Bundles.md) (7 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (6 shared connections)
+- [Game Terminal Panels](Game_Terminal_Panels.md) (2 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (1 shared connections)
+- [NPC Definition Admin API](NPC_Definition_Admin_API.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,14 +48,13 @@
 - `server/schemas/players/__init__.py`
 - `server/schemas/players/player_effects.py`
 - `server/schemas/players/player_requests.py`
-- `server/schemas/players/player_respawn.py`
 - `server/schemas/players/profession.py`
 - `server/tests/unit/api/test_player_effects_endpoints.py`
 - `server/tests/unit/schemas/test_player_requests.py`
 
 ## Audit Trail
 
-- EXTRACTED: 521 (98%)
+- EXTRACTED: 499 (98%)
 - INFERRED: 8 (2%)
 - AMBIGUOUS: 0 (0%)
 

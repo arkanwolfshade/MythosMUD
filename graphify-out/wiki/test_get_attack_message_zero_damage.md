@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_combat_state_edge_case_return_true()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_state fallback return (edge case coverage).** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_create_strike_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_strike_command delegates to combat factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [Player Service Tests](Player_Service_Tests.md) (1 shared connections)
+- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 

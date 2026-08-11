@@ -1,31 +1,36 @@
 # Quality Audit Report
 
-> 8 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **TestNPCSession** (6 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_get_npc_session_yields_session()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_get_npc_session_rollback_on_error()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_get_npc_session_inits_db_for_unit_test()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Test NPC session management.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Test get_npc_session() yields session.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Test get_npc_session() rolls back on error during yield.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Test get_npc_session() calls init_npc_db() for unit_test databases.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **broadcast_message()** (13 connections) — `server/api/game.py`
+- **TestBroadcastMessage** (6 connections) — `server/tests/unit/api/test_game.py`
+- **.test_broadcast_message_success()** (4 connections) — `server/tests/unit/api/test_game.py`
+- **.test_broadcast_message_no_recipients()** (3 connections) — `server/tests/unit/api/test_game.py`
+- **.test_broadcast_message_broadcast_error()** (3 connections) — `server/tests/unit/api/test_game.py`
+- **Broadcast a message to all connected players (admin only).      Requires superus** (1 connections) — `server/api/game.py`
+- **Test broadcast_message endpoint.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **Test broadcast_message successfully broadcasts message.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **Test broadcast_message handles no recipients.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **Test broadcast_message handles broadcast errors gracefully.** (1 connections) — `server/tests/unit/api/test_game.py`
 
 ## Relationships
 
-- [Combat Schema Validation](Combat_Schema_Validation.md) (4 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
+- [Realtime Npc Event](Realtime_Npc_Event.md) (3 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (3 shared connections)
+- [E 2 E Testing Approach](E_2_E_Testing_Approach.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_npc_database.py`
+- `server/api/game.py`
+- `server/tests/unit/api/test_game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 32 (94%)
+- INFERRED: 2 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

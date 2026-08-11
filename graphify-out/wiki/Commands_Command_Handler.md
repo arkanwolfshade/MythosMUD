@@ -23,8 +23,8 @@
 
 ## Relationships
 
-- [Players API Endpoints](Players_API_Endpoints.md) (8 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (2 shared connections)
+- [Game State Provider Tests](Game_State_Provider_Tests.md) (8 shared connections)
+- [Command Parser](Command_Parser.md) (2 shared connections)
 
 ## Source Files
 

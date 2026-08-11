@@ -9,10 +9,10 @@
 - **.create_pickup_command()** (19 connections) — `server/utils/command_factories_inventory.py`
 - **InventoryCommandFactory** (16 connections) — `server/utils/command_factories_inventory.py`
 - **.create_equip_command()** (16 connections) — `server/utils/command_factories_inventory.py`
-- **command_factories_inventory.py** (15 connections) — `server/utils/command_factories_inventory.py`
 - **.create_put_command()** (14 connections) — `server/utils/command_factories_inventory.py`
 - **.create_unequip_command()** (14 connections) — `server/utils/command_factories_inventory.py`
 - **.create_get_command()** (13 connections) — `server/utils/command_factories_inventory.py`
+- **.__init__()** (9 connections) — `server/utils/command_factories.py`
 - **.create_drop_command()** (9 connections) — `server/utils/command_factories_inventory.py`
 - **.create_inventory_command()** (6 connections) — `server/utils/command_factories_inventory.py`
 - **_parse_equip_selector()** (5 connections) — `server/utils/command_factories_inventory.py`
@@ -33,24 +33,26 @@
 
 ## Relationships
 
-- [Command Parser Helpers](Command_Parser_Helpers.md) (31 shared connections)
-- [Realtime Errors Error](Realtime_Errors_Error.md) (14 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (30 shared connections)
+- [NPC Definition Admin API](NPC_Definition_Admin_API.md) (12 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (9 shared connections)
 - [Admin Summon Command](Admin_Summon_Command.md) (6 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (3 shared connections)
-- [Zone Config Loader](Zone_Config_Loader.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (1 shared connections)
-- [Environmental Container Scenario](Environmental_Container_Scenario.md) (1 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (3 shared connections)
+- [NPC Occupant Processor](NPC_Occupant_Processor.md) (1 shared connections)
+- [Moderation Command Models](Moderation_Command_Models.md) (1 shared connections)
+- [Admin Command Models](Admin_Command_Models.md) (1 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
 - `server/tests/unit/utils/test_command_factories_inventory.py`
 - `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- `server/utils/command_factories.py`
 - `server/utils/command_factories_inventory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 465 (94%)
+- EXTRACTED: 459 (94%)
 - INFERRED: 29 (6%)
 - AMBIGUOUS: 0 (0%)
 

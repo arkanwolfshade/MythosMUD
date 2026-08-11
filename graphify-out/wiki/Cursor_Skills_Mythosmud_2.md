@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_following_display_following_player_resolves_name()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **When following a player, display uses resolved name from persistence, not UUID.** (1 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_search_players_by_name()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test search_players_by_name() returns matching players.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 
 ## Relationships
 
-- [NPC Utility Functions](NPC_Utility_Functions.md) (1 shared connections)
+- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_follow_service.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 

@@ -1,53 +1,51 @@
 # Combat Command Models
 
-> 54 nodes
+> 63 nodes
 
 ## Key Concepts
 
-- **NATSMetrics** (31 connections) — `server/services/nats_metrics.py`
-- **test_nats_service_init_with_config()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **nats_metrics.py** (4 connections) — `server/services/nats_metrics.py`
-- **.get_metrics()** (3 connections) — `server/services/nats_metrics.py`
-- **test_nats_metrics_init()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_record_publish_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_record_publish_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_record_subscribe_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_record_subscribe_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_record_batch_flush_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_record_batch_flush_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_update_connection_health()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_update_connection_health_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_update_pool_utilization()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_update_pool_utilization_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_get_metrics()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_get_metrics_empty_processing_times()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_message_processing_times_maxlen()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **.__init__()** (2 connections) — `server/services/nats_metrics.py`
-- **.record_publish()** (2 connections) — `server/services/nats_metrics.py`
-- **.record_subscribe()** (2 connections) — `server/services/nats_metrics.py`
-- **.record_batch_flush()** (2 connections) — `server/services/nats_metrics.py`
-- **.update_connection_health()** (2 connections) — `server/services/nats_metrics.py`
-- **.update_pool_utilization()** (2 connections) — `server/services/nats_metrics.py`
-- **.record_ack_success()** (2 connections) — `server/services/nats_metrics.py`
-- *... and 29 more nodes in this community*
+- **NPCCombatUUIDMapping** (39 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **TestNPCCombatUUIDMapping** (22 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **UUID** (8 connections)
+- **.is_valid_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.convert_to_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **test_npc_combat_uuid_mapping.py** (4 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.get_uuid_mapping()** (3 connections) — `server/services/npc_combat_integration_service.py`
+- **.store_string_id_mapping()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.store_xp_mapping()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.get_uuid_for_string_id()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.get_original_string_id()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.get_xp_value()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_is_valid_uuid_valid()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_is_valid_uuid_invalid()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_convert_to_uuid_from_uuid_string()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_convert_to_uuid_from_string_id()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_store_string_id_mapping()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_store_string_id_mapping_overwrites()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_store_xp_mapping()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_store_xp_mapping_overwrites()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_get_original_string_id_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_get_original_string_id_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_get_uuid_for_string_id_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_get_uuid_for_string_id_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [Combat Service Bundle](Combat_Service_Bundle.md) (17 shared connections)
-- [Inventory Command Models](Inventory_Command_Models.md) (4 shared connections)
-- [Combat Persistence Events](Combat_Persistence_Events.md) (1 shared connections)
-- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
-- [Room Subscription Helpers](Room_Subscription_Helpers.md) (1 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (9 shared connections)
+- [Command Testing Guide](Command_Testing_Guide.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/nats_metrics.py`
-- `server/tests/unit/services/test_nats_service.py`
+- `server/services/npc_combat_integration_service.py`
+- `server/services/npc_combat_uuid_mapping.py`
+- `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
 
 ## Audit Trail
 
-- EXTRACTED: 125 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 184 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

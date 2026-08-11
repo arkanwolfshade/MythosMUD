@@ -1,50 +1,53 @@
 # Command Testing Guide
 
-> 24 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **realtime.py** (13 connections) — `server/schemas/realtime/realtime.py`
-- **PresenceStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
-- **SessionStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
-- **ErrorStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
-- **PlayerConnectionsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
-- **NewGameSessionResponse** (10 connections) — `server/schemas/realtime/realtime.py`
-- **ConnectionStatisticsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
-- **SessionInfo** (9 connections) — `server/schemas/realtime/realtime.py`
-- **PresenceInfo** (6 connections) — `server/schemas/realtime/realtime.py`
-- **BaseModel** (6 connections)
-- **HealthInfo** (6 connections) — `server/schemas/realtime/realtime.py`
-- **presence_data.py** (5 connections) — `server/schemas/realtime/presence_data.py`
-- **BaseModel** (3 connections)
-- **Presence and health statistics schema for MythosMUD.  This module defines Pydant** (1 connections) — `server/schemas/realtime/presence_data.py`
-- **Presence statistics for connection monitoring.      This model represents aggreg** (1 connections) — `server/schemas/realtime/presence_data.py`
-- **Session statistics for connection monitoring.      This model represents aggrega** (1 connections) — `server/schemas/realtime/presence_data.py`
-- **Error statistics for connection monitoring.      This model represents aggregate** (1 connections) — `server/schemas/realtime/presence_data.py`
-- **Real-time API response schemas for MythosMUD server.  This module provides Pydan** (1 connections) — `server/schemas/realtime/realtime.py`
-- **Presence information for a player connection.** (1 connections) — `server/schemas/realtime/realtime.py`
-- **Session information for a player connection.** (1 connections) — `server/schemas/realtime/realtime.py`
-- **Health information for a player connection.** (1 connections) — `server/schemas/realtime/realtime.py`
-- **Response model for player connection information endpoint.** (1 connections) — `server/schemas/realtime/realtime.py`
-- **Response model for new game session endpoint.** (1 connections) — `server/schemas/realtime/realtime.py`
-- **Response model for connection statistics endpoint.** (1 connections) — `server/schemas/realtime/realtime.py`
+- **_NPCCombatIntegrationValidationDeps** (19 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.store_npc_xp_mapping_for_mixin()** (10 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_data_provider()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_uuid_mapping()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **UUID** (6 connections)
+- **._setup_combat_uuids_and_mappings()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._validate_and_get_npc_instance()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._validate_combat_location()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._end_combat_if_participant_in_combat()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._setup_combat_uuids_npc_attacker()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_combat_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_lucidity_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **_coerce_xp_mapping_value()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **_warn_attacked_dead_npc()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.store_npc_xp_mapping_for_mixin()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Protocol** (1 connections)
+- **Parse xp_value from NPC base_stats JSON; bool maps to 0 (avoid True -> 1).** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Log when a player targets an NPC that exists but is not alive.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Attributes supplied by NPCCombatIntegrationService (mixin cannot initialize them** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Return combat service dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Return data provider dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Return UUID mapping dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Return lucidity dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Store XP mapping for NPC combat setup from validation mixin.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Validate NPC instance (lookup when missing). Return instance or None.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (8 shared connections)
-- [NATS Message Schemas](NATS_Message_Schemas.md) (5 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (12 shared connections)
+- [Container Exception Handlers](Container_Exception_Handlers.md) (2 shared connections)
+- [Alias Storage Layer](Alias_Storage_Layer.md) (2 shared connections)
+- [Combat Command Models](Combat_Command_Models.md) (2 shared connections)
+- [Async Persistence Core](Async_Persistence_Core.md) (2 shared connections)
+- [NPC Services Bundle](NPC_Services_Bundle.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/realtime/presence_data.py`
-- `server/schemas/realtime/realtime.py`
+- `server/services/npc_combat_integration_validation_mixin.py`
 
 ## Audit Trail
 
-- EXTRACTED: 83 (70%)
-- INFERRED: 36 (30%)
+- EXTRACTED: 99 (94%)
+- INFERRED: 6 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

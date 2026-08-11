@@ -1,66 +1,70 @@
 # Character Creation E2E
 
-> 37 nodes
+> 152 nodes
 
 ## Key Concepts
 
-- **RoomMapEditorRuntime.hooks.ts** (38 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **RoomMapEditorRuntime.tsx** (34 connections) — `client/src/components/map/RoomMapEditorRuntime.tsx`
-- **RoomMapEditor()** (9 connections) — `client/src/components/map/RoomMapEditorRuntime.tsx`
-- **useRoomMapEditorEditing()** (7 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **RoomMapEditorEditingApi** (7 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **useRoomMapEditorModalHandlers()** (7 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **RoomMapEditorAliases.test.ts** (7 connections) — `client/src/components/map/__tests__/RoomMapEditorAliases.test.ts`
-- **RoomMapEditor.test.tsx** (6 connections) — `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
-- **useRoomMapEditorModals()** (5 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **RoomMapEditor.tsx** (4 connections) — `client/src/components/map/RoomMapEditor.tsx`
-- **RoomMapEditorScene.tsx** (4 connections) — `client/src/components/map/RoomMapEditorScene.tsx`
-- **MapEditToolbar.tsx** (3 connections) — `client/src/components/map/MapEditToolbar.tsx`
-- **RoomMapEditorCore.tsx** (3 connections) — `client/src/components/map/RoomMapEditorCore.tsx`
-- **RoomMapEditorFeature.tsx** (3 connections) — `client/src/components/map/RoomMapEditorFeature.tsx`
-- **RoomMapEditorImpl.tsx** (3 connections) — `client/src/components/map/RoomMapEditorImpl.tsx`
-- **useRoomMapEditorSelection()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **useRoomMapEditorModalState()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **createRoomMapEditorModalActions()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **buildModalPreviewHandler()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **buildModalCreateEdgeHandler()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **buildModalUpdateEdgeHandler()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **buildModalUpdateRoomHandler()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **MapEditToolbar()** (2 connections) — `client/src/components/map/MapEditToolbar.tsx`
-- **RoomMapEditorProps** (2 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **MAP_EDITOR_DIRECTIONS** (2 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- *... and 12 more nodes in this community*
+- **PlayerLeftRoom** (51 connections) — `server/events/event_types.py`
+- **event_handler.py** (35 connections) — `server/realtime/event_handler.py`
+- **PlayerRoomEventHandler** (30 connections) — `server/realtime/player_event_handlers_room.py`
+- **player_event_handlers.py** (26 connections) — `server/realtime/player_event_handlers.py`
+- **PlayerEventHandler** (26 connections) — `server/realtime/player_event_handlers.py`
+- **NPCEventHandler** (25 connections) — `server/realtime/npc_event_handlers.py`
+- **MessageBuilder** (22 connections) — `server/realtime/message_builders.py`
+- **RoomOccupantManager** (22 connections) — `server/realtime/room_occupant_manager.py`
+- **player_event_handlers_room.py** (17 connections) — `server/realtime/player_event_handlers_room.py`
+- **npc_event_handlers.py** (16 connections) — `server/realtime/npc_event_handlers.py`
+- **PlayerStateEventHandler** (14 connections) — `server/realtime/player_event_handlers_state.py`
+- **UUID** (12 connections)
+- **Any** (10 connections)
+- **message_builders.py** (9 connections) — `server/realtime/message_builders.py`
+- **Any** (9 connections)
+- **.handle_player_entered()** (9 connections) — `server/realtime/player_event_handlers_room.py`
+- **._initialize_modules()** (8 connections) — `server/realtime/event_handler.py`
+- **._get_next_sequence()** (8 connections) — `server/realtime/message_builders.py`
+- **.handle_npc_entered()** (8 connections) — `server/realtime/npc_event_handlers.py`
+- **._send_npc_left_message()** (8 connections) — `server/realtime/npc_event_handlers.py`
+- **.__init__()** (8 connections) — `server/realtime/player_event_handlers.py`
+- **._get_npc_spawn_message()** (7 connections) — `server/realtime/npc_event_handlers.py`
+- **._initialize_handlers()** (7 connections) — `server/realtime/player_event_handlers.py`
+- **.__init__()** (7 connections) — `server/realtime/player_event_handlers_room.py`
+- **.send_occupants_snapshot_to_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
+- *... and 127 more nodes in this community*
 
 ## Relationships
 
-- [Command Input Utilities](Command_Input_Utilities.md) (18 shared connections)
-- [Player Death Service Tests](Player_Death_Service_Tests.md) (17 shared connections)
-- [Character Selection Screens](Character_Selection_Screens.md) (4 shared connections)
-- [Realtime Event Handlers](Realtime_Event_Handlers.md) (3 shared connections)
-- [Player GUID Formatter](Player_GUID_Formatter.md) (3 shared connections)
-- [Lie Ground Commands](Lie_Ground_Commands.md) (2 shared connections)
-- [PostgreSQL Audit Report](PostgreSQL_Audit_Report.md) (2 shared connections)
-- [Datetime Fix Summary](Datetime_Fix_Summary.md) (1 shared connections)
+- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (19 shared connections)
+- [LRU Cache Manager](LRU_Cache_Manager.md) (14 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (12 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (11 shared connections)
+- [Application Config Settings](Application_Config_Settings.md) (10 shared connections)
+- [Realtime Service Bundle](Realtime_Service_Bundle.md) (8 shared connections)
+- [Services Combat Initialization](Services_Combat_Initialization.md) (8 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (7 shared connections)
+- [Client Event Store](Client_Event_Store.md) (6 shared connections)
+- [Character Stats Generator](Character_Stats_Generator.md) (6 shared connections)
+- [Look Item Commands](Look_Item_Commands.md) (6 shared connections)
+- [API Type Guards](API_Type_Guards.md) (5 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/MapEditToolbar.tsx`
-- `client/src/components/map/RoomMapEditor.tsx`
-- `client/src/components/map/RoomMapEditorCore.tsx`
-- `client/src/components/map/RoomMapEditorFeature.tsx`
-- `client/src/components/map/RoomMapEditorImpl.tsx`
-- `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- `client/src/components/map/RoomMapEditorRuntime.tsx`
-- `client/src/components/map/RoomMapEditorScene.tsx`
-- `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
-- `client/src/components/map/__tests__/RoomMapEditorAliases.test.ts`
-- `client/src/components/map/__tests__/roomMapEditorTestSetup.tsx`
-- `client/src/components/map/hooks/useRoomMapData.ts`
+- `server/events/event_types.py`
+- `server/npc/spawning_service.py`
+- `server/realtime/event_handler.py`
+- `server/realtime/integration/room_event_handler.py`
+- `server/realtime/message_builders.py`
+- `server/realtime/npc_event_handlers.py`
+- `server/realtime/player_event_handlers.py`
+- `server/realtime/player_event_handlers_room.py`
+- `server/realtime/player_event_handlers_state.py`
+- `server/realtime/room_occupant_manager.py`
+- `server/tests/unit/realtime/test_event_handler.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 184 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 650 (93%)
+- INFERRED: 51 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

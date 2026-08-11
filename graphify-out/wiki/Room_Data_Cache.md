@@ -34,7 +34,7 @@
 ## Relationships
 
 - [Caching Lru Cache](Caching_Lru_Cache.md) (6 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (3 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
 - [Room Data Fixer](Room_Data_Fixer.md) (2 shared connections)
 
 ## Source Files

@@ -1,63 +1,62 @@
 # WebSocket Player Helpers
 
-> 38 nodes
+> 47 nodes
 
 ## Key Concepts
 
-- **useMythosAppActions.ts** (34 connections) — `client/src/mythosApp/useMythosAppActions.ts`
-- **isServerUnavailable()** (19 connections) — `client/src/mythosApp/serverAvailability.ts`
-- **serverAvailability.ts** (16 connections) — `client/src/mythosApp/serverAvailability.ts`
-- **deleteCharacterActions.ts** (14 connections) — `client/src/mythosApp/deleteCharacterActions.ts`
-- **motdContinueFlow.ts** (14 connections) — `client/src/mythosApp/motdContinueFlow.ts`
-- **mythosAppViewModelFactory.ts** (12 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
-- **tryStartLoginGracePeriod()** (11 connections) — `client/src/mythosApp/motdContinueFlow.ts`
-- **useMythosSessionChrome.ts** (11 connections) — `client/src/mythosApp/useMythosSessionChrome.ts`
-- **useMythosAppActions()** (10 connections) — `client/src/mythosApp/useMythosAppActions.ts`
-- **useMythosApp.tsx** (9 connections) — `client/src/mythosApp/useMythosApp.tsx`
-- **executeDeleteCharacterUi()** (7 connections) — `client/src/mythosApp/deleteCharacterActions.ts`
-- **stringIndicatesServerUnavailable()** (6 connections) — `client/src/mythosApp/serverAvailability.ts`
-- **useMythosApp()** (6 connections) — `client/src/mythosApp/useMythosApp.tsx`
-- **useCharacterHandlers()** (6 connections) — `client/src/mythosApp/useMythosAppActions.ts`
-- **useMotdAndLogoutHandlers()** (6 connections) — `client/src/mythosApp/useMythosAppActions.ts`
-- **useMythosSessionChrome()** (6 connections) — `client/src/mythosApp/useMythosSessionChrome.ts`
-- **DeleteCharacterUiDeps** (5 connections) — `client/src/mythosApp/deleteCharacterActions.ts`
-- **isGracePeriodServerUnavailableError()** (5 connections) — `client/src/mythosApp/motdContinueFlow.ts`
-- **buildMythosAppViewModel()** (5 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
-- **errorDetailString()** (4 connections) — `client/src/mythosApp/serverAvailability.ts`
-- **startLoginGracePeriod.ts** (4 connections) — `client/src/mythosApp/startLoginGracePeriod.ts`
-- **useCreationHandlers()** (4 connections) — `client/src/mythosApp/useMythosAppActions.ts`
-- **useMythosSessionChrome.test.ts** (3 connections) — `client/src/mythosApp/__tests__/useMythosSessionChrome.test.ts`
-- **nextStepForDeleteResult()** (3 connections) — `client/src/mythosApp/deleteCharacterFlow.ts`
-- **selectCharacterNetworkErrorMessage()** (3 connections) — `client/src/mythosApp/selectCharacterFlow.ts`
-- *... and 13 more nodes in this community*
+- **deleteCharacterFlow.ts** (29 connections) — `client/src/mythosApp/deleteCharacterFlow.ts`
+- **errorHandler.ts** (28 connections) — `client/src/utils/errorHandler.ts`
+- **isErrorResponse()** (26 connections) — `client/src/utils/errorHandler.ts`
+- **getErrorMessage()** (26 connections) — `client/src/utils/errorHandler.ts`
+- **creationCompleteFlow.ts** (20 connections) — `client/src/mythosApp/creationCompleteFlow.ts`
+- **characterSessionApi.ts** (18 connections) — `client/src/mythosApp/characterSessionApi.ts`
+- **isObject()** (18 connections) — `client/src/mythosApp/guards.ts`
+- **errorHandler.test.ts** (14 connections) — `client/src/utils/errorHandler.test.ts`
+- **registerFailureMessage.ts** (10 connections) — `client/src/mythosApp/registerFailureMessage.ts`
+- **runDeleteCharacterFlow()** (9 connections) — `client/src/mythosApp/deleteCharacterFlow.ts`
+- **guards.ts** (9 connections) — `client/src/mythosApp/guards.ts`
+- **apiErrorMessage.ts** (8 connections) — `client/src/mythosApp/apiErrorMessage.ts`
+- **errorMessageFromApiBody()** (8 connections) — `client/src/mythosApp/apiErrorMessage.ts`
+- **registerFailureMessage()** (8 connections) — `client/src/mythosApp/registerFailureMessage.ts`
+- **getErrorType()** (8 connections) — `client/src/utils/errorHandler.ts`
+- **parseSelectCharacterResult()** (7 connections) — `client/src/mythosApp/characterSessionApi.ts`
+- **loginFailureMessage.ts** (7 connections) — `client/src/mythosApp/loginFailureMessage.ts`
+- **toCharacterInfoFromList()** (7 connections) — `client/src/mythosApp/mapServerCharacters.ts`
+- **messageFromCreationRefreshHttpError()** (6 connections) — `client/src/mythosApp/creationCompleteFlow.ts`
+- **loginFailureMessage()** (6 connections) — `client/src/mythosApp/loginFailureMessage.ts`
+- **formatErrorForDisplay()** (6 connections) — `client/src/utils/errorHandler.ts`
+- **parseRefreshFailure()** (5 connections) — `client/src/mythosApp/deleteCharacterFlow.ts`
+- **mapCharactersResponse()** (4 connections) — `client/src/mythosApp/deleteCharacterFlow.ts`
+- **getErrorDetails()** (4 connections) — `client/src/utils/errorHandler.ts`
+- **getErrorSeverity()** (4 connections) — `client/src/utils/errorHandler.ts`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [Map Editing Hooks](Map_Editing_Hooks.md) (31 shared connections)
-- [Chat Panel Separation](Chat_Panel_Separation.md) (22 shared connections)
-- [Realtime Event Handlers](Realtime_Event_Handlers.md) (12 shared connections)
-- [Warning Remediation Plan](Warning_Remediation_Plan.md) (6 shared connections)
-- [Bug Investigation Guide](Bug_Investigation_Guide.md) (2 shared connections)
-- [Character Creation Screens](Character_Creation_Screens.md) (2 shared connections)
+- [Communication Command Classes](Communication_Command_Classes.md) (32 shared connections)
+- [Chat Panel Separation](Chat_Panel_Separation.md) (26 shared connections)
+- [Warning Remediation Plan](Warning_Remediation_Plan.md) (10 shared connections)
+- [Quest Flow Integration](Quest_Flow_Integration.md) (9 shared connections)
+- [E2E Whisper Fix Report](E2E_Whisper_Fix_Report.md) (5 shared connections)
+- [Realtime Event Handlers](Realtime_Event_Handlers.md) (4 shared connections)
 
 ## Source Files
 
-- `client/src/mythosApp/__tests__/useMythosSessionChrome.test.ts`
-- `client/src/mythosApp/deleteCharacterActions.ts`
+- `client/src/mythosApp/apiErrorMessage.ts`
+- `client/src/mythosApp/characterSessionApi.ts`
+- `client/src/mythosApp/creationCompleteFlow.ts`
 - `client/src/mythosApp/deleteCharacterFlow.ts`
-- `client/src/mythosApp/motdContinueFlow.ts`
-- `client/src/mythosApp/mythosAppViewModelFactory.ts`
-- `client/src/mythosApp/selectCharacterFlow.ts`
-- `client/src/mythosApp/serverAvailability.ts`
-- `client/src/mythosApp/startLoginGracePeriod.ts`
-- `client/src/mythosApp/useMythosApp.tsx`
-- `client/src/mythosApp/useMythosAppActions.ts`
-- `client/src/mythosApp/useMythosSessionChrome.ts`
+- `client/src/mythosApp/guards.ts`
+- `client/src/mythosApp/loginFailureMessage.ts`
+- `client/src/mythosApp/mapServerCharacters.ts`
+- `client/src/mythosApp/registerFailureMessage.ts`
+- `client/src/utils/errorHandler.test.ts`
+- `client/src/utils/errorHandler.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 247 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 343 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

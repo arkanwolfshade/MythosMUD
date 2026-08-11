@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_ground_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_ground_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_is_player_rate_limited_true()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test is_player_rate_limited returns True when rate limited.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [Postgresql Anti Patterns](Postgresql_Anti_Patterns.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 

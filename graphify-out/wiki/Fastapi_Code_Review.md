@@ -1,23 +1,33 @@
 # Fastapi Code Review
 
-> 2 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **test_extract_chat_message_fields()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _extract_chat_message_fields extracts fields.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **player_repository_room.py** (7 connections) — `server/persistence/repositories/player_repository_room.py`
+- **validate_and_fix_player_room()** (7 connections) — `server/persistence/repositories/player_repository_room.py`
+- **validate_and_fix_player_room_with_persistence()** (7 connections) — `server/persistence/repositories/player_repository_room.py`
+- **should_skip_room_validation()** (5 connections) — `server/persistence/repositories/player_repository_room.py`
+- **Any** (3 connections)
+- **Player** (3 connections)
+- **Player room validation helpers for PlayerRepository.  Validates and fixes invali** (1 connections) — `server/persistence/repositories/player_repository_room.py`
+- **Return True if room validation should be skipped (cache empty, instanced, or tut** (1 connections) — `server/persistence/repositories/player_repository_room.py`
+- **Validate player's current room and fix if invalid.      Args:         room_cache** (1 connections) — `server/persistence/repositories/player_repository_room.py`
+- **Validate and fix player room, persisting the fix if needed.      Args:         r** (1 connections) — `server/persistence/repositories/player_repository_room.py`
 
 ## Relationships
 
-- [Loot All Endpoint](Loot_All_Endpoint.md) (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/persistence/repositories/player_repository_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

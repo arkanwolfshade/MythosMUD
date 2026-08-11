@@ -1,27 +1,32 @@
 # Game Instance Manager
 
-> 6 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **_extract_long_bodies.py** (4 connections) — `docs/investigations/_extract_long_bodies.py`
-- **main()** (4 connections) — `docs/investigations/_extract_long_bodies.py`
-- **lizard_warns()** (3 connections) — `docs/investigations/_extract_long_bodies.py`
-- **Path** (2 connections)
-- **extract_body()** (2 connections) — `docs/investigations/_extract_long_bodies.py`
-- **Extract long function bodies into helpers to satisfy lizard length <= 55.** (1 connections) — `docs/investigations/_extract_long_bodies.py`
+- **test_websocket_handler_validation.py** (7 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **test_validate_message_failure()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **mock_validator()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **test_validate_message_success()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **Unit tests for websocket handler message validation.  Tests the message validati** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **Create a mock message validator.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **Test _validate_message() returns message when validation succeeds.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **Test _validate_message() returns None when validation fails.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Scenario Conversion Guide](Scenario_Conversion_Guide.md) (2 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/investigations/_extract_long_bodies.py`
+- `server/tests/unit/realtime/test_websocket_handler_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

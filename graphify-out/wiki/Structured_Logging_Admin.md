@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [E2E Suite Overview](E2E_Suite_Overview.md) (4 shared connections)
+- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (4 shared connections)
 - [Room Drop Renderer](Room_Drop_Renderer.md) (1 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
+- [Command Parser](Command_Parser.md) (1 shared connections)
 
 ## Source Files
 

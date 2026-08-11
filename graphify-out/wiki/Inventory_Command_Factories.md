@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [Command Parser Helpers](Command_Parser_Helpers.md) (4 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (4 shared connections)
 
 ## Source Files
 

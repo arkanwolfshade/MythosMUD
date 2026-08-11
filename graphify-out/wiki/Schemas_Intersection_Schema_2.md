@@ -19,7 +19,7 @@
 ## Relationships
 
 - [Schemas Intersection Schema](Schemas_Intersection_Schema.md) (6 shared connections)
-- [Documentation Audit](Documentation_Audit.md) (1 shared connections)
+- [Cursor Plans Follow](Cursor_Plans_Follow.md) (1 shared connections)
 - [Chat Spec Archive](Chat_Spec_Archive.md) (1 shared connections)
 
 ## Source Files

@@ -1,6 +1,6 @@
 # Chat Moderation Service
 
-> 55 nodes
+> 56 nodes
 
 ## Key Concepts
 
@@ -29,15 +29,14 @@
 - **.is_player_muted()** (4 connections) — `server/game/chat_moderation.py`
 - **.is_globally_muted()** (4 connections) — `server/game/chat_moderation.py`
 - **.get_user_management_stats()** (4 connections) — `server/game/chat_moderation.py`
-- *... and 30 more nodes in this community*
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
 - [Combat Configuration Service](Combat_Configuration_Service.md) (5 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
 - [Who Command Tests](Who_Command_Tests.md) (2 shared connections)
-- [Chat Mute Admin API](Chat_Mute_Admin_API.md) (1 shared connections)
-- [WebSocket Request Context](WebSocket_Request_Context.md) (1 shared connections)
+- [Chat Mute Admin API](Chat_Mute_Admin_API.md) (2 shared connections)
 
 ## Source Files
 
@@ -45,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 226 (100%)
+- EXTRACTED: 228 (100%)
 - INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 

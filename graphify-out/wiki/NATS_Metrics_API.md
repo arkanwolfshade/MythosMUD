@@ -1,59 +1,60 @@
 # NATS Metrics API
 
-> 80 nodes
+> 50 nodes
 
 ## Key Concepts
 
-- **test_metrics_endpoints.py** (37 connections) — `server/tests/unit/api/test_metrics_endpoints.py`
-- **metrics.py** (29 connections) — `server/api/metrics.py`
-- **_admin_user()** (14 connections) — `server/tests/unit/api/test_metrics_endpoints.py`
-- **replay_dlq_message()** (13 connections) — `server/api/metrics.py`
-- **StatusMessageResponse** (13 connections) — `server/schemas/metrics/metrics.py`
-- **DLQReplayResponse** (13 connections) — `server/schemas/metrics/metrics.py`
-- **metrics.py** (12 connections) — `server/schemas/metrics/metrics.py`
-- **get_metrics()** (11 connections) — `server/api/metrics.py`
-- **MetricsSummaryResponse** (11 connections) — `server/schemas/metrics/metrics.py`
-- **DLQMessagesResponse** (11 connections) — `server/schemas/metrics/metrics.py`
-- **Any** (10 connections)
-- **reset_circuit_breaker()** (10 connections) — `server/api/metrics.py`
-- **_load_dlq_message()** (10 connections) — `server/api/metrics.py`
-- **delete_dlq_message()** (10 connections) — `server/api/metrics.py`
-- **MetricsResponse** (10 connections) — `server/schemas/metrics/metrics.py`
-- **verify_admin_access()** (9 connections) — `server/api/metrics.py`
-- **Request** (9 connections)
-- **get_metrics_summary()** (9 connections) — `server/api/metrics.py`
-- **get_dlq_messages()** (9 connections) — `server/api/metrics.py`
-- **MetricsData** (9 connections) — `server/schemas/metrics/metrics_data.py`
-- **MetricsSummary** (9 connections) — `server/schemas/metrics/metrics_data.py`
-- **DLQMessage** (9 connections) — `server/schemas/metrics/metrics_data.py`
-- **DLQReplayDetails** (9 connections) — `server/schemas/metrics/metrics_data.py`
-- **reset_metrics()** (8 connections) — `server/api/metrics.py`
-- **_handle_replay_error()** (8 connections) — `server/api/metrics.py`
-- *... and 55 more nodes in this community*
+- **combat_turn_participant_actions.py** (46 connections) — `server/services/combat_turn_participant_actions.py`
+- **_weapon_damage_from_equipped_player()** (11 connections) — `server/services/combat_turn_participant_actions.py`
+- **_resolve_npc_target()** (11 connections) — `server/services/combat_turn_participant_actions.py`
+- **process_npc_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
+- **process_player_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
+- **resolve_player_attack_damage()** (9 connections) — `server/services/combat_turn_participant_actions.py`
+- **_get_combat_container_services()** (8 connections) — `server/services/combat_turn_participant_actions.py`
+- **_select_npc_target()** (7 connections) — `server/services/combat_turn_participant_actions.py`
+- **_execute_player_attack()** (7 connections) — `server/services/combat_turn_participant_actions.py`
+- **_execute_npc_attack()** (6 connections) — `server/services/combat_turn_participant_actions.py`
+- **test_process_npc_turn_calls_process_attack_when_target_resolved()** (6 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- **_get_target_stats_for_damage()** (5 connections) — `server/services/combat_turn_participant_actions.py`
+- **_apply_physical_strength_bonus()** (5 connections) — `server/services/combat_turn_participant_actions.py`
+- **_should_continue_npc_turn()** (5 connections) — `server/services/combat_turn_participant_actions.py`
+- **_should_continue_player_turn()** (5 connections) — `server/services/combat_turn_participant_actions.py`
+- **_select_player_target()** (5 connections) — `server/services/combat_turn_participant_actions.py`
+- **_should_skip_for_casting()** (5 connections) — `server/services/combat_turn_participant_actions.py`
+- **test_select_npc_target_prefers_mortally_wounded_player_over_skipping()** (5 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- **test_resolve_npc_target_uses_aggro_current_target()** (5 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- **test_resolve_npc_target_broadcasts_when_aggro_switches()** (5 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- **_strength_modifier_from_attacker_stats()** (4 connections) — `server/services/combat_turn_participant_actions.py`
+- **UUID** (3 connections)
+- **_attacker_stats_dict_from_full_player()** (3 connections) — `server/services/combat_turn_participant_actions.py`
+- **test_strength_modifier_from_attacker_stats_defaults()** (3 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- **test_apply_physical_strength_bonus_adds_for_physical_only()** (3 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (16 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (14 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (6 shared connections)
-- [Combat Command Handler](Combat_Command_Handler.md) (4 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (2 shared connections)
-- [Player Domain Model](Player_Domain_Model.md) (1 shared connections)
-- [NPC Service Tests](NPC_Service_Tests.md) (1 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (18 shared connections)
+- [Combat Death Handling](Combat_Death_Handling.md) (12 shared connections)
+- [Async Persistence Layer](Async_Persistence_Layer.md) (10 shared connections)
+- [Container Exception Handlers](Container_Exception_Handlers.md) (8 shared connections)
+- [Client Security Utilities](Client_Security_Utilities.md) (6 shared connections)
+- [Command Parser](Command_Parser.md) (6 shared connections)
+- [Lucidity State Models](Lucidity_State_Models.md) (5 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (4 shared connections)
+- [NATS Subject Admin API](NATS_Subject_Admin_API.md) (3 shared connections)
+- [NATS Retry Handler](NATS_Retry_Handler.md) (3 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
+- [Application DI Bundles](Application_DI_Bundles.md) (2 shared connections)
 
 ## Source Files
 
-- `server/api/metrics.py`
-- `server/schemas/metrics/__init__.py`
-- `server/schemas/metrics/metrics.py`
-- `server/schemas/metrics/metrics_data.py`
-- `server/tests/unit/api/test_metrics_endpoints.py`
+- `server/services/combat_turn_participant_actions.py`
+- `server/tests/unit/services/test_combat_turn_participant_actions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 390 (87%)
-- INFERRED: 57 (13%)
+- EXTRACTED: 207 (95%)
+- INFERRED: 10 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
