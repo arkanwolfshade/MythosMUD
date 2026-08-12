@@ -29,7 +29,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
