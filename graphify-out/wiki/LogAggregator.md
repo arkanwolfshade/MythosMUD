@@ -33,10 +33,8 @@
 
 ## Relationships
 
-- [lifespan.py](lifespan.py.md) (6 shared connections)
-- [bundles/game.py](bundles-game.py.md) (2 shared connections)
-- [MonitoringDashboard](MonitoringDashboard.md) (2 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (1 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (8 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 
 ## Source Files
 

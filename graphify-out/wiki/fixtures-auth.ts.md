@@ -15,12 +15,12 @@
 - **clickWithoutStability()** (9 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
 - **executeCommandWithoutRecovery()** (8 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
 - **MotdPage** (7 connections) — `client/tests/e2e/runtime/pages/MotdPage.ts`
-- **logoutPlayer()** (7 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
 - **recoverPlayableViaSpaNavigation()** (7 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
 - **ensureMultiplayerReadyForCoLocate()** (7 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
 - **skills-visibility.spec.ts** (7 connections) — `client/tests/e2e/runtime/character/skills-visibility.spec.ts`
 - **panel-minimize-dock.spec.ts** (7 connections) — `client/tests/e2e/runtime/ui/panel-minimize-dock.spec.ts`
 - **CharacterSelectionPage** (6 connections) — `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
+- **logoutPlayer()** (6 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
 - **reconnectPlayableSession()** (6 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
 - **linkdead-recovery.ts** (6 connections) — `client/tests/e2e/runtime/fixtures/linkdead-recovery.ts`
 - **executeCommandTrusted()** (5 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [multiplayer.ts](multiplayer.ts.md) (70 shared connections)
+- [multiplayer.ts](multiplayer.ts.md) (71 shared connections)
 - [executeCommand](executeCommand.md) (24 shared connections)
 - [character-cleanup.ts](character-cleanup.ts.md) (14 shared connections)
 - [authenticated.ts](authenticated.ts.md) (4 shared connections)
@@ -60,7 +60,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 343 (95%)
+- EXTRACTED: 342 (95%)
 - INFERRED: 18 (5%)
 - AMBIGUOUS: 0 (0%)
 

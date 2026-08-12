@@ -10,7 +10,7 @@
 
 ## Relationships
 
-- [RateLimiter](RateLimiter.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
 - [test_room_subscription_manager_drops.py](test_room_subscription_manager_drops.py.md) (1 shared connections)
 
 ## Source Files

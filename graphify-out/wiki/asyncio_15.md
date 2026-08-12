@@ -1,47 +1,47 @@
 # asyncio
 
-> 31 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **asyncio** (15 connections)
-- **test_event_handler_get_room_occupants()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_handle_npc_entered()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_handle_npc_left()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_handle_player_delirium_respawned()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_handle_player_died()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_handle_player_dp_decay()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_handle_player_dp_updated()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_handle_player_entered()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_handle_player_left()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_handle_player_respawned()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_handle_player_xp_awarded()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_send_occupants_snapshot_to_player()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_send_room_occupants_update()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_send_room_occupants_update_internal_error()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_send_room_occupants_update_internal_success()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **Test RealTimeEventHandler._handle_player_entered() delegates to player_handler.** (1 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **Test RealTimeEventHandler._handle_player_left() delegates to player_handler.** (1 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **Test RealTimeEventHandler._handle_npc_entered() delegates to npc_handler.** (1 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **Test RealTimeEventHandler._handle_npc_left() delegates to npc_handler.** (1 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **Test RealTimeEventHandler._handle_player_xp_awarded() delegates to…** (1 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **Test RealTimeEventHandler._handle_player_dp_updated() delegates to…** (1 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **Test RealTimeEventHandler._handle_player_died() delegates to player_handler.** (1 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **Test RealTimeEventHandler._handle_player_dp_decay() delegates to player_handler.** (1 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **Test RealTimeEventHandler._handle_player_respawned() delegates to…** (1 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- *... and 6 more nodes in this community*
+- **asyncio** (12 connections)
+- **test_handle_item_look_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_in_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_look_in_skips_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_with_instance_number()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_player_no_get_equipped_items()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item is in inventory.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look with look_in flag skips equipped items.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test trying implicit lookup when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test trying implicit lookup when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test trying implicit lookup when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _handle_item_look() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _try_lookup_item_implicit() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _try_lookup_item_implicit() when player has no get_equipped_items method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (15 shared connections)
+- [_find_item_in_equipped](_find_item_in_equipped.md) (12 shared connections)
+- [test_look_item.py](test_look_item.py.md) (12 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_event_handler.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 75 (100%)
+- EXTRACTED: 72 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

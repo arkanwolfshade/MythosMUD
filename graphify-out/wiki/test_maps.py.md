@@ -30,15 +30,13 @@
 
 ## Relationships
 
-- [ExplorationService](ExplorationService.md) (13 shared connections)
-- [maps.py](maps.py.md) (6 shared connections)
+- [maps.py](maps.py.md) (16 shared connections)
+- [RoomService](RoomService.md) (5 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (3 shared connections)
 - [User](User.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [RoomService](RoomService.md) (1 shared connections)
+- [ExplorationService](ExplorationService.md) (1 shared connections)
 - [test_map_helpers.py](test_map_helpers.py.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
-- [database.py](database.py.md) (1 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
 
 ## Source Files
 

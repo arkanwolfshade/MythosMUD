@@ -28,8 +28,8 @@
 
 - [game_tick_processing.py](game_tick_processing.py.md) (10 shared connections)
 - [coerce_int](coerce_int.md) (2 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [test_game_tick_processing_async.py](test_game_tick_processing_async.py.md) (2 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
 
 ## Source Files
 

@@ -34,7 +34,7 @@
 ## Relationships
 
 - [BaseCommand](BaseCommand.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
 - [test_create_channel_command](test_create_channel_command.md) (1 shared connections)
 - [test_create_get_command](test_create_get_command.md) (1 shared connections)
 - [fixture](fixture.md) (1 shared connections)

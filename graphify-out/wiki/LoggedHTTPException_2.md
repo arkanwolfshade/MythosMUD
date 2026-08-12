@@ -42,7 +42,7 @@
 - api/container_helpers.py `EXTRACTED`
 - legacy_error_handlers.py `EXTRACTED`
 - test_container_helpers.py `EXTRACTED`
-- test_exceptions.py `EXTRACTED`
+- [test_exceptions.py](test_exceptions.py.md) `EXTRACTED`
 - test_legacy_error_handlers.py `EXTRACTED`
 - [test_metrics_endpoints.py](test_metrics_endpoints.py.md) `EXTRACTED`
 - rooms.py `EXTRACTED`

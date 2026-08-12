@@ -1,10 +1,11 @@
 # messageHandlers.ts
 
-> 24 nodes
+> 25 nodes
 
 ## Key Concepts
 
 - **messageHandlers.ts** (21 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- **messageHandlers.test-utils.ts** (15 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
 - **statusParser.ts** (11 connections) — `client/src/utils/statusParser.ts`
 - **handleCommandResponse()** (7 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
 - **handleCommandResponse.test.ts** (6 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/handleCommandResponse.test.ts`
@@ -31,11 +32,14 @@
 
 ## Relationships
 
-- [GameClientV2.tsx](GameClientV2.tsx.md) (8 shared connections)
-- [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (4 shared connections)
-- [roomHandlers.ts](roomHandlers.ts.md) (4 shared connections)
-- [.error](error.md) (1 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (1 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (6 shared connections)
+- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (4 shared connections)
+- [Room](Room.md) (4 shared connections)
+- [roomHandlers.ts](roomHandlers.ts.md) (2 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (1 shared connections)
+- [GameTerminal.tsx](GameTerminal.tsx.md) (1 shared connections)
+- [health.ts](health.ts.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,7 +54,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 103 (99%)
+- EXTRACTED: 118 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

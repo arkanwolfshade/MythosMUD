@@ -19,8 +19,8 @@
 
 - [ConnectionCleaner](ConnectionCleaner.md) (7 shared connections)
 - [UUID](UUID.md) (1 shared connections)
-- [test_connection_delegates.py](test_connection_delegates.py.md) (1 shared connections)
-- [RateLimiter](RateLimiter.md) (1 shared connections)
+- [connection_manager_health_cleanup.py](connection_manager_health_cleanup.py.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
 
 ## Source Files
 

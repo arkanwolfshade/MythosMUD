@@ -15,7 +15,7 @@
 - test_alias_storage_init_without_env_var() `EXTRACTED`
 
 ### contains
-- alias_storage.py `EXTRACTED`
+- [alias_storage.py](alias_storage.py.md) `EXTRACTED`
 
 ### imports
 - command_service.py `EXTRACTED`
@@ -25,14 +25,14 @@
 - combat_handler.py `EXTRACTED`
 - [inventory_equip_command.py](inventory_equip_command.py.md) `EXTRACTED`
 - player_service.py `EXTRACTED`
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) `EXTRACTED`
+- admin_teleport_commands.py `EXTRACTED`
 - [look_command.py](look_command.py.md) `EXTRACTED`
 - [admin_shutdown_command.py](admin_shutdown_command.py.md) `EXTRACTED`
 - [inventory_pickup_command.py](inventory_pickup_command.py.md) `EXTRACTED`
-- [admin_summon_command.py](admin_summon_command.py.md) `EXTRACTED`
+- admin_summon_command.py `EXTRACTED`
 - admin_commands.py `EXTRACTED`
 - rescue_commands.py `EXTRACTED`
-- [combat_taunt.py](combat_taunt.py.md) `EXTRACTED`
+- combat_taunt.py `EXTRACTED`
 - inventory_unequip_command.py `EXTRACTED`
 - [quest_commands.py](quest_commands.py.md) `EXTRACTED`
 - [websocket_handler_commands.py](websocket_handler_commands.py.md) `EXTRACTED`
@@ -85,7 +85,7 @@
 - handle_npc_command() `EXTRACTED`
 
 ### uses
-- [CombatCommandHandler](CombatCommandHandler.md) `INFERRED`
+- CombatCommandHandler `INFERRED`
 - MagicCommandHandler `INFERRED`
 - [TestHelperFunctions](TestHelperFunctions.md) `INFERRED`
 - TauntCommandHandler `INFERRED`

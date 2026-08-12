@@ -27,7 +27,7 @@
 
 - [asyncio](asyncio.md) (6 shared connections)
 - [messaging_integration](messaging_integration.md) (2 shared connections)
-- [_NPCCombatIntegrationDeps](_NPCCombatIntegrationDeps.md) (1 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
 - [test_broadcast_combat_attack_personal_message_error](test_broadcast_combat_attack_personal_message_error.md) (1 shared connections)
 - [test_broadcast_combat_end](test_broadcast_combat_end.md) (1 shared connections)
 - [test_broadcast_combat_error](test_broadcast_combat_error.md) (1 shared connections)

@@ -1,6 +1,6 @@
 # RoomCacheService
 
-> 17 nodes
+> 15 nodes
 
 ## Key Concepts
 
@@ -8,7 +8,6 @@
 - **_FakePersistence** (6 connections) — `scripts/bench_cache.py`
 - **bench_cache.py** (6 connections) — `scripts/bench_cache.py`
 - **bench_room_cache()** (5 connections) — `scripts/bench_cache.py`
-- **.__init__()** (4 connections) — `server/caching/cache_service.py`
 - **.async_get_room()** (2 connections) — `scripts/bench_cache.py`
 - **main()** (2 connections) — `scripts/bench_cache.py`
 - **.invalidate_room()** (2 connections) — `server/caching/cache_service.py`
@@ -18,17 +17,17 @@
 - **Lightweight cache benchmark for CI artifacts. Measures miss vs. hit timings for…** (1 connections) — `scripts/bench_cache.py`
 - **Fake persistence layer providing async_get_room with simulated latency.** (1 connections) — `scripts/bench_cache.py`
 - **Service for caching room data.** (1 connections) — `server/caching/cache_service.py`
-- **Initialize the room cache service. Args: persistence: Persistence layer instance** (1 connections) — `server/caching/cache_service.py`
 - **Invalidate cached room data. Args: room_id: The room ID to invalidate** (1 connections) — `server/caching/cache_service.py`
 - **Preload multiple rooms into cache. Args: room_ids: List of room IDs to preload** (1 connections) — `server/caching/cache_service.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [ProfessionCacheService](ProfessionCacheService.md) (3 shared connections)
-- [LRUCache](LRUCache.md) (2 shared connections)
+- [LRUCache](LRUCache.md) (4 shared connections)
+- [NPCCacheService](NPCCacheService.md) (3 shared connections)
 - [GameBundle](GameBundle.md) (2 shared connections)
 - [bundles/game.py](bundles-game.py.md) (1 shared connections)
+- [RoomService](RoomService.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -37,8 +36,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 49 (89%)
-- INFERRED: 6 (11%)
+- EXTRACTED: 44 (88%)
+- INFERRED: 6 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

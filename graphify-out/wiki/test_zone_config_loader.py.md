@@ -1,20 +1,13 @@
 # test_zone_config_loader.py
 
-> 70 nodes
+> 29 nodes
 
 ## Key Concepts
 
 - **test_zone_config_loader.py** (35 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
 - **async_load_zone_configurations()** (13 connections) — `server/npc/zone_config_loader.py`
-- **process_zone_rows()** (13 connections) — `server/npc/zone_config_loader.py`
 - **_empty_zone_load_result()** (13 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **ZoneLoadResult** (12 connections) — `server/npc/zone_config_loader.py`
-- **parse_json_field()** (11 connections) — `server/npc/zone_config_loader.py`
 - **asyncio** (11 connections)
-- **extract_zone_name()** (9 connections) — `server/npc/zone_config_loader.py`
-- **process_subzone_rows()** (9 connections) — `server/npc/zone_config_loader.py`
-- **_store_subzone_row()** (9 connections) — `server/npc/zone_config_loader.py`
-- **parse_zone_special_rules()** (6 connections) — `server/npc/zone_config_loader.py`
 - **test_async_load_zone_configurations_converts_url()** (6 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
 - **test_async_load_zone_configurations_passes_search_path_for_mythos_e2e()** (6 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
 - **test_async_load_zone_configurations_closes_connection()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
@@ -26,15 +19,26 @@
 - **test_process_zone_rows()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
 - **test_process_zone_rows_empty()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
 - **test_process_zone_rows_json_strings()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_extract_zone_name_empty()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_extract_zone_name_multiple_slashes()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_extract_zone_name_no_slash()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- *... and 45 more nodes in this community*
+- **MonkeyPatch** (2 connections)
+- **Async helper to load zone configurations from PostgreSQL database.** (1 connections) — `server/npc/zone_config_loader.py`
+- **Unit tests for zone configuration loader. Tests the zone_config_loader module…** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test process_zone_rows() handles empty result.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test process_zone_rows() parses JSON string fields.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test process_subzone_rows() processes subzone rows.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test process_subzone_rows() handles empty result.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test async_load_zone_configurations() loads configurations successfully.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test async_load_zone_configurations() converts SQLAlchemy URL format.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Regression: zones/subzones live in schema mythos_e2e; raw asyncpg must set…** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [ZoneConfiguration](ZoneConfiguration.md) (22 shared connections)
-- [ScheduleEntry](ScheduleEntry.md) (1 shared connections)
+- [zone_config_loader.py](zone_config_loader.py.md) (15 shared connections)
+- [parse_json_field](parse_json_field.md) (6 shared connections)
+- [extract_zone_name](extract_zone_name.md) (5 shared connections)
+- [load_zone_configurations](load_zone_configurations.md) (4 shared connections)
+- [HolidayService](HolidayService.md) (1 shared connections)
+- [ZoneConfiguration](ZoneConfiguration.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 270 (99%)
-- INFERRED: 3 (1%)
+- EXTRACTED: 144 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

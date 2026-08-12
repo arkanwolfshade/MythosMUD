@@ -1,58 +1,58 @@
 # asyncio
 
-> 27 nodes
+> 37 nodes
 
 ## Key Concepts
 
-- **asyncio** (37 connections)
-- **test_get_adjacent_rooms_no_exits()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_adjacent_rooms_source_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_adjacent_rooms_target_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_exits_room_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_occupants_with_cache_room_object()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_occupants_without_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_with_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_list_rooms_with_plane_zone()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_list_rooms_with_sub_zone()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_validate_player_in_room_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_validate_room_exists_with_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_validate_room_exists_without_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_adjacent_rooms() returns empty list when source room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_adjacent_rooms() handles room with no exits.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_adjacent_rooms() handles target room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_room_exists() uses cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_room_exists() falls back to persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_occupants() handles Room object with get_players/get_npcs.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_occupants() falls back to persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_player_in_room() returns False when room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_exits() returns empty dict when room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test list_rooms() filters by plane and zone.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test list_rooms() filters by sub_zone.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- *... and 2 more nodes in this community*
+- **asyncio** (41 connections)
+- **test_create_player_preferences_already_exists()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_create_player_preferences_with_string_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_muted_channels_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_muted_channels_invalid_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_muted_channels_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_player_preferences_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_channel_muted_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_mute_channel_invalid_channel()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_mute_channel_system_channel()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_invalid_channel()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_invalid_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_not_muted()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_update_default_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_update_default_channel_invalid_channel()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_update_default_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Test creating player preferences with string UUID.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Test creating player preferences when they already exist.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Test getting player preferences successfully.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Test updating default channel successfully.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Test updating default channel with invalid channel name.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Test muting system channel (should fail).** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [test_room_service.py](test_room_service.py.md) (13 shared connections)
-- [test_get_adjacent_rooms_null_exit](test_get_adjacent_rooms_null_exit.md) (1 shared connections)
-- [test_get_adjacent_rooms_success](test_get_adjacent_rooms_success.md) (1 shared connections)
-- [test_get_local_chat_scope](test_get_local_chat_scope.md) (1 shared connections)
-- [test_get_local_chat_scope_source_not_found](test_get_local_chat_scope_source_not_found.md) (1 shared connections)
-- [test_get_room_exits_no_exits](test_get_room_exits_no_exits.md) (1 shared connections)
-- [test_get_room_exits_success](test_get_room_exits_success.md) (1 shared connections)
-- [test_get_room_info_not_found](test_get_room_info_not_found.md) (1 shared connections)
-- [test_get_room_info_success](test_get_room_info_success.md) (1 shared connections)
-- [test_get_room_occupants_cache_not_found](test_get_room_occupants_cache_not_found.md) (1 shared connections)
-- [test_get_room_occupants_with_cache_dict](test_get_room_occupants_with_cache_dict.md) (1 shared connections)
-- [test_get_room_persistence_not_found](test_get_room_persistence_not_found.md) (1 shared connections)
+- [test_player_preferences_service.py](test_player_preferences_service.py.md) (26 shared connections)
+- [test_create_player_preferences_integrity_error](test_create_player_preferences_integrity_error.md) (1 shared connections)
+- [test_create_player_preferences_success](test_create_player_preferences_success.md) (1 shared connections)
+- [test_delete_player_preferences_not_found](test_delete_player_preferences_not_found.md) (1 shared connections)
+- [test_delete_player_preferences_success](test_delete_player_preferences_success.md) (1 shared connections)
+- [test_get_muted_channels_success](test_get_muted_channels_success.md) (1 shared connections)
+- [test_get_player_preferences_invalid_id](test_get_player_preferences_invalid_id.md) (1 shared connections)
+- [test_get_player_preferences_not_found](test_get_player_preferences_not_found.md) (1 shared connections)
+- [test_is_channel_muted_invalid_channel](test_is_channel_muted_invalid_channel.md) (1 shared connections)
+- [test_is_channel_muted_invalid_id](test_is_channel_muted_invalid_id.md) (1 shared connections)
+- [test_is_channel_muted_not_found](test_is_channel_muted_not_found.md) (1 shared connections)
+- [test_mute_channel_already_muted](test_mute_channel_already_muted.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 89 (100%)
+- EXTRACTED: 113 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

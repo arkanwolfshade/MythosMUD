@@ -1,58 +1,49 @@
 # test_active_lucidity_service.py
 
-> 100 nodes
+> 60 nodes
 
 ## Key Concepts
 
 - **test_active_lucidity_service.py** (34 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 - **asyncio** (25 connections)
-- **ActiveLucidityService** (24 connections) — `server/services/active_lucidity_service.py`
-- **active_lucidity_service.py** (22 connections) — `server/services/active_lucidity_service.py`
-- **npc_combat_lucidity.py** (13 connections) — `server/services/npc_combat_lucidity.py`
-- **UnknownEncounterCategoryError** (10 connections) — `server/services/active_lucidity_service.py`
-- **_EncounterCtx** (9 connections) — `server/services/npc_combat_lucidity.py`
-- **.apply_encounter_lucidity_effect()** (9 connections) — `server/services/npc_combat_lucidity.py`
-- **._apply_loss_with_fallback()** (8 connections) — `server/services/npc_combat_lucidity.py`
-- **LucidityActionError** (7 connections) — `server/services/active_lucidity_service.py`
-- **._apply_disturbing_fallback()** (7 connections) — `server/services/npc_combat_lucidity.py`
-- **._commit_loss()** (7 connections) — `server/services/npc_combat_lucidity.py`
-- **Any** (6 connections)
-- **.apply_encounter_lucidity_loss()** (5 connections) — `server/services/active_lucidity_service.py`
-- **.__init__()** (5 connections) — `server/services/active_lucidity_service.py`
-- **.get_action_cooldown()** (4 connections) — `server/services/active_lucidity_service.py`
-- **._archetype_from_definition()** (4 connections) — `server/services/npc_combat_lucidity.py`
-- **._resolve_lucidity_category()** (4 connections) — `server/services/npc_combat_lucidity.py`
 - **active_lucidity_service()** (4 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 - **test_active_lucidity_service_init()** (4 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 - **test_active_lucidity_service_init_with_now_provider()** (4 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 - **test_perform_recovery_action_naive_datetime_cooldown()** (4 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **UUID** (4 connections)
-- **EncounterProfile** (3 connections) — `server/services/active_lucidity_service.py`
-- **RecoveryActionProfile** (3 connections) — `server/services/active_lucidity_service.py`
-- *... and 75 more nodes in this community*
+- **mock_session()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **sample_player_id()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_acclimated()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_cosmic_category()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_first_encounter()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_horrific_category()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_invalid_string_player_id()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_repeat_encounter()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_string_player_id()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_unknown_category()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_with_location()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_get_action_cooldown_invalid_string_player_id()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_get_action_cooldown_lowercases_action_code()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_get_action_cooldown_string_player_id()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_get_action_cooldown_success()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_perform_recovery_action_all_actions()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_perform_recovery_action_cooldown_expired()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_perform_recovery_action_invalid_string_player_id()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_perform_recovery_action_on_cooldown()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (13 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (11 shared connections)
-- [LucidityService](LucidityService.md) (9 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [debrief_command.py](debrief_command.py.md) (3 shared connections)
-- [database.py](database.py.md) (3 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [TestNPCCombatLucidity](TestNPCCombatLucidity.md) (1 shared connections)
+- [ActiveLucidityService](ActiveLucidityService.md) (5 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (4 shared connections)
 
 ## Source Files
 
-- `server/services/active_lucidity_service.py`
-- `server/services/npc_combat_lucidity.py`
 - `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 347 (97%)
-- INFERRED: 11 (3%)
+- EXTRACTED: 179 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

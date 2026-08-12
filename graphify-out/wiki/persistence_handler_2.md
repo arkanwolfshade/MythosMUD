@@ -12,7 +12,7 @@
 
 ## Relationships
 
-- [build_event](build_event.md) (2 shared connections)
+- [test_combat_persistence_handler_events.py](test_combat_persistence_handler_events.py.md) (2 shared connections)
 - [CombatPersistenceHandler](CombatPersistenceHandler.md) (1 shared connections)
 
 ## Source Files

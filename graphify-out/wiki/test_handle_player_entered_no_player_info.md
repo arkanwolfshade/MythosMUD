@@ -9,7 +9,7 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (1 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (1 shared connections)
 - [asyncio](asyncio.md) (1 shared connections)
 - [test_player_event_handlers_room.py](test_player_event_handlers_room.py.md) (1 shared connections)
 

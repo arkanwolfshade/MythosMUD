@@ -33,12 +33,16 @@
 
 ## Relationships
 
-- [NATSSubjectManager](NATSSubjectManager.md) (9 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (7 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (7 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (6 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [database.py](database.py.md) (2 shared connections)
+- [MythosMUDError](MythosMUDError.md) (6 shared connections)
+- [PatternNotFoundError](PatternNotFoundError.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [User](User.md) (2 shared connections)
+- [factory.py](factory.py.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
 
 ## Source Files
 

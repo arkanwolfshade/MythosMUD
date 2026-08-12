@@ -6,15 +6,15 @@
 
 - **properties** (10 connections) — `db/static/schemas/room.schema.json`
 - **attributes** (3 connections) — `db/static/schemas/room.schema.json`
-- **description** (3 connections) — `db/static/schemas/room.schema.json`
+- **id** (3 connections) — `db/static/schemas/room.schema.json`
 - **name** (3 connections) — `db/static/schemas/room.schema.json`
 - **sub_zone** (3 connections) — `db/static/schemas/room.schema.json`
 - **zone** (3 connections) — `db/static/schemas/room.schema.json`
 - **environment** (2 connections) — `db/static/schemas/room.schema.json`
 - **additionalProperties** (1 connections) — `db/static/schemas/room.schema.json`
 - **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
 - **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
 - **type** (1 connections) — `db/static/schemas/room.schema.json`
 - **minLength** (1 connections) — `db/static/schemas/room.schema.json`
 - **type** (1 connections) — `db/static/schemas/room.schema.json`
@@ -26,9 +26,9 @@
 ## Relationships
 
 - [required](required.md) (1 shared connections)
+- [description](description.md) (1 shared connections)
 - [plane](plane.md) (1 shared connections)
 - [exits](exits.md) (1 shared connections)
-- [id](id.md) (1 shared connections)
 
 ## Source Files
 

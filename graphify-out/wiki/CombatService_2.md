@@ -12,23 +12,23 @@
 - combat_service() `EXTRACTED`
 
 ### contains
-- combat_service.py `EXTRACTED`
+- [combat_service.py](combat_service.py.md) `EXTRACTED`
 
 ### imports
 - [server/dependencies.py](server-dependencies.py.md) `EXTRACTED`
 - [game_tick_processing.py](game_tick_processing.py.md) `EXTRACTED`
-- lifespan_startup.py `EXTRACTED`
+- [lifespan_startup.py](lifespan_startup.py.md) `EXTRACTED`
 - npc_combat_integration_service.py `EXTRACTED`
-- spell_effects.py `EXTRACTED`
+- [spell_effects.py](spell_effects.py.md) `EXTRACTED`
 - combat_handler.py `EXTRACTED`
-- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) `EXTRACTED`
+- combat_turn_participant_actions.py `EXTRACTED`
 - [magic_service.py](magic_service.py.md) `EXTRACTED`
-- [spell_effects_heal.py](spell_effects_heal.py.md) `EXTRACTED`
-- [combat_taunt.py](combat_taunt.py.md) `EXTRACTED`
+- spell_effects_heal.py `EXTRACTED`
+- combat_taunt.py `EXTRACTED`
 - combat_service_npc.py `EXTRACTED`
 - combat_service_start.py `EXTRACTED`
 - combat_service_attack.py `EXTRACTED`
-- combat_loader.py `EXTRACTED`
+- [combat_loader.py](combat_loader.py.md) `EXTRACTED`
 - [magic_service_completion.py](magic_service_completion.py.md) `EXTRACTED`
 - combat_flee.py `EXTRACTED`
 - spell_targeting.py `EXTRACTED`
@@ -84,16 +84,16 @@
 - validate_melee_or_end_combat() `EXTRACTED`
 
 ### uses
-- EventBus `INFERRED`
+- [EventBus](EventBus.md) `INFERRED`
 - [NPCCombatIntegrationService](NPCCombatIntegrationService.md) `INFERRED`
-- PlayerCombatService `INFERRED`
+- [PlayerCombatService](PlayerCombatService.md) `INFERRED`
 - [NATSService](NATSService.md) `INFERRED`
-- [CombatCommandHandler](CombatCommandHandler.md) `INFERRED`
+- CombatCommandHandler `INFERRED`
 - SpellEffects `INFERRED`
 - CombatTurnProcessor `INFERRED`
 - [_MagicServiceCore](_MagicServiceCore.md) `INFERRED`
 - [PlayerRespawnService](PlayerRespawnService.md) `INFERRED`
-- CombatParticipantData `INFERRED`
+- [CombatParticipantData](CombatParticipantData.md) `INFERRED`
 - CombatEventPublisher `INFERRED`
 - NPCCombatDataProvider `INFERRED`
 - TauntCommandHandler `INFERRED`

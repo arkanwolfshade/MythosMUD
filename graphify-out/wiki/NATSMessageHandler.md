@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [build_event](build_event.md) (10 shared connections)
-- [bundles/game.py](bundles-game.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 - [DeadLetterMessage](DeadLetterMessage.md) (3 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (2 shared connections)
+- [realtime/conftest.py](realtime-conftest.py.md) (2 shared connections)
+- [MessageFilteringHelper](MessageFilteringHelper.md) (2 shared connections)
 - [GameStateProvider](GameStateProvider.md) (2 shared connections)
+- [EventHandler](EventHandler.md) (2 shared connections)
 - [apply_communication_dampening](apply_communication_dampening.md) (2 shared connections)
 - [CircuitBreaker](CircuitBreaker.md) (1 shared connections)
 - [CircuitBreakerOpen](CircuitBreakerOpen.md) (1 shared connections)
 - [DeadLetterQueue](DeadLetterQueue.md) (1 shared connections)
 - [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
-- [database.py](database.py.md) (1 shared connections)
 
 ## Source Files
 

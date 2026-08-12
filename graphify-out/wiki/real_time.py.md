@@ -1,11 +1,10 @@
 # real_time.py
 
-> 41 nodes
+> 39 nodes
 
 ## Key Concepts
 
 - **real_time.py** (34 connections) — `server/api/real_time.py`
-- **get_async_persistence()** (19 connections) — `server/async_persistence.py`
 - **_resolve_player_id()** (10 connections) — `server/api/real_time.py`
 - **websocket_endpoint()** (10 connections) — `server/api/real_time.py`
 - **_ensure_connection_manager()** (9 connections) — `server/api/real_time.py`
@@ -29,32 +28,32 @@
 - **get** (2 connections)
 - **post** (1 connections)
 - **Real-time communication API endpoints for MythosMUD server. This module handles…** (1 connections) — `server/api/real_time.py`
-- *... and 16 more nodes in this community*
+- **Parse token from WebSocket subprotocol header. Example formats: "bearer,…** (1 connections) — `server/api/real_time.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (10 shared connections)
 - [realtime/realtime.py](realtime-realtime.py.md) (8 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (7 shared connections)
-- [test_auth_utils.py](test_auth_utils.py.md) (4 shared connections)
-- [test_async_persistence_delegates.py](test_async_persistence_delegates.py.md) (4 shared connections)
-- [test_websocket_handler_coverage_gaps.py](test_websocket_handler_coverage_gaps.py.md) (3 shared connections)
-- [websocket_initial_state.py](websocket_initial_state.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [create_access_token](create_access_token.md) (3 shared connections)
+- [ConnectionManager](ConnectionManager.md) (3 shared connections)
+- [websocket_handler_commands.py](websocket_handler_commands.py.md) (3 shared connections)
 - [.state](state.md) (2 shared connections)
-- [websocket_helpers.py](websocket_helpers.py.md) (2 shared connections)
+- [factory.py](factory.py.md) (2 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
 - [send_game_event](send_game_event.md) (1 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (1 shared connections)
-- [CombatInstance](CombatInstance.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/api/real_time.py`
-- `server/async_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 213 (99%)
-- INFERRED: 3 (1%)
+- EXTRACTED: 193 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -40,9 +40,10 @@
 - [Runner Path](Runner_Path.md) (3 shared connections)
 - [Linting Results Comparator](Linting_Results_Comparator.md) (3 shared connections)
 - [Grype Command Handle Result](Grype_Command_Handle_Result.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
 - [quality_fragmentation_lizard.py](quality_fragmentation_lizard.py.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
 - [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
+- [threading.py](threading.py.md) (1 shared connections)
 - [Result](Result.md) (1 shared connections)
 
 ## Source Files

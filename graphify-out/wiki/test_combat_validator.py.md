@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [CombatCommandHandler](CombatCommandHandler.md) (6 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (6 shared connections)
 
 ## Source Files
 

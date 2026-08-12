@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [RateLimiter](RateLimiter.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [deque](deque.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
 
 ## Source Files
 

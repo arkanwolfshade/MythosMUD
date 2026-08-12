@@ -1,58 +1,68 @@
 # ContainerComponent
 
-> 139 nodes
+> 292 nodes
 
 ## Key Concepts
 
 - **ContainerComponent** (90 connections) — `server/models/container.py`
+- **LootAllRequest** (63 connections) — `server/api/container_models.py`
 - **test_container.py** (38 connections) — `server/tests/unit/models/test_container.py`
-- **ContainerFactoryOptions** (6 connections) — `server/models/container.py`
-- **.create_corpse()** (5 connections) — `server/models/container.py`
-- **.validate_entity_id()** (5 connections) — `server/models/container.py`
-- **.validate_lock_state()** (5 connections) — `server/models/container.py`
-- **.validate_source_type()** (5 connections) — `server/models/container.py`
-- **Any** (5 connections)
-- **field_validator** (5 connections)
-- **UUID** (5 connections)
-- **.create_environment()** (4 connections) — `server/models/container.py`
-- **.create_equipment()** (4 connections) — `server/models/container.py`
-- **.validate_metadata_no_personal_data()** (4 connections) — `server/models/container.py`
-- **.validate_room_id()** (4 connections) — `server/models/container.py`
-- **.would_exceed_capacity()** (4 connections) — `server/models/container.py`
-- **.has_room_for()** (3 connections) — `server/models/container.py`
-- **.is_decayed()** (3 connections) — `server/models/container.py`
-- **.to_dict()** (3 connections) — `server/models/container.py`
-- **test_container_component_can_hold_exceeds_capacity()** (3 connections) — `server/tests/unit/models/test_container.py`
-- **test_container_component_can_hold_replacement_items()** (3 connections) — `server/tests/unit/models/test_container.py`
-- **test_container_component_capacity_slots_valid_range()** (3 connections) — `server/tests/unit/models/test_container.py`
-- **test_container_component_capacity_slots_validation_max()** (3 connections) — `server/tests/unit/models/test_container.py`
-- **test_container_component_capacity_slots_validation_min()** (3 connections) — `server/tests/unit/models/test_container.py`
-- **test_container_component_default_items()** (3 connections) — `server/tests/unit/models/test_container.py`
-- **test_container_component_default_lock_state()** (3 connections) — `server/tests/unit/models/test_container.py`
-- *... and 114 more nodes in this community*
+- **loot_all_items()** (34 connections) — `server/api/container_endpoints_loot.py`
+- **asyncio** (28 connections)
+- **ContainerSourceType** (27 connections) — `server/models/container.py`
+- **models/container.py** (26 connections) — `server/models/container.py`
+- **test_container_helpers_loot.py** (24 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **test_container_events.py** (22 connections) — `server/tests/unit/api/test_container_events.py`
+- **transfer_all_items_from_container()** (21 connections) — `server/api/container_helpers.py`
+- **container_events.py** (21 connections) — `server/api/container_events.py`
+- **TestTransferAllItemsFromContainer** (20 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **emit_loot_all_event()** (17 connections) — `server/api/container_events.py`
+- **emit_transfer_event()** (17 connections) — `server/api/container_events.py`
+- **get_container_and_player_for_loot_all()** (17 connections) — `server/api/container_helpers.py`
+- **emit_container_opened_events()** (16 connections) — `server/api/container_events.py`
+- **TestHandleContainerServiceErrorEdgeCases** (15 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **TestRegisterLootEndpoints** (14 connections) — `server/tests/unit/api/test_container_endpoints_loot_register.py`
+- **TestGetContainerAndPlayerForLootAll** (14 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **_emit_close_container_event()** (14 connections) — `server/api/container_events.py`
+- **asyncio** (14 connections)
+- **TestEmitLootAllEvent** (13 connections) — `server/tests/unit/api/test_container_events.py`
+- **TestEmitCloseContainerEvent** (12 connections) — `server/tests/unit/api/test_container_events.py`
+- **TestEmitTransferEvent** (12 connections) — `server/tests/unit/api/test_container_events.py`
+- **container_models.py** (12 connections) — `server/api/container_models.py`
+- *... and 267 more nodes in this community*
 
 ## Relationships
 
-- [LootAllRequest](LootAllRequest.md) (18 shared connections)
-- [test_corpse_lifecycle_service.py](test_corpse_lifecycle_service.py.md) (16 shared connections)
-- [asyncio](asyncio.md) (8 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (2 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [WearableContainerService](WearableContainerService.md) (1 shared connections)
-- [api/conftest.py](api-conftest.py.md) (1 shared connections)
+- [ContainerServiceError](ContainerServiceError.md) (51 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (48 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (28 shared connections)
+- [test_corpse_lifecycle_service.py](test_corpse_lifecycle_service.py.md) (18 shared connections)
+- [ContainerService](ContainerService.md) (15 shared connections)
+- [test_container_websocket_events.py](test_container_websocket_events.py.md) (14 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (6 shared connections)
+- [User](User.md) (5 shared connections)
+- [Player](Player.md) (4 shared connections)
+- [CorpseLifecycleService](CorpseLifecycleService.md) (4 shared connections)
+- [api/conftest.py](api-conftest.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 
+- `server/api/container_endpoints_loot.py`
+- `server/api/container_events.py`
+- `server/api/container_helpers.py`
+- `server/api/container_models.py`
 - `server/models/container.py`
+- `server/tests/unit/api/test_container_endpoints_loot.py`
+- `server/tests/unit/api/test_container_endpoints_loot_register.py`
+- `server/tests/unit/api/test_container_events.py`
+- `server/tests/unit/api/test_container_helpers_loot.py`
 - `server/tests/unit/models/test_container.py`
-- `server/tests/unit/services/test_corpse_lifecycle_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 403 (97%)
-- INFERRED: 11 (3%)
+- EXTRACTED: 1190 (93%)
+- INFERRED: 85 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

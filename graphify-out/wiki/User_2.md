@@ -39,10 +39,10 @@
 - [maps.py](maps.py.md) `EXTRACTED`
 - [test_users.py](test_users.py.md) `EXTRACTED`
 - [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
-- [test_admin_auth_service.py](test_admin_auth_service.py.md) `EXTRACTED`
+- test_admin_auth_service.py `EXTRACTED`
 - endpoints.py `EXTRACTED`
 - test_endpoints.py `EXTRACTED`
-- container_endpoints_basic.py `EXTRACTED`
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) `EXTRACTED`
 - users.py `EXTRACTED`
 - api/container_helpers.py `EXTRACTED`
 - test_container_helpers.py `EXTRACTED`

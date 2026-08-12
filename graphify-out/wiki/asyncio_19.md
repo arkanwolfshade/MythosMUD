@@ -8,14 +8,14 @@
 - **test_delete_player_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **test_delete_player_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **test_get_player_by_id_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_name_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **test_get_player_by_user_id_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_save_players_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **test_soft_delete_player_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **test_update_player_last_active_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **test_update_player_last_active_with_timestamp()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test get_player_by_name returns None when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **Test get_player_by_id returns None when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **Test get_player_by_user_id returns None when no players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test save_players successfully saves multiple players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **Test soft_delete_player successfully soft deletes player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **Test delete_player successfully deletes player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **Test delete_player returns False when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`

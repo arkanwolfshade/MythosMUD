@@ -1,6 +1,6 @@
 # test_npc_utils.py
 
-> 77 nodes
+> 89 nodes
 
 ## Key Concepts
 
@@ -9,33 +9,34 @@
 - **extract_definition_id_from_npc()** (12 connections) — `server/npc/npc_utils.py`
 - **extract_npc_metadata()** (12 connections) — `server/npc/npc_utils.py`
 - **extract_room_id_from_npc()** (11 connections) — `server/npc/npc_utils.py`
+- **.despawn_npc()** (8 connections) — `server/npc/population_control.py`
 - **npc_utils.py** (8 connections) — `server/npc/npc_utils.py`
 - **._check_spawn_requirements_for_room()** (7 connections) — `server/npc/population_control.py`
+- **._get_active_npcs_from_lifecycle_manager()** (6 connections) — `server/npc/population_control.py`
 - **._register_spawned_npc_in_population_stats()** (6 connections) — `server/npc/population_control.py`
 - **._spawn_npc()** (6 connections) — `server/npc/population_control.py`
+- **.cleanup_inactive_npcs()** (5 connections) — `server/npc/population_control.py`
 - **._get_zone_key_from_room_id()** (5 connections) — `server/npc/population_control.py`
+- **._should_remove_inactive_npc()** (5 connections) — `server/npc/population_control.py`
 - **.is_required()** (4 connections) — `server/models/npc.py`
 - **.get_zone_configuration()** (4 connections) — `server/npc/population_control.py`
+- **._update_population_stats_for_despawn()** (4 connections) — `server/npc/population_control.py`
 - **_stable_room_id_for_zone()** (3 connections) — `server/npc/npc_utils.py`
+- **.get_zone_population_summary()** (3 connections) — `server/npc/population_control.py`
 - **test_extract_definition_id_from_npc_from_lifecycle_manager()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
 - **test_extract_definition_id_from_npc_has_definition_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
 - **test_extract_definition_id_from_npc_lifecycle_manager_no_definition()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
 - **test_extract_definition_id_from_npc_lifecycle_manager_no_record()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
 - **test_extract_definition_id_from_npc_no_manager()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
 - **test_extract_definition_id_from_npc_non_int()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_npc_metadata_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_npc_metadata_non_string_type()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_npc_metadata_none_required()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_npc_metadata_truthy_required()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_npc_metadata_valid()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_room_id_from_npc_current_room()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- *... and 52 more nodes in this community*
+- *... and 64 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (17 shared connections)
-- [NPCDefinition](NPCDefinition.md) (5 shared connections)
+- [EventBus](EventBus.md) (12 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (12 shared connections)
 - [ZoneConfiguration](ZoneConfiguration.md) (1 shared connections)
+- [test_population_control.py](test_population_control.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 236 (99%)
-- INFERRED: 3 (1%)
+- EXTRACTED: 272 (99%)
+- INFERRED: 4 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

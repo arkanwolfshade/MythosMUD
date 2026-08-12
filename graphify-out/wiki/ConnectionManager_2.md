@@ -16,7 +16,7 @@
 - [server/dependencies.py](server-dependencies.py.md) `EXTRACTED`
 - [websocket_handler.py](websocket_handler.py.md) `EXTRACTED`
 - npc_combat_integration_service.py `EXTRACTED`
-- container_endpoints_basic.py `EXTRACTED`
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) `EXTRACTED`
 - [inventory_command_helpers.py](inventory_command_helpers.py.md) `EXTRACTED`
 - combat_handler.py `EXTRACTED`
 - [websocket_initial_state.py](websocket_initial_state.py.md) `EXTRACTED`
@@ -25,11 +25,11 @@
 - event_handler.py `EXTRACTED`
 - player_event_handlers_respawn.py `EXTRACTED`
 - [websocket_handler_commands.py](websocket_handler_commands.py.md) `EXTRACTED`
-- [websocket_room_updates.py](websocket_room_updates.py.md) `EXTRACTED`
+- websocket_room_updates.py `EXTRACTED`
 - test_envelope.py `EXTRACTED`
 - player_disconnect_handlers.py `EXTRACTED`
-- [api/game.py](api-game.py.md) `EXTRACTED`
-- combat_loader.py `EXTRACTED`
+- api/game.py `EXTRACTED`
+- [combat_loader.py](combat_loader.py.md) `EXTRACTED`
 - websocket_handler_message_loop.py `EXTRACTED`
 - follow_service.py `EXTRACTED`
 - event_handlers.py `EXTRACTED`
@@ -81,20 +81,20 @@
 
 ### uses
 - [NATSMessageHandler](NATSMessageHandler.md) `INFERRED`
-- [CombatCommandHandler](CombatCommandHandler.md) `INFERRED`
+- CombatCommandHandler `INFERRED`
 - [RealTimeEventHandler](RealTimeEventHandler.md) `INFERRED`
-- [FollowService](FollowService.md) `INFERRED`
+- FollowService `INFERRED`
 - [PartyService](PartyService.md) `INFERRED`
 - PlayerRespawnEventHandler `INFERRED`
 - CombatCommandHandlerExtras `INFERRED`
 - RealtimeBundle `INFERRED`
-- EventHandler `INFERRED`
+- [EventHandler](EventHandler.md) `INFERRED`
 - _NpcWithLife `INFERRED`
 - ConnectionMetadata `INFERRED`
-- [PlayerStateEventHandler](PlayerStateEventHandler.md) `INFERRED`
+- PlayerStateEventHandler `INFERRED`
 - RespawnPlayerEventPayload `INFERRED`
-- Party `INFERRED`
-- _EventBusPublishPort `INFERRED`
+- [Party](Party.md) `INFERRED`
+- [_EventBusPublishPort](_EventBusPublishPort.md) `INFERRED`
 - _NpcLifecycleManagerForOccupants `INFERRED`
 - RespawnPlayerStatsPayload `INFERRED`
 - AsyncPersistenceRoomLookup `INFERRED`

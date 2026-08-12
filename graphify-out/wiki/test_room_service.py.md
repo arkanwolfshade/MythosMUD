@@ -31,13 +31,13 @@
 
 ## Relationships
 
-- [asyncio](asyncio.md) (13 shared connections)
+- [asyncio](asyncio.md) (12 shared connections)
 - [fixture](fixture.md) (4 shared connections)
-- [RoomService](RoomService.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [RoomService](RoomService.md) (2 shared connections)
 - [test_get_room_persistence_not_found](test_get_room_persistence_not_found.md) (1 shared connections)
 - [test_get_room_persistence_returns_dict](test_get_room_persistence_returns_dict.md) (1 shared connections)
 - [test_get_adjacent_rooms_success](test_get_adjacent_rooms_success.md) (1 shared connections)
+- [test_get_adjacent_rooms_source_not_found](test_get_adjacent_rooms_source_not_found.md) (1 shared connections)
 - [test_get_adjacent_rooms_null_exit](test_get_adjacent_rooms_null_exit.md) (1 shared connections)
 - [test_get_local_chat_scope](test_get_local_chat_scope.md) (1 shared connections)
 - [test_get_local_chat_scope_source_not_found](test_get_local_chat_scope_source_not_found.md) (1 shared connections)

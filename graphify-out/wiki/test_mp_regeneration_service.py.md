@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [magic_service.py](magic_service.py.md) (5 shared connections)
+- [send_game_event](send_game_event.md) (5 shared connections)
 - [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
 
 ## Source Files

@@ -35,8 +35,7 @@
 
 - [command.py](command.py.md) (17 shared connections)
 - [BaseCommand](BaseCommand.md) (8 shared connections)
-- [test_command_factories_inventory.py](test_command_factories_inventory.py.md) (4 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (3 shared connections)
+- [Player](Player.md) (7 shared connections)
 
 ## Source Files
 

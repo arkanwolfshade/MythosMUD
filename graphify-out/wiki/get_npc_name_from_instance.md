@@ -24,8 +24,8 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (3 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
 - [connection_manager.py](connection_manager.py.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
 

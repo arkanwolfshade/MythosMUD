@@ -31,11 +31,12 @@
 
 ## Relationships
 
-- [magic_service.py](magic_service.py.md) (16 shared connections)
-- [TargetMatch](TargetMatch.md) (10 shared connections)
+- [magic_service.py](magic_service.py.md) (15 shared connections)
+- [Spell](Spell.md) (10 shared connections)
 - [magic_service_completion.py](magic_service_completion.py.md) (2 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
 - [AliasStorage](AliasStorage.md) (1 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
+- [test_magic_commands.py](test_magic_commands.py.md) (1 shared connections)
 - [_MagicServiceCore](_MagicServiceCore.md) (1 shared connections)
 - [PlayerService](PlayerService.md) (1 shared connections)
 

@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [CombatCommandHandler](CombatCommandHandler.md) (10 shared connections)
-- [CombatInstance](CombatInstance.md) (4 shared connections)
-- [CombatParticipant](CombatParticipant.md) (2 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [server/models/game.py](server-models-game.py.md) (1 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (8 shared connections)
+- [CombatParticipant](CombatParticipant.md) (6 shared connections)
+- [combat_loader.py](combat_loader.py.md) (2 shared connections)
+- [combat_service.py](combat_service.py.md) (2 shared connections)
+- [server/models/game.py](server-models-game.py.md) (2 shared connections)
 
 ## Source Files
 

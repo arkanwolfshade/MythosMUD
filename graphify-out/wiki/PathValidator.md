@@ -40,7 +40,7 @@
 - [SchemaValidator](SchemaValidator.md) (7 shared connections)
 - [TestValidatorComponents](TestValidatorComponents.md) (4 shared connections)
 - [TestPathValidator](TestPathValidator.md) (3 shared connections)
-- [ScheduleEntry](ScheduleEntry.md) (2 shared connections)
+- [ValidationError](ValidationError.md) (2 shared connections)
 - [command](command.md) (1 shared connections)
 - [Hierarchical Schema Tests](Hierarchical_Schema_Tests.md) (1 shared connections)
 

@@ -1,66 +1,72 @@
 # ApplicationContainer
 
-> 129 nodes
+> 191 nodes
 
 ## Key Concepts
 
 - **ApplicationContainer** (145 connections) — `server/container/main.py`
-- **lifespan_startup.py** (60 connections) — `server/app/lifespan_startup.py`
 - **.get_instance()** (34 connections) — `server/container/main.py`
-- **test_lifespan_startup.py** (26 connections) — `server/tests/unit/app/test_lifespan_startup.py`
-- **initialize_container_and_legacy_services()** (14 connections) — `server/app/lifespan_startup.py`
-- **FastAPI** (13 connections)
-- **asyncio** (12 connections)
-- **initialize_combat_services()** (11 connections) — `server/app/lifespan_startup.py`
-- **setup_connection_manager()** (11 connections) — `server/app/lifespan_startup.py`
-- **initialize_npc_services()** (10 connections) — `server/app/lifespan_startup.py`
-- **initialize_npc_startup_spawning()** (10 connections) — `server/app/lifespan_startup.py`
-- **initialize_chat_service()** (9 connections) — `server/app/lifespan_startup.py`
-- **initialize_nats_and_combat_services()** (9 connections) — `server/app/lifespan_startup.py`
-- **subscribe_quest_events()** (8 connections) — `server/app/lifespan_event_subscriptions.py`
-- **initialize_mythos_time_consumer()** (8 connections) — `server/app/lifespan_startup.py`
-- **get_npc_startup_service()** (8 connections) — `server/services/npc_startup_service.py`
-- **.__init__()** (7 connections) — `server/container/main.py`
-- **subscribe_room_occupants_refresh()** (6 connections) — `server/app/lifespan_event_subscriptions.py`
-- **_load_npc_definitions_and_rules()** (6 connections) — `server/app/lifespan_startup.py`
-- **_set_legacy_services()** (6 connections) — `server/app/lifespan_startup.py`
-- **.reset_instance()** (6 connections) — `server/container/main.py`
-- **test_application_container_set_instance()** (6 connections) — `server/tests/unit/test_application_container.py`
-- **_get_item_prototype_count()** (5 connections) — `server/app/lifespan_startup.py`
-- **_legacy_service_bindings()** (5 connections) — `server/app/lifespan_startup.py`
-- **.initialize()** (5 connections) — `server/container/main.py`
-- *... and 104 more nodes in this community*
+- **container/main.py** (33 connections) — `server/container/main.py`
+- **test_application_container.py** (28 connections) — `server/tests/unit/test_application_container.py`
+- **RealtimeBundle** (24 connections) — `server/container/bundles/realtime.py`
+- **EventPublisher** (20 connections) — `server/realtime/event_publisher.py`
+- **bundles/__init__.py** (19 connections) — `server/container/bundles/__init__.py`
+- **core.py** (18 connections) — `server/container/bundles/core.py`
+- **get_container()** (17 connections) — `server/container/main.py`
+- **TrackedTaskManager** (14 connections) — `server/app/tracked_task_manager.py`
+- **CoreBundle** (14 connections) — `server/container/bundles/core.py`
+- **MonitoringBundle** (13 connections) — `server/container/bundles/monitoring.py`
+- **bundles/realtime.py** (13 connections) — `server/container/bundles/realtime.py`
+- **DistributedEventBus** (12 connections) — `server/events/distributed_event_bus.py`
+- **.initialize()** (12 connections) — `server/container/bundles/core.py`
+- **bundles/monitoring.py** (11 connections) — `server/container/bundles/monitoring.py`
+- **._initialize_primary_bundles()** (10 connections) — `server/container/main.py`
+- **test_realtime_bundle_nats.py** (10 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
+- **TimeBundle** (8 connections) — `server/container/bundles/time.py`
+- **.initialize()** (8 connections) — `server/container/bundles/realtime.py`
+- **reset_container()** (8 connections) — `server/container/main.py`
+- **chat.py** (8 connections) — `server/container/bundles/chat.py`
+- **utils.py** (8 connections) — `server/container/utils.py`
+- **ChatBundle** (7 connections) — `server/container/bundles/chat.py`
+- **.initialize()** (7 connections) — `server/container/bundles/monitoring.py`
+- *... and 166 more nodes in this community*
 
 ## Relationships
 
-- [bundles/game.py](bundles-game.py.md) (51 shared connections)
-- [get_logger](get_logger.md) (32 shared connections)
-- [magic_service.py](magic_service.py.md) (17 shared connections)
-- [lifespan.py](lifespan.py.md) (14 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (14 shared connections)
-- [NPCDefinition](NPCDefinition.md) (12 shared connections)
-- [GameBundle](GameBundle.md) (8 shared connections)
-- [CombatService](CombatService.md) (5 shared connections)
-- [test_player_death_service.py](test_player_death_service.py.md) (5 shared connections)
-- [lifespan_shutdown.py](lifespan_shutdown.py.md) (4 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (4 shared connections)
-- [LucidityService](LucidityService.md) (4 shared connections)
+- [get_logger](get_logger.md) (26 shared connections)
+- [magic_service.py](magic_service.py.md) (19 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (19 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (15 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (12 shared connections)
+- [GameBundle](GameBundle.md) (12 shared connections)
+- [bundles/game.py](bundles-game.py.md) (11 shared connections)
+- [time.py](time.py.md) (7 shared connections)
+- [TaskRegistry](TaskRegistry.md) (6 shared connections)
+- [EventBus](EventBus.md) (6 shared connections)
+- [.get_instance](get_instance.md) (5 shared connections)
+- [._connect_nats](_connect_nats.md) (5 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan_event_subscriptions.py`
-- `server/app/lifespan_startup.py`
-- `server/container/bundles/combat.py`
+- `server/app/tracked_task_manager.py`
+- `server/container/__init__.py`
+- `server/container/bundles/__init__.py`
+- `server/container/bundles/chat.py`
 - `server/container/bundles/core.py`
+- `server/container/bundles/monitoring.py`
+- `server/container/bundles/realtime.py`
+- `server/container/bundles/time.py`
 - `server/container/main.py`
-- `server/services/npc_startup_service.py`
-- `server/tests/unit/app/test_lifespan_startup.py`
+- `server/container/utils.py`
+- `server/events/distributed_event_bus.py`
+- `server/realtime/event_publisher.py`
+- `server/tests/unit/container/test_realtime_bundle_nats.py`
 - `server/tests/unit/test_application_container.py`
 
 ## Audit Trail
 
-- EXTRACTED: 636 (98%)
-- INFERRED: 16 (2%)
+- EXTRACTED: 839 (95%)
+- INFERRED: 41 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

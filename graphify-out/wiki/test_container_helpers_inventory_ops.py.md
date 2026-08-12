@@ -34,9 +34,9 @@
 ## Relationships
 
 - [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (14 shared connections)
-- [inventory_pickup_command.py](inventory_pickup_command.py.md) (8 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (3 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (2 shared connections)
+- [inventory_pickup_command.py](inventory_pickup_command.py.md) (5 shared connections)
+- [persist_player](persist_player.md) (5 shared connections)
+- [ContainerService](ContainerService.md) (3 shared connections)
 - [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (2 shared connections)
 - [Player](Player.md) (2 shared connections)
 - [.state](state.md) (1 shared connections)

@@ -1,6 +1,6 @@
 # chat_service.py
 
-> 29 nodes
+> 43 nodes
 
 ## Key Concepts
 
@@ -14,47 +14,49 @@
 - **Any** (5 connections)
 - **get_room_poses()** (4 connections) — `server/game/chat_pose_helpers.py`
 - **normalize_player_id()** (4 connections) — `server/game/chat_pose_helpers.py`
+- **test_get_room_messages()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
 - **UUID** (4 connections)
 - **.to_dict()** (3 connections) — `server/game/chat_message.py`
+- **test_chat_message_init()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_chat_message_init_with_target()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_chat_message_log_message()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_chat_message_to_dict()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_chat_message_to_dict_with_echo_sent()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_chat_message_to_dict_with_target()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
 - **.__init__()** (2 connections) — `server/game/chat_message.py`
 - **.log_message()** (2 connections) — `server/game/chat_message.py`
 - **UUID** (2 connections)
 - **vulture_allowlist.py** (2 connections) — `vulture_allowlist.py`
 - **Any** (1 connections)
 - **Chat message model for MythosMUD. This module provides the ChatMessage class…** (1 connections) — `server/game/chat_message.py`
-- **Represents a chat message with metadata.** (1 connections) — `server/game/chat_message.py`
-- **Convert message to dictionary for serialization.** (1 connections) — `server/game/chat_message.py`
-- **Log this chat message to the communications log.** (1 connections) — `server/game/chat_message.py`
-- **Pose management helpers for chat service.** (1 connections) — `server/game/chat_pose_helpers.py`
-- **Clear a player's pose. Args: player_id: ID of the player pose_manager: Pose…** (1 connections) — `server/game/chat_pose_helpers.py`
-- **Get all poses for players in a room. Args: room_id: ID of the room…** (1 connections) — `server/game/chat_pose_helpers.py`
-- **Normalize player identifiers to string form.** (1 connections) — `server/game/chat_pose_helpers.py`
-- *... and 4 more nodes in this community*
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
 - [chat_message_senders.py](chat_message_senders.py.md) (16 shared connections)
-- [ChatService](ChatService.md) (12 shared connections)
-- [get_logger](get_logger.md) (12 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
+- [test_chat_service.py](test_chat_service.py.md) (10 shared connections)
 - [chat_nats_publisher.py](chat_nats_publisher.py.md) (7 shared connections)
+- [ChatService](ChatService.md) (4 shared connections)
 - [ChatModeration](ChatModeration.md) (2 shared connections)
 - [ChatPoseManager](ChatPoseManager.md) (2 shared connections)
-- [UUID](UUID.md) (1 shared connections)
 - [UserManagerProtocol](UserManagerProtocol.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [magic_service.py](magic_service.py.md) (1 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
+- [.__post_init__](__post_init__.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/chat_message.py`
 - `server/game/chat_pose_helpers.py`
 - `server/game/chat_service.py`
+- `server/tests/unit/game/test_chat_service.py`
 - `vulture_allowlist.py`
 
 ## Audit Trail
 
-- EXTRACTED: 145 (99%)
+- EXTRACTED: 174 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

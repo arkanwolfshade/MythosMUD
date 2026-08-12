@@ -33,12 +33,11 @@
 
 ## Relationships
 
+- [security.ts](security.ts.md) (5 shared connections)
 - [roomHandlers.ts](roomHandlers.ts.md) (4 shared connections)
 - [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (3 shared connections)
 - [ResourceManager](ResourceManager.md) (3 shared connections)
-- [security.ts](security.ts.md) (3 shared connections)
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (2 shared connections)
-- [.error](error.md) (1 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (1 shared connections)
 
 ## Source Files
 

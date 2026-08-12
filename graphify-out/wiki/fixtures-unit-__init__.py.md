@@ -26,9 +26,8 @@
 
 ## Relationships
 
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
 - [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (1 shared connections)
-- [bundles/game.py](bundles-game.py.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files
 

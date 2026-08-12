@@ -1,12 +1,11 @@
 # PlayerRepositoryProtocol
 
-> 39 nodes
+> 32 nodes
 
 ## Key Concepts
 
 - **PlayerRepositoryProtocol** (21 connections) — `server/persistence/protocols.py`
 - **Player** (11 connections)
-- **RoomRepositoryProtocol** (9 connections) — `server/persistence/protocols.py`
 - **UUID** (6 connections)
 - **.get_players_batch()** (4 connections) — `server/persistence/protocols.py`
 - **.update_player_last_active()** (4 connections) — `server/persistence/protocols.py`
@@ -21,22 +20,22 @@
 - **.save_players()** (3 connections) — `server/persistence/protocols.py`
 - **.soft_delete_player()** (3 connections) — `server/persistence/protocols.py`
 - **.validate_and_fix_player_room()** (3 connections) — `server/persistence/protocols.py`
-- **.get_room_by_id()** (3 connections) — `server/persistence/protocols.py`
-- **.list_rooms()** (3 connections) — `server/persistence/protocols.py`
 - **.list_players()** (2 connections) — `server/persistence/protocols.py`
 - **datetime** (2 connections)
 - **Protocol** (2 connections)
-- **Room** (2 connections)
-- **List all cached rooms.** (1 connections) — `server/persistence/protocols.py`
 - **Protocol for player persistence operations. Defines the contract used by…** (1 connections) — `server/persistence/protocols.py`
-- *... and 14 more nodes in this community*
+- **Get the first active player for a user ID.** (1 connections) — `server/persistence/protocols.py`
+- **Get all players (including deleted) for a user ID.** (1 connections) — `server/persistence/protocols.py`
+- **Get active (non-deleted) players for a user ID.** (1 connections) — `server/persistence/protocols.py`
+- **Get an active player by name (case-insensitive).** (1 connections) — `server/persistence/protocols.py`
+- **Save a player to the database.** (1 connections) — `server/persistence/protocols.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [server/persistence/__init__.py](server-persistence-__init__.py.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [Room](Room.md) (2 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (6 shared connections)
+- [Player](Player.md) (1 shared connections)
+- [Room](Room.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 114 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 96 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

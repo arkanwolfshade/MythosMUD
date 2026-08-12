@@ -32,20 +32,20 @@
 - models/combat.py `EXTRACTED`
 
 ### imports
-- combat_service.py `EXTRACTED`
+- [combat_service.py](combat_service.py.md) `EXTRACTED`
 - test_combat.py `EXTRACTED`
-- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) `EXTRACTED`
-- [test_combat_attack_handler.py](test_combat_attack_handler.py.md) `EXTRACTED`
+- combat_turn_participant_actions.py `EXTRACTED`
+- test_combat_attack_handler.py `EXTRACTED`
 - test_combat_turn_processor.py `EXTRACTED`
-- [combat_taunt.py](combat_taunt.py.md) `EXTRACTED`
+- combat_taunt.py `EXTRACTED`
 - combat_service_npc.py `EXTRACTED`
 - test_aggro_threat.py `EXTRACTED`
 - aggro_threat.py `EXTRACTED`
 - [test_flee_command.py](test_flee_command.py.md) `EXTRACTED`
 - [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) `EXTRACTED`
-- test_damage_grace_period.py `EXTRACTED`
+- [test_damage_grace_period.py](test_damage_grace_period.py.md) `EXTRACTED`
 - combat_service_attack.py `EXTRACTED`
-- [combat_flee_handler.py](combat_flee_handler.py.md) `EXTRACTED`
+- combat_flee_handler.py `EXTRACTED`
 - combat_death_handler.py `EXTRACTED`
 - test_combat_taunt.py `EXTRACTED`
 - combat_turn_processor.py `EXTRACTED`

@@ -1,63 +1,62 @@
 # get_username_from_user
 
-> 46 nodes
+> 69 nodes
 
 ## Key Concepts
 
 - **get_username_from_user()** (50 connections) — `server/utils/command_helpers.py`
-- **teach_command.py** (15 connections) — `server/commands/teach_command.py`
-- **handle_teach_command()** (14 connections) — `server/commands/teach_command.py`
-- **test_teach_command.py** (6 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **_resolve_npc_teacher()** (4 connections) — `server/commands/teach_command.py`
-- **test_handle_teach_command()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_no_target()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **_username_from_dict()** (4 connections) — `server/utils/command_helpers.py`
-- **Any** (4 connections)
-- **_format_teach_result()** (3 connections) — `server/commands/teach_command.py`
-- **_get_teach_services()** (3 connections) — `server/commands/teach_command.py`
-- **test_get_username_from_user_dict()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
-- **test_get_username_from_user_with_name()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
-- **test_get_username_from_user_with_username()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
-- **test_get_username_from_user_dict_name()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_dict_username()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_empty_dict()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_invalid()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_name_attribute()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_none()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_player_object()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_priority_player_over_username()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_username_attribute()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **asyncio** (3 connections)
-- *... and 21 more nodes in this community*
+- **test_follow_commands.py** (23 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **handle_follow_command()** (18 connections) — `server/commands/follow_commands.py`
+- **follow_commands.py** (17 connections) — `server/commands/follow_commands.py`
+- **asyncio** (13 connections)
+- **_make_container()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **_make_request()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **handle_following_command()** (11 connections) — `server/commands/follow_commands.py`
+- **handle_unfollow_command()** (11 connections) — `server/commands/follow_commands.py`
+- **test_handle_follow_same_room_npc_immediate()** (8 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_same_room_player_sends_request()** (8 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_self_rejected()** (8 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_no_such_player_or_npc()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **_get_container()** (6 connections) — `server/commands/follow_commands.py`
+- **test_handle_follow_no_persistence()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_no_target()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_player_not_in_game()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_following_display()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_unfollow_success()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_unfollow_was_not_following()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **Any** (6 connections)
+- **_load_follow_context()** (5 connections) — `server/commands/follow_commands.py`
+- **_resolve_follow_target()** (4 connections) — `server/commands/follow_commands.py`
+- **test_handle_follow_no_container()** (4 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_following_no_container()** (4 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [server/exceptions.py](server-exceptions.py.md) (13 shared connections)
-- [AliasStorage](AliasStorage.md) (8 shared connections)
+- [AliasStorage](AliasStorage.md) (16 shared connections)
+- [TargetMatch](TargetMatch.md) (12 shared connections)
+- [test_command_helpers.py](test_command_helpers.py.md) (10 shared connections)
 - [test_command_helpers_functions.py](test_command_helpers_functions.py.md) (4 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (3 shared connections)
-- [test_follow_commands.py](test_follow_commands.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [Player](Player.md) (3 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
 - [BaseCommand](BaseCommand.md) (2 shared connections)
-- [test_logout_commands.py](test_logout_commands.py.md) (2 shared connections)
+- [logout_commands.py](logout_commands.py.md) (2 shared connections)
 - [quest_commands.py](quest_commands.py.md) (2 shared connections)
 - [.state](state.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [CommandRequest](CommandRequest.md) (1 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/teach_command.py`
-- `server/tests/unit/commands/test_teach_command.py`
+- `server/commands/follow_commands.py`
+- `server/tests/unit/commands/test_follow_commands.py`
 - `server/tests/unit/utils/test_command_helpers.py`
-- `server/tests/unit/utils/test_command_helpers_functions.py`
 - `server/utils/command_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 144 (82%)
-- INFERRED: 32 (18%)
+- EXTRACTED: 296 (89%)
+- INFERRED: 36 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

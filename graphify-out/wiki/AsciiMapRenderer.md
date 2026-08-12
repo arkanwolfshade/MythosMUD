@@ -1,6 +1,6 @@
 # AsciiMapRenderer
 
-> 100 nodes
+> 102 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **Any** (13 connections)
 - **.render_map()** (11 connections) — `server/services/ascii_map_renderer.py`
 - **TestVerticalExitCharBetween** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **ascii_map_renderer.py** (9 connections) — `server/services/ascii_map_renderer.py`
 - **test_ascii_map_renderer_exits.py** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 - **TestHorizontalExitCharBetween** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 - **TestResolveExitTarget** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
@@ -28,14 +29,13 @@
 - **TestBuildGridPlayerMarker** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
 - **._get_room_symbol()** (4 connections) — `server/services/ascii_map_renderer.py`
 - **._horizontal_exit_char_between()** (4 connections) — `server/services/ascii_map_renderer.py`
-- **._vertical_exit_char_between()** (4 connections) — `server/services/ascii_map_renderer.py`
-- *... and 75 more nodes in this community*
+- *... and 77 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [map_minimap.py](map_minimap.py.md) (2 shared connections)
-- [maps.py](maps.py.md) (2 shared connections)
+- [RoomService](RoomService.md) (3 shared connections)
+- [maps.py](maps.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 
@@ -45,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 306 (96%)
+- EXTRACTED: 316 (96%)
 - INFERRED: 12 (4%)
 - AMBIGUOUS: 0 (0%)
 

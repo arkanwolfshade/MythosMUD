@@ -17,9 +17,10 @@
 - [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (6 shared connections)
 - [item_factory.py](item_factory.py.md) (4 shared connections)
 - [PrototypeRegistry](PrototypeRegistry.md) (3 shared connections)
-- [server/models/game.py](server-models-game.py.md) (3 shared connections)
+- [test_player_schema_converter_weapon.py](test_player_schema_converter_weapon.py.md) (2 shared connections)
 - [inventory_equip_command.py](inventory_equip_command.py.md) (2 shared connections)
 - [ItemPrototypeModel](ItemPrototypeModel.md) (2 shared connections)
+- [server/models/game.py](server-models-game.py.md) (1 shared connections)
 
 ## Source Files
 

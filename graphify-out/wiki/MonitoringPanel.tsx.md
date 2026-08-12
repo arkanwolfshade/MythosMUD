@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (3 shared connections)
+- [security.ts](security.ts.md) (3 shared connections)
 - [EldritchIcon.tsx](EldritchIcon.tsx.md) (2 shared connections)
-- [@testing-library/jest-dom/vitest](%40testing-library-jest-dom-vitest.md) (1 shared connections)
+- [gameStore.ts](gameStore.ts.md) (1 shared connections)
 
 ## Source Files
 

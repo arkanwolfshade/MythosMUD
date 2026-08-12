@@ -25,10 +25,10 @@
 - [DeadLetterMessage](DeadLetterMessage.md) (7 shared connections)
 - [Path](Path.md) (5 shared connections)
 - [Any](Any.md) (4 shared connections)
-- [build_event](build_event.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [EventHandler](EventHandler.md) (1 shared connections)
 - [test_dequeue_returns_oldest_message](test_dequeue_returns_oldest_message.md) (1 shared connections)
 - [test_enqueue_writes_correct_data](test_enqueue_writes_correct_data.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
 - [NATSMessageHandler](NATSMessageHandler.md) (1 shared connections)
 
 ## Source Files

@@ -30,9 +30,10 @@
 
 - [UUID](UUID.md) (14 shared connections)
 - [.check_and_cleanup](check_and_cleanup.md) (7 shared connections)
-- [RateLimiter](RateLimiter.md) (4 shared connections)
+- [time.py](time.py.md) (3 shared connections)
 - [test_connection_cleaner.py](test_connection_cleaner.py.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [test_connection_initialization.py](test_connection_initialization.py.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 

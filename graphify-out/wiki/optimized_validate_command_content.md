@@ -17,7 +17,7 @@
 
 - [WebSocket Handler Tests](WebSocket_Handler_Tests.md) (4 shared connections)
 - [optimized_comprehensive_sanitize_input](optimized_comprehensive_sanitize_input.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [optimized_security_validator.py](optimized_security_validator.py.md) (1 shared connections)
 
 ## Source Files
 

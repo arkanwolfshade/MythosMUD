@@ -26,11 +26,10 @@
 - [test_dead_letter_queue.py](test_dead_letter_queue.py.md) (12 shared connections)
 - [DeadLetterQueue](DeadLetterQueue.md) (7 shared connections)
 - [NATSMessageHandler](NATSMessageHandler.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [Path](Path.md) (2 shared connections)
 - [test_dequeue_returns_oldest_message](test_dequeue_returns_oldest_message.md) (1 shared connections)
 - [test_enqueue_writes_correct_data](test_enqueue_writes_correct_data.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
 - [Any](Any.md) (1 shared connections)
 - [.from_dict](from_dict.md) (1 shared connections)
 

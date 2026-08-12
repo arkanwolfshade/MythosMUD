@@ -33,10 +33,9 @@
 
 ## Relationships
 
+- [get_logger](get_logger.md) (3 shared connections)
 - [persistence_handler](persistence_handler.md) (3 shared connections)
-- [AttributeError](AttributeError.md) (2 shared connections)
 - [CombatPersistenceHandler](CombatPersistenceHandler.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
 
 ## Source Files
 

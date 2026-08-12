@@ -13,7 +13,7 @@
 ## Relationships
 
 - [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (2 shared connections)
-- [_NPCCombatIntegrationDeps](_NPCCombatIntegrationDeps.md) (1 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
 
 ## Source Files
 

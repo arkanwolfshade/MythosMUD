@@ -24,7 +24,7 @@
 
 ## Relationships
 
-- [useGameTerminal.ts](useGameTerminal.ts.md) (3 shared connections)
+- [gameStore.ts](gameStore.ts.md) (3 shared connections)
 - [stateNormalization.ts](stateNormalization.ts.md) (2 shared connections)
 
 ## Source Files

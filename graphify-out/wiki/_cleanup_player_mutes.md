@@ -27,8 +27,7 @@
 
 ## Relationships
 
-- [Player Mute Persistence](Player_Mute_Persistence.md) (16 shared connections)
-- [.load_player_mutes](load_player_mutes.md) (1 shared connections)
+- [UserManager](UserManager.md) (17 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files

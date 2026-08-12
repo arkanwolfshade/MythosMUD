@@ -10,7 +10,7 @@
 - **createMultiPlayerContexts()** (36 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
 - **cleanupMultiPlayerContexts()** (34 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
 - **waitForAllPlayersInGame()** (32 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
-- **ensurePlayableConnection()** (26 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **ensurePlayableConnection()** (27 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
 - **local-channel-basic.spec.ts** (23 connections) — `client/tests/e2e/runtime/communication/local-channel-basic.spec.ts`
 - **local-channel-isolation.spec.ts** (22 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
 - **ensureMultiplayerCoLocated()** (20 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
@@ -34,7 +34,7 @@
 ## Relationships
 
 - [executeCommand](executeCommand.md) (105 shared connections)
-- [fixtures/auth.ts](fixtures-auth.ts.md) (70 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (71 shared connections)
 - [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (7 shared connections)
 - [multiplayer-browser-helpers.js](multiplayer-browser-helpers.js.md) (2 shared connections)
 - [character-cleanup.ts](character-cleanup.ts.md) (1 shared connections)
@@ -64,7 +64,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 873 (100%)
+- EXTRACTED: 874 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

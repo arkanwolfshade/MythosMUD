@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [MovementMonitor](MovementMonitor.md) (5 shared connections)
-- [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (5 shared connections)
+- [MovementMonitor](MovementMonitor.md) (2 shared connections)
 
 ## Source Files
 

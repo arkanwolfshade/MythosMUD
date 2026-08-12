@@ -1,60 +1,68 @@
 # ConnectionManager
 
-> 180 nodes
+> 212 nodes
 
 ## Key Concepts
 
 - **ConnectionManager** (162 connections) — `server/realtime/connection_manager.py`
-- **UUID** (41 connections)
-- **Any** (40 connections)
-- **.event_bus()** (12 connections) — `server/realtime/connection_manager.py`
-- **.check_connection_health()** (6 connections) — `server/realtime/connection_manager.py`
-- **._get_player()** (6 connections) — `server/realtime/connection_manager.py`
-- **._track_player_disconnected()** (6 connections) — `server/realtime/connection_manager.py`
-- **._broadcast_connection_message()** (5 connections) — `server/realtime/connection_manager.py`
-- **.broadcast_to_room()** (5 connections) — `server/realtime/connection_manager.py`
-- **.cleanup_dead_connections()** (5 connections) — `server/realtime/connection_manager.py`
-- **.connect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
-- **.detect_and_handle_error_state()** (5 connections) — `server/realtime/connection_manager.py`
-- **.disconnect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
-- **.get_message_delivery_stats()** (5 connections) — `server/realtime/connection_manager.py`
-- **.get_player_presence_info()** (5 connections) — `server/realtime/connection_manager.py`
-- **._get_players_batch()** (5 connections) — `server/realtime/connection_manager.py`
-- **.handle_authentication_error()** (5 connections) — `server/realtime/connection_manager.py`
-- **.handle_new_game_session()** (5 connections) — `server/realtime/connection_manager.py`
-- **.handle_security_violation()** (5 connections) — `server/realtime/connection_manager.py`
-- **.handle_websocket_error()** (5 connections) — `server/realtime/connection_manager.py`
-- **.recover_from_error()** (5 connections) — `server/realtime/connection_manager.py`
-- **._send_initial_game_state()** (5 connections) — `server/realtime/connection_manager.py`
-- **.send_personal_message()** (5 connections) — `server/realtime/connection_manager.py`
-- **.send_personal_message_old()** (5 connections) — `server/realtime/connection_manager.py`
-- **._track_player_connected()** (5 connections) — `server/realtime/connection_manager.py`
-- *... and 155 more nodes in this community*
+- **PlayerEventHandlerUtils** (42 connections) — `server/realtime/player_event_handlers_utils.py`
+- **PlayerRespawnEventHandler** (33 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **player_event_handlers_respawn.py** (33 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **test_player_event_handlers_state.py** (33 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **PlayerXPAwardEvent** (32 connections) — `server/services/player_combat_service.py`
+- **player_event_handlers_state.py** (23 connections) — `server/realtime/player_event_handlers_state.py`
+- **get_async_persistence()** (19 connections) — `server/async_persistence.py`
+- **asyncio** (19 connections)
+- **PlayerRespawnedEvent** (16 connections) — `server/events/event_types.py`
+- **PlayerStateEventHandler** (14 connections) — `server/realtime/player_event_handlers_state.py`
+- **RespawnPlayerEventPayload** (13 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **_dispatch_player_dp_updated_payload()** (10 connections) — `server/realtime/player_event_handlers_state.py`
+- **._extract_occupant_names()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **test_player_event_handlers_utils_grace_period.py** (9 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
+- **._fetch_delirium_respawn_player_snapshot()** (8 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.get_player_data_for_respawn()** (8 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.handle_player_respawned()** (8 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._resolve_player_data_for_respawn_event()** (8 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._initialize_handlers()** (7 connections) — `server/realtime/player_event_handlers.py`
+- **._build_respawn_player_payload()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._fetch_fallback_player_data_for_respawn()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._prepare_room_data_for_respawn()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.send_respawn_event_with_retry()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **_send_player_death_notification()** (7 connections) — `server/realtime/player_event_handlers_state.py`
+- *... and 187 more nodes in this community*
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (38 shared connections)
-- [test_connection_delegates.py](test_connection_delegates.py.md) (17 shared connections)
-- [build_event](build_event.md) (11 shared connections)
-- [websocket_initial_state.py](websocket_initial_state.py.md) (9 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (7 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
-- [test_connection_statistics.py](test_connection_statistics.py.md) (5 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (4 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (4 shared connections)
-- [bundles/game.py](bundles-game.py.md) (3 shared connections)
-- [Room](Room.md) (3 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
+- [UUID](UUID.md) (54 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (38 shared connections)
+- [get_logger](get_logger.md) (20 shared connections)
+- [Player](Player.md) (11 shared connections)
+- [websocket_initial_state.py](websocket_initial_state.py.md) (10 shared connections)
+- [BaseEvent](BaseEvent.md) (8 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (8 shared connections)
+- [connection_manager.py](connection_manager.py.md) (8 shared connections)
+- [connection_manager_health_cleanup.py](connection_manager_health_cleanup.py.md) (8 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (8 shared connections)
+- [Protocol](Protocol.md) (6 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (6 shared connections)
 
 ## Source Files
 
+- `server/async_persistence.py`
+- `server/events/event_types.py`
 - `server/realtime/connection_manager.py`
-- `server/realtime/event_handlers.py`
+- `server/realtime/player_event_handlers.py`
+- `server/realtime/player_event_handlers_respawn.py`
+- `server/realtime/player_event_handlers_state.py`
+- `server/realtime/player_event_handlers_utils.py`
+- `server/services/player_combat_service.py`
+- `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 648 (95%)
-- INFERRED: 35 (5%)
+- EXTRACTED: 908 (95%)
+- INFERRED: 48 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

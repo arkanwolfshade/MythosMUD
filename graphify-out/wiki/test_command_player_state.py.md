@@ -33,11 +33,10 @@
 
 ## Relationships
 
-- [command.py](command.py.md) (17 shared connections)
+- [command.py](command.py.md) (16 shared connections)
 - [BaseCommand](BaseCommand.md) (7 shared connections)
-- [test_command_factories_exploration.py](test_command_factories_exploration.py.md) (4 shared connections)
-- [test_command_factories_player_state.py](test_command_factories_player_state.py.md) (2 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (2 shared connections)
+- [Player](Player.md) (6 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (3 shared connections)
 
 ## Source Files
 

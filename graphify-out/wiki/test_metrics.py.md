@@ -1,6 +1,6 @@
 # test_metrics.py
 
-> 68 nodes
+> 66 nodes
 
 ## Key Concepts
 
@@ -9,7 +9,6 @@
 - **._calculate_percentile()** (6 connections) — `server/services/nats_subject_manager/metrics.py`
 - **.get_metrics()** (4 connections) — `server/services/nats_subject_manager/metrics.py`
 - **metrics()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **.__init__()** (3 connections) — `server/services/nats_subject_manager/metrics.py`
 - **test_calculate_percentile_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
 - **test_calculate_percentile_multiple_values()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
 - **test_calculate_percentile_single_value()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
@@ -29,14 +28,15 @@
 - **test_record_error_missing_parameter()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
 - **test_record_error_pattern_not_found()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
 - **test_record_error_unknown()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- *... and 43 more nodes in this community*
+- **test_record_error_validation_error()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
 - [SubjectValidator](SubjectValidator.md) (4 shared connections)
 - [test_pattern_matcher.py](test_pattern_matcher.py.md) (1 shared connections)
+- [deque](deque.md) (1 shared connections)
 - [NATSSubjectManager](NATSSubjectManager.md) (1 shared connections)
-- [RateLimiter](RateLimiter.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 151 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 148 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

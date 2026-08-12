@@ -30,13 +30,15 @@
 
 ## Relationships
 
-- [build_event](build_event.md) (4 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (3 shared connections)
 - [persistence_handler](persistence_handler.md) (2 shared connections)
 - [test_combat_persistence_handler.py](test_combat_persistence_handler.py.md) (2 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
 - [NATSService](NATSService.md) (1 shared connections)
+- [combat_service.py](combat_service.py.md) (1 shared connections)
+- [test_combat_persistence_handler_events.py](test_combat_persistence_handler_events.py.md) (1 shared connections)
 - [test_combat_persistence_handler_persistence.py](test_combat_persistence_handler_persistence.py.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files

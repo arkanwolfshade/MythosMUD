@@ -1,55 +1,42 @@
 # Any
 
-> 56 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **Any** (14 connections)
-- **NPCMessageQueue** (11 connections) — `server/npc/threading.py`
-- **NPCCommunicationBridge** (10 connections) — `server/npc/threading.py`
-- **._execute_wander_movement()** (8 connections) — `server/npc/threading.py`
-- **Lock** (8 connections)
-- **._npc_thread_worker()** (6 connections) — `server/npc/threading.py`
-- **._process_wander_action()** (6 connections) — `server/npc/threading.py`
-- **._process_npc_message()** (5 connections) — `server/npc/threading.py`
-- **.restart_npc_thread()** (5 connections) — `server/npc/threading.py`
-- **.start_npc_thread()** (5 connections) — `server/npc/threading.py`
-- **.to_dict()** (4 connections) — `server/npc/threading.py`
-- **.__init__()** (4 connections) — `server/npc/threading.py`
-- **._parse_behavior_config()** (4 connections) — `server/npc/threading.py`
-- **.stop_npc_thread()** (4 connections) — `server/npc/threading.py`
-- **._stop_npc_thread_internal()** (4 connections) — `server/npc/threading.py`
-- **.to_json()** (3 connections) — `server/npc/threading.py`
-- **.broadcast_to_all_npcs()** (3 connections) — `server/npc/threading.py`
-- **.get_messages_for_npc()** (3 connections) — `server/npc/threading.py`
-- **.get_pending_messages()** (3 connections) — `server/npc/threading.py`
-- **.__init__()** (3 connections) — `server/npc/threading.py`
-- **.receive_message_from_npc()** (3 connections) — `server/npc/threading.py`
-- **.send_message_to_npc()** (3 connections) — `server/npc/threading.py`
-- **.add_message()** (3 connections) — `server/npc/threading.py`
-- **.get_messages()** (3 connections) — `server/npc/threading.py`
-- **.stop()** (3 connections) — `server/npc/threading.py`
-- *... and 31 more nodes in this community*
+- **Any** (7 connections)
+- **._handle_stale_room_data()** (6 connections) — `server/services/room_sync_service.py`
+- **.__init__()** (6 connections) — `server/services/room_sync_service.py`
+- **._fetch_fresh_room_data()** (4 connections) — `server/services/room_sync_service.py`
+- **._process_room_update_with_validation()** (4 connections) — `server/services/room_sync_service.py`
+- **.get_room_data_cache_stats()** (3 connections) — `server/services/room_sync_service.py`
+- **._invalidate_stale_cache()** (3 connections) — `server/services/room_sync_service.py`
+- **._process_room_transition()** (3 connections) — `server/services/room_sync_service.py`
+- **.set_room_service()** (3 connections) — `server/services/room_sync_service.py`
+- **Process room update with comprehensive validation. Args: room_data: Room data…** (1 connections) — `server/services/room_sync_service.py`
+- **Invalidate stale room cache entry. Args: room_id: Room ID to invalidate…** (1 connections) — `server/services/room_sync_service.py`
+- **Fetch fresh room data from room service. Args: room_id: Room ID to fetch…** (1 connections) — `server/services/room_sync_service.py`
+- **Handle stale room data by requesting fresh data. Args: room_data: Stale room…** (1 connections) — `server/services/room_sync_service.py`
+- **Process room transition with proper ordering and validation. Args:…** (1 connections) — `server/services/room_sync_service.py`
+- **Get statistics about the room data cache. Returns: Dict[str, Any]: Cache…** (1 connections) — `server/services/room_sync_service.py`
+- **Initialize the room synchronization service. Args: room_service: Optional…** (1 connections) — `server/services/room_sync_service.py`
+- **Set the room service for fetching fresh room data. Args: room_service:…** (1 connections) — `server/services/room_sync_service.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (22 shared connections)
-- [IdleMovementHandler](IdleMovementHandler.md) (3 shared connections)
-- [NPCDefinition](NPCDefinition.md) (3 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [.acquire](acquire.md) (2 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
-- [Middleware Metrics Collector](Middleware_Metrics_Collector.md) (1 shared connections)
-- [RateLimiter](RateLimiter.md) (1 shared connections)
+- [test_room_sync_service.py](test_room_sync_service.py.md) (8 shared connections)
+- [RoomDataCache](RoomDataCache.md) (1 shared connections)
+- [RoomDataValidator](RoomDataValidator.md) (1 shared connections)
+- [TestRoomDataFixer](TestRoomDataFixer.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/threading.py`
+- `server/services/room_sync_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 152 (93%)
-- INFERRED: 11 (7%)
+- EXTRACTED: 47 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

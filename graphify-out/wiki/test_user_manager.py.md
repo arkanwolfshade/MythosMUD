@@ -35,7 +35,7 @@
 
 - [asyncio](asyncio.md) (18 shared connections)
 - [user_manager](user_manager.md) (2 shared connections)
-- [Player Mute Persistence](Player_Mute_Persistence.md) (1 shared connections)
+- [UserManager](UserManager.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files

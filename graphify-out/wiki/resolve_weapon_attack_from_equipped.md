@@ -35,15 +35,16 @@
 
 - [PrototypeRegistry](PrototypeRegistry.md) (7 shared connections)
 - [PrototypeRegistryError](PrototypeRegistryError.md) (6 shared connections)
-- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (4 shared connections)
+- [CombatParticipant](CombatParticipant.md) (4 shared connections)
 - [ItemPrototypeModel](ItemPrototypeModel.md) (4 shared connections)
 - [get_logger](get_logger.md) (4 shared connections)
 - [combat_attack.py](combat_attack.py.md) (3 shared connections)
 - [item_factory.py](item_factory.py.md) (3 shared connections)
-- [lifespan.py](lifespan.py.md) (2 shared connections)
-- [server/models/game.py](server-models-game.py.md) (2 shared connections)
 - [registry_with_switchblade](registry_with_switchblade.md) (2 shared connections)
+- [lifespan.py](lifespan.py.md) (1 shared connections)
 - [inventory_equip_command.py](inventory_equip_command.py.md) (1 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (1 shared connections)
+- [server/models/game.py](server-models-game.py.md) (1 shared connections)
 
 ## Source Files
 

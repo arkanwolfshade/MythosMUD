@@ -33,16 +33,17 @@
 
 ## Relationships
 
-- [PlayerService](PlayerService.md) (22 shared connections)
+- [PlayerService](PlayerService.md) (20 shared connections)
 - [api/character_creation.py](api-character_creation.py.md) (18 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (10 shared connections)
 - [User](User.md) (7 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (6 shared connections)
-- [professions.py](professions.py.md) (6 shared connections)
-- [api/player_respawn.py](api-player_respawn.py.md) (3 shared connections)
+- [factory.py](factory.py.md) (6 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (5 shared connections)
+- [ValidationError](ValidationError.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [database.py](database.py.md) (2 shared connections)
 - [ErrorType](ErrorType.md) (2 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
+- [api/player_respawn.py](api-player_respawn.py.md) (2 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
 
 ## Source Files

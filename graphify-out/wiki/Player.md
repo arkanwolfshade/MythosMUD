@@ -1,59 +1,65 @@
 # Player
 
-> 295 nodes
+> 1031 nodes
 
 ## Key Concepts
 
 - **Player** (149 connections) — `server/models/player.py`
+- **log_and_raise_enhanced()** (97 connections) — `server/utils/enhanced_error_logging.py`
 - **models/player.py** (82 connections) — `server/models/player.py`
 - **server/models/__init__.py** (71 connections) — `server/models/__init__.py`
 - **Base** (56 connections) — `server/models/base.py`
 - **PlayerLucidity** (55 connections) — `server/models/lucidity.py`
-- **test_player_model.py** (48 connections) — `server/tests/unit/models/test_player_model.py`
 - **test_player_respawn_service.py** (48 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_command_factories_exploration.py** (48 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_command_factories_inventory.py** (48 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **player_service.py** (44 connections) — `server/game/player_service.py`
 - **player_respawn_service.py** (41 connections) — `server/services/player_respawn_service.py`
+- **enhanced_error_logging.py** (38 connections) — `server/utils/enhanced_error_logging.py`
+- **test_async_persistence_delegates.py** (35 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **lucidity.py** (33 connections) — `server/models/lucidity.py`
-- **database_helpers.py** (30 connections) — `server/database_helpers.py`
+- **service.py** (31 connections) — `server/services/passive_lucidity_flux/service.py`
+- **test_command_factories_communication.py** (29 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_command_factories_moderation.py** (29 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_lucidity_models.py** (28 connections) — `server/tests/unit/models/test_lucidity_models.py`
 - **test_world.py** (27 connections) — `server/tests/unit/models/test_world.py`
+- **test_command_factories_player_state.py** (27 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
 - **PlayerInventory** (25 connections) — `server/models/player.py`
 - **LucidityExposureState** (23 connections) — `server/models/lucidity.py`
 - **PlayerSpell** (23 connections) — `server/models/player_spells.py`
+- **asyncio** (23 connections)
 - **LucidityAdjustmentLog** (22 connections) — `server/models/lucidity.py`
-- **PlayerChannelPreferences** (22 connections) — `server/models/player.py`
-- **LucidityCooldown** (21 connections) — `server/models/lucidity.py`
-- **models/base.py** (21 connections) — `server/models/base.py`
-- **PositionState** (20 connections) — `server/models/game.py`
-- **PlayerExploration** (18 connections) — `server/models/player.py`
-- **PlayerSkill** (17 connections) — `server/models/player_skill.py`
-- **PlayerEffect** (16 connections) — `server/models/player_effect.py`
-- **ItemPrototype** (13 connections) — `server/models/item.py`
-- **models/skill.py** (12 connections) — `server/models/skill.py`
-- **ItemInstance** (11 connections) — `server/models/item.py`
-- *... and 270 more nodes in this community*
+- *... and 1006 more nodes in this community*
 
 ## Relationships
 
-- [LucidityService](LucidityService.md) (43 shared connections)
-- [test_lucidity_models.py](test_lucidity_models.py.md) (23 shared connections)
-- [asyncio](asyncio.md) (23 shared connections)
-- [get_logger](get_logger.md) (22 shared connections)
-- [log_and_raise](log_and_raise.md) (21 shared connections)
-- [DatabaseError](DatabaseError.md) (19 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (103 shared connections)
+- [get_logger](get_logger.md) (52 shared connections)
+- [test_player_model.py](test_player_model.py.md) (44 shared connections)
+- [test_command_factories_utility.py](test_command_factories_utility.py.md) (33 shared connections)
+- [LucidityService](LucidityService.md) (30 shared connections)
+- [command.py](command.py.md) (27 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (26 shared connections)
+- [ValidationError](ValidationError.md) (24 shared connections)
+- [BaseCommand](BaseCommand.md) (21 shared connections)
+- [PlayerService](PlayerService.md) (20 shared connections)
+- [LucidityFluxService](LucidityFluxService.md) (17 shared connections)
 - [coerce_int](coerce_int.md) (16 shared connections)
-- [test_player_related_models.py](test_player_related_models.py.md) (15 shared connections)
-- [PlayerRespawnService](PlayerRespawnService.md) (14 shared connections)
-- [server/models/game.py](server-models-game.py.md) (13 shared connections)
-- [test_item.py](test_item.py.md) (13 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (13 shared connections)
 
 ## Source Files
 
-- `server/database_helpers.py`
+- `server/async_persistence.py`
+- `server/commands/channel_commands.py`
+- `server/game/player_creation_service.py`
+- `server/game/player_respawn_wrapper.py`
+- `server/game/player_search_service.py`
+- `server/game/player_service.py`
+- `server/game/player_state_service.py`
+- `server/game/profession_service.py`
 - `server/models/__init__.py`
 - `server/models/base.py`
 - `server/models/calendar.py`
 - `server/models/emote.py`
-- `server/models/game.py`
 - `server/models/item.py`
 - `server/models/lucidity.py`
 - `server/models/player.py`
@@ -61,18 +67,12 @@
 - `server/models/player_skill.py`
 - `server/models/player_spells.py`
 - `server/models/profession.py`
-- `server/models/skill.py`
-- `server/models/skill_use_log.py`
-- `server/models/spell_db.py`
-- `server/models/world.py`
-- `server/persistence/repositories/player_repository_mappers.py`
-- `server/services/lucidity_repository.py`
-- `server/services/player_respawn_service.py`
+- `server/models/quest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1401 (90%)
-- INFERRED: 151 (10%)
+- EXTRACTED: 3960 (96%)
+- INFERRED: 176 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -35,8 +35,9 @@
 
 - [get_logger](get_logger.md) (6 shared connections)
 - [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (3 shared connections)
-- [LucidityFluxService](LucidityFluxService.md) (3 shared connections)
-- [LucidityService](LucidityService.md) (2 shared connections)
+- [HallucinationFrequencyService](HallucinationFrequencyService.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [LucidityFluxService](LucidityFluxService.md) (1 shared connections)
 
 ## Source Files
 

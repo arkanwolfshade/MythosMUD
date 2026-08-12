@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [RealTimeEventHandler](RealTimeEventHandler.md) (11 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
 
 ## Source Files
 

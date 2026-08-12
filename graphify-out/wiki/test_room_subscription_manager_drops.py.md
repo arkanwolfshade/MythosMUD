@@ -17,7 +17,7 @@
 
 ## Relationships
 
-- [RateLimiter](RateLimiter.md) (2 shared connections)
+- [time.py](time.py.md) (2 shared connections)
 - [test_adjust_room_drop_invalid_index](test_adjust_room_drop_invalid_index.md) (1 shared connections)
 - [test_list_room_drops_with_drops](test_list_room_drops_with_drops.md) (1 shared connections)
 - [test_add_room_drop_new_room](test_add_room_drop_new_room.md) (1 shared connections)

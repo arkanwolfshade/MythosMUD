@@ -5,22 +5,22 @@
 ## Key Concepts
 
 - **fixture** (4 connections)
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **mock_player()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **mock_request()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **Create a mock request object.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **Create a mock player object.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **mock_prototype_registry()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **sample_equipped_item()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **sample_inventory_item()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **sample_room_drop()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Create a mock prototype registry.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Create a sample room drop item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Create a sample inventory item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Create a sample equipped item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [test_logout_commands.py](test_logout_commands.py.md) (4 shared connections)
+- [test_look_item.py](test_look_item.py.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_logout_commands.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 

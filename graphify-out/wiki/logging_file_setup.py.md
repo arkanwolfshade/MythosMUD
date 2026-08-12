@@ -35,12 +35,15 @@
 
 - [test_logging_utilities.py](test_logging_utilities.py.md) (11 shared connections)
 - [test_logging_handlers.py](test_logging_handlers.py.md) (9 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
 - [test_windows_safe_rotation.py](test_windows_safe_rotation.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [PlayerGuidFormatter](PlayerGuidFormatter.md) (2 shared connections)
-- [lifespan.py](lifespan.py.md) (2 shared connections)
 - [test_logging_processors.py](test_logging_processors.py.md) (1 shared connections)
+- [lifespan.py](lifespan.py.md) (1 shared connections)
 - [safe_run_static](safe_run_static.md) (1 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (1 shared connections)
+- [threading.py](threading.py.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
 
 ## Source Files
 

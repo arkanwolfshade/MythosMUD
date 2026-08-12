@@ -34,7 +34,7 @@
 ## Relationships
 
 - [GameStateProvider](GameStateProvider.md) (2 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

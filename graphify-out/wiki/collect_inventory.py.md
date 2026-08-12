@@ -35,7 +35,7 @@
 
 - [QuestService](QuestService.md) (7 shared connections)
 - [Player](Player.md) (3 shared connections)
-- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (1 shared connections)
+- [CombatParticipant](CombatParticipant.md) (1 shared connections)
 
 ## Source Files
 

@@ -15,7 +15,7 @@
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 

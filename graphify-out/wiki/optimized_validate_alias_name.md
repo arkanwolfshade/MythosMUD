@@ -18,7 +18,7 @@
 ## Relationships
 
 - [WebSocket Handler Tests](WebSocket_Handler_Tests.md) (5 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [optimized_security_validator.py](optimized_security_validator.py.md) (1 shared connections)
 
 ## Source Files
 

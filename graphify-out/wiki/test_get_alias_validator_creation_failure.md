@@ -9,7 +9,7 @@
 
 ## Relationships
 
-- [ScheduleEntry](ScheduleEntry.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (1 shared connections)
 - [test_alias_storage.py](test_alias_storage.py.md) (1 shared connections)
 
 ## Source Files

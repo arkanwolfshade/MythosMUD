@@ -35,13 +35,12 @@
 
 - [User](User.md) (12 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (10 shared connections)
-- [PlayerService](PlayerService.md) (6 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (9 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
-- [database.py](database.py.md) (3 shared connections)
 - [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
 - [nats_service](nats_service.md) (1 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [lifespan.py](lifespan.py.md) (1 shared connections)
+- [factory.py](factory.py.md) (1 shared connections)
 
 ## Source Files
 

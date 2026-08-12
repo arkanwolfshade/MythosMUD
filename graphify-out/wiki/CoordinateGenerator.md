@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [maps.py](maps.py.md) (3 shared connections)
-- [ExplorationService](ExplorationService.md) (1 shared connections)
+- [maps.py](maps.py.md) (4 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
-- [RateLimiter](RateLimiter.md) (1 shared connections)
+- [deque](deque.md) (1 shared connections)
 
 ## Source Files
 

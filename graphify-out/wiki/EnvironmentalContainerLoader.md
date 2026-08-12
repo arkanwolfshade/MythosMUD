@@ -23,8 +23,7 @@
 
 ## Relationships
 
-- [log_and_raise](log_and_raise.md) (3 shared connections)
-- [LootAllRequest](LootAllRequest.md) (2 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (5 shared connections)
 
 ## Source Files
 

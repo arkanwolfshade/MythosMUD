@@ -1,10 +1,11 @@
 # test_combat_schema.py
 
-> 45 nodes
+> 49 nodes
 
 ## Key Concepts
 
 - **test_combat_schema.py** (20 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **validate_npc_combat_data()** (13 connections) — `server/schemas/combat/combat_schema.py`
 - **combat_schema.py** (13 connections) — `server/schemas/combat/combat_schema.py`
 - **CombatSchemaValidationError** (11 connections) — `server/schemas/combat/combat_schema.py`
 - **validate_base_stats_combat_data()** (11 connections) — `server/schemas/combat/combat_schema.py`
@@ -27,17 +28,16 @@
 - **test_validate_behavior_config_combat_data_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
 - **test_validate_combat_messages_missing_required()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
 - **test_validate_combat_messages_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **Exception** (1 connections)
-- **Combat system JSON schema validation. This module provides JSON schema…** (1 connections) — `server/schemas/combat/combat_schema.py`
-- *... and 20 more nodes in this community*
+- **test_validate_npc_combat_data()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [migrate_combat_data.py](migrate_combat_data.py.md) (14 shared connections)
-- [NPCDefinition](NPCDefinition.md) (2 shared connections)
-- [TestCombatMessagingService](TestCombatMessagingService.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
-- [PlayerSavePreparer](PlayerSavePreparer.md) (1 shared connections)
+- [migrate_combat_data.py](migrate_combat_data.py.md) (8 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
+- [CombatMessagingService](CombatMessagingService.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 167 (97%)
+- EXTRACTED: 185 (97%)
 - INFERRED: 6 (3%)
 - AMBIGUOUS: 0 (0%)
 

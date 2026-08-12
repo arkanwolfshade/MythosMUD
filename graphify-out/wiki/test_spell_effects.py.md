@@ -1,11 +1,12 @@
 # test_spell_effects.py
 
-> 57 nodes
+> 59 nodes
 
 ## Key Concepts
 
 - **test_spell_effects.py** (38 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
 - **asyncio** (23 connections)
+- **test_publish_npc_spell_damage_syncs_participant_when_npc_room_missing()** (6 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
 - **spell_effects()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
 - **test_process_effect_flee_not_in_combat()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
 - **mock_target_match()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
@@ -28,13 +29,15 @@
 - **test_process_effect_damage()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
 - **test_process_effect_flee_services_not_configured()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
 - **test_process_effect_heal()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- **test_process_effect_lucidity_adjust()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
-- *... and 32 more nodes in this community*
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (23 shared connections)
-- [magic_service.py](magic_service.py.md) (5 shared connections)
+- [TargetMatch](TargetMatch.md) (16 shared connections)
+- [magic_service.py](magic_service.py.md) (6 shared connections)
+- [Spell](Spell.md) (4 shared connections)
+- [test_spell.py](test_spell.py.md) (2 shared connections)
+- [spell_effects.py](spell_effects.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 187 (99%)
+- EXTRACTED: 194 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

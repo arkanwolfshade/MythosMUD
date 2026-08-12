@@ -1,21 +1,12 @@
 # test_command_factories_utility.py
 
-> 122 nodes
+> 104 nodes
 
 ## Key Concepts
 
 - **test_command_factories_utility.py** (51 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **UtilityCommandFactory** (20 connections) — `server/utils/command_factories_utility.py`
 - **.create_summon_command()** (14 connections) — `server/utils/command_factories_utility.py`
 - **.create_cast_command()** (12 connections) — `server/utils/command_factories_utility.py`
-- **.create_teleport_command()** (11 connections) — `server/utils/command_factories_utility.py`
-- **.create_alias_command()** (7 connections) — `server/utils/command_factories_utility.py`
-- **.create_learn_command()** (7 connections) — `server/utils/command_factories_utility.py`
-- **.create_spell_command()** (7 connections) — `server/utils/command_factories_utility.py`
-- **.create_unalias_command()** (7 connections) — `server/utils/command_factories_utility.py`
-- **.create_aliases_command()** (6 connections) — `server/utils/command_factories_utility.py`
-- **.create_goto_command()** (6 connections) — `server/utils/command_factories_utility.py`
-- **.create_spells_command()** (6 connections) — `server/utils/command_factories_utility.py`
 - **.create_help_command()** (5 connections) — `server/utils/command_factories_utility.py`
 - **.create_npc_command()** (5 connections) — `server/utils/command_factories_utility.py`
 - **.create_shutdown_command()** (5 connections) — `server/utils/command_factories_utility.py`
@@ -29,17 +20,26 @@
 - **test_create_cast_command_heal_me()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
 - **test_create_cast_command_heal_other_with_target()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
 - **test_create_cast_command_heal_self()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- *... and 97 more nodes in this community*
+- **test_create_cast_command_multi_word()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_cast_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_cast_command_with_target()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_goto_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_goto_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_help_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_help_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_learn_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_learn_command_multi_word()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- *... and 79 more nodes in this community*
 
 ## Relationships
 
-- [server/exceptions.py](server-exceptions.py.md) (15 shared connections)
-- [command.py](command.py.md) (9 shared connections)
-- [test_command_magic.py](test_command_magic.py.md) (5 shared connections)
-- [test_command_alias.py](test_command_alias.py.md) (2 shared connections)
-- [ErrorContext](ErrorContext.md) (2 shared connections)
-- [test_command_combat.py](test_command_combat.py.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [Player](Player.md) (33 shared connections)
+- [test_command_admin.py](test_command_admin.py.md) (3 shared connections)
+- [test_command_magic.py](test_command_magic.py.md) (2 shared connections)
+- [command.py](command.py.md) (2 shared connections)
+- [ScheduleService](ScheduleService.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 365 (99%)
-- INFERRED: 4 (1%)
+- EXTRACTED: 282 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

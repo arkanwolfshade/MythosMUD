@@ -1,13 +1,12 @@
 # admin_setlucidity_command.py
 
-> 31 nodes
+> 29 nodes
 
 ## Key Concepts
 
 - **admin_setlucidity_command.py** (30 connections) — `server/commands/admin_setlucidity_command.py`
 - **Any** (12 connections)
 - **_execute_lucidity_change()** (11 connections) — `server/commands/admin_setlucidity_command.py`
-- **_handle_admin_set_lucidity_command()** (11 connections) — `server/commands/admin_setlucidity_command.py`
 - **_setup_command_execution()** (7 connections) — `server/commands/admin_setlucidity_command.py`
 - **_validate_command_context()** (6 connections) — `server/commands/admin_setlucidity_command.py`
 - **LucidityChangeCtx** (5 connections) — `server/commands/admin_setlucidity_command.py`
@@ -29,18 +28,18 @@
 - **Resolve target player name to UUID, returning error message if not found.** (1 connections) — `server/commands/admin_setlucidity_command.py`
 - **Execute the lucidity change in database session.** (1 connections) — `server/commands/admin_setlucidity_command.py`
 - **Validate command context and extract arguments, returning error if validation…** (1 connections) — `server/commands/admin_setlucidity_command.py`
-- *... and 6 more nodes in this community*
+- **Setup command execution by checking permissions and resolving target player.** (1 connections) — `server/commands/admin_setlucidity_command.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) (7 shared connections)
-- [database.py](database.py.md) (3 shared connections)
+- [AliasStorage](AliasStorage.md) (9 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
 - [LucidityService](LucidityService.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (3 shared connections)
+- [.get_instance](get_instance.md) (2 shared connections)
 - [Player](Player.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
+- [alias_storage.py](alias_storage.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 141 (100%)
+- EXTRACTED: 129 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

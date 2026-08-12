@@ -20,7 +20,7 @@
 
 - [DeadLetterQueue](DeadLetterQueue.md) (5 shared connections)
 - [DeadLetterMessage](DeadLetterMessage.md) (2 shared connections)
-- [get_config](get_config.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [Any](Any.md) (1 shared connections)
 
 ## Source Files

@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [RateLimiter](RateLimiter.md) (3 shared connections)
+- [time.py](time.py.md) (3 shared connections)
 
 ## Source Files
 

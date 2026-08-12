@@ -27,9 +27,9 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [RateLimiter](RateLimiter.md) (2 shared connections)
-- [get_config](get_config.md) (2 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [test_connection_initialization.py](test_connection_initialization.py.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
 
 ## Source Files
 

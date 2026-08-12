@@ -27,9 +27,9 @@
 
 ## Relationships
 
-- [CombatService](CombatService.md) (9 shared connections)
-- [CombatInstance](CombatInstance.md) (2 shared connections)
-- [CombatParticipant](CombatParticipant.md) (2 shared connections)
+- [CombatParticipant](CombatParticipant.md) (7 shared connections)
+- [combat_service.py](combat_service.py.md) (4 shared connections)
+- [CombatService](CombatService.md) (2 shared connections)
 
 ## Source Files
 

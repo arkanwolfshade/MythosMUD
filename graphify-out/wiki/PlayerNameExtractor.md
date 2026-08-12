@@ -1,60 +1,61 @@
 # PlayerNameExtractor
 
-> 28 nodes
+> 166 nodes
 
 ## Key Concepts
 
 - **PlayerNameExtractor** (104 connections) — `server/realtime/player_name_utils.py`
+- **TestPlayerNameExtractor** (62 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **player_event_handlers_utils.py** (16 connections) — `server/realtime/player_event_handlers_utils.py`
+- **Any** (14 connections)
+- **player_name_utils.py** (13 connections) — `server/realtime/player_name_utils.py`
+- **.extract_and_validate_player_name()** (8 connections) — `server/realtime/player_name_utils.py`
+- **._validate_name_not_uuid()** (8 connections) — `server/realtime/player_name_utils.py`
+- **UUID** (8 connections)
+- **._try_fallback_name_sources()** (7 connections) — `server/realtime/player_name_utils.py`
+- **._is_uuid_string()** (6 connections) — `server/realtime/player_name_utils.py`
+- **._is_valid_name_string()** (6 connections) — `server/realtime/player_name_utils.py`
+- **.extract_player_name()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._is_valid_name()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._log_uuid_validation_failure()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._try_player_username()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._try_user_object_name()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._validate_name_basic()** (5 connections) — `server/realtime/player_name_utils.py`
+- **.validate_player_name_not_uuid()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._check_uuid_string_matches()** (4 connections) — `server/realtime/player_name_utils.py`
+- **._extract_initial_player_name()** (4 connections) — `server/realtime/player_name_utils.py`
+- **._get_name_from_user_object()** (4 connections) — `server/realtime/player_name_utils.py`
+- **.is_valid_name_for_occupant()** (4 connections) — `server/realtime/player_name_utils.py`
+- **.test_extract_player_name_user_exception()** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 - **test_player_name_utils.py** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.__init__()** (3 connections) — `server/realtime/player_name_utils.py`
-- **.test_check_uuid_pattern_match_valid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_extract_and_validate_player_name_fallback_username()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_get_name_from_user_object_getattr_fallback()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_get_name_from_user_object_none()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_init()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_is_uuid_string_valid_uuid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_is_valid_name_for_occupant_valid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_try_fallback_name_sources_invalid_current_username_fallback()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_validate_name_basic_whitespace_only()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_validate_name_not_uuid_uuid_pattern()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_validate_player_name_not_uuid_uuid_string()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Utility class for extracting and validating player names. CRITICAL: NEVER uses…** (1 connections) — `server/realtime/player_name_utils.py`
-- **Initialize the player name extractor.** (1 connections) — `server/realtime/player_name_utils.py`
-- **Tests for player name extraction and validation utilities. As documented in…** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _get_name_from_user_object with getattr fallback.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test PlayerNameExtractor initialization.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _get_name_from_user_object when no name available.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _try_fallback_name_sources with username fallback.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _is_uuid_string with valid UUID.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _validate_name_basic with whitespace only.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _check_uuid_pattern_match with valid UUID pattern.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _validate_name_not_uuid with UUID pattern.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- *... and 3 more nodes in this community*
+- **._check_uuid_pattern_match()** (3 connections) — `server/realtime/player_name_utils.py`
+- *... and 141 more nodes in this community*
 
 ## Relationships
 
-- [TestPlayerNameExtractor](TestPlayerNameExtractor.md) (30 shared connections)
-- [Any](Any.md) (17 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (12 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (12 shared connections)
+- [ConnectionManager](ConnectionManager.md) (8 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
 - [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (6 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [PlayerRoomEventHandler](PlayerRoomEventHandler.md) (2 shared connections)
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (2 shared connections)
-- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (2 shared connections)
-- [.test_check_uuid_string_matches_no_match](test_check_uuid_string_matches_no_match.md) (1 shared connections)
-- [.test_extract_and_validate_player_name_invalid_uuid](test_extract_and_validate_player_name_invalid_uuid.md) (1 shared connections)
-- [.test_extract_and_validate_player_name_none](test_extract_and_validate_player_name_none.md) (1 shared connections)
-- [.test_extract_and_validate_player_name_success](test_extract_and_validate_player_name_success.md) (1 shared connections)
+- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (4 shared connections)
+- [Any](Any.md) (1 shared connections)
+- [RealTimeEventHandler](RealTimeEventHandler.md) (1 shared connections)
+- [PlayerRoomEventHandler](PlayerRoomEventHandler.md) (1 shared connections)
+- [is_player_in_grace_period](is_player_in_grace_period.md) (1 shared connections)
+- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (1 shared connections)
+- [realtime/conftest.py](realtime-conftest.py.md) (1 shared connections)
+- [test_player_event_handlers_respawn.py](test_player_event_handlers_respawn.py.md) (1 shared connections)
 
 ## Source Files
 
+- `server/realtime/player_event_handlers_utils.py`
 - `server/realtime/player_name_utils.py`
 - `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 151 (96%)
-- INFERRED: 7 (4%)
+- EXTRACTED: 564 (98%)
+- INFERRED: 9 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,78 +1,78 @@
 # server/exceptions.py
 
-> 461 nodes
+> 658 nodes
 
 ## Key Concepts
 
 - **server/exceptions.py** (196 connections) — `server/exceptions.py`
-- **ValidationError** (158 connections) — `server/exceptions.py`
-- **log_and_raise_enhanced()** (97 connections) — `server/utils/enhanced_error_logging.py`
-- **MythosMUDError** (68 connections) — `server/exceptions.py`
-- **RateLimitError** (67 connections) — `server/exceptions.py`
-- **player_service.py** (44 connections) — `server/game/player_service.py`
-- **legacy_error_handlers.py** (44 connections) — `server/legacy_error_handlers.py`
-- **test_exceptions.py** (43 connections) — `server/tests/unit/test_exceptions.py`
-- **test_legacy_error_handlers.py** (41 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **enhanced_error_logging.py** (38 connections) — `server/utils/enhanced_error_logging.py`
-- **CircuitBreaker** (36 connections) — `server/legacy_error_handlers.py`
-- **TestErrorMapping** (35 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **test_exceptions_comprehensive.py** (35 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
-- **AuthenticationError** (34 connections) — `server/exceptions.py`
-- **ErrorResponse** (33 connections) — `server/legacy_error_handlers.py`
-- **create_error_context()** (32 connections) — `server/exceptions.py`
-- **TestSanitization** (31 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **NetworkError** (28 connections) — `server/exceptions.py`
-- **ResourceNotFoundError** (27 connections) — `server/exceptions.py`
-- **TestErrorHandlers** (27 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **test_command_helpers.py** (27 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **ConfigurationError** (25 connections) — `server/exceptions.py`
-- **ErrorSeverity** (24 connections) — `server/error_types.py`
-- **GameLogicError** (24 connections) — `server/exceptions.py`
-- **TestCircuitBreaker** (22 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- *... and 436 more nodes in this community*
+- **log_and_raise()** (174 connections) — `server/utils/error_logging.py`
+- **DatabaseError** (167 connections) — `server/exceptions.py`
+- **get_session_maker()** (91 connections) — `server/database.py`
+- **database.py** (79 connections) — `server/database.py`
+- **async_persistence.py** (74 connections) — `server/async_persistence.py`
+- **error_logging.py** (55 connections) — `server/utils/error_logging.py`
+- **persistence/container_persistence.py** (54 connections) — `server/persistence/container_persistence.py`
+- **test_container_persistence_extended_row_helpers.py** (53 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- **test_container_persistence_extended_crud.py** (41 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **container_persistence_async.py** (34 connections) — `server/persistence/container_persistence_async.py`
+- **server/persistence/__init__.py** (32 connections) — `server/persistence/__init__.py`
+- **PlayerRepository** (31 connections) — `server/persistence/repositories/player_repository.py`
+- **ContainerData** (28 connections) — `server/persistence/container_data.py`
+- **persistence/repositories/__init__.py** (28 connections) — `server/persistence/repositories/__init__.py`
+- **player_repository.py** (28 connections) — `server/persistence/repositories/player_repository.py`
+- **Skill** (27 connections) — `server/models/skill.py`
+- **persistence/container_helpers.py** (26 connections) — `server/persistence/container_helpers.py`
+- **test_container_persistence_extended_parse.py** (26 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **update_container()** (25 connections) — `server/persistence/container_persistence.py`
+- **ContainerDataCore** (24 connections) — `server/persistence/container_data.py`
+- **container_query_helpers_async.py** (23 connections) — `server/persistence/container_query_helpers_async.py`
+- **container_repository.py** (23 connections) — `server/persistence/repositories/container_repository.py`
+- **container_query_helpers.py** (21 connections) — `server/persistence/container_query_helpers.py`
+- **HealthRepository** (20 connections) — `server/persistence/repositories/health_repository.py`
+- *... and 633 more nodes in this community*
 
 ## Relationships
 
-- [ErrorType](ErrorType.md) (61 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (55 shared connections)
-- [get_logger](get_logger.md) (52 shared connections)
-- [ErrorContext](ErrorContext.md) (47 shared connections)
-- [DatabaseError](DatabaseError.md) (40 shared connections)
-- [test_command_factories_inventory.py](test_command_factories_inventory.py.md) (38 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (28 shared connections)
-- [PlayerService](PlayerService.md) (25 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (18 shared connections)
-- [BaseCommand](BaseCommand.md) (18 shared connections)
-- [test_command_factories_utility.py](test_command_factories_utility.py.md) (15 shared connections)
-- [test_command_helpers_functions.py](test_command_helpers_functions.py.md) (15 shared connections)
+- [Player](Player.md) (103 shared connections)
+- [get_logger](get_logger.md) (94 shared connections)
+- [.get_instance](get_instance.md) (49 shared connections)
+- [MythosMUDError](MythosMUDError.md) (37 shared connections)
+- [ValidationError](ValidationError.md) (33 shared connections)
+- [test_quest_instance_repository.py](test_quest_instance_repository.py.md) (24 shared connections)
+- [player_effect_repository.py](player_effect_repository.py.md) (20 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (18 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (17 shared connections)
+- [magic_service.py](magic_service.py.md) (15 shared connections)
+- [test_exceptions.py](test_exceptions.py.md) (14 shared connections)
+- [EventBus](EventBus.md) (14 shared connections)
 
 ## Source Files
 
-- `server/error_types.py`
+- `e2e-tests/load-tests/get_invite_codes.py`
+- `server/api/player_helpers.py`
+- `server/async_persistence.py`
+- `server/async_persistence_constants.py`
+- `server/async_persistence_direct_queries.py`
+- `server/async_persistence_room_loader.py`
+- `server/auth/argon2_utils.py`
+- `server/auth_utils.py`
+- `server/database.py`
+- `server/database_config_helpers.py`
 - `server/exceptions.py`
-- `server/game/player_creation_service.py`
-- `server/game/player_respawn_wrapper.py`
-- `server/game/player_search_service.py`
-- `server/game/player_service.py`
-- `server/game/player_state_service.py`
-- `server/legacy_error_handlers.py`
-- `server/legacy_error_sanitization.py`
-- `server/monitoring/exception_metrics.py`
-- `server/services/combat_messaging_service.py`
-- `server/tests/unit/test_exceptions.py`
-- `server/tests/unit/test_exceptions_comprehensive.py`
-- `server/tests/unit/test_legacy_error_handlers.py`
-- `server/tests/unit/test_world_loader.py`
-- `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- `server/tests/unit/utils/test_command_helpers.py`
-- `server/tests/unit/utils/test_enhanced_error_logging.py`
-- `server/utils/command_factories.py`
-- `server/utils/command_factories_communication.py`
+- `server/game/character_creation_service.py`
+- `server/game/mechanics.py`
+- `server/game/skill_service.py`
+- `server/models/skill.py`
+- `server/npc/combat_integration_base.py`
+- `server/persistence/__init__.py`
+- `server/persistence/container_create_params.py`
+- `server/persistence/container_data.py`
+- `server/persistence/container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2349 (87%)
-- INFERRED: 360 (13%)
+- EXTRACTED: 3831 (98%)
+- INFERRED: 98 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

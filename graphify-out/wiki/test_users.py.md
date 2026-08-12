@@ -1,17 +1,15 @@
 # test_users.py
 
-> 139 nodes
+> 135 nodes
 
 ## Key Concepts
 
 - **test_users.py** (60 connections) — `server/tests/unit/auth/test_users.py`
 - **UserManager** (46 connections) — `server/auth/users.py`
 - **asyncio** (20 connections)
-- **get_auth_backend()** (12 connections) — `server/auth/users.py`
 - **get_current_user_with_logging()** (11 connections) — `server/auth/users.py`
 - **UsernameAuthenticationBackend** (10 connections) — `server/auth/users.py`
 - **get_username_auth_backend()** (9 connections) — `server/auth/users.py`
-- **get_user_manager()** (8 connections) — `server/auth/users.py`
 - **get_user_db()** (6 connections) — `server/auth/users.py`
 - **.on_after_register()** (5 connections) — `server/auth/users.py`
 - **test_get_current_user_with_logging_long_auth_header()** (5 connections) — `server/tests/unit/auth/test_users.py`
@@ -29,13 +27,15 @@
 - **test_username_authentication_backend_login()** (5 connections) — `server/tests/unit/auth/test_users.py`
 - **.__init__()** (4 connections) — `server/auth/users.py`
 - **.on_after_forgot_password()** (4 connections) — `server/auth/users.py`
-- *... and 114 more nodes in this community*
+- **.on_after_request_verify()** (4 connections) — `server/auth/users.py`
+- **.parse_id()** (4 connections) — `server/auth/users.py`
+- *... and 110 more nodes in this community*
 
 ## Relationships
 
-- [User](User.md) (26 shared connections)
-- [database.py](database.py.md) (11 shared connections)
-- [lifespan.py](lifespan.py.md) (4 shared connections)
+- [User](User.md) (33 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (9 shared connections)
+- [lifespan.py](lifespan.py.md) (3 shared connections)
 - [test_auth_utils.py](test_auth_utils.py.md) (2 shared connections)
 - [UnknownChannelStrategy](UnknownChannelStrategy.md) (2 shared connections)
 
@@ -46,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 466 (98%)
+- EXTRACTED: 444 (98%)
 - INFERRED: 9 (2%)
 - AMBIGUOUS: 0 (0%)
 

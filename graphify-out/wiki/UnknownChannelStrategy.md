@@ -19,7 +19,7 @@
 - [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (3 shared connections)
 - [test_users.py](test_users.py.md) (2 shared connections)
 - [UUID](UUID.md) (1 shared connections)
-- [ChannelBroadcastingStrategyFactory](ChannelBroadcastingStrategyFactory.md) (1 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
 
 ## Source Files
 

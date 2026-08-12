@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [useMythosAppState.ts](useMythosAppState.ts.md) (6 shared connections)
-- [errorHandler.ts](errorHandler.ts.md) (5 shared connections)
+- [Profession](Profession.md) (6 shared connections)
+- [deleteCharacterFlow.ts](deleteCharacterFlow.ts.md) (5 shared connections)
 - [appLazyScreens.tsx](appLazyScreens.tsx.md) (4 shared connections)
 - [roomHandlers.ts](roomHandlers.ts.md) (4 shared connections)
 - [App.tsx](App.tsx.md) (2 shared connections)

@@ -4,36 +4,42 @@
 
 ## Key Concepts
 
-- **asyncio** (17 connections)
-- **test_event_bus_shutdown()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_shutdown_idempotent()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_multiple_services_subscribe_same_events_integration()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_multiple_services_subscribe_to_same_event()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_service_shutdown_removes_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_shutdown_cleans_up_service_subscriptions()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_stop_processing_not_running()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.shutdown() stops processing.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.shutdown() is idempotent.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test _stop_processing() when not running.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.shutdown() automatically cleans up all service subscriptions.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test multiple services subscribing to the same event type.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test that service shutdown removes all subscribers for that service. This test…** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Integration test: Multiple services subscribing to same events and cleanup.…** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **asyncio** (16 connections)
+- **test_apply_dampening_and_send_message_blocked()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_apply_dampening_and_send_message_no_original_content()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_broadcast_by_channel_type_exception()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_get_player_lucidity_tier_exception_in_processing()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_send_messages_to_players_invalid_player_id()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_send_messages_to_players_no_original_content()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_send_messages_to_players_with_tags()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _broadcast_by_channel_type handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _send_messages_to_players handles missing original_content.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _send_messages_to_players adds tags from dampening.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _send_messages_to_players handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _apply_dampening_and_send_message handles blocked messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _apply_dampening_and_send_message handles missing original_content.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _get_player_lucidity_tier handles exceptions during processing.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [test_event_bus.py](test_event_bus.py.md) (8 shared connections)
-- [MockEventClass](MockEventClass.md) (7 shared connections)
-- [test_event_bus_inject_dispatches_to_subscribers](test_event_bus_inject_dispatches_to_subscribers.md) (1 shared connections)
-- [test_handle_task_result_async_with_error](test_handle_task_result_async_with_error.md) (1 shared connections)
+- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (7 shared connections)
+- [test_apply_dampening_and_send_message_exception](test_apply_dampening_and_send_message_exception.md) (1 shared connections)
+- [test_broadcast_to_room_with_filtering_exception](test_broadcast_to_room_with_filtering_exception.md) (1 shared connections)
+- [test_echo_message_to_sender_exception](test_echo_message_to_sender_exception.md) (1 shared connections)
+- [test_echo_message_to_sender_success](test_echo_message_to_sender_success.md) (1 shared connections)
+- [test_get_player_lucidity_tier](test_get_player_lucidity_tier.md) (1 shared connections)
+- [test_get_player_lucidity_tier_default](test_get_player_lucidity_tier_default.md) (1 shared connections)
+- [test_get_player_lucidity_tier_with_uuid](test_get_player_lucidity_tier_with_uuid.md) (1 shared connections)
+- [test_process_message_with_retry_failure](test_process_message_with_retry_failure.md) (1 shared connections)
+- [test_send_messages_to_players_blocked](test_send_messages_to_players_blocked.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/events/test_event_bus.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
+- EXTRACTED: 44 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

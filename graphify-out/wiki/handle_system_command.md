@@ -19,8 +19,7 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (4 shared connections)
 - [.state](state.md) (1 shared connections)
 
 ## Source Files

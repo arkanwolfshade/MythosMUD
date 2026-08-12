@@ -1,31 +1,52 @@
 # fixture
 
-> 8 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **fixture** (4 connections)
-- **mock_container_service()** (3 connections) — `server/tests/unit/api/test_containers.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/api/test_containers.py`
-- **mock_request()** (3 connections) — `server/tests/unit/api/test_containers.py`
-- **mock_user()** (3 connections) — `server/tests/unit/api/test_containers.py`
-- **Create a mock request object.** (1 connections) — `server/tests/unit/api/test_containers.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/api/test_containers.py`
-- **Create a mock container service.** (1 connections) — `server/tests/unit/api/test_containers.py`
+- **fixture** (10 connections)
+- **factory()** (8 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **async_session_factory()** (4 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **lucidity_service_factory()** (4 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **rescue_service()** (4 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_event_dispatcher()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_lucidity_service()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_session()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **sample_lucidity_record()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **sample_rescuer()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **sample_target()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **fixture** (1 connections)
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Create a mock async session.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Create an async session factory.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Create a mock lucidity service.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Create a lucidity service factory.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Create a mock event dispatcher.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Create a RescueService instance.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Create a sample rescuer player.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Create a sample target player.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Create a sample lucidity record.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Create a CommandFactory instance.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [ContainerServiceError](ContainerServiceError.md) (4 shared connections)
-- [User](User.md) (1 shared connections)
+- [test_rescue_service.py](test_rescue_service.py.md) (10 shared connections)
+- [rescue_service.py](rescue_service.py.md) (1 shared connections)
+- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
+- [K](K.md) (1 shared connections)
+- [test_quest_instance_repository.py](test_quest_instance_repository.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/api/test_containers.py`
+- `server/tests/unit/services/test_rescue_service.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 57 (90%)
+- INFERRED: 6 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

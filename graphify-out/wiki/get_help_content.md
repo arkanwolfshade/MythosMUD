@@ -27,9 +27,9 @@
 ## Relationships
 
 - [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
 - [command_handler_unified.py](command_handler_unified.py.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 

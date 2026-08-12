@@ -1,66 +1,78 @@
 # security.ts
 
-> 34 nodes
+> 87 nodes
 
 ## Key Concepts
 
 - **security.ts** (40 connections) — `client/src/utils/security.ts`
-- **SessionManager** (12 connections) — `client/src/utils/security.ts`
-- **useCommandHandlers.ts** (10 connections) — `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
+- **logoutHandler.ts** (28 connections) — `client/src/utils/logoutHandler.ts`
+- **utils/config.ts** (27 connections) — `client/src/utils/config.ts`
+- **mapPageRenderer.tsx** (19 connections) — `client/src/pages/mapPageRenderer.tsx`
+- **API_V1_BASE** (18 connections) — `client/src/utils/config.ts`
+- **getVersionedApiBaseUrl()** (15 connections) — `client/src/utils/config.ts`
+- **useAuthSessionRestore.ts** (15 connections) — `client/src/mythosApp/useAuthSessionRestore.ts`
+- **secureTokenStorage** (13 connections) — `client/src/utils/security.ts`
+- **logoutHandler()** (12 connections) — `client/src/utils/logoutHandler.ts`
+- **mapPageState.ts** (11 connections) — `client/src/pages/mapPageState.ts`
+- **SkillsPage.tsx** (11 connections) — `client/src/pages/SkillsPage.tsx`
+- **AppRouter.tsx** (10 connections) — `client/src/AppRouter.tsx`
+- **MapPage.tsx** (8 connections) — `client/src/pages/MapPage.tsx`
+- **App.logout.test.tsx** (8 connections) — `client/src/__tests__/App.logout.test.tsx`
+- **src/__tests__/LogoutFlow.integration.test.tsx** (8 connections) — `client/src/__tests__/LogoutFlow.integration.test.tsx`
 - **inputSanitizer** (8 connections) — `client/src/utils/security.ts`
 - **CSRFProtection** (7 connections) — `client/src/utils/security.ts`
+- **renderMapPageState()** (6 connections) — `client/src/pages/mapPageRenderer.tsx`
+- **sendLogoutCommandToServer()** (6 connections) — `client/src/utils/logoutHandler.ts`
+- **useMapPageState()** (5 connections) — `client/src/pages/mapPageState.ts`
+- **readLogoutErrorMessage()** (5 connections) — `client/src/utils/logoutHandler.ts`
+- **MapPage.test.tsx** (5 connections) — `client/src/pages/__tests__/MapPage.test.tsx`
+- **config.test.ts** (5 connections) — `client/src/utils/__tests__/config.test.ts`
+- **logoutHandler.test.ts** (5 connections) — `client/src/utils/__tests__/logoutHandler.test.ts`
 - **secureTokenStorage.test.ts** (5 connections) — `client/src/utils/__tests__/secureTokenStorage.test.ts`
-- **useCommandHandlers()** (4 connections) — `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
-- **.generateToken()** (4 connections) — `client/src/utils/security.ts`
-- **csrfProtection.test.ts** (4 connections) — `client/src/utils/__tests__/csrfProtection.test.ts`
-- **security.test-utils.ts** (4 connections) — `client/src/utils/__tests__/security.test-utils.ts`
-- **.cleanupExpiredSessions()** (3 connections) — `client/src/utils/security.ts`
-- **.startCleanupInterval()** (3 connections) — `client/src/utils/security.ts`
-- **setupSecurityMocks()** (3 connections) — `client/src/utils/__tests__/security.test-utils.ts`
-- **useCommandHandlers.test.ts** (3 connections) — `client/src/components/ui-v2/hooks/__tests__/useCommandHandlers.test.ts`
-- **sessionManager.test.ts** (3 connections) — `client/src/utils/__tests__/sessionManager.test.ts`
-- **UseCommandHandlersParams** (2 connections) — `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
-- **.addTokenToHeaders()** (2 connections) — `client/src/utils/security.ts`
-- **.cleanupExpiredTokens()** (2 connections) — `client/src/utils/security.ts`
-- **.generateRandomToken()** (2 connections) — `client/src/utils/security.ts`
-- **.constructor()** (2 connections) — `client/src/utils/security.ts`
-- **.createSession()** (2 connections) — `client/src/utils/security.ts`
-- **.expireSession()** (2 connections) — `client/src/utils/security.ts`
-- **.generateSessionId()** (2 connections) — `client/src/utils/security.ts`
-- **inputSanitizer.test.ts** (2 connections) — `client/src/utils/__tests__/inputSanitizer.test.ts`
-- **localStorageMock** (2 connections) — `client/src/utils/__tests__/security.test-utils.ts`
-- *... and 9 more nodes in this community*
+- *... and 62 more nodes in this community*
 
 ## Relationships
 
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (7 shared connections)
-- [logoutHandler.ts](logoutHandler.ts.md) (6 shared connections)
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (4 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (3 shared connections)
-- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (3 shared connections)
-- [useWebSocketConnection.ts](useWebSocketConnection.ts.md) (3 shared connections)
-- [submitAuth.ts](submitAuth.ts.md) (3 shared connections)
-- [roomHandlers.ts](roomHandlers.ts.md) (2 shared connections)
-- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (2 shared connections)
-- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (2 shared connections)
-- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (2 shared connections)
-- [errorHandler.ts](errorHandler.ts.md) (1 shared connections)
+- [deleteCharacterFlow.ts](deleteCharacterFlow.ts.md) (19 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (13 shared connections)
+- [App.tsx](App.tsx.md) (9 shared connections)
+- [appLazyScreens.tsx](appLazyScreens.tsx.md) (8 shared connections)
+- [ansiToHtml.ts](ansiToHtml.ts.md) (7 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (6 shared connections)
+- [roomHandlers.ts](roomHandlers.ts.md) (6 shared connections)
+- [mapUtils.ts](mapUtils.ts.md) (5 shared connections)
+- [RoomMapEditorRuntime.hooks.ts](RoomMapEditorRuntime.hooks.ts.md) (5 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (5 shared connections)
+- [useWebSocketConnection.ts](useWebSocketConnection.ts.md) (5 shared connections)
+- [useAsciiMapState.ts](useAsciiMapState.ts.md) (3 shared connections)
 
 ## Source Files
 
+- `client/src/AppRouter.tsx`
+- `client/src/__tests__/App.logout.test.tsx`
+- `client/src/__tests__/AppRouter.test.tsx`
+- `client/src/__tests__/LogoutFlow.integration.test.tsx`
+- `client/src/components/map/RoomMapViewer.tsx`
 - `client/src/components/ui-v2/hooks/__tests__/useCommandHandlers.test.ts`
-- `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
+- `client/src/main.tsx`
+- `client/src/mythosApp/useAuthSessionRestore.ts`
+- `client/src/pages/MapPage.tsx`
+- `client/src/pages/SkillsPage.tsx`
+- `client/src/pages/__tests__/MapPage.test.tsx`
+- `client/src/pages/__tests__/SkillsPage.test.tsx`
+- `client/src/pages/mapPageRenderer.tsx`
+- `client/src/pages/mapPageState.ts`
+- `client/src/pages/mapPageStatusViews.tsx`
+- `client/src/utils/__tests__/config.test.ts`
 - `client/src/utils/__tests__/csrfProtection.test.ts`
 - `client/src/utils/__tests__/inputSanitizer.test.ts`
+- `client/src/utils/__tests__/logoutHandler.test.ts`
 - `client/src/utils/__tests__/secureTokenStorage.test.ts`
-- `client/src/utils/__tests__/security.test-utils.ts`
-- `client/src/utils/__tests__/sessionManager.test.ts`
-- `client/src/utils/security.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 142 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 427 (99%)
+- INFERRED: 6 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

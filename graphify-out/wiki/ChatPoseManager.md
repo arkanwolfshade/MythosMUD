@@ -1,12 +1,11 @@
 # ChatPoseManager
 
-> 30 nodes
+> 28 nodes
 
 ## Key Concepts
 
 - **ChatPoseManager** (11 connections) — `server/game/chat_pose_manager.py`
 - **ChatWhisperTracker** (10 connections) — `server/game/chat_whisper_tracker.py`
-- **chat_logger()** (8 connections) — `server/tests/unit/services/test_chat_logger.py`
 - **.__init__()** (7 connections) — `server/game/chat_service.py`
 - **.normalize_player_id()** (5 connections) — `server/game/chat_pose_manager.py`
 - **.clear_pose()** (3 connections) — `server/game/chat_pose_manager.py`
@@ -29,32 +28,27 @@
 - **Initialize chat service. Args: persistence: Database persistence layer…** (1 connections) — `server/game/chat_service.py`
 - **Tracks last whisper senders for reply functionality.** (1 connections) — `server/game/chat_whisper_tracker.py`
 - **Initialize the whisper tracker.** (1 connections) — `server/game/chat_whisper_tracker.py`
-- *... and 5 more nodes in this community*
+- **Store the last whisper sender for a player. Args: receiver_name: Name of the…** (1 connections) — `server/game/chat_whisper_tracker.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [ChatService](ChatService.md) (3 shared connections)
+- [ChatService](ChatService.md) (4 shared connections)
 - [chat_service.py](chat_service.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [test_chat_logger.py](test_chat_logger.py.md) (2 shared connections)
 - [ChatModeration](ChatModeration.md) (1 shared connections)
-- [UUID](UUID.md) (1 shared connections)
-- [ChatLogger](ChatLogger.md) (1 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (1 shared connections)
-- [RateLimiter](RateLimiter.md) (1 shared connections)
-- [.load_player_mutes](load_player_mutes.md) (1 shared connections)
+- [chat_logger](chat_logger.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/chat_pose_manager.py`
 - `server/game/chat_service.py`
 - `server/game/chat_whisper_tracker.py`
-- `server/tests/unit/services/test_chat_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 72 (91%)
-- INFERRED: 7 (9%)
+- EXTRACTED: 67 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

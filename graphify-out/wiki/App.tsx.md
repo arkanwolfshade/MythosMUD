@@ -33,13 +33,11 @@
 
 ## Relationships
 
-- [logoutHandler.ts](logoutHandler.ts.md) (6 shared connections)
+- [security.ts](security.ts.md) (9 shared connections)
 - [appLazyScreens.tsx](appLazyScreens.tsx.md) (3 shared connections)
 - [useMythosAppActions.ts](useMythosAppActions.ts.md) (2 shared connections)
-- [SkillsPage.tsx](SkillsPage.tsx.md) (2 shared connections)
 - [SkillAssignmentScreen.tsx](SkillAssignmentScreen.tsx.md) (2 shared connections)
-- [security.ts](security.ts.md) (1 shared connections)
-- [@testing-library/jest-dom/vitest](%40testing-library-jest-dom-vitest.md) (1 shared connections)
+- [gameStore.ts](gameStore.ts.md) (1 shared connections)
 
 ## Source Files
 

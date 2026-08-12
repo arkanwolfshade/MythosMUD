@@ -1,12 +1,11 @@
 # NATSService
 
-> 146 nodes
+> 130 nodes
 
 ## Key Concepts
 
 - **NATSService** (72 connections) — `server/services/nats_service.py`
 - **CombatEventPublisher** (30 connections) — `server/services/combat_event_publisher.py`
-- **NATSPublishError** (30 connections) — `server/services/nats_exceptions.py`
 - **Any** (17 connections)
 - **._publish_combat_payload()** (14 connections) — `server/services/combat_event_publisher.py`
 - **.__init__()** (14 connections) — `server/services/combat_service.py`
@@ -29,37 +28,35 @@
 - **.publish_player_attacked()** (5 connections) — `server/services/combat_event_publisher.py`
 - **._get_connection()** (5 connections) — `server/services/nats_service.py`
 - **._on_error()** (5 connections) — `server/services/nats_service.py`
-- *... and 121 more nodes in this community*
+- **.publish()** (5 connections) — `server/services/nats_service.py`
+- *... and 105 more nodes in this community*
 
 ## Relationships
 
-- [CombatService](CombatService.md) (27 shared connections)
-- [build_event](build_event.md) (27 shared connections)
-- [test_nats_service.py](test_nats_service.py.md) (5 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (4 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (4 shared connections)
-- [bundles/game.py](bundles-game.py.md) (3 shared connections)
-- [test_nats_service_init_connection_pool](test_nats_service_init_connection_pool.md) (3 shared connections)
+- [combat_service.py](combat_service.py.md) (28 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
+- [test_nats_service.py](test_nats_service.py.md) (4 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (3 shared connections)
+- [CombatService](CombatService.md) (3 shared connections)
+- [test_nats_service_init_with_subject_manager](test_nats_service_init_with_subject_manager.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [BaseEvent](BaseEvent.md) (2 shared connections)
 - [NATSMetrics](NATSMetrics.md) (2 shared connections)
-- [CombatInstance](CombatInstance.md) (2 shared connections)
-- [combat_event_publisher](combat_event_publisher.md) (1 shared connections)
-- [chat_nats_publisher.py](chat_nats_publisher.py.md) (1 shared connections)
-- [nats_service](nats_service.md) (1 shared connections)
+- [CombatParticipant](CombatParticipant.md) (2 shared connections)
+- [._connect_nats](_connect_nats.md) (1 shared connections)
 
 ## Source Files
 
 - `server/services/combat_event_publisher.py`
 - `server/services/combat_service.py`
-- `server/services/nats_exceptions.py`
 - `server/services/nats_service.py`
 - `server/tests/unit/services/test_combat_event_publisher.py`
-- `server/tests/unit/services/test_nats_exceptions.py`
-- `server/tests/unit/services/test_nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 513 (96%)
-- INFERRED: 24 (4%)
+- EXTRACTED: 462 (97%)
+- INFERRED: 15 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

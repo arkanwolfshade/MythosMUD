@@ -13,7 +13,7 @@
 ## Relationships
 
 - [test_user_manager.py](test_user_manager.py.md) (2 shared connections)
-- [Player Mute Persistence](Player_Mute_Persistence.md) (1 shared connections)
+- [UserManager](UserManager.md) (1 shared connections)
 
 ## Source Files
 

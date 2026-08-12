@@ -34,11 +34,10 @@
 
 - [chat_message_senders.py](chat_message_senders.py.md) (10 shared connections)
 - [chat_service.py](chat_service.py.md) (7 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
 - [test_room_utils.py](test_room_utils.py.md) (2 shared connections)
-- [NATSService](NATSService.md) (1 shared connections)
+- [combat_service.py](combat_service.py.md) (1 shared connections)
 - [SubjectValidator](SubjectValidator.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
 
 ## Source Files
 

@@ -24,7 +24,7 @@
 - [test_security_headers.py](test_security_headers.py.md) (3 shared connections)
 - [.dispatch](dispatch.md) (2 shared connections)
 - [fastapi_integration.py](fastapi_integration.py.md) (1 shared connections)
-- [lifespan.py](lifespan.py.md) (1 shared connections)
+- [factory.py](factory.py.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 - [MutableHeaders](MutableHeaders.md) (1 shared connections)
 

@@ -1,32 +1,29 @@
 # fixture
 
-> 9 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **fixture** (5 connections)
-- **room_service_with_cache()** (4 connections) — `server/tests/unit/game/test_room_service.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **mock_room_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **sample_room_dict()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Create a mock room cache service.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Create a RoomService instance with cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Create a sample room dictionary.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **.mock_connection()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.mock_cursor()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.mock_cursor()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **fixture** (3 connections)
+- **Create a mock psycopg2 connection.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Create a mock psycopg2 cursor.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Create a mock psycopg2 cursor.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 
 ## Relationships
 
-- [test_room_service.py](test_room_service.py.md) (4 shared connections)
-- [RoomService](RoomService.md) (1 shared connections)
-- [HealthService](HealthService.md) (1 shared connections)
+- [PostgresConnection](PostgresConnection.md) (2 shared connections)
+- [PostgresCursor](PostgresCursor.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `server/tests/unit/infrastructure/test_postgres_adapter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

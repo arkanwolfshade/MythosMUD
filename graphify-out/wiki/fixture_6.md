@@ -1,30 +1,38 @@
 # fixture
 
-> 7 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **.mock_connection()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.mock_cursor()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.mock_cursor()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **fixture** (3 connections)
-- **Create a mock psycopg2 connection.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Create a mock psycopg2 cursor.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Create a mock psycopg2 cursor.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **fixture** (6 connections)
+- **skill_service()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
+- **catalog_with_own_language_and_mythos()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **mock_player_skill_repo()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **mock_skill_repo()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **mock_skill_use_log_repo()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Mock PlayerSkillRepository.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Mock AsyncPersistenceLayer (get_profession_by_id, get_player_by_id).** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Mock SkillUseLogRepository for use logging and improvement (plan 10.4).** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **SkillService with mocks.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Minimal catalog: accounting, library_use, own_language, cthulhu_mythos (for…** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Mock SkillRepository returning catalog.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
 
 ## Relationships
 
-- [PostgresConnection](PostgresConnection.md) (2 shared connections)
-- [PostgresCursor](PostgresCursor.md) (1 shared connections)
+- [test_skill_service.py](test_skill_service.py.md) (6 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (1 shared connections)
+- [skills_commands.py](skills_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 32 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

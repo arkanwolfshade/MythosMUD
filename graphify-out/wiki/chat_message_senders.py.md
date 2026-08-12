@@ -36,7 +36,7 @@
 - [chat_service.py](chat_service.py.md) (16 shared connections)
 - [chat_nats_publisher.py](chat_nats_publisher.py.md) (10 shared connections)
 - [get_logger](get_logger.md) (7 shared connections)
-- [EmoteService](EmoteService.md) (2 shared connections)
+- [ValidationError](ValidationError.md) (2 shared connections)
 
 ## Source Files
 

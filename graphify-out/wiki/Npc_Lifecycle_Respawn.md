@@ -20,7 +20,9 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [time.py](time.py.md) (1 shared connections)
 
 ## Source Files
 

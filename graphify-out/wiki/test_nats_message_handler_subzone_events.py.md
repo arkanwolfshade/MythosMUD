@@ -27,8 +27,8 @@
 
 ## Relationships
 
-- [asyncio](asyncio.md) (9 shared connections)
-- [build_event](build_event.md) (2 shared connections)
+- [asyncio](asyncio.md) (8 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [test_subscribe_to_subzone_no_subject_manager](test_subscribe_to_subzone_no_subject_manager.md) (1 shared connections)
 - [test_subscribe_to_event_subjects_partial_failure](test_subscribe_to_event_subjects_partial_failure.md) (1 shared connections)
 - [test_unsubscribe_from_subzone_decrease_count](test_unsubscribe_from_subzone_decrease_count.md) (1 shared connections)
@@ -38,7 +38,7 @@
 - [test_subscribe_to_subzone_subscribe_failure](test_subscribe_to_subzone_subscribe_failure.md) (1 shared connections)
 - [test_unsubscribe_from_subzone_unsubscribe_failure](test_unsubscribe_from_subzone_unsubscribe_failure.md) (1 shared connections)
 - [test_handle_combat_started_event](test_handle_combat_started_event.md) (1 shared connections)
-- [test_handle_npc_attacked_event](test_handle_npc_attacked_event.md) (1 shared connections)
+- [test_handle_combat_ended_event](test_handle_combat_ended_event.md) (1 shared connections)
 
 ## Source Files
 

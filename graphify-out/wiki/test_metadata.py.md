@@ -26,7 +26,7 @@
 ## Relationships
 
 - [Player](Player.md) (4 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 
 ## Source Files
 

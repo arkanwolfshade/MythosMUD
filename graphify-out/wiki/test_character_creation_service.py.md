@@ -1,11 +1,10 @@
 # test_character_creation_service.py
 
-> 71 nodes
+> 69 nodes
 
 ## Key Concepts
 
 - **test_character_creation_service.py** (31 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **character_creation_service.py** (13 connections) — `server/game/character_creation_service.py`
 - **CharacterCreationService** (12 connections) — `server/game/character_creation_service.py`
 - **.create_character_with_stats()** (6 connections) — `server/game/character_creation_service.py`
 - **.validate_character_stats()** (5 connections) — `server/game/character_creation_service.py`
@@ -29,17 +28,15 @@
 - **test_get_class_description_all_classes()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
 - **test_get_class_description_known_class()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
 - **test_get_class_description_unknown_class()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- *... and 46 more nodes in this community*
+- **test_roll_character_stats_class_not_available()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [server/exceptions.py](server-exceptions.py.md) (5 shared connections)
-- [Stats](Stats.md) (4 shared connections)
-- [log_and_raise](log_and_raise.md) (4 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (7 shared connections)
+- [Stats](Stats.md) (3 shared connections)
+- [StatsGenerator](StatsGenerator.md) (2 shared connections)
+- [ValidationError](ValidationError.md) (2 shared connections)
 
 ## Source Files
 
@@ -48,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 181 (99%)
+- EXTRACTED: 167 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

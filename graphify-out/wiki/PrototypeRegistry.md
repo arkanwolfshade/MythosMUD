@@ -27,7 +27,7 @@
 - [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (7 shared connections)
 - [item_factory.py](item_factory.py.md) (5 shared connections)
 - [ItemPrototypeModel](ItemPrototypeModel.md) (5 shared connections)
-- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (3 shared connections)
+- [CombatParticipant](CombatParticipant.md) (3 shared connections)
 - [PrototypeRegistryError](PrototypeRegistryError.md) (3 shared connections)
 - [GameBundle](GameBundle.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)

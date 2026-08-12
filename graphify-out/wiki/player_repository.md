@@ -13,7 +13,7 @@
 ## Relationships
 
 - [test_player_repository.py](test_player_repository.py.md) (2 shared connections)
-- [log_and_raise](log_and_raise.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,6 +1,6 @@
 # test_container_helpers_inventory_find.py
 
-> 93 nodes
+> 91 nodes
 
 ## Key Concepts
 
@@ -29,33 +29,32 @@
 - **test_find_wearable_container_falls_back_to_name_slot_match()** (6 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
 - **test_find_wearable_container_resolves_via_wearable_instance_id()** (6 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
 - **test_try_wearable_container_service_finds_component()** (6 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- *... and 68 more nodes in this community*
+- *... and 66 more nodes in this community*
 
 ## Relationships
 
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (14 shared connections)
-- [inventory_pickup_command.py](inventory_pickup_command.py.md) (7 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (5 shared connections)
+- [ContainerServiceError](ContainerServiceError.md) (7 shared connections)
 - [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (5 shared connections)
 - [container_helpers_inventory_display.py](container_helpers_inventory_display.py.md) (4 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (2 shared connections)
+- [inventory_pickup_command.py](inventory_pickup_command.py.md) (3 shared connections)
+- [persist_player](persist_player.md) (3 shared connections)
 - [Player](Player.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
 - [Room](Room.md) (1 shared connections)
+- [inventory_commands.py](inventory_commands.py.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/container_helpers_inventory.py`
-- `server/commands/container_helpers_inventory_display.py`
 - `server/commands/container_helpers_inventory_find.py`
 - `server/tests/unit/api/test_container_exception_handlers.py`
 - `server/tests/unit/commands/test_container_helpers_inventory_find.py`
 
 ## Audit Trail
 
-- EXTRACTED: 503 (97%)
-- INFERRED: 17 (3%)
+- EXTRACTED: 499 (97%)
+- INFERRED: 16 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

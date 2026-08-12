@@ -33,9 +33,11 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (10 shared connections)
-- [NPCDefinition](NPCDefinition.md) (4 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (7 shared connections)
+- [EventBus](EventBus.md) (4 shared connections)
 - [game_tick_processing.py](game_tick_processing.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [time.py](time.py.md) (1 shared connections)
 
 ## Source Files
 

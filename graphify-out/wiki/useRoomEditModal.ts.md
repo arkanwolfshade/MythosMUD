@@ -33,9 +33,11 @@
 
 ## Relationships
 
-- [gameStore.ts](gameStore.ts.md) (5 shared connections)
-- [map/types.ts](map-types.ts.md) (3 shared connections)
+- [useRoomMapData.ts](useRoomMapData.ts.md) (3 shared connections)
+- [RoomNodeData](RoomNodeData.md) (2 shared connections)
 - [RoomMapEditorRuntime.hooks.ts](RoomMapEditorRuntime.hooks.ts.md) (2 shared connections)
+- [gameStore.ts](gameStore.ts.md) (2 shared connections)
+- [map/types.ts](map-types.ts.md) (1 shared connections)
 
 ## Source Files
 

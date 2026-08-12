@@ -27,7 +27,7 @@
 
 ## Relationships
 
-- [lifespan.py](lifespan.py.md) (1 shared connections)
+- [factory.py](factory.py.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files

@@ -1,45 +1,38 @@
 # UUID
 
-> 20 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **UUID** (18 connections)
-- **._handle_movement_error()** (7 connections) — `server/game/movement_service.py`
-- **.move_player()** (7 connections) — `server/game/movement_service.py`
-- **.add_player_to_room()** (6 connections) — `server/game/movement_service.py`
-- **.remove_player_from_room()** (5 connections) — `server/game/movement_service.py`
-- **._validate_add_player_ids()** (5 connections) — `server/game/movement_service.py`
-- **._validate_move_params()** (5 connections) — `server/game/movement_service.py`
-- **._validate_remove_player_params()** (5 connections) — `server/game/movement_service.py`
-- **.get_player_room()** (4 connections) — `server/game/movement_service.py`
-- **._persist_added_player_room()** (4 connections) — `server/game/movement_service.py`
-- **Exception** (1 connections)
-- **Validate movement parameters. Returns False if validation fails (same room),…** (1 connections) — `server/game/movement_service.py`
-- **Handle movement errors with monitoring.** (1 connections) — `server/game/movement_service.py`
-- **Move a player from one room to another atomically. This operation ensures ACID…** (1 connections) — `server/game/movement_service.py`
-- **Validate player and room IDs for add_player_to_room.** (1 connections) — `server/game/movement_service.py`
-- **Update player current_room_id in persistence after room add.** (1 connections) — `server/game/movement_service.py`
-- **Add a player to a room (for initial placement, teleportation, etc.). Args:…** (1 connections) — `server/game/movement_service.py`
-- **Validate parameters for remove_player_from_room operation.** (1 connections) — `server/game/movement_service.py`
-- **Remove a player from a room (for logout, teleportation, etc.). Args: player_id:…** (1 connections) — `server/game/movement_service.py`
-- **Get the room ID where a player is currently located. Args: player_id: The ID of…** (1 connections) — `server/game/movement_service.py`
+- **UUID** (10 connections)
+- **.prune_stale_players()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.cleanup_dead_connections()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._cleanup_dead_connections_for_player()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._remove_stale_player_data()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_players_to_check()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._identify_stale_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._is_websocket_dead()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Identify players whose last_seen timestamp exceeds the max age. Args:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Remove all data for a stale player. Args: pid: Player ID to remove…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Remove players whose presence is stale beyond the threshold. Args: last_seen:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Return True if websocket appears dead (should be cleaned up).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Return list of player IDs to check (single player or all).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Clean up dead connections for a single player.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Clean up dead connections for a specific player or all players. Args:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
 
 ## Relationships
 
-- [MovementService](MovementService.md) (17 shared connections)
-- [log_and_raise](log_and_raise.md) (7 shared connections)
-- [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [movement_helpers.py](movement_helpers.py.md) (1 shared connections)
+- [ConnectionCleaner](ConnectionCleaner.md) (14 shared connections)
+- [.check_and_cleanup](check_and_cleanup.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/movement_service.py`
+- `server/realtime/maintenance/connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 76 (100%)
+- EXTRACTED: 52 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

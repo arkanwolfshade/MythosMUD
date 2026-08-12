@@ -1,6 +1,6 @@
 # TaskRegistry
 
-> 54 nodes
+> 60 nodes
 
 ## Key Concepts
 
@@ -11,6 +11,7 @@
 - **TaskMetadata** (7 connections) — `server/app/task_registry.py`
 - **.register_task()** (7 connections) — `server/app/task_registry.py`
 - **.shutdown_all()** (7 connections) — `server/app/task_registry.py`
+- **.__init__()** (7 connections) — `server/time/tick_scheduler.py`
 - **._create_task_completion_callback()** (5 connections) — `server/app/task_registry.py`
 - **.get_task_lifecycle_metrics()** (5 connections) — `server/app/task_registry.py`
 - **unregister_task()** (5 connections) — `server/app/task_registry.py`
@@ -28,23 +29,28 @@
 - **.get_registry_info()** (3 connections) — `server/app/task_registry.py`
 - **.get_task_stats_by_type()** (3 connections) — `server/app/task_registry.py`
 - **.list_active_tasks()** (3 connections) — `server/app/task_registry.py`
-- **._track_task_creation_metrics()** (3 connections) — `server/app/task_registry.py`
-- *... and 29 more nodes in this community*
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (9 shared connections)
-- [bundles/game.py](bundles-game.py.md) (3 shared connections)
-- [TrackedTaskManager](TrackedTaskManager.md) (3 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (6 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
+- [GameBundle](GameBundle.md) (2 shared connections)
+- [time.py](time.py.md) (1 shared connections)
+- [ScheduleService](ScheduleService.md) (1 shared connections)
+- [MetricsCollector](MetricsCollector.md) (1 shared connections)
 
 ## Source Files
 
 - `server/app/task_registry.py`
+- `server/app/tracked_task_manager.py`
+- `server/time/tick_scheduler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 176 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 191 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

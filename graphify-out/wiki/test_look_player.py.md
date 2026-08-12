@@ -1,6 +1,6 @@
 # test_look_player.py
 
-> 98 nodes
+> 99 nodes
 
 ## Key Concepts
 
@@ -13,6 +13,7 @@
 - **test_visual_indicator.py** (13 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
 - **_try_lookup_player_implicit()** (12 connections) — `server/commands/look_player.py`
 - **test_look_player_helpers.py** (12 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
+- **_get_visible_equipment()** (11 connections) — `server/commands/look_helpers.py`
 - **_get_players_in_room()** (11 connections) — `server/commands/look_player.py`
 - **_find_matching_players()** (9 connections) — `server/commands/look_player.py`
 - **Any** (8 connections)
@@ -28,20 +29,23 @@
 - **test_handle_player_look_not_found()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
 - **test_handle_player_look_success()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
 - **test_handle_player_look_with_instance_number()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_try_lookup_player_implicit_multiple_matches()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- *... and 73 more nodes in this community*
+- *... and 74 more nodes in this community*
 
 ## Relationships
 
-- [look_command.py](look_command.py.md) (12 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (7 shared connections)
-- [test_look_room.py](test_look_room.py.md) (7 shared connections)
-- [disconnect_grace_period.py](disconnect_grace_period.py.md) (3 shared connections)
-- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (3 shared connections)
+- [test_look_helpers.py](test_look_helpers.py.md) (11 shared connections)
+- [look_command.py](look_command.py.md) (7 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (6 shared connections)
+- [test_look_room.py](test_look_room.py.md) (5 shared connections)
+- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (4 shared connections)
+- [is_player_in_grace_period](is_player_in_grace_period.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [test_filter_other_players_adds_linkdead_indicator](test_filter_other_players_adds_linkdead_indicator.md) (2 shared connections)
+- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (1 shared connections)
 
 ## Source Files
 
+- `server/commands/look_helpers.py`
 - `server/commands/look_player.py`
 - `server/tests/unit/commands/test_look_player.py`
 - `server/tests/unit/commands/test_look_player_helpers.py`
@@ -49,7 +53,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 372 (100%)
+- EXTRACTED: 380 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

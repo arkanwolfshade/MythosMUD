@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (6 shared connections)
+- [AliasStorage](AliasStorage.md) (11 shared connections)
 - [Player](Player.md) (5 shared connections)
 - [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (5 shared connections)
-- [database.py](database.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
 - [LucidityService](LucidityService.md) (3 shared connections)
-- [position_commands.py](position_commands.py.md) (3 shared connections)
 - [rescue_service.py](rescue_service.py.md) (3 shared connections)
+- [.get_instance](get_instance.md) (3 shared connections)
 - [GameStateProvider](GameStateProvider.md) (3 shared connections)
-- [test_alias_commands.py](test_alias_commands.py.md) (2 shared connections)
 - [get_username_from_user](get_username_from_user.md) (2 shared connections)
 - [real_time.py](real_time.py.md) (2 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (2 shared connections)
+- [test_communication_commands_support.py](test_communication_commands_support.py.md) (2 shared connections)
+- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (2 shared connections)
 
 ## Source Files
 

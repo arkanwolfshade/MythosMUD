@@ -1,51 +1,61 @@
 # AppConfig
 
-> 23 nodes
+> 139 nodes
 
 ## Key Concepts
 
 - **AppConfig** (31 connections) — `server/config/models/app.py`
+- **CORSConfig** (19 connections) — `server/config/models/cors.py`
+- **GameConfig** (15 connections) — `server/config/models/game.py`
+- **server/config/__init__.py** (11 connections) — `server/config/__init__.py`
+- **LoggingConfig** (10 connections) — `server/config/models/security_logging.py`
+- **._parse_csv()** (10 connections) — `server/config/models/cors.py`
+- **PlayerStatsConfig** (9 connections) — `server/config/models/player_stats.py`
+- **reset_config()** (9 connections) — `server/config/__init__.py`
+- **test_config.py** (9 connections) — `server/tests/unit/config/test_config.py`
+- **test_config_init.py** (9 connections) — `server/tests/unit/config/test_config_init.py`
+- **field_validator** (8 connections)
+- **SecurityConfig** (7 connections) — `server/config/models/security_logging.py`
 - **.to_legacy_dict()** (7 connections) — `server/config/models/app.py`
 - **Any** (6 connections)
+- **field_validator** (6 connections)
+- **_create_config_instance()** (5 connections) — `server/config/__init__.py`
+- **_get_config_cached()** (5 connections) — `server/config/__init__.py`
+- **_get_config_test()** (5 connections) — `server/config/__init__.py`
 - **.__init__()** (5 connections) — `server/config/models/app.py`
 - **._legacy_chat_dict()** (5 connections) — `server/config/models/app.py`
 - **._legacy_cors_dict()** (5 connections) — `server/config/models/app.py`
 - **._legacy_game_entries()** (5 connections) — `server/config/models/app.py`
 - **._legacy_nats_dict()** (5 connections) — `server/config/models/app.py`
-- **._sanitize_environment_for_nested_configs()** (4 connections) — `server/config/models/app.py`
-- **._first_cors_origins_env()** (3 connections) — `server/config/models/app.py`
-- **.set_legacy_environment_variables()** (3 connections) — `server/config/models/app.py`
-- **BaseSettings** (1 connections)
-- **model_validator** (1 connections)
-- **Build legacy dict entries for game config.** (1 connections) — `server/config/models/app.py`
-- **Build legacy nats nested dict.** (1 connections) — `server/config/models/app.py`
-- **Build legacy chat nested dict.** (1 connections) — `server/config/models/app.py`
-- **Build legacy cors nested dict.** (1 connections) — `server/config/models/app.py`
-- **Composite application configuration. This is the main configuration class that…** (1 connections) — `server/config/models/app.py`
-- **Initialize configuration and set environment variables for legacy compatibility.** (1 connections) — `server/config/models/app.py`
-- **Set environment variables for legacy code that reads them directly.** (1 connections) — `server/config/models/app.py`
-- **Return first set CORS origins env var to reduce CCN in _sanitize.** (1 connections) — `server/config/models/app.py`
-- **Normalize environment variables so nested configs can parse them reliably.** (1 connections) — `server/config/models/app.py`
-- **Convert to legacy dict format for backward compatibility. This allows gradual…** (1 connections) — `server/config/models/app.py`
+- **._clean_list_items()** (5 connections) — `server/config/models/cors.py`
+- **._parse_json_array()** (5 connections) — `server/config/models/cors.py`
+- *... and 114 more nodes in this community*
 
 ## Relationships
 
-- [config/models/__init__.py](config-models-__init__.py.md) (13 shared connections)
-- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (3 shared connections)
-- [_create_config_instance](_create_config_instance.md) (3 shared connections)
-- [CORSConfig](CORSConfig.md) (2 shared connections)
-- [GameConfig](GameConfig.md) (2 shared connections)
-- [get_config](get_config.md) (1 shared connections)
-- [ErrorContext](ErrorContext.md) (1 shared connections)
+- [get_logger](get_logger.md) (42 shared connections)
+- [CombatParticipant](CombatParticipant.md) (3 shared connections)
+- [test_config_models.py](test_config_models.py.md) (2 shared connections)
+- [server/tests/conftest.py](server-tests-conftest.py.md) (2 shared connections)
+- [ScheduleService](ScheduleService.md) (1 shared connections)
+- [threading.py](threading.py.md) (1 shared connections)
+- [CombatAttackHandler](CombatAttackHandler.md) (1 shared connections)
 
 ## Source Files
 
+- `server/config/__init__.py`
 - `server/config/models/app.py`
+- `server/config/models/cors.py`
+- `server/config/models/game.py`
+- `server/config/models/player_stats.py`
+- `server/config/models/security_logging.py`
+- `server/tests/unit/config/test_config.py`
+- `server/tests/unit/config/test_config_init.py`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (88%)
-- INFERRED: 11 (12%)
+- EXTRACTED: 410 (96%)
+- INFERRED: 16 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

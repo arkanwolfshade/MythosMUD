@@ -30,7 +30,7 @@
 ## Relationships
 
 - [GameTerminal.tsx](GameTerminal.tsx.md) (2 shared connections)
-- [debugLogger](debugLogger.md) (2 shared connections)
+- [gameStore.ts](gameStore.ts.md) (2 shared connections)
 - [roomHandlers.ts](roomHandlers.ts.md) (2 shared connections)
 
 ## Source Files

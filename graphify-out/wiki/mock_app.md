@@ -1,28 +1,25 @@
 # mock_app
 
-> 7 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **mock_app()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **mock_container()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **mock_player()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **fixture** (3 connections)
-- **Create a mock FastAPI app.** (1 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **Create a mock ApplicationContainer.** (1 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **Create a mock player.** (1 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
+- **mock_app()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **fixture** (2 connections)
+- **Create a mock ASGI app.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
 
 ## Relationships
 
-- [test_game_tick_processing_async.py](test_game_tick_processing_async.py.md) (3 shared connections)
+- [test_security_headers.py](test_security_headers.py.md) (1 shared connections)
+- [fastapi_integration.py](fastapi_integration.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/app/test_game_tick_processing_async.py`
+- `server/tests/unit/middleware/test_security_headers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

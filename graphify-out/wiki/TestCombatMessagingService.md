@@ -1,20 +1,12 @@
 # TestCombatMessagingService
 
-> 60 nodes
+> 40 nodes
 
 ## Key Concepts
 
 - **TestCombatMessagingService** (21 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **CombatMessagingService** (18 connections) — `server/services/combat_messaging_service.py`
 - **asyncio** (16 connections)
-- **.validate_npc_messages()** (6 connections) — `server/services/combat_messaging_service.py`
-- **CombatMessages** (5 connections)
 - **.service()** (4 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **test_combat_messaging_service.py** (4 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.get_attack_message()** (3 connections) — `server/services/combat_messaging_service.py`
-- **.get_combat_end_messages()** (3 connections) — `server/services/combat_messaging_service.py`
-- **.get_combat_start_messages()** (3 connections) — `server/services/combat_messaging_service.py`
-- **.get_death_message()** (3 connections) — `server/services/combat_messaging_service.py`
 - **.test_get_attack_message_attacker_perspective()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
 - **.test_get_attack_message_custom_action_type()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
 - **.test_get_attack_message_custom_npc_messages()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
@@ -29,24 +21,28 @@
 - **.test_get_combat_end_messages_winner_perspective()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
 - **.test_get_combat_start_messages()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
 - **.test_get_combat_start_messages_single_occupant()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- *... and 35 more nodes in this community*
+- **.test_get_death_message_custom()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_death_message_default()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **fixture** (1 connections)
+- **Test get_death_message with custom template.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **Test get_combat_start_messages generates messages for all occupants.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **Test get_combat_start_messages with single occupant.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **Test get_combat_end_messages generates messages for all occupants.** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [server/exceptions.py](server-exceptions.py.md) (4 shared connections)
-- [build_event](build_event.md) (3 shared connections)
-- [CombatInstance](CombatInstance.md) (1 shared connections)
-- [test_combat_schema.py](test_combat_schema.py.md) (1 shared connections)
+- [CombatMessagingService](CombatMessagingService.md) (4 shared connections)
 
 ## Source Files
 
-- `server/services/combat_messaging_service.py`
 - `server/tests/unit/services/test_combat_messaging_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 166 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 111 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

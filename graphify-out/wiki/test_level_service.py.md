@@ -1,6 +1,6 @@
 # test_level_service.py
 
-> 61 nodes
+> 56 nodes
 
 ## Key Concepts
 
@@ -12,8 +12,6 @@
 - **xp_required_for_level()** (6 connections) — `server/game/level_curve.py`
 - **level_curve.py** (6 connections) — `server/game/level_curve.py`
 - **test_grant_xp_level_up_calls_hook()** (5 connections) — `server/tests/unit/game/test_level_service.py`
-- **.check_level_up()** (4 connections) — `server/game/level_service.py`
-- **.grant_xp()** (4 connections) — `server/game/level_service.py`
 - **test_level_from_total_xp_roundtrip()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
 - **test_level_from_total_xp_threshold_level_two()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
 - **test_xp_required_for_level_marginal()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
@@ -29,23 +27,23 @@
 - **test_xp_required_for_level_invalid()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
 - **mock_persistence()** (3 connections) — `server/tests/unit/game/test_level_service.py`
 - **sample_player()** (3 connections) — `server/tests/unit/game/test_level_service.py`
-- *... and 36 more nodes in this community*
+- **test_check_level_up_player_not_found_raises()** (3 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_grant_xp_increases_xp_and_persists()** (3 connections) — `server/tests/unit/game/test_level_service.py`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [GameBundle](GameBundle.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (8 shared connections)
 
 ## Source Files
 
 - `server/game/level_curve.py`
-- `server/game/level_service.py`
 - `server/tests/unit/game/test_level_curve.py`
 - `server/tests/unit/game/test_level_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 193 (100%)
+- EXTRACTED: 180 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

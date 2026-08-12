@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [test_logout_commands.py](test_logout_commands.py.md) (8 shared connections)
-- [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
+- [logout_commands.py](logout_commands.py.md) (8 shared connections)
+- [test_status_commands.py](test_status_commands.py.md) (1 shared connections)
 
 ## Source Files
 

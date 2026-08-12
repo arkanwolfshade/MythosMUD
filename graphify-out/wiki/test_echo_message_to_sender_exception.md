@@ -9,7 +9,7 @@
 
 ## Relationships
 
-- [build_event](build_event.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [asyncio](asyncio.md) (1 shared connections)
 - [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (1 shared connections)
 

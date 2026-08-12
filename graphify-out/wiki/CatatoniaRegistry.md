@@ -1,11 +1,12 @@
 # CatatoniaRegistry
 
-> 65 nodes
+> 67 nodes
 
 ## Key Concepts
 
 - **CatatoniaRegistry** (42 connections) — `server/services/catatonia_registry.py`
 - **TestCatatoniaRegistry** (26 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **catatonia_registry.py** (12 connections) — `server/services/catatonia_registry.py`
 - **UUID** (6 connections)
 - **test_catatonia_registry.py** (5 connections) — `server/tests/unit/services/test_catatonia_registry.py`
 - **.is_catatonic()** (4 connections) — `server/services/catatonia_registry.py`
@@ -28,18 +29,18 @@
 - **.test_on_catatonia_cleared_with_string()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
 - **.test_on_catatonia_cleared_with_uuid()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
 - **.test_on_catatonia_entered_with_string()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_on_catatonia_entered_with_uuid()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- *... and 40 more nodes in this community*
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (1 shared connections)
-- [LucidityService](LucidityService.md) (1 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (3 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (3 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (2 shared connections)
+- [ContainerServiceError](ContainerServiceError.md) (2 shared connections)
+- [LucidityService](LucidityService.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [catatonia_check.py](catatonia_check.py.md) (1 shared connections)
+- [threading.py](threading.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 199 (98%)
+- EXTRACTED: 212 (98%)
 - INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 

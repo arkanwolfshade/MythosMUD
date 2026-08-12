@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [useMythosAppState.ts](useMythosAppState.ts.md) (4 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (4 shared connections)
 - [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (3 shared connections)
 
 ## Source Files

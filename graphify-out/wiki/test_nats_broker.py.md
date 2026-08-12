@@ -35,7 +35,7 @@
 
 - [NATSMessageBroker](NATSMessageBroker.md) (10 shared connections)
 - [nats_broker](nats_broker.md) (2 shared connections)
-- [config/models/__init__.py](config-models-__init__.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

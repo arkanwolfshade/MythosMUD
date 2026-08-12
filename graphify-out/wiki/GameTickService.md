@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
-- [get_global_tracked_manager](get_global_tracked_manager.md) (1 shared connections)
+- [time.py](time.py.md) (3 shared connections)
 
 ## Source Files
 

@@ -34,11 +34,12 @@
 ## Relationships
 
 - [quest_commands.py](quest_commands.py.md) (9 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (5 shared connections)
 - [test_look_room.py](test_look_room.py.md) (3 shared connections)
 - [look_command.py](look_command.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [mock_lifecycle_manager](mock_lifecycle_manager.md) (2 shared connections)
-- [test_communication_commands_support.py](test_communication_commands_support.py.md) (1 shared connections)
+- [validate_shutdown_admin_permission](validate_shutdown_admin_permission.md) (1 shared connections)
 
 ## Source Files
 

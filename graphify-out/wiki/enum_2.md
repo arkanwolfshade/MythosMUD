@@ -1,10 +1,13 @@
 # enum
 
-> 7 nodes
+> 10 nodes
 
 ## Key Concepts
 
 - **enum** (7 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **zone_type** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 - **city** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 - **countryside** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 - **desert** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
@@ -22,7 +25,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

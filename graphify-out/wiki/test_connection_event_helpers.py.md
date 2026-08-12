@@ -1,11 +1,12 @@
 # test_connection_event_helpers.py
 
-> 22 nodes
+> 24 nodes
 
 ## Key Concepts
 
 - **test_connection_event_helpers.py** (13 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
 - **subscribe_to_room_events_impl()** (10 connections) — `server/realtime/connection_event_helpers.py`
+- **unsubscribe_from_room_events_impl()** (10 connections) — `server/realtime/connection_event_helpers.py`
 - **asyncio** (8 connections)
 - **test_subscribe_to_room_events_impl_attribute_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
 - **test_subscribe_to_room_events_impl_database_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
@@ -17,6 +18,7 @@
 - **test_unsubscribe_from_room_events_impl_success()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
 - **Any** (2 connections)
 - **Subscribe to room movement events for occupant broadcasting.** (1 connections) — `server/realtime/connection_event_helpers.py`
+- **Unsubscribe from room movement events.** (1 connections) — `server/realtime/connection_event_helpers.py`
 - **Unit tests for connection event helpers. Tests the connection_event_helpers…** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
 - **Test unsubscribe_from_room_events_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
 - **Test subscribe_to_room_events_impl() successfully subscribes to events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
@@ -29,10 +31,9 @@
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (8 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (6 shared connections)
+- [connection_manager.py](connection_manager.py.md) (4 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [AttributeError](AttributeError.md) (2 shared connections)
 
 ## Source Files
 
@@ -41,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 77 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 88 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

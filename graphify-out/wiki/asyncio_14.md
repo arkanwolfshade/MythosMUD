@@ -1,47 +1,41 @@
 # asyncio
 
-> 37 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **asyncio** (18 connections)
-- **test_add_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_no_container_duplicate()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_player_not_found()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_success()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_not_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_player_muted_async_false()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_player_muted_async_true()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_load_player_mutes_async_cache_valid()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_load_player_mutes_batch_all_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_load_player_mutes_batch_empty_list()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_player_not_found()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_success()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test is_player_muted_async() returns True when player is muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test is_player_muted_async() returns False when player is not muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test add_admin() handles missing container.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test add_admin() handles missing persistence.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test add_admin() handles player not found.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test remove_admin() handles missing container.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- *... and 12 more nodes in this community*
+- **asyncio** (9 connections)
+- **test_filter_online_players_all_online()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_filter_online_players_invalid_last_active()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_filter_online_players_no_last_active()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_filter_online_players_some_offline()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_handle_who_command_error_handling()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_handle_who_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_handle_who_command_no_players()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_handle_who_command_success()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_handle_who_command_with_filter()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test filter_online_players with all players online.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test filter_online_players with some players offline.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test filter_online_players with players without last_active.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test handle_who_command when persistence is not available.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test handle_who_command when no players are found.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test handle_who_command successful execution.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test handle_who_command with filter term.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test handle_who_command handles exceptions gracefully.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test filter_online_players() handles invalid last_active.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
 
 ## Relationships
 
-- [test_user_manager.py](test_user_manager.py.md) (18 shared connections)
+- [who_commands.py](who_commands.py.md) (9 shared connections)
+- [test_who_commands.py](test_who_commands.py.md) (9 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_user_manager.py`
+- `server/tests/unit/commands/test_who_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (100%)
+- EXTRACTED: 54 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

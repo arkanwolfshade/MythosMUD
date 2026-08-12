@@ -21,18 +21,18 @@
 
 ## Relationships
 
-- [fastapi_integration.py](fastapi_integration.py.md) (5 shared connections)
+- [fastapi_integration.py](fastapi_integration.py.md) (6 shared connections)
 - [test_async_logging](test_async_logging.md) (3 shared connections)
 - [process_batch](process_batch.md) (3 shared connections)
 - [WebSocket](WebSocket.md) (2 shared connections)
 - [risky_operation](risky_operation.md) (2 shared connections)
 - [LoggingMiddleware](LoggingMiddleware.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
 - [test_basic_logging](test_basic_logging.md) (1 shared connections)
 - [test_logging_performance_metrics](test_logging_performance_metrics.md) (1 shared connections)
 - [test_fastapi_endpoint_logging](test_fastapi_endpoint_logging.md) (1 shared connections)
 - [database](database.md) (1 shared connections)
 - [client](client.md) (1 shared connections)
+- [test_context_binding](test_context_binding.md) (1 shared connections)
 
 ## Source Files
 

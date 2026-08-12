@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (14 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (2 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (14 shared connections)
+- [NPCEventHandler](NPCEventHandler.md) (2 shared connections)
 
 ## Source Files
 

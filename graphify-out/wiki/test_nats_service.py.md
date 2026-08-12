@@ -1,6 +1,6 @@
 # test_nats_service.py
 
-> 85 nodes
+> 87 nodes
 
 ## Key Concepts
 
@@ -19,8 +19,9 @@
 - **test_flush_batch_empty()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
 - **test_flush_batch_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
 - **test_is_connected_true()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_service_init_message_batch()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_connection_pool()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
 - **test_nats_service_init_with_config()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_with_dict()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
 - **test_perform_health_check_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
 - **test_perform_health_check_no_client()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
 - **test_perform_health_check_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
@@ -28,19 +29,18 @@
 - **test_publish_batch_adds_to_batch()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
 - **test_publish_batch_flushes_when_full()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
 - **test_publish_no_available_connections()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_publish_not_initialized()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- *... and 60 more nodes in this community*
+- *... and 62 more nodes in this community*
 
 ## Relationships
 
 - [NATSMetrics](NATSMetrics.md) (16 shared connections)
-- [NATSService](NATSService.md) (5 shared connections)
-- [build_event](build_event.md) (5 shared connections)
-- [test_nats_service_init_connection_pool](test_nats_service_init_connection_pool.md) (3 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [NATSService](NATSService.md) (4 shared connections)
+- [test_nats_service_init_with_subject_manager](test_nats_service_init_with_subject_manager.md) (3 shared connections)
 - [NATSConnectionStateMachine](NATSConnectionStateMachine.md) (2 shared connections)
 - [nats_service](nats_service.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [config/models/__init__.py](config-models-__init__.py.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
+- [combat_service.py](combat_service.py.md) (1 shared connections)
 - [NATSSubjectManager](NATSSubjectManager.md) (1 shared connections)
 
 ## Source Files
@@ -49,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 276 (100%)
+- EXTRACTED: 280 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
