@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_get_regen_multiplier_standing()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test _get_regen_multiplier() returns 1.0 for standing position.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **UI Panel Resize Bug** (1 connections) — `investigations/sessions/2025-01-XX_session-ui-panel-resize-bug.md`
+- **UI Panel Resize Fix Verified** (1 connections) — `investigations/sessions/2025-01-XX_verification-ui-panel-resize-fix.md`
 
 ## Relationships
 
-- [Cursor Agents Quick](Cursor_Agents_Quick.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `investigations/sessions/2025-01-XX_session-ui-panel-resize-bug.md`
+- `investigations/sessions/2025-01-XX_verification-ui-panel-resize-fix.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

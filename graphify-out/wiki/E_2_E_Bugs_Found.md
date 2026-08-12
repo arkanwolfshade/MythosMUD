@@ -1,27 +1,24 @@
 # E 2 E Bugs Found
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **TestNPCSessionMaker** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_get_npc_session_maker()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Test NPC session maker functions.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Test get_npc_session_maker() returns session maker.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Chat Messages Not Displayed to Sender (Bug #2)** (1 connections) — `e2e-tests/BUGS_FOUND.md`
+- **Player ID Format Mismatch** (1 connections) — `e2e-tests/BUGS_FOUND.md`
 
 ## Relationships
 
-- [Combat Schema Validation](Combat_Schema_Validation.md) (2 shared connections)
-- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_npc_database.py`
+- `e2e-tests/BUGS_FOUND.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (89%)
-- INFERRED: 1 (11%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -7,10 +7,10 @@
 - **cli.sh** (7 connections) — `.codacy/cli.sh`
 - **download()** (3 connections) — `.codacy/cli.sh`
 - **download_cli()** (3 connections) — `.codacy/cli.sh`
-- **cli.sh script** (2 connections) — `.codacy/cli.sh`
+- **download_file()** (2 connections) — `.codacy/cli.sh`
 - **get_latest_version()** (2 connections) — `.codacy/cli.sh`
 - **handle_rate_limit()** (2 connections) — `.codacy/cli.sh`
-- **download_file()** (2 connections) — `.codacy/cli.sh`
+- **cli.sh script** (2 connections) — `.codacy/cli.sh`
 - **get_version_from_yaml()** (1 connections) — `.codacy/cli.sh`
 
 ## Relationships

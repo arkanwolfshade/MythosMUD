@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **Truly Dead Code** (2 connections) — `docs/dead-code.md`
-- **Vulture Allowlist** (1 connections) — `docs/dead-code.md`
 - **Knip Client Dead Code Tooling** (1 connections) — `docs/dead-code.md`
+- **Vulture Allowlist** (1 connections) — `docs/dead-code.md`
 
 ## Relationships
 

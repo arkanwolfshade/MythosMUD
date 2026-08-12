@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Motion Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/motion-design.md`
-- **Motion 100/300/500 Duration Rule** (1 connections) — `.cursor/skills/frontend-design/reference/motion-design.md`
+- **Mobile-First Responsive Design** (1 connections) — `.cursor/skills/frontend-design/reference/responsive-design.md`
+- **Responsive Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/responsive-design.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/reference/motion-design.md`
+- `.cursor/skills/frontend-design/reference/responsive-design.md`
 
 ## Audit Trail
 

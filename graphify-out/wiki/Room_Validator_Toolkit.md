@@ -1,30 +1,32 @@
 # Room Validator Toolkit
 
-> 8 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **enum** (6 connections) — `schemas/calendar/holiday.schema.json`
-- **tradition** (3 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **catholic** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **islamic** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **jewish** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **neo_pagan** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **mythos** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **Room Pathing Validator Implementation Spec** (3 connections) — `tools/room_toolkit/room_validator/room_validator_instructions.md`
+- **Connectivity Analysis** (2 connections) — `tools/room_toolkit/room_validator/README.md`
+- **Legacy string exit format** (2 connections) — `tools/room_toolkit/room_validator/README.md`
+- **Object exit format with flags** (2 connections) — `tools/room_toolkit/room_validator/README.md`
+- **Legacy exit format migration support** (2 connections) — `tools/room_toolkit/room_validator/room_validator_instructions.md`
+- **earth_arkhamcity_intersection_derby_high start room** (2 connections) — `tools/room_toolkit/room_validator/room_validator_instructions.md`
+- **Bidirectional Path Validation** (1 connections) — `tools/room_toolkit/room_validator/README.md`
+- **Exit Flags (one_way, self_reference)** (1 connections) — `tools/room_toolkit/room_validator/README.md`
+- **ValidationRule abstract base** (1 connections) — `tools/room_toolkit/room_validator/room_validator_instructions.md`
 
 ## Relationships
 
-- [Logging Structured Processors](Logging_Structured_Processors.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `tools/room_toolkit/room_validator/README.md`
+- `tools/room_toolkit/room_validator/room_validator_instructions.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 12 (75%)
+- INFERRED: 4 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

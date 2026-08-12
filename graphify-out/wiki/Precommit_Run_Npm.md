@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **_resolved_npm()** (3 connections) — `scripts/precommit_run_npm.py`
-- **precommit_run_npm.py** (2 connections) — `scripts/precommit_run_npm.py`
 - **main()** (2 connections) — `scripts/precommit_run_npm.py`
+- **precommit_run_npm.py** (2 connections) — `scripts/precommit_run_npm.py`
 - **Return absolute path to npm (prefer npm.cmd on Windows), or None if not found.** (1 connections) — `scripts/precommit_run_npm.py`
 
 ## Relationships

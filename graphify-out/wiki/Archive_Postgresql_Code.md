@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **SELECT * Anti-Pattern** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
 - **players.current_room_id Index Gap** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
+- **SELECT * Anti-Pattern** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
 
 ## Relationships
 

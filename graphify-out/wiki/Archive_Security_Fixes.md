@@ -1,12 +1,11 @@
 # Archive Security Fixes
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **LoginGracePeriodBanner.tsx** (2 connections) — `client/src/components/ui-v2/LoginGracePeriodBanner.tsx`
-- **LoginGracePeriodBannerProps** (1 connections) — `client/src/components/ui-v2/LoginGracePeriodBanner.tsx`
-- **LoginGracePeriodBanner** (1 connections) — `client/src/components/ui-v2/LoginGracePeriodBanner.tsx`
+- **CWE-209 Information Exposure** (1 connections) — `docs/archive/SECURITY_FIXES.md`
+- **Stack Trace Sanitization** (1 connections) — `docs/archive/SECURITY_FIXES.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `client/src/components/ui-v2/LoginGracePeriodBanner.tsx`
+- `docs/archive/SECURITY_FIXES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

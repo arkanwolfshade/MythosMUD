@@ -1,14 +1,11 @@
 # Architecture Decisions Adr
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **rename_players_to_population.py** (2 connections) — `server/alembic/versions/rename_players_to_population.py`
-- **upgrade()** (2 connections) — `server/alembic/versions/rename_players_to_population.py`
-- **downgrade()** (2 connections) — `server/alembic/versions/rename_players_to_population.py`
-- **Rename columns from min_players/max_players to min_population/max_population.** (1 connections) — `server/alembic/versions/rename_players_to_population.py`
-- **Revert column names back to min_players/max_players.** (1 connections) — `server/alembic/versions/rename_players_to_population.py`
+- **InstanceManager** (1 connections) — `docs/architecture/decisions/ADR-009-instanced-rooms.md`
+- **ADR-009 Instanced Rooms** (1 connections) — `docs/architecture/decisions/ADR-009-instanced-rooms.md`
 
 ## Relationships
 
@@ -16,11 +13,11 @@
 
 ## Source Files
 
-- `server/alembic/versions/rename_players_to_population.py`
+- `docs/architecture/decisions/ADR-009-instanced-rooms.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

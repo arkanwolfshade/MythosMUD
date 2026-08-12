@@ -1,33 +1,16 @@
 # Subsystems Subsystem Design
 
-> 24 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Game Subsystem Design Documents** (8 connections) — `docs/subsystems/README.md`
-- **PostgreSQL Procedures Migration - Audit Spreadsheet** (5 connections) — `docs/postgresql_procedures_audit.md`
-- **Combat Subsystem** (5 connections) — `docs/subsystems/SUBSYSTEM_COMBAT_DESIGN.md`
-- **Disconnect Grace Period (linkdead)** (3 connections) — `docs/realtime.md`
-- **Lucidity Subsystem** (3 connections) — `docs/subsystems/SUBSYSTEM_LUCIDITY_DESIGN.md`
-- **NPC Subsystem** (3 connections) — `docs/subsystems/SUBSYSTEM_NPC_DESIGN.md`
-- **postgresql_procedures_audit.md** (2 connections) — `docs/postgresql_procedures_audit.md`
-- **Gunicorn + Uvicorn Production** (2 connections) — `docs/deployment.md`
-- **HTTPS and WSS Requirement** (2 connections) — `docs/deployment.md`
-- **WebSocket JWT in URL Query String** (2 connections) — `docs/realtime.md`
-- **Login Grace Period (warded)** (2 connections) — `docs/realtime.md`
-- **Magic Subsystem** (2 connections) — `docs/subsystems/SUBSYSTEM_MAGIC_DESIGN.md`
-- **Party Subsystem** (2 connections) — `docs/subsystems/SUBSYSTEM_PARTY_DESIGN.md`
-- **Scope** (1 connections) — `docs/postgresql_procedures_audit.md`
-- **Audit Table** (1 connections) — `docs/postgresql_procedures_audit.md`
-- **Existing PostgreSQL Functions (Already in DDL)** (1 connections) — `docs/postgresql_procedures_audit.md`
-- **Domain Grouping Summary** (1 connections) — `docs/postgresql_procedures_audit.md`
-- **Linkdead Grace Period** (1 connections) — `docs/debugging-mid-run-drops.md`
-- **Item System Observability Runbook** (1 connections) — `docs/runbooks/item_system_observability.md`
-- **Admin Commands Subsystem** (1 connections) — `docs/subsystems/SUBSYSTEM_ADMIN_COMMANDS_DESIGN.md`
-- **NPCCombatIntegrationService** (1 connections) — `docs/subsystems/SUBSYSTEM_COMBAT_DESIGN.md`
-- **Emote / Pose Subsystem** (1 connections) — `docs/subsystems/SUBSYSTEM_EMOTE_POSE_DESIGN.md`
-- **Follow Subsystem** (1 connections) — `docs/subsystems/SUBSYSTEM_FOLLOW_DESIGN.md`
-- **Lucidity Recovery Rituals** (1 connections) — `docs/subsystems/SUBSYSTEM_LUCIDITY_DESIGN.md`
+- **Respawn Subsystem** (3 connections) — `docs/subsystems/SUBSYSTEM_RESPAWN_DESIGN.md`
+- **Determination Points (DP)** (3 connections) — `docs/subsystems/SUBSYSTEM_STATUS_EFFECTS_DESIGN.md`
+- **Limbo Room Death State** (2 connections) — `docs/subsystems/SUBSYSTEM_RESPAWN_DESIGN.md`
+- **Incapacitation (DP 0 to -9)** (2 connections) — `docs/subsystems/SUBSYSTEM_STATUS_EFFECTS_DESIGN.md`
+- **Status Effects Subsystem** (2 connections) — `docs/subsystems/SUBSYSTEM_STATUS_EFFECTS_DESIGN.md`
+- **PlayerRespawnService** (1 connections) — `docs/subsystems/SUBSYSTEM_RESPAWN_DESIGN.md`
+- **no_death Rooms (ADR-009)** (1 connections) — `docs/subsystems/SUBSYSTEM_STATUS_EFFECTS_DESIGN.md`
 
 ## Relationships
 
@@ -35,25 +18,13 @@
 
 ## Source Files
 
-- `docs/debugging-mid-run-drops.md`
-- `docs/deployment.md`
-- `docs/postgresql_procedures_audit.md`
-- `docs/realtime.md`
-- `docs/runbooks/item_system_observability.md`
-- `docs/subsystems/README.md`
-- `docs/subsystems/SUBSYSTEM_ADMIN_COMMANDS_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_COMBAT_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_EMOTE_POSE_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_FOLLOW_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_LUCIDITY_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_MAGIC_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_NPC_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_PARTY_DESIGN.md`
+- `docs/subsystems/SUBSYSTEM_RESPAWN_DESIGN.md`
+- `docs/subsystems/SUBSYSTEM_STATUS_EFFECTS_DESIGN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (81%)
-- INFERRED: 10 (19%)
+- EXTRACTED: 12 (86%)
+- INFERRED: 2 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

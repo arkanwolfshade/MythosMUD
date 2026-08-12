@@ -1,14 +1,11 @@
 # Cursor Skills Mythosmud
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **MythosMUD Pre-Commit Checklist Skill** (4 connections) — `.cursor/skills/mythosmud-pre-commit-checklist/SKILL.md`
-- **MythosMUD Code Quality AI Skill** (1 connections) — `.cursor/skills/mythosmud-code-quality-ai/SKILL.md`
-- **MythosMUD Commit Messages Skill** (1 connections) — `.cursor/skills/mythosmud-commit-messages/SKILL.md`
-- **MythosMUD Test Writing Skill** (1 connections) — `.cursor/skills/mythosmud-test-writing/SKILL.md`
-- **Definition of Done Checklist** (1 connections) — `.cursor/skills/mythosmud-pre-commit-checklist/SKILL.md`
+- **Obsidian LLM Wiki Vault** (1 connections) — `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
+- **MythosMUD LLM Wiki Skill** (1 connections) — `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
 
 ## Relationships
 
@@ -16,15 +13,12 @@
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-code-quality-ai/SKILL.md`
-- `.cursor/skills/mythosmud-commit-messages/SKILL.md`
-- `.cursor/skills/mythosmud-pre-commit-checklist/SKILL.md`
-- `.cursor/skills/mythosmud-test-writing/SKILL.md`
+- `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (25%)
-- INFERRED: 6 (75%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

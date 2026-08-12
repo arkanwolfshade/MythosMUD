@@ -6,9 +6,9 @@
 
 - **check_file()** (6 connections) — `scripts/check_asyncio_run_guardrails.py`
 - **check_asyncio_run_guardrails.py** (4 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **_strip_triple_quoted_blocks()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **_strip_string_literals()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
 - **main()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
+- **_strip_string_literals()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
+- **_strip_triple_quoted_blocks()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
 - **Path** (1 connections)
 - **Remove triple-quoted string blocks from file content.** (1 connections) — `scripts/check_asyncio_run_guardrails.py`
 - **Remove string literals from line to avoid false positives inside docs/strings.** (1 connections) — `scripts/check_asyncio_run_guardrails.py`

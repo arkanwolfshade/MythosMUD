@@ -1,113 +1,67 @@
 # AliasStorage
 
-> God node · 230 connections · `server/alias_storage.py`
+> 168 nodes
 
-**Community:** [Player Schema Converter](Player_Schema_Converter.md)
+## Key Concepts
 
-## Connections by Relation
+- **AliasStorage** (217 connections) — `server/alias_storage.py`
+- **command_service.py** (92 connections) — `server/commands/command_service.py`
+- **.__init__()** (71 connections) — `server/commands/command_service.py`
+- **MagicCommandHandler** (34 connections) — `server/commands/magic_commands.py`
+- **communication_commands.py** (31 connections) — `server/commands/communication_commands.py`
+- **admin_mute_commands.py** (29 connections) — `server/commands/admin_mute_commands.py`
+- **test_communication_commands_channels.py** (20 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **handle_mute_command()** (19 connections) — `server/commands/admin_mute_commands.py`
+- **Any** (19 connections)
+- **Any** (16 connections)
+- **handle_inventory_command()** (14 connections) — `server/commands/inventory_commands.py`
+- **asyncio** (13 connections)
+- **handle_mutes_command()** (12 connections) — `server/commands/admin_mute_commands.py`
+- **handle_unmute_command()** (12 connections) — `server/commands/admin_mute_commands.py`
+- **handle_global_command()** (12 connections) — `server/commands/communication_commands.py`
+- **handle_help_command()** (12 connections) — `server/commands/system_commands.py`
+- **handle_add_admin_command()** (11 connections) — `server/commands/admin_mute_commands.py`
+- **handle_local_command()** (11 connections) — `server/commands/communication_commands.py`
+- **handle_system_command()** (11 connections) — `server/commands/communication_commands.py`
+- **handle_mute_global_command()** (10 connections) — `server/commands/admin_mute_commands.py`
+- **handle_unmute_global_command()** (10 connections) — `server/commands/admin_mute_commands.py`
+- **handle_cast_command()** (9 connections) — `server/commands/magic_commands.py`
+- **handle_learn_command()** (9 connections) — `server/commands/magic_commands.py`
+- **handle_spell_command()** (9 connections) — `server/commands/magic_commands.py`
+- **handle_spells_command()** (9 connections) — `server/commands/magic_commands.py`
+- *... and 143 more nodes in this community*
 
-### calls
-- _websocket_unified_command_result() `EXTRACTED`
-- .delete_player() `EXTRACTED`
-- test_alias_storage_creates_directory() `EXTRACTED`
-- test_alias_storage_init_with_env_var() `EXTRACTED`
-- test_alias_storage_init_with_storage_dir() `EXTRACTED`
-- test_alias_storage_init_without_env_var() `EXTRACTED`
+## Relationships
 
-### contains
-- alias_storage.py `EXTRACTED`
+- [admin_teleport_commands.py](admin_teleport_commands.py.md) (49 shared connections)
+- [request_with_app_container](request_with_app_container.md) (31 shared connections)
+- [router.py](router.py.md) (22 shared connections)
+- [get_logger](get_logger.md) (19 shared connections)
+- [test_alias_commands.py](test_alias_commands.py.md) (18 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (18 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (18 shared connections)
+- [test_magic_commands.py](test_magic_commands.py.md) (16 shared connections)
+- [magic_service.py](magic_service.py.md) (15 shared connections)
+- [inventory_pickup_command.py](inventory_pickup_command.py.md) (13 shared connections)
+- [position_commands.py](position_commands.py.md) (12 shared connections)
+- [test_follow_commands.py](test_follow_commands.py.md) (11 shared connections)
 
-### imports
-- command_service.py `EXTRACTED`
-- test_alias_storage.py `EXTRACTED`
-- test_admin_shutdown_command.py `EXTRACTED`
-- command_handler_unified.py `EXTRACTED`
-- combat_handler.py `EXTRACTED`
-- inventory_equip_command.py `EXTRACTED`
-- player_service.py `EXTRACTED`
-- admin_teleport_commands.py `EXTRACTED`
-- look_command.py `EXTRACTED`
-- admin_shutdown_command.py `EXTRACTED`
-- inventory_pickup_command.py `EXTRACTED`
-- admin_summon_command.py `EXTRACTED`
-- admin_commands.py `EXTRACTED`
-- rescue_commands.py `EXTRACTED`
-- combat_taunt.py `EXTRACTED`
-- inventory_unequip_command.py `EXTRACTED`
-- quest_commands.py `EXTRACTED`
-- websocket_handler_commands.py `EXTRACTED`
-- communication_commands.py `EXTRACTED`
-- admin_setlucidity_command.py `EXTRACTED`
+## Source Files
 
-### indirect_call
-- .test_ensure_alias_storage_provided() `INFERRED`
+- `server/alias_storage.py`
+- `server/commands/admin_mute_commands.py`
+- `server/commands/command_service.py`
+- `server/commands/communication_commands.py`
+- `server/commands/inventory_commands.py`
+- `server/commands/magic_commands.py`
+- `server/commands/system_commands.py`
+- `server/tests/unit/commands/test_communication_commands_channels.py`
 
-### method
-- .get_player_aliases() `EXTRACTED`
-- .create_alias() `EXTRACTED`
-- ._get_alias_file_path() `EXTRACTED`
-- .save_player_aliases() `EXTRACTED`
-- ._validate_alias_payload() `EXTRACTED`
-- .add_alias() `EXTRACTED`
-- ._load_alias_data() `EXTRACTED`
-- ._save_alias_data() `EXTRACTED`
-- .backup_aliases() `EXTRACTED`
-- .get_alias() `EXTRACTED`
-- .get_alias_count() `EXTRACTED`
-- .remove_alias() `EXTRACTED`
-- .clear_aliases() `EXTRACTED`
-- .delete_player_aliases() `EXTRACTED`
-- .validate_alias_command() `EXTRACTED`
-- .validate_alias_name() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- .list_alias_files() `EXTRACTED`
+## Audit Trail
 
-### rationale_for
-- Manages player alias storage in JSON files.      Each player's aliases are store `EXTRACTED`
-
-### references
-- _handle_admin_set_stat_command() `EXTRACTED`
-- handle_ground_command() `EXTRACTED`
-- handle_alias_command() `EXTRACTED`
-- handle_logout_command() `EXTRACTED`
-- handle_read_command() `EXTRACTED`
-- handle_pray_command() `EXTRACTED`
-- handle_rest_command() `EXTRACTED`
-- _prepare_command_for_processing() `EXTRACTED`
-- handle_whisper_command() `EXTRACTED`
-- handle_quest_command() `EXTRACTED`
-- handle_mute_command() `EXTRACTED`
-- handle_teleport_command() `EXTRACTED`
-- _process_alias_expansion() `EXTRACTED`
-- process_command_unified() `EXTRACTED`
-- _handle_special_command_routing() `EXTRACTED`
-- handle_follow_command() `EXTRACTED`
-- handle_go_command() `EXTRACTED`
-- handle_pickup_command() `EXTRACTED`
-- handle_say_command() `EXTRACTED`
-- handle_npc_command() `EXTRACTED`
-
-### uses
-- CombatCommandHandler `INFERRED`
-- MagicCommandHandler `INFERRED`
-- TestHelperFunctions `INFERRED`
-- SchemaValidator `INFERRED`
-- TauntCommandHandler `INFERRED`
-- CombatCommandHandlerExtras `INFERRED`
-- Any `INFERRED`
-- _NpcWithLife `INFERRED`
-- Any `INFERRED`
-- SpellCommandError `INFERRED`
-- CommandRequest `INFERRED`
-- CommandExecutionRequest `INFERRED`
-- Any `INFERRED`
-- TestHandleSpecialCommandRouting `INFERRED`
-- Any `INFERRED`
-- UUID `INFERRED`
-- Path `INFERRED`
-- AppWithState `INFERRED`
-- Any `INFERRED`
-- AppWithState `INFERRED`
+- EXTRACTED: 952 (87%)
+- INFERRED: 137 (13%)
+- AMBIGUOUS: 0 (0%)
 
 ---
 

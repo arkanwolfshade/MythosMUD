@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Issue Template Config** (1 connections) — `.github/ISSUE_TEMPLATE/config.yml`
 - **Private Security Advisory Channel** (1 connections) — `.github/ISSUE_TEMPLATE/config.yml`
+- **Issue Template Config** (1 connections) — `.github/ISSUE_TEMPLATE/config.yml`
 
 ## Relationships
 

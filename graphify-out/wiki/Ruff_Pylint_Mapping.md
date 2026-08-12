@@ -5,10 +5,10 @@
 ## Key Concepts
 
 - **Linting Complexity Alignment** (3 connections) — `docs/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Ruff to Pylint Mapping** (2 connections) — `docs/LINTING_RUFF_PYLINT_MAPPING.md`
-- **Lizard Complexity Findings** (2 connections) — `docs/LIZARD_COMPLEXITY_FINDINGS.md`
 - **Ruff C901 McCabe Complexity** (2 connections) — `docs/LINTING_COMPLEXITY_ALIGNMENT.md`
 - **Lizard CCN Threshold (>10)** (2 connections) — `docs/LIZARD_COMPLEXITY_FINDINGS.md`
+- **Ruff to Pylint Mapping** (2 connections) — `docs/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Lizard Complexity Findings** (2 connections) — `docs/LIZARD_COMPLEXITY_FINDINGS.md`
 - **Pylint Unique Findings** (1 connections) — `docs/LINTING_PYLINT_UNIQUE_FINDINGS.md`
 
 ## Relationships

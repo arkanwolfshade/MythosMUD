@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Mythos Holiday Candidates** (1 connections) — `docs/MYTHOS_HOLIDAY_CANDIDATES.md`
 - **Mythos Holiday Observances** (1 connections) — `docs/MYTHOS_HOLIDAY_CANDIDATES.md`
+- **Mythos Holiday Candidates** (1 connections) — `docs/MYTHOS_HOLIDAY_CANDIDATES.md`
 
 ## Relationships
 

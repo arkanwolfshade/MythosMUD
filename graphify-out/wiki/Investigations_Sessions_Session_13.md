@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **__init__.py** (1 connections) — `server/domain/value_objects/__init__.py`
-- **Domain value objects for MythosMUD.  Value objects are immutable objects defined** (1 connections) — `server/domain/value_objects/__init__.py`
+- **Persist Player HP Before Event Publish** (1 connections) — `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
+- **Character Info Combat HP Update Delay** (1 connections) — `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `server/domain/value_objects/__init__.py`
+- `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
 
 ## Audit Trail
 

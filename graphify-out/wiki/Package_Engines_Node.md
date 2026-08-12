@@ -4,24 +4,24 @@
 
 ## Key Concepts
 
-- **package.json** (10 connections) — `client/package.json`
+- **client/package.json** (10 connections) — `client/package.json`
+- **engines** (2 connections) — `client/package.json`
 - **optionalDependencies** (2 connections) — `client/package.json`
 - **argon2** (2 connections) — `client/package.json`
 - **argon2** (2 connections) — `client/package.json`
-- **engines** (2 connections) — `client/package.json`
+- **node** (1 connections) — `client/package.json`
 - **name** (1 connections) — `client/package.json`
 - **private** (1 connections) — `client/package.json`
-- **version** (1 connections) — `client/package.json`
 - **type** (1 connections) — `client/package.json`
-- **node** (1 connections) — `client/package.json`
+- **version** (1 connections) — `client/package.json`
 
 ## Relationships
 
-- [Package Dependencies Dompurify](Package_Dependencies_Dompurify.md) (1 shared connections)
-- [Client Dev Dependencies](Client_Dev_Dependencies.md) (1 shared connections)
-- [Package Overrides Fast Uri](Package_Overrides_Fast_Uri.md) (1 shared connections)
+- [dependencies](dependencies.md) (1 shared connections)
+- [devDependencies](devDependencies.md) (1 shared connections)
 - [Package Scripts Build](Package_Scripts_Build.md) (1 shared connections)
-- [Command Testing Guide](Command_Testing_Guide.md) (1 shared connections)
+- [overrides](overrides.md) (1 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 
 ## Source Files
 

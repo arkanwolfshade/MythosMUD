@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **Test Coverage Gaps** (2 connections) — `docs/TEST_COVERAGE_GAPS.md`
-- **Disconnect Grace Period Rest Coverage** (1 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
 - **Coverage Gap Priority Matrix** (1 connections) — `docs/TEST_COVERAGE_GAPS.md`
+- **Disconnect Grace Period Rest Coverage** (1 connections) — `docs/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
 
 ## Relationships
 

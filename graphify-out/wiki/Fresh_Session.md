@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Fresh Session Tests** (1 connections) — `docs/FRESH_SESSION_TESTS.md`
 - **bcrypt Fresh Session Isolation** (1 connections) — `docs/FRESH_SESSION_TESTS.md`
+- **Fresh Session Tests** (1 connections) — `docs/FRESH_SESSION_TESTS.md`
 
 ## Relationships
 

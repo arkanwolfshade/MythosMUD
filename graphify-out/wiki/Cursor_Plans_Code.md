@@ -1,23 +1,22 @@
 # Cursor Plans Code
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_restore_mp_from_meditation_player_not_found()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test restore_mp_from_meditation() returns error when player not found.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Code Practice Rules Reference Doc** (0 connections) — `.cursor/plans/code_practice_rules_reference_doc.plan.md`
 
 ## Relationships
 
-- [Cursor Agents Quick](Cursor_Agents_Quick.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `.cursor/plans/code_practice_rules_reference_doc.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

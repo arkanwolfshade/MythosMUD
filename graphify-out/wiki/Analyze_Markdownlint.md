@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **analyze_markdownlint.py** (1 connections) — `scripts/analyze_markdownlint.py`
 - **main()** (1 connections) — `scripts/analyze_markdownlint.py`
+- **analyze_markdownlint.py** (1 connections) — `scripts/analyze_markdownlint.py`
 
 ## Relationships
 

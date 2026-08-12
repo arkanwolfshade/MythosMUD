@@ -1,23 +1,24 @@
 # .to_dict
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_create_mute_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_mute_command delegates to moderation factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **.to_dict()** (3 connections) — `server/npc/population_stats.py`
+- **Any** (1 connections)
+- **Convert population statistics to dictionary.** (1 connections) — `server/npc/population_stats.py`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/npc/population_stats.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

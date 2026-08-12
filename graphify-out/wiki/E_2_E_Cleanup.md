@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Post-Scenario Cleanup** (1 connections) — `e2e-tests/CLEANUP.md`
 - **mythos_e2e Database** (1 connections) — `e2e-tests/CLEANUP.md`
+- **Post-Scenario Cleanup** (1 connections) — `e2e-tests/CLEANUP.md`
 
 ## Relationships
 

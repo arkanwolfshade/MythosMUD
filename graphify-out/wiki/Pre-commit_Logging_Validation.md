@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Pre-commit Logging Validation** (1 connections) — `docs/PRE_COMMIT_LOGGING_VALIDATION.md`
 - **Pre-commit Logging Validation Hook** (1 connections) — `docs/PRE_COMMIT_LOGGING_VALIDATION.md`
+- **Pre-commit Logging Validation** (1 connections) — `docs/PRE_COMMIT_LOGGING_VALIDATION.md`
 
 ## Relationships
 

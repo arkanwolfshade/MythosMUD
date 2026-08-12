@@ -1,23 +1,24 @@
 # .set_main_loop
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_create_equip_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_equip_command delegates to inventory factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **.set_main_loop()** (3 connections) — `server/events/event_bus.py`
+- **AbstractEventLoop** (1 connections)
+- **Set the main event loop - now properly managed for async compatibility.** (1 connections) — `server/events/event_bus.py`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/events/event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

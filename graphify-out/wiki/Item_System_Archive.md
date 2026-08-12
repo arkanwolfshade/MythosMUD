@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Item System Blueprint** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
 - **Item Prototype and Instance Split** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
+- **Item System Blueprint** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
 
 ## Relationships
 

@@ -1,19 +1,15 @@
 # Investigations Sessions Session
 
-> 10 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **load_test_10_players.spec.ts** (9 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **generateLoadTestCredential()** (2 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **registerPlayer()** (2 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **PlayerConfig** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **PLAYER_CONFIGS** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **INVITE_CODES** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **selectProfessionAndCreateCharacter()** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **executeCommand()** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **analyzeLogFiles()** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
-- **NOTE: This test is designed to be executed using Playwright MCP tools for** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **Combat Client Crash** (3 connections) — `investigations/sessions/2025-11-19_session-002_combat-client-crash.md`
+- **NATS Event Message Field Mismatch** (2 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
+- **Combat Disconnect At NPC Death** (2 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
+- **event_data vs data Field Name Mismatch** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
+- **CombatMessaging Connection Manager Init Failure** (1 connections) — `investigations/sessions/2025-11-19_session-002_combat-client-crash.md`
+- **Passive Lucidity Flux Performance Degradation** (1 connections) — `investigations/sessions/2025-11-30_session-001_passive-sanity-flux-performance.md`
 
 ## Relationships
 
@@ -21,12 +17,15 @@
 
 ## Source Files
 
-- `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
+- `investigations/sessions/2025-11-19_session-002_combat-client-crash.md`
+- `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
+- `investigations/sessions/2025-11-30_session-001_passive-sanity-flux-performance.md`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (60%)
+- INFERRED: 4 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,32 +1,12 @@
 # Comprehensive System Audit
 
-> 23 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **MythosMUD Dependency Upgrade Strategy - Implementation Summary** (8 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **What Has Been Accomplished** (5 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **Implementation Strategy** (4 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **Next Steps** (4 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **Critical Findings** (3 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **Risk Mitigation** (3 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **DEPENDENCY_UPGRADE_SUMMARY.md** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **Overview** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **🔍 Dependency Analysis** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **📊 Risk Assessment** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **🛠️ Tools Created** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **📋 Documentation Generated** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **⚠️ Breaking Changes Detected** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **🎯 Priority Recommendations** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **🚀 Ready-to-Execute Phase 1** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **📚 Migration Guides Available** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **🔄 Safety Measures** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **Immediate Actions (Today)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **Short-term Planning (This Week)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **Long-term Planning (Next 2-3 Weeks)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **🛡️ Safety Measures in Place** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **📞 Support Resources** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
-- **Conclusion** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **Comprehensive System Audit** (2 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
+- **CI/CD Enhanced Logging Validation** (1 connections) — `docs/archive/CI_CD_LOGGING_VALIDATION.md`
+- **Database Migration Guide** (1 connections) — `docs/archive/DATABASE_MIGRATION.md`
 
 ## Relationships
 
@@ -34,12 +14,14 @@
 
 ## Source Files
 
-- `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- `docs/archive/CI_CD_LOGGING_VALIDATION.md`
+- `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
+- `docs/archive/DATABASE_MIGRATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 4 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

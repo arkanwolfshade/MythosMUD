@@ -1,31 +1,26 @@
 # Archive Connection Termination
 
-> 8 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **schedule.schema.json** (8 connections) — `schemas/calendar/schedule.schema.json`
-- **required** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **$schema** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **$id** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **title** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **additionalProperties** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **schedules** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Single Session Per User** (2 connections) — `docs/archive/connection_termination_demo.md`
+- **force_disconnect_player** (1 connections) — `docs/archive/connection_termination_demo.md`
+- **Player Spawn Protection** (1 connections) — `docs/archive/player_protection_system_dec_21.plan.md`
 
 ## Relationships
 
-- [Services Inventory Mutation](Services_Inventory_Mutation.md) (1 shared connections)
-- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `docs/archive/connection_termination_demo.md`
+- `docs/archive/player_protection_system_dec_21.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (50%)
+- INFERRED: 2 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

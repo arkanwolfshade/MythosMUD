@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **Dependency Review Workflow** (2 connections) — `.github/workflows/dependency-review.yml`
-- **Dependabot Dependency Updates** (1 connections) — `.github/dependabot.yml`
 - **UV Lock Dependency Snapshot Gate** (1 connections) — `.github/workflows/dependency-review.yml`
+- **Dependabot Dependency Updates** (1 connections) — `.github/dependabot.yml`
 
 ## Relationships
 

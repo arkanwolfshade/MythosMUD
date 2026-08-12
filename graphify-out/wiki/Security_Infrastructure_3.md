@@ -1,22 +1,39 @@
 # Security Infrastructure
 
-> 8 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **ensure_directory_exists()** (6 connections) — `server/security_utils.py`
-- **test_ensure_directory_exists_existing()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_ensure_directory_exists_creates()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_ensure_directory_exists_relative_path()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Ensure a directory exists and return its absolute path.      Args:         direc** (1 connections) — `server/security_utils.py`
-- **Test ensure_directory_exists with existing directory.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test ensure_directory_exists creates directory if it doesn't exist.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test ensure_directory_exists with relative path.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **validate_secure_path()** (16 connections) — `server/security_utils.py`
+- **test_validate_secure_path_absolute_base()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_commonpath_mismatch()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_commonpath_mismatch_with_mock()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_different_drives_windows()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_empty_user_path()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_nested_path()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_valid()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_with_dot_dot()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_with_leading_slash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_with_spaces()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_with_tilde()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Validate and sanitize a user-provided path to prevent path traversal attacks.…** (1 connections) — `server/security_utils.py`
+- **Test validate_secure_path detects when common_path != base_path (lines 59-66).** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path with valid path.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path handles different drives on Windows.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path rejects path traversal with ..** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path rejects path traversal with ~** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path with nested valid path.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path with empty user path.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path handles leading slashes.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path normalizes base path to absolute.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path with path containing spaces.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path detects when common_path != base_path (lines 59-66)…** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
 
 ## Relationships
 
-- [Security Infrastructure](Security_Infrastructure.md) (4 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Security Infrastructure](Security_Infrastructure.md) (12 shared connections)
+- [test_validate_secure_path_path_traversal_commonpath](test_validate_secure_path_path_traversal_commonpath.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -25,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 61 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

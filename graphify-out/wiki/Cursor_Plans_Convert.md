@@ -1,25 +1,23 @@
 # Cursor Plans Convert
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **10. Grace Period Persistence** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Industry Practices** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Our Plan** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Gap Analysis** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **4:1 Temporal Compression Ratio** (1 connections) — `.cursor/plans/convert_temporal_system_to_4_1_ratio_with_real-world_calendar_f530d460.plan.md`
+- **Temporal System 4:1 Calendar Conversion** (1 connections) — `.cursor/plans/convert_temporal_system_to_4_1_ratio_with_real-world_calendar_f530d460.plan.md`
 
 ## Relationships
 
-- [Cursor Commands Remediation](Cursor_Commands_Remediation.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.cursor/plans/disconnect_grace_period_comparison.md`
+- `.cursor/plans/convert_temporal_system_to_4_1_ratio_with_real-world_calendar_f530d460.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,10 +4,10 @@
 
 ## Key Concepts
 
-- **Wrong Starting Room Bug** (2 connections) — `e2e-tests/TEST_RESULTS_scenario-01-rerun.md`
 - **Main Foyer Starting Room** (2 connections) — `e2e-tests/scenarios/scenario-01-basic-connection.md`
-- **Players Start in Different Rooms** (1 connections) — `e2e-tests/TEST_RESULTS_scenario-01.md`
+- **Wrong Starting Room Bug** (2 connections) — `e2e-tests/TEST_RESULTS_scenario-01-rerun.md`
 - **Scenario 2 Clean Game State** (1 connections) — `e2e-tests/scenarios/scenario-02-clean-game-state.md`
+- **Players Start in Different Rooms** (1 connections) — `e2e-tests/TEST_RESULTS_scenario-01.md`
 
 ## Relationships
 

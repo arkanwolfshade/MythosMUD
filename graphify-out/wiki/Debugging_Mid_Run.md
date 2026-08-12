@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **__init__.py** (1 connections) — `server/domain/repositories/__init__.py`
-- **Domain repository interfaces for MythosMUD.  Repositories provide an abstraction** (1 connections) — `server/domain/repositories/__init__.py`
+- **Mid-Run Disconnect Reasons** (1 connections) — `docs/debugging-mid-run-drops.md`
+- **stale_prune Disconnect** (1 connections) — `docs/debugging-mid-run-drops.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `server/domain/repositories/__init__.py`
+- `docs/debugging-mid-run-drops.md`
 
 ## Audit Trail
 

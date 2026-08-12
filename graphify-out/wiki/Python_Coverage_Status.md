@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Python Coverage Status** (1 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
 - **Python Coverage Targets** (1 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
+- **Python Coverage Status** (1 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
 
 ## Relationships
 

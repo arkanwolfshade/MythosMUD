@@ -10,9 +10,9 @@
 - **main()** (5 connections) — `scripts/lint_sql_guardrails.py`
 - **_strip_block_comments()** (4 connections) — `scripts/lint_sql_guardrails.py`
 - **_collect_sql_files()** (3 connections) — `scripts/lint_sql_guardrails.py`
-- **Path** (3 connections)
 - **_strip_line_comment()** (3 connections) — `scripts/lint_sql_guardrails.py`
-- **Lightweight guardrails for hand-maintained PostgreSQL SQL.  Warns on: - select *** (1 connections) — `scripts/lint_sql_guardrails.py`
+- **Path** (3 connections)
+- **Lightweight guardrails for hand-maintained PostgreSQL SQL. Warns on: - select *…** (1 connections) — `scripts/lint_sql_guardrails.py`
 - **Return line with line comment removed (-- ...).** (1 connections) — `scripts/lint_sql_guardrails.py`
 - **Return content with block comments /* ... */ removed (simple, no nested).** (1 connections) — `scripts/lint_sql_guardrails.py`
 - **Warn on select * outside comments.** (1 connections) — `scripts/lint_sql_guardrails.py`

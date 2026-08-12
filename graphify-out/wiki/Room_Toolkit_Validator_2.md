@@ -1,24 +1,33 @@
 # Room Toolkit Validator
 
-> 2 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **test_restore_mp_from_meditation_higher_than_rest()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test restore_mp_from_meditation() restores more MP than rest.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **validator.py CLI** (5 connections) — `tools/room_toolkit/room_validator/README.md`
+- **Path Validator Test Failures** (3 connections) — `tools/room_toolkit/room_validator/TEST_SUMMARY.md`
+- **core/path_validator.py** (2 connections) — `tools/room_toolkit/room_validator/README.md`
+- **core/reporter.py** (1 connections) — `tools/room_toolkit/room_validator/README.md`
+- **core/room_loader.py** (1 connections) — `tools/room_toolkit/room_validator/README.md`
+- **core/schema_validator.py** (1 connections) — `tools/room_toolkit/room_validator/README.md`
+- **click CLI dependency** (1 connections) — `tools/room_toolkit/room_validator/requirements.txt`
+- **Graph Building Issues** (1 connections) — `tools/room_toolkit/room_validator/TEST_SUMMARY.md`
+- **Room Validator Test Suite** (1 connections) — `tools/room_toolkit/room_validator/TEST_SUMMARY.md`
 
 ## Relationships
 
-- [Cursor Agents Quick](Cursor_Agents_Quick.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `tools/room_toolkit/room_validator/README.md`
+- `tools/room_toolkit/room_validator/TEST_SUMMARY.md`
+- `tools/room_toolkit/room_validator/requirements.txt`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 14 (88%)
+- INFERRED: 2 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

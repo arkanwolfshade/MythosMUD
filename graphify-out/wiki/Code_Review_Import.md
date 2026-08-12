@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Code Review Import Analysis** (1 connections) — `docs/CODE_REVIEW_IMPORT_ANALYSIS.md`
 - **Import Consistency Patterns** (1 connections) — `docs/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **Code Review Import Analysis** (1 connections) — `docs/CODE_REVIEW_IMPORT_ANALYSIS.md`
 
 ## Relationships
 

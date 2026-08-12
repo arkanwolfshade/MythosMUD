@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **mythosTheme.test.ts** (2 connections) — `client/src/theme/__tests__/mythosTheme.test.ts`
-- **mythosTheme.ts** (2 connections) — `client/src/theme/mythosTheme.ts`
-- **mythosTheme** (2 connections) — `client/src/theme/mythosTheme.ts`
+- **Who Command Enhancement** (2 connections) — `docs/archive/WHO_COMMAND_FRD.md`
+- **Who Command Name Filtering** (1 connections) — `docs/archive/WHO_COMMAND_FRD.md`
+- **Who Command Implementation Tasks** (1 connections) — `docs/archive/WHO_COMMAND_TASKS.md`
 
 ## Relationships
 
@@ -14,12 +14,12 @@
 
 ## Source Files
 
-- `client/src/theme/__tests__/mythosTheme.test.ts`
-- `client/src/theme/mythosTheme.ts`
+- `docs/archive/WHO_COMMAND_FRD.md`
+- `docs/archive/WHO_COMMAND_TASKS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

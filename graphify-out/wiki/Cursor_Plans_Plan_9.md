@@ -1,13 +1,11 @@
 # Cursor Plans Plan
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Vite Best-Practices Remediation** (2 connections) — `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
-- **Vitest Best-Practices Remediation** (2 connections) — `.cursor/plans/vitest_best-practices_remediation_f589ee02.plan.md`
-- **Test Suite Improvement** (1 connections) — `.cursor/plans/test_suite_improvement_f5a4acf1.plan.md`
-- **import.meta.env (Vite)** (1 connections) — `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
+- **React Best-Practices Remediation** (1 connections) — `.cursor/plans/react_best-practices_remediation.plan.md`
+- **Room Editor Backend APIs** (1 connections) — `.cursor/plans/room_editor_backend_apis.plan.md`
 
 ## Relationships
 
@@ -15,14 +13,13 @@
 
 ## Source Files
 
-- `.cursor/plans/test_suite_improvement_f5a4acf1.plan.md`
-- `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
-- `.cursor/plans/vitest_best-practices_remediation_f589ee02.plan.md`
+- `.cursor/plans/react_best-practices_remediation.plan.md`
+- `.cursor/plans/room_editor_backend_apis.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (33%)
-- INFERRED: 4 (67%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

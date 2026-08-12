@@ -1,27 +1,20 @@
 # Schemas Room Schema
 
-> 12 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **properties** (13 connections) — `schemas/room_schema.json`
-- **name** (5 connections) — `schemas/room_schema.json`
-- **field1** (2 connections) — `schemas/room_schema.json`
-- **field2** (2 connections) — `schemas/room_schema.json`
-- **field3** (2 connections) — `schemas/room_schema.json`
+- **room_schema.json** (7 connections) — `schemas/room_schema.json`
+- **additionalProperties** (1 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
+- **$schema** (1 connections) — `schemas/room_schema.json`
+- **title** (1 connections) — `schemas/room_schema.json`
 - **type** (1 connections) — `schemas/room_schema.json`
-- **minLength** (1 connections) — `schemas/room_schema.json`
-- **maxLength** (1 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
-- [Schemas Room Schema](Schemas_Room_Schema.md) (7 shared connections)
-- [Documentation Updates](Documentation_Updates.md) (1 shared connections)
-- [Archive Planning Stats](Archive_Planning_Stats.md) (1 shared connections)
+- [required](required.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
@@ -29,7 +22,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 31 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

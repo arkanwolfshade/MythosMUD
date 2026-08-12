@@ -1,48 +1,24 @@
 # Dependency Upgrade Report
 
-> 22 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **RoomInfoPanel.tsx** (22 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **RoomInfoPanel()** (10 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **validateAndFixRoomData()** (4 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **RoomInfoPanel.test.tsx** (4 connections) — `client/src/components/__tests__/RoomInfoPanel.test.tsx`
-- **RoomInfoPanel.test.tsx** (3 connections) — `client/src/components/RoomInfoPanel.test.tsx`
-- **applyRoomDefaultFields()** (2 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **fixOccupantCountMismatch()** (2 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **formatLocationName()** (2 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **formatDescription()** (2 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **formatExitDirections()** (2 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **logRoomInfoRenderDebug()** (2 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **mockConsoleLog** (1 connections) — `client/src/components/RoomInfoPanel.test.tsx`
-- **Room** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **RoomInfoPanelProps** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **KNOWN_LOCATION_PATTERNS** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **ROOM_DEFAULT_FIELD_FIXES** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **OccupantList()** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **RoomOccupantsSection()** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **DEV_FALLBACK_ROOM** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **RoomInfoEmptyState()** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **{ mockDebug }** (1 connections) — `client/src/components/__tests__/RoomInfoPanel.test.tsx`
-- **Room** (1 connections) — `client/src/components/__tests__/RoomInfoPanel.test.tsx`
+- **Incremental Upgrade Strategy (Report)** (1 connections) — `scripts/dependency_upgrade_report.md`
+- **Upgrade Rollback Plan** (1 connections) — `scripts/dependency_upgrade_report.md`
 
 ## Relationships
 
-- [Magic System Feature Plan](Magic_System_Feature_Plan.md) (2 shared connections)
-- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (2 shared connections)
-- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/src/components/RoomInfoPanel.test.tsx`
-- `client/src/components/RoomInfoPanel.tsx`
-- `client/src/components/__tests__/RoomInfoPanel.test.tsx`
+- `scripts/dependency_upgrade_report.md`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

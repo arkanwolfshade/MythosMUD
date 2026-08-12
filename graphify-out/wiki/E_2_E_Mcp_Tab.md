@@ -1,13 +1,11 @@
 # E 2 E Mcp Tab
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **VirtualizedMessageList.tsx** (3 connections) — `client/src/components/ui/VirtualizedMessageList.tsx`
-- **Message** (1 connections) — `client/src/components/ui/VirtualizedMessageList.tsx`
-- **VirtualizedMessageListProps** (1 connections) — `client/src/components/ui/VirtualizedMessageList.tsx`
-- **VirtualizedMessageList()** (1 connections) — `client/src/components/ui/VirtualizedMessageList.tsx`
+- **Playwright MCP core-tabs Capability** (1 connections) — `e2e-tests/MCP_TAB_MANAGEMENT_ISSUE.md`
+- **MCP Tab Management Issue** (1 connections) — `e2e-tests/MCP_TAB_MANAGEMENT_ISSUE.md`
 
 ## Relationships
 
@@ -15,11 +13,11 @@
 
 ## Source Files
 
-- `client/src/components/ui/VirtualizedMessageList.tsx`
+- `e2e-tests/MCP_TAB_MANAGEMENT_ISSUE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

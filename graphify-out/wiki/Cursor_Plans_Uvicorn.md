@@ -1,31 +1,23 @@
 # Cursor Plans Uvicorn
 
-> 8 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **optimized_validate_filter_name()** (6 connections) — `server/validators/optimized_security_validator.py`
-- **test_optimized_validate_filter_name_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_filter_name_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_filter_name_invalid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating empty filter name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating valid filter name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating invalid filter name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Optimized validation for filter name fields.      Args:         value: The filte** (1 connections) — `server/validators/optimized_security_validator.py`
+- **app.state Global State Anti-Pattern** (1 connections) — `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
+- **Uvicorn Best Practices Remediation** (1 connections) — `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
 
 ## Relationships
 
-- [WebSocket Handler Tests](WebSocket_Handler_Tests.md) (4 shared connections)
-- [Cursor Workflows Docs](Cursor_Workflows_Docs.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/validators/test_optimized_security_validator.py`
-- `server/validators/optimized_security_validator.py`
+- `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

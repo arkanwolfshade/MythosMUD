@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **MythosMUD ADR Authoring Skill** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
-- **ADR Structure (Status/Context/Decision)** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
+- **get_logger Structured Logging** (1 connections) — `.cursor/skills/mythosmud-logging-standards/SKILL.md`
+- **MythosMUD Logging Standards Skill** (1 connections) — `.cursor/skills/mythosmud-logging-standards/SKILL.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
+- `.cursor/skills/mythosmud-logging-standards/SKILL.md`
 
 ## Audit Trail
 

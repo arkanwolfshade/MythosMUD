@@ -1,25 +1,27 @@
 # Investigations Sessions Movement
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_room_init_defaults()** (3 connections) — `server/tests/unit/models/test_room_class.py`
-- **Test Room initialization with minimal data.** (1 connections) — `server/tests/unit/models/test_room_class.py`
+- **current_room_id VARCHAR(50) Truncation** (2 connections) — `investigations/sessions/2025-11-19_session-001_catatonic-movement-and-exit-bugs.md`
+- **Catatonic Movement Prevention Bug** (2 connections) — `investigations/sessions/2025-11-19_session-001_catatonic-movement-and-exit-bugs.md`
+- **WebSocket Go Command Unified Handler Bypass** (1 connections) — `investigations/sessions/2025-11-19_session-001_catatonic-movement-and-exit-bugs.md`
+- **Movement Valid Exits Rejection Bug** (1 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
 
 ## Relationships
 
-- [Health Cold Resistance](Health_Cold_Resistance.md) (1 shared connections)
-- [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/models/test_room_class.py`
+- `investigations/sessions/2025-11-19_session-001_catatonic-movement-and-exit-bugs.md`
+- `investigations/sessions/2025-11-20_movement-bug-investigation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 4 (67%)
+- INFERRED: 2 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

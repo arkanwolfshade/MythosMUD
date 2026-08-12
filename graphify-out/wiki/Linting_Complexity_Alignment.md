@@ -6,21 +6,21 @@
 
 - **properties** (7 connections) — `schemas/unified_room_schema.json`
 - **exits** (5 connections) — `schemas/unified_room_schema.json`
+- **down** (2 connections) — `schemas/unified_room_schema.json`
+- **east** (2 connections) — `schemas/unified_room_schema.json`
 - **north** (2 connections) — `schemas/unified_room_schema.json`
 - **south** (2 connections) — `schemas/unified_room_schema.json`
-- **east** (2 connections) — `schemas/unified_room_schema.json`
-- **west** (2 connections) — `schemas/unified_room_schema.json`
 - **up** (2 connections) — `schemas/unified_room_schema.json`
-- **down** (2 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
+- **west** (2 connections) — `schemas/unified_room_schema.json`
 - **oneOf** (1 connections) — `schemas/unified_room_schema.json`
 - **oneOf** (1 connections) — `schemas/unified_room_schema.json`
 - **additionalProperties** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 

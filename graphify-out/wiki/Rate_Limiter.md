@@ -1,35 +1,27 @@
-# Rate Limiter
+# rate_limiter
 
-> 12 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **load_motd()** (8 connections) — `server/utils/motd_loader.py`
-- **test_motd_loader.py** (7 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **test_load_motd_file_exists()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **test_load_motd_file_not_exists()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **test_load_motd_file_read_error()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **test_load_motd_empty_file()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Unit tests for motd_loader utilities.  Tests the MOTD loading functions.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Test load_motd() loads MOTD from file.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Test load_motd() returns default when file doesn't exist.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Test load_motd() handles file read errors.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Test load_motd() handles empty file.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Load the Message of the Day from the configured file.      Returns:         str:** (1 connections) — `server/utils/motd_loader.py`
+- **rate_limiter()** (4 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **mock_config()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **fixture** (2 connections)
+- **Create a mock config with chat rate limits.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Create a RateLimiter instance with mocked config.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [Rest Command Flow](Rest_Command_Flow.md) (1 shared connections)
+- [test_rate_limiter.py](test_rate_limiter.py.md) (2 shared connections)
+- [RateLimiter](RateLimiter.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_motd_loader.py`
-- `server/utils/motd_loader.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

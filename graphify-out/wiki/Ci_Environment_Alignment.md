@@ -1,11 +1,11 @@
-# Ci Environment Alignment
+# CI Environment Alignment
 
 > 2 nodes
 
 ## Key Concepts
 
-- **CI Environment Alignment** (1 connections) — `docs/CI_ENVIRONMENT_ALIGNMENT.md`
 - **.venv-ci Shared Dependencies** (1 connections) — `docs/CI_ENVIRONMENT_ALIGNMENT.md`
+- **CI Environment Alignment** (1 connections) — `docs/CI_ENVIRONMENT_ALIGNMENT.md`
 
 ## Relationships
 

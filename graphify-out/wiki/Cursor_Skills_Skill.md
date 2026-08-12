@@ -5,8 +5,10 @@
 ## Key Concepts
 
 - **Frontend Design Skill** (15 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **Critique Skill** (2 connections) — `.cursor/skills/critique/SKILL.md`
 - **AI Slop Avoidance** (2 connections) — `.cursor/skills/frontend-design/SKILL.md`
+- **Critique Skill** (2 connections) — `.cursor/skills/critique/SKILL.md`
+- **Design Context Gathering Protocol** (1 connections) — `.cursor/skills/frontend-design/SKILL.md`
+- **teach-impeccable Prerequisite** (1 connections) — `.cursor/skills/frontend-design/SKILL.md`
 - **Tailwind CSS Anti-Pattern Remediation** (1 connections) — `.cursor/plans/tailwind_css_anti-pattern_remediation_af2debc7.plan.md`
 - **Adapt Skill** (1 connections) — `.cursor/skills/adapt/SKILL.md`
 - **Animate Skill** (1 connections) — `.cursor/skills/animate/SKILL.md`
@@ -18,8 +20,6 @@
 - **Delight Skill** (1 connections) — `.cursor/skills/delight/SKILL.md`
 - **Distill Skill** (1 connections) — `.cursor/skills/distill/SKILL.md`
 - **Extract Skill** (1 connections) — `.cursor/skills/extract/SKILL.md`
-- **Design Context Gathering Protocol** (1 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **teach-impeccable Prerequisite** (1 connections) — `.cursor/skills/frontend-design/SKILL.md`
 
 ## Relationships
 

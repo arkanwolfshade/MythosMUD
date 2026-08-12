@@ -6,12 +6,12 @@
 
 - **migrate_file()** (5 connections) — `scripts/migrate_async_persistence.py`
 - **MigrationResult** (4 connections) — `scripts/migrate_async_persistence.py`
-- **migrate_async_persistence.py** (3 connections) — `scripts/migrate_async_persistence.py`
 - **main()** (3 connections) — `scripts/migrate_async_persistence.py`
+- **migrate_async_persistence.py** (3 connections) — `scripts/migrate_async_persistence.py`
 - **Path** (2 connections)
 - **NamedTuple** (1 connections)
 - **Result of a file migration.** (1 connections) — `scripts/migrate_async_persistence.py`
-- **Migrate a single file to use async persistence patterns.      Args:         file** (1 connections) — `scripts/migrate_async_persistence.py`
+- **Migrate a single file to use async persistence patterns. Args: file_path: Path…** (1 connections) — `scripts/migrate_async_persistence.py`
 
 ## Relationships
 

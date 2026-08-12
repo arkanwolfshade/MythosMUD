@@ -8,17 +8,17 @@
 - **aliases** (4 connections) — `schemas/alias_schema.json`
 - **properties** (3 connections) — `schemas/alias_schema.json`
 - **items** (2 connections) — `schemas/alias_schema.json`
+- **description** (1 connections) — `schemas/alias_schema.json`
 - **type** (1 connections) — `schemas/alias_schema.json`
+- **$ref** (1 connections) — `schemas/alias_schema.json`
 - **description** (1 connections) — `schemas/alias_schema.json`
 - **pattern** (1 connections) — `schemas/alias_schema.json`
 - **type** (1 connections) — `schemas/alias_schema.json`
-- **description** (1 connections) — `schemas/alias_schema.json`
-- **$ref** (1 connections) — `schemas/alias_schema.json`
 
 ## Relationships
 
-- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
-- [Npc Config Parsing](Npc_Config_Parsing.md) (1 shared connections)
+- [alias_schema.json](alias_schema.json.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 

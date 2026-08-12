@@ -1,20 +1,11 @@
 # Facades Implementation Summary
 
-> 11 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **MotdContent.tsx** (6 connections) — `client/src/components/MotdContent.tsx`
-- **MotdInterstitialScreen.tsx** (6 connections) — `client/src/components/MotdInterstitialScreen.tsx`
-- **MotdContent()** (3 connections) — `client/src/components/MotdContent.tsx`
-- **MotdInterstitialScreen()** (2 connections) — `client/src/components/MotdInterstitialScreen.tsx`
-- **MotdContent.test.tsx** (2 connections) — `client/src/components/__tests__/MotdContent.test.tsx`
-- **MotdInterstitialScreen.test.tsx** (2 connections) — `client/src/components/__tests__/MotdInterstitialScreen.test.tsx`
-- **MotdYellowSign()** (1 connections) — `client/src/components/MotdContent.tsx`
-- **MotdWelcomeIntro()** (1 connections) — `client/src/components/MotdContent.tsx`
-- **MotdCommandsList()** (1 connections) — `client/src/components/MotdContent.tsx`
-- **MotdInterstitialScreenProps** (1 connections) — `client/src/components/MotdInterstitialScreen.tsx`
-- **MOTD_BUTTON_STYLE** (1 connections) — `client/src/components/MotdInterstitialScreen.tsx`
+- **Async Repository Facades** (1 connections) — `docs/FACADES_IMPLEMENTATION_SUMMARY.md`
+- **Async Facades Implementation Summary** (1 connections) — `docs/FACADES_IMPLEMENTATION_SUMMARY.md`
 
 ## Relationships
 
@@ -22,14 +13,11 @@
 
 ## Source Files
 
-- `client/src/components/MotdContent.tsx`
-- `client/src/components/MotdInterstitialScreen.tsx`
-- `client/src/components/__tests__/MotdContent.test.tsx`
-- `client/src/components/__tests__/MotdInterstitialScreen.test.tsx`
+- `docs/FACADES_IMPLEMENTATION_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

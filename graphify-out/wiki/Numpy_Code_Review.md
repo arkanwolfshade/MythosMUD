@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **__init__.py** (1 connections) — `server/domain/services/__init__.py`
-- **Domain services for MythosMUD.  Domain services contain business logic that does** (1 connections) — `server/domain/services/__init__.py`
+- **NumPy Usage Review** (1 connections) — `docs/NUMPY_CODE_REVIEW.md`
+- **NumPy Code Review** (1 connections) — `docs/NUMPY_CODE_REVIEW.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `server/domain/services/__init__.py`
+- `docs/NUMPY_CODE_REVIEW.md`
 
 ## Audit Trail
 

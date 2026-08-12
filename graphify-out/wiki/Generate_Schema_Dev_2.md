@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **generate_schema_from_dev.sh** (1 connections) — `scripts/generate_schema_from_dev.sh`
-- **generate_schema_from_dev.sh script** (1 connections) — `scripts/generate_schema_from_dev.sh`
+- **generate_schema_from_dev.ps1** (1 connections) — `scripts/generate_schema_from_dev.ps1`
+- **Write-ColorOutput()** (1 connections) — `scripts/generate_schema_from_dev.ps1`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `scripts/generate_schema_from_dev.sh`
+- `scripts/generate_schema_from_dev.ps1`
 
 ## Audit Trail
 

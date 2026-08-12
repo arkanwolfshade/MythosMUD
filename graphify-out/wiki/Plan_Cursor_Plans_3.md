@@ -1,25 +1,27 @@
 # Plan Cursor Plans
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_occupant_formatter_separate_occupants_by_type_none()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter.separate_occupants_by_type() handles None input.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Playwright DI Migration Validation** (2 connections) — `.cursor/plans/playwright_test_plan_for_di_migration_validation_30b56bf7.plan.md`
+- **Playwright Best-Practices Remediation** (1 connections) — `.cursor/plans/playwright_best-practices_remediation.plan.md`
+- **E2E Harness Overhaul** (1 connections) — `.cursor/plans/refactor-e2e-harness_e2e-harness.plan.md`
 
 ## Relationships
 
-- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
-- [Room Occupant Formatter](Room_Occupant_Formatter.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `.cursor/plans/playwright_best-practices_remediation.plan.md`
+- `.cursor/plans/playwright_test_plan_for_di_migration_validation_30b56bf7.plan.md`
+- `.cursor/plans/refactor-e2e-harness_e2e-harness.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 4 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

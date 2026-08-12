@@ -1,17 +1,18 @@
 # Schemas Room Schema
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **id** (4 connections) — `schemas/room_schema.json`
-- **type** (1 connections) — `schemas/room_schema.json`
-- **pattern** (1 connections) — `schemas/room_schema.json`
+- **description** (5 connections) — `schemas/room_schema.json`
 - **description** (1 connections) — `schemas/room_schema.json`
+- **maxLength** (1 connections) — `schemas/room_schema.json`
+- **minLength** (1 connections) — `schemas/room_schema.json`
+- **type** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
-- [Schemas Room Schema](Schemas_Room_Schema.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
@@ -19,7 +20,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

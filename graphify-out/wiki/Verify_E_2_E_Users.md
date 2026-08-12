@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **verify_e2e_users_seeded.py** (2 connections) — `scripts/verify_e2e_users_seeded.py`
-- **_verify()** (2 connections) — `scripts/verify_e2e_users_seeded.py`
 - **main()** (2 connections) — `scripts/verify_e2e_users_seeded.py`
+- **_verify()** (2 connections) — `scripts/verify_e2e_users_seeded.py`
+- **verify_e2e_users_seeded.py** (2 connections) — `scripts/verify_e2e_users_seeded.py`
 
 ## Relationships
 

@@ -1,13 +1,10 @@
 # Verify Schema Match
 
-> 4 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **verify_schema_match.sh** (3 connections) — `scripts/verify_schema_match.sh`
-- **verify_schema_match.sh script** (1 connections) — `scripts/verify_schema_match.sh`
-- **find_pg_dump()** (1 connections) — `scripts/verify_schema_match.sh`
-- **find_pg_isready()** (1 connections) — `scripts/verify_schema_match.sh`
+- **verify_schema_match.ps1** (0 connections) — `scripts/verify_schema_match.ps1`
 
 ## Relationships
 
@@ -15,11 +12,11 @@
 
 ## Source Files
 
-- `scripts/verify_schema_match.sh`
+- `scripts/verify_schema_match.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

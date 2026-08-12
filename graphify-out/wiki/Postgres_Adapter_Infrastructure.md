@@ -4,15 +4,15 @@
 
 ## Key Concepts
 
-- **PostgresRow** (28 connections) — `server/postgres_adapter.py`
+- **PostgresRow** (26 connections) — `server/postgres_adapter.py`
 - **TestPostgresRow** (15 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_row_initialization()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_row_getitem_string_key()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_row_contains()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 - **.test_postgres_row_getitem_int_key()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 - **.test_postgres_row_getitem_int_key_out_of_range()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_row_getitem_string_key()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_row_initialization()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 - **.test_postgres_row_iter()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 - **.test_postgres_row_keys()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_row_contains()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 - **.test_postgres_row_len()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 - **.test_postgres_row_repr()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 - **.__contains__()** (1 connections) — `server/postgres_adapter.py`
@@ -32,11 +32,12 @@
 
 ## Relationships
 
-- [Postgres Adapter Infrastructure](Postgres_Adapter_Infrastructure.md) (6 shared connections)
-- [Postgres Adapter](Postgres_Adapter.md) (6 shared connections)
-- [PostgreSQL Adapter Tests](PostgreSQL_Adapter_Tests.md) (3 shared connections)
-- [Postgres Connection Tests](Postgres_Connection_Tests.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [PostgresCursor](PostgresCursor.md) (4 shared connections)
+- [test_postgres_adapter.py](test_postgres_adapter.py.md) (4 shared connections)
+- [Any](Any.md) (4 shared connections)
+- [PostgresConnection](PostgresConnection.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [TestUtilityFunctions](TestUtilityFunctions.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 73 (87%)
-- INFERRED: 11 (13%)
+- EXTRACTED: 73 (89%)
+- INFERRED: 9 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

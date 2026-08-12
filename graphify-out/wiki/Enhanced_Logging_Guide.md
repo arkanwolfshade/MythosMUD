@@ -1,25 +1,36 @@
 # Enhanced Logging Guide
 
-> 2 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **test_ensure_room_cache_loaded_database_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _ensure_room_cache_loaded handles DatabaseError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Enhanced Logging Guide** (4 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
+- **AI Agent Development Guide** (3 connections) — `docs/DEVELOPMENT_AI.md`
+- **Error Handling Guide** (3 connections) — `docs/ERROR_HANDLING_GUIDE.md`
+- **MDC Request Context Binding** (2 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
+- **MythosMUDError Hierarchy** (2 connections) — `docs/ERROR_HANDLING_GUIDE.md`
+- **Error Logging Implementation Guide** (2 connections) — `docs/ERROR_LOGGING_IMPLEMENTATION_GUIDE.md`
+- **AI Enhanced Logging Mandate** (1 connections) — `docs/DEVELOPMENT_AI.md`
+- **measure_performance Span** (1 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
+- **LoggedHTTPException Pattern** (1 connections) — `docs/ERROR_LOGGING_IMPLEMENTATION_GUIDE.md`
+- **Documentation Updates ConnectionManager** (1 connections) — `docs/DOCUMENTATION_UPDATES.md`
 
 ## Relationships
 
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
-- [Mythosmud Obsidian Raw](Mythosmud_Obsidian_Raw.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `docs/DEVELOPMENT_AI.md`
+- `docs/DOCUMENTATION_UPDATES.md`
+- `docs/ENHANCED_LOGGING_GUIDE.md`
+- `docs/ERROR_HANDLING_GUIDE.md`
+- `docs/ERROR_LOGGING_IMPLEMENTATION_GUIDE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 14 (70%)
+- INFERRED: 6 (30%)
 - AMBIGUOUS: 0 (0%)
 
 ---

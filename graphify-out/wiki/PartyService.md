@@ -1,0 +1,53 @@
+# PartyService
+
+> 19 nodes
+
+## Key Concepts
+
+- **PartyService** (35 connections) — `server/game/party_service.py`
+- **.accept_party_invite()** (8 connections) — `server/game/party_service.py`
+- **._send_result_to_player()** (8 connections) — `server/game/party_service.py`
+- **.decline_party_invite()** (7 connections) — `server/game/party_service.py`
+- **._expire_pending_invites()** (7 connections) — `server/game/party_service.py`
+- **.request_party_invite()** (7 connections) — `server/game/party_service.py`
+- **._send_party_invite_to_target()** (4 connections) — `server/game/party_service.py`
+- **party_service()** (4 connections) — `server/tests/unit/game/test_party_service.py`
+- **.get_party()** (3 connections) — `server/game/party_service.py`
+- **fixture** (1 connections)
+- **Remove expired pending invites and notify inviters.** (1 connections) — `server/game/party_service.py`
+- **Send a command_response-style message to a single player.** (1 connections) — `server/game/party_service.py`
+- **Send party_invite event to the target player only.** (1 connections) — `server/game/party_service.py`
+- **Create a pending party invite and send party_invite event to target. Target…** (1 connections) — `server/game/party_service.py`
+- **Accept a party invite. Target is the player who accepted (the invitee).** (1 connections) — `server/game/party_service.py`
+- **Decline a party invite.** (1 connections) — `server/game/party_service.py`
+- **Return the party by id, or None.** (1 connections) — `server/game/party_service.py`
+- **In-memory party management: create, disband, add/remove/kick members, leader…** (1 connections) — `server/game/party_service.py`
+- **PartyService with no dependencies (in-memory only).** (1 connections) — `server/tests/unit/game/test_party_service.py`
+
+## Relationships
+
+- [_str_id](_str_id.md) (15 shared connections)
+- [Any](Any.md) (11 shared connections)
+- [.__post_init__](__post_init__.md) (6 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [GameBundle](GameBundle.md) (2 shared connections)
+- [test_party_service.py](test_party_service.py.md) (2 shared connections)
+- [bundles/game.py](bundles-game.py.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
+- [send_game_event](send_game_event.md) (1 shared connections)
+
+## Source Files
+
+- `server/game/party_service.py`
+- `server/tests/unit/game/test_party_service.py`
+
+## Audit Trail
+
+- EXTRACTED: 89 (96%)
+- INFERRED: 4 (4%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

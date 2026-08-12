@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Requests Best Practices Remediation** (1 connections) — `.cursor/plans/requests_best_practices_remediation_plan.md`
 - **Unused requests Dependency** (1 connections) — `.cursor/plans/requests_best_practices_remediation_plan.md`
+- **Requests Best Practices Remediation** (1 connections) — `.cursor/plans/requests_best_practices_remediation_plan.md`
 
 ## Relationships
 

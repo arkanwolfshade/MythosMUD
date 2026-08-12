@@ -1,14 +1,11 @@
 # Cursor Plans Plan
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Quest Subsystem Implementation** (2 connections) — `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
-- **Quest System** (2 connections) — `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
-- **Quest System Gap** (2 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- **MUD Subsystems Gap Analysis** (1 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- **Player Skills and Profession Modifiers** (1 connections) — `.cursor/plans/player_skills_and_profession_modifiers_dff11b8d.plan.md`
+- **Convert E2E Scenarios to Playwright CLI** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
+- **Fix Code Review Findings Issue 353** (1 connections) — `.cursor/plans/fix_code_review_findings_issue_353_f59f87dc.plan.md`
 
 ## Relationships
 
@@ -16,14 +13,13 @@
 
 ## Source Files
 
-- `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
-- `.cursor/plans/player_skills_and_profession_modifiers_dff11b8d.plan.md`
-- `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
+- `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
+- `.cursor/plans/fix_code_review_findings_issue_353_f59f87dc.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (75%)
-- INFERRED: 2 (25%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

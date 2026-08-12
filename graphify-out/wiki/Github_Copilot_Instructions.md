@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **GitHub Copilot Instructions Router** (1 connections) — `.github/copilot-instructions.md`
 - **AGENTS.md Authoritative Guidance** (1 connections) — `.github/copilot-instructions.md`
+- **GitHub Copilot Instructions Router** (1 connections) — `.github/copilot-instructions.md`
 
 ## Relationships
 

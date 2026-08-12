@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **PlayerRepository** (1 connections) — `server/persistence/repositories/README.md`
 - **AsyncPersistenceLayer** (1 connections) — `server/persistence/repositories/README.md`
+- **PlayerRepository** (1 connections) — `server/persistence/repositories/README.md`
 
 ## Relationships
 

@@ -1,14 +1,12 @@
 # Investigations Sessions Session
 
-> 5 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **2025_11_21_convert_players_player_id_to_uuid.py** (2 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
-- **upgrade()** (2 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
-- **downgrade()** (2 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
-- **Convert players.player_id from VARCHAR to UUID.      PostgreSQL can directly cas** (1 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
-- **Convert players.player_id from UUID back to VARCHAR.      This is a downgrade pa** (1 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
+- **NPCs Not Updating On Player Movement** (2 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
+- **exclude_player Occupants Snapshot Pattern** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
+- **Canonical Room ID NPC Matching Remediation** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
 
 ## Relationships
 
@@ -16,11 +14,12 @@
 
 ## Source Files
 
-- `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
+- `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
+- `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

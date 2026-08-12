@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **_content_is_valid()** (3 connections) — `scripts/check_codacy_yaml.py`
 - **check_codacy_yaml()** (3 connections) — `scripts/check_codacy_yaml.py`
+- **_content_is_valid()** (3 connections) — `scripts/check_codacy_yaml.py`
 - **check_codacy_yaml.py** (2 connections) — `scripts/check_codacy_yaml.py`
 - **Return (valid, list of reasons if invalid).** (1 connections) — `scripts/check_codacy_yaml.py`
 - **Warn if .codacy/codacy.yaml is missing or invalid; never fail the commit.** (1 connections) — `scripts/check_codacy_yaml.py`

@@ -1,8 +1,8 @@
 # AsyncPersistenceLayer
 
-> God node · 185 connections · `server/async_persistence.py`
+> God node · 163 connections · `server/async_persistence.py`
 
-**Community:** [Client Security Utilities](Client_Security_Utilities.md)
+**Community:** [get_logger](get_logger.md)
 
 ## Connections by Relation
 
@@ -16,58 +16,51 @@
 - async_persistence.py `EXTRACTED`
 
 ### imports
-- dependencies.py `EXTRACTED`
-- game_tick_processing.py `EXTRACTED`
-- maps.py `EXTRACTED`
-- monitoring.py `EXTRACTED`
+- [server/dependencies.py](server-dependencies.py.md) `EXTRACTED`
+- [game_tick_processing.py](game_tick_processing.py.md) `EXTRACTED`
+- [maps.py](maps.py.md) `EXTRACTED`
+- [api/monitoring.py](api-monitoring.py.md) `EXTRACTED`
 - endpoints.py `EXTRACTED`
 - npc_combat_integration_service.py `EXTRACTED`
 - container_endpoints_basic.py `EXTRACTED`
 - lifecycle_manager.py `EXTRACTED`
 - combat_handler.py `EXTRACTED`
-- combat_turn_participant_actions.py `EXTRACTED`
+- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) `EXTRACTED`
 - population_control.py `EXTRACTED`
 - npc_base.py `EXTRACTED`
-- test_async_persistence_core.py `EXTRACTED`
+- [test_async_persistence_core.py](test_async_persistence_core.py.md) `EXTRACTED`
 - rooms.py `EXTRACTED`
-- test_async_persistence_delegates.py `EXTRACTED`
+- [test_async_persistence_delegates.py](test_async_persistence_delegates.py.md) `EXTRACTED`
 - movement_service.py `EXTRACTED`
 - player_event_handlers_respawn.py `EXTRACTED`
 - service.py `EXTRACTED`
 - player_disconnect_handlers.py `EXTRACTED`
-- player_respawn.py `EXTRACTED`
-
-### indirect_call
-- .is_admin() `INFERRED`
-- resolve_player_attack_damage() `INFERRED`
-- ._move_with_integration() `INFERRED`
-- .add_admin() `INFERRED`
-- .remove_admin() `INFERRED`
+- [api/player_respawn.py](api-player_respawn.py.md) `EXTRACTED`
 
 ### method
-- ._ensure_room_cache_loaded() `EXTRACTED`
 - .__init__() `EXTRACTED`
+- ._ensure_room_cache_loaded() `EXTRACTED`
 - .get_player_by_id() `EXTRACTED`
 - .get_players_batch() `EXTRACTED`
-- .add_player_effect() `EXTRACTED`
-- .apply_corruption() `EXTRACTED`
-- .apply_fear() `EXTRACTED`
-- .apply_lucidity_loss() `EXTRACTED`
-- .async_damage_player() `EXTRACTED`
-- .async_heal_player() `EXTRACTED`
-- .async_list_rooms() `EXTRACTED`
-- ._build_room_objects() `EXTRACTED`
-- .create_container() `EXTRACTED`
-- .damage_player() `EXTRACTED`
-- .get_active_player_effects() `EXTRACTED`
+- .get_player_by_name() `EXTRACTED`
+- .get_players_by_user_id() `EXTRACTED`
 - .get_active_players_by_user_id() `EXTRACTED`
+- .get_player_by_user_id() `EXTRACTED`
+- .get_user_by_username_case_insensitive() `EXTRACTED`
+- .list_players() `EXTRACTED`
+- .get_players_in_room() `EXTRACTED`
+- .update_player_last_active() `EXTRACTED`
+- .get_professions() `EXTRACTED`
+- .add_player_effect() `EXTRACTED`
+- .get_active_player_effects() `EXTRACTED`
+- .create_container() `EXTRACTED`
 - .get_container() `EXTRACTED`
 - .get_containers_by_entity_id() `EXTRACTED`
 - .get_decayed_containers() `EXTRACTED`
-- .get_player_by_name() `EXTRACTED`
+- .set_instance_manager() `EXTRACTED`
 
 ### rationale_for
-- Async persistence layer using SQLAlchemy ORM for true async PostgreSQL operation `EXTRACTED`
+- Async persistence layer using SQLAlchemy ORM for true async PostgreSQL… `EXTRACTED`
 
 ### references
 - transfer_items() `EXTRACTED`
@@ -78,40 +71,37 @@
 - .__init__() `EXTRACTED`
 - _weapon_damage_from_equipped_player() `EXTRACTED`
 - validate_room_integrity() `EXTRACTED`
-- validate_player_room_membership() `EXTRACTED`
 - ._init_npc_submodules() `EXTRACTED`
+- validate_player_room_membership() `EXTRACTED`
+- .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - _get_combat_container_services() `EXTRACTED`
-- .__init__() `EXTRACTED`
 - validate_exit() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
-- ._get_persistence_from_app() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
+- _get_target_stats_for_damage() `EXTRACTED`
 
 ### uses
 - [DatabaseError](DatabaseError.md) `INFERRED`
-- CombatCommandHandler `INFERRED`
-- HolidayService `INFERRED`
+- [CombatCommandHandler](CombatCommandHandler.md) `INFERRED`
+- [HolidayService](HolidayService.md) `INFERRED`
 - SkillService `INFERRED`
-- RoomCacheLoader `INFERRED`
-- Request `INFERRED`
 - ScheduleService `INFERRED`
 - CombatCommandHandlerExtras `INFERRED`
+- [RoomCacheLoader](RoomCacheLoader.md) `INFERRED`
 - CreateItemInstanceInput `INFERRED`
 - CombatDeathHandler `INFERRED`
 - _NpcWithLife `INFERRED`
 - _LifecycleManagerForDeath `INFERRED`
 - CoreBundle `INFERRED`
-- Any `INFERRED`
-- _CombatServiceDeps `INFERRED`
+- [_CombatServiceDeps](_CombatServiceDeps.md) `INFERRED`
 - _ConnectionManagerLike `INFERRED`
 - _NPCCombatIntegrationLike `INFERRED`
-- UUID `INFERRED`
-- datetime `INFERRED`
-- Any `INFERRED`
+- _HolidayLoadResult `INFERRED`
+- _DatabaseLoadResult `INFERRED`
 
 ---
 

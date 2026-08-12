@@ -1,14 +1,11 @@
 # Investigations Sessions Xx
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **2025_01_XX_convert_players_player_id_to_uuid.py** (2 connections) — `server/alembic/versions/2025_01_XX_convert_players_player_id_to_uuid.py`
-- **upgrade()** (2 connections) — `server/alembic/versions/2025_01_XX_convert_players_player_id_to_uuid.py`
-- **downgrade()** (2 connections) — `server/alembic/versions/2025_01_XX_convert_players_player_id_to_uuid.py`
-- **Convert players.player_id from VARCHAR to UUID.      PostgreSQL can directly cas** (1 connections) — `server/alembic/versions/2025_01_XX_convert_players_player_id_to_uuid.py`
-- **Convert players.player_id from UUID back to VARCHAR.      This is a downgrade pa** (1 connections) — `server/alembic/versions/2025_01_XX_convert_players_player_id_to_uuid.py`
+- **mythos_time_update Daypart-Only Messages** (1 connections) — `investigations/sessions/2025-01-XX_session-hourly-clock-chimes-missing.md`
+- **Missing Hourly Clock Chimes** (1 connections) — `investigations/sessions/2025-01-XX_session-hourly-clock-chimes-missing.md`
 
 ## Relationships
 
@@ -16,11 +13,11 @@
 
 ## Source Files
 
-- `server/alembic/versions/2025_01_XX_convert_players_player_id_to_uuid.py`
+- `investigations/sessions/2025-01-XX_session-hourly-clock-chimes-missing.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

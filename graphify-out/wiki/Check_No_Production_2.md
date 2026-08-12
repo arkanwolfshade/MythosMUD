@@ -1,25 +1,23 @@
 # Check No Production
 
-> 16 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **test_check_no_production_assert.py** (11 connections) — `server/tests/unit/test_check_no_production_assert.py`
-- **Path** (7 connections)
-- **_NoProductionAssertModule** (4 connections) — `server/tests/unit/test_check_no_production_assert.py`
-- **_load_checker()** (2 connections) — `server/tests/unit/test_check_no_production_assert.py`
-- **test_is_production_server_py_true_for_commands()** (2 connections) — `server/tests/unit/test_check_no_production_assert.py`
-- **test_is_production_server_py_false_for_tests()** (2 connections) — `server/tests/unit/test_check_no_production_assert.py`
-- **test_is_production_server_py_false_for_test_named_module()** (2 connections) — `server/tests/unit/test_check_no_production_assert.py`
-- **test_find_assert_line_numbers_detects_assert()** (2 connections) — `server/tests/unit/test_check_no_production_assert.py`
-- **test_find_assert_line_numbers_empty_when_no_assert()** (2 connections) — `server/tests/unit/test_check_no_production_assert.py`
-- **test_script_exits_1_on_production_file_with_assert()** (2 connections) — `server/tests/unit/test_check_no_production_assert.py`
-- **test_script_exits_0_on_test_file_with_assert()** (2 connections) — `server/tests/unit/test_check_no_production_assert.py`
-- **test_pre_commit_no_production_assert_hook_patterns_match_expected_paths()** (2 connections) — `server/tests/unit/test_check_no_production_assert.py`
-- **Protocol** (1 connections)
-- **Tests for scripts/check_no_production_assert.py.** (1 connections) — `server/tests/unit/test_check_no_production_assert.py`
-- **Public surface of check_no_production_assert loaded via importlib.** (1 connections) — `server/tests/unit/test_check_no_production_assert.py`
-- **Verify no-production-assert hook targets server code and excludes tests.** (1 connections) — `server/tests/unit/test_check_no_production_assert.py`
+- **check_no_production_assert.py** (6 connections) — `scripts/check_no_production_assert.py`
+- **_AssertFinder** (5 connections) — `scripts/check_no_production_assert.py`
+- **find_assert_line_numbers()** (5 connections) — `scripts/check_no_production_assert.py`
+- **is_production_server_py()** (5 connections) — `scripts/check_no_production_assert.py`
+- **main()** (4 connections) — `scripts/check_no_production_assert.py`
+- **_path_parts_indicate_production_server()** (3 connections) — `scripts/check_no_production_assert.py`
+- **Path** (3 connections)
+- **.visit_Assert()** (2 connections) — `scripts/check_no_production_assert.py`
+- **_excluded_server_module_filename()** (2 connections) — `scripts/check_no_production_assert.py`
+- **.__init__()** (1 connections) — `scripts/check_no_production_assert.py`
+- **Assert** (1 connections)
+- **True for MythosMUD backend modules under ``server/``, excluding tests and…** (1 connections) — `scripts/check_no_production_assert.py`
+- **Collect line numbers of assert statements.** (1 connections) — `scripts/check_no_production_assert.py`
+- **Return sorted unique line numbers of ``assert`` in file; empty if none or…** (1 connections) — `scripts/check_no_production_assert.py`
 
 ## Relationships
 
@@ -27,11 +25,11 @@
 
 ## Source Files
 
-- `server/tests/unit/test_check_no_production_assert.py`
+- `scripts/check_no_production_assert.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
+- EXTRACTED: 40 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **Ground Command** (2 connections) — `docs/subsystems/SUBSYSTEM_RESCUE_DESIGN.md`
-- **Rescue Subsystem** (1 connections) — `docs/subsystems/SUBSYSTEM_RESCUE_DESIGN.md`
 - **Catatonic Rescue Target** (1 connections) — `docs/subsystems/SUBSYSTEM_RESCUE_DESIGN.md`
+- **Rescue Subsystem** (1 connections) — `docs/subsystems/SUBSYSTEM_RESCUE_DESIGN.md`
 
 ## Relationships
 

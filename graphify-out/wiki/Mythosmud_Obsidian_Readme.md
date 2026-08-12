@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **LLM Wiki Vault Schema** (2 connections) — `data/MythosMUD-Obsidian/AGENTS.md`
 - **Wiki Layer** (2 connections) — `data/MythosMUD-Obsidian/AGENTS.md`
+- **LLM Wiki Vault Schema** (2 connections) — `data/MythosMUD-Obsidian/AGENTS.md`
 - **Raw Sources Layer** (1 connections) — `data/MythosMUD-Obsidian/AGENTS.md`
 - **Wiki Page Template** (1 connections) — `data/MythosMUD-Obsidian/_templates/wiki-page.md`
 

@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **apply_container_migrations.py** (1 connections) — `scripts/apply_container_migrations.py`
-- **Apply container schema normalization migrations to mythos_dev database.  This sc** (1 connections) — `scripts/apply_container_migrations.py`
+- **Apply container schema normalization migrations to mythos_dev database. This…** (1 connections) — `scripts/apply_container_migrations.py`
 
 ## Relationships
 

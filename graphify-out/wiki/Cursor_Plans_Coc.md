@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **CoC Spells Proposal** (1 connections) — `.cursor/plans/coc_spells_proposal_d3705253.plan.md`
 - **MythosMUD Spell Model** (1 connections) — `.cursor/plans/coc_spells_proposal_d3705253.plan.md`
+- **CoC Spells Proposal** (1 connections) — `.cursor/plans/coc_spells_proposal_d3705253.plan.md`
 
 ## Relationships
 

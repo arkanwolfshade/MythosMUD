@@ -4,15 +4,15 @@
 
 ## Key Concepts
 
-- **name** (5 connections) — `schemas/intersection_schema.json`
-- **type** (1 connections) — `schemas/intersection_schema.json`
-- **minLength** (1 connections) — `schemas/intersection_schema.json`
-- **maxLength** (1 connections) — `schemas/intersection_schema.json`
+- **description** (5 connections) — `schemas/intersection_schema.json`
 - **description** (1 connections) — `schemas/intersection_schema.json`
+- **maxLength** (1 connections) — `schemas/intersection_schema.json`
+- **minLength** (1 connections) — `schemas/intersection_schema.json`
+- **type** (1 connections) — `schemas/intersection_schema.json`
 
 ## Relationships
 
-- [Schemas Intersection Schema](Schemas_Intersection_Schema.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 

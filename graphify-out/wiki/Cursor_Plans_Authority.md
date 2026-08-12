@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **Server Authority Remediation** (2 connections) — `.cursor/plans/server_authority_remediation_de891aa1.plan.md`
-- **Server Authority Rule** (1 connections) — `.cursor/plans/server_authority_remediation_de891aa1.plan.md`
 - **game_state Room Replace (not Merge)** (1 connections) — `.cursor/plans/server_authority_remediation_de891aa1.plan.md`
+- **Server Authority Rule** (1 connections) — `.cursor/plans/server_authority_remediation_de891aa1.plan.md`
 
 ## Relationships
 

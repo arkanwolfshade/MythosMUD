@@ -1,10 +1,12 @@
 # Archive Character Creation
 
-> 1 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **__init__.py** (0 connections) — `server/tests/unit/commands/__init__.py`
+- **Character Creation Revamp** (2 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
+- **CoC-Style Skills Allocation** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
+- **Skill Use Tracking and Level-Up Improvement** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
 
 ## Relationships
 
@@ -12,11 +14,11 @@
 
 ## Source Files
 
-- `server/tests/unit/commands/__init__.py`
+- `docs/archive/character_creation_revamp_coc_skills_plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

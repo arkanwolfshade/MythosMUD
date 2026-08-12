@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Pull Request Template** (1 connections) — `.github/PULL_REQUEST_TEMPLATE.md`
 - **PR Coverage Thresholds** (1 connections) — `.github/PULL_REQUEST_TEMPLATE.md`
+- **Pull Request Template** (1 connections) — `.github/PULL_REQUEST_TEMPLATE.md`
 
 ## Relationships
 

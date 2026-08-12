@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **__init__.py** (0 connections) — `server/__init__.py`
+- **server/__init__.py** (0 connections) — `server/__init__.py`
 
 ## Relationships
 

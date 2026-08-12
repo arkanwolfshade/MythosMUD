@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **compare_linting_results.py** (20 connections) — `scripts/compare_linting_results.py`
+- **compare_linting_results.py** (21 connections) — `scripts/compare_linting_results.py`
 - **Finding** (18 connections) — `scripts/compare_linting_results.py`
 - **main()** (10 connections) — `scripts/compare_linting_results.py`
 - **compare_findings()** (8 connections) — `scripts/compare_linting_results.py`
@@ -12,29 +12,28 @@
 - **categorize_findings()** (6 connections) — `scripts/compare_linting_results.py`
 - **_format_findings_section()** (6 connections) — `scripts/compare_linting_results.py`
 - **parse_ruff_json_output()** (5 connections) — `scripts/compare_linting_results.py`
-- **Any** (4 connections)
-- **parse_ruff_text_output()** (4 connections) — `scripts/compare_linting_results.py`
-- **parse_pylint_text_output()** (4 connections) — `scripts/compare_linting_results.py`
-- **get_ruff_output()** (4 connections) — `scripts/compare_linting_results.py`
-- **load_pylint_output()** (4 connections) — `scripts/compare_linting_results.py`
 - **_build_file_line_index()** (4 connections) — `scripts/compare_linting_results.py`
+- **_categorize_pylint_finding()** (4 connections) — `scripts/compare_linting_results.py`
+- **_categorize_ruff_finding()** (4 connections) — `scripts/compare_linting_results.py`
 - **_find_overlapping_findings()** (4 connections) — `scripts/compare_linting_results.py`
 - **_find_unmatched_findings()** (4 connections) — `scripts/compare_linting_results.py`
-- **_categorize_ruff_finding()** (4 connections) — `scripts/compare_linting_results.py`
-- **_categorize_pylint_finding()** (4 connections) — `scripts/compare_linting_results.py`
-- **_format_summary_statistics()** (4 connections) — `scripts/compare_linting_results.py`
 - **_format_category_section()** (4 connections) — `scripts/compare_linting_results.py`
 - **_format_overlapping_section()** (4 connections) — `scripts/compare_linting_results.py`
+- **_format_summary_statistics()** (4 connections) — `scripts/compare_linting_results.py`
+- **get_ruff_output()** (4 connections) — `scripts/compare_linting_results.py`
+- **load_pylint_output()** (4 connections) — `scripts/compare_linting_results.py`
+- **parse_pylint_text_output()** (4 connections) — `scripts/compare_linting_results.py`
+- **parse_ruff_text_output()** (4 connections) — `scripts/compare_linting_results.py`
+- **Any** (4 connections)
 - **Path** (3 connections)
-- **.__hash__()** (2 connections) — `scripts/compare_linting_results.py`
 - **.__eq__()** (2 connections) — `scripts/compare_linting_results.py`
+- **.__hash__()** (2 connections) — `scripts/compare_linting_results.py`
 - **.location_key()** (2 connections) — `scripts/compare_linting_results.py`
 - *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [CI Quality Scripts](CI_Quality_Scripts.md) (1 shared connections)
-- [Combat Command Helpers](Combat_Command_Helpers.md) (1 shared connections)
+- [safe_run_static](safe_run_static.md) (3 shared connections)
 
 ## Source Files
 
@@ -42,8 +41,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 161 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 165 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

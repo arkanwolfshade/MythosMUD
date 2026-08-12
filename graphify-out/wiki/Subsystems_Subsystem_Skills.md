@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **Skills / Level Subsystem** (2 connections) — `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
-- **SkillService** (2 connections) — `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
 - **LevelService** (2 connections) — `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
+- **SkillService** (2 connections) — `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
+- **Skills / Level Subsystem** (2 connections) — `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
 
 ## Relationships
 

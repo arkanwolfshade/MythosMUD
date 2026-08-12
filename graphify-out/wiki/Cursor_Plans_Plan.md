@@ -1,24 +1,30 @@
 # Cursor Plans Plan
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **.reset_player_limits()** (2 connections) — `server/services/rate_limiter.py`
-- **Reset rate limiting for a player.          Args:             player_id: Player I** (1 connections) — `server/services/rate_limiter.py`
+- **WebSocket-Only Migration** (3 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
+- **WebSocket-Only Architecture** (2 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
+- **Unify Client Message Handling** (2 connections) — `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
+- **SSE Connection Removal** (1 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
+- **Unified Client Message Pipeline** (1 connections) — `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
+- **WebSocket Best-Practices Remediation** (1 connections) — `.cursor/plans/websocket_best-practices_remediation.plan.md`
 
 ## Relationships
 
-- [Npc Behavior Engine](Npc_Behavior_Engine.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/rate_limiter.py`
+- `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
+- `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
+- `.cursor/plans/websocket_best-practices_remediation.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (60%)
+- INFERRED: 4 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---

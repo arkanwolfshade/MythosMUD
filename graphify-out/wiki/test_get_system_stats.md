@@ -9,7 +9,7 @@
 
 ## Relationships
 
-- [Postgresql Anti Patterns](Postgresql_Anti_Patterns.md) (1 shared connections)
+- [test_rate_limiter.py](test_rate_limiter.py.md) (1 shared connections)
 
 ## Source Files
 

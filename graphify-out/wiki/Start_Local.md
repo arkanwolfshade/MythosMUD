@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **start_local.ps1** (2 connections) — `scripts/start_local.ps1`
-- **Start-Server()** (1 connections) — `scripts/start_local.ps1`
 - **Start-Client()** (1 connections) — `scripts/start_local.ps1`
+- **Start-Server()** (1 connections) — `scripts/start_local.ps1`
 
 ## Relationships
 

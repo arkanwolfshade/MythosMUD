@@ -1,34 +1,27 @@
 # Investigations Sessions Session
 
-> 10 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **get_help_content()** (6 connections) — `server/command_handler_unified.py`
-- **TestLegacyFunctions** (6 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_process_command_legacy()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_get_help_content()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_get_help_content_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Get help content for commands.      This is a compatibility function that delega** (1 connections) — `server/command_handler_unified.py`
-- **Test legacy compatibility functions.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test process_command() legacy function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test get_help_content() delegates to help system.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test get_help_content() with None command.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Combat Messages Dual Panel Display** (2 connections) — `investigations/sessions/2025-11-19_session-003_combat-messages-dual-panel-display.md`
+- **Combat Turn Order UUID Display** (1 connections) — `investigations/sessions/2025-11-19_session-002_combat-message-uuid-display.md`
+- **Missing NPC Death Message Handlers** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
 
 ## Relationships
 
-- [Room Exploration API](Room_Exploration_API.md) (5 shared connections)
-- [Container Open Events](Container_Open_Events.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/command_handler_unified.py`
-- `server/tests/unit/commands/test_command_handler_unified.py`
+- `investigations/sessions/2025-11-19_session-002_combat-message-uuid-display.md`
+- `investigations/sessions/2025-11-19_session-003_combat-messages-dual-panel-display.md`
+- `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 4 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,26 +1,31 @@
 # Components Ui V 2
 
-> 4 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **🔍 DEBUGGING GUIDE** (4 connections) — `.cursor/commands/mypy-remediation.md`
-- **If Mypy Command Fails** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **If Specific Issues Persist** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Understanding Type Checker Behavior** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **Event-Sourced Projector** (3 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
+- **Enter-Room Request/Response** (3 connections) — `client/src/components/ui-v2/eventLog/HANDOFFS.md`
+- **Client Event Schema** (3 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
+- **Critical State Handoffs** (3 connections) — `client/src/components/ui-v2/eventLog/HANDOFFS.md`
+- **room_state Event** (2 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
+- **Server Authority Over Client** (2 connections) — `client/src/components/ui-v2/eventLog/HANDOFFS.md`
+- **game_state Event** (1 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
+- **GameState** (1 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
 
 ## Relationships
 
-- [Realtime Connection State](Realtime_Connection_State.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.cursor/commands/mypy-remediation.md`
+- `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
+- `client/src/components/ui-v2/eventLog/HANDOFFS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 16 (89%)
+- INFERRED: 2 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

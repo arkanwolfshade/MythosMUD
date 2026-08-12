@@ -1,11 +1,16 @@
 # Investigations Sessions Combat
 
-> 2 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **playwright.runtime.config.ts** (1 connections) — `client/tests/e2e/playwright.runtime.config.ts`
-- **PARALLEL_WORKERS** (1 connections) — `client/tests/e2e/playwright.runtime.config.ts`
+- **Second NPC Combat And Linkdead Findings** (4 connections) — `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
+- **Combat Start Missing Await get_player_by_name** (2 connections) — `investigations/sessions/2025-12-08_session-combat-start-failure.md`
+- **XP Award async_get_player Missing Method** (2 connections) — `investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md`
+- **Coroutine Object Has No current_room_id** (1 connections) — `investigations/sessions/2025-12-08_session-combat-start-failure.md`
+- **get_player_by_id vs async_get_player Mismatch** (1 connections) — `investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md`
+- **Linkdead WebSocket Grace Period** (1 connections) — `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
+- **Stale Queued Attack Target Validation** (1 connections) — `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
 
 ## Relationships
 
@@ -13,12 +18,14 @@
 
 ## Source Files
 
-- `client/tests/e2e/playwright.runtime.config.ts`
+- `investigations/sessions/2025-12-08_session-combat-start-failure.md`
+- `investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md`
+- `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 8 (67%)
+- INFERRED: 4 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

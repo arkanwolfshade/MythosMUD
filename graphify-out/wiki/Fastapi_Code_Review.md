@@ -1,32 +1,24 @@
 # Fastapi Code Review
 
-> 10 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **player_repository_room.py** (7 connections) — `server/persistence/repositories/player_repository_room.py`
-- **validate_and_fix_player_room()** (7 connections) — `server/persistence/repositories/player_repository_room.py`
-- **validate_and_fix_player_room_with_persistence()** (7 connections) — `server/persistence/repositories/player_repository_room.py`
-- **should_skip_room_validation()** (5 connections) — `server/persistence/repositories/player_repository_room.py`
-- **Any** (3 connections)
-- **Player** (3 connections)
-- **Player room validation helpers for PlayerRepository.  Validates and fixes invali** (1 connections) — `server/persistence/repositories/player_repository_room.py`
-- **Return True if room validation should be skipped (cache empty, instanced, or tut** (1 connections) — `server/persistence/repositories/player_repository_room.py`
-- **Validate player's current room and fix if invalid.      Args:         room_cache** (1 connections) — `server/persistence/repositories/player_repository_room.py`
-- **Validate and fix player room, persisting the fix if needed.      Args:         r** (1 connections) — `server/persistence/repositories/player_repository_room.py`
+- **FastAPI Code Review** (2 connections) — `docs/FASTAPI_CODE_REVIEW.md`
+- **FastAPI Dependency Injection** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
+- **FastAPI Response Models** (1 connections) — `docs/FASTAPI_CODE_REVIEW.md`
 
 ## Relationships
 
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
-- [Zone Config Loader](Zone_Config_Loader.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/persistence/repositories/player_repository_room.py`
+- `docs/FASTAPI_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

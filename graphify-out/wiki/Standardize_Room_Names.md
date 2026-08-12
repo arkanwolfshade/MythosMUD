@@ -8,10 +8,10 @@
 - **standardize_room_names.py** (7 connections) — `scripts/standardize_room_names.py`
 - **load_room_file()** (4 connections) — `scripts/standardize_room_names.py`
 - **save_room_file()** (4 connections) — `scripts/standardize_room_names.py`
-- **Path** (3 connections)
-- **standardize_room_id()** (3 connections) — `scripts/standardize_room_names.py`
 - **standardize_filename()** (3 connections) — `scripts/standardize_room_names.py`
+- **standardize_room_id()** (3 connections) — `scripts/standardize_room_names.py`
 - **update_room_references()** (3 connections) — `scripts/standardize_room_names.py`
+- **Path** (3 connections)
 - **main()** (2 connections) — `scripts/standardize_room_names.py`
 - **Load a room file safely.** (1 connections) — `scripts/standardize_room_names.py`
 - **Save a room file safely.** (1 connections) — `scripts/standardize_room_names.py`

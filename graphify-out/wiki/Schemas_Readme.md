@@ -5,9 +5,9 @@
 ## Key Concepts
 
 - **Shared JSON schemas** (3 connections) — `schemas/README.md`
-- **unified_room_schema.json** (1 connections) — `schemas/README.md`
 - **alias_schema.json** (1 connections) — `schemas/README.md`
 - **emote_schema.json** (1 connections) — `schemas/README.md`
+- **unified_room_schema.json** (1 connections) — `schemas/README.md`
 
 ## Relationships
 

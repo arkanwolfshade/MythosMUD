@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **.test_start_already_running()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **Test start returns True when already running.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Three-Column Panel Wireframe Layout** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
+- **Wireframe Layout Verification** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
 
 ## Relationships
 
-- [Combat Health Persistence Fix](Combat_Health_Persistence_Fix.md) (1 shared connections)
-- [AnyIO Code Review](AnyIO_Code_Review.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_game_tick_service.py`
+- `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

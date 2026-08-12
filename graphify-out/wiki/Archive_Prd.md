@@ -6,8 +6,8 @@
 
 - **MythosMUD Product Requirements** (2 connections) — `docs/archive/PRD.md`
 - **Room-Based Combat** (2 connections) — `docs/archive/PRD.md`
-- **Lucidity System** (1 connections) — `docs/archive/PRD.md`
 - **Aggro System** (1 connections) — `docs/archive/PRD.md`
+- **Lucidity System** (1 connections) — `docs/archive/PRD.md`
 
 ## Relationships
 

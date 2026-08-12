@@ -1,12 +1,10 @@
 # Check Postgresql
 
-> 3 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **check_postgresql.sh** (2 connections) — `scripts/check_postgresql.sh`
-- **check_postgresql.sh script** (1 connections) — `scripts/check_postgresql.sh`
-- **PGPASSWORD** (1 connections) — `scripts/check_postgresql.sh`
+- **check_postgresql.ps1** (0 connections) — `scripts/check_postgresql.ps1`
 
 ## Relationships
 
@@ -14,11 +12,11 @@
 
 ## Source Files
 
-- `scripts/check_postgresql.sh`
+- `scripts/check_postgresql.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

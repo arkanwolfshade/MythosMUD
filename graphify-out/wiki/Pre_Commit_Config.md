@@ -7,18 +7,18 @@
 - **Codacy configuration** (4 connections) — `.codacy.yml`
 - **Pre-commit hook configuration** (4 connections) — `.pre-commit-config.yaml`
 - **Enforced coverage gates** (2 connections) — `.codacy.yml`
-- **Lizard CCN and NLOC thresholds** (2 connections) — `.codacy.yml`
 - **Codacy exclude_paths** (2 connections) — `.codacy.yml`
+- **Lizard CCN and NLOC thresholds** (2 connections) — `.codacy.yml`
 - **Quality Fragmentation Guard hook** (2 connections) — `.pre-commit-config.yaml`
-- **Greenfield testing strategy** (2 connections) — `TESTING.md`
 - **70 percent and 90 percent coverage policy** (2 connections) — `TESTING.md`
 - **Bandit configuration** (2 connections) — `bandit.yml`
-- **Grype SCA exclude paths** (1 connections) — `.grype.yaml`
-- **Ruff pre-commit hook** (1 connections) — `.pre-commit-config.yaml`
-- **Mypy pre-commit hook** (1 connections) — `.pre-commit-config.yaml`
-- **F-string logging anti-pattern detector** (1 connections) — `.pre-commit-config.yaml`
-- **Unit integration E2E test tiers** (1 connections) — `TESTING.md`
+- **Greenfield testing strategy** (2 connections) — `TESTING.md`
 - **Bandit B101 B105 B106 test skips** (1 connections) — `bandit.yml`
+- **F-string logging anti-pattern detector** (1 connections) — `.pre-commit-config.yaml`
+- **Mypy pre-commit hook** (1 connections) — `.pre-commit-config.yaml`
+- **Ruff pre-commit hook** (1 connections) — `.pre-commit-config.yaml`
+- **Unit integration E2E test tiers** (1 connections) — `TESTING.md`
+- **Grype SCA exclude paths** (1 connections) — `.grype.yaml`
 
 ## Relationships
 

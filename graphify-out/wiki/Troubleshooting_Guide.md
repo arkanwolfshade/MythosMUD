@@ -1,26 +1,23 @@
 # Troubleshooting Guide
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **name** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **maxLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **Error Monitoring Scripts** (1 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
+- **Troubleshooting Guide** (1 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
 
 ## Relationships
 
-- [Chat Panel Separation Spec](Chat_Panel_Separation_Spec.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- `docs/TROUBLESHOOTING_GUIDE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

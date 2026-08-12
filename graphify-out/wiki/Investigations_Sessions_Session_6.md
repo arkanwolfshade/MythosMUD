@@ -4,25 +4,29 @@
 
 ## Key Concepts
 
-- **schedules** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **properties** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **items** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **$ref** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **NPC Combat Start Race Condition** (2 connections) — `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
+- **NPCs Incorrectly Marked is_alive False** (2 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
+- **December 3 Final Investigation Summary** (2 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
+- **Room Occupants Duplicates and Missing Player** (2 connections) — `investigations/sessions/2025-12-03_session-002_room-occupants-display.md`
+- **Redundant NPC Instance Lookup Failure** (1 connections) — `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
+- **Character Info Panel Missing Stats Field** (1 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
 
 ## Relationships
 
-- [Archive Connection Termination](Archive_Connection_Termination.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
+- `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
+- `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
+- `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
+- `investigations/sessions/2025-12-03_session-002_room-occupants-display.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (60%)
+- INFERRED: 4 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---

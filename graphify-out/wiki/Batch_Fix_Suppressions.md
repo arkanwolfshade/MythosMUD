@@ -8,7 +8,7 @@
 - **main()** (3 connections) — `scripts/batch_fix_suppressions.py`
 - **batch_fix_suppressions.py** (2 connections) — `scripts/batch_fix_suppressions.py`
 - **Path** (2 connections)
-- **Fix suppressions in a file.      Returns:         (number_fixed, list of changes** (1 connections) — `scripts/batch_fix_suppressions.py`
+- **Fix suppressions in a file. Returns: (number_fixed, list of changes)** (1 connections) — `scripts/batch_fix_suppressions.py`
 
 ## Relationships
 

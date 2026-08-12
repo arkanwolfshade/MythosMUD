@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **Playwright MCP Primary Testing Tool** (2 connections) — `e2e-tests/TESTING_APPROACH.md`
-- **Standard Playwright Unsuitable for Multiplayer** (1 connections) — `e2e-tests/TESTING_APPROACH.md`
 - **Server Won't Start Troubleshooting** (1 connections) — `e2e-tests/TROUBLESHOOTING.md`
+- **Standard Playwright Unsuitable for Multiplayer** (1 connections) — `e2e-tests/TESTING_APPROACH.md`
 
 ## Relationships
 

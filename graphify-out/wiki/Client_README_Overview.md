@@ -5,9 +5,9 @@
 ## Key Concepts
 
 - **Tiered Test Coverage Strategy** (3 connections) — `client/docs/TEST_COVERAGE_STRATEGY.md`
-- **Vitest Unit Tests** (1 connections) — `client/README.md`
 - **Critical Code 90% Coverage** (1 connections) — `client/docs/TEST_COVERAGE_STRATEGY.md`
 - **Global 70% Coverage Threshold** (1 connections) — `client/docs/TEST_COVERAGE_STRATEGY.md`
+- **Vitest Unit Tests** (1 connections) — `client/README.md`
 
 ## Relationships
 

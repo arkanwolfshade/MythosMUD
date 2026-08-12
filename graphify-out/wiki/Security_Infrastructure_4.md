@@ -1,30 +1,39 @@
 # Security Infrastructure
 
-> 16 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **is_safe_filename()** (10 connections) — `server/security_utils.py`
-- **test_is_safe_filename_valid()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_is_safe_filename_empty()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_is_safe_filename_with_dot_dot()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_is_safe_filename_with_forward_slash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_is_safe_filename_with_backslash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_is_safe_filename_with_special_chars()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_is_safe_filename_unicode()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Check if a filename is safe (no path traversal, no special characters).      Arg** (1 connections) — `server/security_utils.py`
-- **Test is_safe_filename with valid filename.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test is_safe_filename with empty string (considered safe).** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test is_safe_filename rejects filenames with ..** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test is_safe_filename rejects filenames with forward slash.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test is_safe_filename rejects filenames with backslash.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test is_safe_filename rejects filenames with special characters.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test is_safe_filename with Unicode characters.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_security_utils.py** (39 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **get_secure_file_path()** (13 connections) — `server/security_utils.py`
+- **test_get_secure_file_path_creates_directory()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_get_secure_file_path_invalid_characters()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_get_secure_file_path_mixed_case()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_get_secure_file_path_numeric_filename()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_get_secure_file_path_valid()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_get_secure_file_path_with_dots()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_get_secure_file_path_with_hyphens()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_get_secure_file_path_with_slash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_get_secure_file_path_with_spaces()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_get_secure_file_path_with_underscores()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Get a secure file path within a base directory. Args: filename: The filename…** (1 connections) — `server/security_utils.py`
+- **Unit tests for security utilities. Tests path validation and file security…** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test get_secure_file_path with valid filename.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test get_secure_file_path rejects invalid characters.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test get_secure_file_path rejects filenames with slashes.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test get_secure_file_path creates base directory if it doesn't exist.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test get_secure_file_path accepts filenames with underscores.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test get_secure_file_path accepts filenames with dots.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test get_secure_file_path accepts filenames with hyphens.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test get_secure_file_path with numeric filename.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test get_secure_file_path with mixed case filename.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test get_secure_file_path rejects filenames with spaces.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
 
 ## Relationships
 
-- [Security Infrastructure](Security_Infrastructure.md) (8 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Security Infrastructure](Security_Infrastructure.md) (24 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [test_validate_secure_path_path_traversal_commonpath](test_validate_secure_path_path_traversal_commonpath.md) (2 shared connections)
 
 ## Source Files
 
@@ -33,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
+- EXTRACTED: 94 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

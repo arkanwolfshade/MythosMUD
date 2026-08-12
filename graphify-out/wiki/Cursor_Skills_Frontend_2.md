@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **test_restore_mp_from_meditation_restores_mp()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test restore_mp_from_meditation() restores MP.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Vertical Rhythm Typography** (1 connections) — `.cursor/skills/frontend-design/reference/typography.md`
+- **Typography Reference** (1 connections) — `.cursor/skills/frontend-design/reference/typography.md`
 
 ## Relationships
 
-- [Cursor Agents Quick](Cursor_Agents_Quick.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `.cursor/skills/frontend-design/reference/typography.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

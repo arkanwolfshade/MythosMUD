@@ -11,10 +11,10 @@
 - **vite.proxyAuthorization.ts** (2 connections) — `client/vite.proxyAuthorization.ts`
 - **vite.vitestOptions.ts** (2 connections) — `client/vite.vitestOptions.ts`
 - **vitestTestOptions** (2 connections) — `client/vite.vitestOptions.ts`
+- **vitest.config.ts** (1 connections) — `client/vitest.config.ts`
+- **vitest.config.d.ts** (1 connections) — `client/vitest.config.d.ts`
 - **TODO: Implement AST-based console removal plugin to selectively remove** (1 connections) — `client/vite.config.ts`
 - **TODO: Implement AST-based console removal to preserve console.error/warn** (1 connections) — `client/vite.userConfig.ts`
-- **vitest.config.d.ts** (1 connections) — `client/vitest.config.d.ts`
-- **vitest.config.ts** (1 connections) — `client/vitest.config.ts`
 
 ## Relationships
 

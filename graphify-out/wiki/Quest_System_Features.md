@@ -1,27 +1,29 @@
 # Quest System Features
 
-> 4 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **exits** (4 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **additionalProperties** (2 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **Quest System Features** (4 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
+- **Quest Design Principles** (2 connections) — `docs/QUEST_DESIGN_GUIDELINES.md`
+- **Quest Goal Types** (2 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
+- **Quest Design Guidelines** (2 connections) — `docs/QUEST_DESIGN_GUIDELINES.md`
+- **Event-Driven Quest Progression** (1 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
+- **Declarative YAML Quest Config** (1 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
 
 ## Relationships
 
-- [WebSocket-Only Migration Plan](WebSocket-Only_Migration_Plan.md) (3 shared connections)
-- [Edge Creation Modal](Edge_Creation_Modal.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/room.schema.json`
+- `docs/QUEST_DESIGN_GUIDELINES.md`
+- `docs/QUEST_SYSTEM_FEATURES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 10 (83%)
+- INFERRED: 2 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

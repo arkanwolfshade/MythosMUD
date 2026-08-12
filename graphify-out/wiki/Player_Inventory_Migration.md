@@ -5,18 +5,18 @@
 ## Key Concepts
 
 - **player_inventory_migration.py** (6 connections) — `server/scripts/player_inventory_migration.py`
-- **migrate_player_inventories()** (4 connections) — `server/scripts/player_inventory_migration.py`
 - **migrate_multiple()** (4 connections) — `server/scripts/player_inventory_migration.py`
-- **Path** (2 connections)
+- **migrate_player_inventories()** (4 connections) — `server/scripts/player_inventory_migration.py`
 - **parse_args()** (2 connections) — `server/scripts/player_inventory_migration.py`
+- **Path** (2 connections)
 - **Namespace** (1 connections)
 - **Create and backfill the player_inventories table.** (1 connections) — `server/scripts/player_inventory_migration.py`
-- **Ensure the player_inventories table exists and is populated for existing players** (1 connections) — `server/scripts/player_inventory_migration.py`
+- **Ensure the player_inventories table exists and is populated for existing…** (1 connections) — `server/scripts/player_inventory_migration.py`
 - **Run the migration across multiple database paths.** (1 connections) — `server/scripts/player_inventory_migration.py`
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 

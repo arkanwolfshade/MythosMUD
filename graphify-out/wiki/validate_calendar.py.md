@@ -1,0 +1,49 @@
+# validate_calendar.py
+
+> 21 nodes
+
+## Key Concepts
+
+- **validate_calendar.py** (17 connections) — `scripts/validate_calendar.py`
+- **run_validation()** (9 connections) — `scripts/validate_calendar.py`
+- **load_schedule_directory()** (8 connections) — `server/schemas/calendar/calendar.py`
+- **_get_calendar_paths()** (7 connections) — `scripts/validate_calendar.py`
+- **_check_holiday_coverage()** (6 connections) — `scripts/validate_calendar.py`
+- **_load_and_validate_holidays()** (6 connections) — `scripts/validate_calendar.py`
+- **_validate_schedule_files()** (6 connections) — `scripts/validate_calendar.py`
+- **Path** (6 connections)
+- **_print_success_message()** (5 connections) — `scripts/validate_calendar.py`
+- **load_document_ids()** (4 connections) — `scripts/validate_calendar.py`
+- **parse_args()** (4 connections) — `scripts/validate_calendar.py`
+- **main()** (3 connections) — `scripts/validate_calendar.py`
+- **_print_errors()** (3 connections) — `scripts/validate_calendar.py`
+- **Namespace** (3 connections)
+- **Print validation errors.** (1 connections) — `scripts/validate_calendar.py`
+- **Print success message if not quiet.** (1 connections) — `scripts/validate_calendar.py`
+- **Get holidays and schedules paths.** (1 connections) — `scripts/validate_calendar.py`
+- **Load and validate holidays.** (1 connections) — `scripts/validate_calendar.py`
+- **Check if holidays cover documentation references.** (1 connections) — `scripts/validate_calendar.py`
+- **Load and validate schedule files.** (1 connections) — `scripts/validate_calendar.py`
+- **Utility for loading every schedule file within a directory.** (1 connections) — `server/schemas/calendar/calendar.py`
+
+## Relationships
+
+- [bundles/game.py](bundles-game.py.md) (7 shared connections)
+- [HolidayCollection](HolidayCollection.md) (5 shared connections)
+- [ScheduleCollection](ScheduleCollection.md) (5 shared connections)
+- [.load_file](load_file.md) (3 shared connections)
+
+## Source Files
+
+- `scripts/validate_calendar.py`
+- `server/schemas/calendar/calendar.py`
+
+## Audit Trail
+
+- EXTRACTED: 94 (100%)
+- INFERRED: 0 (0%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

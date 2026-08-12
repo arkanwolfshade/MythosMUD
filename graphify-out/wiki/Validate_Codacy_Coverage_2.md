@@ -1,22 +1,24 @@
 # Validate Codacy Coverage
 
-> 13 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **test_validate_codacy_coverage_gate.py** (9 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
+- **validate_codacy_coverage_gate.py** (7 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **validate_python_gate()** (6 connections) — `scripts/validate_codacy_coverage_gate.py`
 - **Path** (6 connections)
-- **_CodacyGateModule** (4 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **_load_gate_module()** (2 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **test_cobertura_root_line_rate_parses()** (2 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **test_validate_python_gate_passes()** (2 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **test_validate_python_gate_fails_low_aggregate()** (2 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **test_validate_python_gate_fails_no_server_paths()** (2 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **test_lcov_aggregate_and_gate()** (2 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **test_validate_lcov_gate_fails()** (2 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **Protocol** (1 connections)
-- **Tests for scripts/validate_codacy_coverage_gate.py (Codacy upload quality gate).** (1 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **Public surface of validate_codacy_coverage_gate loaded via importlib.** (1 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
+- **cobertura_has_server_sources()** (5 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **cobertura_root_line_rate()** (5 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **_parse_cobertura_xml()** (5 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **validate_lcov_gate()** (5 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **lcov_aggregate_hits()** (4 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **main()** (3 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **Parse Cobertura XML with defusedxml (lazy import: LCOV-only runs skip this…** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **Return root line-rate from Cobertura XML (0.0--1.0).** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **True if report lists at least one class under server/ (relative paths).** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **Sum LH (lines hit) and LF (lines found) across all LCOV records.** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **Fail fast if Python Cobertura aggregate or server scope is insufficient.** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **Fail fast if LCOV aggregate line rate is below minimum.** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
 
 ## Relationships
 
@@ -24,11 +26,11 @@
 
 ## Source Files
 
-- `server/tests/unit/test_validate_codacy_coverage_gate.py`
+- `scripts/validate_codacy_coverage_gate.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
+- EXTRACTED: 52 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

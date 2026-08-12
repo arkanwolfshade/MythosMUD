@@ -1,11 +1,20 @@
 # Cursor Skills Skill
 
-> 2 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **Harden Skill** (1 connections) — `.cursor/skills/harden/SKILL.md`
-- **Normalize Skill** (1 connections) — `.cursor/skills/normalize/SKILL.md`
+- **Teach Impeccable Skill** (7 connections) — `.cursor/skills/teach-impeccable/SKILL.md`
+- **Overdrive Skill** (3 connections) — `.cursor/skills/overdrive/SKILL.md`
+- **Polish Skill** (3 connections) — `.cursor/skills/polish/SKILL.md`
+- **Quieter Skill** (3 connections) — `.cursor/skills/quieter/SKILL.md`
+- **Onboard Skill** (2 connections) — `.cursor/skills/onboard/SKILL.md`
+- **Optimize Skill** (2 connections) — `.cursor/skills/optimize/SKILL.md`
+- **Typeset Skill** (2 connections) — `.cursor/skills/typeset/SKILL.md`
+- **Aha Moment Onboarding** (1 connections) — `.cursor/skills/onboard/SKILL.md`
+- **Core Web Vitals Performance** (1 connections) — `.cursor/skills/optimize/SKILL.md`
+- **Design Context Persistence (.impeccable.md)** (1 connections) — `.cursor/skills/teach-impeccable/SKILL.md`
+- **Overdrive Mode** (1 connections) — `.cursor/skills/overdrive/SKILL.md`
 
 ## Relationships
 
@@ -13,13 +22,18 @@
 
 ## Source Files
 
-- `.cursor/skills/harden/SKILL.md`
-- `.cursor/skills/normalize/SKILL.md`
+- `.cursor/skills/onboard/SKILL.md`
+- `.cursor/skills/optimize/SKILL.md`
+- `.cursor/skills/overdrive/SKILL.md`
+- `.cursor/skills/polish/SKILL.md`
+- `.cursor/skills/quieter/SKILL.md`
+- `.cursor/skills/teach-impeccable/SKILL.md`
+- `.cursor/skills/typeset/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- EXTRACTED: 20 (77%)
+- INFERRED: 6 (23%)
 - AMBIGUOUS: 0 (0%)
 
 ---

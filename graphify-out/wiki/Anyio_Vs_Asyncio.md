@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **AnyIO vs Asyncio Comparison** (2 connections) — `docs/anyio_vs_asyncio_comparison.md`
-- **AnyIO Code Review and Migration** (1 connections) — `docs/anyio_code_review.md`
 - **Structured Concurrency** (1 connections) — `docs/anyio_vs_asyncio_comparison.md`
+- **AnyIO Code Review and Migration** (1 connections) — `docs/anyio_code_review.md`
 
 ## Relationships
 

@@ -1,11 +1,12 @@
 # Cursor Skills Mythosmud
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **check_invites_schema.py** (1 connections) — `server/scripts/check_invites_schema.py`
-- **main()** (1 connections) — `server/scripts/check_invites_schema.py`
+- **MythosMUD Server Runbook Skill** (2 connections) — `.cursor/skills/mythosmud-server-runbook/SKILL.md`
+- **One Server Only Rule** (1 connections) — `.cursor/skills/mythosmud-server-runbook/SKILL.md`
+- **MythosMUD Worktree Workflow Skill** (1 connections) — `.cursor/skills/mythosmud-worktree-workflow/SKILL.md`
 
 ## Relationships
 
@@ -13,12 +14,13 @@
 
 ## Source Files
 
-- `server/scripts/check_invites_schema.py`
+- `.cursor/skills/mythosmud-server-runbook/SKILL.md`
+- `.cursor/skills/mythosmud-worktree-workflow/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (50%)
+- INFERRED: 2 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

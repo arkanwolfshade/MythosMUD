@@ -1,10 +1,17 @@
 # Migrate Npc
 
-> 1 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **migrate_npc_db.ps1** (0 connections) — `scripts/migrate_npc_db.ps1`
+- **apply_migration()** (4 connections) — `scripts/migrate_npc_db.py`
+- **check_schema()** (4 connections) — `scripts/migrate_npc_db.py`
+- **main()** (4 connections) — `scripts/migrate_npc_db.py`
+- **migrate_npc_db.py** (3 connections) — `scripts/migrate_npc_db.py`
+- **Path** (2 connections)
+- **Cursor** (1 connections)
+- **Check current schema of npc_spawn_rules table** (1 connections) — `scripts/migrate_npc_db.py`
+- **Apply the migration to rename columns** (1 connections) — `scripts/migrate_npc_db.py`
 
 ## Relationships
 
@@ -12,11 +19,11 @@
 
 ## Source Files
 
-- `scripts/migrate_npc_db.ps1`
+- `scripts/migrate_npc_db.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

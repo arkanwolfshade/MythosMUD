@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **_scan_dml_blank_before_terminator.py** (1 connections) — `scripts/_scan_dml_blank_before_terminator.py`
-- **One-off scan: blank line immediately before \\. in data/db DML (invalid COPY row** (1 connections) — `scripts/_scan_dml_blank_before_terminator.py`
+- **One-off scan: blank line immediately before \\. in data/db DML (invalid COPY…** (1 connections) — `scripts/_scan_dml_blank_before_terminator.py`
 
 ## Relationships
 

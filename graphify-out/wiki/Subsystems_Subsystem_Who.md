@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Who Subsystem** (1 connections) — `docs/subsystems/SUBSYSTEM_WHO_DESIGN.md`
 - **Online via last_active Threshold** (1 connections) — `docs/subsystems/SUBSYSTEM_WHO_DESIGN.md`
+- **Who Subsystem** (1 connections) — `docs/subsystems/SUBSYSTEM_WHO_DESIGN.md`
 
 ## Relationships
 

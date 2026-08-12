@@ -1,39 +1,30 @@
 # Security Infrastructure
 
-> 24 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **validate_secure_path()** (16 connections) — `server/security_utils.py`
-- **test_validate_secure_path_valid()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_validate_secure_path_with_dot_dot()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_validate_secure_path_with_tilde()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_validate_secure_path_with_leading_slash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_validate_secure_path_commonpath_mismatch_with_mock()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_validate_secure_path_commonpath_mismatch()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_validate_secure_path_different_drives_windows()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_validate_secure_path_nested_path()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_validate_secure_path_empty_user_path()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_validate_secure_path_absolute_base()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_validate_secure_path_with_spaces()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Validate and sanitize a user-provided path to prevent path traversal     attacks** (1 connections) — `server/security_utils.py`
-- **Test validate_secure_path with valid path.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test validate_secure_path rejects path traversal with ..** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test validate_secure_path rejects path traversal with ~** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test validate_secure_path handles leading slashes.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test validate_secure_path detects when common_path != base_path (lines 59-66) us** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test validate_secure_path detects when common_path != base_path (lines 59-66).** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test validate_secure_path handles different drives on Windows.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test validate_secure_path with nested valid path.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test validate_secure_path with empty user path.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test validate_secure_path normalizes base path to absolute.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test validate_secure_path with path containing spaces.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **is_safe_filename()** (10 connections) — `server/security_utils.py`
+- **test_is_safe_filename_empty()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_is_safe_filename_unicode()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_is_safe_filename_valid()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_is_safe_filename_with_backslash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_is_safe_filename_with_dot_dot()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_is_safe_filename_with_forward_slash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_is_safe_filename_with_special_chars()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Check if a filename is safe (no path traversal, no special characters). Args:…** (1 connections) — `server/security_utils.py`
+- **Test is_safe_filename with valid filename.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test is_safe_filename with empty string (considered safe).** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test is_safe_filename rejects filenames with ..** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test is_safe_filename rejects filenames with forward slash.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test is_safe_filename rejects filenames with backslash.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test is_safe_filename rejects filenames with special characters.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test is_safe_filename with Unicode characters.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
 
 ## Relationships
 
-- [Security Infrastructure](Security_Infrastructure.md) (12 shared connections)
-- [Realtime Websocket Handler](Realtime_Websocket_Handler.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Security Infrastructure](Security_Infrastructure.md) (8 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +33,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 61 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

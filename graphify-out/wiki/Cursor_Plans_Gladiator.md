@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Gladiator Ring Arena** (1 connections) — `.cursor/plans/gladiator_ring_arena_6a674c58.plan.md`
 - **Limbo Arena Zone** (1 connections) — `.cursor/plans/gladiator_ring_arena_6a674c58.plan.md`
+- **Gladiator Ring Arena** (1 connections) — `.cursor/plans/gladiator_ring_arena_6a674c58.plan.md`
 
 ## Relationships
 

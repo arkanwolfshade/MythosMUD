@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **playwright.config.d.ts** (0 connections) — `client/playwright.config.d.ts`
+- **playwright.config.ts** (0 connections) — `client/playwright.config.ts`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `client/playwright.config.d.ts`
+- `client/playwright.config.ts`
 
 ## Audit Trail
 

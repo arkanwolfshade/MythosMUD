@@ -1,26 +1,33 @@
 # Event Ownership Matrix
 
-> 4 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **sub_zone** (4 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **pattern** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **Event Subscription service_id Tracking** (2 connections) — `docs/EVENT_SUBSCRIPTION_CLEANUP_PATTERNS.md`
+- **Memory Leak Audit Categories** (2 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
+- **Event Ownership Matrix** (2 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
+- **Event Subscription Cleanup Patterns** (2 connections) — `docs/EVENT_SUBSCRIPTION_CLEANUP_PATTERNS.md`
+- **Memory Leak Audit Report** (2 connections) — `docs/MEMORY_LEAK_AUDIT_REPORT.md`
+- **Memory Leak Metrics Usage Guide** (2 connections) — `docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md`
+- **Event Publishing Layers** (1 connections) — `docs/EVENT_OWNERSHIP_MATRIX.md`
+- **Memory Leak Monitoring Endpoints** (1 connections) — `docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md`
 
 ## Relationships
 
-- [Schemas Unified Room](Schemas_Unified_Room.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `docs/EVENT_OWNERSHIP_MATRIX.md`
+- `docs/EVENT_SUBSCRIPTION_CLEANUP_PATTERNS.md`
+- `docs/MEMORY_LEAK_AUDIT_REPORT.md`
+- `docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 8 (57%)
+- INFERRED: 6 (43%)
 - AMBIGUOUS: 0 (0%)
 
 ---

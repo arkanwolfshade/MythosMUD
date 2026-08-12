@@ -1,12 +1,11 @@
 # E 2 E Scenario Limitation
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Graphify Code Graph** (2 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
-- **Graphify Code Graph.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
-- **Relationship to this vault** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
+- **Playwright MCP Timing Limitation** (1 connections) — `e2e-tests/SCENARIO_15_TEST_LIMITATION.md`
+- **Whisper Rate Limit Sliding Window** (1 connections) — `e2e-tests/SCENARIO_15_TEST_LIMITATION.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
+- `e2e-tests/SCENARIO_15_TEST_LIMITATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

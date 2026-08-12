@@ -4,14 +4,14 @@
 
 ## Key Concepts
 
-- **zone** (4 connections) — `schemas/room_schema.json`
-- **type** (1 connections) — `schemas/room_schema.json`
-- **pattern** (1 connections) — `schemas/room_schema.json`
+- **plane** (4 connections) — `schemas/room_schema.json`
 - **description** (1 connections) — `schemas/room_schema.json`
+- **pattern** (1 connections) — `schemas/room_schema.json`
+- **type** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
-- [Schemas Room Schema](Schemas_Room_Schema.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 

@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **Rest Subsystem** (2 connections) — `docs/subsystems/SUBSYSTEM_REST_DESIGN.md`
-- **Rest Location Instant Disconnect** (1 connections) — `docs/subsystems/SUBSYSTEM_REST_DESIGN.md`
 - **Rest Countdown Disconnect** (1 connections) — `docs/subsystems/SUBSYSTEM_REST_DESIGN.md`
+- **Rest Location Instant Disconnect** (1 connections) — `docs/subsystems/SUBSYSTEM_REST_DESIGN.md`
 
 ## Relationships
 

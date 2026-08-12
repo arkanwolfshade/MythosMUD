@@ -1,23 +1,27 @@
 # E 2 E Scenarios Lucidity
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_store_npc_xp_mapping_first_engagement()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **Test store_npc_xp_mapping_for_mixin applies lucidity effect on first engagement.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Lucidity System Expansion Scenarios** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/README.md`
+- **Catatonia Grounding Ritual Scenario** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
+- **player_lucidity Ledger** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
+- **Sanitarium Failover Escalation** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-02-sanitarium-failover.md`
 
 ## Relationships
 
-- [E2E Suite Overview](E2E_Suite_Overview.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- `e2e-tests/scenarios/lucidity-system-expansion/README.md`
+- `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
+- `e2e-tests/scenarios/lucidity-system-expansion/scenario-02-sanitarium-failover.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

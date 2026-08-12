@@ -1,36 +1,33 @@
 # Application Container Analysis
 
-> 13 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **SessionManager** (12 connections) — `client/src/utils/security.ts`
-- **sessionManager.test.ts** (3 connections) — `client/src/utils/__tests__/sessionManager.test.ts`
-- **.cleanupExpiredSessions()** (3 connections) — `client/src/utils/security.ts`
-- **.startCleanupInterval()** (3 connections) — `client/src/utils/security.ts`
-- **.constructor()** (2 connections) — `client/src/utils/security.ts`
-- **.createSession()** (2 connections) — `client/src/utils/security.ts`
-- **.expireSession()** (2 connections) — `client/src/utils/security.ts`
-- **.generateSessionId()** (2 connections) — `client/src/utils/security.ts`
-- **SessionManagerTestHooks** (1 connections) — `client/src/utils/__tests__/sessionManager.test.ts`
-- **.isSessionValid()** (1 connections) — `client/src/utils/security.ts`
-- **.refreshSession()** (1 connections) — `client/src/utils/security.ts`
-- **.removeSession()** (1 connections) — `client/src/utils/security.ts`
-- **.destroy()** (1 connections) — `client/src/utils/security.ts`
+- **Application Container Analysis** (4 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **ApplicationContainer** (3 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **Domain Container Bundles** (2 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **Container Initialization Phases** (2 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **Bounded Contexts** (2 connections) — `docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md`
+- **Service Boundaries** (2 connections) — `docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md`
+- **Bounded Contexts and Service Boundaries** (2 connections) — `docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md`
+- **Complexity Refactoring Test Plan** (2 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **Complexity Refactoring Edge Cases** (1 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
 
 ## Relationships
 
-- [Realtime Event Handlers](Realtime_Event_Handlers.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/src/utils/__tests__/sessionManager.test.ts`
-- `client/src/utils/security.ts`
+- `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- `docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md`
+- `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 14 (70%)
+- INFERRED: 6 (30%)
 - AMBIGUOUS: 0 (0%)
 
 ---

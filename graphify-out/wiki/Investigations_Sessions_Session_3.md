@@ -1,30 +1,30 @@
 # Investigations Sessions Session
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **npc_schedules.schema.json** (7 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **required** (2 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **$schema** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **$id** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **title** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **schedules** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **additionalProperties** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **NPC Occupants Verification Summary** (3 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
+- **asyncpg UUID replace AttributeError** (2 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
+- **NPC Display Final Fixes** (2 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
+- **room_update Overwriting NPC Data** (1 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
+- **Legacy Occupants Snapshot Format** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
+- **Rooms API User Object AttributeError** (1 connections) — `investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md`
 
 ## Relationships
 
-- [Contributing Ai Development](Contributing_Ai_Development.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/npc_schedules.schema.json`
+- `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
+- `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
+- `investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (60%)
+- INFERRED: 4 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---

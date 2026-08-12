@@ -1,10 +1,13 @@
 # Archive Dual Connection
 
-> 1 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **__init__.py** (0 connections) — `server/tests/unit/game/__init__.py`
+- **WebSocket and SSE Dual Connections** (3 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
+- **Dual Connection API Reference** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
+- **Dual Connection Client Guide** (1 connections) — `docs/archive/DUAL_CONNECTION_CLIENT_GUIDE.md`
+- **Dual Connection Deployment Guide** (1 connections) — `docs/archive/DUAL_CONNECTION_DEPLOYMENT_GUIDE.md`
 
 ## Relationships
 
@@ -12,12 +15,14 @@
 
 ## Source Files
 
-- `server/tests/unit/game/__init__.py`
+- `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
+- `docs/archive/DUAL_CONNECTION_CLIENT_GUIDE.md`
+- `docs/archive/DUAL_CONNECTION_DEPLOYMENT_GUIDE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (33%)
+- INFERRED: 4 (67%)
 - AMBIGUOUS: 0 (0%)
 
 ---

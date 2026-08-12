@@ -1,12 +1,10 @@
 # Setup Postgresql
 
-> 3 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **setup_postgresql_test_db.sh** (2 connections) — `scripts/setup_postgresql_test_db.sh`
-- **setup_postgresql_test_db.sh script** (1 connections) — `scripts/setup_postgresql_test_db.sh`
-- **PGPASSWORD** (1 connections) — `scripts/setup_postgresql_test_db.sh`
+- **setup_postgresql_test_db.ps1** (0 connections) — `scripts/setup_postgresql_test_db.ps1`
 
 ## Relationships
 
@@ -14,11 +12,11 @@
 
 ## Source Files
 
-- `scripts/setup_postgresql_test_db.sh`
+- `scripts/setup_postgresql_test_db.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

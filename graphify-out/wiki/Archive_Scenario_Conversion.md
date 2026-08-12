@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **E2E Scenario Conversion** (1 connections) — `docs/archive/SCENARIO_CONVERSION_GUIDE.md`
 - **Playwright CLI Automation** (1 connections) — `docs/archive/SCENARIO_CONVERSION_GUIDE.md`
+- **E2E Scenario Conversion** (1 connections) — `docs/archive/SCENARIO_CONVERSION_GUIDE.md`
 
 ## Relationships
 

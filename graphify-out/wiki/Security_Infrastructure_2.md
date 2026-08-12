@@ -1,39 +1,22 @@
 # Security Infrastructure
 
-> 24 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_security_utils.py** (39 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **get_secure_file_path()** (13 connections) — `server/security_utils.py`
-- **test_get_secure_file_path_valid()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_invalid_characters()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_with_slash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_creates_directory()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_with_underscores()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_with_dots()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_with_hyphens()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_numeric_filename()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_mixed_case()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_with_spaces()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Get a secure file path within a base directory.      Args:         filename: The** (1 connections) — `server/security_utils.py`
-- **Unit tests for security utilities.  Tests path validation and file security func** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test get_secure_file_path with valid filename.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test get_secure_file_path rejects invalid characters.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test get_secure_file_path rejects filenames with slashes.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test get_secure_file_path creates base directory if it doesn't exist.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test get_secure_file_path accepts filenames with underscores.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test get_secure_file_path accepts filenames with dots.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test get_secure_file_path accepts filenames with hyphens.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test get_secure_file_path with numeric filename.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test get_secure_file_path with mixed case filename.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test get_secure_file_path rejects filenames with spaces.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **ensure_directory_exists()** (6 connections) — `server/security_utils.py`
+- **test_ensure_directory_exists_creates()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_ensure_directory_exists_existing()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_ensure_directory_exists_relative_path()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Ensure a directory exists and return its absolute path. Args: directory: The…** (1 connections) — `server/security_utils.py`
+- **Test ensure_directory_exists with existing directory.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test ensure_directory_exists creates directory if it doesn't exist.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test ensure_directory_exists with relative path.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
 
 ## Relationships
 
-- [Security Infrastructure](Security_Infrastructure.md) (24 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [Realtime Websocket Handler](Realtime_Websocket_Handler.md) (2 shared connections)
+- [Security Infrastructure](Security_Infrastructure.md) (4 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +25,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 94 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **E2E Multiplayer Playbook Findings** (1 connections) — `investigations/sessions/2025-11-21_e2e-multiplayer-playbook-findings.md`
 - **Session Loss On Peer Tab Closure** (1 connections) — `investigations/sessions/2025-11-21_e2e-multiplayer-playbook-findings.md`
+- **E2E Multiplayer Playbook Findings** (1 connections) — `investigations/sessions/2025-11-21_e2e-multiplayer-playbook-findings.md`
 
 ## Relationships
 

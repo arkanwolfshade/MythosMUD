@@ -11,13 +11,13 @@
 - **Path** (2 connections)
 - **Namespace** (1 connections)
 - **Schema migration for the MythosMUD lucidity system tables.** (1 connections) — `server/scripts/lucidity_migration.py`
-- **Apply lucidity schema migration to a SQLite database.      The ritual crafts the** (1 connections) — `server/scripts/lucidity_migration.py`
 - **Run the lucidity migration across multiple database files.** (1 connections) — `server/scripts/lucidity_migration.py`
 - **Parse CLI arguments for the lucidity migration runner.** (1 connections) — `server/scripts/lucidity_migration.py`
+- **Apply lucidity schema migration to a SQLite database. The ritual crafts the new…** (1 connections) — `server/scripts/lucidity_migration.py`
 
 ## Relationships
 
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 

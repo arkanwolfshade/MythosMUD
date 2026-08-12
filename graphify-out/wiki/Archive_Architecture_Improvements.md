@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Zustand State Management** (1 connections) — `docs/archive/client_architecture_improvements_tasks.md`
 - **httpOnly Cookie Token Storage** (1 connections) — `docs/archive/client_architecture_improvements_tasks.md`
+- **Zustand State Management** (1 connections) — `docs/archive/client_architecture_improvements_tasks.md`
 
 ## Relationships
 

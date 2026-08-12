@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **Easy Coverage Wins** (2 connections) — `docs/EASY_COVERAGE_WINS.md`
-- **Coverage Improvement Summary** (1 connections) — `docs/COVERAGE_IMPROVEMENT_SUMMARY.md`
 - **Tiered Coverage Wins** (1 connections) — `docs/EASY_COVERAGE_WINS.md`
+- **Coverage Improvement Summary** (1 connections) — `docs/COVERAGE_IMPROVEMENT_SUMMARY.md`
 
 ## Relationships
 

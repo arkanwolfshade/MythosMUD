@@ -1,16 +1,11 @@
 # Investigations Sessions Xx
 
-> 7 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **useGridLayout.ts** (6 connections) — `client/src/hooks/useGridLayout.ts`
-- **useGridLayout.test.ts** (2 connections) — `client/src/hooks/__tests__/useGridLayout.test.ts`
-- **useGridLayout()** (2 connections) — `client/src/hooks/useGridLayout.ts`
-- **layoutConfig** (1 connections) — `client/src/hooks/useGridLayout.ts`
-- **STORAGE_KEYS** (1 connections) — `client/src/hooks/useGridLayout.ts`
-- **PanelState** (1 connections) — `client/src/hooks/useGridLayout.ts`
-- **UseGridLayoutReturn** (1 connections) — `client/src/hooks/useGridLayout.ts`
+- **Movement Message Dual Panel Routing** (1 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
+- **Missing game_tick Client Handler** (1 connections) — `investigations/sessions/2025-01-XX_session-game-tick-messages-not-displaying.md`
 
 ## Relationships
 
@@ -18,13 +13,13 @@
 
 ## Source Files
 
-- `client/src/hooks/__tests__/useGridLayout.test.ts`
-- `client/src/hooks/useGridLayout.ts`
+- `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
+- `investigations/sessions/2025-01-XX_session-game-tick-messages-not-displaying.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

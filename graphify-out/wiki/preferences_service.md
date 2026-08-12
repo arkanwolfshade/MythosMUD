@@ -1,23 +1,31 @@
 # preferences_service
 
-> 2 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **test_create_spawn_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_spawn_command produces NPCCommand for npc spawn subcommand.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **preferences_service()** (4 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **fixture** (4 connections)
+- **mock_session()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **sample_player_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **sample_preferences()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Create a PlayerPreferencesService instance.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Create a mock async session.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Create a sample player ID.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Create sample player preferences.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Relationships
 
-- [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)
+- [test_player_preferences_service.py](test_player_preferences_service.py.md) (4 shared connections)
+- [PlayerPreferencesService](PlayerPreferencesService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

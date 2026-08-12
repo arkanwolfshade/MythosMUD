@@ -1,26 +1,27 @@
 # Archive Planning Stats
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **sub_zone** (4 connections) — `schemas/room_schema.json`
-- **type** (1 connections) — `schemas/room_schema.json`
-- **pattern** (1 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
+- **Random Stats Generator Planning** (2 connections) — `docs/archive/PLANNING_stats.md`
+- **Pydantic Click Command Validation Integration** (1 connections) — `docs/archive/INTEGRATION_SUMMARY.md`
+- **Random Stats Generator Technical Plan** (1 connections) — `docs/archive/PLANNING_stats_generator.md`
 
 ## Relationships
 
-- [Schemas Room Schema](Schemas_Room_Schema.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/room_schema.json`
+- `docs/archive/INTEGRATION_SUMMARY.md`
+- `docs/archive/PLANNING_stats.md`
+- `docs/archive/PLANNING_stats_generator.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 4 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

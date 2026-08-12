@@ -1,0 +1,53 @@
+# LogAggregator
+
+> 42 nodes
+
+## Key Concepts
+
+- **LogAggregator** (25 connections) — `server/structured_logging/log_aggregator.py`
+- **LogEntry** (14 connections) — `server/structured_logging/log_aggregator.py`
+- **.get_logs()** (10 connections) — `server/structured_logging/log_aggregator.py`
+- **LogQueryFilter** (9 connections) — `server/structured_logging/log_aggregator.py`
+- **.export_logs()** (8 connections) — `server/structured_logging/log_aggregator.py`
+- **._export_csv()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **._export_json()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **.get_correlation_logs()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **.get_error_logs()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **.get_user_logs()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **.get_warning_logs()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **.__init__()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **._log_matches_filter()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **.add_log_entry()** (4 connections) — `server/structured_logging/log_aggregator.py`
+- **._update_stats()** (4 connections) — `server/structured_logging/log_aggregator.py`
+- **Path** (4 connections)
+- **.add_aggregation_callback()** (3 connections) — `server/structured_logging/log_aggregator.py`
+- **.get_stats()** (3 connections) — `server/structured_logging/log_aggregator.py`
+- **._start_processing_thread()** (3 connections) — `server/structured_logging/log_aggregator.py`
+- **._eq_if_set()** (2 connections) — `server/structured_logging/log_aggregator.py`
+- **._process_logs()** (2 connections) — `server/structured_logging/log_aggregator.py`
+- **.shutdown()** (2 connections) — `server/structured_logging/log_aggregator.py`
+- **Any** (1 connections)
+- **Add a log entry to the aggregation system.** (1 connections) — `server/structured_logging/log_aggregator.py`
+- **Get filtered log entries.** (1 connections) — `server/structured_logging/log_aggregator.py`
+- *... and 17 more nodes in this community*
+
+## Relationships
+
+- [lifespan.py](lifespan.py.md) (6 shared connections)
+- [bundles/game.py](bundles-game.py.md) (2 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (2 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (1 shared connections)
+
+## Source Files
+
+- `server/structured_logging/log_aggregator.py`
+
+## Audit Trail
+
+- EXTRACTED: 152 (99%)
+- INFERRED: 1 (1%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

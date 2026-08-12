@@ -1,14 +1,12 @@
-# Ai Development Workflow
+# AI Development Workflow
 
-> 5 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **DomainError** (3 connections) — `server/domain/exceptions/__init__.py`
-- **__init__.py** (2 connections) — `server/domain/exceptions/__init__.py`
-- **Exception** (1 connections)
-- **Domain-specific exceptions for MythosMUD.  These exceptions represent business r** (1 connections) — `server/domain/exceptions/__init__.py`
-- **Base exception for all domain errors.** (1 connections) — `server/domain/exceptions/__init__.py`
+- **AI Development Workflow** (2 connections) — `docs/AI_DEVELOPMENT_WORKFLOW.md`
+- **AI Command Development Workflow** (1 connections) — `docs/AI_DEVELOPMENT_WORKFLOW.md`
+- **Cursor AI Tooling** (1 connections) — `docs/AI_DEVELOPMENT_WORKFLOW.md`
 
 ## Relationships
 
@@ -16,11 +14,11 @@
 
 ## Source Files
 
-- `server/domain/exceptions/__init__.py`
+- `docs/AI_DEVELOPMENT_WORKFLOW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

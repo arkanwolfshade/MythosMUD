@@ -1,11 +1,10 @@
 # Room Toolkit Validator
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **__init__.py** (1 connections) — `server/tests/unit/realtime/monitoring/__init__.py`
-- **Realtime monitoring unit tests.** (1 connections) — `server/tests/unit/realtime/monitoring/__init__.py`
+- **core/fixer.py** (0 connections) — `tools/room_toolkit/room_validator/README.md`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `server/tests/unit/realtime/monitoring/__init__.py`
+- `tools/room_toolkit/room_validator/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

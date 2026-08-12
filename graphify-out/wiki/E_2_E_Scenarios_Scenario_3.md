@@ -1,27 +1,27 @@
 # E 2 E Scenarios Scenario
 
-> 5 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **command** (5 connections) — `schemas/alias_schema.json`
-- **type** (1 connections) — `schemas/alias_schema.json`
-- **description** (1 connections) — `schemas/alias_schema.json`
-- **minLength** (1 connections) — `schemas/alias_schema.json`
-- **maxLength** (1 connections) — `schemas/alias_schema.json`
+- **Scenario 34 Two Players Same Room Visibility** (2 connections) — `e2e-tests/scenarios/scenario-34-two-players-same-room.md`
+- **Scenario 36 Movement Visibility** (1 connections) — `e2e-tests/scenarios/scenario-36-movement-visibility.md`
+- **Scenario 37 Chat Message Ordering** (1 connections) — `e2e-tests/scenarios/scenario-37-chat-message-ordering.md`
 
 ## Relationships
 
-- [Npc Config Parsing](Npc_Config_Parsing.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/alias_schema.json`
+- `e2e-tests/scenarios/scenario-34-two-players-same-room.md`
+- `e2e-tests/scenarios/scenario-36-movement-visibility.md`
+- `e2e-tests/scenarios/scenario-37-chat-message-ordering.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 4 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

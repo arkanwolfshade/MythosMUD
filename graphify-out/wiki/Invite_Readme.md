@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **run_invite_tools.ps1** (1 connections) — `tools/invite_tools/README.md`
 - **POSTGRES_SEARCH_PATH for invites schema** (1 connections) — `tools/invite_tools/README.md`
+- **run_invite_tools.ps1** (1 connections) — `tools/invite_tools/README.md`
 
 ## Relationships
 

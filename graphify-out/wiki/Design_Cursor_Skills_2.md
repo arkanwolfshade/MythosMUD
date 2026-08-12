@@ -1,29 +1,23 @@
 # Design Cursor Skills
 
-> 8 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_error_logging.py** (5 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **test_create_error_context()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **test_create_error_context_with_metadata()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **test_error_context_to_dict()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **Unit tests for error_logging utilities.  Tests error logging helper functions.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **Test create_error_context() creates error context.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **Test create_error_context() can include metadata.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **Test error context to_dict() method.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **Eight Interactive States** (1 connections) — `.cursor/skills/frontend-design/reference/interaction-design.md`
+- **Interaction Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/interaction-design.md`
 
 ## Relationships
 
-- [Realtime Conftest Mocks](Realtime_Conftest_Mocks.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_error_logging.py`
+- `.cursor/skills/frontend-design/reference/interaction-design.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

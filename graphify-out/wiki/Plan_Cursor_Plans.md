@@ -1,44 +1,25 @@
 # Plan Cursor Plans
 
-> 21 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **FeedbackForm.tsx** (19 connections) — `client/src/components/ui/FeedbackForm.tsx`
-- **ModalContainer.tsx** (11 connections) — `client/src/components/ui/ModalContainer.tsx`
-- **ModalContainer()** (5 connections) — `client/src/components/ui/ModalContainer.tsx`
-- **useModalEscapeKey()** (2 connections) — `client/src/components/ui/ModalContainer.tsx`
-- **renderOpenModal()** (2 connections) — `client/src/components/ui/ModalContainer.tsx`
-- **FeedbackFormProps** (1 connections) — `client/src/components/ui/FeedbackForm.tsx`
-- **FeedbackData** (1 connections) — `client/src/components/ui/FeedbackForm.tsx`
-- **FeedbackDraft** (1 connections) — `client/src/components/ui/FeedbackForm.tsx`
-- **DEFAULT_FEEDBACK** (1 connections) — `client/src/components/ui/FeedbackForm.tsx`
-- **TEMPLATES** (1 connections) — `client/src/components/ui/FeedbackForm.tsx`
-- **SELECT_FIELDS** (1 connections) — `client/src/components/ui/FeedbackForm.tsx`
-- **FormSelectField()** (1 connections) — `client/src/components/ui/FeedbackForm.tsx`
-- **FeedbackFields()** (1 connections) — `client/src/components/ui/FeedbackForm.tsx`
-- **QuickTemplates()** (1 connections) — `client/src/components/ui/FeedbackForm.tsx`
-- **FeedbackForm()** (1 connections) — `client/src/components/ui/FeedbackForm.tsx`
-- **ModalContainerProps** (1 connections) — `client/src/components/ui/ModalContainer.tsx`
-- **maxWidthClasses** (1 connections) — `client/src/components/ui/ModalContainer.tsx`
-- **ModalContent()** (1 connections) — `client/src/components/ui/ModalContainer.tsx`
-- **FloatingModalShell()** (1 connections) — `client/src/components/ui/ModalContainer.tsx`
-- **CenterNoBackdropShell()** (1 connections) — `client/src/components/ui/ModalContainer.tsx`
-- **CenterModalShell()** (1 connections) — `client/src/components/ui/ModalContainer.tsx`
+- **Client Updates System Audit** (2 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
+- **Option C Replacement Client Updates** (1 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
+- **Architecture Review Plan** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
 
 ## Relationships
 
-- [Command Input Validator](Command_Input_Validator.md) (7 shared connections)
-- [Game Terminal Container](Game_Terminal_Container.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/src/components/ui/FeedbackForm.tsx`
-- `client/src/components/ui/ModalContainer.tsx`
+- `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
+- `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

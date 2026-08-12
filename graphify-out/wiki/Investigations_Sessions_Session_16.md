@@ -1,35 +1,24 @@
 # Investigations Sessions Session
 
-> 11 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **UUID** (6 connections)
-- **.player_entered()** (5 connections) — `server/models/room.py`
-- **.player_left()** (4 connections) — `server/models/room.py`
-- **.has_player()** (4 connections) — `server/models/room.py`
-- **.add_player_silently()** (3 connections) — `server/models/room.py`
-- **.remove_player_silently()** (3 connections) — `server/models/room.py`
-- **Add a player to the room and trigger event.          Args:             player_id** (1 connections) — `server/models/room.py`
-- **Add a player to the room without triggering an event.          This method is us** (1 connections) — `server/models/room.py`
-- **Remove a player from the room without triggering an event.          This method** (1 connections) — `server/models/room.py`
-- **Remove a player from the room and trigger event.          Args:             play** (1 connections) — `server/models/room.py`
-- **Check if a player is in the room.          Args:             player_id: The ID o** (1 connections) — `server/models/room.py`
+- **showProfessionSelection With Existing Characters** (1 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
+- **Create New Character Rendering Gap** (1 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
 
 ## Relationships
 
-- [Health Cold Resistance](Health_Cold_Resistance.md) (5 shared connections)
-- [Commands Look Item](Commands_Look_Item.md) (3 shared connections)
-- [Character Creation Service](Character_Creation_Service.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/models/room.py`
+- `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (93%)
-- INFERRED: 2 (7%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

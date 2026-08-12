@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **test_handle_player_attack_on_npc_login_grace_period_blocked()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **Test handle_player_attack_on_npc blocks attack when player is in login grace per** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Procedures-First PostgreSQL CRUD** (1 connections) — `.cursor/plans/eliminate-raw-crud-sql_1bc86515.plan.md`
+- **Eliminate Raw CRUD SQL** (1 connections) — `.cursor/plans/eliminate-raw-crud-sql_1bc86515.plan.md`
 
 ## Relationships
 
-- [E2E Suite Overview](E2E_Suite_Overview.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- `.cursor/plans/eliminate-raw-crud-sql_1bc86515.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

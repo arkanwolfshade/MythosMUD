@@ -14,14 +14,14 @@
 - **populate_npc_data()** (3 connections) — `scripts/init_npc_database.py`
 - **_print_final_message()** (3 connections) — `scripts/init_npc_database.py`
 - **Namespace** (1 connections)
-- **Get NPC database URL for the specified environment.      Args:         environme** (1 connections) — `scripts/init_npc_database.py`
-- **Extract seed data from a PostgreSQL NPC database.      DEPRECATED: NPC seed data** (1 connections) — `scripts/init_npc_database.py`
-- **Populate the database with NPC seed data.      Args:         engine: SQLAlchemy** (1 connections) — `scripts/init_npc_database.py`
-- **Initialize a PostgreSQL database with the NPC schema.      Args:         databas** (1 connections) — `scripts/init_npc_database.py`
+- **Populate the database with NPC seed data. Args: engine: SQLAlchemy engine…** (1 connections) — `scripts/init_npc_database.py`
+- **Initialize a PostgreSQL database with the NPC schema. Args: database_url: The…** (1 connections) — `scripts/init_npc_database.py`
+- **Get NPC database URL for the specified environment. Args: environment:…** (1 connections) — `scripts/init_npc_database.py`
 - **Determine which databases to initialize based on arguments.** (1 connections) — `scripts/init_npc_database.py`
 - **Initialize a database with URL checking. Returns updated success flag.** (1 connections) — `scripts/init_npc_database.py`
 - **Print final success or error message and exit.** (1 connections) — `scripts/init_npc_database.py`
 - **Main function to initialize NPC database schema.** (1 connections) — `scripts/init_npc_database.py`
+- **Extract seed data from a PostgreSQL NPC database. DEPRECATED: NPC seed data is…** (1 connections) — `scripts/init_npc_database.py`
 
 ## Relationships
 

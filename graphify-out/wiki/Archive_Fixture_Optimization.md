@@ -1,12 +1,11 @@
 # Archive Fixture Optimization
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **PlayerPanel.tsx** (2 connections) — `client/src/components/panels/PlayerPanel.tsx`
-- **PlayerPanelProps** (1 connections) — `client/src/components/panels/PlayerPanel.tsx`
-- **PlayerPanel()** (1 connections) — `client/src/components/panels/PlayerPanel.tsx`
+- **container_test_client Fixture** (1 connections) — `docs/archive/fixture-optimization-plan.md`
+- **Class-Scoped Container Fixture** (1 connections) — `docs/archive/fixture-optimization-summary.md`
 
 ## Relationships
 
@@ -14,11 +13,12 @@
 
 ## Source Files
 
-- `client/src/components/panels/PlayerPanel.tsx`
+- `docs/archive/fixture-optimization-plan.md`
+- `docs/archive/fixture-optimization-summary.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,26 +1,26 @@
 # Plans Gladiator Ring
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **mp_regeneration_service()** (4 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Create an MPRegenerationService instance.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Gladiator Ring Arena** (2 connections) — `docs/plans/gladiator_ring_arena_plan.md`
+- **Arena Center Tutorial Exit and Respawn** (1 connections) — `docs/plans/gladiator_ring_arena_plan.md`
+- **Arena Implementation Todos** (1 connections) — `docs/plans/gladiator-ring-arena-implementation-todos.md`
 
 ## Relationships
 
-- [Character Creation API](Character_Creation_API.md) (1 shared connections)
-- [Combat Attack Service](Combat_Attack_Service.md) (1 shared connections)
-- [Cursor Agents Quick](Cursor_Agents_Quick.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `docs/plans/gladiator-ring-arena-implementation-todos.md`
+- `docs/plans/gladiator_ring_arena_plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (80%)
-- INFERRED: 1 (20%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

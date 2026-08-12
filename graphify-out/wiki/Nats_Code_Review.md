@@ -1,31 +1,31 @@
-# Nats Code Review
+# NATS Code Review
 
-> 6 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **items** (5 connections) — `db/static/schemas/holidays.schema.json`
-- **holidays** (4 connections) — `db/static/schemas/holidays.schema.json`
-- **properties** (2 connections) — `db/static/schemas/holidays.schema.json`
-- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **additionalProperties** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **minItems** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **NATS Code Review** (3 connections) — `docs/NATS_CODE_REVIEW.md`
+- **NATS Complete Remediation Summary** (3 connections) — `docs/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **NATS Sync Ops in Async Handlers** (2 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **NATS Connection Pooling** (2 connections) — `docs/NATS_CODE_REVIEW.md`
+- **NATS Manual Acknowledgment** (2 connections) — `docs/NATS_CODE_REVIEW.md`
+- **NATS Remediation Complete** (2 connections) — `docs/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **NATS Anti-Patterns Review 2026-01-13** (2 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
 
 ## Relationships
 
-- [Services Inventory Mutation](Services_Inventory_Mutation.md) (1 shared connections)
-- [Respawn Occupant Enrichment](Respawn_Occupant_Enrichment.md) (1 shared connections)
-- [Archive Structured Error](Archive_Structured_Error.md) (1 shared connections)
-- [Commands Npc Admin](Commands_Npc_Admin.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/holidays.schema.json`
+- `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- `docs/NATS_CODE_REVIEW.md`
+- `docs/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 10 (62%)
+- INFERRED: 6 (38%)
 - AMBIGUOUS: 0 (0%)
 
 ---

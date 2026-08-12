@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_room_player_left()** (3 connections) — `server/tests/unit/models/test_room_class.py`
-- **Test Room.player_left() removes player and triggers event.** (1 connections) — `server/tests/unit/models/test_room_class.py`
+- **Verb+Object Button Labels** (1 connections) — `.cursor/skills/frontend-design/reference/ux-writing.md`
+- **UX Writing Reference** (1 connections) — `.cursor/skills/frontend-design/reference/ux-writing.md`
 
 ## Relationships
 
-- [Health Cold Resistance](Health_Cold_Resistance.md) (1 shared connections)
-- [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/models/test_room_class.py`
+- `.cursor/skills/frontend-design/reference/ux-writing.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

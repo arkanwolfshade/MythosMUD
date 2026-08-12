@@ -1,26 +1,26 @@
 # E 2 E Execution Validation
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Phase 2: Categorize and Prioritize Mypy Issues** (5 connections) — `.cursor/commands/mypy-remediation.md`
-- **🔴 CRITICAL (Fix First - Blocking Issues)** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **🟡 HIGH PRIORITY (Fix Second - Core Functionality)** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **🟢 MEDIUM PRIORITY (Fix Third - Enhancement)** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **🔵 LOW PRIORITY (Fix Last - Polish)** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **Scenario Group Execution** (3 connections) — `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
+- **Local Channel Scenario Group (8-12)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
+- **Logout Scenario Group (19-21)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
+- **Whisper Channel Scenario Group (13-18)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
 
 ## Relationships
 
-- [Configuration Files Reference](Configuration_Files_Reference.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.cursor/commands/mypy-remediation.md`
+- `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
+- `e2e-tests/EXECUTION_VALIDATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

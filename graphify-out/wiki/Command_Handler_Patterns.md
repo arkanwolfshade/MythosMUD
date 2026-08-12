@@ -1,18 +1,16 @@
 # Command Handler Patterns
 
-> 9 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Implementation Notes** (5 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Spec Tasks** (4 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **ENVIRONMENT_CONTAMINATION_TASKS.md** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Environment Contamination Remediation Tasks** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Tasks** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Critical Priority** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Dependencies** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Testing Strategy** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Success Criteria** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
+- **Command Handler Patterns** (3 connections) — `docs/COMMAND_HANDLER_PATTERNS.md`
+- **Command Models Reference** (2 connections) — `docs/COMMAND_MODELS_REFERENCE.md`
+- **Command Security Guide** (2 connections) — `docs/COMMAND_SECURITY_GUIDE.md`
+- **Command Testing Guide** (2 connections) — `docs/COMMAND_TESTING_GUIDE.md`
+- **Pydantic Command Models** (1 connections) — `docs/COMMAND_MODELS_REFERENCE.md`
+- **Command Role-Based Access Control** (1 connections) — `docs/COMMAND_SECURITY_GUIDE.md`
+- **Command Test-Driven Development** (1 connections) — `docs/COMMAND_TESTING_GUIDE.md`
 
 ## Relationships
 
@@ -20,12 +18,15 @@
 
 ## Source Files
 
-- `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
+- `docs/COMMAND_HANDLER_PATTERNS.md`
+- `docs/COMMAND_MODELS_REFERENCE.md`
+- `docs/COMMAND_SECURITY_GUIDE.md`
+- `docs/COMMAND_TESTING_GUIDE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (50%)
+- INFERRED: 6 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

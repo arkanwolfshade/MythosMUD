@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Interaction Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/interaction-design.md`
-- **Eight Interactive States** (1 connections) — `.cursor/skills/frontend-design/reference/interaction-design.md`
+- **Motion 100/300/500 Duration Rule** (1 connections) — `.cursor/skills/frontend-design/reference/motion-design.md`
+- **Motion Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/motion-design.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/reference/interaction-design.md`
+- `.cursor/skills/frontend-design/reference/motion-design.md`
 
 ## Audit Trail
 

@@ -1,10 +1,14 @@
 # Cursor Skills Mythosmud
 
-> 1 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Async Code Review Post Migration** (0 connections) — `docs/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **MythosMUD Pre-Commit Checklist Skill** (4 connections) — `.cursor/skills/mythosmud-pre-commit-checklist/SKILL.md`
+- **Definition of Done Checklist** (1 connections) — `.cursor/skills/mythosmud-pre-commit-checklist/SKILL.md`
+- **MythosMUD Code Quality AI Skill** (1 connections) — `.cursor/skills/mythosmud-code-quality-ai/SKILL.md`
+- **MythosMUD Commit Messages Skill** (1 connections) — `.cursor/skills/mythosmud-commit-messages/SKILL.md`
+- **MythosMUD Test Writing Skill** (1 connections) — `.cursor/skills/mythosmud-test-writing/SKILL.md`
 
 ## Relationships
 
@@ -12,12 +16,15 @@
 
 ## Source Files
 
-- `docs/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- `.cursor/skills/mythosmud-code-quality-ai/SKILL.md`
+- `.cursor/skills/mythosmud-commit-messages/SKILL.md`
+- `.cursor/skills/mythosmud-pre-commit-checklist/SKILL.md`
+- `.cursor/skills/mythosmud-test-writing/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (25%)
+- INFERRED: 6 (75%)
 - AMBIGUOUS: 0 (0%)
 
 ---

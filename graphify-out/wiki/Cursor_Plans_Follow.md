@@ -1,25 +1,23 @@
 # Cursor Plans Follow
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **sub_zone** (4 connections) — `schemas/intersection_schema.json`
-- **type** (1 connections) — `schemas/intersection_schema.json`
-- **pattern** (1 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
+- **FollowService** (1 connections) — `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
+- **Follow Command Feature** (1 connections) — `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
 
 ## Relationships
 
-- [Schemas Intersection Schema](Schemas_Intersection_Schema.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/intersection_schema.json`
+- `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

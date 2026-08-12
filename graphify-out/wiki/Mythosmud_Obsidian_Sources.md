@@ -9,8 +9,8 @@
 - **Miskatonic University** (2 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
 - **Innsmouth** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
 - **The Dreamlands** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Limbo / Death Plane** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
 - **The Investigators** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
+- **Limbo / Death Plane** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
 - **Arkham City Zone Visualization** (1 connections) — `data/local/arkham_city_visualization.html`
 
 ## Relationships

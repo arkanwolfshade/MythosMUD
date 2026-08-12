@@ -12,7 +12,7 @@
 - **NoReturn** (1 connections)
 - **Print empty JSON and exit successfully (no followup).** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
 - **Load and validate edited-files state. Returns None if missing or invalid.** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **Entry point: read hook payload from stdin, check edited-files state, and optiona** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **Entry point: read hook payload from stdin, check edited-files state, and…** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
 
 ## Relationships
 

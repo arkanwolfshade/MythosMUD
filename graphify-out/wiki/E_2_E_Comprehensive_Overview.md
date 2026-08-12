@@ -5,9 +5,9 @@
 ## Key Concepts
 
 - **Modular E2E Test Suite** (4 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **MULTIPLAYER_SCENARIOS_PLAYBOOK** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
 - **E2E Validation Passed** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
 - **AI Context Limit 20KB** (1 connections) — `e2e-tests/FILE_SIZE_ANALYSIS.md`
+- **MULTIPLAYER_SCENARIOS_PLAYBOOK** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
 - **E2E Test Suite README** (1 connections) — `e2e-tests/README.md`
 
 ## Relationships
