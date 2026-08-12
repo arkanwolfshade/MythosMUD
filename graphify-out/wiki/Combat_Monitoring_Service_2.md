@@ -1,10 +1,12 @@
 # Combat Monitoring Service
 
-> 74 nodes
+> 78 nodes
 
 ## Key Concepts
 
 - **test_nats_broker.py** (49 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_connect_with_tls_enabled_passes_tls_options()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **nats_config()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 - **nats_broker()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 - **test_connect_failure()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 - **test_disconnect_error_handling()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
@@ -27,14 +29,12 @@
 - **test_is_connected_false_no_client()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 - **test_is_connected_false_not_connected()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 - **test_publish_success()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_publish_json_serialization()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_subscribe_success()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- *... and 49 more nodes in this community*
+- *... and 53 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Event Delegation](Realtime_Event_Delegation.md) (19 shared connections)
-- [Player Death Service](Player_Death_Service.md) (3 shared connections)
+- [Realtime Event Delegation](Realtime_Event_Delegation.md) (20 shared connections)
+- [Combat Service Bundle](Combat_Service_Bundle.md) (3 shared connections)
 
 ## Source Files
 
@@ -42,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 159 (95%)
+- EXTRACTED: 168 (95%)
 - INFERRED: 9 (5%)
 - AMBIGUOUS: 0 (0%)
 

@@ -2,7 +2,7 @@
 
 > God node · 510 connections · `server/structured_logging/enhanced_logging_config.py`
 
-**Community:** [Room Occupancy Class](Room_Occupancy_Class.md)
+**Community:** [Client Event Store](Client_Event_Store.md)
 
 ## Connections by Relation
 

@@ -1,53 +1,59 @@
 # Memory Threshold Monitor
 
-> 26 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **_format_container_display()** (19 connections) — `server/commands/look_container.py`
-- **test_format_container_display_basic()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_with_description()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_locked()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_sealed()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_with_contents()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_with_target_type()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_with_metadata_name()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_fallback_name()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_locked()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_format_container_display_sealed()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_format_container_display_with_look_in()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_format_container_display_with_target_type_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Format the complete container display text.** (1 connections) — `server/commands/look_container.py`
-- **Test formatting container display with basic info.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display with description.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display when locked.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display when sealed.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display with look_in flag.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display with target_type container.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display uses metadata name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display uses fallback when no metadata name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test _format_container_display() with locked container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _format_container_display() with sealed container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _format_container_display() with look_in flag.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- *... and 1 more nodes in this community*
+- **real_time.py** (34 connections) — `server/api/real_time.py`
+- **_resolve_player_id()** (10 connections) — `server/api/real_time.py`
+- **websocket_endpoint()** (10 connections) — `server/api/real_time.py`
+- **Any** (9 connections)
+- **WebSocket** (8 connections)
+- **_resolve_player_id_from_test()** (8 connections) — `server/api/real_time.py`
+- **_resolve_player_id_from_token()** (8 connections) — `server/api/real_time.py`
+- **websocket_endpoint_route()** (8 connections) — `server/api/real_time.py`
+- **UUID** (7 connections)
+- **_validate_websocket_connection_manager()** (7 connections) — `server/api/real_time.py`
+- **_resolve_connection_manager_from_state()** (6 connections) — `server/api/real_time.py`
+- **_parse_websocket_token()** (6 connections) — `server/api/real_time.py`
+- **_resolve_player_id_from_path_or_token()** (6 connections) — `server/api/real_time.py`
+- **_validate_and_accept_websocket()** (5 connections) — `server/api/real_time.py`
+- **_parse_subprotocol_token()** (4 connections) — `server/api/real_time.py`
+- **_extract_bearer_token()** (3 connections) — `server/api/real_time.py`
+- **Real-time communication API endpoints for MythosMUD server.  This module handles** (1 connections) — `server/api/real_time.py`
+- **Validate connection manager and accept WebSocket connection.     Returns True if** (1 connections) — `server/api/real_time.py`
+- **Extract bearer token from parsed subprotocol parts.      If 'bearer' marker is p** (1 connections) — `server/api/real_time.py`
+- **Parse token from WebSocket subprotocol header.      Example formats: "bearer, <t** (1 connections) — `server/api/real_time.py`
+- **Parse token from WebSocket subprotocol (preferred) or query params (fallback).** (1 connections) — `server/api/real_time.py`
+- **Resolve player ID from test player_id query parameter.     Validates that the pl** (1 connections) — `server/api/real_time.py`
+- **Resolve player ID from JWT token payload.     Validates that the user has a play** (1 connections) — `server/api/real_time.py`
+- **Resolve player ID from token or test player_id parameter.     Handles both authe** (1 connections) — `server/api/real_time.py`
+- **WebSocket endpoint for interactive commands and chat.     Supports session track** (1 connections) — `server/api/real_time.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [Look Container Command](Look_Container_Command.md) (9 shared connections)
-- [Player State Command Factory](Player_State_Command_Factory.md) (5 shared connections)
-- [Server Process Termination](Server_Process_Termination.md) (3 shared connections)
-- [Chat Archive Advanced](Chat_Archive_Advanced.md) (1 shared connections)
+- [Schedule Service Loader](Schedule_Service_Loader.md) (12 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (5 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Combat Domain Events](Combat_Domain_Events.md) (3 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (3 shared connections)
+- [Plan Cursor Plans](Plan_Cursor_Plans.md) (2 shared connections)
+- [Game State Provider](Game_State_Provider.md) (2 shared connections)
+- [Command Testing Guide](Command_Testing_Guide.md) (1 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
+- [Container Exception Handlers](Container_Exception_Handlers.md) (1 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_container.py`
-- `server/tests/unit/commands/test_look_container.py`
-- `server/tests/unit/commands/test_look_container_helpers.py`
+- `server/api/real_time.py`
 
 ## Audit Trail
 
-- EXTRACTED: 68 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 148 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,13 +33,11 @@
 
 ## Relationships
 
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
 - [NATS Retry Handler](NATS_Retry_Handler.md) (3 shared connections)
-- [Command Parser](Command_Parser.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (2 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
-- [Container Open Events](Container_Open_Events.md) (1 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (3 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (2 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 

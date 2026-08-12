@@ -1,29 +1,43 @@
 # Commands Npc Admin
 
-> 4 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **message_validator.py** (9 connections) — `server/realtime/message_validator.py`
-- **get_message_validator()** (5 connections) — `server/realtime/message_validator.py`
-- **WebSocket message validation for MythosMUD.  This module provides comprehensiv** (1 connections) — `server/realtime/message_validator.py`
-- **Get the global message validator instance.** (1 connections) — `server/realtime/message_validator.py`
+- **ComprehensiveLoggingMiddleware** (10 connections) — `server/middleware/comprehensive_logging.py`
+- **.__call__()** (8 connections) — `server/middleware/comprehensive_logging.py`
+- **.dispatch()** (7 connections) — `server/middleware/comprehensive_logging.py`
+- **._log_request_start()** (5 connections) — `server/middleware/comprehensive_logging.py`
+- **._log_request_success_with_status()** (5 connections) — `server/middleware/comprehensive_logging.py`
+- **._log_request_error()** (5 connections) — `server/middleware/comprehensive_logging.py`
+- **Request** (4 connections)
+- **.__init__()** (3 connections) — `server/middleware/comprehensive_logging.py`
+- **ASGIApp** (1 connections)
+- **Scope** (1 connections)
+- **Receive** (1 connections)
+- **Send** (1 connections)
+- **Any** (1 connections)
+- **Exception** (1 connections)
+- **Pure ASGI middleware that combines access, error, and request logging.      This** (1 connections) — `server/middleware/comprehensive_logging.py`
+- **Initialize comprehensive logging middleware.          Args:             app: ASG** (1 connections) — `server/middleware/comprehensive_logging.py`
+- **ASGI application interface.          Args:             scope: ASGI connection sc** (1 connections) — `server/middleware/comprehensive_logging.py`
+- **Backward-compatible dispatch method for BaseHTTPMiddleware interface.          T** (1 connections) — `server/middleware/comprehensive_logging.py`
+- **Log request start information.** (1 connections) — `server/middleware/comprehensive_logging.py`
+- **Log successful request completion.** (1 connections) — `server/middleware/comprehensive_logging.py`
 
 ## Relationships
 
-- [Player Combat XP](Player_Combat_XP.md) (4 shared connections)
-- [Database Helper Tests](Database_Helper_Tests.md) (3 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Scenario Conversion Guide](Scenario_Conversion_Guide.md) (1 shared connections)
+- [Plan Cursor Plans](Plan_Cursor_Plans.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_validator.py`
+- `server/middleware/comprehensive_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 58 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

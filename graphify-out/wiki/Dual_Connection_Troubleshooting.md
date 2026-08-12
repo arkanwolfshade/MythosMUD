@@ -34,8 +34,8 @@
 ## Relationships
 
 - [Character Creation E2E](Character_Creation_E2E.md) (3 shared connections)
-- [API Type Guards](API_Type_Guards.md) (1 shared connections)
-- [Playwright E2E Specs](Playwright_E2E_Specs.md) (1 shared connections)
+- [LRU Cache Manager](LRU_Cache_Manager.md) (1 shared connections)
+- [WebSocket Initial State](WebSocket_Initial_State.md) (1 shared connections)
 
 ## Source Files
 

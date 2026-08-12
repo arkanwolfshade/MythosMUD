@@ -1,37 +1,37 @@
 # Investigations Sessions Session
 
-> 13 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **_build_standardized_subject()** (8 connections) — `server/game/chat_nats_publisher.py`
-- **build_nats_subject()** (6 connections) — `server/game/chat_nats_publisher.py`
-- **_extract_subzone_from_room()** (5 connections) — `server/game/chat_nats_publisher.py`
-- **Any** (5 connections)
-- **_subject_whisper_standardized()** (4 connections) — `server/game/chat_nats_publisher.py`
-- **_subject_party_standardized()** (4 connections) — `server/game/chat_nats_publisher.py`
-- **_build_legacy_subject()** (4 connections) — `server/game/chat_nats_publisher.py`
-- **Extract subzone from room_id, returning 'unknown' if extraction fails.** (1 connections) — `server/game/chat_nats_publisher.py`
-- **Build whisper subject; returns fallback 'chat.whisper' if no target_id.** (1 connections) — `server/game/chat_nats_publisher.py`
-- **Build party subject; returns None if no party_id.** (1 connections) — `server/game/chat_nats_publisher.py`
-- **Build NATS subject using standardized patterns via subject_manager.** (1 connections) — `server/game/chat_nats_publisher.py`
-- **Build NATS subject using legacy construction (backward compatibility).** (1 connections) — `server/game/chat_nats_publisher.py`
-- **Build NATS subject using standardized patterns or fallback to legacy constructio** (1 connections) — `server/game/chat_nats_publisher.py`
+- **inventory_command_prototype.py** (12 connections) — `server/commands/inventory_command_prototype.py`
+- **infer_equip_slot_from_prototype()** (9 connections) — `server/commands/inventory_command_prototype.py`
+- **prototype_registry_from_request()** (4 connections) — `server/commands/inventory_command_prototype.py`
+- **prototype_from_registry()** (4 connections) — `server/commands/inventory_command_prototype.py`
+- **_first_normalized_wear_slot()** (3 connections) — `server/commands/inventory_command_prototype.py`
+- **_inventory_prototype_id()** (2 connections) — `server/commands/inventory_command_prototype.py`
+- **_wear_slots_from_prototype()** (2 connections) — `server/commands/inventory_command_prototype.py`
+- **Prototype registry access and equip-slot inference for inventory items.** (1 connections) — `server/commands/inventory_command_prototype.py`
+- **Resolve prototype registry from FastAPI-style request (agent-readable indirectio** (1 connections) — `server/commands/inventory_command_prototype.py`
+- **Return the prototype object for ``prototype_id``, or None if missing or invalid.** (1 connections) — `server/commands/inventory_command_prototype.py`
+- **Infer equip slot from prototype wear_slots for inventory items.** (1 connections) — `server/commands/inventory_command_prototype.py`
 
 ## Relationships
 
-- [Who Command Tests](Who_Command_Tests.md) (8 shared connections)
-- [Monitoring API Endpoints](Monitoring_API_Endpoints.md) (1 shared connections)
-- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (1 shared connections)
+- [Container Component Capacity](Container_Component_Capacity.md) (5 shared connections)
+- [NATS Retry Handler](NATS_Retry_Handler.md) (2 shared connections)
+- [Async Task Registry](Async_Task_Registry.md) (1 shared connections)
+- [Game State Provider](Game_State_Provider.md) (1 shared connections)
+- [NATS Subject Admin API](NATS_Subject_Admin_API.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_nats_publisher.py`
+- `server/commands/inventory_command_prototype.py`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 38 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

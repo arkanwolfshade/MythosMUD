@@ -1,43 +1,46 @@
 # Combat Disconnect Bug
 
-> 20 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **parse_last_active_datetime()** (14 connections) — `server/commands/who_commands.py`
-- **test_parse_last_active_datetime_none()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_parse_last_active_datetime_empty_string()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_parse_last_active_datetime_string_with_z()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_parse_last_active_datetime_string_with_timezone()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_parse_last_active_datetime_string_without_timezone()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_parse_last_active_datetime_datetime_naive()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_parse_last_active_datetime_datetime_aware()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_parse_last_active_datetime_invalid_string()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_parse_last_active_datetime_invalid_format()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Parse last_active from string or datetime object to timezone-aware datetime.** (1 connections) — `server/commands/who_commands.py`
-- **Test parse_last_active_datetime with None.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test parse_last_active_datetime with empty string.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test parse_last_active_datetime with string ending in Z.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test parse_last_active_datetime with string containing timezone.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test parse_last_active_datetime with string without timezone.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test parse_last_active_datetime with naive datetime.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test parse_last_active_datetime with timezone-aware datetime.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test parse_last_active_datetime with invalid string.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test parse_last_active_datetime() with invalid format.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **EdgeDetailsPanel.tsx** (25 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **buildEdgeFieldModel()** (4 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeDetailsPanel.test.tsx** (4 connections) — `client/src/components/map/__tests__/EdgeDetailsPanel.test.tsx`
+- **EdgeDetailsPanel()** (3 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeDetailsPanelProps** (2 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeDetailsFieldsProps** (2 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeAdminActionsProps** (2 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **roomLabel()** (2 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **flagsFromData()** (2 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **edgeDetailValueClass()** (2 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeDetailRow()** (2 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeDetailsFields()** (2 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeAdminReadyActions()** (2 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeDetailRowProps** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **OptionalEdgeDetailRowProps** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeFieldModel** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeFlagsProps** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeDeleteConfirmProps** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **OptionalEdgeDetailRow()** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeFlagsSection()** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeFlagsIfAny()** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeDeleteConfirm()** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeAdminActions()** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
 
 ## Relationships
 
-- [Combat UUID Display Bug](Combat_UUID_Display_Bug.md) (10 shared connections)
-- [Legacy Cleanup Summary](Legacy_Cleanup_Summary.md) (3 shared connections)
+- [Player Death Service Tests](Player_Death_Service_Tests.md) (6 shared connections)
+- [Room Map Viewer UI](Room_Map_Viewer_UI.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/who_commands.py`
-- `server/tests/unit/commands/test_who_commands.py`
+- `client/src/components/map/EdgeDetailsPanel.tsx`
+- `client/src/components/map/__tests__/EdgeDetailsPanel.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 51 (100%)
+- EXTRACTED: 64 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

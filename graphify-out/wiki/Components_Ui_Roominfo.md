@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **test_soft_delete_character_success()** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test soft_delete_character() successfully soft deletes.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_is_npc_in_combat_true()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test _is_npc_in_combat() when NPC is in combat.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
+- [NPC Movement Integration](NPC_Movement_Integration.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

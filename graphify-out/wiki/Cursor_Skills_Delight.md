@@ -1,25 +1,29 @@
 # Cursor Skills Delight
 
-> 3 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **.to_dict()** (3 connections) — `server/game/chat_message.py`
-- **Any** (1 connections)
-- **Convert message to dictionary for serialization.** (1 connections) — `server/game/chat_message.py`
+- **TestGetNPCDatabasePath** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_database_path_raises_for_non_postgresql()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_database_path_returns_none_for_postgresql()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_database_path() function.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_database_path() returns None for PostgreSQL.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_database_path() raises for non-PostgreSQL URLs.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Relationships
 
-- [Who Command Tests](Who_Command_Tests.md) (1 shared connections)
+- [Combat Schema Validation](Combat_Schema_Validation.md) (3 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/chat_message.py`
+- `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (87%)
+- INFERRED: 2 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

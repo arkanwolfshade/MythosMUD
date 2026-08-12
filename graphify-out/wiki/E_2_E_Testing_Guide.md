@@ -1,44 +1,40 @@
 # E 2 E Testing Guide
 
-> 15 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **RoomCacheService** (17 connections) — `server/caching/cache_service.py`
-- **bench_cache.py** (6 connections) — `scripts/bench_cache.py`
-- **_FakePersistence** (6 connections) — `scripts/bench_cache.py`
-- **bench_room_cache()** (5 connections) — `scripts/bench_cache.py`
-- **.async_get_room()** (2 connections) — `scripts/bench_cache.py`
-- **Any** (2 connections)
-- **main()** (2 connections) — `scripts/bench_cache.py`
-- **.invalidate_room()** (2 connections) — `server/caching/cache_service.py`
-- **.preload_rooms()** (2 connections) — `server/caching/cache_service.py`
-- **.__init__()** (1 connections) — `scripts/bench_cache.py`
-- **Lightweight cache benchmark for CI artifacts.  Measures miss vs. hit timings for** (1 connections) — `scripts/bench_cache.py`
-- **Fake persistence layer providing async_get_room with simulated latency.** (1 connections) — `scripts/bench_cache.py`
-- **Service for caching room data.** (1 connections) — `server/caching/cache_service.py`
-- **Invalidate cached room data.          Args:             room_id: The room ID to** (1 connections) — `server/caching/cache_service.py`
-- **Preload multiple rooms into cache.          Args:             room_ids: List of** (1 connections) — `server/caching/cache_service.py`
+- **level_from_total_xp()** (13 connections) — `server/game/level_curve.py`
+- **test_level_from_total_xp_roundtrip()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_level_from_total_xp_threshold_level_two()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_level_from_total_xp_zero()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_level_from_total_xp_negative()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_check_level_up_no_change_returns_false()** (3 connections) — `server/tests/unit/game/test_level_service.py`
+- **Compute character level from total experience points.      Uses the same curve a** (1 connections) — `server/game/level_curve.py`
+- **Zero XP gives level 1.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **Negative XP treated as zero gives level 1.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **level_from_total_xp(total_xp_for_level(n)) >= n (at least that level).** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **XP just below total_xp_for_level(2) gives level 1; at or above gives level 2.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **check_level_up when level already matches curve returns False.** (1 connections) — `server/tests/unit/game/test_level_service.py`
 
 ## Relationships
 
-- [Alias Command Models](Alias_Command_Models.md) (4 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Command Factory Tests](Command_Factory_Tests.md) (2 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
-- [Grace Period Blocking Tests](Grace_Period_Blocking_Tests.md) (1 shared connections)
-- [WebSocket Code Review](WebSocket_Code_Review.md) (1 shared connections)
-- [Mythos Time HUD](Mythos_Time_HUD.md) (1 shared connections)
+- [Archive Bug Prevention](Archive_Bug_Prevention.md) (6 shared connections)
+- [Magic Game Service](Magic_Game_Service.md) (3 shared connections)
+- [Persistence Extraction Complete](Persistence_Extraction_Complete.md) (2 shared connections)
+- [Code Review Archive](Code_Review_Archive.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/bench_cache.py`
-- `server/caching/cache_service.py`
+- `server/game/level_curve.py`
+- `server/tests/unit/game/test_level_curve.py`
+- `server/tests/unit/game/test_level_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (88%)
-- INFERRED: 6 (12%)
+- EXTRACTED: 36 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,23 +4,23 @@
 
 ## Key Concepts
 
-- **description** (5 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **minLength** (1 connections) — `schemas/unified_room_schema.json`
-- **maxLength** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **2025_11_21_convert_players_player_id_to_uuid.py** (2 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
+- **downgrade()** (2 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
+- **Convert players.player_id from VARCHAR to UUID.      PostgreSQL can directly cas** (1 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
+- **Convert players.player_id from UUID back to VARCHAR.      This is a downgrade pa** (1 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
 
 ## Relationships
 
-- [Schemas Unified Room](Schemas_Unified_Room.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

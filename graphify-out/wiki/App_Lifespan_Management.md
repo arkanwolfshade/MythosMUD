@@ -1,6 +1,6 @@
 # App Lifespan Management
 
-> 82 nodes
+> 80 nodes
 
 ## Key Concepts
 
@@ -28,16 +28,16 @@
 - **test_get_npc_definitions_by_type()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
 - **test_get_npc_definitions_by_sub_zone()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
 - **sample_npc_definition()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
-- **sample_spawn_rule()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
-- *... and 57 more nodes in this community*
+- **test_get_npc_definitions_empty()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
+- [Command Parser Tests](Command_Parser_Tests.md) (5 shared connections)
 - [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
-- [Command Parser Tests](Command_Parser_Tests.md) (3 shared connections)
 - [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (3 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
 - [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 264 (98%)
-- INFERRED: 6 (2%)
+- EXTRACTED: 261 (98%)
+- INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

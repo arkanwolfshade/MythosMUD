@@ -1,24 +1,27 @@
 # E 2 E Scenarios Lucidity
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_setup_session_tracking_no_session_id()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _setup_session_tracking() handles None session_id.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Lucidity System Expansion Scenarios** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/README.md`
+- **Catatonia Grounding Ritual Scenario** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
+- **player_lucidity Ledger** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
+- **Sanitarium Failover Escalation** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-02-sanitarium-failover.md`
 
 ## Relationships
 
-- [Architecture Review Plan](Architecture_Review_Plan.md) (1 shared connections)
-- [WebSocket Connection Setup](WebSocket_Connection_Setup.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `e2e-tests/scenarios/lucidity-system-expansion/README.md`
+- `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
+- `e2e-tests/scenarios/lucidity-system-expansion/scenario-02-sanitarium-failover.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

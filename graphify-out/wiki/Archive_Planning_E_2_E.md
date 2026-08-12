@@ -1,41 +1,42 @@
 # Archive Planning E 2 E
 
-> 11 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **npc_combat_grace.py** (13 connections) — `server/services/npc_combat_grace.py`
-- **_connection_manager_from_config_app()** (8 connections) — `server/services/npc_combat_grace.py`
-- **is_player_attack_blocked_by_login_grace_period()** (7 connections) — `server/services/npc_combat_grace.py`
-- **is_npc_attack_on_player_blocked_by_login_grace_period()** (7 connections) — `server/services/npc_combat_grace.py`
-- **get_app_instance()** (5 connections) — `server/config/__init__.py`
-- **UUID** (3 connections)
-- **Return the runtime app instance attached during lifespan startup.      This prov** (1 connections) — `server/config/__init__.py`
-- **Login grace-period checks for NPC combat integration (extracted to keep service** (1 connections) — `server/services/npc_combat_grace.py`
-- **Resolve connection_manager from the public config app accessor.      Uses geta** (1 connections) — `server/services/npc_combat_grace.py`
-- **True if the player should not attack (in login grace period). Fail-open on confi** (1 connections) — `server/services/npc_combat_grace.py`
-- **True if NPC attack on this player should be blocked (player in login grace perio** (1 connections) — `server/services/npc_combat_grace.py`
+- **create_error_context()** (10 connections) — `server/api/player_helpers.py`
+- **player_helpers.py** (9 connections) — `server/api/player_helpers.py`
+- **create_context_from_request()** (7 connections) — `server/utils/error_logging.py`
+- **test_player_helpers.py** (5 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **test_create_error_context_without_user_sets_metadata()** (3 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **test_create_error_context_with_user_sets_user_id_and_metadata()** (3 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **Request** (1 connections)
+- **Any** (1 connections)
+- **Shared helper functions for player API endpoints.** (1 connections) — `server/api/player_helpers.py`
+- **Create error context from request and user.      Helper function to reduce dupli** (1 connections) — `server/api/player_helpers.py`
+- **Unit tests for server.api.player_helpers (error context helper).** (1 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **When current_user is None, context gets metadata only.** (1 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **When current_user is set, user_id is populated and metadata merged.** (1 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **Request** (1 connections)
+- **Create error context from a FastAPI request. Delegates to create_enhanced_error_** (1 connections) — `server/utils/error_logging.py`
 
 ## Relationships
 
-- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (5 shared connections)
-- [Player Respawn Events](Player_Respawn_Events.md) (4 shared connections)
-- [Command Parser](Command_Parser.md) (2 shared connections)
-- [Archive Bug Fix](Archive_Bug_Fix.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Playwright E2E Specs](Playwright_E2E_Specs.md) (1 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
-- [Players API Endpoints](Players_API_Endpoints.md) (1 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (4 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
+- [Realtime Conftest Mocks](Realtime_Conftest_Mocks.md) (2 shared connections)
+- [Playwright Remediation Plan](Playwright_Remediation_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/__init__.py`
-- `server/services/npc_combat_grace.py`
+- `server/api/player_helpers.py`
+- `server/tests/unit/api/test_player_helpers.py`
+- `server/utils/error_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 46 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

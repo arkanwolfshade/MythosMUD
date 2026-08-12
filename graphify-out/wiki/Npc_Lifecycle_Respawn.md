@@ -20,9 +20,7 @@
 
 ## Relationships
 
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (3 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (6 shared connections)
 
 ## Source Files
 

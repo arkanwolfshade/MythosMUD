@@ -33,13 +33,14 @@
 
 ## Relationships
 
-- [Command Input Validator](Command_Input_Validator.md) (26 shared connections)
-- [Client App State Hooks](Client_App_State_Hooks.md) (9 shared connections)
+- [Command Input Validator](Command_Input_Validator.md) (20 shared connections)
+- [Client App State Hooks](Client_App_State_Hooks.md) (10 shared connections)
+- [Commands System Help](Commands_System_Help.md) (8 shared connections)
 - [Lucidity Rate Overrides](Lucidity_Rate_Overrides.md) (4 shared connections)
-- [Commands System Help](Commands_System_Help.md) (3 shared connections)
 - [Holidays JSON Schema](Holidays_JSON_Schema.md) (2 shared connections)
-- [Combat Attack Handler](Combat_Attack_Handler.md) (2 shared connections)
-- [API Test Fixtures](API_Test_Fixtures.md) (2 shared connections)
+- [Async Room Loading Tests](Async_Room_Loading_Tests.md) (2 shared connections)
+- [Command Input Utilities](Command_Input_Utilities.md) (1 shared connections)
+- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (1 shared connections)
 - [Magic System Feature Plan](Magic_System_Feature_Plan.md) (1 shared connections)
 - [Admin Shutdown Commands](Admin_Shutdown_Commands.md) (1 shared connections)
 

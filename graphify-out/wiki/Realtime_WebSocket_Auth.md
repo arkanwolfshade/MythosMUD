@@ -1,49 +1,49 @@
 # Realtime WebSocket Auth
 
-> 25 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **MockPersistenceFull** (14 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_unintentional_disconnect_starts_grace_period()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_intentional_disconnect_no_grace_period()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_command_blocks_during_combat()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_command_starts_countdown_not_in_combat()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_location_instant_disconnect()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_location_blocked_during_combat()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_countdown_completes_disconnect()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **mock_persistence_full()** (3 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **.get_player_by_name()** (2 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **.get_room_by_id()** (2 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **.__setattr__()** (2 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **.__init__()** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **Mock persistence layer with async methods for integration tests.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **Mock async method that uses configured mock.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **Mock method that uses configured mock.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **Allow setting get_player_by_name and get_room_by_id to mocks.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **Create a fully configured mock persistence layer.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **Test that unintentional disconnect starts grace period.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **Test that intentional disconnect does NOT start grace period.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **Test that /rest command is blocked during combat.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **Test that /rest command starts countdown when not in combat.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **Test that rest location provides instant disconnect when not in combat.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **Test that /rest in rest location is still blocked during combat.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **Test that rest countdown completes and disconnects player.** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **test_command_base.py** (22 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_base_command_rejects_extra_fields()** (4 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_base_command_instantiation()** (3 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_base_command_model_config()** (3 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_base_command_slots()** (3 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_direction_enum_inheritance()** (3 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_command_type_enum_inheritance()** (3 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_direction_enum_values()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_direction_enum_all_directions()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_direction_enum_string_comparison()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_command_type_enum_contains_look()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_command_type_enum_contains_communication_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_command_type_enum_contains_exploration_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_command_type_enum_contains_admin_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_command_type_enum_contains_inventory_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_command_type_enum_contains_combat_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_command_type_enum_contains_magic_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_command_type_enum_string_comparison()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **Unit tests for base command models and enums.  Tests the Direction and CommandTy** (1 connections) — `server/tests/unit/models/test_command_base.py`
+- **Test Direction enum contains all expected values.** (1 connections) — `server/tests/unit/models/test_command_base.py`
+- **Test Direction enum contains all 10 expected directions.** (1 connections) — `server/tests/unit/models/test_command_base.py`
+- **Test Direction enum values can be compared to strings.** (1 connections) — `server/tests/unit/models/test_command_base.py`
+- **Test CommandType enum contains LOOK.** (1 connections) — `server/tests/unit/models/test_command_base.py`
+- **Test CommandType enum contains communication commands.** (1 connections) — `server/tests/unit/models/test_command_base.py`
+- **Test CommandType enum contains exploration commands.** (1 connections) — `server/tests/unit/models/test_command_base.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [Container Persistence Queries](Container_Persistence_Queries.md) (9 shared connections)
-- [NPC Event Handler Tests](NPC_Event_Handler_Tests.md) (5 shared connections)
-- [Rescue Service Tests](Rescue_Service_Tests.md) (2 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (10 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/integration/test_rest_and_grace_period.py`
+- `server/tests/unit/models/test_command_base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 64 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 77 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

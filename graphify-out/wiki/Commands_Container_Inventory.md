@@ -1,24 +1,26 @@
 # Commands Container Inventory
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_find_item_in_equipped_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in equipped items when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **.resolve_player_name()** (4 connections) — `server/game/player_search_service.py`
+- **.validate_player_name()** (3 connections) — `server/game/player_search_service.py`
+- **Resolve a player name with fuzzy matching and case-insensitive search.** (1 connections) — `server/game/player_search_service.py`
+- **Validate a player name for chat system use.          This checks if the name is** (1 connections) — `server/game/player_search_service.py`
 
 ## Relationships
 
-- [Error Handling Guide](Error_Handling_Guide.md) (1 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
+- [Profession Get Mechanical Effects](Profession_Get_Mechanical_Effects.md) (2 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/game/player_search_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

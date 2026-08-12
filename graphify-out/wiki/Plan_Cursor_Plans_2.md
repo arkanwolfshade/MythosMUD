@@ -1,16 +1,20 @@
 # Plan Cursor Plans
 
-> 29 nodes
+> 43 nodes
 
 ## Key Concepts
 
+- **factory.py** (37 connections) — `server/app/factory.py`
 - **create_app()** (16 connections) — `server/app/factory.py`
+- **main.py** (15 connections) — `server/main.py`
+- **__init__.py** (10 connections) — `server/api/__init__.py`
+- **containers.py** (6 connections) — `server/api/containers.py`
 - **CORSConfigDict** (6 connections) — `server/app/factory.py`
 - **_get_cors_config_from_app_config()** (6 connections) — `server/app/factory.py`
 - **_configure_cors()** (6 connections) — `server/app/factory.py`
-- **UserRead** (6 connections) — `server/auth/endpoints.py`
-- **UserUpdate** (6 connections) — `server/auth/endpoints.py`
+- **base.py** (5 connections) — `server/api/base.py`
 - **main()** (4 connections) — `scripts/generate_openapi_spec.py`
+- **__init__.py** (4 connections) — `server/api/admin/__init__.py`
 - **_get_default_cors_config()** (4 connections) — `server/app/factory.py`
 - **_parse_cors_env_vars()** (4 connections) — `server/app/factory.py`
 - **main()** (4 connections) — `server/main.py`
@@ -18,41 +22,44 @@
 - **generate_openapi_spec.py** (3 connections) — `scripts/generate_openapi_spec.py`
 - **_sanitize_token_examples()** (3 connections) — `scripts/generate_openapi_spec.py`
 - **FastAPI** (3 connections)
+- **test_auth()** (3 connections) — `server/main.py`
 - **FastAPI** (2 connections)
+- **read_root()** (2 connections) — `server/main.py`
 - **Replace auth token examples with clearly fake placeholders.** (1 connections) — `scripts/generate_openapi_spec.py`
 - **Generate and write OpenAPI spec to docs/openapi/openapi.json.** (1 connections) — `scripts/generate_openapi_spec.py`
-- **TypedDict** (1 connections)
-- **Any** (1 connections)
-- **Type definition for CORS configuration dictionary.** (1 connections) — `server/app/factory.py`
-- **Get default CORS configuration values.      Returns:         CORSConfigDict: Dic** (1 connections) — `server/app/factory.py`
-- **Get CORS configuration from AppConfig, with fallback to defaults.      Returns:** (1 connections) — `server/app/factory.py`
-- **Parse CORS-related environment variables and return overrides.      Environment** (1 connections) — `server/app/factory.py`
-- **Configure CORS settings from config file and environment variables.      Precede** (1 connections) — `server/app/factory.py`
-- **Create and configure the FastAPI application.      This function sets up the Fas** (1 connections) — `server/app/factory.py`
-- *... and 4 more nodes in this community*
+- **API module for MythosMUD.  This module provides REST API endpoints for the Mytho** (1 connections) — `server/api/__init__.py`
+- **Admin API module for MythosMUD.  This module provides administrative API endpoin** (1 connections) — `server/api/admin/__init__.py`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (14 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (3 shared connections)
-- [Who Command Helpers](Who_Command_Helpers.md) (2 shared connections)
-- [Combat Command Handler](Combat_Command_Handler.md) (2 shared connections)
-- [Command Parser](Command_Parser.md) (1 shared connections)
-- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (1 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
-- [Graceful Degradation Plan](Graceful_Degradation_Plan.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (12 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (8 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (7 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (3 shared connections)
+- [Error Handling Middleware](Error_Handling_Middleware.md) (3 shared connections)
+- [Command Field Validators](Command_Field_Validators.md) (2 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (2 shared connections)
+- [Memory Threshold Monitor](Memory_Threshold_Monitor.md) (2 shared connections)
+- [Game Terminal Panels](Game_Terminal_Panels.md) (2 shared connections)
+- [Room Occupant Manager Tests](Room_Occupant_Manager_Tests.md) (2 shared connections)
+- [Commands Npc Admin](Commands_Npc_Admin.md) (2 shared connections)
 
 ## Source Files
 
 - `scripts/generate_openapi_spec.py`
+- `server/api/__init__.py`
+- `server/api/admin/__init__.py`
+- `server/api/base.py`
+- `server/api/containers.py`
 - `server/app/factory.py`
-- `server/auth/endpoints.py`
 - `server/main.py`
 
 ## Audit Trail
 
-- EXTRACTED: 79 (87%)
-- INFERRED: 12 (13%)
+- EXTRACTED: 163 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

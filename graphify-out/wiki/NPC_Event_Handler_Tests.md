@@ -1,6 +1,6 @@
 # NPC Event Handler Tests
 
-> 174 nodes
+> 166 nodes
 
 ## Key Concepts
 
@@ -24,32 +24,31 @@
 - **_begin_seated_rest_countdown()** (8 connections) — `server/commands/rest_command.py`
 - **Any** (7 connections)
 - **MockPersistence** (7 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.get_player_and_room()** (6 connections) — `server/commands/combat_handler.py`
-- **._interrupt_rest_for_cast()** (6 connections) — `server/commands/magic_commands.py`
 - **_resolve_rest_command_setup()** (6 connections) — `server/commands/rest_command.py`
-- **AppWithState** (5 connections)
-- **._get_persistence_from_app()** (5 connections) — `server/commands/combat_handler.py`
-- *... and 149 more nodes in this community*
+- **._get_player_for_position_change()** (5 connections) — `server/services/player_position_service.py`
+- **._update_player_position()** (5 connections) — `server/services/player_position_service.py`
+- **_get_services_from_app()** (4 connections) — `server/commands/rest_command.py`
+- **._extract_player_info()** (4 connections) — `server/services/player_position_service.py`
+- *... and 141 more nodes in this community*
 
 ## Relationships
 
-- [Container Open Events](Container_Open_Events.md) (23 shared connections)
+- [Container Persistence Queries](Container_Persistence_Queries.md) (9 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (8 shared connections)
+- [Container Open Events](Container_Open_Events.md) (6 shared connections)
+- [Client Event Store](Client_Event_Store.md) (6 shared connections)
 - [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (6 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (5 shared connections)
 - [Player Left Room Tests](Player_Left_Room_Tests.md) (5 shared connections)
-- [Players API Endpoints](Players_API_Endpoints.md) (5 shared connections)
-- [Realtime WebSocket Auth](Realtime_WebSocket_Auth.md) (5 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (4 shared connections)
-- [Container Persistence Queries](Container_Persistence_Queries.md) (4 shared connections)
-- [Combat Aggro Threat](Combat_Aggro_Threat.md) (4 shared connections)
+- [NPC Admin Commands](NPC_Admin_Commands.md) (5 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (5 shared connections)
+- [Health Check Models](Health_Check_Models.md) (4 shared connections)
 - [Pylint Unique Findings](Pylint_Unique_Findings.md) (3 shared connections)
-- [Client Security Utilities](Client_Security_Utilities.md) (2 shared connections)
-- [Command Factory Tests](Command_Factory_Tests.md) (2 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (3 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (2 shared connections)
 
 ## Source Files
 
 - `server/commands/combat_handler.py`
-- `server/commands/magic_commands.py`
 - `server/commands/rest_command.py`
 - `server/services/player_position_service.py`
 - `server/tests/unit/commands/test_rest_command.py`
@@ -57,8 +56,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 608 (98%)
-- INFERRED: 11 (2%)
+- EXTRACTED: 585 (99%)
+- INFERRED: 8 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

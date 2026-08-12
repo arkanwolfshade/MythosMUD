@@ -1,39 +1,53 @@
 # Investigations Sessions Session
 
-> 11 nodes
+> 81 nodes
 
 ## Key Concepts
 
-- **test_game.py** (20 connections) — `server/tests/unit/api/test_game.py`
-- **TestBroadcastMessageEdgeCases** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_broadcast_message_broadcast_stats_structure()** (3 connections) — `server/tests/unit/api/test_game.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/api/test_game.py`
-- **mock_user()** (2 connections) — `server/tests/unit/api/test_game.py`
-- **mock_container()** (2 connections) — `server/tests/unit/api/test_game.py`
-- **Unit tests for game API endpoints.  Tests game status, broadcasting, and time en** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Create a mock application container.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test edge cases for broadcast_message.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test broadcast_message with different broadcast_stats structures.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **MessageQueue** (52 connections) — `server/realtime/message_queue.py`
+- **test_message_queue.py** (32 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **.add_message()** (4 connections) — `server/realtime/message_queue.py`
+- **Any** (4 connections)
+- **.cleanup_old_messages()** (4 connections) — `server/realtime/message_queue.py`
+- **._is_message_recent()** (4 connections) — `server/realtime/message_queue.py`
+- **test_message_queue_get_messages_error()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_has_messages_empty_list()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages_removes_empty()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages_string_timestamp()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages_invalid_timestamp()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_large_structures()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **.get_messages()** (3 connections) — `server/realtime/message_queue.py`
+- **.cleanup_large_structures()** (3 connections) — `server/realtime/message_queue.py`
+- **.get_stats()** (3 connections) — `server/realtime/message_queue.py`
+- **test_message_queue_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_init_custom()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_add_message()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_add_message_with_timestamp()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_add_message_multiple()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_add_message_limit_reached()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_add_message_error()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_get_messages()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_get_messages_empty()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (5 shared connections)
-- [Investigations Sessions Session](Investigations_Sessions_Session.md) (3 shared connections)
-- [Quality Audit Report](Quality_Audit_Report.md) (3 shared connections)
-- [Chat Panel Filtering](Chat_Panel_Filtering.md) (3 shared connections)
-- [Realtime Npc Event](Realtime_Npc_Event.md) (2 shared connections)
-- [Spell Effects Tests](Spell_Effects_Tests.md) (1 shared connections)
-- [E 2 E Testing Approach](E_2_E_Testing_Approach.md) (1 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (10 shared connections)
+- [Client Event Store](Client_Event_Store.md) (6 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (5 shared connections)
+- [Game State Provider Tests](Game_State_Provider_Tests.md) (2 shared connections)
+- [JSONB Column Parsing](JSONB_Column_Parsing.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/api/test_game.py`
+- `server/realtime/message_queue.py`
+- `server/tests/unit/realtime/test_message_queue.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 235 (95%)
+- INFERRED: 13 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

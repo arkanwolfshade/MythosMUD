@@ -1,60 +1,52 @@
 # Combat Persistence Events
 
-> 111 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **NATSService** (72 connections) — `server/services/nats_service.py`
-- **Any** (17 connections)
-- **.disconnect()** (11 connections) — `server/services/nats_service.py`
-- **.publish_with_pool()** (10 connections) — `server/services/nats_service.py`
-- **._create_tracked_task()** (9 connections) — `server/services/nats_service.py`
-- **.connect()** (8 connections) — `server/services/nats_service.py`
-- **.__init__()** (7 connections) — `server/services/nats_service.py`
-- **._flush_batch()** (7 connections) — `server/services/nats_service.py`
-- **._verify_subscription_cleanup()** (6 connections) — `server/services/nats_service.py`
-- **.publish_batch()** (6 connections) — `server/services/nats_service.py`
-- **._start_health_monitoring()** (5 connections) — `server/services/nats_service.py`
-- **.publish()** (5 connections) — `server/services/nats_service.py`
-- **._on_error()** (5 connections) — `server/services/nats_service.py`
-- **._get_connection()** (5 connections) — `server/services/nats_service.py`
-- **._retry_failed_batch_groups()** (5 connections) — `server/services/nats_service.py`
-- **nats_service()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_service_init_with_config()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **._build_connect_options()** (4 connections) — `server/services/nats_service.py`
-- **._configure_tls()** (4 connections) — `server/services/nats_service.py`
-- **._close_all_subscriptions()** (4 connections) — `server/services/nats_service.py`
-- **._health_check_loop()** (4 connections) — `server/services/nats_service.py`
-- **.subscribe()** (4 connections) — `server/services/nats_service.py`
-- **.unsubscribe()** (4 connections) — `server/services/nats_service.py`
-- **.request()** (4 connections) — `server/services/nats_service.py`
-- **._handle_error_async()** (4 connections) — `server/services/nats_service.py`
-- *... and 86 more nodes in this community*
+- **NPCStartupService** (53 connections) — `server/services/npc_startup_service.py`
+- **Any** (16 connections)
+- **._spawn_required_npcs()** (8 connections) — `server/services/npc_startup_service.py`
+- **._determine_spawn_room()** (8 connections) — `server/services/npc_startup_service.py`
+- **._run_startup_pass()** (7 connections) — `server/services/npc_startup_service.py`
+- **._spawn_optional_npcs()** (7 connections) — `server/services/npc_startup_service.py`
+- **._spawn_arena_npcs()** (7 connections) — `server/services/npc_startup_service.py`
+- **.spawn_npcs_on_startup()** (6 connections) — `server/services/npc_startup_service.py`
+- **_new_spawn_results()** (5 connections) — `server/services/npc_startup_service.py`
+- **._try_spawn_npc()** (5 connections) — `server/services/npc_startup_service.py`
+- **_record_spawned_npc()** (4 connections) — `server/services/npc_startup_service.py`
+- **._handle_required_no_room()** (4 connections) — `server/services/npc_startup_service.py`
+- **._warmup_room_cache_for_arena()** (4 connections) — `server/services/npc_startup_service.py`
+- **._spawn_one_arena_npc()** (4 connections) — `server/services/npc_startup_service.py`
+- **._get_persistence_for_spawn()** (4 connections) — `server/services/npc_startup_service.py`
+- **._try_sub_zone_room()** (4 connections) — `server/services/npc_startup_service.py`
+- **_merge_phase_into_startup()** (3 connections) — `server/services/npc_startup_service.py`
+- **._try_specific_room()** (3 connections) — `server/services/npc_startup_service.py`
+- **._try_fallback_room()** (3 connections) — `server/services/npc_startup_service.py`
+- **._get_default_room_for_sub_zone()** (3 connections) — `server/services/npc_startup_service.py`
+- **.__init__()** (2 connections) — `server/services/npc_startup_service.py`
+- **Service for automatic NPC spawning during server startup.      This service coor** (1 connections) — `server/services/npc_startup_service.py`
+- **Initialize the NPC startup service.** (1 connections) — `server/services/npc_startup_service.py`
+- **Spawn NPCs during server startup.          This method handles the automatic spa** (1 connections) — `server/services/npc_startup_service.py`
+- **Spawn all required NPCs.          Args:             required_npcs: List of requi** (1 connections) — `server/services/npc_startup_service.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [Inventory Command Models](Inventory_Command_Models.md) (13 shared connections)
-- [Combat Service Bundle](Combat_Service_Bundle.md) (11 shared connections)
-- [Emote Schema Validator](Emote_Schema_Validator.md) (3 shared connections)
-- [Player Death Service](Player_Death_Service.md) (3 shared connections)
-- [WebSocket Code Review](WebSocket_Code_Review.md) (2 shared connections)
-- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (2 shared connections)
-- [Room Subscription Helpers](Room_Subscription_Helpers.md) (2 shared connections)
-- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (2 shared connections)
-- [NPC Spawn Validator](NPC_Spawn_Validator.md) (1 shared connections)
-- [Health Check Models](Health_Check_Models.md) (1 shared connections)
-- [Container Exception Handlers](Container_Exception_Handlers.md) (1 shared connections)
-- [Command Helper Utilities](Command_Helper_Utilities.md) (1 shared connections)
+- [NPC Occupant Verification](NPC_Occupant_Verification.md) (23 shared connections)
+- [Legacy Cleanup Summary](Legacy_Cleanup_Summary.md) (10 shared connections)
+- [Client Event Store](Client_Event_Store.md) (7 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (3 shared connections)
+- [Combat Schema Validation](Combat_Schema_Validation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_service.py`
-- `server/tests/unit/services/test_nats_service.py`
+- `server/services/npc_startup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 358 (96%)
-- INFERRED: 15 (4%)
+- EXTRACTED: 166 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

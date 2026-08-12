@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_soft_delete_character_already_deleted()** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test soft_delete_character() when character already deleted.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_connection_failed_from_reconnecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test connection_failed() transition from reconnecting to disconnected.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Relationships
 
-- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
+- [Room Subscription Helpers](Room_Subscription_Helpers.md) (1 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

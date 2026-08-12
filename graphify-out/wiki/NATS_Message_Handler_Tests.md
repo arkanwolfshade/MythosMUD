@@ -22,6 +22,7 @@
 ## Relationships
 
 - [Phase 2: Categorize and Prioritize Lint Issues](Phase_2-_Categorize_and_Prioritize_Lint_Issues.md) (2 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (2 shared connections)
 - [Message Queue Cleanup](Message_Queue_Cleanup.md) (1 shared connections)
 - [test_get_alerts_no_alerts](test_get_alerts_no_alerts.md) (1 shared connections)
 - [test_validate_room_integrity_room_without_get_players](test_validate_room_integrity_room_without_get_players.md) (1 shared connections)
@@ -32,7 +33,6 @@
 - [.test_get_attack_message_defender_perspective](test_get_attack_message_defender_perspective.md) (1 shared connections)
 - [Plan Cursor Plans](Plan_Cursor_Plans.md) (1 shared connections)
 - [.__init__](__init__.md) (1 shared connections)
-- [test_build_room_objects_debug_logging](test_build_room_objects_debug_logging.md) (1 shared connections)
 
 ## Source Files
 

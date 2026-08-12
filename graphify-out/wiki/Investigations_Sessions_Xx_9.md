@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Movement Message Dual Panel Routing** (1 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
-- **Missing game_tick Client Handler** (1 connections) — `investigations/sessions/2025-01-XX_session-game-tick-messages-not-displaying.md`
+- **UI Panel Resize Bug** (1 connections) — `investigations/sessions/2025-01-XX_session-ui-panel-resize-bug.md`
+- **UI Panel Resize Fix Verified** (1 connections) — `investigations/sessions/2025-01-XX_verification-ui-panel-resize-fix.md`
 
 ## Relationships
 
@@ -13,13 +13,13 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
-- `investigations/sessions/2025-01-XX_session-game-tick-messages-not-displaying.md`
+- `investigations/sessions/2025-01-XX_session-ui-panel-resize-bug.md`
+- `investigations/sessions/2025-01-XX_verification-ui-panel-resize-fix.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

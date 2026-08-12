@@ -17,8 +17,8 @@
 
 ## Relationships
 
-- [Admin Teleport Commands](Admin_Teleport_Commands.md) (5 shared connections)
-- [Container Open Events](Container_Open_Events.md) (1 shared connections)
+- [Room Exploration API](Room_Exploration_API.md) (5 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
 
 ## Source Files
 

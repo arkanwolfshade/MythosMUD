@@ -34,9 +34,9 @@
 ## Relationships
 
 - [Async Task Registry](Async_Task_Registry.md) (6 shared connections)
-- [Spell Effect Protocols](Spell_Effect_Protocols.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Container Open Events](Container_Open_Events.md) (1 shared connections)
+- [Container Sync Remediation](Container_Sync_Remediation.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [NATS Connection State Machine](NATS_Connection_State_Machine.md) (1 shared connections)
 
 ## Source Files
 

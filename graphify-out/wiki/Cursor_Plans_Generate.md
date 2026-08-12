@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_establish_websocket_connection_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test establish_websocket_connection() returns False when player not found.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Authoritative Database Schema from mythos_dev** (1 connections) — `.cursor/plans/generate-authoritative-database-schema-from-mythos-dev-8db3cde5.plan.md`
+- **authoritative_schema.sql** (1 connections) — `.cursor/plans/generate-authoritative-database-schema-from-mythos-dev-8db3cde5.plan.md`
 
 ## Relationships
 
-- [Architecture Review Plan](Architecture_Review_Plan.md) (1 shared connections)
-- [WebSocket Connection Setup](WebSocket_Connection_Setup.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `.cursor/plans/generate-authoritative-database-schema-from-mythos-dev-8db3cde5.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

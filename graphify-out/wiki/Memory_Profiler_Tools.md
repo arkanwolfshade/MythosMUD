@@ -35,10 +35,11 @@
 
 - [Monitoring Response Models](Monitoring_Response_Models.md) (5 shared connections)
 - [Alias Expansion Logic](Alias_Expansion_Logic.md) (3 shared connections)
-- [Combat NPC Lookup](Combat_NPC_Lookup.md) (2 shared connections)
+- [Test Refactoring Complete](Test_Refactoring_Complete.md) (2 shared connections)
 - [NPC Database Sessions](NPC_Database_Sessions.md) (2 shared connections)
-- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (2 shared connections)
-- [Player Creation Service](Player_Creation_Service.md) (1 shared connections)
+- [Player Respawn Service](Player_Respawn_Service.md) (1 shared connections)
+- [Inventory Service Helpers](Inventory_Service_Helpers.md) (1 shared connections)
+- [Invite and User Schemas](Invite_and_User_Schemas.md) (1 shared connections)
 
 ## Source Files
 

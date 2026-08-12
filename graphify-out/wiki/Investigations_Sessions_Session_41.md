@@ -1,12 +1,11 @@
 # Investigations Sessions Session
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Test Suite Stall After Performance Comparison** (2 connections) — `investigations/sessions/2025-11-19_session-005_test-suite-stall.md`
-- **Docker Build mythos_unitql Typo** (1 connections) — `investigations/sessions/2025-11-19_session-004_docker-build-postgresql-typo.md`
-- **thread.join Without Timeout Hang** (1 connections) — `investigations/sessions/2025-11-19_session-005_test-suite-stall.md`
+- **Character Info Combat HP Update Delay** (1 connections) — `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
+- **Persist Player HP Before Event Publish** (1 connections) — `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
 
 ## Relationships
 
@@ -14,13 +13,12 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-11-19_session-004_docker-build-postgresql-typo.md`
-- `investigations/sessions/2025-11-19_session-005_test-suite-stall.md`
+- `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (50%)
-- INFERRED: 2 (50%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

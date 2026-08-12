@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_get_shutdown_blocking_message_login()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test get_shutdown_blocking_message() returns login message.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **mock_player()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Create a mock player.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
-- [Room Drop Renderer](Room_Drop_Renderer.md) (1 shared connections)
+- [Cursor Agents Quick](Cursor_Agents_Quick.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_admin_shutdown_command.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

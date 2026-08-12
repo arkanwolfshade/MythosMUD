@@ -1,6 +1,6 @@
 # Circuit Breaker Core
 
-> 88 nodes
+> 90 nodes
 
 ## Key Concepts
 
@@ -29,13 +29,13 @@
 - **test_call_reopens_from_half_open_on_failure()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_on_success_resets_failure_count_closed()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_on_success_increments_success_count_half_open()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- *... and 63 more nodes in this community*
+- *... and 65 more nodes in this community*
 
 ## Relationships
 
 - [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (4 shared connections)
 - [Inventory Command Models](Inventory_Command_Models.md) (3 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 - [NATS Chat Broadcasting](NATS_Chat_Broadcasting.md) (2 shared connections)
 - [Chat Message Filtering](Chat_Message_Filtering.md) (1 shared connections)
 
@@ -47,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 268 (99%)
+- EXTRACTED: 272 (99%)
 - INFERRED: 4 (1%)
 - AMBIGUOUS: 0 (0%)
 

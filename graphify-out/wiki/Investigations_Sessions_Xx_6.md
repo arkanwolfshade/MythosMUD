@@ -1,23 +1,25 @@
 # Investigations Sessions Xx
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_get_active_sessions_filters_expired()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **Test get_active_sessions filters expired sessions.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **9. Command Blocking During Grace Period** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Industry Practices** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Our Plan** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Gap Analysis** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
 
 ## Relationships
 
-- [Player Model Inventory](Player_Model_Inventory.md) (1 shared connections)
+- [Cursor Commands Remediation](Cursor_Commands_Remediation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_admin_auth_service.py`
+- `.cursor/plans/disconnect_grace_period_comparison.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

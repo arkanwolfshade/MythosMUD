@@ -23,9 +23,9 @@
 
 ## Relationships
 
-- [Playwright E2E Specs](Playwright_E2E_Specs.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Container Exception Handlers](Container_Exception_Handlers.md) (1 shared connections)
+- [WebSocket Initial State](WebSocket_Initial_State.md) (1 shared connections)
 
 ## Source Files
 

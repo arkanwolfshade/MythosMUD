@@ -1,61 +1,61 @@
 # Container Exception Handlers
 
-> 121 nodes
+> 89 nodes
 
 ## Key Concepts
 
-- **CombatService** (182 connections) — `server/services/combat_service.py`
-- **combat_service_npc.py** (30 connections) — `server/services/combat_service_npc.py`
-- **UUID** (20 connections)
-- **get_combat_id_for_npc()** (13 connections) — `server/services/combat_service_npc.py`
-- **UUID** (11 connections)
-- **get_npc_participant_current_room()** (11 connections) — `server/services/combat_service_npc.py`
-- **spell_effects_internal.py** (10 connections) — `server/game/magic/spell_effects_internal.py`
-- **_get_uuid_mapping()** (10 connections) — `server/services/combat_service_npc.py`
-- **find_participant_uuid_by_string_id()** (10 connections) — `server/services/combat_service_npc.py`
-- **resolve_npc_participant_id_in_combat()** (9 connections) — `server/services/combat_service_npc.py`
-- **UUIDMappingProtocol** (8 connections) — `server/services/combat_service_npc.py`
-- **DataProviderProtocol** (8 connections) — `server/services/combat_service_npc.py`
-- **get_combat_id_for_npc_via_mapping()** (8 connections) — `server/services/combat_service_npc.py`
-- **_fallback_find_combat_id_for_npc()** (8 connections) — `server/services/combat_service_npc.py`
-- **get_participant_current_room()** (8 connections) — `server/services/combat_service_npc.py`
-- **.get_uuid_for_string_id()** (7 connections) — `server/services/combat_service_npc.py`
-- **combat_room_id_for_npc_spell()** (6 connections) — `server/game/magic/spell_effects_internal.py`
-- **.validate_melee_or_end_combat()** (6 connections) — `server/services/combat_service.py`
-- **.finalize_attack_result()** (6 connections) — `server/services/combat_service.py`
-- **.get_original_string_id()** (6 connections) — `server/services/combat_service_npc.py`
-- **_get_data_provider()** (6 connections) — `server/services/combat_service_npc.py`
-- **_iter_active_combats()** (6 connections) — `server/services/combat_service_npc.py`
-- **sync_npc_participant_dp_after_spell_damage()** (6 connections) — `server/services/combat_service_npc.py`
-- **get_combat_by_participant()** (6 connections) — `server/services/combat_service_npc.py`
-- **_participant_matches_npc_id()** (6 connections) — `server/services/combat_service_npc.py`
-- *... and 96 more nodes in this community*
+- **connection_manager.py** (124 connections) — `server/realtime/connection_manager.py`
+- **connection_manager_methods.py** (52 connections) — `server/realtime/connection_manager_methods.py`
+- **Any** (32 connections)
+- **connection_delegates.py** (21 connections) — `server/realtime/connection_delegates.py`
+- **delegate_game_state_provider()** (12 connections) — `server/realtime/connection_delegates.py`
+- **UUID** (12 connections)
+- **delegate_message_broadcaster()** (11 connections) — `server/realtime/connection_delegates.py`
+- **delegate_personal_message_sender()** (9 connections) — `server/realtime/connection_delegates.py`
+- **delegate_room_event_handler()** (9 connections) — `server/realtime/connection_delegates.py`
+- **delegate_game_state_provider_sync()** (8 connections) — `server/realtime/connection_delegates.py`
+- **delegate_personal_message_sender_sync()** (8 connections) — `server/realtime/connection_delegates.py`
+- **broadcast_to_room_impl()** (8 connections) — `server/realtime/connection_manager_methods.py`
+- **broadcast_room_event_impl()** (8 connections) — `server/realtime/connection_manager_methods.py`
+- **broadcast_global_event_impl()** (8 connections) — `server/realtime/connection_manager_methods.py`
+- **get_message_delivery_stats_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
+- **broadcast_global_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
+- **force_disconnect_player_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
+- **disconnect_websocket_connection_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
+- **get_player_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
+- **get_players_batch_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
+- **send_initial_game_state_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
+- **send_personal_message_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
+- **is_websocket_open_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
+- **get_player_websocket_connection_id_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
+- **get_connection_id_from_websocket_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
+- *... and 64 more nodes in this community*
 
 ## Relationships
 
-- [Health Check Models](Health_Check_Models.md) (34 shared connections)
-- [Combat Death Handling](Combat_Death_Handling.md) (21 shared connections)
-- [Player Respawn Service](Player_Respawn_Service.md) (14 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (14 shared connections)
-- [Rest Command Flow](Rest_Command_Flow.md) (12 shared connections)
-- [Players API Endpoints](Players_API_Endpoints.md) (11 shared connections)
-- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (10 shared connections)
-- [NATS Metrics API](NATS_Metrics_API.md) (8 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (6 shared connections)
-- [Game Client Container](Game_Client_Container.md) (6 shared connections)
-- [Combat Taunt Tests](Combat_Taunt_Tests.md) (5 shared connections)
-- [Application DI Bundles](Application_DI_Bundles.md) (4 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (32 shared connections)
+- [Command Helper Utilities](Command_Helper_Utilities.md) (28 shared connections)
+- [Room Occupant Events](Room_Occupant_Events.md) (26 shared connections)
+- [Client Event Store](Client_Event_Store.md) (12 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (12 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (9 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (6 shared connections)
+- [ASCII Map API](ASCII_Map_API.md) (6 shared connections)
+- [Follow Service Tests](Follow_Service_Tests.md) (5 shared connections)
+- [NATS Subject Manager](NATS_Subject_Manager.md) (4 shared connections)
+- [Rescue Service Tests](Rescue_Service_Tests.md) (4 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (4 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_effects_internal.py`
-- `server/services/combat_service.py`
-- `server/services/combat_service_npc.py`
+- `server/realtime/connection_delegates.py`
+- `server/realtime/connection_manager.py`
+- `server/realtime/connection_manager_methods.py`
 
 ## Audit Trail
 
-- EXTRACTED: 536 (91%)
-- INFERRED: 56 (9%)
+- EXTRACTED: 542 (99%)
+- INFERRED: 4 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

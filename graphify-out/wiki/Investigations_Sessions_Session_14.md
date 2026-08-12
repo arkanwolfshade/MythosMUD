@@ -1,32 +1,41 @@
 # Investigations Sessions Session
 
-> 8 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **_update_player_connection_list()** (9 connections) — `server/realtime/connection_establishment.py`
-- **test_update_player_connection_list_no_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_update_player_connection_list_with_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_update_player_connection_list_no_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Update player's connection list to only include active connections.      Args:** (1 connections) — `server/realtime/connection_establishment.py`
-- **Test _update_player_connection_list() handles player not in player_websockets.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _update_player_connection_list() keeps active connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _update_player_connection_list() removes player when no active connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Any** (10 connections)
+- **._emit_party_updated()** (9 connections) — `server/game/party_service.py`
+- **.disband_party()** (8 connections) — `server/game/party_service.py`
+- **.remove_member()** (8 connections) — `server/game/party_service.py`
+- **.kick_member()** (8 connections) — `server/game/party_service.py`
+- **.add_member()** (7 connections) — `server/game/party_service.py`
+- **._notify_player_removed_from_party()** (7 connections) — `server/game/party_service.py`
+- **.__init__()** (6 connections) — `server/game/party_service.py`
+- **._schedule_notification()** (6 connections) — `server/game/party_service.py`
+- **Initialize empty party store. Optionally provide event_bus, connection_manager,** (1 connections) — `server/game/party_service.py`
+- **Emit PartyUpdated event if event_bus is set.** (1 connections) — `server/game/party_service.py`
+- **Disband a party. If by_player_id is given, only the leader may disband.** (1 connections) — `server/game/party_service.py`
+- **Add a player to a party. Fails if party does not exist or player is already in a** (1 connections) — `server/game/party_service.py`
+- **Safely schedule an async notification, handling cases where no event loop is run** (1 connections) — `server/game/party_service.py`
+- **Notify a player they have been removed from a party. Resolves leader name.** (1 connections) — `server/game/party_service.py`
+- **Remove a player from a party (leave or internal remove). If leader leaves,** (1 connections) — `server/game/party_service.py`
+- **Remove a member from the party. Only the leader may kick.** (1 connections) — `server/game/party_service.py`
 
 ## Relationships
 
-- [WebSocket Connection Setup](WebSocket_Connection_Setup.md) (4 shared connections)
-- [Architecture Review Plan](Architecture_Review_Plan.md) (3 shared connections)
-- [Archive Npc Population](Archive_Npc_Population.md) (1 shared connections)
+- [Player State Command Factory](Player_State_Command_Factory.md) (17 shared connections)
+- [Status Effect Model](Status_Effect_Model.md) (9 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_establishment.py`
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/game/party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 77 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

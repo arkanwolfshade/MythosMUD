@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_create_player_with_stats_success()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test create_player_with_stats() successful creation.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_restore_mp_from_item_restores_mp()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_item() restores MP.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [NPC Database Sessions](NPC_Database_Sessions.md) (1 shared connections)
-- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
+- [Cursor Agents Quick](Cursor_Agents_Quick.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

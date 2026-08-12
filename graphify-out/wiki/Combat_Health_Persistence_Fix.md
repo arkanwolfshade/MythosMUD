@@ -27,7 +27,7 @@
 - [Investigations Sessions Session](Investigations_Sessions_Session.md) (3 shared connections)
 - [Components Panels Monitoringpaneltestfixtures](Components_Panels_Monitoringpaneltestfixtures.md) (2 shared connections)
 - [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 - [Cursor Plans Postgresql](Cursor_Plans_Postgresql.md) (1 shared connections)
 - [Realtime Player Event](Realtime_Player_Event.md) (1 shared connections)
 - [Realtime Websocket Handler](Realtime_Websocket_Handler.md) (1 shared connections)

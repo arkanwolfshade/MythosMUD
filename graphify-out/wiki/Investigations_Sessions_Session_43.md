@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Character Info Combat HP Update Delay** (1 connections) — `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
-- **Persist Player HP Before Event Publish** (1 connections) — `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
+- **Missing Delirium Respawn Feature** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
+- **Lucidity -10 Delirium Threshold** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
+- `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
 
 ## Audit Trail
 

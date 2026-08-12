@@ -1,26 +1,23 @@
 # add_hashed_password_column.py
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **add_hashed_password_column.py** (4 connections) — `server/scripts/add_hashed_password_column.py`
-- **apply_migration()** (3 connections) — `server/scripts/add_hashed_password_column.py`
-- **main()** (3 connections) — `server/scripts/add_hashed_password_column.py`
-- **Apply the migration to add hashed_password column.      Args:         database_u** (1 connections) — `server/scripts/add_hashed_password_column.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/add_hashed_password_column.py`
+- **test_handle_npc_attack_on_player_no_combat_service()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **Test handle_npc_attack_on_player returns False when combat service is missing.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Combat Configuration Service](Combat_Configuration_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/add_hashed_password_column.py`
+- `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

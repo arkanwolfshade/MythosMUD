@@ -1,13 +1,16 @@
 # Investigations Sessions Session
 
-> 4 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Rooms List SQL ::uuid[] Parameter Conflict** (2 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **Minimap Explored Rooms UUID vs stable_id** (2 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **asyncpg Colon Cast Parameter Parsing** (1 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **Explored Room UUIDs Treated As stable_ids** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
+- **Multi-Word Spell Name Parsing Failure** (3 connections) — `investigations/sessions/2025-12-14_session-002_spell-cast-failure.md`
+- **Spell Slash Commands Missing From Validation** (2 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
+- **Missing async_heal_player Method** (2 connections) — `investigations/sessions/2025-12-14_session-003_minor-heal-casting-delay.md`
+- **Heal Spell SQLAlchemy Session Boundary Error** (2 connections) — `investigations/sessions/2025-12-14_session-004_heal-spell-casting-failure.md`
+- **Missing cast spell spells Pydantic Models** (1 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
+- **create_cast_command First-Word-Only Parse** (1 connections) — `investigations/sessions/2025-12-14_session-002_spell-cast-failure.md`
+- **record_spell_cast Cross-Session Object Use** (1 connections) — `investigations/sessions/2025-12-14_session-004_heal-spell-casting-failure.md`
 
 ## Relationships
 
@@ -15,13 +18,15 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
+- `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
+- `investigations/sessions/2025-12-14_session-002_spell-cast-failure.md`
+- `investigations/sessions/2025-12-14_session-003_minor-heal-casting-delay.md`
+- `investigations/sessions/2025-12-14_session-004_heal-spell-casting-failure.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (67%)
-- INFERRED: 2 (33%)
+- EXTRACTED: 6 (50%)
+- INFERRED: 6 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

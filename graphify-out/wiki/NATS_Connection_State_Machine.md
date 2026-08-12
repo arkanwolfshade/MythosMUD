@@ -1,36 +1,48 @@
 # NATS Connection State Machine
 
-> 13 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **_utc_now()** (8 connections) — `server/models/lucidity.py`
-- **test_lucidity_utils.py** (7 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **test_utc_now_returns_datetime()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **test_utc_now_returns_naive_datetime()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **test_utc_now_returns_utc_time()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **test_utc_now_returns_different_times()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **datetime** (2 connections)
-- **Return naive UTC timestamps for PostgreSQL TIMESTAMP WITHOUT TIME ZONE compatibi** (1 connections) — `server/models/lucidity.py`
-- **Unit tests for lucidity model utility functions.  Tests the _utc_now utility fun** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **Test _utc_now returns a datetime object.** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **Test _utc_now returns naive datetime (tzinfo=None).** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **Test _utc_now returns time close to current UTC time.** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **Test _utc_now returns different times on subsequent calls.** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
+- **test_inventory_commands.py** (20 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **handle_inventory_command()** (14 connections) — `server/commands/inventory_commands.py`
+- **test_handle_inventory_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **test_handle_unequip_command_no_target()** (4 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **test_handle_get_command_no_target()** (4 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **test_handle_inventory_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **test_handle_unequip_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **test_handle_get_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **CommandResponse** (1 connections)
+- **Display the player's inventory and equipped items, including container contents.** (1 connections) — `server/commands/inventory_commands.py`
+- **Unit tests for inventory command handlers (except pickup; see test_inventory_com** (1 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **Test handle_inventory_command() displays inventory.** (1 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **Test handle_inventory_command() handles missing persistence.** (1 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **Test handle_unequip_command() unequips item.** (1 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **Test handle_unequip_command() handles missing target.** (1 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **Test handle_get_command() gets item from container.** (1 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **Test handle_get_command() handles missing target.** (1 connections) — `server/tests/unit/commands/test_inventory_commands.py`
 
 ## Relationships
 
-- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (3 shared connections)
+- [Admin NPC Schemas](Admin_NPC_Schemas.md) (9 shared connections)
+- [Container Sync Remediation](Container_Sync_Remediation.md) (7 shared connections)
+- [Container Open Events](Container_Open_Events.md) (3 shared connections)
+- [Container Component Capacity](Container_Component_Capacity.md) (3 shared connections)
+- [AnyIO vs Asyncio Guide](AnyIO_vs_Asyncio_Guide.md) (2 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
+- [Async Task Registry](Async_Task_Registry.md) (1 shared connections)
+- [Container Inventory Ops](Container_Inventory_Ops.md) (1 shared connections)
+- [Admin Command Models](Admin_Command_Models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/lucidity.py`
-- `server/tests/unit/models/test_lucidity_utils.py`
+- `server/commands/inventory_commands.py`
+- `server/tests/unit/commands/test_inventory_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 57 (89%)
+- INFERRED: 7 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

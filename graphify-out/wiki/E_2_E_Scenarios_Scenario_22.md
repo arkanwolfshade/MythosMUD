@@ -1,26 +1,23 @@
 # E 2 E Scenarios Scenario
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **exits** (5 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **analyze-product.md** (1 connections) — `.claude/commands/analyze-product.md`
+- **Analyze Product** (1 connections) — `.claude/commands/analyze-product.md`
 
 ## Relationships
 
-- [Npc Event Reaction](Npc_Event_Reaction.md) (1 shared connections)
-- [Item System Design](Item_System_Design.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- `.claude/commands/analyze-product.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

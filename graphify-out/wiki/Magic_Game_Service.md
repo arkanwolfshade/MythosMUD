@@ -1,39 +1,41 @@
 # Magic Game Service
 
-> 16 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **commandStore.ts** (18 connections) — `client/src/stores/commandStore.ts`
-- **createCommandQueueAndAliasActions()** (4 connections) — `client/src/stores/commandStore.ts`
-- **createCommandStoreSlice()** (4 connections) — `client/src/stores/commandStore.ts`
-- **createInitialState()** (3 connections) — `client/src/stores/commandStore.ts`
-- **commandStore.test.ts** (2 connections) — `client/src/stores/__tests__/commandStore.test.ts`
-- **computeNavigateHistoryState()** (2 connections) — `client/src/stores/commandStore.ts`
-- **findMatchingTriggersInState()** (2 connections) — `client/src/stores/commandStore.ts`
-- **CommandHistoryEntry** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandAlias** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandTrigger** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandState** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandActions** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandSelectors** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandStore** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandStoreSet** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandStoreGet** (1 connections) — `client/src/stores/commandStore.ts`
+- **total_xp_for_level()** (15 connections) — `server/game/level_curve.py`
+- **test_grant_xp_level_up_calls_hook()** (4 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_total_xp_for_level_one()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_total_xp_for_level_two_positive()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_total_xp_for_level_increases()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_total_xp_for_level_invalid()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_check_level_up_increase_persists_and_returns_true()** (3 connections) — `server/tests/unit/game/test_level_service.py`
+- **Total XP required to reach a given level (cumulative).      Level 1 requires 0 X** (1 connections) — `server/game/level_curve.py`
+- **Level 1 requires 0 cumulative XP.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **Level 2 requires positive cumulative XP.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **Cumulative XP increases with level.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **total_xp_for_level raises for level < 1.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **When level increases, save is called and level_up_hook is invoked.** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **check_level_up when curve gives higher level updates player and returns True.** (1 connections) — `server/tests/unit/game/test_level_service.py`
 
 ## Relationships
 
-- [Combat Attack Handler](Combat_Attack_Handler.md) (4 shared connections)
+- [Archive Bug Prevention](Archive_Bug_Prevention.md) (8 shared connections)
+- [E 2 E Testing Guide](E_2_E_Testing_Guide.md) (3 shared connections)
+- [Code Review Archive](Code_Review_Archive.md) (3 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/stores/__tests__/commandStore.test.ts`
-- `client/src/stores/commandStore.ts`
+- `server/game/level_curve.py`
+- `server/tests/unit/game/test_level_curve.py`
+- `server/tests/unit/game/test_level_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 41 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

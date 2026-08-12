@@ -1,46 +1,42 @@
 # Upgrade Archive Dependency
 
-> 11 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **prototype_registry.py** (19 connections) — `server/game/items/prototype_registry.py`
-- **validate_prototypes.py** (8 connections) — `server/scripts/validate_prototypes.py`
-- **models.py** (7 connections) — `server/game/items/models.py`
-- **parse_arguments()** (3 connections) — `server/scripts/validate_prototypes.py`
-- **main()** (3 connections) — `server/scripts/validate_prototypes.py`
-- **constants.py** (2 connections) — `server/game/items/constants.py`
-- **Constants supporting item prototype validation.  These enumerations anchor the s** (1 connections) — `server/game/items/constants.py`
-- **Pydantic models for item prototype validation.  This module defines the ItemProt** (1 connections) — `server/game/items/models.py`
-- **Prototype registry for managing item prototypes.  This module provides the Pro** (1 connections) — `server/game/items/prototype_registry.py`
-- **Namespace** (1 connections)
-- **CLI entrypoint for validating MythosMUD item prototype definitions.** (1 connections) — `server/scripts/validate_prototypes.py`
+- **log_exception_once()** (15 connections) — `server/structured_logging/enhanced_logging_config.py`
+- **test_enhanced_logging_config.py** (9 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **_StubBoundLogger** (8 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **_as_bound_logger()** (6 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **test_log_exception_once_logged_exception_uses_mark_logged()** (6 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **test_log_exception_once_plain_exception_sets_flag_and_skips_repeat()** (5 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **BoundLogger** (2 connections)
+- **Exception** (1 connections)
+- **Log an exception once, respecting exceptions that have already been logged.** (1 connections) — `server/structured_logging/enhanced_logging_config.py`
+- **.__init__()** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **Unit tests for enhanced_logging_config helpers.  Covers log_exception_once ded** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **Minimal stand-in for BoundLogger: only what log_exception_once touches for these** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **Adapt test double to the function param type (structural use only).** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **Plain exceptions get _already_logged via __setattr__ fallback; second log is sup** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **LoggedException uses mark_logged(); repeat call does not log again.** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
 
 ## Relationships
 
-- [Npc Services Combat](Npc_Services_Combat.md) (5 shared connections)
-- [NATS Retry Handler](NATS_Retry_Handler.md) (5 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (4 shared connections)
-- [NATS Subject Admin API](NATS_Subject_Admin_API.md) (3 shared connections)
-- [App Creation Flow Screens](App_Creation_Flow_Screens.md) (2 shared connections)
-- [Async Task Registry](Async_Task_Registry.md) (1 shared connections)
-- [Help and WebSocket Core](Help_and_WebSocket_Core.md) (1 shared connections)
-- [Room Occupant Manager Tests](Room_Occupant_Manager_Tests.md) (1 shared connections)
-- [NPC Definition Admin API](NPC_Definition_Admin_API.md) (1 shared connections)
-- [NATS Metrics API](NATS_Metrics_API.md) (1 shared connections)
-- [Combat NPC Lookup](Combat_NPC_Lookup.md) (1 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (6 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Dual Connection API Reference](Dual_Connection_API_Reference.md) (4 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
+- [Error Handling Middleware](Error_Handling_Middleware.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/items/constants.py`
-- `server/game/items/models.py`
-- `server/game/items/prototype_registry.py`
-- `server/scripts/validate_prototypes.py`
+- `server/structured_logging/enhanced_logging_config.py`
+- `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 56 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

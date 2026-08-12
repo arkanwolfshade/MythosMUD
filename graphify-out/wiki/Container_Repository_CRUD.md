@@ -1,49 +1,58 @@
 # Container Repository CRUD
 
-> 23 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **UsernameAuthenticationBackend** (11 connections) — `server/auth/users.py`
-- **get_username_auth_backend()** (9 connections) — `server/auth/users.py`
-- **.parse_id()** (4 connections) — `server/auth/users.py`
-- **Any** (4 connections)
-- **test_username_authentication_backend_login()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_get_username_auth_backend_returns_username_authentication_backend()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_username_authentication_backend_init()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **.__init__()** (3 connections) — `server/auth/users.py`
-- **.login()** (3 connections) — `server/auth/users.py`
-- **test_get_username_auth_backend()** (3 connections) — `server/tests/unit/auth/test_users.py`
-- **test_get_username_auth_backend_jwt_strategy_uses_env_var()** (3 connections) — `server/tests/unit/auth/test_users.py`
-- **test_get_username_auth_backend_jwt_strategy_default_secret()** (3 connections) — `server/tests/unit/auth/test_users.py`
-- **AuthenticationBackend** (2 connections)
-- **Parse a value into a UUID instance.** (1 connections) — `server/auth/users.py`
-- **Custom authentication backend that uses username instead of email.** (1 connections) — `server/auth/users.py`
-- **Custom login that uses username.** (1 connections) — `server/auth/users.py`
-- **Get username-based authentication backend configuration.** (1 connections) — `server/auth/users.py`
-- **Test getting username-based authentication backend.** (1 connections) — `server/tests/unit/auth/test_users.py`
-- **Test UsernameAuthenticationBackend login method.** (1 connections) — `server/tests/unit/auth/test_users.py`
-- **Test that get_username_auth_backend returns UsernameAuthenticationBackend.** (1 connections) — `server/tests/unit/auth/test_users.py`
-- **Test that get_username_auth_backend uses environment variable for JWT secret.** (1 connections) — `server/tests/unit/auth/test_users.py`
-- **Test that get_username_auth_backend uses default secret when env var not set.** (1 connections) — `server/tests/unit/auth/test_users.py`
-- **Test UsernameAuthenticationBackend initialization.** (1 connections) — `server/tests/unit/auth/test_users.py`
+- **normalize_environment()** (15 connections) — `server/utils/project_paths.py`
+- **get_calendar_paths_for_environment()** (14 connections) — `server/utils/project_paths.py`
+- **project_paths.py** (12 connections) — `server/utils/project_paths.py`
+- **test_project_paths.py** (10 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **get_project_root()** (10 connections) — `server/utils/project_paths.py`
+- **get_environment_data_dir()** (10 connections) — `server/utils/project_paths.py`
+- **.__init__()** (8 connections) — `server/services/holiday_service.py`
+- **.__init__()** (7 connections) — `server/services/schedule_service.py`
+- **test_get_project_root()** (3 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **test_normalize_environment()** (3 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **test_get_environment_data_dir()** (3 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **test_get_calendar_paths_for_environment()** (3 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **Path** (3 connections)
+- **Path** (2 connections)
+- **Path** (2 connections)
+- **Unit tests for project_paths utilities.  Tests path resolution functions.** (1 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **Test get_project_root() returns project root path.** (1 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **Test normalize_environment() normalizes environment names.** (1 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **Test get_environment_data_dir() returns data directory.** (1 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **Test get_calendar_paths_for_environment() returns calendar paths.** (1 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **Project path resolution helpers used across runtime code and tooling.** (1 connections) — `server/utils/project_paths.py`
+- **Return the repository root (directory containing pyproject.toml).** (1 connections) — `server/utils/project_paths.py`
+- **Normalize logging environment names to their canonical directory names.** (1 connections) — `server/utils/project_paths.py`
+- **Compute the base data directory for the provided environment.** (1 connections) — `server/utils/project_paths.py`
+- **Return (holidays_file, schedules_dir) for the requested environment.** (1 connections) — `server/utils/project_paths.py`
 
 ## Relationships
 
-- [Combat Command Handler](Combat_Command_Handler.md) (11 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (4 shared connections)
-- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (2 shared connections)
-- [Error Monitor Service](Error_Monitor_Service.md) (2 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (8 shared connections)
+- [Error Handling Guide](Error_Handling_Guide.md) (7 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (6 shared connections)
+- [Client Security Utilities](Client_Security_Utilities.md) (4 shared connections)
+- [Combat Messaging Base](Combat_Messaging_Base.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Spell Effects Tests](Spell_Effects_Tests.md) (2 shared connections)
+- [Minimap Fallback Helpers](Minimap_Fallback_Helpers.md) (1 shared connections)
+- [WebSocket Code Review](WebSocket_Code_Review.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth/users.py`
-- `server/tests/unit/auth/test_users.py`
+- `server/services/holiday_service.py`
+- `server/services/schedule_service.py`
+- `server/tests/unit/utils/test_project_paths.py`
+- `server/utils/project_paths.py`
 
 ## Audit Trail
 
-- EXTRACTED: 62 (93%)
-- INFERRED: 5 (7%)
+- EXTRACTED: 113 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

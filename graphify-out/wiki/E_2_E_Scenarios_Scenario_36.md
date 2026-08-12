@@ -1,14 +1,15 @@
 # E 2 E Scenarios Scenario
 
-> 5 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **Local Channel System** (3 connections) — `e2e-tests/scenarios/scenario-08-local-channel-basic.md`
-- **Scenario 10 Local Channel Movement** (2 connections) — `e2e-tests/scenarios/scenario-10-local-channel-movement.md`
-- **Local Channel Sub-Zone Routing** (1 connections) — `e2e-tests/scenarios/scenario-09-local-channel-isolation.md`
-- **Scenario 11 Local Channel Errors** (1 connections) — `e2e-tests/scenarios/scenario-11-local-channel-errors.md`
-- **Scenario 12 Local Channel Integration** (1 connections) — `e2e-tests/scenarios/scenario-12-local-channel-integration.md`
+- **Whisper Channel System** (4 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
+- **Scenario 13 Whisper Basic** (2 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
+- **Scenario 16 Whisper Movement** (2 connections) — `e2e-tests/scenarios/scenario-16-whisper-movement.md`
+- **Scenario 18 Whisper Logging** (2 connections) — `e2e-tests/scenarios/scenario-18-whisper-logging.md`
+- **Scenario 14 Whisper Errors** (1 connections) — `e2e-tests/scenarios/scenario-14-whisper-errors.md`
+- **Whisper Moderation Logging** (1 connections) — `e2e-tests/scenarios/scenario-18-whisper-logging.md`
 
 ## Relationships
 
@@ -16,16 +17,15 @@
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-08-local-channel-basic.md`
-- `e2e-tests/scenarios/scenario-09-local-channel-isolation.md`
-- `e2e-tests/scenarios/scenario-10-local-channel-movement.md`
-- `e2e-tests/scenarios/scenario-11-local-channel-errors.md`
-- `e2e-tests/scenarios/scenario-12-local-channel-integration.md`
+- `e2e-tests/scenarios/scenario-13-whisper-basic.md`
+- `e2e-tests/scenarios/scenario-14-whisper-errors.md`
+- `e2e-tests/scenarios/scenario-16-whisper-movement.md`
+- `e2e-tests/scenarios/scenario-18-whisper-logging.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 10 (83%)
+- INFERRED: 2 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,8 +33,11 @@
 
 ## Relationships
 
-- [Container Open Events](Container_Open_Events.md) (9 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (4 shared connections)
+- [Container Open Events](Container_Open_Events.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (1 shared connections)
+- [Rate Limiter Utilities](Rate_Limiter_Utilities.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,50 +1,31 @@
 # Archive Frd Random
 
-> 28 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **CORSConfig** (19 connections) — `server/config/models/cors.py`
-- **._parse_csv()** (10 connections) — `server/config/models/cors.py`
-- **._validate_non_empty()** (5 connections) — `server/config/models/cors.py`
-- **._clean_list_items()** (5 connections) — `server/config/models/cors.py`
-- **._parse_json_array()** (5 connections) — `server/config/models/cors.py`
-- **._parse_comma_separated()** (4 connections) — `server/config/models/cors.py`
-- **.parse_allow_origins()** (3 connections) — `server/config/models/cors.py`
-- **.parse_allow_methods()** (3 connections) — `server/config/models/cors.py`
-- **.parse_allow_headers()** (3 connections) — `server/config/models/cors.py`
-- **.parse_expose_headers()** (3 connections) — `server/config/models/cors.py`
-- **._validate_and_warn_wildcards()** (2 connections) — `server/config/models/cors.py`
-- **.parse_max_age()** (2 connections) — `server/config/models/cors.py`
-- **.validate_max_age()** (2 connections) — `server/config/models/cors.py`
-- **BaseSettings** (1 connections)
-- **Any** (1 connections)
-- **Cross-origin resource sharing configuration.      Configuration precedence (high** (1 connections) — `server/config/models/cors.py`
-- **Validate CORS configuration and warn about wildcard origins.** (1 connections) — `server/config/models/cors.py`
-- **Validate that cleaned list is not empty if allow_empty is False.** (1 connections) — `server/config/models/cors.py`
-- **Clean and filter list items, removing empty strings.** (1 connections) — `server/config/models/cors.py`
-- **Parse JSON array string if it looks like one, otherwise return None.** (1 connections) — `server/config/models/cors.py`
-- **Parse comma-separated string into cleaned list.** (1 connections) — `server/config/models/cors.py`
-- **Parse comma separated strings or lists into a cleaned list of strings.** (1 connections) — `server/config/models/cors.py`
-- **Parse allowed origins from various input formats.** (1 connections) — `server/config/models/cors.py`
-- **Parse and validate CORS allowed methods. Converts all methods to uppercase.** (1 connections) — `server/config/models/cors.py`
-- **Parse and validate CORS allowed headers.** (1 connections) — `server/config/models/cors.py`
-- *... and 3 more nodes in this community*
+- **TestNPCSession** (6 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_session_yields_session()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_session_rollback_on_error()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_session_inits_db_for_unit_test()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test NPC session management.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_session() yields session.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_session() rolls back on error during yield.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_session() calls init_npc_db() for unit_test databases.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Relationships
 
-- [Pydantic Error Handlers](Pydantic_Error_Handlers.md) (2 shared connections)
-- [Command Parser](Command_Parser.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Combat Schema Validation](Combat_Schema_Validation.md) (4 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/models/cors.py`
+- `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 18 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -19,8 +19,8 @@
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Command Parser](Command_Parser.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (1 shared connections)
 
 ## Source Files
 

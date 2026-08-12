@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [Communication Command Handlers](Communication_Command_Handlers.md) (8 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (4 shared connections)
+- [Async Room Loading Tests](Async_Room_Loading_Tests.md) (8 shared connections)
+- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (4 shared connections)
 - [API Test Fixtures](API_Test_Fixtures.md) (2 shared connections)
 
 ## Source Files

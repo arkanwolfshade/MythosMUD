@@ -35,7 +35,7 @@
 
 - [Quest Flow Integration](Quest_Flow_Integration.md) (6 shared connections)
 - [Fresh Session Test Guide](Fresh_Session_Test_Guide.md) (4 shared connections)
-- [Archive Circuit Breaker](Archive_Circuit_Breaker.md) (2 shared connections)
+- [Player Death Service Tests](Player_Death_Service_Tests.md) (2 shared connections)
 - [Game Terminal Container](Game_Terminal_Container.md) (2 shared connections)
 - [Command Input Utilities](Command_Input_Utilities.md) (2 shared connections)
 - [API Test Fixtures](API_Test_Fixtures.md) (2 shared connections)

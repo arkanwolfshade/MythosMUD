@@ -6,7 +6,7 @@
 
 - **PlayerNameExtractor** (104 connections) — `server/realtime/player_name_utils.py`
 - **TestPlayerNameExtractor** (62 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **player_event_handlers_utils.py** (16 connections) — `server/realtime/player_event_handlers_utils.py`
+- **room_occupant_manager.py** (19 connections) — `server/realtime/room_occupant_manager.py`
 - **Any** (14 connections)
 - **player_name_utils.py** (13 connections) — `server/realtime/player_name_utils.py`
 - **UUID** (8 connections)
@@ -33,28 +33,25 @@
 
 ## Relationships
 
-- [Character Creation E2E](Character_Creation_E2E.md) (14 shared connections)
-- [API Type Guards](API_Type_Guards.md) (12 shared connections)
-- [Services Combat Initialization](Services_Combat_Initialization.md) (5 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
-- [Container Persistence Queries](Container_Persistence_Queries.md) (2 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (2 shared connections)
-- [Zone Config Loader](Zone_Config_Loader.md) (1 shared connections)
-- [Container System Architecture](Container_System_Architecture.md) (1 shared connections)
-- [NPC Utility Functions](NPC_Utility_Functions.md) (1 shared connections)
-- [Look Command Helpers](Look_Command_Helpers.md) (1 shared connections)
-- [Archive Lucidity System](Archive_Lucidity_System.md) (1 shared connections)
-- [Warning Fixes Session](Warning_Fixes_Session.md) (1 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (21 shared connections)
+- [Container Persistence Queries](Container_Persistence_Queries.md) (11 shared connections)
+- [Client Event Store](Client_Event_Store.md) (6 shared connections)
+- [Warning Fixes Session](Warning_Fixes_Session.md) (3 shared connections)
+- [Combat Turn Processor](Combat_Turn_Processor.md) (3 shared connections)
+- [Player Respawn Events](Player_Respawn_Events.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
+- [Dual Connection Troubleshooting](Dual_Connection_Troubleshooting.md) (1 shared connections)
+- [WebSocket Initial State](WebSocket_Initial_State.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_event_handlers_utils.py`
 - `server/realtime/player_name_utils.py`
+- `server/realtime/room_occupant_manager.py`
 - `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 564 (98%)
+- EXTRACTED: 567 (98%)
 - INFERRED: 9 (2%)
 - AMBIGUOUS: 0 (0%)
 

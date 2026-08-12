@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [Merge Refactoring Summary](Merge_Refactoring_Summary.md) (3 shared connections)
+- [Help and WebSocket Core](Help_and_WebSocket_Core.md) (4 shared connections)
 - [Memory Leak Metrics](Memory_Leak_Metrics.md) (3 shared connections)
 - [Archive Environment Contamination](Archive_Environment_Contamination.md) (2 shared connections)
-- [Help and WebSocket Core](Help_and_WebSocket_Core.md) (1 shared connections)
 - [Coverage Improvement Summary](Coverage_Improvement_Summary.md) (1 shared connections)
 
 ## Source Files

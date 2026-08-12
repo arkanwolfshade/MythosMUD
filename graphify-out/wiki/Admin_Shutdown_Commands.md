@@ -26,10 +26,10 @@
 ## Relationships
 
 - [Client App State Hooks](Client_App_State_Hooks.md) (5 shared connections)
-- [Combat Attack Handler](Combat_Attack_Handler.md) (4 shared connections)
+- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (3 shared connections)
+- [Command Input Utilities](Command_Input_Utilities.md) (2 shared connections)
 - [Command Input Validator](Command_Input_Validator.md) (1 shared connections)
 - [Magic System Feature Plan](Magic_System_Feature_Plan.md) (1 shared connections)
-- [Memory Leak Metrics Tests](Memory_Leak_Metrics_Tests.md) (1 shared connections)
 - [NPC Combat Rewards Tests](NPC_Combat_Rewards_Tests.md) (1 shared connections)
 - [NPC Combat Integration](NPC_Combat_Integration.md) (1 shared connections)
 

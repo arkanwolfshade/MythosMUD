@@ -1,10 +1,9 @@
 # Chat Message Filtering
 
-> 99 nodes
+> 53 nodes
 
 ## Key Concepts
 
-- **test_message_filtering.py** (26 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 - **MessageFilteringHelper** (23 connections) — `server/realtime/message_filtering.py`
 - **test_message_filtering_helpers.py** (10 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
 - **.is_player_in_room()** (7 connections) — `server/realtime/message_filtering.py`
@@ -26,15 +25,17 @@
 - **message_filtering_helper()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 - **message_filtering_helper()** (3 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
 - **.collect_room_targets()** (2 connections) — `server/realtime/message_filtering.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_message_filtering_helper_init()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_collect_room_targets()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- *... and 74 more nodes in this community*
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- **test_extract_chat_event_info()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- **test_should_apply_mute_check()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- **test_compare_canonical_rooms()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [Inventory Command Models](Inventory_Command_Models.md) (8 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (7 shared connections)
 - [NATS Chat Broadcasting](NATS_Chat_Broadcasting.md) (3 shared connections)
+- [Combat Death Handling](Combat_Death_Handling.md) (2 shared connections)
 - [Circuit Breaker Core](Circuit_Breaker_Core.md) (1 shared connections)
 - [Dead Letter Queue](Dead_Letter_Queue.md) (1 shared connections)
 - [Test Optimization Insights](Test_Optimization_Insights.md) (1 shared connections)
@@ -49,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 230 (97%)
-- INFERRED: 7 (3%)
+- EXTRACTED: 137 (95%)
+- INFERRED: 7 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

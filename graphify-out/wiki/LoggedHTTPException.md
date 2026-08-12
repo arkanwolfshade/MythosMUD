@@ -2,7 +2,7 @@
 
 > God node · 405 connections · `server/exceptions.py`
 
-**Community:** [Room Occupancy Class](Room_Occupancy_Class.md)
+**Community:** [Aggressive Mob NPC](Aggressive_Mob_NPC.md)
 
 ## Connections by Relation
 

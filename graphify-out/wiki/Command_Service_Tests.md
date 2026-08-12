@@ -1,11 +1,12 @@
 # Command Service Tests
 
-> 62 nodes
+> 64 nodes
 
 ## Key Concepts
 
 - **test_quest_service.py** (34 connections) — `server/tests/unit/game/test_quest_service.py`
 - **_make_definition_row()** (17 connections) — `server/tests/unit/game/test_quest_service.py`
+- **quest_service()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
 - **_make_turn_in_definition_row()** (6 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_turn_in_inventory_full_blocks_item_reward()** (4 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_resolve_name_to_quest_id_found()** (3 connections) — `server/tests/unit/game/test_quest_service.py`
@@ -28,14 +29,17 @@
 - **test_turn_in_no_active_instance_returns_error()** (3 connections) — `server/tests/unit/game/test_quest_service.py`
 - **mock_def_repo()** (2 connections) — `server/tests/unit/game/test_quest_service.py`
 - **mock_instance_repo()** (2 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_resolve_name_to_quest_id_not_found()** (2 connections) — `server/tests/unit/game/test_quest_service.py`
-- *... and 37 more nodes in this community*
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [Quest Service Core](Quest_Service_Core.md) (2 shared connections)
+- [Quest Service Core](Quest_Service_Core.md) (3 shared connections)
 - [Async Audit Cursor](Async_Audit_Cursor.md) (1 shared connections)
-- [3. Systematic Investigation Approach](3._Systematic_Investigation_Approach.md) (1 shared connections)
+- [Async Task Registry](Async_Task_Registry.md) (1 shared connections)
+- [Player GUID Formatter](Player_GUID_Formatter.md) (1 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (1 shared connections)
+- [Game State Provider](Game_State_Provider.md) (1 shared connections)
+- [Chat Rate Limiter](Chat_Rate_Limiter.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 164 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 168 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

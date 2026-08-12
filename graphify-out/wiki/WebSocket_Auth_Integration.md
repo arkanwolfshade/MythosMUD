@@ -1,59 +1,52 @@
 # WebSocket Auth Integration
 
-> 50 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **inventory_unequip_command.py** (32 connections) — `server/commands/inventory_unequip_command.py`
-- **equipment_helpers.py** (28 connections) — `server/commands/equipment_helpers.py`
-- **handle_unequip_command()** (14 connections) — `server/commands/inventory_unequip_command.py`
-- **_equip_build_work()** (13 connections) — `server/commands/inventory_equip_command.py`
-- **handle_equip_command()** (12 connections) — `server/commands/inventory_equip_command.py`
-- **_unequip_run_mutation()** (12 connections) — `server/commands/inventory_unequip_command.py`
-- **normalize_inventory_slots()** (8 connections) — `server/commands/equipment_helpers.py`
-- **normalize_equipped_items()** (8 connections) — `server/commands/equipment_helpers.py`
-- **resolve_unequip_slot()** (8 connections) — `server/commands/equipment_helpers.py`
-- **_equip_run_mutation()** (8 connections) — `server/commands/inventory_equip_command.py`
-- **resolve_equip_item_index()** (7 connections) — `server/commands/equipment_helpers.py`
-- **handle_wearable_container_on_equip()** (7 connections) — `server/commands/equipment_helpers.py`
-- **handle_wearable_container_on_unequip()** (7 connections) — `server/commands/equipment_helpers.py`
-- **EquipCommandWork** (7 connections) — `server/commands/inventory_equip_command.py`
-- **CommandResponse** (7 connections)
-- **_equip_success_payload()** (7 connections) — `server/commands/inventory_equip_command.py`
-- **find_equipped_item_after_equip()** (6 connections) — `server/commands/equipment_helpers.py`
-- **_unequip_success_payload()** (6 connections) — `server/commands/inventory_unequip_command.py`
-- **_equip_persist_or_rollback()** (5 connections) — `server/commands/inventory_equip_command.py`
-- **_unequip_persist_or_rollback()** (5 connections) — `server/commands/inventory_unequip_command.py`
-- **_equip_stack_from_inventory_index()** (4 connections) — `server/commands/equipment_helpers.py`
-- **InventoryStack** (4 connections)
-- **EquipCommandRuntime** (4 connections) — `server/commands/inventory_equip_command.py`
-- **EquipCommandInventoryStep** (4 connections) — `server/commands/inventory_equip_command.py`
-- **_equip_target_slot_or_error()** (4 connections) — `server/commands/inventory_equip_command.py`
-- *... and 25 more nodes in this community*
+- **test_websocket_handler_app_state_connection.py** (23 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **resolve_and_setup_app_state_services()** (20 connections) — `server/realtime/websocket_handler_app_state.py`
+- **_services_from_container()** (4 connections) — `server/realtime/websocket_handler_app_state.py`
+- **_mirror_service_to_app_state()** (3 connections) — `server/realtime/websocket_handler_app_state.py`
+- **test_resolve_and_setup_app_state_services_services_already_set()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_missing_services()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_no_app_state()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_container_no_services()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_no_container_attribute()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_only_player_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_only_user_manager()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_player_service_already_set()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_user_manager_already_set()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_player_service_no_hasattr()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_user_manager_no_hasattr()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_shutdown_rejected()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_connect_failure()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_initial_state_exit()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_with_room_and_death()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_initial_setup_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_cleanup_connection_mute_cleanup_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_message_loop()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **Read player_service and user_manager from app_state.container.** (1 connections) — `server/realtime/websocket_handler_app_state.py`
+- **Copy container service onto app.state if missing.** (1 connections) — `server/realtime/websocket_handler_app_state.py`
+- **Resolve player_service and user_manager from container or app.state.      Muta** (1 connections) — `server/realtime/websocket_handler_app_state.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [Container Component Capacity](Container_Component_Capacity.md) (39 shared connections)
-- [Spell Effect Protocols](Spell_Effect_Protocols.md) (16 shared connections)
-- [Async Task Registry](Async_Task_Registry.md) (12 shared connections)
-- [Container Open Events](Container_Open_Events.md) (6 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (4 shared connections)
-- [Admin NPC Schemas](Admin_NPC_Schemas.md) (4 shared connections)
-- [Rate Limiter Utilities](Rate_Limiter_Utilities.md) (3 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (2 shared connections)
-- [Zone Config Loader](Zone_Config_Loader.md) (2 shared connections)
-- [Client Lifecycle Metrics](Client_Lifecycle_Metrics.md) (2 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (8 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Character Info Panel Fix](Character_Info_Panel_Fix.md) (2 shared connections)
+- [Pre-commit Hook Analysis](Pre-commit_Hook_Analysis.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/equipment_helpers.py`
-- `server/commands/inventory_equip_command.py`
-- `server/commands/inventory_unequip_command.py`
+- `server/realtime/websocket_handler_app_state.py`
+- `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 261 (96%)
-- INFERRED: 11 (4%)
+- EXTRACTED: 122 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

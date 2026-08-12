@@ -1,39 +1,42 @@
 # Security Issues And Fixes
 
-> 15 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **._unwrap_string_inner_message_if_json()** (7 connections) — `server/realtime/message_validator.py`
-- **.parse_and_validate()** (7 connections) — `server/realtime/message_validator.py`
-- **._parse_outer_json_object()** (6 connections) — `server/realtime/message_validator.py`
-- **.validate_size()** (5 connections) — `server/realtime/message_validator.py`
-- **.validate_schema()** (5 connections) — `server/realtime/message_validator.py`
-- **._extract_csrf_token_string()** (5 connections) — `server/realtime/message_validator.py`
-- **.validate_csrf()** (5 connections) — `server/realtime/message_validator.py`
-- **BaseModel** (2 connections)
-- **Validate message size.          Args:             data: Raw message data as s** (1 connections) — `server/realtime/message_validator.py`
-- **Validate message against Pydantic schema.          Args:             message:** (1 connections) — `server/realtime/message_validator.py`
-- **Return the first string CSRF token from known keys, or None if absent.** (1 connections) — `server/realtime/message_validator.py`
-- **Validate CSRF token in message.          Args:             message: Parsed JS** (1 connections) — `server/realtime/message_validator.py`
-- **Parse raw payload to a dict; validate size and outer JSON structure.** (1 connections) — `server/realtime/message_validator.py`
-- **If ``message["message"]`` is a JSON string, parse and validate inner object.** (1 connections) — `server/realtime/message_validator.py`
-- **Parse and validate a complete WebSocket message.          This is the main ent** (1 connections) — `server/realtime/message_validator.py`
+- **._subscribe_to_subject()** (7 connections) — `server/realtime/nats_message_handler.py`
+- **.handle_player_movement()** (6 connections) — `server/realtime/nats_message_handler.py`
+- **.start()** (5 connections) — `server/realtime/nats_message_handler.py`
+- **._subscribe_to_standardized_chat_subjects()** (5 connections) — `server/realtime/nats_message_handler.py`
+- **._subscribe_to_chat_subjects()** (4 connections) — `server/realtime/nats_message_handler.py`
+- **.subscribe_to_subzone()** (4 connections) — `server/realtime/nats_message_handler.py`
+- **.subscribe_to_event_subjects()** (4 connections) — `server/realtime/nats_message_handler.py`
+- **.subscribe_to_room()** (3 connections) — `server/realtime/nats_message_handler.py`
+- **.track_player_subzone_subscription()** (3 connections) — `server/realtime/nats_message_handler.py`
+- **Start the NATS message handler and subscribe to subjects.          Args:** (1 connections) — `server/realtime/nats_message_handler.py`
+- **Subscribe to all chat-related NATS subjects using NATSSubjectManager patterns.** (1 connections) — `server/realtime/nats_message_handler.py`
+- **Subscribe to chat subjects using NATSSubjectManager patterns.          This meth** (1 connections) — `server/realtime/nats_message_handler.py`
+- **Subscribe to a specific NATS subject.          Args:             subject: Subjec** (1 connections) — `server/realtime/nats_message_handler.py`
+- **Subscribe to chat messages for a specific room.          Args:             room_** (1 connections) — `server/realtime/nats_message_handler.py`
+- **Subscribe to local channel messages for a specific sub-zone.          Args:** (1 connections) — `server/realtime/nats_message_handler.py`
+- **Track a player's sub-zone subscription for local channels.          Args:** (1 connections) — `server/realtime/nats_message_handler.py`
+- **Handle player movement between rooms and update sub-zone subscriptions.** (1 connections) — `server/realtime/nats_message_handler.py`
+- **Subscribe to all event-related NATS subjects using standardized patterns.** (1 connections) — `server/realtime/nats_message_handler.py`
 
 ## Relationships
 
-- [Database Helper Tests](Database_Helper_Tests.md) (7 shared connections)
-- [Scenario Conversion Guide](Scenario_Conversion_Guide.md) (6 shared connections)
-- [Cursor Plans Best](Cursor_Plans_Best.md) (2 shared connections)
+- [NATS Chat Broadcasting](NATS_Chat_Broadcasting.md) (10 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (3 shared connections)
+- [Monitoring API Endpoints](Monitoring_API_Endpoints.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_validator.py`
+- `server/realtime/nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 47 (94%)
+- INFERRED: 3 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

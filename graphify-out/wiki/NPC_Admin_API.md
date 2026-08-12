@@ -1,6 +1,6 @@
 # NPC Admin API
 
-> 131 nodes
+> 139 nodes
 
 ## Key Concepts
 
@@ -26,34 +26,34 @@
 - **test_process_subzone_rows()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
 - **test_async_load_zone_configurations_converts_url()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
 - **test_async_load_zone_configurations_passes_search_path_for_mythos_e2e()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **._load_zone_configurations()** (4 connections) — `server/npc/population_control.py`
 - **test_process_zone_rows_empty()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
 - **test_process_zone_rows_json_strings()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_process_subzone_rows_empty()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- *... and 106 more nodes in this community*
+- *... and 114 more nodes in this community*
 
 ## Relationships
 
-- [Command Parser Tests](Command_Parser_Tests.md) (9 shared connections)
-- [Commands Look Item](Commands_Look_Item.md) (6 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (5 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
-- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (11 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (7 shared connections)
+- [Command Parser Tests](Command_Parser_Tests.md) (6 shared connections)
+- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (4 shared connections)
 - [Player Respawn Service](Player_Respawn_Service.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Spell Registry Costs](Spell_Registry_Costs.md) (1 shared connections)
-- [Nats Anti Patterns](Nats_Anti_Patterns.md) (1 shared connections)
+- [Container Data Models](Container_Data_Models.md) (2 shared connections)
+- [Realtime Conftest Mocks](Realtime_Conftest_Mocks.md) (1 shared connections)
 - [Lucidity Recovery Commands](Lucidity_Recovery_Commands.md) (1 shared connections)
 
 ## Source Files
 
+- `server/npc/population_control.py`
 - `server/npc/zone_config_loader.py`
 - `server/npc/zone_configuration.py`
+- `server/tests/unit/npc/test_population_control.py`
 - `server/tests/unit/npc/test_zone_config_loader.py`
 - `server/tests/unit/npc/test_zone_configuration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 472 (96%)
+- EXTRACTED: 489 (96%)
 - INFERRED: 19 (4%)
 - AMBIGUOUS: 0 (0%)
 

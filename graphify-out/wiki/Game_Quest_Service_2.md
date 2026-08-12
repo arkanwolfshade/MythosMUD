@@ -1,25 +1,26 @@
 # Game Quest Service
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_delete_player_preferences_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test deleting player preferences when not found.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Risk Assessment** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Technical Risks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **User Experience Risks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Implementation Risks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Relationships
 
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
-- [Async Persistence Delegates](Async_Persistence_Delegates.md) (1 shared connections)
+- [Command Factories Combat](Command_Factories_Combat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 7 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

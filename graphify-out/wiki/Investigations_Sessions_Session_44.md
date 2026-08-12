@@ -1,15 +1,13 @@
 # Investigations Sessions Session
 
-> 6 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **NPC Combat Start Race Condition** (2 connections) — `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
-- **NPCs Incorrectly Marked is_alive False** (2 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- **December 3 Final Investigation Summary** (2 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- **Room Occupants Duplicates and Missing Player** (2 connections) — `investigations/sessions/2025-12-03_session-002_room-occupants-display.md`
-- **Redundant NPC Instance Lookup Failure** (1 connections) — `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
-- **Character Info Panel Missing Stats Field** (1 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
+- **Rooms List SQL ::uuid[] Parameter Conflict** (2 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
+- **Minimap Explored Rooms UUID vs stable_id** (2 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
+- **asyncpg Colon Cast Parameter Parsing** (1 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
+- **Explored Room UUIDs Treated As stable_ids** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
 
 ## Relationships
 
@@ -17,16 +15,13 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
-- `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
-- `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
-- `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
-- `investigations/sessions/2025-12-03_session-002_room-occupants-display.md`
+- `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
+- `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (60%)
-- INFERRED: 4 (40%)
+- EXTRACTED: 4 (67%)
+- INFERRED: 2 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

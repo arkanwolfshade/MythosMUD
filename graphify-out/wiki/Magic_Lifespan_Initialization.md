@@ -24,10 +24,9 @@
 
 ## Relationships
 
-- [Container Persistence Ops](Container_Persistence_Ops.md) (7 shared connections)
+- [Container Persistence Ops](Container_Persistence_Ops.md) (8 shared connections)
 - [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
 - [Spell Registry Costs](Spell_Registry_Costs.md) (1 shared connections)
-- [Mythos Time HUD](Mythos_Time_HUD.md) (1 shared connections)
 
 ## Source Files
 

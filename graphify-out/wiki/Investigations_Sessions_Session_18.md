@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_user_characters()** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test get_user_characters() returns user's characters.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_process_tick_regeneration_fractional_accumulation()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test process_tick_regeneration() accumulates fractional MP.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
+- [Cursor Agents Quick](Cursor_Agents_Quick.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 

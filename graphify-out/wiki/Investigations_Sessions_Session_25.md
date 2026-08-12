@@ -1,29 +1,31 @@
 # Investigations Sessions Session
 
-> 8 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **required** (8 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **id** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **name** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **plane** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **zone** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **sub_zone** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **exits** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **enum** (7 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **zone_type** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **city** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **countryside** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **mountains** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **swamp** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **tundra** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **desert** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Relationships
 
-- [Archive Plan Planning](Archive_Plan_Planning.md) (1 shared connections)
+- [Cursor Commands Remediation](Cursor_Commands_Remediation.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

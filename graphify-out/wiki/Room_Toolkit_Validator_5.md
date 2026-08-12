@@ -1,23 +1,25 @@
 # Room Toolkit Validator
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_update_session_no_request()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **Test _update_session handles None request.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **name** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Relationships
 
-- [Player Model Inventory](Player_Model_Inventory.md) (1 shared connections)
+- [Npc Event Reaction](Npc_Event_Reaction.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_admin_auth_service.py`
+- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

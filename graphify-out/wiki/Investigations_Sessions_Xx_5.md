@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_log_audit_event_limits_size()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **Test _log_audit_event limits log size to 1000.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_setup_combat_uuids_npc_attacker_valid()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **Test _setup_combat_uuids_npc_attacker with valid UUID mapping.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
 
 ## Relationships
 
-- [Player Model Inventory](Player_Model_Inventory.md) (1 shared connections)
+- [Combat Configuration Service](Combat_Configuration_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_admin_auth_service.py`
+- `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
 
 ## Audit Trail
 

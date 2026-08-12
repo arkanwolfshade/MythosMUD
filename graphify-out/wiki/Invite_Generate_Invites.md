@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_restore_mp_from_rest_restores_mp()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_rest() restores MP.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
+- [Cursor Agents Quick](Cursor_Agents_Quick.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 

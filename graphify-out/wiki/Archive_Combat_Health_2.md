@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **test_create_player_preferences_with_string_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test creating player preferences with string UUID.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Combat Health Persistence Bug** (1 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md`
+- **Combat Health Persistence Remediation** (1 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_REMEDIATION_PLAN.md`
 
 ## Relationships
 
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
-- [Async Persistence Delegates](Async_Persistence_Delegates.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md`
+- `docs/archive/COMBAT_HEALTH_PERSISTENCE_REMEDIATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

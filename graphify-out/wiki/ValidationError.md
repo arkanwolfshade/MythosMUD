@@ -2,7 +2,7 @@
 
 > God node · 540 connections · `server/exceptions.py`
 
-**Community:** [Spell Registry Costs](Spell_Registry_Costs.md)
+**Community:** [React Node Upgrade Summary](React_Node_Upgrade_Summary.md)
 
 ## Connections by Relation
 

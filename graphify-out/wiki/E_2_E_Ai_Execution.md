@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_get_players_for_who_no_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test get_players_for_who without filter.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_get_regen_multiplier_lying()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test _get_regen_multiplier() returns enhanced REST multiplier for lying.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [Legacy Cleanup Summary](Legacy_Cleanup_Summary.md) (1 shared connections)
-- [Combat UUID Display Bug](Combat_UUID_Display_Bug.md) (1 shared connections)
+- [Cursor Agents Quick](Cursor_Agents_Quick.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_who_commands.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,6 +1,6 @@
 # Player Mute Persistence
 
-> 83 nodes
+> 71 nodes
 
 ## Key Concepts
 
@@ -9,10 +9,7 @@
 - **._normalize_to_uuid()** (26 connections) — `server/services/user_manager.py`
 - **.save_player_mutes()** (14 connections) — `server/services/user_manager.py`
 - **.load_player_mutes()** (12 connections) — `server/services/user_manager.py`
-- **._cleanup_player_mutes()** (8 connections) — `server/services/user_manager.py`
 - **.is_admin_sync()** (7 connections) — `server/services/user_manager.py`
-- **datetime** (7 connections)
-- **.get_player_mutes()** (7 connections) — `server/services/user_manager.py`
 - **._get_player_mute_file()** (7 connections) — `server/services/user_manager.py`
 - **.load_player_mutes_async()** (7 connections) — `server/services/user_manager.py`
 - **.add_admin()** (6 connections) — `server/services/user_manager.py`
@@ -29,21 +26,25 @@
 - **.mute_channel()** (5 connections) — `server/services/user_manager.py`
 - **.unmute_channel()** (5 connections) — `server/services/user_manager.py`
 - **.is_player_muted_async()** (5 connections) — `server/services/user_manager.py`
-- *... and 58 more nodes in this community*
+- **.is_channel_muted()** (5 connections) — `server/services/user_manager.py`
+- **.is_globally_muted()** (5 connections) — `server/services/user_manager.py`
+- **._convert_mute_info_timestamps()** (5 connections) — `server/services/user_manager.py`
+- *... and 46 more nodes in this community*
 
 ## Relationships
 
-- [Async Migration Gotchas](Async_Migration_Gotchas.md) (7 shared connections)
-- [Commands Time](Commands_Time.md) (5 shared connections)
-- [Player Effects API](Player_Effects_API.md) (3 shared connections)
-- [Command Factory Tests](Command_Factory_Tests.md) (2 shared connections)
-- [Combat Aggro Threat](Combat_Aggro_Threat.md) (2 shared connections)
+- [Async Migration Gotchas](Async_Migration_Gotchas.md) (17 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (3 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (3 shared connections)
+- [Health Check Models](Health_Check_Models.md) (2 shared connections)
 - [Inventory Command Models](Inventory_Command_Models.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 - [Player Preferences Service](Player_Preferences_Service.md) (2 shared connections)
 - [Client Security Utilities](Client_Security_Utilities.md) (2 shared connections)
-- [NPC Occupant Verification](NPC_Occupant_Verification.md) (2 shared connections)
-- [WebSocket Code Review](WebSocket_Code_Review.md) (1 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (2 shared connections)
 - [Performance Optimization Summary](Performance_Optimization_Summary.md) (1 shared connections)
+- [Admin Teleport FRD](Admin_Teleport_FRD.md) (1 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 390 (99%)
+- EXTRACTED: 347 (99%)
 - INFERRED: 5 (1%)
 - AMBIGUOUS: 0 (0%)
 

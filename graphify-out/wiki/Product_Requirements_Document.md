@@ -30,7 +30,7 @@
 
 ## Relationships
 
-- [Inventory Command Models](Inventory_Command_Models.md) (3 shared connections)
+- [Maps API Endpoints](Maps_API_Endpoints.md) (3 shared connections)
 
 ## Source Files
 

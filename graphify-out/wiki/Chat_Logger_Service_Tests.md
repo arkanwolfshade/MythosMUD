@@ -1,37 +1,45 @@
 # Chat Logger Service Tests
 
-> 15 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **main()** (10 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **render_with_tcod()** (8 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **compute_bounds()** (7 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **Any** (6 connections)
-- **render_text()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **dump_ascii_to_file()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_load_tileset()** (4 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_handle_tcod_events()** (3 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **Compute the bounding box of a grid.      Args:         grid: Dictionary mappi** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **Load tileset for tcod rendering with fallback options.** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **Handle tcod events, return True if should exit.** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **Render a grid map using tcod (libtcodpy) library.      Creates a terminal wind** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **Fallback textual renderer using simple printing or rich if available.** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **Write grid map to an ASCII text file.      Converts the grid to a text represe** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **Main entry point for the map builder tool.      Loads room data from JSON file** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **ProfessionRepository** (11 connections) — `server/persistence/repositories/profession_repository.py`
+- **_row_to_profession()** (9 connections) — `server/persistence/repositories/profession_repository.py`
+- **.get_all_professions()** (7 connections) — `server/persistence/repositories/profession_repository.py`
+- **.get_profession_by_id()** (7 connections) — `server/persistence/repositories/profession_repository.py`
+- **Any** (5 connections)
+- **_text_or_default()** (4 connections) — `server/persistence/repositories/profession_repository.py`
+- **_bool_or_default()** (4 connections) — `server/persistence/repositories/profession_repository.py`
+- **Profession** (4 connections)
+- **_str_or_default()** (3 connections) — `server/persistence/repositories/profession_repository.py`
+- **.__init__()** (3 connections) — `server/persistence/repositories/profession_repository.py`
+- **Return value as str or a default if falsy.** (1 connections) — `server/persistence/repositories/profession_repository.py`
+- **Return text value or default if falsy.** (1 connections) — `server/persistence/repositories/profession_repository.py`
+- **Return bool(value) when not None, otherwise default.** (1 connections) — `server/persistence/repositories/profession_repository.py`
+- **Map procedure result row to Profession model.** (1 connections) — `server/persistence/repositories/profession_repository.py`
+- **Repository for profession persistence operations.      Handles profession querie** (1 connections) — `server/persistence/repositories/profession_repository.py`
+- **Initialize the profession repository.** (1 connections) — `server/persistence/repositories/profession_repository.py`
+- **Get all available professions.          Returns:             list[Profession]: L** (1 connections) — `server/persistence/repositories/profession_repository.py`
+- **Get a profession by ID.          Args:             profession_id: Profession ID** (1 connections) — `server/persistence/repositories/profession_repository.py`
 
 ## Relationships
 
-- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (17 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (9 shared connections)
+- [Realtime Conftest Mocks](Realtime_Conftest_Mocks.md) (5 shared connections)
+- [Ground and Rescue Commands](Ground_and_Rescue_Commands.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Draggable Panel UI](Draggable_Panel_UI.md) (2 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (1 shared connections)
 
 ## Source Files
 
-- `data/local/mythos_mud_mapbuilder.py`
+- `server/persistence/repositories/profession_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 56 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 59 (91%)
+- INFERRED: 6 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

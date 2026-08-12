@@ -1,34 +1,39 @@
 # Cursor Plans Pydantic
 
-> 11 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **.add_message()** (4 connections) — `server/realtime/message_queue.py`
-- **Any** (4 connections)
-- **.cleanup_old_messages()** (4 connections) — `server/realtime/message_queue.py`
-- **._is_message_recent()** (4 connections) — `server/realtime/message_queue.py`
-- **.get_messages()** (3 connections) — `server/realtime/message_queue.py`
-- **.get_stats()** (3 connections) — `server/realtime/message_queue.py`
-- **Add a message to a player's pending message queue.          Args:             pl** (1 connections) — `server/realtime/message_queue.py`
-- **Get all pending messages for a player and clear the queue.          Args:** (1 connections) — `server/realtime/message_queue.py`
-- **Clean up old messages to prevent memory bloat.          Args:             max_ag** (1 connections) — `server/realtime/message_queue.py`
-- **Check if a message is recent (within the specified age limit).          Args:** (1 connections) — `server/realtime/message_queue.py`
-- **Get message queue statistics.          Returns:             Dict[str, Any]: Stat** (1 connections) — `server/realtime/message_queue.py`
+- **test_ascii_map_renderer_exits.py** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **TestGetExitEntriesForRoom** (5 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **TestGetHorizontalExitCharViewportBounds** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **renderer()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_returns_entries_for_valid_exits()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_skips_exit_with_missing_target()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_returns_none_when_next_x_at_or_past_viewport_right()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Unit tests for AsciiMapRenderer exit character and exit resolution.  Guards agai** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Return a fresh AsciiMapRenderer instance for each test.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Tests for _get_exit_entries_for_room.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Valid exits for a room produce one entry with correct direction and coordinates.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Exits whose targets are missing are skipped when building exit entries.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Viewport bounds: return None when next cell is outside viewport.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Returns None when the next horizontal cell lies at or beyond the viewport's righ** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 
 ## Relationships
 
-- [Playwright E2E Specs](Playwright_E2E_Specs.md) (5 shared connections)
-- [Async Persistence Migration](Async_Persistence_Migration.md) (2 shared connections)
+- [Player Command Developer Guide](Player_Command_Developer_Guide.md) (8 shared connections)
+- [Container Persistence Ops](Container_Persistence_Ops.md) (1 shared connections)
+- [Game Magic Spell](Game_Magic_Spell.md) (1 shared connections)
+- [Commands Inventory Item](Commands_Inventory_Item.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_queue.py`
+- `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (93%)
-- INFERRED: 2 (7%)
+- EXTRACTED: 35 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

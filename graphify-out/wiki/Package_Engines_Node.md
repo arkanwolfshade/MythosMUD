@@ -21,7 +21,7 @@
 - [Client Dev Dependencies](Client_Dev_Dependencies.md) (1 shared connections)
 - [Package Overrides Fast Uri](Package_Overrides_Fast_Uri.md) (1 shared connections)
 - [Package Scripts Build](Package_Scripts_Build.md) (1 shared connections)
-- [Auth Token Utilities](Auth_Token_Utilities.md) (1 shared connections)
+- [Command Testing Guide](Command_Testing_Guide.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,23 +1,25 @@
 # E 2 E Scenarios Scenario
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **create-spec.md** (1 connections) — `.claude/commands/create-spec.md`
-- **Create Spec** (1 connections) — `.claude/commands/create-spec.md`
+- **1. Disconnect Grace Period Duration** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Industry Practices** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Our Plan** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Gap Analysis** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Cursor Commands Remediation](Cursor_Commands_Remediation.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/commands/create-spec.md`
+- `.cursor/plans/disconnect_grace_period_comparison.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

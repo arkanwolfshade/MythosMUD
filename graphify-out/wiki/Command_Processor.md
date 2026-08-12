@@ -1,23 +1,26 @@
 # Command Processor
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **mock_session()** (2 connections) — `server/tests/unit/auth/test_endpoints.py`
-- **Create a mock async session.** (1 connections) — `server/tests/unit/auth/test_endpoints.py`
+- **._exit_is_bidirectional()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._get_reverse_direction()** (3 connections) — `server/services/ascii_map_renderer.py`
+- **True if target room has a reverse exit back to from_room_id.** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Get reverse direction for checking bidirectional exits.          Args:** (1 connections) — `server/services/ascii_map_renderer.py`
 
 ## Relationships
 
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
+- [Player Command Developer Guide](Player_Command_Developer_Guide.md) (2 shared connections)
+- [ASCII Map Renderer](ASCII_Map_Renderer.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/auth/test_endpoints.py`
+- `server/services/ascii_map_renderer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

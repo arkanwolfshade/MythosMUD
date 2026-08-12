@@ -1,27 +1,24 @@
 # Services Inventory Mutation
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.create_tracked_task()** (5 connections) — `server/app/tracked_task_manager.py`
-- **.create_supervised_task()** (5 connections) — `server/app/tracked_task_manager.py`
-- **Any** (2 connections)
-- **Task** (2 connections)
-- **Create a managed asyncio.Task with mandatory lifecycle tracking.          Args:** (1 connections) — `server/app/tracked_task_manager.py`
-- **Create a task with enhanced supervision for legacy cleanup scenarios.          A** (1 connections) — `server/app/tracked_task_manager.py`
+- **test_room_get_containers()** (3 connections) — `server/tests/unit/models/test_room_class.py`
+- **Test Room.get_containers() returns containers list.** (1 connections) — `server/tests/unit/models/test_room_class.py`
 
 ## Relationships
 
-- [WebSocket Code Review](WebSocket_Code_Review.md) (2 shared connections)
+- [Health Cold Resistance](Health_Cold_Resistance.md) (1 shared connections)
+- [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/tracked_task_manager.py`
+- `server/tests/unit/models/test_room_class.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

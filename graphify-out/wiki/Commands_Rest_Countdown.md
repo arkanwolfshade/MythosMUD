@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_player_name_valid()** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test validate_player_name() with valid name.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **sample_player_id()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Create a sample player ID.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
+- [Cursor Agents Quick](Cursor_Agents_Quick.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 

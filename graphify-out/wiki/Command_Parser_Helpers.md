@@ -33,9 +33,7 @@
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
-- [Grace Period Blocking Tests](Grace_Period_Blocking_Tests.md) (1 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
 
 ## Source Files
 

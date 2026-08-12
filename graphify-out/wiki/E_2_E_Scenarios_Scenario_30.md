@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **6. Rest Location (Inn/Hotel) Behavior** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **7. Reconnection During Grace Period** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
 - **Industry Practices** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
 - **Our Plan** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
 - **Gap Analysis** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`

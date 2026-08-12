@@ -1,10 +1,11 @@
 # ASCII Map Exit Tests
 
-> 104 nodes
+> 106 nodes
 
 ## Key Concepts
 
 - **test_room_service.py** (56 connections) — `server/tests/unit/game/test_room_service.py`
+- **room_service_with_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
 - **mock_persistence()** (2 connections) — `server/tests/unit/game/test_room_service.py`
 - **mock_room_cache()** (2 connections) — `server/tests/unit/game/test_room_service.py`
 - **sample_room_dict()** (2 connections) — `server/tests/unit/game/test_room_service.py`
@@ -28,13 +29,12 @@
 - **test_validate_room_exists_cache_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
 - **test_validate_room_exists_without_cache()** (2 connections) — `server/tests/unit/game/test_room_service.py`
 - **test_validate_exit_exists_success()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_validate_exit_exists_invalid()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- *... and 79 more nodes in this community*
+- *... and 81 more nodes in this community*
 
 ## Relationships
 
-- [Inventory Service Helpers](Inventory_Service_Helpers.md) (3 shared connections)
-- [Mythos Time HUD](Mythos_Time_HUD.md) (1 shared connections)
+- [Container Persistence Ops](Container_Persistence_Ops.md) (3 shared connections)
+- [NATS Subject Patterns](NATS_Subject_Patterns.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 210 (100%)
+- EXTRACTED: 214 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

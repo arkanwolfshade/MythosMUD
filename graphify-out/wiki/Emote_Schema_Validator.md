@@ -1,62 +1,53 @@
 # Emote Schema Validator
 
-> 93 nodes
+> 87 nodes
 
 ## Key Concepts
 
-- **test_combat_event_publisher.py** (37 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
-- **CombatEventPublisher** (30 connections) — `server/services/combat_event_publisher.py`
-- **combat_event_publisher.py** (22 connections) — `server/services/combat_event_publisher.py`
-- **CombatStartedEvent** (15 connections) — `server/events/combat_events.py`
-- **._publish_combat_payload()** (14 connections) — `server/services/combat_event_publisher.py`
-- **_CombatPublishJob** (13 connections) — `server/services/combat_event_publisher.py`
-- **CombatEndedEvent** (12 connections) — `server/events/combat_events.py`
-- **NPCAttackedEvent** (10 connections) — `server/events/combat_events.py`
-- **CombatTurnAdvancedEvent** (7 connections) — `server/events/combat_events.py`
-- **CombatTimeoutEvent** (7 connections) — `server/events/combat_events.py`
-- **.publish_combat_started()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_combat_ended()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_player_attacked()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_npc_attacked()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_npc_took_damage()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_npc_died()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_combat_turn_advanced()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_combat_timeout()** (5 connections) — `server/services/combat_event_publisher.py`
-- **._create_event_message()** (4 connections) — `server/services/combat_event_publisher.py`
-- **test_publish_combat_started_no_nats_service()** (4 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
-- **test_publish_combat_started_nats_error()** (4 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
-- **test_publish_combat_ended_no_nats_service()** (4 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
-- **test_publish_player_attacked_no_nats_service()** (4 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
-- **._nats_ready()** (3 connections) — `server/services/combat_event_publisher.py`
-- **.publish_combat_started_event()** (3 connections) — `server/services/combat_service.py`
-- *... and 68 more nodes in this community*
+- **RateLimiter** (54 connections) — `server/realtime/rate_limiter.py`
+- **test_connection_rate_limiter.py** (33 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **.get_rate_limit_info()** (3 connections) — `server/realtime/rate_limiter.py`
+- **Any** (3 connections)
+- **.get_stats()** (3 connections) — `server/realtime/rate_limiter.py`
+- **.get_message_rate_limit_info()** (3 connections) — `server/realtime/rate_limiter.py`
+- **mock_manager()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
+- **test_rate_limiter_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_init_custom()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_check_rate_limit_first_attempt()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_check_rate_limit_within_limit()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_check_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_check_rate_limit_old_attempts_removed()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_get_rate_limit_info()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_get_rate_limit_info_no_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_old_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_old_attempts_removes_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_old_attempts_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_large_structures()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_large_structures_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_remove_player_data()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_remove_player_data_not_present()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_remove_player_data_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_get_stats()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_get_stats_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- *... and 62 more nodes in this community*
 
 ## Relationships
 
-- [Health Check Models](Health_Check_Models.md) (17 shared connections)
-- [Inventory Command Models](Inventory_Command_Models.md) (7 shared connections)
-- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (5 shared connections)
-- [Command Helper Utilities](Command_Helper_Utilities.md) (5 shared connections)
-- [Event Bus Serialization](Event_Bus_Serialization.md) (5 shared connections)
-- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (4 shared connections)
-- [Container Exception Handlers](Container_Exception_Handlers.md) (3 shared connections)
-- [Combat Persistence Events](Combat_Persistence_Events.md) (3 shared connections)
-- [Players API Endpoints](Players_API_Endpoints.md) (2 shared connections)
-- [Async Persistence Layer](Async_Persistence_Layer.md) (2 shared connections)
-- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (6 shared connections)
+- [Client Event Store](Client_Event_Store.md) (5 shared connections)
+- [Game State Provider Tests](Game_State_Provider_Tests.md) (2 shared connections)
+- [JSONB Column Parsing](JSONB_Column_Parsing.md) (1 shared connections)
 
 ## Source Files
 
-- `server/events/combat_events.py`
-- `server/services/combat_event_publisher.py`
-- `server/services/combat_service.py`
-- `server/tests/unit/services/test_combat_event_publisher.py`
+- `server/realtime/rate_limiter.py`
+- `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
+- `server/tests/unit/realtime/test_connection_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 323 (96%)
-- INFERRED: 14 (4%)
+- EXTRACTED: 243 (98%)
+- INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

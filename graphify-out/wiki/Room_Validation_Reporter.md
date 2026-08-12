@@ -34,8 +34,7 @@
 ## Relationships
 
 - [Room Fixer Toolkit](Room_Fixer_Toolkit.md) (7 shared connections)
-- [Admin Set Stat Command](Admin_Set_Stat_Command.md) (3 shared connections)
-- [Room Definition Loader](Room_Definition_Loader.md) (1 shared connections)
+- [Admin Set Stat Command](Admin_Set_Stat_Command.md) (4 shared connections)
 - [Migration Testing Strategy](Migration_Testing_Strategy.md) (1 shared connections)
 
 ## Source Files

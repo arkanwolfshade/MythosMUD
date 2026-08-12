@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [Command Input Utilities](Command_Input_Utilities.md) (3 shared connections)
+- [Command Input Utilities](Command_Input_Utilities.md) (5 shared connections)
 - [Player Death Service Tests](Player_Death_Service_Tests.md) (3 shared connections)
 - [Room Map Viewer UI](Room_Map_Viewer_UI.md) (2 shared connections)
-- [Combat Attack Handler](Combat_Attack_Handler.md) (2 shared connections)
 
 ## Source Files
 

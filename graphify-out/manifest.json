@@ -640,8 +640,8 @@
     "semantic_hash": ""
   },
   "client/src/components/map/EdgeDetailsPanel.tsx": {
-    "mtime": 1786463501.1272976,
-    "ast_hash": "54e2aba8cf33626dc95ab3260ca020d9",
+    "mtime": 1786490449.3627057,
+    "ast_hash": "e4a04016ae1d3ce81bc3cec2e9fdd8ea",
     "semantic_hash": ""
   },
   "client/src/components/map/MapControls.tsx": {
@@ -930,8 +930,8 @@
     "semantic_hash": "212db7594ae1bb9de6e88b7a939999b2"
   },
   "client/src/components/map/utils/layout.ts": {
-    "mtime": 1786476532.9191978,
-    "ast_hash": "0631092ebf7d892dbf7b211a85117de5",
+    "mtime": 1786490728.5804164,
+    "ast_hash": "f6a6cabdd63d3b2d5d906c798a8f3a4f",
     "semantic_hash": ""
   },
   "client/src/components/map/utils/mapUtils.ts": {
@@ -1490,8 +1490,8 @@
     "semantic_hash": "5aff18da40b73de1ee086031df005d34"
   },
   "client/src/components/ui-v2/eventHandlers/playerHandlers.ts": {
-    "mtime": 1786232076.6325936,
-    "ast_hash": "4d2acbf8793e832f20ea960d46be0f19",
+    "mtime": 1786477727.6289303,
+    "ast_hash": "d63f424596ffc71d72b4d792ed8c3466",
     "semantic_hash": ""
   },
   "client/src/components/ui-v2/eventHandlers/roomHandlers.ts": {
@@ -1565,8 +1565,8 @@
     "semantic_hash": "2eda756699eaea38f4f953c64877de18"
   },
   "client/src/components/ui-v2/eventLog/projectorRoom.ts": {
-    "mtime": 1786370248.206503,
-    "ast_hash": "8168d5a5ff445684237ef92827623a7c",
+    "mtime": 1786491543.345244,
+    "ast_hash": "fd1c8622d6db1157eeff41ba289e79d1",
     "semantic_hash": ""
   },
   "client/src/components/ui-v2/eventLog/types.ts": {
@@ -3140,8 +3140,8 @@
     "semantic_hash": "c1ad6fdcf8fe25dcba36cf57580f3c59"
   },
   "client/tests/e2e/runtime/fixtures/multiplayer.ts": {
-    "mtime": 1786122797.4127374,
-    "ast_hash": "644e44090a945e29a9652f200e5e7a0b",
+    "mtime": 1786488418.98735,
+    "ast_hash": "c99f72d3ecd3ba6af325c0b74dbd0668",
     "semantic_hash": ""
   },
   "client/tests/e2e/runtime/fixtures/player.ts": {
@@ -3155,14 +3155,14 @@
     "semantic_hash": ""
   },
   "client/tests/e2e/runtime/global-setup.ts": {
-    "mtime": 1786122797.4132624,
-    "ast_hash": "3932ee3796cde07901cc6cbe8135aa3d",
-    "semantic_hash": "3932ee3796cde07901cc6cbe8135aa3d"
+    "mtime": 1786488418.9244459,
+    "ast_hash": "283370c67f34153dd365a23807f12567",
+    "semantic_hash": ""
   },
   "client/tests/e2e/runtime/global-teardown.ts": {
-    "mtime": 1786122797.4137847,
-    "ast_hash": "4bdc6ac5ae730b81ae5b74dd84fe14a2",
-    "semantic_hash": "4bdc6ac5ae730b81ae5b74dd84fe14a2"
+    "mtime": 1786488418.899481,
+    "ast_hash": "2d72b34a51d0c597de47c1428bd51952",
+    "semantic_hash": ""
   },
   "client/tests/e2e/runtime/lucidity/catatonia-grounding.spec.ts": {
     "mtime": 1775192600.4859889,
@@ -3670,7 +3670,7 @@
     "semantic_hash": "8c2546cea6741735e9fe12893db68d46"
   },
   "docs/openapi/openapi.json": {
-    "mtime": 1786468438.3269536,
+    "mtime": 1786482008.0402365,
     "ast_hash": "3c9813a640f00c4a472c2164356a495a",
     "semantic_hash": ""
   },
@@ -5000,9 +5000,9 @@
     "semantic_hash": "4ed60585ce0787f77aff3f97a0f77cfa"
   },
   "server/app/lifespan_startup.py": {
-    "mtime": 1775192600.6584375,
-    "ast_hash": "14824b29bd7de176099474b8b3805854",
-    "semantic_hash": "14824b29bd7de176099474b8b3805854"
+    "mtime": 1786488417.069906,
+    "ast_hash": "c17eaf8f9ecbfe98f396f594aa13c927",
+    "semantic_hash": ""
   },
   "server/app/memory_cleanup_service.py": {
     "mtime": 1785771438.0356953,
@@ -5650,14 +5650,14 @@
     "semantic_hash": "b9ed09f3af86e2fb7353dff55622dc04"
   },
   "server/container/bundles/chat.py": {
-    "mtime": 1786122798.662944,
-    "ast_hash": "e3cfa30f6f76e1a062b90504a4924b07",
-    "semantic_hash": "e3cfa30f6f76e1a062b90504a4924b07"
+    "mtime": 1786488417.069906,
+    "ast_hash": "6572d9f2cfe91865be5a5d4498907b0d",
+    "semantic_hash": ""
   },
   "server/container/bundles/combat.py": {
-    "mtime": 1775192600.674104,
-    "ast_hash": "eb6714789daba0930d9693b952cd70b6",
-    "semantic_hash": "eb6714789daba0930d9693b952cd70b6"
+    "mtime": 1786488417.069906,
+    "ast_hash": "d770473ae3848f3c12492c33ba5a116c",
+    "semantic_hash": ""
   },
   "server/container/bundles/core.py": {
     "mtime": 1775192600.674104,
@@ -5685,9 +5685,9 @@
     "semantic_hash": ""
   },
   "server/container/bundles/realtime.py": {
-    "mtime": 1775192600.674104,
-    "ast_hash": "c30524819834d161ea4dac26cc6c07ff",
-    "semantic_hash": "c30524819834d161ea4dac26cc6c07ff"
+    "mtime": 1786488417.0848908,
+    "ast_hash": "5aa4b1efc8c8198e0a4932ae334d8524",
+    "semantic_hash": ""
   },
   "server/container/bundles/time.py": {
     "mtime": 1775192600.6897647,
@@ -10980,7 +10980,7 @@
     "semantic_hash": "14a662582b3347bd10912dbe7dd9b8a2"
   },
   ".codacy/codacy.yaml": {
-    "mtime": 1786477125.4146118,
+    "mtime": 1786491548.2862787,
     "ast_hash": "b657d1aa91f6ddc9bd0130ad3cbf457d",
     "semantic_hash": ""
   },
@@ -14395,8 +14395,8 @@
     "semantic_hash": "d7b7e7b66d26f8eeaf103a6f36851049"
   },
   ".codacy/codacy.config.json": {
-    "mtime": 1786475769.3586042,
-    "ast_hash": "84acfff03f2d2b37d99dd9b4fb1e60e8",
+    "mtime": 1786490662.7920496,
+    "ast_hash": "dff7587991f2468ddae2a1847e3872b2",
     "semantic_hash": ""
   },
   "client/src/components/DraggablePanelView.tsx": {
@@ -14465,8 +14465,8 @@
     "semantic_hash": ""
   },
   "client/src/components/ui/StyleGuideSections.tsx": {
-    "mtime": 1786463233.6358473,
-    "ast_hash": "45863937ec32a6e243e083c63fa33b67",
+    "mtime": 1786477533.7131317,
+    "ast_hash": "3f000d81f872ec94374f09aa80027fc8",
     "semantic_hash": ""
   },
   "client/src/components/useDraggablePanelLayout.ts": {
@@ -14480,8 +14480,8 @@
     "semantic_hash": ""
   },
   "client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts": {
-    "mtime": 1786122797.4153416,
-    "ast_hash": "97bc3e26776d548b51c26a58f2b3440a",
+    "mtime": 1786488418.98735,
+    "ast_hash": "3b7eb11e2b6117fe1a3f168dd178d0d5",
     "semantic_hash": ""
   },
   "data/db/migrations/20260719_seed_quest_gather_sanitarium_daisies_dev.sql": {
@@ -14765,8 +14765,33 @@
     "semantic_hash": ""
   },
   "client/src/components/eldritchEffectsDemoData.ts": {
-    "mtime": 1786470539.3653338,
-    "ast_hash": "e2519d8224d69273a9e29db866a99676",
+    "mtime": 1786481162.2826438,
+    "ast_hash": "13ff7806caebba8b824c253241df71b3",
+    "semantic_hash": ""
+  },
+  "data/e2e_test/user_management/mutes_434f9f66-53e7-4d0d-8134-07086bb5be7b.json": {
+    "mtime": 1786486737.4826868,
+    "ast_hash": "e86764424b4f727fb7e071bb63d8b595",
+    "semantic_hash": ""
+  },
+  "data/e2e_test/user_management/mutes_b5356c0a-d908-41c8-b728-29dd32eacd00.json": {
+    "mtime": 1786491487.5783086,
+    "ast_hash": "8b62aef3647547434a590d4aaea05bb5",
+    "semantic_hash": ""
+  },
+  "data/e2e_test/user_management/mutes_c26705bd-8f6c-432b-ab9a-f40b0d1431b8.json": {
+    "mtime": 1786491487.5763085,
+    "ast_hash": "384df98431705c112d808e6ca712fd28",
+    "semantic_hash": ""
+  },
+  "data/e2e_test/user_management/mutes_fe51f519-76e1-44f0-acbf-d870c92bc2e8.json": {
+    "mtime": 1786486737.4816823,
+    "ast_hash": "a48a5eb1c81c73baa8b084d197c3ab23",
+    "semantic_hash": ""
+  },
+  "server/tests/unit/container/test_realtime_bundle_nats.py": {
+    "mtime": 1786488417.0693827,
+    "ast_hash": "0d711dd50d2d0dc6e8b77de4d04b71ff",
     "semantic_hash": ""
   }
 }

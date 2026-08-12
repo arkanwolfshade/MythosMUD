@@ -1,14 +1,11 @@
 # Combat Domain Events
 
-> 175 nodes
+> 112 nodes
 
 ## Key Concepts
 
 - **websocket_initial_state.py** (45 connections) — `server/realtime/websocket_initial_state.py`
 - **test_websocket_initial_state.py** (45 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **RealTimeEventHandler** (44 connections) — `server/realtime/event_handler.py`
-- **player_event_handlers_respawn.py** (33 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **room.py** (31 connections) — `server/models/room.py`
 - **get_async_persistence()** (19 connections) — `server/async_persistence.py`
 - **send_initial_room_state()** (19 connections) — `server/realtime/websocket_initial_state.py`
 - **send_initial_game_state()** (15 connections) — `server/realtime/websocket_initial_state.py`
@@ -16,7 +13,6 @@
 - **check_and_send_death_notification()** (14 connections) — `server/realtime/websocket_initial_state.py`
 - **get_occupant_names()** (11 connections) — `server/realtime/websocket_helpers.py`
 - **send_game_state_event_safely()** (10 connections) — `server/realtime/websocket_initial_state.py`
-- **._extract_occupant_names()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
 - **prepare_room_data_with_occupants()** (9 connections) — `server/realtime/websocket_initial_state.py`
 - **get_event_handler_for_initial_state()** (9 connections) — `server/realtime/websocket_initial_state.py`
 - **get_npc_lifecycle_manager_from_connection_manager()** (8 connections) — `server/realtime/websocket_initial_state.py`
@@ -29,38 +25,39 @@
 - **_NpcLifecycleManagerForOccupants** (6 connections) — `server/realtime/websocket_initial_state.py`
 - **_AppStateWithNpcLifecycle** (6 connections) — `server/realtime/websocket_initial_state.py`
 - **UUID** (6 connections)
-- *... and 150 more nodes in this community*
+- **_RealTimeHandlerContainer** (5 connections) — `server/realtime/websocket_initial_state.py`
+- **_ContainerWithNpcLifecycle** (5 connections) — `server/realtime/websocket_initial_state.py`
+- **WebSocket** (5 connections)
+- **_get_player_for_death_check()** (5 connections) — `server/realtime/websocket_initial_state.py`
+- *... and 87 more nodes in this community*
 
 ## Relationships
 
-- [Archive Bug Fix](Archive_Bug_Fix.md) (13 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (14 shared connections)
 - [Party Service Management](Party_Service_Management.md) (13 shared connections)
-- [Character Creation E2E](Character_Creation_E2E.md) (12 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (11 shared connections)
 - [Character Creation Service](Character_Creation_Service.md) (10 shared connections)
-- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (10 shared connections)
-- [Application Config Settings](Application_Config_Settings.md) (9 shared connections)
-- [Zone Config Loader](Zone_Config_Loader.md) (9 shared connections)
-- [Dependency Injection Tests](Dependency_Injection_Tests.md) (8 shared connections)
-- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (7 shared connections)
-- [Pylint Unique Findings](Pylint_Unique_Findings.md) (6 shared connections)
-- [Investigations Sessions Xx](Investigations_Sessions_Xx.md) (5 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (9 shared connections)
+- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (6 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (5 shared connections)
+- [Conftest Migration Plan](Conftest_Migration_Plan.md) (4 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (4 shared connections)
+- [Memory Threshold Monitor](Memory_Threshold_Monitor.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Health Cold Resistance](Health_Cold_Resistance.md) (3 shared connections)
 
 ## Source Files
 
 - `server/async_persistence.py`
-- `server/models/room.py`
-- `server/realtime/event_handler.py`
 - `server/realtime/player_event_handlers_respawn.py`
 - `server/realtime/websocket_helpers.py`
 - `server/realtime/websocket_initial_state.py`
-- `server/tests/unit/realtime/test_event_handler.py`
 - `server/tests/unit/realtime/test_websocket_initial_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 652 (94%)
-- INFERRED: 45 (6%)
+- EXTRACTED: 433 (94%)
+- INFERRED: 28 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

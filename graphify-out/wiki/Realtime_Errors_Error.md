@@ -1,26 +1,28 @@
 # Realtime Errors Error
 
-> 4 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **._initialize_default_caches()** (4 connections) — `server/caching/lru_cache.py`
-- **.__init__()** (3 connections) — `server/caching/lru_cache.py`
-- **Initialize the cache manager.** (1 connections) — `server/caching/lru_cache.py`
-- **Initialize default caches with appropriate configurations.** (1 connections) — `server/caching/lru_cache.py`
+- **generate_unique_codes()** (5 connections) — `tools/invite_tools/generate_invites.py`
+- **generate_invites.py** (4 connections) — `tools/invite_tools/generate_invites.py`
+- **generate_invite_code()** (3 connections) — `tools/invite_tools/generate_invites.py`
+- **main()** (3 connections) — `tools/invite_tools/generate_invites.py`
+- **Generate a unique Mythos-themed invite code.** (1 connections) — `tools/invite_tools/generate_invites.py`
+- **Generate a list of unique invite codes and store them in the database.** (1 connections) — `tools/invite_tools/generate_invites.py`
+- **Generate invite codes and store them in the database.** (1 connections) — `tools/invite_tools/generate_invites.py`
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Grace Period Blocking Tests](Grace_Period_Blocking_Tests.md) (1 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (2 shared connections)
 
 ## Source Files
 
-- `server/caching/lru_cache.py`
+- `tools/invite_tools/generate_invites.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

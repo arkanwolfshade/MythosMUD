@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [Help and WebSocket Core](Help_and_WebSocket_Core.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [NATS Subject Metrics](NATS_Subject_Metrics.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 

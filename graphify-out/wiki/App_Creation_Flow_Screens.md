@@ -1,48 +1,53 @@
 # App Creation Flow Screens
 
-> 19 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **ItemPrototypeModel** (28 connections) — `server/game/items/models.py`
-- **.find_by_tag()** (3 connections) — `server/game/items/prototype_registry.py`
-- **.all()** (3 connections) — `server/game/items/prototype_registry.py`
-- **switchblade_prototype()** (3 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
-- **.validate_item_type()** (2 connections) — `server/game/items/models.py`
-- **.validate_flags()** (2 connections) — `server/game/items/models.py`
-- **.validate_wear_slots()** (2 connections) — `server/game/items/models.py`
-- **.validate_effect_components()** (2 connections) — `server/game/items/models.py`
-- **.validate_tags()** (2 connections) — `server/game/items/models.py`
-- **BaseModel** (1 connections)
-- **Validated representation of an item prototype definition.      This model keeps** (1 connections) — `server/game/items/models.py`
-- **Validate that item_type is in the allowed list.          Args:             value** (1 connections) — `server/game/items/models.py`
-- **Validate that all flags are in the allowed list.          Args:             valu** (1 connections) — `server/game/items/models.py`
-- **Validate that all wear slots are in the allowed list.          Args:** (1 connections) — `server/game/items/models.py`
-- **Validate and normalize effect components.          Args:             value: The** (1 connections) — `server/game/items/models.py`
-- **Validate and normalize tags.          Args:             value: The list of tags** (1 connections) — `server/game/items/models.py`
-- **Find all prototypes that have a specific tag.          Args:             tag:** (1 connections) — `server/game/items/prototype_registry.py`
-- **Get all prototypes in the registry.          Returns:             Iterable[It** (1 connections) — `server/game/items/prototype_registry.py`
-- **Build ItemPrototypeModel for switchblade (weapon.main_hand.switchblade).** (1 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
+- **handle_emote_command()** (15 connections) — `server/commands/emote_commands.py`
+- **emote_commands.py** (14 connections) — `server/commands/emote_commands.py`
+- **_get_emote_services()** (7 connections) — `server/commands/emote_commands.py`
+- **test_emote_commands.py** (6 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Any** (5 connections)
+- **_extract_emote_action()** (4 connections) — `server/commands/emote_commands.py`
+- **_validate_player_for_emote()** (4 connections) — `server/commands/emote_commands.py`
+- **_format_emote_messages()** (4 connections) — `server/commands/emote_commands.py`
+- **_handle_emote_result()** (4 connections) — `server/commands/emote_commands.py`
+- **test_handle_emote_command()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_handle_emote_command_no_message()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_handle_emote_command_no_chat_service()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Emote command handlers for MythosMUD.  This module contains handlers for the emo** (1 connections) — `server/commands/emote_commands.py`
+- **Extract action from command_data.      Args:         command_data: Command data** (1 connections) — `server/commands/emote_commands.py`
+- **Get chat service and player service from app state.      Args:         request:** (1 connections) — `server/commands/emote_commands.py`
+- **Validate player and extract required information for emote.      Args:         p** (1 connections) — `server/commands/emote_commands.py`
+- **Format emote messages for predefined or custom emotes.      Args:         action** (1 connections) — `server/commands/emote_commands.py`
+- **Handle the result from chat service after sending emote.      Args:         resu** (1 connections) — `server/commands/emote_commands.py`
+- **Handle the emote command for performing emotes.      Args:         command_data:** (1 connections) — `server/commands/emote_commands.py`
+- **Unit tests for emote command handlers.  Tests the emote command functionality.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Test handle_emote_command() processes emote.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Test handle_emote_command() handles missing message.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Test handle_emote_command() handles missing chat service.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
 
 ## Relationships
 
-- [NATS Retry Handler](NATS_Retry_Handler.md) (8 shared connections)
-- [NATS Subject Admin API](NATS_Subject_Admin_API.md) (6 shared connections)
-- [Command Factory Tests](Command_Factory_Tests.md) (2 shared connections)
-- [Npc Services Combat](Npc_Services_Combat.md) (2 shared connections)
-- [Upgrade Archive Dependency](Upgrade_Archive_Dependency.md) (2 shared connections)
-- [WebSocket Code Review](WebSocket_Code_Review.md) (1 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (3 shared connections)
+- [Async Persistence Types](Async_Persistence_Types.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Server Process Termination](Server_Process_Termination.md) (2 shared connections)
+- [Character Info Panel Fix](Character_Info_Panel_Fix.md) (1 shared connections)
+- [Memory Leak Metrics](Memory_Leak_Metrics.md) (1 shared connections)
+- [Game State Provider](Game_State_Provider.md) (1 shared connections)
+- [Container Open Events](Container_Open_Events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/items/models.py`
-- `server/game/items/prototype_registry.py`
-- `server/tests/integration/test_combat_weapon_resolution.py`
+- `server/commands/emote_commands.py`
+- `server/tests/unit/commands/test_emote_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (86%)
-- INFERRED: 8 (14%)
+- EXTRACTED: 79 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

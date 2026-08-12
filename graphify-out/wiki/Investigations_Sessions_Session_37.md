@@ -1,11 +1,15 @@
 # Investigations Sessions Session
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **Warnings Log Investigation** (1 connections) — `investigations/sessions/2025-01-29_session-001_warnings-log-investigation.md`
-- **passive_lucidity_flux_tick Performance Alert** (1 connections) — `investigations/sessions/2025-01-29_session-001_warnings-log-investigation.md`
+- **Combat Client Crash** (3 connections) — `investigations/sessions/2025-11-19_session-002_combat-client-crash.md`
+- **NATS Event Message Field Mismatch** (2 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
+- **Combat Disconnect At NPC Death** (2 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
+- **event_data vs data Field Name Mismatch** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
+- **CombatMessaging Connection Manager Init Failure** (1 connections) — `investigations/sessions/2025-11-19_session-002_combat-client-crash.md`
+- **Passive Lucidity Flux Performance Degradation** (1 connections) — `investigations/sessions/2025-11-30_session-001_passive-sanity-flux-performance.md`
 
 ## Relationships
 
@@ -13,12 +17,15 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-01-29_session-001_warnings-log-investigation.md`
+- `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
+- `investigations/sessions/2025-11-19_session-002_combat-client-crash.md`
+- `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
+- `investigations/sessions/2025-11-30_session-001_passive-sanity-flux-performance.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (60%)
+- INFERRED: 4 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---

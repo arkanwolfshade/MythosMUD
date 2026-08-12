@@ -35,8 +35,8 @@
 
 - [Combat Messaging Integration](Combat_Messaging_Integration.md) (3 shared connections)
 - [Connection Disconnection Cleanup](Connection_Disconnection_Cleanup.md) (3 shared connections)
-- [Chat Panel Separation](Chat_Panel_Separation.md) (2 shared connections)
 - [Warning Remediation Plan](Warning_Remediation_Plan.md) (2 shared connections)
+- [Nats Anti Patterns](Nats_Anti_Patterns.md) (2 shared connections)
 
 ## Source Files
 

@@ -28,8 +28,8 @@
 - [Combat Monitoring Service](Combat_Monitoring_Service.md) (8 shared connections)
 - [Rate Limiter Service](Rate_Limiter_Service.md) (5 shared connections)
 - [Player Related Models](Player_Related_Models.md) (2 shared connections)
-- [Async Persistence Migration](Async_Persistence_Migration.md) (1 shared connections)
-- [Command Parser](Command_Parser.md) (1 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (1 shared connections)
 - [Invite Registration Model](Invite_Registration_Model.md) (1 shared connections)
 
 ## Source Files

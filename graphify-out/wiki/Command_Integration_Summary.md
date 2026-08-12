@@ -1,40 +1,42 @@
 # Command Integration Summary
 
-> 18 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **test_look_player_helpers.py** (12 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **test_select_target_player_single_match()** (3 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **test_select_target_player_no_match()** (3 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **test_select_target_player_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **test_select_target_player_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **test_select_target_player_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **test_format_player_look_display()** (3 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **test_format_player_look_display_no_equipment()** (3 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **test_format_player_look_display_unknown_name()** (3 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **Unit tests for look_player helper functions.  Tests the helper functions in look** (1 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **Test _select_target_player() returns single matching player.** (1 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **Test _select_target_player() returns error when no match.** (1 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **Test _select_target_player() uses instance_number.** (1 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **Test _select_target_player() returns error for invalid instance number.** (1 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **Test _select_target_player() returns error for multiple matches.** (1 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **Test _format_player_look_display() formats player display.** (1 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **Test _format_player_look_display() handles player with no equipment.** (1 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **Test _format_player_look_display() handles player without name.** (1 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
+- **TestPathValidator** (11 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.validator()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **test_path_validator.py** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.zone_transition_rooms()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.test_zone_transition_detection()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.test_broken_zone_transition()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.test_get_room_zone()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.test_missing_zone_info()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.test_one_way_zone_transition()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.test_mismatched_return_path()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Tests for path validator functionality.  Validates room connectivity analysis wi** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test suite for path validation functionality.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Create a path validator instance.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Sample rooms with zone transitions.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test detection of zone transitions in room connections.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test detection of broken zone transitions.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test extraction of zone information from room data.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test handling of rooms with missing zone information.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test one-way exits across zone boundaries.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test detection of mismatched return paths across zones.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
 
 ## Relationships
 
-- [Look Player Command](Look_Player_Command.md) (11 shared connections)
+- [Admin Set Stat Command](Admin_Set_Stat_Command.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_player_helpers.py`
+- `tools/room_toolkit/room_validator/tests/test_path_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 38 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

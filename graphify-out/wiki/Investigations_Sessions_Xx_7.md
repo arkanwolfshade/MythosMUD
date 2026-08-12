@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **.test_start_already_running()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **Test start returns True when already running.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Movement Message Dual Panel Routing** (1 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
+- **Missing game_tick Client Handler** (1 connections) — `investigations/sessions/2025-01-XX_session-game-tick-messages-not-displaying.md`
 
 ## Relationships
 
-- [Combat Health Persistence Fix](Combat_Health_Persistence_Fix.md) (1 shared connections)
-- [AnyIO Code Review](AnyIO_Code_Review.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_game_tick_service.py`
+- `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
+- `investigations/sessions/2025-01-XX_session-game-tick-messages-not-displaying.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

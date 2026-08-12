@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_setup_connection_metadata_no_session_token()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _setup_connection_metadata() handles None session and token.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_handle_npc_attack_on_player_happy_path()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **Test handle_npc_attack_on_player starts combat and processes attack on happy pat** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
 
 ## Relationships
 
-- [Architecture Review Plan](Architecture_Review_Plan.md) (1 shared connections)
-- [WebSocket Connection Setup](WebSocket_Connection_Setup.md) (1 shared connections)
+- [Combat Configuration Service](Combat_Configuration_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

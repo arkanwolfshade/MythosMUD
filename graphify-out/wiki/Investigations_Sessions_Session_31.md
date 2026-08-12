@@ -1,30 +1,23 @@
 # Investigations Sessions Session
 
-> 8 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Proposed Changes** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **1. Enhanced ChatPanel (New Chat Input Panel)** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **2. Renamed Game Log Panel (Formerly ChatPanel)** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **New Features to Add** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Enhanced ChatPanel Interface** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **ChatPanel Layout Structure** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Purpose and Functionality** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Game Log Panel Layout Structure** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Posture Desync After Respawn** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
+- **player_respawned Event Payload Gap** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
 
 ## Relationships
 
-- [Command Factories Combat](Command_Factories_Combat.md) (1 shared connections)
-- [Realtime Message Formatters](Realtime_Message_Formatters.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

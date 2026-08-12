@@ -1,26 +1,25 @@
 # E 2 E Scenarios Scenario
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_add_correlation_id_existing()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **sample_event_dict()** (2 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Create a sample event dictionary.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test add_correlation_id() preserves existing correlation_id.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **mock_combat_service()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **Create mock combat service.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
 
 ## Relationships
 
-- [Test Refactoring Deliverables](Test_Refactoring_Deliverables.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (1 shared connections)
+- [Combat Configuration Service](Combat_Configuration_Service.md) (1 shared connections)
+- [E2E Suite Overview](E2E_Suite_Overview.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/structured_logging/test_logging_processors.py`
+- `server/tests/unit/services/test_npc_combat_integration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

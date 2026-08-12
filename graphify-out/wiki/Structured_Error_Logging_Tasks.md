@@ -1,50 +1,54 @@
 # Structured Error Logging Tasks
 
-> 24 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **_find_item_in_inventory()** (18 connections) — `server/commands/look_item.py`
-- **test_find_item_in_inventory_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_inventory_by_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_inventory_with_name_field()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_inventory_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Find an item in player inventory by name or prototype_id.      Args:         inv** (1 connections) — `server/commands/look_item.py`
-- **Test finding item in inventory by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in inventory when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in inventory by item_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in inventory using 'name' field.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _find_item_in_inventory() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_inventory() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_inventory() with empty list.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_inventory() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_inventory() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_inventory() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_inventory() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **ChatPoseManager** (11 connections) — `server/game/chat_pose_manager.py`
+- **ChatWhisperTracker** (10 connections) — `server/game/chat_whisper_tracker.py`
+- **.__init__()** (7 connections) — `server/game/chat_service.py`
+- **.normalize_player_id()** (5 connections) — `server/game/chat_pose_manager.py`
+- **.set_pose()** (3 connections) — `server/game/chat_pose_manager.py`
+- **.get_pose()** (3 connections) — `server/game/chat_pose_manager.py`
+- **.clear_pose()** (3 connections) — `server/game/chat_pose_manager.py`
+- **.__init__()** (2 connections) — `server/game/chat_pose_manager.py`
+- **.get_all_poses()** (2 connections) — `server/game/chat_pose_manager.py`
+- **.__init__()** (2 connections) — `server/game/chat_whisper_tracker.py`
+- **.store_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
+- **.get_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
+- **.clear_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
+- **.get_all_trackings()** (2 connections) — `server/game/chat_whisper_tracker.py`
+- **Manages in-memory storage of player poses.** (1 connections) — `server/game/chat_pose_manager.py`
+- **Initialize the pose manager.** (1 connections) — `server/game/chat_pose_manager.py`
+- **Normalize player identifiers to string form.** (1 connections) — `server/game/chat_pose_manager.py`
+- **Set a player's pose in memory.          Args:             player_id: ID of the p** (1 connections) — `server/game/chat_pose_manager.py`
+- **Get a player's current pose.          Args:             player_id: ID of the pla** (1 connections) — `server/game/chat_pose_manager.py`
+- **Clear a player's pose.          Args:             player_id: ID of the player** (1 connections) — `server/game/chat_pose_manager.py`
+- **Get all poses (for testing/debugging).          Returns:             Dictionary** (1 connections) — `server/game/chat_pose_manager.py`
+- **Initialize chat service.          Args:             persistence: Database persis** (1 connections) — `server/game/chat_service.py`
+- **Tracks last whisper senders for reply functionality.** (1 connections) — `server/game/chat_whisper_tracker.py`
+- **Initialize the whisper tracker.** (1 connections) — `server/game/chat_whisper_tracker.py`
+- **Store the last whisper sender for a player.          Args:             receiver_** (1 connections) — `server/game/chat_whisper_tracker.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [Command Request App State](Command_Request_App_State.md) (8 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (5 shared connections)
-- [Error Handling Guide](Error_Handling_Guide.md) (4 shared connections)
+- [Chat Mute Admin API](Chat_Mute_Admin_API.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Who Command Tests](Who_Command_Tests.md) (2 shared connections)
+- [Chat Moderation Service](Chat_Moderation_Service.md) (1 shared connections)
+- [Admin Teleport FRD](Admin_Teleport_FRD.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_item.py`
-- `server/tests/unit/commands/test_look_item.py`
-- `server/tests/unit/commands/test_look_item_helpers.py`
+- `server/game/chat_pose_manager.py`
+- `server/game/chat_service.py`
+- `server/game/chat_whisper_tracker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 67 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

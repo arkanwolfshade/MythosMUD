@@ -33,9 +33,8 @@
 
 ## Relationships
 
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
 - [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 

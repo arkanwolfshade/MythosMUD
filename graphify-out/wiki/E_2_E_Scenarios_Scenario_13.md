@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_disconnect_from_degraded()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test disconnect() transition from degraded to disconnected.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_room_object_added()** (3 connections) — `server/tests/unit/models/test_room_class.py`
+- **Test Room.object_added() adds object to room.** (1 connections) — `server/tests/unit/models/test_room_class.py`
 
 ## Relationships
 
-- [Room Subscription Helpers](Room_Subscription_Helpers.md) (1 shared connections)
-- [Player Name Validation](Player_Name_Validation.md) (1 shared connections)
+- [Health Cold Resistance](Health_Cold_Resistance.md) (1 shared connections)
+- [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_state_machine.py`
+- `server/tests/unit/models/test_room_class.py`
 
 ## Audit Trail
 

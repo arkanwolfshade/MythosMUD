@@ -1,6 +1,6 @@
 # Memory Leak Metrics
 
-> 50 nodes
+> 52 nodes
 
 ## Key Concepts
 
@@ -12,6 +12,7 @@
 - **.send_text()** (7 connections) — `docs/examples/logging/websocket_integration.py`
 - **.disconnect()** (6 connections) — `docs/examples/logging/websocket_integration.py`
 - **handle_game_action()** (6 connections) — `docs/examples/logging/websocket_integration.py`
+- **chat_service** (6 connections) — `docs/examples/logging/websocket_integration.py`
 - **.connect()** (5 connections) — `docs/examples/logging/websocket_integration.py`
 - **handle_chat_message()** (5 connections) — `docs/examples/logging/websocket_integration.py`
 - **WebSocket** (5 connections) — `docs/examples/logging/websocket_integration.py`
@@ -28,19 +29,20 @@
 - **validate_websocket_message()** (2 connections) — `docs/examples/logging/websocket_integration.py`
 - **Exception** (2 connections)
 - **WebSocketDisconnect** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **websocket_manager** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- *... and 25 more nodes in this community*
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
+- [Character Info Panel Fix](Character_Info_Panel_Fix.md) (7 shared connections)
 - [Help and WebSocket Core](Help_and_WebSocket_Core.md) (6 shared connections)
-- [Character Info Panel Fix](Character_Info_Panel_Fix.md) (5 shared connections)
-- [Merge Refactoring Summary](Merge_Refactoring_Summary.md) (3 shared connections)
 - [Test Migration Mapping](Test_Migration_Mapping.md) (3 shared connections)
-- [Cursor Skills Harden](Cursor_Skills_Harden.md) (2 shared connections)
-- [Archive Environment Contamination](Archive_Environment_Contamination.md) (2 shared connections)
+- [Flee Command Tests](Flee_Command_Tests.md) (3 shared connections)
 - [Player Movement Service](Player_Movement_Service.md) (2 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Archive Environment Contamination](Archive_Environment_Contamination.md) (1 shared connections)
+- [Quest Journal Commands](Quest_Journal_Commands.md) (1 shared connections)
+- [App Creation Flow Screens](App_Creation_Flow_Screens.md) (1 shared connections)
+- [Container Open Events](Container_Open_Events.md) (1 shared connections)
 - [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
 - [Async Code Review Docs](Async_Code_Review_Docs.md) (1 shared connections)
 
@@ -51,8 +53,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 166 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 170 (96%)
+- INFERRED: 8 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

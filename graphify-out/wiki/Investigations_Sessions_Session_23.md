@@ -1,24 +1,29 @@
 # Investigations Sessions Session
 
-> 2 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **.test_start_failure()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **Test start handles exceptions gracefully.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **required** (8 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **id** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **name** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **plane** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **zone** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **sub_zone** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **exits** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [Combat Health Persistence Fix](Combat_Health_Persistence_Fix.md) (1 shared connections)
-- [AnyIO Code Review](AnyIO_Code_Review.md) (1 shared connections)
+- [Archive Plan Planning](Archive_Plan_Planning.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_game_tick_service.py`
+- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

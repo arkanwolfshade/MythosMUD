@@ -1,50 +1,60 @@
 # Character Selection Screens
 
-> 36 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **test_container_persistence_extended_parse.py** (26 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_parse_jsonb_column_empty_list()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_parse_jsonb_column_empty_dict()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_parse_jsonb_column_string_list()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_parse_jsonb_column_string_dict()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_parse_jsonb_column_with_default()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_parse_jsonb_column_falsy_value()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_parse_jsonb_column_falsy_empty_string()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_parse_jsonb_column_falsy_empty_list()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_parse_jsonb_column_falsy_empty_dict()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_fetch_container_items_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_fetch_container_items_empty()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_fetch_container_items_missing_item_instance_id()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_fetch_container_items_non_dict_row()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_fetch_container_items_string_metadata()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_fetch_container_items_invalid_json_metadata()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_fetch_container_items_non_dict_metadata()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_fetch_container_items_missing_fields()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **Unit tests for container persistence: JSONB parsing, item fetch, and ContainerDa** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **Test parsing empty list JSONB column.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **Test parsing empty dict JSONB column.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **Test parsing string JSONB column containing list.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **Test parsing string JSONB column containing dict.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **Test parsing JSONB column with custom default.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **Test parsing falsy but non-None value.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- *... and 11 more nodes in this community*
+- **PlayerChannelPreferences** (30 connections) — `server/models/player.py`
+- **PlayerPreferencesService** (19 connections) — `server/services/player_preferences_service.py`
+- **._is_valid_player_id()** (11 connections) — `server/services/player_preferences_service.py`
+- **UUID** (10 connections)
+- **player_preferences_service.py** (9 connections) — `server/services/player_preferences_service.py`
+- **AsyncSession** (8 connections)
+- **Any** (8 connections)
+- **.update_default_channel()** (8 connections) — `server/services/player_preferences_service.py`
+- **.mute_channel()** (8 connections) — `server/services/player_preferences_service.py`
+- **.unmute_channel()** (8 connections) — `server/services/player_preferences_service.py`
+- **.is_channel_muted()** (8 connections) — `server/services/player_preferences_service.py`
+- **.create_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
+- **.get_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
+- **.get_muted_channels()** (7 connections) — `server/services/player_preferences_service.py`
+- **.delete_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
+- **._is_valid_channel()** (6 connections) — `server/services/player_preferences_service.py`
+- **test_player_channel_preferences_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **test_player_channel_preferences_with_muted_channels()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **preferences_service()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **sample_preferences()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **.__init__()** (2 connections) — `server/services/player_preferences_service.py`
+- **._is_valid_json_array()** (2 connections) — `server/services/player_preferences_service.py`
+- **Player channel preferences model for Advanced Chat Channels.      Stores player** (1 connections) — `server/models/player.py`
+- **Player Preferences Service for Advanced Chat Channels.  This module provides fun** (1 connections) — `server/services/player_preferences_service.py`
+- **Service for managing player channel preferences.      This service handles:** (1 connections) — `server/services/player_preferences_service.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (17 shared connections)
-- [Communication Command Models](Communication_Command_Models.md) (7 shared connections)
-- [Maps API Endpoints](Maps_API_Endpoints.md) (1 shared connections)
+- [NPC Definition CRUD](NPC_Definition_CRUD.md) (6 shared connections)
+- [Async Persistence Delegates](Async_Persistence_Delegates.md) (5 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (3 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (3 shared connections)
+- [Logging Correct Patterns](Logging_Correct_Patterns.md) (3 shared connections)
+- [Realtime Npc Event](Realtime_Npc_Event.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (1 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- `server/models/player.py`
+- `server/services/player_preferences_service.py`
+- `server/tests/unit/models/test_player_related_models.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 78 (82%)
-- INFERRED: 17 (18%)
+- EXTRACTED: 166 (85%)
+- INFERRED: 30 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,50 +1,51 @@
 # Real-Time Architecture Docs
 
-> 19 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **websocket_handler_connection.py** (17 connections) — `server/realtime/websocket_handler_connection.py`
-- **cleanup_websocket_connection()** (7 connections) — `server/realtime/websocket_handler_connection.py`
-- **setup_initial_connection_state()** (7 connections) — `server/realtime/websocket_handler_connection.py`
-- **PlayerDisconnectService** (6 connections) — `server/realtime/websocket_handler_connection.py`
-- **AsyncPersistenceRoomLookup** (6 connections) — `server/realtime/websocket_handler_connection.py`
-- **send_welcome_event()** (6 connections) — `server/realtime/websocket_handler_connection.py`
-- **UUID** (5 connections)
-- **_fetch_room_for_tracked_player()** (4 connections) — `server/realtime/websocket_helpers.py`
-- **.on_player_disconnect()** (3 connections) — `server/realtime/websocket_handler_connection.py`
-- **.get_room_by_id()** (3 connections) — `server/realtime/websocket_handler_connection.py`
-- **Protocol** (2 connections)
-- **WebSocket** (2 connections)
-- **WebSocket connection lifecycle: setup, welcome, and cleanup on disconnect.  Extr** (1 connections) — `server/realtime/websocket_handler_connection.py`
-- **Notify subsystems when a WebSocket session ends for a player.** (1 connections) — `server/realtime/websocket_handler_connection.py`
-- **Narrow persistence surface for loading ``Room`` by id in the WS handler.** (1 connections) — `server/realtime/websocket_handler_connection.py`
-- **Clean up connection, follow state, party state, and player mute data on disconne** (1 connections) — `server/realtime/websocket_handler_connection.py`
-- **Set up initial connection state and send initial game state.      Returns:** (1 connections) — `server/realtime/websocket_handler_connection.py`
-- **Send welcome event to the client.      Returns:         True if successful, Fals** (1 connections) — `server/realtime/websocket_handler_connection.py`
-- **Load the room instance for the player's current_room_id.      Returns:         (** (1 connections) — `server/realtime/websocket_helpers.py`
+- **PlayerSchemaConverter** (16 connections) — `server/game/player_schema_converter.py`
+- **.create_player_read_from_object()** (12 connections) — `server/game/player_schema_converter.py`
+- **Any** (11 connections)
+- **.create_player_read_from_dict()** (10 connections) — `server/game/player_schema_converter.py`
+- **.convert_player_to_schema()** (8 connections) — `server/game/player_schema_converter.py`
+- **.get_position_state()** (6 connections) — `server/game/player_schema_converter.py`
+- **.check_player_combat_state()** (5 connections) — `server/game/player_schema_converter.py`
+- **.get_profession_details()** (5 connections) — `server/game/player_schema_converter.py`
+- **.compute_derived_stats_fields()** (5 connections) — `server/game/player_schema_converter.py`
+- **.get_player_data_methods()** (4 connections) — `server/game/player_schema_converter.py`
+- **.__init__()** (3 connections) — `server/game/player_schema_converter.py`
+- **Utility class for converting Player objects to PlayerRead schemas.** (1 connections) — `server/game/player_schema_converter.py`
+- **Initialize the converter with persistence, optional combat service, and optional** (1 connections) — `server/game/player_schema_converter.py`
+- **Check if player is in combat.** (1 connections) — `server/game/player_schema_converter.py`
+- **Get profession information for player.** (1 connections) — `server/game/player_schema_converter.py`
+- **Get stats, inventory, and status_effects from player, handling async methods.** (1 connections) — `server/game/player_schema_converter.py`
+- **Compute derived stats fields (max_dp, max_magic_points, max_lucidity).** (1 connections) — `server/game/player_schema_converter.py`
+- **Get PositionState from position value, with fallback to STANDING.** (1 connections) — `server/game/player_schema_converter.py`
+- **Create PlayerRead schema from player object.** (1 connections) — `server/game/player_schema_converter.py`
+- **Create PlayerRead schema from player dictionary.** (1 connections) — `server/game/player_schema_converter.py`
+- **Convert a player object to PlayerRead schema.          Args:             player:** (1 connections) — `server/game/player_schema_converter.py`
 
 ## Relationships
 
-- [Player Combat XP](Player_Combat_XP.md) (4 shared connections)
-- [Archive Bug Fix](Archive_Bug_Fix.md) (3 shared connections)
-- [Pylint Unique Findings](Pylint_Unique_Findings.md) (3 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Character Creation Service](Character_Creation_Service.md) (2 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
-- [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
-- [Playwright E2E Specs](Playwright_E2E_Specs.md) (1 shared connections)
+- [Combat NPC Lookup](Combat_NPC_Lookup.md) (7 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (4 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (2 shared connections)
+- [NPC Database Sessions](NPC_Database_Sessions.md) (2 shared connections)
+- [Test Refactoring Complete](Test_Refactoring_Complete.md) (2 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (1 shared connections)
+- [Profession Get Mechanical Effects](Profession_Get_Mechanical_Effects.md) (1 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_handler_connection.py`
-- `server/realtime/websocket_helpers.py`
+- `server/game/player_schema_converter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (89%)
-- INFERRED: 8 (11%)
+- EXTRACTED: 89 (94%)
+- INFERRED: 6 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

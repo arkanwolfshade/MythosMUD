@@ -1,9 +1,10 @@
 # NATS Subject Metrics
 
-> 27 nodes
+> 29 nodes
 
 ## Key Concepts
 
+- **MemoryLeakMetricsCollector** (33 connections) — `server/monitoring/memory_leak_metrics.py`
 - **Any** (10 connections)
 - **.collect_all_metrics()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
 - **.check_alerts()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
@@ -18,6 +19,7 @@
 - **._check_cache_alerts()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
 - **._check_subscriber_alerts()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
 - **._check_task_alerts()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Unified metrics collector for memory leak detection.      Aggregates metrics fro** (1 connections) — `server/monitoring/memory_leak_metrics.py`
 - **Collect all metrics from all sources.          Returns:             Dictionary c** (1 connections) — `server/monitoring/memory_leak_metrics.py`
 - **Collect connection metrics from ConnectionManager.          Returns:** (1 connections) — `server/monitoring/memory_leak_metrics.py`
 - **Collect event metrics from EventBus.          Returns:             Dictionary wi** (1 connections) — `server/monitoring/memory_leak_metrics.py`
@@ -27,17 +29,19 @@
 - **Calculate growth rate for a single metric.          Args:             current: C** (1 connections) — `server/monitoring/memory_leak_metrics.py`
 - **Calculate growth rates for metrics over time.          Returns:             Dict** (1 connections) — `server/monitoring/memory_leak_metrics.py`
 - **Check connection-related alerts and append to alerts list.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Check subscriber growth rate alerts and append to alerts list.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Check cache-related alerts and append to alerts list.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- *... and 2 more nodes in this community*
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [Help and WebSocket Core](Help_and_WebSocket_Core.md) (13 shared connections)
-- [NPC Occupant Verification](NPC_Occupant_Verification.md) (2 shared connections)
-- [Connection Health Monitor](Connection_Health_Monitor.md) (1 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
-- [Command Field Validators](Command_Field_Validators.md) (1 shared connections)
+- [Command Field Validators](Command_Field_Validators.md) (6 shared connections)
+- [Help and WebSocket Core](Help_and_WebSocket_Core.md) (6 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
+- [Room Occupant Manager Tests](Room_Occupant_Manager_Tests.md) (2 shared connections)
+- [Target Resolution Service](Target_Resolution_Service.md) (2 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 87 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 116 (95%)
+- INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,59 +1,44 @@
 # Test Modernization Plan
 
-> 40 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **test_look_item.py** (55 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_equipped_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_fallback()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_with_location_name()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_no_prototype()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_equipped_item_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_in_inventory()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_in_equipped()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_in_room_drops()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_with_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_exception_handling()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_fallback_name()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_in_equipped()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_player_no_get_equipped_items()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **mock_prototype_registry()** (2 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_room_drop()** (2 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_inventory_item()** (2 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_equipped_item()** (2 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Unit tests for item look functionality.  Tests the helper functions for looking** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a mock prototype registry.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a sample room drop item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a sample inventory item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a sample equipped item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- *... and 15 more nodes in this community*
+- **handle_time_command()** (14 connections) — `server/commands/time_commands.py`
+- **time_commands.py** (10 connections) — `server/commands/time_commands.py`
+- **test_time_commands.py** (8 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_success()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_with_holidays()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_no_holidays()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_holiday_service_error()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_no_holiday_service()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Any** (1 connections)
+- **Time command handlers for MythosMUD.  This module contains handlers for the time** (1 connections) — `server/commands/time_commands.py`
+- **Handle the time command, exposing the current Mythos time and active holidays.** (1 connections) — `server/commands/time_commands.py`
+- **Unit tests for time command handlers.  Tests the time command functionality.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Test handle_time_command() returns time information.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Test handle_time_command() includes active holidays.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Test handle_time_command() handles no active holidays.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Test handle_time_command() handles holiday service errors.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Test handle_time_command() handles missing holiday service.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
 
 ## Relationships
 
-- [Error Handling Guide](Error_Handling_Guide.md) (27 shared connections)
-- [Chat Service Whispers](Chat_Service_Whispers.md) (8 shared connections)
-- [Structured Error Logging Tasks](Structured_Error_Logging_Tasks.md) (5 shared connections)
-- [Command Commands Validation](Command_Commands_Validation.md) (1 shared connections)
-- [Api Players Quests](Api_Players_Quests.md) (1 shared connections)
-- [Room Toolkit Validator](Room_Toolkit_Validator.md) (1 shared connections)
-- [Commands Container Inventory](Commands_Container_Inventory.md) (1 shared connections)
-- [Logging Structured Processors](Logging_Structured_Processors.md) (1 shared connections)
-- [E 2 E Bugs Found](E_2_E_Bugs_Found.md) (1 shared connections)
-- [Archive Npc Duplication](Archive_Npc_Duplication.md) (1 shared connections)
-- [Error Logging Implementation](Error_Logging_Implementation.md) (1 shared connections)
-- [Archive Room Hierarchy](Archive_Room_Hierarchy.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (5 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (3 shared connections)
+- [Server Process Termination](Server_Process_Termination.md) (2 shared connections)
+- [Container Open Events](Container_Open_Events.md) (1 shared connections)
+- [Game State Provider](Game_State_Provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/commands/time_commands.py`
+- `server/tests/unit/commands/test_time_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 128 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 54 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

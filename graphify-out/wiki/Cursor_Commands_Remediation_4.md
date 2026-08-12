@@ -1,31 +1,23 @@
 # Cursor Commands Remediation
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **MUD Disconnect Grace Period & Rest Command: Industry Comparison** (15 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **11. Missing Features from Other MUDs** (2 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **disconnect_grace_period_comparison.md** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Executive Summary** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Features We're NOT Implementing (but exist elsewhere)** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Questions for Discussion** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Realtime Monitoring Subsystem** (1 connections) — `docs/CONNECTION_MANAGER_ARCHITECTURE.md`
+- **Realtime Messaging Subsystem** (1 connections) — `docs/CONNECTION_MANAGER_ARCHITECTURE.md`
 
 ## Relationships
 
-- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (7 shared connections)
-- [Cursor Plans Convert](Cursor_Plans_Convert.md) (1 shared connections)
-- [Time Service](Time_Service.md) (1 shared connections)
-- [Investigations Sessions Xx](Investigations_Sessions_Xx.md) (1 shared connections)
-- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.cursor/plans/disconnect_grace_period_comparison.md`
+- `docs/CONNECTION_MANAGER_ARCHITECTURE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

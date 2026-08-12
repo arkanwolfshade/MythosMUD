@@ -1,6 +1,6 @@
 # NATS Chat Broadcasting
 
-> 133 nodes
+> 117 nodes
 
 ## Key Concepts
 
@@ -10,7 +10,6 @@
 - **._process_single_message()** (9 connections) — `server/realtime/nats_message_handler.py`
 - **._send_messages_to_players()** (8 connections) — `server/realtime/nats_message_handler.py`
 - **apply_communication_dampening()** (8 connections) — `server/services/lucidity_communication_dampening.py`
-- **._subscribe_to_subject()** (7 connections) — `server/realtime/nats_message_handler.py`
 - **._unsubscribe_from_subject()** (7 connections) — `server/realtime/nats_message_handler.py`
 - **UUID** (7 connections)
 - **._apply_dampening_and_send_message()** (7 connections) — `server/realtime/nats_message_handler.py`
@@ -19,29 +18,30 @@
 - **._handle_nats_message()** (6 connections) — `server/realtime/nats_message_handler.py`
 - **._broadcast_by_channel_type()** (6 connections) — `server/realtime/nats_message_handler.py`
 - **._echo_message_to_sender()** (6 connections) — `server/realtime/nats_message_handler.py`
-- **.handle_player_movement()** (6 connections) — `server/realtime/nats_message_handler.py`
-- **.start()** (5 connections) — `server/realtime/nats_message_handler.py`
-- **._subscribe_to_standardized_chat_subjects()** (5 connections) — `server/realtime/nats_message_handler.py`
 - **._build_chat_event()** (5 connections) — `server/realtime/nats_message_handler.py`
 - **._format_message_for_receiver()** (5 connections) — `server/realtime/nats_message_handler.py`
 - **.unsubscribe_from_subzone()** (5 connections) — `server/realtime/nats_message_handler.py`
 - **.stop()** (4 connections) — `server/realtime/nats_message_handler.py`
-- **._subscribe_to_chat_subjects()** (4 connections) — `server/realtime/nats_message_handler.py`
 - **._process_message_with_retry()** (4 connections) — `server/realtime/nats_message_handler.py`
 - **._extract_chat_message_fields()** (4 connections) — `server/realtime/nats_message_handler.py`
-- *... and 108 more nodes in this community*
+- **._validate_chat_message_fields()** (4 connections) — `server/realtime/nats_message_handler.py`
+- **._convert_ids_to_uuids()** (4 connections) — `server/realtime/nats_message_handler.py`
+- **._extract_chat_event_info()** (4 connections) — `server/realtime/nats_message_handler.py`
+- **._filter_target_players()** (4 connections) — `server/realtime/nats_message_handler.py`
+- **.cleanup_empty_subzone_subscriptions()** (4 connections) — `server/realtime/nats_message_handler.py`
+- *... and 92 more nodes in this community*
 
 ## Relationships
 
-- [Inventory Command Models](Inventory_Command_Models.md) (15 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (12 shared connections)
+- [Security Issues And Fixes](Security_Issues_And_Fixes.md) (10 shared connections)
 - [Dead Letter Queue](Dead_Letter_Queue.md) (4 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (3 shared connections)
 - [Chat Message Filtering](Chat_Message_Filtering.md) (3 shared connections)
 - [Game State Provider](Game_State_Provider.md) (2 shared connections)
-- [WebSocket Code Review](WebSocket_Code_Review.md) (2 shared connections)
 - [Circuit Breaker Core](Circuit_Breaker_Core.md) (2 shared connections)
-- [Container System Architecture](Container_System_Architecture.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [NPC Spawn Validator](NPC_Spawn_Validator.md) (1 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 - [Archive Bug Fix](Archive_Bug_Fix.md) (1 shared connections)
 - [Test Optimization Insights](Test_Optimization_Insights.md) (1 shared connections)
 - [Vim Editor Guidelines](Vim_Editor_Guidelines.md) (1 shared connections)
@@ -50,11 +50,12 @@
 
 - `server/realtime/nats_message_handler.py`
 - `server/services/lucidity_communication_dampening.py`
+- `server/tests/unit/realtime/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 423 (96%)
-- INFERRED: 18 (4%)
+- EXTRACTED: 380 (96%)
+- INFERRED: 15 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

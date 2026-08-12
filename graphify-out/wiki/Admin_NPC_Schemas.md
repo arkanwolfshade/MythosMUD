@@ -1,10 +1,9 @@
 # Admin NPC Schemas
 
-> 59 nodes
+> 39 nodes
 
 ## Key Concepts
 
-- **test_inventory_commands.py** (20 connections) — `server/tests/unit/commands/test_inventory_commands.py`
 - **handle_pickup_command()** (18 connections) — `server/commands/inventory_pickup_command.py`
 - **command_result_text()** (17 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
 - **PickupTestWiring** (17 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
@@ -21,25 +20,25 @@
 - **test_handle_pickup_command_no_room_manager()** (5 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
 - **test_handle_pickup_command_invalid_index()** (5 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
 - **test_handle_pickup_command_search_term_not_found()** (5 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- **test_handle_inventory_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_inventory_commands.py`
 - **test_handle_drop_command_no_target()** (4 connections) — `server/tests/unit/commands/test_inventory_commands.py`
 - **test_handle_equip_command_no_target()** (4 connections) — `server/tests/unit/commands/test_inventory_commands.py`
-- **test_handle_unequip_command_no_target()** (4 connections) — `server/tests/unit/commands/test_inventory_commands.py`
-- **test_handle_put_command_no_target()** (4 connections) — `server/tests/unit/commands/test_inventory_commands.py`
-- **test_handle_get_command_no_target()** (4 connections) — `server/tests/unit/commands/test_inventory_commands.py`
-- **test_handle_inventory_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
-- **test_handle_equip_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
-- *... and 34 more nodes in this community*
+- **Move an item stack from room drops into the player's inventory.** (1 connections) — `server/commands/inventory_pickup_command.py`
+- **.__init__()** (1 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- **.set_floor_stack()** (1 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- **.set_listed_drops()** (1 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- **.set_player_inventory()** (1 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- **Shared helpers for inventory command unit tests.** (1 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- **Normalize handler result message for assertions.** (1 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [Container Sync Remediation](Container_Sync_Remediation.md) (10 shared connections)
-- [Spell Effect Protocols](Spell_Effect_Protocols.md) (6 shared connections)
-- [Container Open Events](Container_Open_Events.md) (5 shared connections)
-- [WebSocket Auth Integration](WebSocket_Auth_Integration.md) (4 shared connections)
-- [Rate Limiter Utilities](Rate_Limiter_Utilities.md) (3 shared connections)
-- [Container Component Capacity](Container_Component_Capacity.md) (3 shared connections)
-- [Client Lifecycle Metrics](Client_Lifecycle_Metrics.md) (1 shared connections)
+- [Container Sync Remediation](Container_Sync_Remediation.md) (12 shared connections)
+- [NATS Connection State Machine](NATS_Connection_State_Machine.md) (9 shared connections)
+- [Container Component Capacity](Container_Component_Capacity.md) (5 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
+- [Container Open Events](Container_Open_Events.md) (1 shared connections)
+- [AnyIO vs Asyncio Guide](AnyIO_vs_Asyncio_Guide.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 205 (90%)
-- INFERRED: 23 (10%)
+- EXTRACTED: 151 (90%)
+- INFERRED: 16 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

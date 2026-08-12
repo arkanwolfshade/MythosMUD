@@ -9,7 +9,7 @@
 
 ## Relationships
 
-- [Pylint Unique Findings](Pylint_Unique_Findings.md) (1 shared connections)
+- [Zone Schema Definition](Zone_Schema_Definition.md) (1 shared connections)
 - [Database Pool Configuration](Database_Pool_Configuration.md) (1 shared connections)
 
 ## Source Files

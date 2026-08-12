@@ -34,10 +34,10 @@
 ## Relationships
 
 - [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (9 shared connections)
-- [Playwright E2E Specs](Playwright_E2E_Specs.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
 - [Game State Provider Tests](Game_State_Provider_Tests.md) (2 shared connections)
 - [Unified Command Handler](Unified_Command_Handler.md) (2 shared connections)
-- [Room Occupant Events](Room_Occupant_Events.md) (1 shared connections)
+- [Command Helper Utilities](Command_Helper_Utilities.md) (1 shared connections)
 
 ## Source Files
 

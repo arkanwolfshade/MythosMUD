@@ -1,25 +1,26 @@
 # Archive Who Command
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_get_muted_channels_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test getting muted channels when preferences not found.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Who Command Enhancement** (2 connections) — `docs/archive/WHO_COMMAND_FRD.md`
+- **Who Command Name Filtering** (1 connections) — `docs/archive/WHO_COMMAND_FRD.md`
+- **Who Command Implementation Tasks** (1 connections) — `docs/archive/WHO_COMMAND_TASKS.md`
 
 ## Relationships
 
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
-- [Async Persistence Delegates](Async_Persistence_Delegates.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `docs/archive/WHO_COMMAND_FRD.md`
+- `docs/archive/WHO_COMMAND_TASKS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

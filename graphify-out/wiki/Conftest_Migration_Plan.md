@@ -34,11 +34,10 @@
 ## Relationships
 
 - [Client Security Utilities](Client_Security_Utilities.md) (21 shared connections)
-- [Zone Config Loader](Zone_Config_Loader.md) (10 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (11 shared connections)
 - [Combat Domain Events](Combat_Domain_Events.md) (4 shared connections)
-- [Draggable Panel UI](Draggable_Panel_UI.md) (3 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (2 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
+- [Communication Command Models](Communication_Command_Models.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 
 ## Source Files
 

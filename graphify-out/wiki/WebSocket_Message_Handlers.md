@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (4 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
-- [ASCII Map API](ASCII_Map_API.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (3 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
 
 ## Source Files
 

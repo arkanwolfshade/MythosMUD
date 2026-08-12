@@ -33,16 +33,16 @@
 
 ## Relationships
 
-- [Async Audit Cursor](Async_Audit_Cursor.md) (20 shared connections)
+- [Async Audit Cursor](Async_Audit_Cursor.md) (18 shared connections)
 - [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (9 shared connections)
 - [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (5 shared connections)
 - [Whisper Testing Complete](Whisper_Testing_Complete.md) (4 shared connections)
-- [Server Config Loading](Server_Config_Loading.md) (3 shared connections)
+- [Player GUID Formatter](Player_GUID_Formatter.md) (3 shared connections)
+- [Command Service Tests](Command_Service_Tests.md) (3 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (2 shared connections)
 - [Player Domain Model](Player_Domain_Model.md) (2 shared connections)
-- [Command Service Tests](Command_Service_Tests.md) (2 shared connections)
-- [3. Systematic Investigation Approach](3._Systematic_Investigation_Approach.md) (2 shared connections)
-- [WebSocket Code Review](WebSocket_Code_Review.md) (1 shared connections)
-- [Command Factory Tests](Command_Factory_Tests.md) (1 shared connections)
+- [Lucidity Database Models](Lucidity_Database_Models.md) (2 shared connections)
+- [Async Task Registry](Async_Task_Registry.md) (1 shared connections)
 - [AI Agent Development Docs](AI_Agent_Development_Docs.md) (1 shared connections)
 - [Chat Spec Archive](Chat_Spec_Archive.md) (1 shared connections)
 

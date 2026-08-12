@@ -1,21 +1,16 @@
 # Moderation Command Models
 
-> 110 nodes
+> 72 nodes
 
 ## Key Concepts
 
 - **test_command_factories_exploration.py** (48 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **.create_look_command()** (18 connections) — `server/utils/command_factories_exploration.py`
-- **ExplorationCommandFactory** (17 connections) — `server/utils/command_factories_exploration.py`
 - **.create_party_command()** (12 connections) — `server/utils/command_factories_exploration.py`
 - **.create_lie_command()** (8 connections) — `server/utils/command_factories_exploration.py`
 - **.create_go_command()** (7 connections) — `server/utils/command_factories_exploration.py`
 - **.create_ground_command()** (7 connections) — `server/utils/command_factories_exploration.py`
 - **.create_follow_command()** (7 connections) — `server/utils/command_factories_exploration.py`
-- **.create_sit_command()** (6 connections) — `server/utils/command_factories_exploration.py`
 - **.create_stand_command()** (6 connections) — `server/utils/command_factories_exploration.py`
-- **.create_unfollow_command()** (6 connections) — `server/utils/command_factories_exploration.py`
-- **.create_following_command()** (6 connections) — `server/utils/command_factories_exploration.py`
 - **test_create_go_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
 - **test_create_sit_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
 - **test_create_stand_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
@@ -29,15 +24,20 @@
 - **test_create_following_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
 - **test_create_party_command_invite_no_target()** (4 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
 - **test_create_party_command_kick_no_target()** (4 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- *... and 85 more nodes in this community*
+- **test_create_go_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_go_command_invalid_direction()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_sit_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_stand_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_lie_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [Spell Registry Costs](Spell_Registry_Costs.md) (14 shared connections)
-- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (13 shared connections)
-- [NPC Definition Admin API](NPC_Definition_Admin_API.md) (9 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (4 shared connections)
-- [Base Command Models](Base_Command_Models.md) (1 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (21 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (14 shared connections)
+- [Invite and User Schemas](Invite_and_User_Schemas.md) (13 shared connections)
+- [Playwright Remediation Plan](Playwright_Remediation_Plan.md) (6 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 330 (96%)
-- INFERRED: 15 (4%)
+- EXTRACTED: 218 (94%)
+- INFERRED: 13 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

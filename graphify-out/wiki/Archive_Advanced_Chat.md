@@ -1,12 +1,19 @@
 # Archive Advanced Chat
 
-> 62 nodes
+> 76 nodes
 
 ## Key Concepts
 
 - **test_npc_event_handlers.py** (44 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_room()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_room()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_room_with_npc_instance()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 - **test_handle_npc_left_room_with_npc_instance()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_room_not_found()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 - **test_handle_npc_left_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 - **test_handle_npc_left_room_not_found()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 - **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 - **mock_message_builder()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
@@ -22,21 +29,12 @@
 - **test_parse_behavior_config_invalid_json()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 - **test_get_npc_instance_found()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 - **test_get_npc_instance_no_service()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_npc_instance_exception()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_parse_behavior_config_none()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_parse_behavior_config_empty_string()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_parse_behavior_config_not_dict_or_string()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_npc_spawn_message_no_config()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_npc_name_no_service()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_determine_direction_from_rooms_no_persistence()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- *... and 37 more nodes in this community*
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [Combat Aggro Threat](Combat_Aggro_Threat.md) (6 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (6 shared connections)
-- [Character Creation E2E](Character_Creation_E2E.md) (3 shared connections)
-- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (1 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (14 shared connections)
+- [NPC Occupants Verification](NPC_Occupants_Verification.md) (2 shared connections)
 
 ## Source Files
 
@@ -44,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 138 (100%)
+- EXTRACTED: 166 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

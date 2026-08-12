@@ -1,12 +1,15 @@
 # Investigations Sessions Session
 
-> 3 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **Combat Messages Dual Panel Display** (2 connections) — `investigations/sessions/2025-11-19_session-003_combat-messages-dual-panel-display.md`
-- **Combat Turn Order UUID Display** (1 connections) — `investigations/sessions/2025-11-19_session-002_combat-message-uuid-display.md`
-- **Missing NPC Death Message Handlers** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
+- **Respawn Death Screen Loop Limbo ID Mismatch** (3 connections) — `investigations/sessions/2025-11-19_session-005_respawn-death-screen-loop.md`
+- **Respawn Persistence JSONB Mutation Failure** (2 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
+- **Death Threshold and Posture Bugs** (2 connections) — `investigations/sessions/2025-11-20_session-002_death-posture-bugs.md`
+- **limbo_death_void vs limbo_death_void_limbo_death_void** (1 connections) — `investigations/sessions/2025-11-19_session-005_respawn-death-screen-loop.md`
+- **SQLAlchemy JSONB Mutation Detection** (1 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
+- **HP -10 Limbo Transition Delay** (1 connections) — `investigations/sessions/2025-11-20_session-002_death-posture-bugs.md`
 
 ## Relationships
 
@@ -14,14 +17,14 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-11-19_session-002_combat-message-uuid-display.md`
-- `investigations/sessions/2025-11-19_session-003_combat-messages-dual-panel-display.md`
-- `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
+- `investigations/sessions/2025-11-19_session-005_respawn-death-screen-loop.md`
+- `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
+- `investigations/sessions/2025-11-20_session-002_death-posture-bugs.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 4 (100%)
+- EXTRACTED: 6 (60%)
+- INFERRED: 4 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---

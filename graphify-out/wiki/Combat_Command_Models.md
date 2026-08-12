@@ -1,51 +1,54 @@
 # Combat Command Models
 
-> 63 nodes
+> 67 nodes
 
 ## Key Concepts
 
-- **NPCCombatUUIDMapping** (39 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **TestNPCCombatUUIDMapping** (22 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **UUID** (8 connections)
-- **.is_valid_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **.convert_to_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **test_npc_combat_uuid_mapping.py** (4 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.get_uuid_mapping()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **.store_string_id_mapping()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **.store_xp_mapping()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **.get_uuid_for_string_id()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **.get_original_string_id()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **.get_xp_value()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_is_valid_uuid_valid()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_is_valid_uuid_invalid()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_convert_to_uuid_from_uuid_string()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_convert_to_uuid_from_string_id()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_store_string_id_mapping()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_store_string_id_mapping_overwrites()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_store_xp_mapping()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_store_xp_mapping_overwrites()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_get_original_string_id_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_get_original_string_id_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_get_uuid_for_string_id_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_get_uuid_for_string_id_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- *... and 38 more nodes in this community*
+- **test_argon2_utils.py** (42 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **verify_password()** (16 connections) — `server/auth/argon2_utils.py`
+- **create_hasher_with_params()** (11 connections) — `server/auth/argon2_utils.py`
+- **is_argon2_hash()** (9 connections) — `server/auth/argon2_utils.py`
+- **needs_rehash()** (7 connections) — `server/auth/argon2_utils.py`
+- **get_hash_info()** (6 connections) — `server/auth/argon2_utils.py`
+- **test_verify_password_success()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_verify_password_failure()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_verify_password_non_string_password()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_is_argon2_hash_valid()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_needs_rehash_valid_hash()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_get_hash_info_valid()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_needs_rehash_error_handling()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **._verify_password()** (3 connections) — `server/auth/users.py`
+- **test_hash_password_success()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_create_hasher_with_params_valid()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_create_hasher_with_params_invalid_time_cost()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_create_hasher_with_params_invalid_memory_cost()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_create_hasher_with_params_invalid_parallelism()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_create_hasher_with_params_invalid_hash_len()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_verify_password_invalid_hash()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_verify_password_non_string_hash()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_verify_password_empty_hash()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_is_argon2_hash_invalid()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_is_argon2_hash_none()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (9 shared connections)
-- [Command Testing Guide](Command_Testing_Guide.md) (2 shared connections)
+- [Command Testing Guide](Command_Testing_Guide.md) (22 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Integer Coercion Utils](Integer_Coercion_Utils.md) (1 shared connections)
+- [Combat Command Handler](Combat_Command_Handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_integration_service.py`
-- `server/services/npc_combat_uuid_mapping.py`
-- `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- `server/auth/argon2_utils.py`
+- `server/auth/users.py`
+- `server/tests/unit/auth/test_argon2_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 184 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 213 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

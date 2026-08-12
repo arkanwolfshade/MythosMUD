@@ -1,24 +1,26 @@
 # Investigations Sessions Session
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.test_stop_success()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **Test stop successfully stops the service.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **exits** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [Combat Health Persistence Fix](Combat_Health_Persistence_Fix.md) (1 shared connections)
-- [AnyIO Code Review](AnyIO_Code_Review.md) (1 shared connections)
+- [Chat Panel Separation Spec](Chat_Panel_Separation_Spec.md) (1 shared connections)
+- [NATS Subject Validator Tests](NATS_Subject_Validator_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_game_tick_service.py`
+- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,67 +1,59 @@
 # Health Check Models
 
-> 87 nodes
+> 66 nodes
 
 ## Key Concepts
 
-- **combat_service.py** (100 connections) — `server/services/combat_service.py`
-- **combat_service_attack.py** (26 connections) — `server/services/combat_service_attack.py`
-- **CombatResult** (23 connections) — `server/models/combat.py`
-- **combat_events.py** (20 connections) — `server/events/combat_events.py`
-- **NPCDiedEvent** (18 connections) — `server/events/combat_events.py`
-- **test_combat_service.py** (18 connections) — `server/tests/unit/services/test_combat_service.py`
-- **get_current_tick()** (15 connections) — `server/app/game_tick_processing.py`
-- **NPCTookDamageEvent** (15 connections) — `server/events/combat_events.py`
-- **combat_service_events.py** (14 connections) — `server/services/combat_service_events.py`
-- **_NPCCombatIntegrationDeps** (14 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **finalize_attack_result()** (11 connections) — `server/services/combat_service_attack.py`
-- **validate_melee_or_end_combat()** (10 connections) — `server/services/combat_service_attack.py`
-- **_make_participant()** (10 connections) — `server/tests/unit/services/test_combat_service.py`
-- **validate_melee_location()** (9 connections) — `server/services/combat_service_attack.py`
-- **process_attack()** (9 connections) — `server/services/combat_service_attack.py`
-- **_make_combat_instance()** (9 connections) — `server/tests/unit/services/test_combat_service.py`
-- **_make_service()** (9 connections) — `server/tests/unit/services/test_combat_service.py`
-- **handle_combat_completion()** (8 connections) — `server/services/combat_service_attack.py`
-- **apply_damage_and_check_involuntary_flee()** (8 connections) — `server/services/combat_service_attack.py`
-- **._process_combat_attack()** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **.start_new_combat_for_mixin()** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **publish_npc_damage_event()** (7 connections) — `server/services/combat_service_events.py`
-- **publish_npc_died_event()** (7 connections) — `server/services/combat_service_events.py`
-- **._apply_npc_attack_damage_for_npc_initiated_combat()** (7 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **._broadcast_room_after_npc_death()** (7 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- *... and 62 more nodes in this community*
+- **FollowService** (36 connections) — `server/game/follow_service.py`
+- **follow_service.py** (24 connections) — `server/game/follow_service.py`
+- **UUID** (14 connections)
+- **_str_id()** (13 connections) — `server/game/follow_service.py`
+- **test_follow_flow.py** (13 connections) — `server/tests/integration/test_follow_flow.py`
+- **.__init__()** (10 connections) — `server/game/follow_service.py`
+- **.request_follow()** (9 connections) — `server/game/follow_service.py`
+- **._handle_player_follower_move()** (9 connections) — `server/game/follow_service.py`
+- **._handle_npc_follower_move()** (9 connections) — `server/game/follow_service.py`
+- **._send_result_to_player()** (8 connections) — `server/game/follow_service.py`
+- **._send_follow_state_to_player()** (8 connections) — `server/game/follow_service.py`
+- **.unfollow()** (8 connections) — `server/game/follow_service.py`
+- **Any** (7 connections)
+- **._expire_pending_requests()** (7 connections) — `server/game/follow_service.py`
+- **.accept_follow()** (7 connections) — `server/game/follow_service.py`
+- **.decline_follow()** (7 connections) — `server/game/follow_service.py`
+- **_is_npc_follow_value()** (6 connections) — `server/game/follow_service.py`
+- **.get_followers()** (6 connections) — `server/game/follow_service.py`
+- **.get_following_display()** (6 connections) — `server/game/follow_service.py`
+- **._ensure_follower_standing()** (6 connections) — `server/game/follow_service.py`
+- **._on_player_entered_room()** (6 connections) — `server/game/follow_service.py`
+- **._send_follow_request_to_target()** (5 connections) — `server/game/follow_service.py`
+- **.get_following()** (5 connections) — `server/game/follow_service.py`
+- **.get_following_display_name()** (5 connections) — `server/game/follow_service.py`
+- **._on_npc_entered_room()** (5 connections) — `server/game/follow_service.py`
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
-- [Container Exception Handlers](Container_Exception_Handlers.md) (34 shared connections)
-- [Async Persistence Layer](Async_Persistence_Layer.md) (18 shared connections)
-- [Emote Schema Validator](Emote_Schema_Validator.md) (17 shared connections)
-- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (17 shared connections)
-- [Rest Command Flow](Rest_Command_Flow.md) (13 shared connections)
-- [Players API Endpoints](Players_API_Endpoints.md) (12 shared connections)
-- [Combat Death Handling](Combat_Death_Handling.md) (12 shared connections)
-- [Inventory Command Models](Inventory_Command_Models.md) (10 shared connections)
-- [Command Helper Utilities](Command_Helper_Utilities.md) (9 shared connections)
-- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (6 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (6 shared connections)
-- [Lucidity State Models](Lucidity_State_Models.md) (5 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (15 shared connections)
+- [Client Event Store](Client_Event_Store.md) (11 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (6 shared connections)
+- [Calendar Holiday Schemas](Calendar_Holiday_Schemas.md) (4 shared connections)
+- [NPC Event Handler Tests](NPC_Event_Handler_Tests.md) (4 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (3 shared connections)
+- [Combat Aggro Threat](Combat_Aggro_Threat.md) (3 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (3 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (3 shared connections)
+- [Player Mute Persistence](Player_Mute_Persistence.md) (2 shared connections)
+- [Container Exception Handlers](Container_Exception_Handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/game_tick_processing.py`
-- `server/events/combat_events.py`
-- `server/models/combat.py`
-- `server/services/combat_service.py`
-- `server/services/combat_service_attack.py`
-- `server/services/combat_service_events.py`
-- `server/services/combat_service_state.py`
-- `server/services/npc_combat_integration_combat_mixin.py`
-- `server/tests/unit/services/test_combat_service.py`
+- `server/game/follow_service.py`
+- `server/tests/integration/test_follow_flow.py`
 
 ## Audit Trail
 
-- EXTRACTED: 509 (95%)
-- INFERRED: 29 (5%)
+- EXTRACTED: 284 (96%)
+- INFERRED: 11 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

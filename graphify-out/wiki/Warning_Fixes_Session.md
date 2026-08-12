@@ -35,11 +35,10 @@
 
 - [Combat Turn Processor](Combat_Turn_Processor.md) (4 shared connections)
 - [Character Creation E2E](Character_Creation_E2E.md) (4 shared connections)
-- [API Type Guards](API_Type_Guards.md) (3 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (2 shared connections)
-- [Room Occupant Formatter](Room_Occupant_Formatter.md) (1 shared connections)
-- [LRU Cache Manager](LRU_Cache_Manager.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [LRU Cache Manager](LRU_Cache_Manager.md) (3 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
+- [Container Persistence Queries](Container_Persistence_Queries.md) (1 shared connections)
 
 ## Source Files
 

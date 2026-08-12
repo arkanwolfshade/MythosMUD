@@ -1,34 +1,32 @@
 # Investigations Sessions Session
 
-> 8 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Implementation Phases** (7 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Phase 1: Core Infrastructure Enhancement** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Phase 5: Authentication and Security** (3 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **1.1 Enhance CircuitBreaker Class** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **1.2 Create CircuitBreaker Manager** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **1.3 Add Configuration Support** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **5.1 Authentication Operations** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **5.2 Rate Limiting Integration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Attack Command Not Starting Combat** (2 connections) — `investigations/sessions/2025-01-28_session-attack-command-not-starting-combat.md`
+- **Target Resolution via Lifecycle Manager** (2 connections) — `investigations/sessions/2025-01-28_session-attack-command-not-starting-combat.md`
+- **NPC Dual Tracking System Issue** (2 connections) — `investigations/sessions/2025-01-29_session-001_npc-occupants-display-issue.md`
+- **Stale Room.get_npcs After Persistence Reload** (2 connections) — `investigations/sessions/2025-01-29_session-001_npc-occupants-display-issue.md`
+- **NPC Spawning vs Occupants Display Issue** (2 connections) — `investigations/sessions/2025-01-XX_session-npc-spawning-occupants-issue.md`
+- **CommandType Enum vs String Comparison** (1 connections) — `investigations/sessions/2025-01-28_session-attack-command-not-starting-combat.md`
+- **Flattened Occupants Losing Player NPC Distinction** (1 connections) — `investigations/sessions/2025-01-XX_session-occupants-npc-display.md`
 
 ## Relationships
 
-- [Components Map Nodes](Components_Map_Nodes.md) (1 shared connections)
-- [Npc Communication](Npc_Communication.md) (1 shared connections)
-- [Cursor Skills Onboard](Cursor_Skills_Onboard.md) (1 shared connections)
-- [Components Panels Chatpanelrefactoredderived](Components_Panels_Chatpanelrefactoredderived.md) (1 shared connections)
-- [Cursor Skills Polish](Cursor_Skills_Polish.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- `investigations/sessions/2025-01-28_session-attack-command-not-starting-combat.md`
+- `investigations/sessions/2025-01-29_session-001_npc-occupants-display-issue.md`
+- `investigations/sessions/2025-01-XX_session-npc-spawning-occupants-issue.md`
+- `investigations/sessions/2025-01-XX_session-occupants-npc-display.md`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (50%)
+- INFERRED: 6 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

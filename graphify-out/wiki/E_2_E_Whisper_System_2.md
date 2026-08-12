@@ -1,23 +1,32 @@
 # E 2 E Whisper System
 
-> 2 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_soft_delete_player_success()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test soft_delete_player successfully soft deletes player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **optimized_validate_reason_content()** (7 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_validate_reason_content_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_reason_content_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_reason_content_injection()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating empty reason content.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating valid reason content.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating reason content with injection pattern.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Optimized validation for reason content fields.      Args:         value: The re** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- [Lizard Complexity Findings](Lizard_Complexity_Findings.md) (1 shared connections)
+- [WebSocket Handler Tests](WebSocket_Handler_Tests.md) (4 shared connections)
+- [Cursor Workflows Docs](Cursor_Workflows_Docs.md) (1 shared connections)
+- [Services Combat Initialization](Services_Combat_Initialization.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

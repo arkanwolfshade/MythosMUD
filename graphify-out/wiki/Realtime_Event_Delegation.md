@@ -33,15 +33,15 @@
 
 ## Relationships
 
-- [Combat Monitoring Service](Combat_Monitoring_Service.md) (19 shared connections)
-- [Player Death Service](Player_Death_Service.md) (3 shared connections)
+- [Combat Monitoring Service](Combat_Monitoring_Service.md) (20 shared connections)
+- [Combat Service Bundle](Combat_Service_Bundle.md) (3 shared connections)
 - [Infrastructure Message Broker](Infrastructure_Message_Broker.md) (2 shared connections)
 - [NATS Message Schemas](NATS_Message_Schemas.md) (2 shared connections)
-- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 - [Components Ui Designtokens](Components_Ui_Designtokens.md) (2 shared connections)
-- [Combat Persistence Events](Combat_Persistence_Events.md) (1 shared connections)
-- [Database Error Handling](Database_Error_Handling.md) (1 shared connections)
+- [Cursor Setup Guide](Cursor_Setup_Guide.md) (1 shared connections)
+- [Services Rescue Service](Services_Rescue_Service.md) (1 shared connections)
+- [Subzone Schema Definition](Subzone_Schema_Definition.md) (1 shared connections)
 
 ## Source Files
 

@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **superuser()** (3 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **Create a superuser object.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **.test_start_success()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test start successfully starts the service.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
-- [Player Model Inventory](Player_Model_Inventory.md) (1 shared connections)
+- [Combat Health Persistence Fix](Combat_Health_Persistence_Fix.md) (1 shared connections)
+- [AnyIO Code Review](AnyIO_Code_Review.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_admin_auth_service.py`
+- `server/tests/unit/services/test_game_tick_service.py`
 
 ## Audit Trail
 

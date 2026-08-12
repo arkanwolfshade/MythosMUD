@@ -1,25 +1,34 @@
 # Cursor Commands Remediation
 
-> 2 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_list_players_database_error()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test list_players handles database errors.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **properties** (6 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **enum** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Relationships
 
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
-- [Lizard Complexity Findings](Lizard_Complexity_Findings.md) (1 shared connections)
+- [Realtime Statistics Aggregator](Realtime_Statistics_Aggregator.md) (1 shared connections)
+- [Logging Quick Reference](Logging_Quick_Reference.md) (1 shared connections)
+- [Archive Combat Health](Archive_Combat_Health.md) (1 shared connections)
+- [Archive Bug Prevention](Archive_Bug_Prevention.md) (1 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 19 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

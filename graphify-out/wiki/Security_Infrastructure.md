@@ -33,7 +33,7 @@
 
 - [Security Infrastructure](Security_Infrastructure.md) (12 shared connections)
 - [Realtime Websocket Handler](Realtime_Websocket_Handler.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 

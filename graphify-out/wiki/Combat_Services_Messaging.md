@@ -17,7 +17,7 @@
 
 ## Relationships
 
-- [Admin Teleport Commands](Admin_Teleport_Commands.md) (5 shared connections)
+- [Room Exploration API](Room_Exploration_API.md) (5 shared connections)
 
 ## Source Files
 

@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
-- [Zone Config Loader](Zone_Config_Loader.md) (3 shared connections)
-- [Dependency Injection Tests](Dependency_Injection_Tests.md) (3 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Health Cold Resistance](Health_Cold_Resistance.md) (3 shared connections)
 - [Draggable Panel UI](Draggable_Panel_UI.md) (3 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (1 shared connections)
 
 ## Source Files
 

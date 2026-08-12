@@ -1,26 +1,23 @@
 # Services Hallucination Frequency
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **add_fastapi_users_columns.py** (4 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **apply_migration()** (3 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **main()** (3 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **Apply the migration to add FastAPI Users columns.      Args:         database_ur** (1 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/add_fastapi_users_columns.py`
+- **test_handle_npc_attack_on_player_invalid_location()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **Test handle_npc_attack_on_player returns False when combat location is invalid.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Combat Configuration Service](Combat_Configuration_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/add_fastapi_users_columns.py`
+- `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

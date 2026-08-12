@@ -1,13 +1,12 @@
 # E 2 E Scenarios Scenario
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Scenario 32 Disconnect Grace Period** (2 connections) — `e2e-tests/scenarios/scenario-32-disconnect-grace-period.md`
-- **Linkdead Zombie State** (2 connections) — `e2e-tests/scenarios/scenario-32-disconnect-grace-period.md`
-- **Scenario 33 Rest Command** (1 connections) — `e2e-tests/scenarios/scenario-33-rest-command.md`
-- **Scenario 35 Player Combat** (1 connections) — `e2e-tests/scenarios/scenario-35-player-combat.md`
+- **Scenario 34 Two Players Same Room Visibility** (2 connections) — `e2e-tests/scenarios/scenario-34-two-players-same-room.md`
+- **Scenario 36 Movement Visibility** (1 connections) — `e2e-tests/scenarios/scenario-36-movement-visibility.md`
+- **Scenario 37 Chat Message Ordering** (1 connections) — `e2e-tests/scenarios/scenario-37-chat-message-ordering.md`
 
 ## Relationships
 
@@ -15,14 +14,14 @@
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-32-disconnect-grace-period.md`
-- `e2e-tests/scenarios/scenario-33-rest-command.md`
-- `e2e-tests/scenarios/scenario-35-player-combat.md`
+- `e2e-tests/scenarios/scenario-34-two-players-same-room.md`
+- `e2e-tests/scenarios/scenario-36-movement-visibility.md`
+- `e2e-tests/scenarios/scenario-37-chat-message-ordering.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (67%)
-- INFERRED: 2 (33%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 4 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

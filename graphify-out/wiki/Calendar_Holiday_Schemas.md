@@ -1,6 +1,6 @@
 # Calendar Holiday Schemas
 
-> 109 nodes
+> 117 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **movement_service.py** (34 connections) — `server/game/movement_service.py`
 - **test_movement_service.py** (25 connections) — `server/tests/unit/game/test_movement_service.py`
 - **UUID** (18 connections)
+- **movement_helpers.py** (16 connections) — `server/game/movement_helpers.py`
 - **._execute_move_locked()** (14 connections) — `server/game/movement_service.py`
 - **validate_player_room_membership()** (9 connections) — `server/game/movement_helpers.py`
 - **check_combat_state()** (8 connections) — `server/game/movement_helpers.py`
@@ -27,24 +28,23 @@
 - **._validate_add_player_ids()** (6 connections) — `server/game/movement_service.py`
 - **._validate_remove_player_params()** (6 connections) — `server/game/movement_service.py`
 - **.remove_player_from_room()** (6 connections) — `server/game/movement_service.py`
-- **Any** (5 connections)
-- **UUID** (5 connections)
-- *... and 84 more nodes in this community*
+- **.get_player_room()** (6 connections) — `server/game/movement_service.py`
+- *... and 92 more nodes in this community*
 
 ## Relationships
 
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (20 shared connections)
-- [Spell Registry Costs](Spell_Registry_Costs.md) (12 shared connections)
-- [Dependency Injection Tests](Dependency_Injection_Tests.md) (8 shared connections)
-- [Player Respawn Service](Player_Respawn_Service.md) (5 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (4 shared connections)
-- [Combat Aggro Threat](Combat_Aggro_Threat.md) (4 shared connections)
-- [Movement Performance Monitor](Movement_Performance_Monitor.md) (4 shared connections)
-- [Client Security Utilities](Client_Security_Utilities.md) (3 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (22 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (13 shared connections)
+- [Client Event Store](Client_Event_Store.md) (12 shared connections)
+- [Client Security Utilities](Client_Security_Utilities.md) (4 shared connections)
+- [Health Check Models](Health_Check_Models.md) (4 shared connections)
+- [Command Field Validators](Command_Field_Validators.md) (4 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (3 shared connections)
 - [Player Left Room Tests](Player_Left_Room_Tests.md) (3 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
-- [NPC Services Bundle](NPC_Services_Bundle.md) (2 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (3 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (2 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (2 shared connections)
+- [Health Cold Resistance](Health_Cold_Resistance.md) (2 shared connections)
 
 ## Source Files
 
@@ -54,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 391 (95%)
-- INFERRED: 19 (5%)
+- EXTRACTED: 421 (95%)
+- INFERRED: 23 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

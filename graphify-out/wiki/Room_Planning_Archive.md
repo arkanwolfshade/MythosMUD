@@ -1,6 +1,6 @@
 # Room Planning Archive
 
-> 34 nodes
+> 33 nodes
 
 ## Key Concepts
 
@@ -13,7 +13,6 @@
 - **runDeathRespawn()** (8 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
 - **useRespawnHandlers()** (6 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
 - **getMessageMetadata()** (5 connections) — `client/src/components/ui-v2/utils/messageUtils.ts`
-- **isApiErrorWithDetail()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
 - **UseRespawnHandlersParams** (4 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
 - **appendChatError()** (4 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
 - **appendChatSystem()** (4 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
@@ -29,20 +28,22 @@
 - **useRespawnHandlers.test.ts** (3 connections) — `client/src/components/ui-v2/hooks/__tests__/useRespawnHandlers.test.ts`
 - **postRespawn()** (3 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
 - **applyDeliriumRespawnSuccess()** (3 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
-- *... and 9 more nodes in this community*
+- **handleCombatStarted()** (2 connections) — `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [Communication Command Handlers](Communication_Command_Handlers.md) (18 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (6 shared connections)
+- [Async Room Loading Tests](Async_Room_Loading_Tests.md) (12 shared connections)
+- [Level and XP Curve](Level_and_XP_Curve.md) (8 shared connections)
 - [Character Stats Model](Character_Stats_Model.md) (6 shared connections)
+- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (5 shared connections)
 - [API Test Fixtures](API_Test_Fixtures.md) (4 shared connections)
-- [Combat Messaging Integration](Combat_Messaging_Integration.md) (4 shared connections)
 - [Realtime Event Handlers](Realtime_Event_Handlers.md) (4 shared connections)
 - [Connection Cleaner Tests](Connection_Cleaner_Tests.md) (4 shared connections)
-- [Quest Flow Integration](Quest_Flow_Integration.md) (3 shared connections)
-- [Cursor Bug Agents](Cursor_Bug_Agents.md) (2 shared connections)
+- [Combat Messaging Integration](Combat_Messaging_Integration.md) (3 shared connections)
+- [Quest Flow Integration](Quest_Flow_Integration.md) (2 shared connections)
 - [Command Input Utilities](Command_Input_Utilities.md) (2 shared connections)
+- [Cursor Bug Agents](Cursor_Bug_Agents.md) (2 shared connections)
 
 ## Source Files
 
@@ -56,7 +57,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 196 (98%)
+- EXTRACTED: 191 (98%)
 - INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 

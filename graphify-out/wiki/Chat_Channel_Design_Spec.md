@@ -32,12 +32,11 @@
 
 ## Relationships
 
-- [Communication Command Handlers](Communication_Command_Handlers.md) (10 shared connections)
-- [Client App State Hooks](Client_App_State_Hooks.md) (4 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (2 shared connections)
+- [Async Room Loading Tests](Async_Room_Loading_Tests.md) (11 shared connections)
+- [Commands System Help](Commands_System_Help.md) (4 shared connections)
+- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (2 shared connections)
 - [API Test Fixtures](API_Test_Fixtures.md) (1 shared connections)
-- [Async Room Loading Tests](Async_Room_Loading_Tests.md) (1 shared connections)
-- [Magic System Feature Plan](Magic_System_Feature_Plan.md) (1 shared connections)
+- [Character Stats Model](Character_Stats_Model.md) (1 shared connections)
 - [Cursor Bug Agents](Cursor_Bug_Agents.md) (1 shared connections)
 
 ## Source Files

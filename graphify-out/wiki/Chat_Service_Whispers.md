@@ -1,52 +1,59 @@
 # Chat Service Whispers
 
-> 26 nodes
+> 80 nodes
 
 ## Key Concepts
 
-- **_find_item_in_room_drops()** (23 connections) — `server/commands/look_item.py`
-- **test_find_item_in_room_drops_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_by_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Find an item in room drops by name or prototype_id.      Args:         room_drop** (1 connections) — `server/commands/look_item.py`
-- **Test finding item in room drops by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in room drops by prototype_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in room drops when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in room drops with multiple matches.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in room drops with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in room drops with invalid instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in room drops by item_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _find_item_in_room_drops() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_room_drops() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_room_drops() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_room_drops() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- *... and 1 more nodes in this community*
+- **test_metrics_endpoints.py** (37 connections) — `server/tests/unit/api/test_metrics_endpoints.py`
+- **metrics.py** (29 connections) — `server/api/metrics.py`
+- **_admin_user()** (14 connections) — `server/tests/unit/api/test_metrics_endpoints.py`
+- **replay_dlq_message()** (13 connections) — `server/api/metrics.py`
+- **StatusMessageResponse** (13 connections) — `server/schemas/metrics/metrics.py`
+- **DLQReplayResponse** (13 connections) — `server/schemas/metrics/metrics.py`
+- **metrics.py** (12 connections) — `server/schemas/metrics/metrics.py`
+- **get_metrics()** (11 connections) — `server/api/metrics.py`
+- **MetricsSummaryResponse** (11 connections) — `server/schemas/metrics/metrics.py`
+- **DLQMessagesResponse** (11 connections) — `server/schemas/metrics/metrics.py`
+- **Any** (10 connections)
+- **reset_circuit_breaker()** (10 connections) — `server/api/metrics.py`
+- **_load_dlq_message()** (10 connections) — `server/api/metrics.py`
+- **delete_dlq_message()** (10 connections) — `server/api/metrics.py`
+- **MetricsResponse** (10 connections) — `server/schemas/metrics/metrics.py`
+- **verify_admin_access()** (9 connections) — `server/api/metrics.py`
+- **Request** (9 connections)
+- **get_metrics_summary()** (9 connections) — `server/api/metrics.py`
+- **get_dlq_messages()** (9 connections) — `server/api/metrics.py`
+- **MetricsData** (9 connections) — `server/schemas/metrics/metrics_data.py`
+- **MetricsSummary** (9 connections) — `server/schemas/metrics/metrics_data.py`
+- **DLQMessage** (9 connections) — `server/schemas/metrics/metrics_data.py`
+- **DLQReplayDetails** (9 connections) — `server/schemas/metrics/metrics_data.py`
+- **reset_metrics()** (8 connections) — `server/api/metrics.py`
+- **_handle_replay_error()** (8 connections) — `server/api/metrics.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [Command Request App State](Command_Request_App_State.md) (10 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (8 shared connections)
-- [Error Handling Guide](Error_Handling_Guide.md) (4 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (17 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (16 shared connections)
+- [Game Terminal Panels](Game_Terminal_Panels.md) (6 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (2 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (1 shared connections)
+- [Plan Cursor Plans](Plan_Cursor_Plans.md) (1 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_item.py`
-- `server/tests/unit/commands/test_look_item.py`
-- `server/tests/unit/commands/test_look_item_helpers.py`
+- `server/api/metrics.py`
+- `server/schemas/metrics/__init__.py`
+- `server/schemas/metrics/metrics.py`
+- `server/schemas/metrics/metrics_data.py`
+- `server/tests/unit/api/test_metrics_endpoints.py`
 
 ## Audit Trail
 
-- EXTRACTED: 72 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 390 (87%)
+- INFERRED: 57 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

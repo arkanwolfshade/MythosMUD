@@ -35,16 +35,16 @@
 
 - [Container Persistence Queries](Container_Persistence_Queries.md) (9 shared connections)
 - [Rescue Service Tests](Rescue_Service_Tests.md) (9 shared connections)
-- [Room Occupant Events](Room_Occupant_Events.md) (3 shared connections)
-- [Player Command Developer Guide](Player_Command_Developer_Guide.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Command Helper Utilities](Command_Helper_Utilities.md) (3 shared connections)
+- [Chat Rate Limiter](Chat_Rate_Limiter.md) (3 shared connections)
 - [Pylint Unique Findings](Pylint_Unique_Findings.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
 - [Client Security Utilities](Client_Security_Utilities.md) (1 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
-- [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (1 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (1 shared connections)
+- [Health Cold Resistance](Health_Cold_Resistance.md) (1 shared connections)
+- [Container Exception Handlers](Container_Exception_Handlers.md) (1 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (1 shared connections)
 
 ## Source Files
 

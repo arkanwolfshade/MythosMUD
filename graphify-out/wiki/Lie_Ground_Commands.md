@@ -31,7 +31,7 @@
 - [Command Input Utilities](Command_Input_Utilities.md) (4 shared connections)
 - [Realtime Event Handlers](Realtime_Event_Handlers.md) (4 shared connections)
 - [Room Map Viewer UI](Room_Map_Viewer_UI.md) (2 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (2 shared connections)
+- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (2 shared connections)
 
 ## Source Files
 

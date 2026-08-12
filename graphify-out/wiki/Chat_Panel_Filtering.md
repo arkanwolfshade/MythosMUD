@@ -1,51 +1,52 @@
 # Chat Panel Filtering
 
-> 22 nodes
+> 84 nodes
 
 ## Key Concepts
 
-- **MythosTimeResponse** (15 connections) — `server/schemas/game/game.py`
-- **get_mythos_time()** (14 connections) — `server/api/game.py`
-- **TestGetMythosTimeEdgeCases** (6 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_success()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_no_holiday_service()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_holiday_service_error()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_no_container()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_holiday_service_upcoming_error()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_container_no_holiday_service_attribute()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_logs_debug()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_different_calendar_components()** (3 connections) — `server/tests/unit/api/test_game.py`
-- **Return the current Mythos calendar metadata for HUD initialization.      In-memo** (1 connections) — `server/api/game.py`
-- **Response model for Mythos calendar time endpoint.** (1 connections) — `server/schemas/game/game.py`
-- **Test get_mythos_time returns time data.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test get_mythos_time handles missing holiday service.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test get_mythos_time handles holiday service errors gracefully.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test get_mythos_time handles None container.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test get_mythos_time handles upcoming holidays error gracefully.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test edge cases for get_mythos_time.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test get_mythos_time handles container without holiday_service attribute.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test get_mythos_time logs debug message.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test get_mythos_time with different calendar component values.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **test_player_death_service.py** (52 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **player_death_service()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **player_death_service_no_dependencies()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_process_mortally_wounded_tick_publishes_event()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_publish_death_event_with_event_bus()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **mock_event_bus()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **mock_player_combat_service()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **mock_session()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **sample_player_id()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_player_death_service_init()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_player_death_service_init_no_dependencies()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_get_mortally_wounded_players_empty()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_get_mortally_wounded_players_finds_mortally_wounded()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_get_mortally_wounded_players_excludes_healthy()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_get_mortally_wounded_players_excludes_dead()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_get_mortally_wounded_players_handles_error()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_get_dead_players_empty()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_get_dead_players_finds_dead()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_get_dead_players_excludes_alive()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_get_dead_players_handles_error()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_process_mortally_wounded_tick_player_not_found()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_process_mortally_wounded_tick_already_dead()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_process_mortally_wounded_tick_applies_decay()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_process_mortally_wounded_tick_caps_at_negative_10()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_process_mortally_wounded_tick_changes_posture_to_lying()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [E 2 E Testing Approach](E_2_E_Testing_Approach.md) (6 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
-- [Investigations Sessions Session](Investigations_Sessions_Session.md) (3 shared connections)
-- [Realtime Npc Event](Realtime_Npc_Event.md) (3 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
-- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (1 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (4 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (1 shared connections)
+- [Combat NPC Lookup](Combat_NPC_Lookup.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/game.py`
-- `server/schemas/game/game.py`
-- `server/tests/unit/api/test_game.py`
+- `server/tests/unit/services/test_player_death_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 62 (81%)
-- INFERRED: 15 (19%)
+- EXTRACTED: 178 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

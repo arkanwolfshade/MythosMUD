@@ -1,12 +1,11 @@
 # Container Inventory Finders
 
-> 89 nodes
+> 87 nodes
 
 ## Key Concepts
 
 - **test_container_helpers_inventory_find.py** (55 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
 - **container_helpers_inventory_find.py** (32 connections) — `server/commands/container_helpers_inventory_find.py`
-- **container_helpers_inventory.py** (31 connections) — `server/commands/container_helpers_inventory.py`
 - **find_wearable_container()** (17 connections) — `server/commands/container_helpers_inventory_find.py`
 - **UUID** (16 connections)
 - **try_wearable_container_service()** (14 connections) — `server/commands/container_helpers_inventory_find.py`
@@ -29,33 +28,31 @@
 - **_component_metadata()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
 - **_resolve_inner_uuid()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
 - **_container_from_equip_dict()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
-- *... and 64 more nodes in this community*
+- **_fallback_create_equipment_container()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
+- *... and 62 more nodes in this community*
 
 ## Relationships
 
-- [Container Inventory Ops](Container_Inventory_Ops.md) (14 shared connections)
+- [Container Inventory Ops](Container_Inventory_Ops.md) (15 shared connections)
 - [Container Component Capacity](Container_Component_Capacity.md) (5 shared connections)
-- [Schedule Service Loader](Schedule_Service_Loader.md) (5 shared connections)
-- [Async Task Registry](Async_Task_Registry.md) (4 shared connections)
-- [Spell Effect Protocols](Spell_Effect_Protocols.md) (4 shared connections)
-- [Container Sync Remediation](Container_Sync_Remediation.md) (3 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
-- [Zone Config Loader](Zone_Config_Loader.md) (1 shared connections)
-- [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
+- [Quest Journal Commands](Quest_Journal_Commands.md) (5 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (2 shared connections)
+- [AnyIO vs Asyncio Guide](AnyIO_vs_Asyncio_Guide.md) (2 shared connections)
+- [Container Sync Remediation](Container_Sync_Remediation.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
 - [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/container_helpers_inventory.py`
 - `server/commands/container_helpers_inventory_find.py`
 - `server/tests/unit/api/test_container_exception_handlers.py`
 - `server/tests/unit/commands/test_container_helpers_inventory_find.py`
 
 ## Audit Trail
 
-- EXTRACTED: 444 (97%)
-- INFERRED: 16 (3%)
+- EXTRACTED: 412 (96%)
+- INFERRED: 16 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

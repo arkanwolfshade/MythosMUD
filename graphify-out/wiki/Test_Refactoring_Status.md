@@ -32,7 +32,7 @@
 ## Relationships
 
 - [Connection Statistics Aggregator](Connection_Statistics_Aggregator.md) (2 shared connections)
-- [Playwright E2E Specs](Playwright_E2E_Specs.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 

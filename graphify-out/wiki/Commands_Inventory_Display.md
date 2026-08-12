@@ -1,34 +1,39 @@
 # Commands Inventory Display
 
-> 8 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **schedule_end_combat_if_npc_died_best_effort()** (8 connections) — `server/npc/npc_combat_schedule.py`
-- **test_npc_combat_schedule.py** (5 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **test_schedule_end_combat_if_npc_died_no_service()** (3 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **test_schedule_end_combat_if_npc_died_no_running_loop()** (3 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **Schedule end_combat_if_npc_died so the slain NPC no longer gets combat turns (be** (1 connections) — `server/npc/npc_combat_schedule.py`
-- **Unit tests for best-effort NPC combat cleanup scheduling.** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **When combat service is missing, scheduling is a no-op.** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **Without a running asyncio loop, scheduling fails quietly (RuntimeError path).** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **_FleeCommandHandlerLike** (17 connections) — `server/commands/combat_flee.py`
+- **.check_and_interrupt_rest()** (4 connections) — `server/commands/combat_flee.py`
+- **.get_player_and_room()** (4 connections) — `server/commands/combat_flee.py`
+- **.combat_service()** (3 connections) — `server/commands/combat_flee.py`
+- **AppWithState** (3 connections)
+- **.movement_service()** (2 connections) — `server/commands/combat_flee.py`
+- **.player_position_service()** (2 connections) — `server/commands/combat_flee.py`
+- **Handler surface for flee (avoids importing CombatCommandHandler; breaks import c** (1 connections) — `server/commands/combat_flee.py`
+- **Combat service if wired.** (1 connections) — `server/commands/combat_flee.py`
+- **Movement service if wired.** (1 connections) — `server/commands/combat_flee.py`
+- **Player position service if wired (duck-typed; see _ensure_flee_standing).** (1 connections) — `server/commands/combat_flee.py`
+- **Interrupt rest / block during grace; return message dict or None.** (1 connections) — `server/commands/combat_flee.py`
+- **Load player and room or an error payload.** (1 connections) — `server/commands/combat_flee.py`
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (9 shared connections)
+- [Api Player Respawn](Api_Player_Respawn.md) (2 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (2 shared connections)
+- [Combat Taunt Tests](Combat_Taunt_Tests.md) (1 shared connections)
+- [Commands Npc Admin](Commands_Npc_Admin.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/npc_combat_schedule.py`
-- `server/tests/unit/npc/test_npc_combat_schedule.py`
+- `server/commands/combat_flee.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 38 (93%)
+- INFERRED: 3 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

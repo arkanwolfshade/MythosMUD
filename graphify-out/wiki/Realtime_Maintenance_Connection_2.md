@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_player_name_exists()** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test validate_player_name() when name already exists.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_process_tick_regeneration_at_max()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test process_tick_regeneration() returns zero when MP already at max.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
+- [Cursor Agents Quick](Cursor_Agents_Quick.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 

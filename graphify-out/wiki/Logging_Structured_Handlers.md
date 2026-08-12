@@ -36,7 +36,7 @@
 - [Logging File Setup](Logging_File_Setup.md) (10 shared connections)
 - [Logging Path Utilities](Logging_Path_Utilities.md) (6 shared connections)
 - [Windows Log Rotation](Windows_Log_Rotation.md) (4 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 
 ## Source Files
 

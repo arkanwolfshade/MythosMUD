@@ -1,14 +1,13 @@
 # Party Service Management
 
-> 63 nodes
+> 62 nodes
 
 ## Key Concepts
 
 - **test_websocket_helpers.py** (36 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **get_npc_name_from_instance()** (12 connections) — `server/realtime/websocket_helpers.py`
 - **check_shutdown_and_reject()** (12 connections) — `server/realtime/websocket_helpers.py`
 - **convert_uuids_to_strings()** (11 connections) — `server/realtime/websocket_helpers.py`
-- **load_player_mute_data()** (7 connections) — `server/realtime/websocket_helpers.py`
+- **is_client_disconnected_exception()** (10 connections) — `server/realtime/websocket_helpers.py`
 - **test_get_npc_name_from_instance_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
 - **test_get_npc_name_from_instance_not_found()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
 - **test_get_npc_name_from_instance_no_name_attribute()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
@@ -29,17 +28,21 @@
 - **test_get_occupant_names_empty()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
 - **test_get_occupant_names_none()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
 - **test_convert_uuids_to_strings_dict()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- *... and 38 more nodes in this community*
+- **test_convert_uuids_to_strings_list()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
 - [Combat Domain Events](Combat_Domain_Events.md) (13 shared connections)
-- [Character Creation Service](Character_Creation_Service.md) (9 shared connections)
-- [WebSocket Initial State](WebSocket_Initial_State.md) (5 shared connections)
-- [Player Combat XP](Player_Combat_XP.md) (4 shared connections)
+- [Character Creation Service](Character_Creation_Service.md) (8 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (6 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (6 shared connections)
+- [Pre-commit Hook Analysis](Pre-commit_Hook_Analysis.md) (2 shared connections)
 - [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (2 shared connections)
-- [Auth Token Utilities](Auth_Token_Utilities.md) (2 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
+- [Container Exception Handlers](Container_Exception_Handlers.md) (1 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (1 shared connections)
+- [Container Persistence Queries](Container_Persistence_Queries.md) (1 shared connections)
+- [Look Display Helpers](Look_Display_Helpers.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,7 +51,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 188 (100%)
+- EXTRACTED: 179 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

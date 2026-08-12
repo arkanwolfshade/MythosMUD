@@ -1,10 +1,10 @@
 # Grace Period Blocking Tests
 
-> 45 nodes
+> 43 nodes
 
 ## Key Concepts
 
-- **LRUCache** (27 connections) — `server/caching/lru_cache.py`
+- **CacheManager** (12 connections) — `server/caching/lru_cache.py`
 - **.items()** (8 connections) — `server/caching/lru_cache.py`
 - **K** (7 connections)
 - **.get_or_set()** (7 connections) — `server/caching/lru_cache.py`
@@ -19,30 +19,26 @@
 - **.delete()** (4 connections) — `server/caching/lru_cache.py`
 - **Any** (4 connections)
 - **.values()** (4 connections) — `server/caching/lru_cache.py`
+- **._initialize_default_caches()** (4 connections) — `server/caching/lru_cache.py`
 - **.create_cache()** (4 connections) — `server/caching/lru_cache.py`
 - **.clear()** (3 connections) — `server/caching/lru_cache.py`
-- **.size()** (3 connections) — `server/caching/lru_cache.py`
-- **.__len__()** (3 connections) — `server/caching/lru_cache.py`
 - **.__contains__()** (3 connections) — `server/caching/lru_cache.py`
 - **.__repr__()** (3 connections) — `server/caching/lru_cache.py`
+- **.__init__()** (3 connections) — `server/caching/lru_cache.py`
 - **.clear_all_caches()** (3 connections) — `server/caching/lru_cache.py`
-- **.__init__()** (2 connections) — `server/caching/lru_cache.py`
-- **.is_full()** (2 connections) — `server/caching/lru_cache.py`
+- **.delete_cache()** (2 connections) — `server/caching/lru_cache.py`
 - **.get_cache_names()** (2 connections) — `server/caching/lru_cache.py`
-- *... and 20 more nodes in this community*
+- **Get an item from the cache.          Args:             key: The key to look up** (1 connections) — `server/caching/lru_cache.py`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (8 shared connections)
-- [Alias Command Models](Alias_Command_Models.md) (2 shared connections)
-- [E 2 E Testing Guide](E_2_E_Testing_Guide.md) (1 shared connections)
-- [Structured Concurrency Patterns](Structured_Concurrency_Patterns.md) (1 shared connections)
-- [Command Parser Helpers](Command_Parser_Helpers.md) (1 shared connections)
-- [Connection Room Presence Utils](Connection_Room_Presence_Utils.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (16 shared connections)
+- [Logging Correct Patterns](Logging_Correct_Patterns.md) (1 shared connections)
 - [Message Queue Cleanup](Message_Queue_Cleanup.md) (1 shared connections)
-- [Realtime Errors Error](Realtime_Errors_Error.md) (1 shared connections)
 - [Async Task Registry](Async_Task_Registry.md) (1 shared connections)
 - [Player Effects API](Player_Effects_API.md) (1 shared connections)
+- [Command Field Validators](Command_Field_Validators.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 142 (95%)
-- INFERRED: 8 (5%)
+- EXTRACTED: 129 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

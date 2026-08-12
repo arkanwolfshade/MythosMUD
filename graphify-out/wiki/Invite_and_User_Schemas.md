@@ -1,58 +1,54 @@
 # Invite and User Schemas
 
-> 70 nodes
+> 60 nodes
 
 ## Key Concepts
 
-- **test_admin_commands.py** (37 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **handle_admin_command()** (14 connections) — `server/commands/admin_commands.py`
-- **_handle_admin_status_command()** (9 connections) — `server/commands/admin_commands.py`
-- **_handle_admin_time_command()** (6 connections) — `server/commands/admin_commands.py`
-- **.is_admin()** (4 connections) — `server/commands/communication_commands_support.py`
-- **test_handle_mute_command_exception()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **Any** (3 connections)
-- **test_handle_admin_command_status()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_admin_command_time()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_admin_command_unknown()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_no_target()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_unmute_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_unmute_command_no_target()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_unmute_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_unmute_command_idempotent_when_not_muted()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_global_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_global_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_unmute_global_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_unmute_global_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_add_admin_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_add_admin_command_no_target()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_add_admin_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mutes_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- *... and 45 more nodes in this community*
+- **test_command_exploration.py** (20 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **LookCommand** (19 connections) — `server/models/command_exploration.py`
+- **.create_look_command()** (18 connections) — `server/utils/command_factories_exploration.py`
+- **test_look_command_validate_direction_invalid()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_instance_number_validation_min()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **.validate_direction()** (3 connections) — `server/models/command_exploration.py`
+- **test_look_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_direction()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_validate_direction_valid()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_validate_direction_none()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_look_in()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_instance_number()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_required_direction()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_validate_direction_valid()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_all_directions()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_create_look_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_target()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_explicit_player_type()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_explicit_npc_type()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_explicit_item_type()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_explicit_container_type()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_explicit_type_no_target()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_instance_hyphen()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_instance_space()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [Container Open Events](Container_Open_Events.md) (32 shared connections)
-- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (9 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
-- [Admin Status Commands](Admin_Status_Commands.md) (1 shared connections)
-- [Cursor Skills Harden](Cursor_Skills_Harden.md) (1 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
-- [Room Drop Renderer](Room_Drop_Renderer.md) (1 shared connections)
-- [Quest Journal Commands](Quest_Journal_Commands.md) (1 shared connections)
-- [Look NPC Command](Look_NPC_Command.md) (1 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (16 shared connections)
+- [Moderation Command Models](Moderation_Command_Models.md) (13 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (4 shared connections)
+- [Memory Profiler Tools](Memory_Profiler_Tools.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_commands.py`
-- `server/commands/communication_commands_support.py`
-- `server/tests/unit/commands/test_admin_commands.py`
+- `server/models/command_exploration.py`
+- `server/tests/unit/models/test_command_exploration.py`
+- `server/tests/unit/utils/test_command_factories_exploration.py`
+- `server/utils/command_factories_exploration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 168 (85%)
-- INFERRED: 30 (15%)
+- EXTRACTED: 163 (96%)
+- INFERRED: 7 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

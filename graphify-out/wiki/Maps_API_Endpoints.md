@@ -1,60 +1,55 @@
 # Maps API Endpoints
 
-> 55 nodes
+> 69 nodes
 
 ## Key Concepts
 
-- **container_persistence.py** (54 connections) — `server/persistence/container_persistence.py`
-- **test_container_persistence_extended_row_helpers.py** (53 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
-- **_container_data_from_row()** (20 connections) — `server/persistence/container_persistence.py`
-- **create_container()** (19 connections) — `server/persistence/container_persistence.py`
-- **get_container()** (19 connections) — `server/persistence/container_persistence.py`
-- **_InsertBindSource** (11 connections) — `server/persistence/container_persistence.py`
-- **_insert_container_row()** (11 connections) — `server/persistence/container_persistence.py`
-- **PsycopgConnection** (11 connections)
-- **_log_and_resolve_created_container()** (11 connections) — `server/persistence/container_persistence.py`
-- **_seed_new_container_items()** (11 connections) — `server/persistence/container_persistence.py`
-- **UUID** (10 connections)
-- **_CreateOutcome** (10 connections) — `server/persistence/container_persistence.py`
-- **_after_container_insert()** (10 connections) — `server/persistence/container_persistence.py`
-- **_run_container_update_execute()** (9 connections) — `server/persistence/container_persistence.py`
-- **_as_uuid()** (6 connections) — `server/persistence/container_persistence.py`
-- **_as_opt_datetime()** (6 connections) — `server/persistence/container_persistence.py`
-- **_metadata_from_row()** (6 connections) — `server/persistence/container_persistence.py`
-- **_validate_new_container_params()** (6 connections) — `server/persistence/container_persistence.py`
-- **ContainerData** (6 connections)
-- **_as_opt_uuid()** (5 connections) — `server/persistence/container_persistence.py`
-- **datetime** (5 connections)
-- **_allowed_roles_from_row()** (5 connections) — `server/persistence/container_persistence.py`
-- **_insert_bind_tuple()** (5 connections) — `server/persistence/container_persistence.py`
-- **_fetch_container_row_dict()** (5 connections) — `server/persistence/container_persistence.py`
-- **test_insert_container_row_raises_when_no_row_returned()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
-- *... and 30 more nodes in this community*
+- **test_combat_persistence_handler_events.py** (25 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **CombatPersistenceHandler** (22 connections) — `server/services/combat_persistence_handler.py`
+- **combat_persistence_handler.py** (15 connections) — `server/services/combat_persistence_handler.py`
+- **UUID** (8 connections)
+- **._persist_player_dp_sync()** (7 connections) — `server/services/combat_persistence_handler.py`
+- **._get_persistence_layer()** (6 connections) — `server/services/combat_persistence_handler.py`
+- **._publish_player_dp_update_event_impl()** (6 connections) — `server/services/combat_persistence_handler.py`
+- **._verify_player_save()** (5 connections) — `server/services/combat_persistence_handler.py`
+- **._publish_player_dp_correction_event()** (5 connections) — `server/services/combat_persistence_handler.py`
+- **._log_death_state_changes()** (4 connections) — `server/services/combat_persistence_handler.py`
+- **._persist_player_dp_background()** (4 connections) — `server/services/combat_persistence_handler.py`
+- **.publish_player_dp_update_event()** (4 connections) — `server/services/combat_persistence_handler.py`
+- **.__init__()** (3 connections) — `server/services/combat_persistence_handler.py`
+- **Any** (3 connections)
+- **persistence_handler()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_event_bus_publish_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_no_event_bus()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_with_nats()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_legacy_subject()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_nats_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_no_nats()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [Communication Command Models](Communication_Command_Models.md) (23 shared connections)
-- [Draggable Panel UI](Draggable_Panel_UI.md) (16 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (14 shared connections)
-- [E2E Suite Overview](E2E_Suite_Overview.md) (10 shared connections)
-- [Api Player Respawn](Api_Player_Respawn.md) (9 shared connections)
-- [Spell Registry Costs](Spell_Registry_Costs.md) (5 shared connections)
-- [Coverage Disconnect Grace](Coverage_Disconnect_Grace.md) (5 shared connections)
-- [Player Save Preparer](Player_Save_Preparer.md) (4 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (3 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Character Selection Screens](Character_Selection_Screens.md) (1 shared connections)
-- [Archive Database Migration](Archive_Database_Migration.md) (1 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (10 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (4 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (4 shared connections)
+- [Product Requirements Document](Product_Requirements_Document.md) (3 shared connections)
+- [AI Development Workflow](AI_Development_Workflow_2.md) (3 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 
 ## Source Files
 
-- `server/persistence/container_persistence.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- `server/services/combat_persistence_handler.py`
+- `server/tests/unit/services/test_combat_persistence_handler_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 370 (96%)
-- INFERRED: 17 (4%)
+- EXTRACTED: 187 (96%)
+- INFERRED: 7 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

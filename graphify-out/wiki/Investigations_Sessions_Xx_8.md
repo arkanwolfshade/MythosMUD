@@ -1,25 +1,23 @@
 # Investigations Sessions Xx
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **9. Command Blocking During Grace Period** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Industry Practices** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Our Plan** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Gap Analysis** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Missing Hourly Clock Chimes** (1 connections) — `investigations/sessions/2025-01-XX_session-hourly-clock-chimes-missing.md`
+- **mythos_time_update Daypart-Only Messages** (1 connections) — `investigations/sessions/2025-01-XX_session-hourly-clock-chimes-missing.md`
 
 ## Relationships
 
-- [Cursor Commands Remediation](Cursor_Commands_Remediation.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.cursor/plans/disconnect_grace_period_comparison.md`
+- `investigations/sessions/2025-01-XX_session-hourly-clock-chimes-missing.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

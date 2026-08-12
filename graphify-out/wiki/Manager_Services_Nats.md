@@ -7,8 +7,8 @@
 - **test_metrics.py** (27 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
 - **SubjectManagerMetrics** (16 connections) — `server/services/nats_subject_manager/metrics.py`
 - **._calculate_percentile()** (6 connections) — `server/services/nats_subject_manager/metrics.py`
-- **metrics.py** (5 connections) — `server/services/nats_subject_manager/metrics.py`
 - **.get_metrics()** (4 connections) — `server/services/nats_subject_manager/metrics.py`
+- **.__init__()** (3 connections) — `server/services/nats_subject_manager/metrics.py`
 - **metrics()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
 - **test_subject_manager_metrics_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
 - **test_calculate_percentile_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (3 shared connections)
-- [Cursor Setup Guide](Cursor_Setup_Guide.md) (2 shared connections)
+- [Cursor Setup Guide](Cursor_Setup_Guide.md) (4 shared connections)
+- [Services Rescue Service](Services_Rescue_Service.md) (1 shared connections)
 - [NATS Pattern Matcher](NATS_Pattern_Matcher.md) (1 shared connections)
-- [Async Persistence Migration](Async_Persistence_Migration.md) (1 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 152 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 149 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

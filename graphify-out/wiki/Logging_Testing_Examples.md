@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
-- [Room Data Fixer](Room_Data_Fixer.md) (2 shared connections)
-- [Playwright E2E Specs](Playwright_E2E_Specs.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Holiday Persistence Models](Holiday_Persistence_Models.md) (1 shared connections)
+- [Room Data Fixer](Room_Data_Fixer.md) (1 shared connections)
+- [WebSocket Initial State](WebSocket_Initial_State.md) (1 shared connections)
 
 ## Source Files
 

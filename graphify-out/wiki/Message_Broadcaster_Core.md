@@ -1,53 +1,56 @@
 # Message Broadcaster Core
 
-> 20 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **CombatAttackHandler** (19 connections) — `server/services/combat_attack_handler.py`
-- **._apply_damage()** (9 connections) — `server/services/combat_attack_handler.py`
-- **.validate_and_get_combat_participants()** (8 connections) — `server/services/combat_attack_handler.py`
-- **.apply_attack_damage()** (5 connections) — `server/services/combat_attack_handler.py`
-- **._find_combat_target()** (5 connections) — `server/services/combat_attack_handler.py`
-- **._validate_attack()** (4 connections) — `server/services/combat_attack_handler.py`
-- **._room_has_no_death()** (4 connections) — `server/services/combat_attack_handler.py`
-- **.__init__()** (3 connections) — `server/services/combat_attack_handler.py`
-- **UUID** (3 connections)
-- **._validate_target_can_be_attacked()** (3 connections) — `server/services/combat_attack_handler.py`
-- **attack_handler()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **Any** (1 connections)
-- **Handles combat attack processing and damage application.** (1 connections) — `server/services/combat_attack_handler.py`
-- **Initialize the attack handler.          Args:             combat_service: Refere** (1 connections) — `server/services/combat_attack_handler.py`
-- **Validate that attack is allowed.** (1 connections) — `server/services/combat_attack_handler.py`
-- **Apply damage to target and check death states.          Delegates domain logic t** (1 connections) — `server/services/combat_attack_handler.py`
-- **Check if room has no_death attribute (tutorial/safe zones).** (1 connections) — `server/services/combat_attack_handler.py`
-- **Apply damage to target and update combat state.          Args:             comba** (1 connections) — `server/services/combat_attack_handler.py`
-- **Validate attack and retrieve combat participants.          Args:             att** (1 connections) — `server/services/combat_attack_handler.py`
-- **Create CombatAttackHandler instance.** (1 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **admin_summon_command.py** (34 connections) — `server/commands/admin_summon_command.py`
+- **_resolve_summon_context()** (11 connections) — `server/commands/admin_summon_command.py`
+- **Any** (10 connections)
+- **handle_summon_command()** (10 connections) — `server/commands/admin_summon_command.py`
+- **_broadcast_and_log_summon_success()** (7 connections) — `server/commands/admin_summon_command.py`
+- **_complete_summon()** (7 connections) — `server/commands/admin_summon_command.py`
+- **_persist_summoned_item()** (6 connections) — `server/commands/admin_summon_command.py`
+- **_parse_summon_command_data()** (5 connections) — `server/commands/admin_summon_command.py`
+- **_validate_summon_prerequisites()** (4 connections) — `server/commands/admin_summon_command.py`
+- **_summon_npc_stub_response()** (4 connections) — `server/commands/admin_summon_command.py`
+- **_create_summon_item_instance()** (4 connections) — `server/commands/admin_summon_command.py`
+- **_log_summon_success()** (4 connections) — `server/commands/admin_summon_command.py`
+- **Administrative summon command implementation.** (1 connections) — `server/commands/admin_summon_command.py`
+- **Return an error result dict if item services or room manager are missing; otherw** (1 connections) — `server/commands/admin_summon_command.py`
+- **If target_type is 'npc', log and return stub message; otherwise return None.** (1 connections) — `server/commands/admin_summon_command.py`
+- **Create item instance via factory. Returns (instance, None) or (None, error_dict)** (1 connections) — `server/commands/admin_summon_command.py`
+- **Persist item instance to DB. Logs and continues on failure (room drop still adde** (1 connections) — `server/commands/admin_summon_command.py`
+- **Resolve state, player, admin permission, and summon prerequisites.      Returns** (1 connections) — `server/commands/admin_summon_command.py`
+- **Parse and validate command_data; optionally record quantity spike; check NPC stu** (1 connections) — `server/commands/admin_summon_command.py`
+- **Broadcast admin_summon event to room, then record success logs.** (1 connections) — `server/commands/admin_summon_command.py`
+- **Log successful summon in admin logger and structured logs.** (1 connections) — `server/commands/admin_summon_command.py`
+- **Create item, persist, add to room, broadcast event, log; return success message.** (1 connections) — `server/commands/admin_summon_command.py`
+- **Handle the `/summon` administrative command.** (1 connections) — `server/commands/admin_summon_command.py`
 
 ## Relationships
 
-- [Combat Death Handling](Combat_Death_Handling.md) (5 shared connections)
-- [Rest Command Flow](Rest_Command_Flow.md) (5 shared connections)
-- [Async Persistence Layer](Async_Persistence_Layer.md) (4 shared connections)
-- [Player Respawn Service](Player_Respawn_Service.md) (3 shared connections)
-- [Player Respawn Events](Player_Respawn_Events.md) (2 shared connections)
-- [Health Check Models](Health_Check_Models.md) (1 shared connections)
-- [Container Exception Handlers](Container_Exception_Handlers.md) (1 shared connections)
-- [Command Helper Utilities](Command_Helper_Utilities.md) (1 shared connections)
-- [Command Parser](Command_Parser.md) (1 shared connections)
-- [Players API Endpoints](Players_API_Endpoints.md) (1 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
+- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (6 shared connections)
+- [Container Open Events](Container_Open_Events.md) (5 shared connections)
+- [Spell Effect Protocols](Spell_Effect_Protocols.md) (4 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (3 shared connections)
+- [Async Task Registry](Async_Task_Registry.md) (3 shared connections)
+- [Help and WebSocket Core](Help_and_WebSocket_Core.md) (3 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (3 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (2 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (2 shared connections)
+- [NATS Retry Handler](NATS_Retry_Handler.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_attack_handler.py`
-- `server/tests/unit/services/test_combat_attack_handler.py`
+- `server/commands/admin_summon_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 73 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 113 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

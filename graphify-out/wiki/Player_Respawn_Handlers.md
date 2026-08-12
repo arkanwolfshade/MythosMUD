@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [Playwright Remediation Plan](Playwright_Remediation_Plan.md) (2 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (3 shared connections)
 - [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
-- [Spell Registry Costs](Spell_Registry_Costs.md) (1 shared connections)
-- [Container Open Events](Container_Open_Events.md) (1 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,60 +1,62 @@
 # NATS Metrics API
 
-> 50 nodes
+> 48 nodes
 
 ## Key Concepts
 
-- **combat_turn_participant_actions.py** (46 connections) — `server/services/combat_turn_participant_actions.py`
-- **_weapon_damage_from_equipped_player()** (11 connections) — `server/services/combat_turn_participant_actions.py`
-- **_resolve_npc_target()** (11 connections) — `server/services/combat_turn_participant_actions.py`
-- **process_npc_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
-- **process_player_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
-- **resolve_player_attack_damage()** (9 connections) — `server/services/combat_turn_participant_actions.py`
-- **_get_combat_container_services()** (8 connections) — `server/services/combat_turn_participant_actions.py`
-- **_select_npc_target()** (7 connections) — `server/services/combat_turn_participant_actions.py`
-- **_execute_player_attack()** (7 connections) — `server/services/combat_turn_participant_actions.py`
-- **_execute_npc_attack()** (6 connections) — `server/services/combat_turn_participant_actions.py`
-- **test_process_npc_turn_calls_process_attack_when_target_resolved()** (6 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
-- **_get_target_stats_for_damage()** (5 connections) — `server/services/combat_turn_participant_actions.py`
-- **_apply_physical_strength_bonus()** (5 connections) — `server/services/combat_turn_participant_actions.py`
-- **_should_continue_npc_turn()** (5 connections) — `server/services/combat_turn_participant_actions.py`
-- **_should_continue_player_turn()** (5 connections) — `server/services/combat_turn_participant_actions.py`
-- **_select_player_target()** (5 connections) — `server/services/combat_turn_participant_actions.py`
-- **_should_skip_for_casting()** (5 connections) — `server/services/combat_turn_participant_actions.py`
-- **test_select_npc_target_prefers_mortally_wounded_player_over_skipping()** (5 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
-- **test_resolve_npc_target_uses_aggro_current_target()** (5 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
-- **test_resolve_npc_target_broadcasts_when_aggro_switches()** (5 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
-- **_strength_modifier_from_attacker_stats()** (4 connections) — `server/services/combat_turn_participant_actions.py`
-- **UUID** (3 connections)
-- **_attacker_stats_dict_from_full_player()** (3 connections) — `server/services/combat_turn_participant_actions.py`
-- **test_strength_modifier_from_attacker_stats_defaults()** (3 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
-- **test_apply_physical_strength_bonus_adds_for_physical_only()** (3 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
-- *... and 25 more nodes in this community*
+- **test_player_schemas.py** (21 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **player.py** (20 connections) — `server/schemas/players/player.py`
+- **ClassDefinition** (15 connections) — `server/schemas/players/class_definition.py`
+- **PlayerBase** (11 connections) — `server/schemas/players/player.py`
+- **PlayerCreate** (10 connections) — `server/schemas/players/player.py`
+- **CharacterInfo** (10 connections) — `server/schemas/players/player.py`
+- **PlayerUpdate** (9 connections) — `server/schemas/players/player.py`
+- **AvailableClassesResponse** (8 connections) — `server/schemas/players/player.py`
+- **get_available_classes()** (7 connections) — `server/api/players.py`
+- **BaseModel** (7 connections)
+- **MessageResponse** (7 connections) — `server/schemas/players/player.py`
+- **test_player_base_validation()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_create()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_create_custom_stats()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_read()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_read_defaults()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_base_rejects_extra_fields()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_create_rejects_extra_fields()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **class_definition.py** (3 connections) — `server/schemas/players/class_definition.py`
+- **test_player_base()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_character_info()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_character_info_defaults()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_update()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **test_player_update_all_optional()** (3 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **Get information about all available character classes and their prerequisites.** (1 connections) — `server/api/players.py`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [Rest Command Flow](Rest_Command_Flow.md) (18 shared connections)
-- [Combat Death Handling](Combat_Death_Handling.md) (12 shared connections)
-- [Async Persistence Layer](Async_Persistence_Layer.md) (10 shared connections)
-- [Container Exception Handlers](Container_Exception_Handlers.md) (8 shared connections)
-- [Client Security Utilities](Client_Security_Utilities.md) (6 shared connections)
-- [Command Parser](Command_Parser.md) (6 shared connections)
-- [Lucidity State Models](Lucidity_State_Models.md) (5 shared connections)
-- [Inventory Command Models](Inventory_Command_Models.md) (4 shared connections)
-- [NATS Subject Admin API](NATS_Subject_Admin_API.md) (3 shared connections)
-- [NATS Retry Handler](NATS_Retry_Handler.md) (3 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
-- [Application DI Bundles](Application_DI_Bundles.md) (2 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (17 shared connections)
+- [Disconnect Grace Period](Disconnect_Grace_Period.md) (7 shared connections)
+- [NPC Database Sessions](NPC_Database_Sessions.md) (6 shared connections)
+- [Game Terminal Panels](Game_Terminal_Panels.md) (4 shared connections)
+- [Combat NPC Lookup](Combat_NPC_Lookup.md) (3 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (3 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (2 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (2 shared connections)
+- [WebSocket Command Handler](WebSocket_Command_Handler.md) (1 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Test Refactoring Complete](Test_Refactoring_Complete.md) (1 shared connections)
+- [Game Mechanics Service](Game_Mechanics_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_turn_participant_actions.py`
-- `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- `server/api/players.py`
+- `server/schemas/players/class_definition.py`
+- `server/schemas/players/player.py`
+- `server/tests/unit/schemas/test_player_schemas.py`
 
 ## Audit Trail
 
-- EXTRACTED: 207 (95%)
-- INFERRED: 10 (5%)
+- EXTRACTED: 176 (90%)
+- INFERRED: 19 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

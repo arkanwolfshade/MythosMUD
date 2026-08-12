@@ -34,7 +34,7 @@
 ## Relationships
 
 - [Cursor Setup Guide](Cursor_Setup_Guide.md) (3 shared connections)
-- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (2 shared connections)
+- [Services Rescue Service](Services_Rescue_Service.md) (2 shared connections)
 - [Manager Services Nats](Manager_Services_Nats.md) (1 shared connections)
 
 ## Source Files

@@ -1,51 +1,50 @@
 # Player State Command Factory
 
-> 26 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **test_look_container_helpers.py** (45 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_via_inner_container_no_inner_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_via_inner_container_invalid_uuid()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_via_inner_container_no_get_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_item_instance_id_true()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_item_instance_id_false()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_item_instance_id_none()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_name_or_slot_slot_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_name_or_slot_name_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_name_or_slot_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_get_container_data_from_component_no_container_id()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_get_container_data_from_component_no_get_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_extract_container_metadata_no_metadata()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Unit tests for look container helper functions.  Tests the helper functions in l** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_via_inner_container() when item has no inner_container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_via_inner_container() with invalid UUID.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_via_inner_container() when persistence has no get_container** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _matches_item_instance_id() returns True when IDs match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _matches_item_instance_id() returns False when IDs don't match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _matches_item_instance_id() returns False when either ID is None.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _matches_name_or_slot() returns True for slot match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _matches_name_or_slot() returns True for name match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _matches_name_or_slot() returns False when no match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _get_container_data_from_component() when component has no container_id.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _get_container_data_from_component() when persistence has no get_container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- *... and 1 more nodes in this community*
+- **UUID** (17 connections)
+- **_str_id()** (16 connections) — `server/game/party_service.py`
+- **._send_result_to_player()** (8 connections) — `server/game/party_service.py`
+- **.accept_party_invite()** (8 connections) — `server/game/party_service.py`
+- **.get_party_for_player()** (8 connections) — `server/game/party_service.py`
+- **.create_party()** (7 connections) — `server/game/party_service.py`
+- **._expire_pending_invites()** (7 connections) — `server/game/party_service.py`
+- **.request_party_invite()** (7 connections) — `server/game/party_service.py`
+- **.decline_party_invite()** (7 connections) — `server/game/party_service.py`
+- **.on_player_disconnect()** (6 connections) — `server/game/party_service.py`
+- **._send_party_invite_to_target()** (5 connections) — `server/game/party_service.py`
+- **.is_leader()** (5 connections) — `server/game/party_service.py`
+- **.is_in_same_party()** (5 connections) — `server/game/party_service.py`
+- **.get_party_members()** (4 connections) — `server/game/party_service.py`
+- **Normalize ID to string for dict keys and membership sets.** (1 connections) — `server/game/party_service.py`
+- **Create a new party with the given player as leader.          Returns dict with s** (1 connections) — `server/game/party_service.py`
+- **Remove expired pending invites and notify inviters.** (1 connections) — `server/game/party_service.py`
+- **Send a command_response-style message to a single player.** (1 connections) — `server/game/party_service.py`
+- **Send party_invite event to the target player only.** (1 connections) — `server/game/party_service.py`
+- **Create a pending party invite and send party_invite event to target.         Tar** (1 connections) — `server/game/party_service.py`
+- **Accept a party invite. Target is the player who accepted (the invitee).** (1 connections) — `server/game/party_service.py`
+- **Decline a party invite.** (1 connections) — `server/game/party_service.py`
+- **Return the party the player is in, or None.** (1 connections) — `server/game/party_service.py`
+- **Return True if the player is the leader of their current party.** (1 connections) — `server/game/party_service.py`
+- **Return list of party member IDs for the given player (including themselves).** (1 connections) — `server/game/party_service.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [Server Process Termination](Server_Process_Termination.md) (18 shared connections)
-- [Health Check Service](Health_Check_Service.md) (10 shared connections)
-- [Client ASCII Map API](Client_ASCII_Map_API.md) (8 shared connections)
-- [Memory Threshold Monitor](Memory_Threshold_Monitor.md) (5 shared connections)
-- [Chat Archive Advanced](Chat_Archive_Advanced.md) (3 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (17 shared connections)
+- [Status Effect Model](Status_Effect_Model.md) (14 shared connections)
+- [Archive Planning Multiplayer](Archive_Planning_Multiplayer.md) (2 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_container_helpers.py`
+- `server/game/party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 94 (100%)
+- EXTRACTED: 123 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,57 +1,61 @@
 # Character Creation API
 
-> 82 nodes
+> 84 nodes
 
 ## Key Concepts
 
-- **test_command_parser.py** (45 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **parse_command()** (24 connections) — `server/utils/command_parser.py`
-- **test_command_parser_smoke.py** (8 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **test_parse_command_basic()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **test_parse_command_with_args()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **test_parse_command_with_pipes()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **test_parse_command_empty_string()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_whitespace_only()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_too_long()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_unknown_command()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_valid_look()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_valid_go()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_with_slash_prefix()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_spawn_alias()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_alias_l()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_alias_g()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_global_function()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_global_function_with_args()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_command_parser_initialization()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_normalize_command_removes_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_normalize_command_cleans_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_normalize_command_no_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_parts_basic()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_parts_no_args()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_parts_multiple_args()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- *... and 57 more nodes in this community*
+- **test_lucidity_recovery_commands.py** (34 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **lucidity_recovery_commands.py** (26 connections) — `server/commands/lucidity_recovery_commands.py`
+- **handle_pray_command()** (22 connections) — `server/commands/lucidity_recovery_commands.py`
+- **LucidityActionOnCooldownError** (16 connections) — `server/services/active_lucidity_service.py`
+- **UnknownLucidityActionError** (12 connections) — `server/services/active_lucidity_service.py`
+- **_perform_recovery_action()** (11 connections) — `server/commands/lucidity_recovery_commands.py`
+- **handle_meditate_command()** (11 connections) — `server/commands/lucidity_recovery_commands.py`
+- **handle_group_solace_command()** (10 connections) — `server/commands/lucidity_recovery_commands.py`
+- **Any** (9 connections)
+- **handle_therapy_command()** (9 connections) — `server/commands/lucidity_recovery_commands.py`
+- **handle_folk_tonic_command()** (9 connections) — `server/commands/lucidity_recovery_commands.py`
+- **_run_recovery_session()** (8 connections) — `server/commands/lucidity_recovery_commands.py`
+- **LucidityActionError** (7 connections) — `server/services/active_lucidity_service.py`
+- **.perform_recovery_action()** (6 connections) — `server/services/active_lucidity_service.py`
+- **_validate_recovery_context()** (5 connections) — `server/commands/lucidity_recovery_commands.py`
+- **_restore_mp_for_action()** (5 connections) — `server/commands/lucidity_recovery_commands.py`
+- **_format_cooldown_message()** (4 connections) — `server/commands/lucidity_recovery_commands.py`
+- **test_handle_pray_command_cooldown()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_unknown_action()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_cooldown_no_expiry()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_cooldown_no_cooldown_object()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_cooldown_naive_datetime()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_meditate_command_cooldown()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_group_solace_command_unknown_action()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **_format_recovery_success_message()** (3 connections) — `server/commands/lucidity_recovery_commands.py`
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [Container Open Events](Container_Open_Events.md) (5 shared connections)
-- [Playwright Remediation Plan](Playwright_Remediation_Plan.md) (4 shared connections)
-- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (3 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
-- [Spell Registry Costs](Spell_Registry_Costs.md) (1 shared connections)
-- [Container API Endpoints](Container_API_Endpoints.md) (1 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
-- [Environmental Container Scenario](Environmental_Container_Scenario.md) (1 shared connections)
+- [Container Open Events](Container_Open_Events.md) (11 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (8 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (8 shared connections)
+- [WebSocket Message Validator](WebSocket_Message_Validator.md) (4 shared connections)
+- [Realtime Conftest Mocks](Realtime_Conftest_Mocks.md) (3 shared connections)
+- [Async Persistence Migration](Async_Persistence_Migration.md) (3 shared connections)
+- [Container Component Capacity](Container_Component_Capacity.md) (3 shared connections)
+- [Archive Optimization Summary](Archive_Optimization_Summary.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (1 shared connections)
+- [Rate Limiter Utilities](Rate_Limiter_Utilities.md) (1 shared connections)
+- [Plans Gladiator Ring](Plans_Gladiator_Ring.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_command_parser_smoke.py`
-- `server/tests/unit/utils/test_command_parser.py`
-- `server/utils/command_parser.py`
+- `server/commands/lucidity_recovery_commands.py`
+- `server/services/active_lucidity_service.py`
+- `server/tests/unit/commands/test_lucidity_recovery_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 209 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 315 (96%)
+- INFERRED: 12 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

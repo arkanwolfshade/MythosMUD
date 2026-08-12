@@ -33,13 +33,11 @@
 
 ## Relationships
 
-- [Help and WebSocket Core](Help_and_WebSocket_Core.md) (6 shared connections)
-- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (3 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
-- [WebSocket Code Review](WebSocket_Code_Review.md) (2 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
+- [Help and WebSocket Core](Help_and_WebSocket_Core.md) (7 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (3 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (2 shared connections)
 - [Logging File Setup](Logging_File_Setup.md) (1 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
 
 ## Source Files
 

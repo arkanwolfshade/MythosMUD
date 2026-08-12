@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_setup_player_and_room_no_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _setup_player_and_room() returns False when player not found.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_handle_player_attack_on_npc_with_existing_combat()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test handle_player_attack_on_npc queues action when combat exists.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
 
 ## Relationships
 
-- [Architecture Review Plan](Architecture_Review_Plan.md) (1 shared connections)
-- [WebSocket Connection Setup](WebSocket_Connection_Setup.md) (1 shared connections)
+- [E2E Suite Overview](E2E_Suite_Overview.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

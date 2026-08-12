@@ -1,48 +1,55 @@
 # Look Item Commands
 
-> 26 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **test_player_event_handlers_room_left.py** (15 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_handle_player_left_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_handle_player_left_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_handle_player_left_no_player_info()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_handle_player_left_disconnecting()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_handle_player_left_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_unsubscribe_player_from_room_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_unsubscribe_player_from_room_string_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_unsubscribe_player_from_room_invalid_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_broadcast_player_left_message_not_disconnecting()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_broadcast_player_left_message_disconnecting()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_broadcast_player_left_message_no_room_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_log_occupants_info()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Unit tests for player room event handlers (player left / unsubscribe / broadcast** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test unsubscribe_player_from_room() successfully unsubscribes player.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test unsubscribe_player_from_room() handles string player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test unsubscribe_player_from_room() handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test broadcast_player_left_message() broadcasts when not disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test broadcast_player_left_message() skips when player is disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test broadcast_player_left_message() skips when room_id is None.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test handle_player_left() successfully handles event.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test handle_player_left() skips when connection manager not available.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test handle_player_left() handles player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test handle_player_left() skips broadcast when player is disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test handle_player_left() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- *... and 1 more nodes in this community*
+- **websocket_handler_message_loop.py** (25 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **handle_message_loop_exception()** (10 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **send_websocket_error_response()** (7 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **WebSocket** (7 connections)
+- **handle_json_decode_error()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **UUID** (6 connections)
+- **handle_websocket_runtime_error()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **handle_websocket_generic_exception()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **process_exception_in_message_loop()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **handle_websocket_message_loop()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **is_websocket_disconnect_message()** (6 connections) — `server/realtime/websocket_helpers.py`
+- **process_websocket_inbound_message()** (5 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **handle_websocket_disconnect()** (4 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Exception** (3 connections)
+- **WebSocket message loop, per-message processing, and loop exception handling.  Ex** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Send error response to client.      Returns:         True if sent successfully,** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Handle JSON decode error.** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Handle WebSocket disconnect.      Returns:         True to break the loop** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Handle RuntimeError.      Returns:         Tuple of (should_break, should_raise)** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Handle generic exception.      Returns:         True to break the loop** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Process a single WebSocket message.      Returns:         True to continue loop,** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Handle exception in message loop.      Returns:         Tuple of (should_break,** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Process exception in message loop and return (should_break, should_raise).** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Handle the main WebSocket message loop.** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Check if error message indicates WebSocket disconnection or send-after-close.** (1 connections) — `server/realtime/websocket_helpers.py`
 
 ## Relationships
 
-- [Character Creation E2E](Character_Creation_E2E.md) (6 shared connections)
-- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (1 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (11 shared connections)
+- [Database Helper Tests](Database_Helper_Tests.md) (4 shared connections)
+- [Container API Endpoints](Container_API_Endpoints.md) (3 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (3 shared connections)
+- [Character Creation Service](Character_Creation_Service.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Container Exception Handlers](Container_Exception_Handlers.md) (1 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (1 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- `server/realtime/websocket_handler_message_loop.py`
+- `server/realtime/websocket_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (100%)
+- EXTRACTED: 114 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

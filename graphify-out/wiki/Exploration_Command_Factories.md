@@ -35,12 +35,11 @@
 
 - [Container Component Capacity](Container_Component_Capacity.md) (13 shared connections)
 - [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (8 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (4 shared connections)
-- [Combat Player Broadcasts](Combat_Player_Broadcasts.md) (3 shared connections)
-- [Look Player Command](Look_Player_Command.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Magic Command Handlers](Magic_Command_Handlers.md) (1 shared connections)
-- [Cache and NPC Cache](Cache_and_NPC_Cache.md) (1 shared connections)
+- [Combat Player Broadcasts](Combat_Player_Broadcasts.md) (4 shared connections)
+- [Look Player Command](Look_Player_Command.md) (3 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Realtime Conftest Mocks](Realtime_Conftest_Mocks.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,36 +1,42 @@
 # Realtime Health Monitor
 
-> 12 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **test_who_commands_helpers.py** (12 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_filter_players_by_name_found()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_filter_players_by_name_not_found()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_filter_players_by_name_empty_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_location_valid()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_entry_admin()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **Unit tests for who command helper functions.  Tests the helper functions in who_** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **Test filter_players_by_name() filters players by name.** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **Test filter_players_by_name() returns empty list when no matches.** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **Test filter_players_by_name() returns all players when filter is empty.** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **Test format_player_location() formats valid room ID.** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **Test format_player_entry() includes admin indicator.** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **PersonalMessageSender** (11 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **.send_message()** (8 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **UUID** (7 connections)
+- **._prepare_payload()** (7 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Any** (6 connections)
+- **._queue_message_if_needed()** (6 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **._send_to_websocket()** (5 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **.__init__()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **.get_delivery_stats()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Sends personal messages to individual players.      This class provides:     - P** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Initialize the personal message sender.          Args:             message_queue** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Prepare and optimize the payload for sending.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Send message to a single WebSocket connection. Returns True if successful.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Queue message if no active connections.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Send a personal message to a player via WebSocket.          Args:             pl** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Get message delivery statistics for a player.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
 
 ## Relationships
 
-- [Legacy Cleanup Summary](Legacy_Cleanup_Summary.md) (5 shared connections)
-- [Exploration Command Factory](Exploration_Command_Factory.md) (3 shared connections)
-- [Plan Modernization Archive](Plan_Modernization_Archive.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Game State Provider Tests](Game_State_Provider_Tests.md) (2 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (2 shared connections)
+- [E2E Playwright Conversion Plan](E2E_Playwright_Conversion_Plan.md) (1 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_who_commands_helpers.py`
+- `server/realtime/messaging/personal_message_sender.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 62 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,10 +4,10 @@
 
 ## Key Concepts
 
-- **🔍 DEBUGGING GUIDE** (4 connections) — `.cursor/commands/mypy-remediation.md`
-- **If Mypy Command Fails** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **If Specific Issues Persist** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Understanding Type Checker Behavior** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **🔄 COMMON SCENARIOS AND SOLUTIONS** (4 connections) — `.cursor/commands/mypy-remediation.md`
+- **Scenario 1: Third-Party Library Without Stubs** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **Scenario 2: Complex Union Types** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **Scenario 3: Recursive Types** (1 connections) — `.cursor/commands/mypy-remediation.md`
 
 ## Relationships
 

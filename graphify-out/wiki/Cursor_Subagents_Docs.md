@@ -1,10 +1,11 @@
 # Cursor Subagents Docs
 
-> 52 nodes
+> 54 nodes
 
 ## Key Concepts
 
 - **test_movement_monitor.py** (33 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_movement_monitor_returns_singleton()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
 - **sample_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
 - **test_movement_monitor_init()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
 - **test_record_movement_attempt_success()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
@@ -28,12 +29,12 @@
 - **test_get_alerts_high_failure_rate()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
 - **test_get_alerts_slow_movement_time()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
 - **test_reset_metrics()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_log_performance_summary()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- *... and 27 more nodes in this community*
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [Movement Performance Monitor](Movement_Performance_Monitor.md) (7 shared connections)
+- [Movement Performance Monitor](Movement_Performance_Monitor.md) (4 shared connections)
+- [Command Field Validators](Command_Field_Validators.md) (3 shared connections)
 
 ## Source Files
 
@@ -41,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 109 (100%)
+- EXTRACTED: 113 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

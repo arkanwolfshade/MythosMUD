@@ -29,10 +29,11 @@
 
 ## Relationships
 
-- [Legacy Error Sanitization](Legacy_Error_Sanitization.md) (16 shared connections)
-- [Investigations Sessions Xx](Investigations_Sessions_Xx.md) (2 shared connections)
+- [Legacy Error Sanitization](Legacy_Error_Sanitization.md) (14 shared connections)
+- [Calendar NPC Schedule](Calendar_NPC_Schedule.md) (2 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (2 shared connections)
 - [Command Alias Handling](Command_Alias_Handling.md) (1 shared connections)
-- [Application Config Settings](Application_Config_Settings.md) (1 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (1 shared connections)
 
 ## Source Files
 

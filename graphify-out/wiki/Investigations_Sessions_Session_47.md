@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Admin Look Mob Stats Bug** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
-- **is_alive Called As Function Not Property** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
+- **Create New Character Rendering Gap** (1 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
+- **showProfessionSelection With Existing Characters** (1 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
+- `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
 
 ## Audit Trail
 

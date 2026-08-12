@@ -1,37 +1,36 @@
 # E 2 E Cleanup Troubleshooting
 
-> 15 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **.set_stat_requirements()** (3 connections) — `server/models/profession.py`
-- **.get_mechanical_effects()** (3 connections) — `server/models/profession.py`
-- **.set_mechanical_effects()** (3 connections) — `server/models/profession.py`
-- **.get_stat_modifiers()** (3 connections) — `server/models/profession.py`
-- **.set_stat_modifiers()** (3 connections) — `server/models/profession.py`
-- **.get_skill_modifiers()** (3 connections) — `server/models/profession.py`
-- **.set_skill_modifiers()** (3 connections) — `server/models/profession.py`
-- **Set profession stat requirements from dictionary.** (1 connections) — `server/models/profession.py`
-- **Get profession mechanical effects as dictionary.** (1 connections) — `server/models/profession.py`
-- **Set profession mechanical effects from dictionary.** (1 connections) — `server/models/profession.py`
-- **Get stat modifiers as list of {stat, value}.** (1 connections) — `server/models/profession.py`
-- **Set stat modifiers from list of {stat, value}.** (1 connections) — `server/models/profession.py`
-- **Get skill modifiers as list of {skill_key, value}.** (1 connections) — `server/models/profession.py`
-- **Set skill modifiers from list of {skill_key, value}.** (1 connections) — `server/models/profession.py`
+- **._is_uuid_string()** (8 connections) — `server/realtime/occupant_formatter.py`
+- **._process_string_occupant_for_update()** (4 connections) — `server/realtime/occupant_formatter.py`
+- **test_occupant_formatter_is_uuid_string_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_uuid_string_invalid_length()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_uuid_string_invalid_dashes()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_uuid_string_invalid_chars()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Check if a string looks like a UUID.          Args:             value: The strin** (1 connections) — `server/realtime/occupant_formatter.py`
+- **Process a string occupant (legacy format) and add to list if valid.          Arg** (1 connections) — `server/realtime/occupant_formatter.py`
+- **Test OccupantFormatter._is_uuid_string() returns True for valid UUID.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._is_uuid_string() returns False for invalid length.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._is_uuid_string() returns False for wrong dash count.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._is_uuid_string() returns False for invalid characters.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Relationships
 
-- [Cursor Plans Login](Cursor_Plans_Login.md) (7 shared connections)
-- [Archive Planning Unified](Archive_Planning_Unified.md) (1 shared connections)
+- [Room Occupant Formatter](Room_Occupant_Formatter.md) (4 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (2 shared connections)
+- [Quality Audit Report](Quality_Audit_Report.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/profession.py`
+- `server/realtime/occupant_formatter.py`
+- `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
+- EXTRACTED: 30 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

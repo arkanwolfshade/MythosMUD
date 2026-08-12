@@ -4,23 +4,22 @@
 
 ## Key Concepts
 
-- **exits** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **Recommendations Summary** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **High Priority Decisions** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Medium Priority Enhancements** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Low Priority (Future Considerations)** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
 
 ## Relationships
 
-- [Chat Panel Separation Spec](Chat_Panel_Separation_Spec.md) (1 shared connections)
-- [NATS Subject Validator Tests](NATS_Subject_Validator_Tests.md) (1 shared connections)
+- [Cursor Commands Remediation](Cursor_Commands_Remediation.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- `.cursor/plans/disconnect_grace_period_comparison.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

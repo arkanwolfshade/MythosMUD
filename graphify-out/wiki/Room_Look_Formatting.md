@@ -1,13 +1,11 @@
 # Room Look Formatting
 
-> 96 nodes
+> 92 nodes
 
 ## Key Concepts
 
 - **test_look_room.py** (35 connections) — `server/tests/unit/commands/test_look_room.py`
-- **look_room.py** (28 connections) — `server/commands/look_room.py`
 - **test_look_room_helpers.py** (20 connections) — `server/tests/unit/commands/test_look_room_helpers.py`
-- **_filter_other_players()** (17 connections) — `server/commands/look_room.py`
 - **_handle_room_look()** (17 connections) — `server/commands/look_room.py`
 - **_format_items_section()** (11 connections) — `server/commands/look_room.py`
 - **_get_room_description()** (10 connections) — `server/commands/look_room.py`
@@ -29,19 +27,17 @@
 - **test_format_npcs_section_empty()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
 - **test_filter_other_players_excludes_current()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
 - **test_filter_other_players_no_name_attribute()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
-- *... and 71 more nodes in this community*
+- **test_format_players_section_empty()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
+- **test_format_players_section_with_players()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
+- *... and 67 more nodes in this community*
 
 ## Relationships
 
-- [Commands Command Look](Commands_Command_Look.md) (5 shared connections)
-- [Look Display Helpers](Look_Display_Helpers.md) (4 shared connections)
-- [Lucidity Flux Performance Bug](Lucidity_Flux_Performance_Bug.md) (4 shared connections)
-- [Look NPC Command](Look_NPC_Command.md) (3 shared connections)
-- [Look Player Command](Look_Player_Command.md) (3 shared connections)
-- [Container Persistence Queries](Container_Persistence_Queries.md) (3 shared connections)
-- [Player Respawn Events](Player_Respawn_Events.md) (3 shared connections)
-- [API Type Guards](API_Type_Guards.md) (3 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Container Persistence Queries](Container_Persistence_Queries.md) (19 shared connections)
+- [Commands Command Look](Commands_Command_Look.md) (4 shared connections)
+- [Look Display Helpers](Look_Display_Helpers.md) (2 shared connections)
+- [Look NPC Command](Look_NPC_Command.md) (1 shared connections)
+- [Look Player Command](Look_Player_Command.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 352 (100%)
+- EXTRACTED: 305 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

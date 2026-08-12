@@ -1,51 +1,54 @@
 # Test Refactoring Deliverables
 
-> 24 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **test_logging_processors.py** (36 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **sanitize_sensitive_data()** (14 connections) — `server/structured_logging/logging_processors.py`
-- **test_sanitize_sensitive_data_password()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_token()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_api_key()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_safe_fields()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_nested_dict()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_multiple_sensitive_fields()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_no_sensitive_fields()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_case_insensitive()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_add_correlation_id_missing()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **mock_player_service()** (2 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **sanitize_sensitive_data.** (1 connections) — `server/structured_logging/logging_processors.py`
-- **Unit tests for logging processors.  Tests the logging processors for sanitizing** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Create a mock player service.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() redacts password fields.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() redacts token fields.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() redacts fields ending with _key.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() preserves safe fields.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() sanitizes nested dictionaries.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() redacts multiple sensitive fields.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() leaves non-sensitive fields unchanged.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() is case insensitive.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test add_correlation_id() adds correlation_id when missing.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_professions_endpoints.py** (13 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **get_all_professions()** (10 connections) — `server/api/professions.py`
+- **get_profession_by_id()** (10 connections) — `server/api/professions.py`
+- **profession.py** (7 connections) — `server/schemas/players/profession.py`
+- **ProfessionListResponse** (7 connections) — `server/schemas/players/profession.py`
+- **ProfessionResponse** (7 connections) — `server/schemas/players/profession.py`
+- **BaseModel** (5 connections)
+- **StatRequirement** (4 connections) — `server/schemas/players/profession.py`
+- **MechanicalEffect** (4 connections) — `server/schemas/players/profession.py`
+- **ProfessionData** (4 connections) — `server/schemas/players/profession.py`
+- **_user()** (4 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **test_get_all_professions_requires_auth()** (4 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **test_get_profession_by_id_not_found()** (4 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **test_get_all_professions_success()** (3 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **test_get_profession_by_id_success()** (3 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **Request** (2 connections)
+- **Retrieve all available professions for character creation with caching.      :pa** (1 connections) — `server/api/professions.py`
+- **Retrieve specific profession details by ID with caching.      :param profession_** (1 connections) — `server/api/professions.py`
+- **Profession API response schemas for MythosMUD server.  This module provides Pyda** (1 connections) — `server/schemas/players/profession.py`
+- **Stat requirement for a profession.** (1 connections) — `server/schemas/players/profession.py`
+- **Mechanical effect of a profession.** (1 connections) — `server/schemas/players/profession.py`
+- **Profession data model.** (1 connections) — `server/schemas/players/profession.py`
+- **Response model for listing all professions.** (1 connections) — `server/schemas/players/profession.py`
+- **Response model for a single profession.** (1 connections) — `server/schemas/players/profession.py`
+- **Unit tests for server.api.professions.** (1 connections) — `server/tests/unit/api/test_professions_endpoints.py`
 
 ## Relationships
 
-- [Logging Structured Processors](Logging_Structured_Processors.md) (15 shared connections)
-- [Archive Planning Aliases](Archive_Planning_Aliases.md) (6 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (4 shared connections)
-- [Archive Bug Prevention](Archive_Bug_Prevention.md) (2 shared connections)
-- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (2 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (10 shared connections)
+- [Disconnect Grace Period](Disconnect_Grace_Period.md) (6 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (5 shared connections)
+- [Game Mechanics Service](Game_Mechanics_Service.md) (2 shared connections)
+- [Game Terminal Panels](Game_Terminal_Panels.md) (2 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/logging_processors.py`
-- `server/tests/unit/structured_logging/test_logging_processors.py`
+- `server/api/professions.py`
+- `server/schemas/players/profession.py`
+- `server/tests/unit/api/test_professions_endpoints.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 97 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

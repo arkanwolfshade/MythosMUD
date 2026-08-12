@@ -1,55 +1,63 @@
 # Look Command Helpers
 
-> 40 nodes
+> 109 nodes
 
 ## Key Concepts
 
-- **test_player_event_handlers_state.py** (33 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **mock_utils()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **player_state_event_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_player_no_get_stats()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **mock_logger()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_player_state_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_died_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_died_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_died_no_death_location()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_died_invalid_player_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_died_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_decay_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_decay_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_decay_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_decay_no_player_id_attr()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **Unit tests for player state event handlers.  Tests the PlayerStateEventHandler c** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **Create a mock PlayerEventHandlerUtils.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **Create a mock logger.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **Create a PlayerStateEventHandler instance.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- *... and 15 more nodes in this community*
+- **TargetResolutionService** (53 connections) — `server/services/target_resolution_service.py`
+- **TargetResolutionResult** (39 connections) — `server/schemas/shared/target_resolution.py`
+- **test_target_resolution_service.py** (27 connections) — `server/tests/unit/services/test_target_resolution_service.py`
+- **_NpcWithLife** (17 connections) — `server/commands/combat_handler.py`
+- **.resolve_target()** (9 connections) — `server/services/target_resolution_service.py`
+- **PersistenceProtocol** (7 connections) — `server/services/target_resolution_service.py`
+- **._gather_room_target_matches()** (7 connections) — `server/services/target_resolution_service.py`
+- **._validate_combat_target_match()** (6 connections) — `server/commands/combat_handler.py`
+- **UUID** (6 connections)
+- **.get_room_by_id()** (6 connections) — `server/services/target_resolution_service.py`
+- **._get_player_from_persistence()** (6 connections) — `server/services/target_resolution_service.py`
+- **._validate_player_and_room()** (6 connections) — `server/services/target_resolution_service.py`
+- **._load_npc_ids_with_room_fallback()** (6 connections) — `server/services/target_resolution_service.py`
+- **.resolve_combat_target()** (5 connections) — `server/commands/combat_handler.py`
+- **.get_player_by_id()** (5 connections) — `server/services/target_resolution_service.py`
+- **Player** (5 connections)
+- **PlayerServiceProtocol** (5 connections) — `server/services/target_resolution_service.py`
+- **._build_target_result()** (5 connections) — `server/services/target_resolution_service.py`
+- **._fetch_players_in_room()** (5 connections) — `server/services/target_resolution_service.py`
+- **._get_npcs_from_lifecycle_manager()** (5 connections) — `server/services/target_resolution_service.py`
+- **.get_players_in_room()** (4 connections) — `server/services/target_resolution_service.py`
+- **.__init__()** (4 connections) — `server/services/target_resolution_service.py`
+- **._validate_room_exists_async()** (4 connections) — `server/services/target_resolution_service.py`
+- **._npc_ids_in_room_from_active_map()** (4 connections) — `server/services/target_resolution_service.py`
+- **test_resolve_target_player_no_room_id()** (4 connections) — `server/tests/unit/services/test_target_resolution_service.py`
+- *... and 84 more nodes in this community*
 
 ## Relationships
 
-- [Application Config Settings](Application_Config_Settings.md) (6 shared connections)
-- [Redis to NATS Migration](Redis_to_NATS_Migration.md) (6 shared connections)
-- [Character Creation E2E](Character_Creation_E2E.md) (2 shared connections)
-- [Services Combat Initialization](Services_Combat_Initialization.md) (2 shared connections)
-- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (1 shared connections)
-- [Zone Config Loader](Zone_Config_Loader.md) (1 shared connections)
-- [LRU Cache Manager](LRU_Cache_Manager.md) (1 shared connections)
-- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (1 shared connections)
+- [Player Respawn Service](Player_Respawn_Service.md) (27 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (15 shared connections)
+- [Client Event Store](Client_Event_Store.md) (11 shared connections)
+- [Player Event Handler Tests](Player_Event_Handler_Tests.md) (7 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (7 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (4 shared connections)
+- [Character Info Panel Fix](Character_Info_Panel_Fix.md) (3 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (2 shared connections)
+- [Cursor Skills Harden](Cursor_Skills_Harden.md) (2 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
+- [Client Security Utilities](Client_Security_Utilities.md) (1 shared connections)
+- [Api Player Respawn](Api_Player_Respawn.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- `server/commands/combat_handler.py`
+- `server/schemas/shared/target_resolution.py`
+- `server/services/target_resolution_service.py`
+- `server/tests/unit/schemas/test_target_resolution.py`
+- `server/tests/unit/services/test_target_resolution_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 98 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 338 (88%)
+- INFERRED: 44 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

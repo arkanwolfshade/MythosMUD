@@ -1,61 +1,49 @@
 # Lucidity State Models
 
-> 97 nodes
+> 51 nodes
 
 ## Key Concepts
 
-- **test_aggro_threat.py** (29 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **aggro_threat.py** (28 connections) — `server/services/aggro_threat.py`
-- **update_aggro()** (24 connections) — `server/services/aggro_threat.py`
-- **_make_combat()** (23 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **add_damage_threat()** (20 connections) — `server/services/aggro_threat.py`
-- **get_or_create_hate_list()** (19 connections) — `server/services/aggro_threat.py`
-- **add_heal_threat()** (14 connections) — `server/services/aggro_threat.py`
-- **test_aggro_flow.py** (14 connections) — `server/tests/integration/test_aggro_flow.py`
-- **_make_participant()** (13 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **apply_taunt()** (12 connections) — `server/services/aggro_threat.py`
-- **UUID** (11 connections)
-- **combat_service_end.py** (11 connections) — `server/services/combat_service_end.py`
-- **_make_participant()** (9 connections) — `server/tests/integration/test_aggro_flow.py`
-- **get_npc_current_target()** (8 connections) — `server/services/aggro_threat.py`
-- **_make_combat()** (8 connections) — `server/tests/integration/test_aggro_flow.py`
-- **_get_aggro_config()** (7 connections) — `server/services/aggro_threat.py`
-- **apply_stealth_wipe()** (7 connections) — `server/services/aggro_threat.py`
-- **on_player_entered_stealth()** (7 connections) — `server/services/aggro_threat.py`
-- **test_aggro_healer_overpull_switches_target()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
-- **test_aggro_taunt_from_next_room_no_effect()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
-- **test_aggro_stealth_wipe_switches_to_next()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
-- **test_aggro_passive_mob_no_damage_threat_taunt_switches()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
-- **test_aggro_nightgaunt_like_damage_and_heal_threat()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
-- **clear_aggro_for_combat()** (6 connections) — `server/services/aggro_threat.py`
-- **test_aggro_tank_swap_taunt_sequence()** (6 connections) — `server/tests/integration/test_aggro_flow.py`
-- *... and 72 more nodes in this community*
+- **Any** (10 connections)
+- **._handle_event_async()** (8 connections) — `server/events/event_bus.py`
+- **._stop_processing()** (7 connections) — `server/events/event_bus.py`
+- **._ensure_async_processing()** (6 connections) — `server/events/event_bus.py`
+- **._create_async_subscriber_tasks()** (6 connections) — `server/events/event_bus.py`
+- **.unsubscribe()** (6 connections) — `server/events/event_bus.py`
+- **._separate_subscribers()** (5 connections) — `server/events/event_bus.py`
+- **._process_sync_subscribers()** (5 connections) — `server/events/event_bus.py`
+- **._wait_for_async_subscribers()** (5 connections) — `server/events/event_bus.py`
+- **.subscribe()** (5 connections) — `server/events/event_bus.py`
+- **._process_events_async()** (4 connections) — `server/events/event_bus.py`
+- **._handle_task_result_async()** (4 connections) — `server/events/event_bus.py`
+- **.publish()** (4 connections) — `server/events/event_bus.py`
+- **.inject()** (4 connections) — `server/events/event_bus.py`
+- **.unsubscribe_all_for_service()** (4 connections) — `server/events/event_bus.py`
+- **.get_subscriber_stats()** (4 connections) — `server/events/event_bus.py`
+- **.shutdown()** (4 connections) — `server/events/event_bus.py`
+- **._ensure_processing_started()** (3 connections) — `server/events/event_bus.py`
+- **._signal_shutdown()** (3 connections) — `server/events/event_bus.py`
+- **._cancel_processing_task()** (3 connections) — `server/events/event_bus.py`
+- **._cancel_and_wait_for_active_tasks()** (3 connections) — `server/events/event_bus.py`
+- **._finalize_shutdown()** (3 connections) — `server/events/event_bus.py`
+- **Task** (3 connections)
+- **.get_all_subscriber_counts()** (3 connections) — `server/events/event_bus.py`
+- **.get_active_task_details()** (3 connections) — `server/events/event_bus.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [Combat Death Handling](Combat_Death_Handling.md) (14 shared connections)
-- [Async Persistence Layer](Async_Persistence_Layer.md) (10 shared connections)
-- [Rest Command Flow](Rest_Command_Flow.md) (10 shared connections)
-- [Game Client Container](Game_Client_Container.md) (5 shared connections)
-- [Health Check Models](Health_Check_Models.md) (5 shared connections)
-- [NATS Metrics API](NATS_Metrics_API.md) (5 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (4 shared connections)
-- [Command Parser](Command_Parser.md) (2 shared connections)
-- [Player Respawn Service](Player_Respawn_Service.md) (2 shared connections)
-- [Distributed Event Bus](Distributed_Event_Bus.md) (2 shared connections)
-- [Container Exception Handlers](Container_Exception_Handlers.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (24 shared connections)
+- [Async Persistence Layer](Async_Persistence_Layer.md) (8 shared connections)
 
 ## Source Files
 
-- `server/services/aggro_threat.py`
-- `server/services/combat_service_end.py`
-- `server/tests/integration/test_aggro_flow.py`
-- `server/tests/unit/services/test_aggro_threat.py`
+- `server/events/event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 480 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 142 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

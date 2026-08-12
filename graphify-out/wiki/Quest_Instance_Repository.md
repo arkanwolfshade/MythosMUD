@@ -1,40 +1,43 @@
 # Quest Instance Repository
 
-> 14 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **RoomRepository** (12 connections) — `server/persistence/repositories/room_repository.py`
-- **room_repository.py** (7 connections) — `server/persistence/repositories/room_repository.py`
-- **.__init__()** (3 connections) — `server/persistence/repositories/room_repository.py`
-- **.get_room_by_id()** (2 connections) — `server/persistence/repositories/room_repository.py`
-- **.list_rooms()** (2 connections) — `server/persistence/repositories/room_repository.py`
-- **.save_room()** (2 connections) — `server/persistence/repositories/room_repository.py`
-- **.save_rooms()** (2 connections) — `server/persistence/repositories/room_repository.py`
-- **Room repository for async persistence operations.  This module provides async da** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Repository for room persistence operations.      Handles room caching and retrie** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Initialize the room repository.          Args:             room_cache: Shared ro** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Get a room by ID from cache.          Args:             room_id: Room identifier** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **List all cached rooms.          Returns:             list[Room]: List of all roo** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Save a room to the cache.          Args:             room: Room object to save** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Save multiple rooms to the cache.          Args:             rooms: List of room** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **combat_helpers.py** (7 connections) — `server/commands/combat_helpers.py`
+- **format_combat_status()** (6 connections) — `server/commands/combat_helpers.py`
+- **get_combat_target()** (6 connections) — `server/commands/combat_helpers.py`
+- **test_combat_helpers.py** (6 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **test_format_combat_status_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **test_format_combat_status_not_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **test_get_combat_target()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **test_get_combat_target_not_found()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Any** (2 connections)
+- **Shared helpers and exceptions for combat commands.  Extracted from combat.py to** (1 connections) — `server/commands/combat_helpers.py`
+- **Produce a human-readable combat status string.      This helper is retained for** (1 connections) — `server/commands/combat_helpers.py`
+- **Resolve a combat target by name.      The current implementation is intentionall** (1 connections) — `server/commands/combat_helpers.py`
+- **Unit tests for combat command helper functions.  Tests helper functions in comba** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Test format_combat_status() formats combat status.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Test format_combat_status() handles player not in combat.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Test get_combat_target() finds target.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Test get_combat_target() returns None when target not found.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
 
 ## Relationships
 
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
-- [Dependency Injection Tests](Dependency_Injection_Tests.md) (2 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
-- [Draggable Panel UI](Draggable_Panel_UI.md) (1 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (4 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
+- [Commands Npc Admin](Commands_Npc_Admin.md) (1 shared connections)
+- [Combat Taunt Tests](Combat_Taunt_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/repositories/room_repository.py`
+- `server/commands/combat_helpers.py`
+- `server/tests/unit/commands/test_combat_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 39 (83%)
+- INFERRED: 8 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

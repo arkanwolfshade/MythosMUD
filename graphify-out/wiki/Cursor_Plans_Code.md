@@ -4,23 +4,21 @@
 
 ## Key Concepts
 
-- **player_service()** (4 connections) — `server/tests/unit/game/test_player_service.py`
-- **Create a PlayerService instance.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_restore_mp_from_meditation_player_not_found()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_meditation() returns error when player not found.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
-- [Application DI Bundles](Application_DI_Bundles.md) (1 shared connections)
-- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
+- [Cursor Agents Quick](Cursor_Agents_Quick.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (80%)
-- INFERRED: 1 (20%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

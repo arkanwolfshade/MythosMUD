@@ -39,7 +39,7 @@
 - [Linting Results Comparator](Linting_Results_Comparator.md) (1 shared connections)
 - [Dependency Risk Analyzer](Dependency_Risk_Analyzer.md) (1 shared connections)
 - [Grype Command Handle Result](Grype_Command_Handle_Result.md) (1 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 - [Architecture Container System](Architecture_Container_System.md) (1 shared connections)
 - [Quality Fragmentation Ci](Quality_Fragmentation_Ci.md) (1 shared connections)
 

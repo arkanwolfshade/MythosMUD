@@ -1,25 +1,25 @@
 # CircuitBreakerOpen
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/realtime/message_validator.py`
-- **.__init__()** (2 connections) — `server/realtime/message_validator.py`
-- **Initialize the message validator.          Args:             max_message_size** (1 connections) — `server/realtime/message_validator.py`
+- **end_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [Scenario Conversion Guide](Scenario_Conversion_Guide.md) (1 shared connections)
-- [Database Helper Tests](Database_Helper_Tests.md) (1 shared connections)
+- [Contributing Guidelines](Contributing_Guidelines.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_validator.py`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

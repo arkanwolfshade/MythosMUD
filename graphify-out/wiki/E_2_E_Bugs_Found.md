@@ -1,25 +1,27 @@
 # E 2 E Bugs Found
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_get_item_description_from_prototype_no_registry()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description when prototype registry is None.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **TestNPCSessionMaker** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_session_maker()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test NPC session maker functions.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_session_maker() returns session maker.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Relationships
 
-- [Error Handling Guide](Error_Handling_Guide.md) (1 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
+- [Combat Schema Validation](Combat_Schema_Validation.md) (2 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 8 (89%)
+- INFERRED: 1 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

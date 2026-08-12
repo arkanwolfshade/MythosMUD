@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **NPCs Not Updating On Player Movement** (2 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
-- **exclude_player Occupants Snapshot Pattern** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
-- **Canonical Room ID NPC Matching Remediation** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
+- **Combat Messages Dual Panel Display** (2 connections) — `investigations/sessions/2025-11-19_session-003_combat-messages-dual-panel-display.md`
+- **Combat Turn Order UUID Display** (1 connections) — `investigations/sessions/2025-11-19_session-002_combat-message-uuid-display.md`
+- **Missing NPC Death Message Handlers** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
 
 ## Relationships
 
@@ -14,13 +14,14 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
-- `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
+- `investigations/sessions/2025-11-19_session-002_combat-message-uuid-display.md`
+- `investigations/sessions/2025-11-19_session-003_combat-messages-dual-panel-display.md`
+- `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 4 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

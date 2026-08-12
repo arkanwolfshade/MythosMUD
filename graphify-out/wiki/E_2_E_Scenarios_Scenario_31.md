@@ -1,25 +1,26 @@
 # E 2 E Scenarios Scenario
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **7. Reconnection During Grace Period** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Industry Practices** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Our Plan** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Gap Analysis** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Implementation Phases** (5 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Phase 1: Core Separation** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Phase 2: Enhanced Features** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Phase 3: Polish and Optimization** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Phase 4: Testing and Refinement** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Relationships
 
-- [Cursor Commands Remediation](Cursor_Commands_Remediation.md) (1 shared connections)
+- [Command Factories Combat](Command_Factories_Combat.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/disconnect_grace_period_comparison.md`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

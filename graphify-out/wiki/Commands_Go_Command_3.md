@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_save_player_success()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test save_player successfully saves player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_reconnect_attempts_increment()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test reconnect_attempts increments on connection failures.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Relationships
 
-- [Lizard Complexity Findings](Lizard_Complexity_Findings.md) (1 shared connections)
+- [Room Subscription Helpers](Room_Subscription_Helpers.md) (1 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,31 +1,34 @@
 # Cursor Plans Postgresql
 
-> 9 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **datetime** (8 connections)
-- **._filter_active_players()** (8 connections) — `server/services/passive_lucidity_flux/service.py`
-- **._is_player_active()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
-- **._normalize_datetime_timezone()** (5 connections) — `server/services/passive_lucidity_flux/service.py`
-- **._parse_last_active()** (4 connections) — `server/services/passive_lucidity_flux/service.py`
-- **Parse last_active from various formats.** (1 connections) — `server/services/passive_lucidity_flux/service.py`
-- **Normalize datetime to timezone-aware UTC.** (1 connections) — `server/services/passive_lucidity_flux/service.py`
-- **Check if player is active based on last_active and created_at.** (1 connections) — `server/services/passive_lucidity_flux/service.py`
-- **Filter players to only those active in the last 5 minutes.** (1 connections) — `server/services/passive_lucidity_flux/service.py`
+- **test_websocket_handler_error_handling.py** (9 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **test_send_error_response_success()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **test_send_error_response_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **test_handle_runtime_error_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **test_handle_runtime_error_other()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Unit tests for websocket handler error handling.  Tests the error handling funct** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Test _send_error_response() successfully sends error.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Test _send_error_response() handles WebSocket disconnection.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Test _handle_runtime_error() detects WebSocket disconnection.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Test _handle_runtime_error() handles other runtime errors.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
 
 ## Relationships
 
-- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (10 shared connections)
-- [End-to-End Validation](End-to-End_Validation.md) (1 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (2 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/passive_lucidity_flux/service.py`
+- `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
+- EXTRACTED: 25 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

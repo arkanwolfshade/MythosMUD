@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [Spell Registry Costs](Spell_Registry_Costs.md) (4 shared connections)
-- [Auth Token Utilities](Auth_Token_Utilities.md) (2 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (4 shared connections)
+- [Schedule Service Loader](Schedule_Service_Loader.md) (2 shared connections)
 - [Realtime Event Delegation](Realtime_Event_Delegation.md) (2 shared connections)
 - [Inventory Command Models](Inventory_Command_Models.md) (1 shared connections)
 - [NATS Chat Broadcasting](NATS_Chat_Broadcasting.md) (1 shared connections)

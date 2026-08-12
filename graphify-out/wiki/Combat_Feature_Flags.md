@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [Standardized Error Responses](Standardized_Error_Responses.md) (5 shared connections)
-- [Scenario Conversion Guide](Scenario_Conversion_Guide.md) (3 shared connections)
+- [Container API Endpoints](Container_API_Endpoints.md) (3 shared connections)
+- [Database Helper Tests](Database_Helper_Tests.md) (3 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (2 shared connections)
 - [Player Combat XP](Player_Combat_XP.md) (1 shared connections)
 
 ## Source Files

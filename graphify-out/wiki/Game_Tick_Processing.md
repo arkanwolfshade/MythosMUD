@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 - [Performance Optimization Summary](Performance_Optimization_Summary.md) (1 shared connections)
 - [Monitoring API Endpoints](Monitoring_API_Endpoints.md) (1 shared connections)
 

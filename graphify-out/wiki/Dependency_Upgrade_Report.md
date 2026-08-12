@@ -30,8 +30,8 @@
 ## Relationships
 
 - [Magic System Feature Plan](Magic_System_Feature_Plan.md) (2 shared connections)
-- [Memory Leak Metrics Tests](Memory_Leak_Metrics_Tests.md) (2 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (2 shared connections)
+- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (2 shared connections)
+- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (2 shared connections)
 
 ## Source Files
 

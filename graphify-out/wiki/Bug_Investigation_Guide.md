@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [Communication Command Classes](Communication_Command_Classes.md) (8 shared connections)
+- [Warning Remediation Plan](Warning_Remediation_Plan.md) (8 shared connections)
 - [Realtime Event Handlers](Realtime_Event_Handlers.md) (6 shared connections)
 - [Character Creation Screens](Character_Creation_Screens.md) (2 shared connections)
-- [Warning Remediation Plan](Warning_Remediation_Plan.md) (2 shared connections)
-- [Chat Panel Separation](Chat_Panel_Separation.md) (1 shared connections)
+- [Communication Command Classes](Communication_Command_Classes.md) (2 shared connections)
+- [WebSocket Player Helpers](WebSocket_Player_Helpers.md) (1 shared connections)
 
 ## Source Files
 

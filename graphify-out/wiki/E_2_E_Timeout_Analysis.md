@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_handle_who_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test handle_who_command when persistence is not available.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_restore_mp_from_rest_player_not_found()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_rest() returns error when player not found.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [Legacy Cleanup Summary](Legacy_Cleanup_Summary.md) (1 shared connections)
-- [Combat UUID Display Bug](Combat_UUID_Display_Bug.md) (1 shared connections)
+- [Cursor Agents Quick](Cursor_Agents_Quick.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_who_commands.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

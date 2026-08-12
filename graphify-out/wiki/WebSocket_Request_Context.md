@@ -33,13 +33,13 @@
 
 ## Relationships
 
-- [Standardized Error Responses](Standardized_Error_Responses.md) (6 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (6 shared connections)
+- [Subzone Schema Definition](Subzone_Schema_Definition.md) (6 shared connections)
 - [Database Error Handling](Database_Error_Handling.md) (6 shared connections)
-- [Pylint Unique Findings](Pylint_Unique_Findings.md) (4 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (3 shared connections)
-- [Player Combat XP](Player_Combat_XP.md) (3 shared connections)
-- [Connection Health Monitor](Connection_Health_Monitor.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (3 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Pre-commit Hook Analysis](Pre-commit_Hook_Analysis.md) (1 shared connections)
 
 ## Source Files
 

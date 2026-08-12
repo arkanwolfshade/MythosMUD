@@ -1,54 +1,50 @@
 # Who Command Helpers
 
-> 35 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **InviteManager** (24 connections) — `server/auth/invites.py`
-- **list_invites()** (10 connections) — `server/auth/endpoints.py`
-- **create_invite()** (9 connections) — `server/auth/endpoints.py`
-- **.validate_invite()** (6 connections) — `server/auth/invites.py`
-- **get_invite_manager()** (6 connections) — `server/auth/invites.py`
-- **.use_invite()** (5 connections) — `server/auth/invites.py`
-- **.get_user_invites()** (4 connections) — `server/auth/invites.py`
-- **test_list_invites()** (4 connections) — `server/tests/unit/auth/test_endpoints.py`
-- **test_create_invite()** (4 connections) — `server/tests/unit/auth/test_endpoints.py`
-- **test_list_invites_empty_list()** (4 connections) — `server/tests/unit/auth/test_endpoints.py`
-- **test_list_invites_with_used_invite()** (4 connections) — `server/tests/unit/auth/test_endpoints.py`
-- **test_list_invites_with_expired_invite()** (4 connections) — `server/tests/unit/auth/test_endpoints.py`
-- **test_create_invite_success()** (4 connections) — `server/tests/unit/auth/test_endpoints.py`
-- **UUID** (3 connections)
-- **.get_unused_invites()** (3 connections) — `server/auth/invites.py`
-- **.cleanup_expired_invites()** (3 connections) — `server/auth/invites.py`
-- **.__init__()** (2 connections) — `server/auth/invites.py`
-- **AsyncSession** (2 connections)
-- **.list_invites()** (2 connections) — `server/auth/invites.py`
-- **List all invite codes.      This endpoint returns all invite codes in the system** (1 connections) — `server/auth/endpoints.py`
-- **Create a new invite code.      This endpoint creates a new invite code for user** (1 connections) — `server/auth/endpoints.py`
-- **Request** (1 connections)
-- **Manages invite creation, validation, and tracking.      Handles the invite-only** (1 connections) — `server/auth/invites.py`
-- **Validate an invite code.** (1 connections) — `server/auth/invites.py`
-- **Mark an invite as used by a specific user.** (1 connections) — `server/auth/invites.py`
-- *... and 10 more nodes in this community*
+- **UUID** (12 connections)
+- **Any** (10 connections)
+- **.handle_player_entered()** (9 connections) — `server/realtime/player_event_handlers_room.py`
+- **.send_occupants_snapshot_to_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
+- **.send_room_updates_to_entering_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
+- **.handle_player_left()** (7 connections) — `server/realtime/player_event_handlers_room.py`
+- **._prepare_room_data()** (6 connections) — `server/realtime/player_event_handlers_room.py`
+- **.send_room_update_to_player()** (6 connections) — `server/realtime/player_event_handlers_room.py`
+- **.log_player_movement()** (5 connections) — `server/realtime/player_event_handlers_room.py`
+- **._send_room_name_message()** (5 connections) — `server/realtime/player_event_handlers_room.py`
+- **._log_occupants_info()** (5 connections) — `server/realtime/player_event_handlers_room.py`
+- **.query_room_occupants_snapshot()** (5 connections) — `server/realtime/player_event_handlers_room.py`
+- **.send_room_state_to_player()** (5 connections) — `server/realtime/player_event_handlers_room.py`
+- **.get_room_state_event()** (5 connections) — `server/realtime/player_event_handlers_room.py`
+- **.broadcast_player_entered_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
+- **.subscribe_player_to_room()** (4 connections) — `server/realtime/player_event_handlers_room.py`
+- **.build_room_occupants_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
+- **._process_player_entered_event()** (4 connections) — `server/realtime/player_event_handlers_room.py`
+- **.unsubscribe_player_from_room()** (4 connections) — `server/realtime/player_event_handlers_room.py`
+- **.broadcast_player_left_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
+- **Log player movement for AI processing.          Args:             player_id: The** (1 connections) — `server/realtime/player_event_handlers_room.py`
+- **Broadcast player entered message to room occupants.          Args:             m** (1 connections) — `server/realtime/player_event_handlers_room.py`
+- **Subscribe player to room for receiving broadcasts.          Args:             pl** (1 connections) — `server/realtime/player_event_handlers_room.py`
+- **Send room name as a message to the Game Info panel.          Args:             p** (1 connections) — `server/realtime/player_event_handlers_room.py`
+- **Prepare room data for client, removing occupant fields.          Args:** (1 connections) — `server/realtime/player_event_handlers_room.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (19 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (16 shared connections)
-- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (7 shared connections)
-- [Plan Cursor Plans](Plan_Cursor_Plans.md) (2 shared connections)
-- [Combat Flee Command](Combat_Flee_Command.md) (1 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (20 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (3 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth/endpoints.py`
-- `server/auth/invites.py`
-- `server/tests/unit/auth/test_endpoints.py`
+- `server/realtime/player_event_handlers_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 113 (95%)
-- INFERRED: 6 (5%)
+- EXTRACTED: 136 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

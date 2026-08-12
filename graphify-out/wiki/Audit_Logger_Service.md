@@ -1,11 +1,10 @@
 # Audit Logger Service
 
-> 46 nodes
+> 44 nodes
 
 ## Key Concepts
 
 - **AuditLogger** (21 connections) — `server/utils/audit_logger.py`
-- **audit_logger.py** (14 connections) — `server/utils/audit_logger.py`
 - **._write_entry()** (10 connections) — `server/utils/audit_logger.py`
 - **test_audit_logger.py** (8 connections) — `server/tests/unit/utils/test_audit_logger.py`
 - **Any** (7 connections)
@@ -29,16 +28,13 @@
 - **datetime** (3 connections)
 - **.log_player_action()** (3 connections) — `server/utils/audit_logger.py`
 - **.log_alias_expansion()** (3 connections) — `server/utils/audit_logger.py`
-- *... and 21 more nodes in this community*
+- **Unit tests for audit_logger utilities.  Tests the AuditLogger class.** (1 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (4 shared connections)
-- [Command Parser](Command_Parser.md) (2 shared connections)
-- [Container Open Events](Container_Open_Events.md) (1 shared connections)
-- [Persistence Container Extended](Persistence_Container_Extended.md) (1 shared connections)
-- [Admin Teleport Commands](Admin_Teleport_Commands.md) (1 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 154 (100%)
+- EXTRACTED: 139 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

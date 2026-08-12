@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_try_lookup_item_implicit_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **.check_casting_progress()** (2 connections) — `server/game/magic/magic_service.py`
+- **Check and process casting progress for all active castings.          Called by** (1 connections) — `server/game/magic/magic_service.py`
 
 ## Relationships
 
-- [Error Handling Guide](Error_Handling_Guide.md) (1 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
+- [Security Headers Middleware](Security_Headers_Middleware.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/game/magic/magic_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

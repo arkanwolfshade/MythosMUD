@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (9 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (9 shared connections)
 
 ## Source Files
 

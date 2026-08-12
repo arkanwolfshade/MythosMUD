@@ -1,62 +1,47 @@
 # Npc Services Combat
 
-> 28 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **PrototypeRegistryError** (19 connections) — `server/game/items/prototype_registry.py`
-- **item_factory.py** (14 connections) — `server/game/items/item_factory.py`
 - **ItemFactory** (13 connections) — `server/game/items/item_factory.py`
-- **__init__.py** (11 connections) — `server/game/items/__init__.py`
-- **ItemFactoryError** (9 connections) — `server/game/items/item_factory.py`
+- **._initialize_item_services()** (10 connections) — `server/container/bundles/game.py`
 - **.create_instance()** (7 connections) — `server/game/items/item_factory.py`
-- **ItemInstance** (7 connections) — `server/game/items/item_instance.py`
 - **initialize_components()** (5 connections) — `server/game/items/component_hooks.py`
+- **._handle_item_prototypes_db_error()** (4 connections) — `server/container/bundles/game.py`
 - **._build_instance_metadata()** (4 connections) — `server/game/items/item_factory.py`
-- **item_instance.py** (4 connections) — `server/game/items/item_instance.py`
+- **.__init__()** (3 connections) — `server/game/items/item_factory.py`
 - **._resolve_stack_slot()** (3 connections) — `server/game/items/item_factory.py`
 - **Any** (3 connections)
-- **.to_inventory_stack()** (3 connections) — `server/game/items/item_instance.py`
-- **Item system package.  This module exposes the prototype schema and registry util** (1 connections) — `server/game/items/__init__.py`
+- **Exception** (1 connections)
+- **On SQLAlchemyError: log, optionally warn about schema/DDL, and clear item regist** (1 connections) — `server/container/bundles/game.py`
+- **Load item prototypes from PostgreSQL and create item factory.** (1 connections) — `server/container/bundles/game.py`
 - **Any** (1 connections)
 - **Prepare component state metadata for a new item instance.      This routine curr** (1 connections) — `server/game/items/component_hooks.py`
-- **Exception** (1 connections)
 - **ItemInstance** (1 connections)
-- **Item factory for creating item instances from prototypes.  This module provide** (1 connections) — `server/game/items/item_factory.py`
-- **Raised when the factory cannot produce a valid instance.** (1 connections) — `server/game/items/item_factory.py`
 - **Factory responsible for instantiating runtime item instances.** (1 connections) — `server/game/items/item_factory.py`
+- **Initialize the item factory with a prototype registry.          Args:** (1 connections) — `server/game/items/item_factory.py`
 - **Create an item instance from a prototype.** (1 connections) — `server/game/items/item_factory.py`
-- **Any** (1 connections)
-- **Item instance model for runtime item representation.  This module defines the It** (1 connections) — `server/game/items/item_instance.py`
-- **Runtime representation of an item created from a prototype.** (1 connections) — `server/game/items/item_instance.py`
-- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [NATS Subject Admin API](NATS_Subject_Admin_API.md) (7 shared connections)
-- [Upgrade Archive Dependency](Upgrade_Archive_Dependency.md) (5 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (4 shared connections)
-- [NATS Retry Handler](NATS_Retry_Handler.md) (4 shared connections)
-- [App Creation Flow Screens](App_Creation_Flow_Screens.md) (2 shared connections)
-- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (2 shared connections)
-- [Command Factory Tests](Command_Factory_Tests.md) (2 shared connections)
-- [Combat NPC Lookup](Combat_NPC_Lookup.md) (2 shared connections)
-- [WebSocket Code Review](WebSocket_Code_Review.md) (1 shared connections)
-- [Async Task Registry](Async_Task_Registry.md) (1 shared connections)
-- [NPC Definition Admin API](NPC_Definition_Admin_API.md) (1 shared connections)
+- [NATS Retry Handler](NATS_Retry_Handler.md) (9 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (6 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (1 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/items/__init__.py`
+- `server/container/bundles/game.py`
 - `server/game/items/component_hooks.py`
 - `server/game/items/item_factory.py`
-- `server/game/items/item_instance.py`
-- `server/game/items/prototype_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 104 (89%)
-- INFERRED: 13 (11%)
+- EXTRACTED: 56 (92%)
+- INFERRED: 5 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -15,7 +15,7 @@
 
 ## Relationships
 
-- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
+- [Realtime Conftest Mocks](Realtime_Conftest_Mocks.md) (1 shared connections)
 
 ## Source Files
 

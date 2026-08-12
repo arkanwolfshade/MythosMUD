@@ -1,25 +1,29 @@
 # Investigations Sessions Session
 
-> 4 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Recommendations Summary** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **High Priority Decisions** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Medium Priority Enhancements** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Low Priority (Future Considerations)** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **MythosMUD** (4 connections) — `data/MythosMUD-Obsidian/wiki/world/MythosMUD.md`
+- **Geography Overview.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Geography Overview.md`
+- **MythosMUD.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/MythosMUD.md`
+- **Geography Overview** (1 connections) — `data/MythosMUD-Obsidian/wiki/world/Geography Overview.md`
+- **World** (1 connections) — `data/MythosMUD-Obsidian/wiki/world/MythosMUD.md`
+- **Engineering memory** (1 connections) — `data/MythosMUD-Obsidian/wiki/world/MythosMUD.md`
+- **Sources** (1 connections) — `data/MythosMUD-Obsidian/wiki/world/MythosMUD.md`
 
 ## Relationships
 
-- [Cursor Commands Remediation](Cursor_Commands_Remediation.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.cursor/plans/disconnect_grace_period_comparison.md`
+- `data/MythosMUD-Obsidian/wiki/world/Geography Overview.md`
+- `data/MythosMUD-Obsidian/wiki/world/MythosMUD.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

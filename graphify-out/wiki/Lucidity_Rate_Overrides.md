@@ -37,7 +37,7 @@
 - [NPC Combat Integration](NPC_Combat_Integration.md) (4 shared connections)
 - [WebSocket Message Validation](WebSocket_Message_Validation.md) (2 shared connections)
 - [Magic System Feature Plan](Magic_System_Feature_Plan.md) (2 shared connections)
-- [Memory Leak Metrics Tests](Memory_Leak_Metrics_Tests.md) (2 shared connections)
+- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (2 shared connections)
 - [NPC Combat Rewards Tests](NPC_Combat_Rewards_Tests.md) (2 shared connections)
 - [Character Stats Model](Character_Stats_Model.md) (2 shared connections)
 

@@ -1,10 +1,11 @@
 # Player Service Tests
 
-> 96 nodes
+> 98 nodes
 
 ## Key Concepts
 
 - **test_combat_validator.py** (50 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **combat_validator.py** (6 connections) — `server/validators/combat_validator.py`
 - **combat_validator()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
 - **test_validate_can_attack_target_no_party_service_allows()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
 - **test_validate_can_attack_target_same_party_blocks()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
@@ -28,20 +29,21 @@
 - **test_validate_combat_state_in_combat_required()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
 - **test_validate_combat_state_not_in_combat_required()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
 - **test_validate_combat_state_in_combat_not_required()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_combat_state_not_in_combat_not_required()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- *... and 71 more nodes in this community*
+- *... and 73 more nodes in this community*
 
 ## Relationships
 
 - [Magic Service Bundle](Magic_Service_Bundle.md) (6 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
 
 ## Source Files
 
 - `server/tests/unit/validators/test_combat_validator.py`
+- `server/validators/combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 196 (100%)
+- EXTRACTED: 203 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

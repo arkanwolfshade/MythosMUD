@@ -1,6 +1,6 @@
 # Container Component Capacity
 
-> 112 nodes
+> 196 nodes
 
 ## Key Concepts
 
@@ -8,59 +8,65 @@
 - **inventory_equip_command.py** (45 connections) — `server/commands/inventory_equip_command.py`
 - **InventoryService** (43 connections) — `server/services/inventory_service.py`
 - **InventoryStack** (34 connections) — `server/services/inventory_service.py`
+- **inventory_unequip_command.py** (32 connections) — `server/commands/inventory_unequip_command.py`
+- **persist_player()** (30 connections) — `server/commands/inventory_command_helpers.py`
+- **inventory_service.py** (29 connections) — `server/services/inventory_service.py`
 - **InventoryCapacityError** (29 connections) — `server/services/inventory_service.py`
+- **equipment_helpers.py** (28 connections) — `server/commands/equipment_helpers.py`
 - **SlotValidationError** (22 connections) — `server/services/equipment_service.py`
 - **test_equipment_service.py** (22 connections) — `server/tests/unit/services/test_equipment_service.py`
 - **equipment_service.py** (21 connections) — `server/services/equipment_service.py`
 - **test_inventory_service.py** (20 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **normalize_slot_name()** (19 connections) — `server/commands/inventory_item_matching.py`
 - **get_shared_services()** (19 connections) — `server/commands/inventory_service_helpers.py`
 - **EquipmentService** (18 connections) — `server/services/equipment_service.py`
+- **MutationDecision** (18 connections) — `server/services/inventory_mutation_guard.py`
 - **EquipmentCapacityError** (17 connections) — `server/services/equipment_service.py`
 - **inventory_service_helpers.py** (16 connections) — `server/commands/inventory_service_helpers.py`
+- **handle_unequip_command()** (14 connections) — `server/commands/inventory_unequip_command.py`
+- **build_and_broadcast_inventory_event()** (13 connections) — `server/commands/inventory_command_helpers.py`
+- **_equip_build_work()** (13 connections) — `server/commands/inventory_equip_command.py`
 - **InventoryValidationError** (13 connections) — `server/services/inventory_service.py`
-- **EquipmentServiceError** (10 connections) — `server/services/equipment_service.py`
-- **.equip_from_inventory()** (10 connections) — `server/services/equipment_service.py`
-- **._clone_stack()** (9 connections) — `server/services/inventory_service.py`
-- **.unequip_to_inventory()** (8 connections) — `server/services/equipment_service.py`
-- **.add_stack()** (8 connections) — `server/services/inventory_service.py`
-- **.split_stack()** (8 connections) — `server/services/inventory_service.py`
-- **_equip_try_inventory_swap()** (7 connections) — `server/commands/inventory_equip_command.py`
-- **_ensure_shared_services_initialized()** (7 connections) — `server/commands/inventory_service_helpers.py`
-- **Any** (7 connections)
-- **._validate_and_clone_optional_fields()** (7 connections) — `server/services/inventory_service.py`
-- **._clone_with_quantity()** (7 connections) — `server/services/inventory_service.py`
-- *... and 87 more nodes in this community*
+- **InventorySplitError** (13 connections) — `server/services/inventory_service.py`
+- **handle_equip_command()** (12 connections) — `server/commands/inventory_equip_command.py`
+- *... and 171 more nodes in this community*
 
 ## Relationships
 
-- [WebSocket Auth Integration](WebSocket_Auth_Integration.md) (39 shared connections)
-- [Client Lifecycle Metrics](Client_Lifecycle_Metrics.md) (35 shared connections)
-- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (24 shared connections)
+- [Async Task Registry](Async_Task_Registry.md) (32 shared connections)
+- [Container Sync Remediation](Container_Sync_Remediation.md) (28 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (25 shared connections)
+- [Client Lifecycle Metrics](Client_Lifecycle_Metrics.md) (18 shared connections)
+- [Client Event Store](Client_Event_Store.md) (13 shared connections)
 - [Exploration Command Factories](Exploration_Command_Factories.md) (13 shared connections)
-- [Spell Effect Protocols](Spell_Effect_Protocols.md) (12 shared connections)
-- [Async Task Registry](Async_Task_Registry.md) (9 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (9 shared connections)
-- [Container Open Events](Container_Open_Events.md) (5 shared connections)
+- [Spell Effect Protocols](Spell_Effect_Protocols.md) (9 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (6 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (6 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (5 shared connections)
+- [Admin NPC Schemas](Admin_NPC_Schemas.md) (5 shared connections)
 - [Container Inventory Finders](Container_Inventory_Finders.md) (5 shared connections)
-- [Player Effects API](Player_Effects_API.md) (4 shared connections)
-- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (3 shared connections)
-- [Client Event Store](Client_Event_Store.md) (3 shared connections)
 
 ## Source Files
 
+- `server/commands/equipment_helpers.py`
+- `server/commands/inventory_command_helpers.py`
 - `server/commands/inventory_equip_command.py`
+- `server/commands/inventory_item_matching.py`
 - `server/commands/inventory_service_helpers.py`
+- `server/commands/inventory_unequip_command.py`
 - `server/services/__init__.py`
 - `server/services/equipment_service.py`
+- `server/services/inventory_mutation_guard.py`
 - `server/services/inventory_service.py`
 - `server/services/passive_lucidity_flux_service.py`
+- `server/tests/unit/commands/test_inventory_commands.py`
 - `server/tests/unit/services/test_equipment_service.py`
 - `server/tests/unit/services/test_inventory_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 517 (84%)
-- INFERRED: 97 (16%)
+- EXTRACTED: 935 (87%)
+- INFERRED: 135 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

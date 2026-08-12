@@ -1,57 +1,55 @@
 # Schedule Service Loader
 
-> 51 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **test_communication_commands_flows.py** (41 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **SimpleNamespace** (38 connections)
-- **_chat_send_with_room_bundle()** (14 connections) — `server/commands/communication_commands_flows.py`
-- **flow_global_command()** (12 connections) — `server/commands/communication_commands_flows.py`
-- **_message_from_command()** (11 connections) — `server/commands/communication_commands_flows.py`
-- **_RoomChannelOutcomeConfig** (11 connections) — `server/commands/communication_commands_flows.py`
-- **flow_say_command()** (10 connections) — `server/commands/communication_commands_flows.py`
-- **_str_error_from_chat_result()** (9 connections) — `server/commands/communication_commands_flows.py`
-- **_room_player_bundle()** (9 connections) — `server/commands/communication_commands_flows.py`
-- **_global_player_bundle()** (8 connections) — `server/commands/communication_commands_flows.py`
-- **flow_local_command()** (8 connections) — `server/commands/communication_commands_flows.py`
-- **_whisper_id_pair_or_error()** (8 connections) — `server/commands/communication_commands_flows.py`
-- **test_chat_send_with_room_bundle_exception_returns_generic_message()** (5 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_chat_send_with_room_bundle_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_chat_send_with_room_bundle_chat_failure()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_say_command_success_broadcasts_room_message()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_whisper_command_exception_returns_generic_message()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_whisper_command_success_sends_private_message()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_reply_command_success_uses_container_services()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_reply_command_no_last_sender_returns_user_message()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_global_command_blocks_low_level_user()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_system_command_blocks_non_admin_user()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_whisper_id_pair_self_whisper()** (3 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_whisper_id_pair_missing_id()** (3 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_whisper_id_pair_ok()** (3 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- *... and 26 more nodes in this community*
+- **realtime.py** (13 connections) — `server/schemas/realtime/realtime.py`
+- **PresenceStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
+- **SessionStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
+- **ErrorStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
+- **PlayerConnectionsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
+- **NewGameSessionResponse** (10 connections) — `server/schemas/realtime/realtime.py`
+- **ConnectionStatisticsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
+- **_ensure_connection_manager()** (9 connections) — `server/api/real_time.py`
+- **__init__.py** (9 connections) — `server/schemas/realtime/__init__.py`
+- **SessionInfo** (9 connections) — `server/schemas/realtime/realtime.py`
+- **get_player_connections()** (8 connections) — `server/api/real_time.py`
+- **handle_new_game_session()** (8 connections) — `server/api/real_time.py`
+- **get_connection_statistics()** (6 connections) — `server/api/real_time.py`
+- **PresenceInfo** (6 connections) — `server/schemas/realtime/realtime.py`
+- **BaseModel** (6 connections)
+- **HealthInfo** (6 connections) — `server/schemas/realtime/realtime.py`
+- **presence_data.py** (5 connections) — `server/schemas/realtime/presence_data.py`
+- **Request** (4 connections)
+- **BaseModel** (3 connections)
+- **Ensure connection manager is available.     Raises LoggedHTTPException with prop** (1 connections) — `server/api/real_time.py`
+- **Get connection information for a player.     Returns detailed connection metadat** (1 connections) — `server/api/real_time.py`
+- **Handle a new game session for a player.     This will disconnect existing connec** (1 connections) — `server/api/real_time.py`
+- **Get comprehensive connection statistics.     Returns detailed statistics about a** (1 connections) — `server/api/real_time.py`
+- **Realtime domain schemas: realtime API, NATS messages, WebSocket messages.** (1 connections) — `server/schemas/realtime/__init__.py`
+- **Presence and health statistics schema for MythosMUD.  This module defines Pydant** (1 connections) — `server/schemas/realtime/presence_data.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [Quest Journal Commands](Quest_Journal_Commands.md) (49 shared connections)
-- [Container Inventory Finders](Container_Inventory_Finders.md) (5 shared connections)
-- [Container Open Events](Container_Open_Events.md) (4 shared connections)
-- [Alias Command Models](Alias_Command_Models.md) (3 shared connections)
-- [Chat NATS Publisher](Chat_NATS_Publisher.md) (2 shared connections)
-- [Catatonia Check Logic](Catatonia_Check_Logic.md) (2 shared connections)
-- [Container Inventory Ops](Container_Inventory_Ops.md) (2 shared connections)
-- [Structured Concurrency Patterns](Structured_Concurrency_Patterns.md) (1 shared connections)
-- [Message Broker Errors](Message_Broker_Errors.md) (1 shared connections)
+- [Memory Threshold Monitor](Memory_Threshold_Monitor.md) (12 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Game Terminal Panels](Game_Terminal_Panels.md) (4 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (2 shared connections)
+- [NATS Message Schemas](NATS_Message_Schemas.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/communication_commands_flows.py`
-- `server/tests/unit/commands/test_communication_commands_flows.py`
+- `server/api/real_time.py`
+- `server/schemas/realtime/__init__.py`
+- `server/schemas/realtime/presence_data.py`
+- `server/schemas/realtime/realtime.py`
 
 ## Audit Trail
 
-- EXTRACTED: 216 (79%)
-- INFERRED: 59 (21%)
+- EXTRACTED: 132 (79%)
+- INFERRED: 36 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

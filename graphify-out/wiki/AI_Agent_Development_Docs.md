@@ -36,7 +36,7 @@
 - [Async Audit Cursor](Async_Audit_Cursor.md) (6 shared connections)
 - [Zone Config Loader](Zone_Config_Loader.md) (3 shared connections)
 - [Quest Service Core](Quest_Service_Core.md) (1 shared connections)
-- [NATS Metrics API](NATS_Metrics_API.md) (1 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (1 shared connections)
 
 ## Source Files
 

@@ -4,23 +4,21 @@
 
 ## Key Concepts
 
-- **test_create_player_with_stats_name_exists()** (4 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test create_player_with_stats() when name already exists.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_process_tick_regeneration_sitting_position()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test process_tick_regeneration() uses REST multiplier for sitting position.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [Spell Registry Costs](Spell_Registry_Costs.md) (1 shared connections)
-- [NPC Database Sessions](NPC_Database_Sessions.md) (1 shared connections)
-- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
+- [Cursor Agents Quick](Cursor_Agents_Quick.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (80%)
-- INFERRED: 1 (20%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

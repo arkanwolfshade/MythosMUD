@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_cleanup_expired_sessions()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **Test cleanup_expired_sessions removes expired sessions.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **.test_start_failure()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test start handles exceptions gracefully.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
 
 ## Relationships
 
-- [Player Model Inventory](Player_Model_Inventory.md) (1 shared connections)
+- [Combat Health Persistence Fix](Combat_Health_Persistence_Fix.md) (1 shared connections)
+- [AnyIO Code Review](AnyIO_Code_Review.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_admin_auth_service.py`
+- `server/tests/unit/services/test_game_tick_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

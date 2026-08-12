@@ -33,10 +33,8 @@
 
 ## Relationships
 
+- [Character Creation E2E](Character_Creation_E2E.md) (4 shared connections)
 - [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (3 shared connections)
-- [Services Combat Initialization](Services_Combat_Initialization.md) (2 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (1 shared connections)
-- [LRU Cache Manager](LRU_Cache_Manager.md) (1 shared connections)
 
 ## Source Files
 

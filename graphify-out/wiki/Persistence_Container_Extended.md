@@ -34,17 +34,17 @@
 ## Relationships
 
 - [Chat Panel Components](Chat_Panel_Components.md) (10 shared connections)
-- [Catatonia Check Logic](Catatonia_Check_Logic.md) (9 shared connections)
-- [Container Open Events](Container_Open_Events.md) (8 shared connections)
-- [Admin Teleport Commands](Admin_Teleport_Commands.md) (8 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (6 shared connections)
-- [FastAPI Auth Integration](FastAPI_Auth_Integration.md) (2 shared connections)
+- [Room Exploration API](Room_Exploration_API.md) (7 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (6 shared connections)
+- [Client Event Store](Client_Event_Store.md) (6 shared connections)
+- [FastAPI Auth Integration](FastAPI_Auth_Integration.md) (5 shared connections)
+- [Catatonia Check Logic](Catatonia_Check_Logic.md) (4 shared connections)
+- [Game Magic Spell](Game_Magic_Spell.md) (2 shared connections)
 - [Config Model Tests](Config_Model_Tests.md) (1 shared connections)
+- [Archive Database Migration](Archive_Database_Migration.md) (1 shared connections)
+- [Container Open Events](Container_Open_Events.md) (1 shared connections)
+- [NPC Population Control](NPC_Population_Control.md) (1 shared connections)
 - [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
-- [Spell Registry Costs](Spell_Registry_Costs.md) (1 shared connections)
-- [Audit Logger Service](Audit_Logger_Service.md) (1 shared connections)
-- [Environmental Container Scenario](Environmental_Container_Scenario.md) (1 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
 
 ## Source Files
 

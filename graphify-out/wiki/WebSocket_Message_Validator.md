@@ -1,15 +1,13 @@
 # WebSocket Message Validator
 
-> 56 nodes
+> 52 nodes
 
 ## Key Concepts
 
 - **test_active_lucidity_service.py** (34 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **active_lucidity_service()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 - **test_active_lucidity_service_init()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 - **test_active_lucidity_service_init_with_now_provider()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 - **test_perform_recovery_action_on_cooldown()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_naive_datetime_cooldown()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 - **test_perform_recovery_action_unknown_action()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 - **mock_session()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 - **sample_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
@@ -29,12 +27,17 @@
 - **test_perform_recovery_action_sets_cooldown()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 - **test_perform_recovery_action_with_location()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 - **test_get_action_cooldown_success()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- *... and 31 more nodes in this community*
+- **test_get_action_cooldown_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_get_action_cooldown_invalid_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [Container Open Events](Container_Open_Events.md) (9 shared connections)
-- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (3 shared connections)
+- [Character Creation API](Character_Creation_API.md) (4 shared connections)
+- [Async Persistence Migration](Async_Persistence_Migration.md) (4 shared connections)
+- [Archive Optimization Summary](Archive_Optimization_Summary.md) (2 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (1 shared connections)
+- [Realtime Visual Indicator](Realtime_Visual_Indicator.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 120 (98%)
+- EXTRACTED: 112 (98%)
 - INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,33 +1,35 @@
 # Cursor Skills Overdrive
 
-> 9 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **.connect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
-- **._is_websocket_open()** (4 connections) — `server/realtime/connection_manager.py`
-- **WebSocket** (4 connections)
-- **._safe_close_websocket()** (4 connections) — `server/realtime/connection_manager.py`
-- **.get_connection_id_from_websocket()** (4 connections) — `server/realtime/connection_manager.py`
-- **Check if a WebSocket is open.** (1 connections) — `server/realtime/connection_manager.py`
-- **Safely close a WebSocket connection.** (1 connections) — `server/realtime/connection_manager.py`
-- **Connect a WebSocket for a player.** (1 connections) — `server/realtime/connection_manager.py`
-- **Get connection ID from a WebSocket instance.** (1 connections) — `server/realtime/connection_manager.py`
+- **TestNPCDatabaseInitialization** (8 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_raises_on_invalid_url()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_initializes_engine()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_uses_existing_engine()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_env_fallback()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_uses_nullpool_for_test()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test NPC database initialization.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_engine() initializes engine when None.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_engine() returns existing engine if already initialized.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_engine() raises ValidationError for non-PostgreSQL URL.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_engine() uses environment fallback when config fails.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_engine() uses NullPool for test databases.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Relationships
 
-- [Archive Bug Fix](Archive_Bug_Fix.md) (5 shared connections)
-- [Playwright E2E Specs](Playwright_E2E_Specs.md) (3 shared connections)
-- [Architecture Review Plan](Architecture_Review_Plan.md) (1 shared connections)
+- [Combat Schema Validation](Combat_Schema_Validation.md) (6 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_manager.py`
+- `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 28 (93%)
+- INFERRED: 2 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

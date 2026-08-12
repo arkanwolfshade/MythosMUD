@@ -24,7 +24,7 @@
 ## Relationships
 
 - [Security Infrastructure](Security_Infrastructure.md) (8 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 

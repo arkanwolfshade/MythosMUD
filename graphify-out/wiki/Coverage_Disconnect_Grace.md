@@ -1,38 +1,40 @@
 # Coverage Disconnect Grace
 
-> 11 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **delete_container()** (14 connections) — `server/persistence/container_persistence.py`
-- **test_delete_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_delete_container_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_delete_container_not_found()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_delete_container_uuid_string_conversion()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_delete_container_false_and_psycopg_error()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
-- **Delete by id; True if a row was removed. Raises DatabaseError on failure.** (1 connections) — `server/persistence/container_persistence.py`
-- **Test delete_container successfully deletes container.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **Test delete_container returns False when container not found.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **Test delete_container handles database errors.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **Test delete_container handles UUID to string conversion.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **_should_include_npc()** (14 connections) — `server/commands/look_npc.py`
+- **test_should_include_npc_alive_with_name()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_should_include_npc_dead()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_should_include_npc_no_name()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_should_include_npc()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_should_include_npc_no_name()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_should_include_npc_not_alive()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Check if an NPC should be included in the results (has name and is alive).** (1 connections) — `server/commands/look_npc.py`
+- **Test should_include_npc for alive NPC with name.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test should_include_npc for dead NPC.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test should_include_npc for NPC without name.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test _should_include_npc() returns True for valid NPC.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _should_include_npc() returns False when no name.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _should_include_npc() returns False when not alive.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Relationships
 
-- [Maps API Endpoints](Maps_API_Endpoints.md) (5 shared connections)
-- [Communication Command Models](Communication_Command_Models.md) (5 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
-- [Draggable Panel UI](Draggable_Panel_UI.md) (1 shared connections)
+- [Look NPC Command](Look_NPC_Command.md) (7 shared connections)
+- [Character Stats Generator](Character_Stats_Generator.md) (4 shared connections)
+- [Player GUID Formatter](Player_GUID_Formatter.md) (2 shared connections)
 
 ## Source Files
 
-- `server/persistence/container_persistence.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- `server/commands/look_npc.py`
+- `server/tests/unit/commands/test_look_npc.py`
+- `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (91%)
-- INFERRED: 3 (9%)
+- EXTRACTED: 39 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

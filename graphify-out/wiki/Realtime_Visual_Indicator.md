@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **test_damage_player_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test damage_player() when player not found.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **active_lucidity_service()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **Create an ActiveLucidityService instance.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Relationships
 
-- [Spell Registry Costs](Spell_Registry_Costs.md) (1 shared connections)
-- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
+- [Async Persistence Migration](Async_Persistence_Migration.md) (1 shared connections)
+- [WebSocket Message Validator](WebSocket_Message_Validator.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

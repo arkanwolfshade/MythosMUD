@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [Container Open Events](Container_Open_Events.md) (10 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (11 shared connections)
 - [Alias Expansion Logic](Alias_Expansion_Logic.md) (7 shared connections)
-- [Async Persistence Types](Async_Persistence_Types.md) (2 shared connections)
+- [Async Persistence Types](Async_Persistence_Types.md) (1 shared connections)
 - [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
-- [Command Factory Tests](Command_Factory_Tests.md) (1 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (1 shared connections)
 - [Config Model Tests](Config_Model_Tests.md) (1 shared connections)
 
 ## Source Files

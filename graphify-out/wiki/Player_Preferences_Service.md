@@ -34,7 +34,7 @@
 ## Relationships
 
 - [Player Mute Persistence](Player_Mute_Persistence.md) (2 shared connections)
-- [Commands Time](Commands_Time.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 

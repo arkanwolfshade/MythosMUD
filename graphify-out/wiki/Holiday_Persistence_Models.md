@@ -1,17 +1,17 @@
 # Holiday Persistence Models
 
-> 68 nodes
+> 69 nodes
 
 ## Key Concepts
 
 - **test_room_sync_service.py** (40 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **get_room_sync_service()** (8 connections) — `server/services/room_sync_service.py`
+- **RoomSyncService** (19 connections) — `server/services/room_sync_service.py`
 - **room_sync_service()** (4 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **.process_event_with_ordering()** (3 connections) — `server/services/room_sync_service.py`
+- **room_sync_service_with_room_service()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
 - **sample_event()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_room_update_with_validation_handles_error()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_invalidate_stale_cache_error()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_fetch_fresh_room_data_handles_error()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
 - **test_get_room_sync_service_returns_singleton()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **.clear_cache()** (2 connections) — `server/services/room_sync_service.py`
 - **mock_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
 - **test_room_sync_service_init()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
 - **test_room_sync_service_init_with_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
@@ -29,17 +29,19 @@
 - **test_fetch_fresh_room_data_no_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
 - **test_fetch_fresh_room_data_not_found()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
 - **test_handle_stale_room_data_success()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- *... and 43 more nodes in this community*
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [Room Data Fixer](Room_Data_Fixer.md) (4 shared connections)
-- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (3 shared connections)
-- [Playwright E2E Specs](Playwright_E2E_Specs.md) (3 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Character Creation E2E](Character_Creation_E2E.md) (1 shared connections)
-- [Commands Time](Commands_Time.md) (1 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
+- [Room Data Fixer](Room_Data_Fixer.md) (8 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [WebSocket Initial State](WebSocket_Initial_State.md) (3 shared connections)
+- [Async Persistence Layer](Async_Persistence_Layer.md) (2 shared connections)
+- [Room Data Cache](Room_Data_Cache.md) (1 shared connections)
+- [Logging Testing Examples](Logging_Testing_Examples.md) (1 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (1 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 147 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 159 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

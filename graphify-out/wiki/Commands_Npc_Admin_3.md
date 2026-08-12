@@ -1,37 +1,34 @@
 # Commands Npc Admin
 
-> 15 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **.__call__()** (8 connections) — `server/middleware/comprehensive_logging.py`
-- **.dispatch()** (7 connections) — `server/middleware/comprehensive_logging.py`
-- **._log_request_start()** (5 connections) — `server/middleware/comprehensive_logging.py`
-- **._log_request_success_with_status()** (5 connections) — `server/middleware/comprehensive_logging.py`
-- **._log_request_error()** (5 connections) — `server/middleware/comprehensive_logging.py`
-- **Request** (4 connections)
-- **Scope** (1 connections)
-- **Receive** (1 connections)
-- **Send** (1 connections)
-- **Any** (1 connections)
+- **FleePreconditionError** (12 connections) — `server/commands/combat_helpers.py`
+- **test_resolve_flee_preconditions_player_error()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
 - **Exception** (1 connections)
-- **ASGI application interface.          Args:             scope: ASGI connection sc** (1 connections) — `server/middleware/comprehensive_logging.py`
-- **Backward-compatible dispatch method for BaseHTTPMiddleware interface.          T** (1 connections) — `server/middleware/comprehensive_logging.py`
-- **Log request start information.** (1 connections) — `server/middleware/comprehensive_logging.py`
-- **Log successful request completion.** (1 connections) — `server/middleware/comprehensive_logging.py`
+- **.__init__()** (1 connections) — `server/commands/combat_helpers.py`
+- **Raised when flee preconditions fail; carries the error dict to return to the cli** (1 connections) — `server/commands/combat_helpers.py`
+- **FleePreconditionError wraps get_player_and_room error.** (1 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (5 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (4 shared connections)
+- [Combat Taunt Tests](Combat_Taunt_Tests.md) (2 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (1 shared connections)
+- [Api Player Respawn](Api_Player_Respawn.md) (1 shared connections)
+- [Commands Inventory Display](Commands_Inventory_Display.md) (1 shared connections)
+- [Quest Instance Repository](Quest_Instance_Repository.md) (1 shared connections)
 
 ## Source Files
 
-- `server/middleware/comprehensive_logging.py`
+- `server/commands/combat_helpers.py`
+- `server/tests/unit/commands/test_combat_flee_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 15 (75%)
+- INFERRED: 5 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

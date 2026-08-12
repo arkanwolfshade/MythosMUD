@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
-- [Async Persistence Migration](Async_Persistence_Migration.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
 
 ## Source Files
 

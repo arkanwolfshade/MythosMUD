@@ -34,9 +34,9 @@
 ## Relationships
 
 - [Player Related Models](Player_Related_Models.md) (3 shared connections)
-- [Command Parser](Command_Parser.md) (2 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (2 shared connections)
 - [Combat Monitoring Service](Combat_Monitoring_Service.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 - [UI Animation Testing Standards](UI_Animation_Testing_Standards.md) (1 shared connections)
 
 ## Source Files

@@ -1,36 +1,36 @@
 # Quality Audit Report
 
-> 10 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **broadcast_message()** (13 connections) — `server/api/game.py`
-- **TestBroadcastMessage** (6 connections) — `server/tests/unit/api/test_game.py`
-- **.test_broadcast_message_success()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_broadcast_message_no_recipients()** (3 connections) — `server/tests/unit/api/test_game.py`
-- **.test_broadcast_message_broadcast_error()** (3 connections) — `server/tests/unit/api/test_game.py`
-- **Broadcast a message to all connected players (admin only).      Requires superus** (1 connections) — `server/api/game.py`
-- **Test broadcast_message endpoint.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test broadcast_message successfully broadcasts message.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test broadcast_message handles no recipients.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test broadcast_message handles broadcast errors gracefully.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **._is_valid_name_for_occupant()** (7 connections) — `server/realtime/occupant_formatter.py`
+- **._process_dict_occupant_for_update()** (7 connections) — `server/realtime/occupant_formatter.py`
+- **._process_player_name_for_update()** (6 connections) — `server/realtime/occupant_formatter.py`
+- **._process_npc_name_for_update()** (6 connections) — `server/realtime/occupant_formatter.py`
+- **Any** (5 connections)
+- **.separate_occupants_by_type()** (5 connections) — `server/realtime/occupant_formatter.py`
+- **._add_valid_name_to_lists()** (4 connections) — `server/realtime/occupant_formatter.py`
+- **Check if a name is valid for use as an occupant name.          Args:** (1 connections) — `server/realtime/occupant_formatter.py`
+- **Add a valid name to both target list and all occupants list.          Args:** (1 connections) — `server/realtime/occupant_formatter.py`
+- **Process a player name and add to appropriate lists if valid.          Args:** (1 connections) — `server/realtime/occupant_formatter.py`
+- **Process an NPC name and add to appropriate lists if valid.          Args:** (1 connections) — `server/realtime/occupant_formatter.py`
+- **Process a dictionary occupant and add to appropriate lists if valid.          Ar** (1 connections) — `server/realtime/occupant_formatter.py`
+- **Separate occupants into players, NPCs, and all occupants lists.          Args:** (1 connections) — `server/realtime/occupant_formatter.py`
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
-- [Realtime Npc Event](Realtime_Npc_Event.md) (3 shared connections)
-- [Investigations Sessions Session](Investigations_Sessions_Session.md) (3 shared connections)
-- [E 2 E Testing Approach](E_2_E_Testing_Approach.md) (3 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (6 shared connections)
+- [E 2 E Cleanup Troubleshooting](E_2_E_Cleanup_Troubleshooting.md) (2 shared connections)
 
 ## Source Files
 
-- `server/api/game.py`
-- `server/tests/unit/api/test_game.py`
+- `server/realtime/occupant_formatter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (94%)
-- INFERRED: 2 (6%)
+- EXTRACTED: 46 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

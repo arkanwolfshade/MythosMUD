@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_online_players()** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test get_online_players() returns online players.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_process_tick_regeneration_calculates_max_from_power()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test process_tick_regeneration() calculates max_mp from power if not present.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
+- [Cursor Agents Quick](Cursor_Agents_Quick.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 

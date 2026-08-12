@@ -2,7 +2,7 @@
 
 > God node · 182 connections · `server/services/combat_service.py`
 
-**Community:** [Container Exception Handlers](Container_Exception_Handlers.md)
+**Community:** [Rest Command Flow](Rest_Command_Flow.md)
 
 ## Connections by Relation
 
@@ -105,8 +105,8 @@
 - PlayerDeathService `INFERRED`
 - CombatCommandHandlerExtras `INFERRED`
 - SpellEffectsDeps `INFERRED`
-- CombatPersistenceHandler `INFERRED`
 - CombatBundle `INFERRED`
+- CombatPersistenceHandler `INFERRED`
 
 ---
 

@@ -1,6 +1,6 @@
 # E2E Whisper Fix Report
 
-> 26 nodes
+> 27 nodes
 
 ## Key Concepts
 
@@ -23,19 +23,19 @@
 - **useSkillCatalog()** (3 connections) — `client/src/components/SkillAssignmentScreen.tsx`
 - **OccupationSlotPayload** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **PersonalInterestPayload** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
+- **CreateCharacterPayload** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **buildCreateCharacterPayload()** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **OCCUPATION_VALUES** (2 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
 - **SkillCatalogEntry** (2 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
 - **MIN_TOUCH_TARGET_STYLE** (2 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
 - **useSkillSlotPickers()** (2 connections) — `client/src/components/SkillAssignmentScreen.tsx`
-- **SkillsLoadResult** (1 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- *... and 1 more nodes in this community*
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
 - [Warning Remediation Plan](Warning_Remediation_Plan.md) (6 shared connections)
 - [WebSocket Player Helpers](WebSocket_Player_Helpers.md) (5 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (4 shared connections)
+- [Admin Set Lucidity Command](Admin_Set_Lucidity_Command.md) (4 shared connections)
 - [Character Creation Screens](Character_Creation_Screens.md) (2 shared connections)
 
 ## Source Files
@@ -46,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 119 (100%)
+- EXTRACTED: 121 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

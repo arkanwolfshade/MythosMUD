@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (8 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (3 shared connections)
-- [Client Event Store](Client_Event_Store.md) (2 shared connections)
-- [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (9 shared connections)
+- [Active Lucidity Service](Active_Lucidity_Service.md) (2 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 

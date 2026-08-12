@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (7 shared connections)
+- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (6 shared connections)
+- [Logging Correct Patterns](Logging_Correct_Patterns.md) (1 shared connections)
 - [Grace Period Blocking Tests](Grace_Period_Blocking_Tests.md) (1 shared connections)
 - [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
 - [NATS Message Handler Tests](NATS_Message_Handler_Tests.md) (1 shared connections)

@@ -30,13 +30,13 @@
 
 - [Archive Effects System](Archive_Effects_System.md) (7 shared connections)
 - [Admin Status Commands](Admin_Status_Commands.md) (7 shared connections)
-- [Container Open Events](Container_Open_Events.md) (3 shared connections)
+- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (3 shared connections)
 - [Pylint Unique Findings](Pylint_Unique_Findings.md) (3 shared connections)
-- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 - [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
 - [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
-- [Cursor Skills Harden](Cursor_Skills_Harden.md) (1 shared connections)
+- [Character Info Panel Fix](Character_Info_Panel_Fix.md) (1 shared connections)
 
 ## Source Files
 

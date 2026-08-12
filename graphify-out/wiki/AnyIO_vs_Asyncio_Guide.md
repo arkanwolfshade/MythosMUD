@@ -1,46 +1,55 @@
 # AnyIO vs Asyncio Guide
 
-> 19 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **NPCSpawnRuleCRUDMixin** (10 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **._execute_create_spawn_rule()** (8 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **_row_to_npc_spawn_rule()** (8 connections) — `server/services/npc_service_models.py`
-- **.create_spawn_rule()** (7 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **.get_spawn_rules()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **AsyncSession** (6 connections)
-- **.get_spawn_rule()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **._validate_spawn_rule_inputs()** (4 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **.delete_spawn_rule()** (4 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Any** (2 connections)
-- **Any** (2 connections)
-- **Mixin providing NPC spawn rule CRUD operations.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Get all NPC spawn rules.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Get a specific NPC spawn rule by ID.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Create a new NPC spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Validate NPC definition existence and population counts for spawn rule creation.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Execute create_spawn_rule stored procedure and return the created spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Delete an NPC spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Map procedure result row to NPCSpawnRule model.** (1 connections) — `server/services/npc_service_models.py`
+- **inventory_put_command.py** (21 connections) — `server/commands/inventory_put_command.py`
+- **handle_put_command()** (13 connections) — `server/commands/inventory_put_command.py`
+- **_put_resolve_container_id()** (9 connections) — `server/commands/inventory_put_command.py`
+- **_put_transfer_finish()** (8 connections) — `server/commands/inventory_put_command.py`
+- **_put_run_validated()** (7 connections) — `server/commands/inventory_put_command.py`
+- **remove_item_from_inventory()** (5 connections) — `server/commands/inventory_command_helpers.py`
+- **PutCommandRuntime** (4 connections) — `server/commands/inventory_put_command.py`
+- **PutValidatedWork** (4 connections) — `server/commands/inventory_put_command.py`
+- **CommandResponse** (4 connections)
+- **test_handle_put_command_no_target()** (4 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **UUID** (3 connections)
+- **test_handle_put_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **Player** (2 connections)
+- **Remove or update item quantity in player inventory after transfer.** (1 connections) — `server/commands/inventory_command_helpers.py`
+- **Put command: move inventory items into a container.** (1 connections) — `server/commands/inventory_put_command.py`
+- **Services and request scope for put-after-validation.** (1 connections) — `server/commands/inventory_put_command.py`
+- **Validated inventory item and command fields for put.** (1 connections) — `server/commands/inventory_put_command.py`
+- **Locate a room or wearable container id, or return an error response.** (1 connections) — `server/commands/inventory_put_command.py`
+- **Put an item from inventory into a container.** (1 connections) — `server/commands/inventory_put_command.py`
+- **Test handle_put_command() puts item in container.** (1 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **Test handle_put_command() handles missing target.** (1 connections) — `server/tests/unit/commands/test_inventory_commands.py`
 
 ## Relationships
 
-- [Command Parser Tests](Command_Parser_Tests.md) (6 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (2 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
-- [Whisper Remediation Plan](Whisper_Remediation_Plan.md) (1 shared connections)
+- [Container Sync Remediation](Container_Sync_Remediation.md) (5 shared connections)
+- [Container Inventory Ops](Container_Inventory_Ops.md) (4 shared connections)
+- [Async Task Registry](Async_Task_Registry.md) (3 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (3 shared connections)
+- [Container Component Capacity](Container_Component_Capacity.md) (2 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Container Inventory Finders](Container_Inventory_Finders.md) (2 shared connections)
+- [NATS Connection State Machine](NATS_Connection_State_Machine.md) (2 shared connections)
+- [Container Open Events](Container_Open_Events.md) (1 shared connections)
+- [Admin NPC Schemas](Admin_NPC_Schemas.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_service/spawn_rule_crud.py`
-- `server/services/npc_service_models.py`
+- `server/commands/inventory_command_helpers.py`
+- `server/commands/inventory_put_command.py`
+- `server/tests/unit/commands/test_inventory_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 70 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 85 (89%)
+- INFERRED: 10 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

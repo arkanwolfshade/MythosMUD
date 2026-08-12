@@ -1,41 +1,39 @@
 # Player Cache
 
-> 17 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **lifespan_shutdown.py** (15 connections) — `server/app/lifespan_shutdown.py`
-- **shutdown_services()** (12 connections) — `server/app/lifespan_shutdown.py`
-- **FastAPI** (5 connections)
-- **_shutdown_mythos_chronicle()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **_shutdown_nats_handler()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **_shutdown_connection_manager()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **_shutdown_mythos_tick_scheduler()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **_shutdown_task_registry()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **_shutdown_event_bus()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **Application shutdown logic.  This module handles graceful shutdown of all servic** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown and persist mythos chronicle state.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown NATS message handler if present.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown connection manager if present.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown mythos tick scheduler if present.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown task registry if present.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown event bus and clean up all service subscriptions.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Handle graceful shutdown of all services.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **_get_npc_room_id()** (14 connections) — `server/commands/look_npc.py`
+- **test_get_npc_room_id_from_current_room_id()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_get_npc_room_id_from_current_room()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_get_npc_room_id_none()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_get_npc_room_id_from_current_room_id()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_get_npc_room_id_from_current_room()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_get_npc_room_id_none()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Get the room ID from an NPC instance, checking both current_room and current_roo** (1 connections) — `server/commands/look_npc.py`
+- **Test getting NPC room ID from current_room_id.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test getting NPC room ID from current_room when current_room_id is None.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test getting NPC room ID when both are None.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test _get_npc_room_id() returns current_room_id when available.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _get_npc_room_id() returns current_room when current_room_id is None.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _get_npc_room_id() returns None when both are None.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Relationships
 
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (4 shared connections)
-- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (3 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (3 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Look NPC Command](Look_NPC_Command.md) (7 shared connections)
+- [Character Stats Generator](Character_Stats_Generator.md) (4 shared connections)
+- [Player GUID Formatter](Player_GUID_Formatter.md) (2 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan_shutdown.py`
+- `server/commands/look_npc.py`
+- `server/tests/unit/commands/test_look_npc.py`
+- `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 64 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

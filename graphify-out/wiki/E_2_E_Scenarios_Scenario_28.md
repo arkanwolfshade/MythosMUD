@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **4. Rest/Quit Command During Combat** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **5. Rest Command Countdown Duration** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
 - **Industry Practices** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
 - **Our Plan** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
 - **Gap Analysis** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`

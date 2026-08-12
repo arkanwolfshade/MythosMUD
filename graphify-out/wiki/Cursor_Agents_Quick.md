@@ -1,56 +1,41 @@
 # Cursor Agents Quick
 
-> 82 nodes
+> 8 nodes
 
 ## Key Concepts
 
 - **test_mp_regeneration_service.py** (33 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **MPRegenerationService** (20 connections) — `server/game/magic/mp_regeneration_service.py`
-- **mp_regeneration_service.py** (13 connections) — `server/game/magic/mp_regeneration_service.py`
-- **.process_tick_regeneration()** (6 connections) — `server/game/magic/mp_regeneration_service.py`
-- **UUID** (5 connections)
-- **Any** (5 connections)
-- **._get_regen_multiplier()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
-- **.restore_mp_from_rest()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
-- **.restore_mp_from_meditation()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
-- **.restore_mp_from_item()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
-- **mp_regeneration_service()** (4 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **.__init__()** (3 connections) — `server/game/magic/mp_regeneration_service.py`
-- **test_mp_regeneration_service_init()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_mp_regeneration_service_init_custom_rate()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **mock_player_service()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **sample_player_id()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **mock_player()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_process_tick_regeneration_player_not_found()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_process_tick_regeneration_at_max()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_process_tick_regeneration_restores_mp()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_process_tick_regeneration_calculates_max_from_power()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_process_tick_regeneration_fractional_accumulation()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_get_regen_multiplier_standing()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_get_regen_multiplier_sitting()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_get_regen_multiplier_lying()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- *... and 57 more nodes in this community*
+- **test_get_regen_multiplier_default_position()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_restore_mp_from_rest_at_max()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_restore_mp_from_rest_calculates_max_from_power()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Unit tests for MP regeneration service.  Tests the MPRegenerationService class f** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test _get_regen_multiplier() defaults to 1.0 when position not specified.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_rest() returns message when MP already at max.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_rest() calculates max_mp from power if not present.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [Player Respawn Service](Player_Respawn_Service.md) (3 shared connections)
-- [Player Domain Model](Player_Domain_Model.md) (3 shared connections)
-- [Application DI Bundles](Application_DI_Bundles.md) (3 shared connections)
-- [Combat Attack Service](Combat_Attack_Service.md) (3 shared connections)
-- [Connection Health Monitor](Connection_Health_Monitor.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [NPC Definition Admin API](NPC_Definition_Admin_API.md) (1 shared connections)
-- [Container Open Events](Container_Open_Events.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (4 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (2 shared connections)
+- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
+- [Manager Services Nats](Manager_Services_Nats.md) (1 shared connections)
+- [Plans Gladiator Ring](Plans_Gladiator_Ring.md) (1 shared connections)
+- [Commands Rest Countdown](Commands_Rest_Countdown.md) (1 shared connections)
+- [E 2 E Ai Execution](E_2_E_Ai_Execution.md) (1 shared connections)
+- [Upgrade Archive Dependency](Upgrade_Archive_Dependency.md) (1 shared connections)
+- [Investigations Sessions Xx](Investigations_Sessions_Xx.md) (1 shared connections)
+- [Commands Time](Commands_Time.md) (1 shared connections)
+- [Magic Game Healing](Magic_Game_Healing.md) (1 shared connections)
+- [Realtime Maintenance Connection](Realtime_Maintenance_Connection.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/mp_regeneration_service.py`
 - `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 202 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 43 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

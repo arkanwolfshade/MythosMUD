@@ -33,10 +33,10 @@
 
 ## Relationships
 
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
 - [Game State Provider Tests](Game_State_Provider_Tests.md) (2 shared connections)
-- [Validate Calendar](Validate_Calendar.md) (2 shared connections)
-- [Playwright E2E Specs](Playwright_E2E_Specs.md) (2 shared connections)
 - [Test Refactoring Status](Test_Refactoring_Status.md) (2 shared connections)
+- [Validate Calendar](Validate_Calendar.md) (1 shared connections)
 
 ## Source Files
 

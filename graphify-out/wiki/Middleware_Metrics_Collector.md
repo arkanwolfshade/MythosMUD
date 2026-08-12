@@ -30,7 +30,7 @@
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 - [Client Lifecycle Metrics](Client_Lifecycle_Metrics.md) (1 shared connections)
 
 ## Source Files

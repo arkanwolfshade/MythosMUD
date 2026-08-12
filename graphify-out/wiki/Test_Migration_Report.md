@@ -29,12 +29,10 @@
 
 ## Relationships
 
-- [End-to-End Validation](End-to-End_Validation.md) (3 shared connections)
+- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
 - [Player Respawn Service](Player_Respawn_Service.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Spell Registry Costs](Spell_Registry_Costs.md) (1 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
-- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (1 shared connections)
+- [Realtime Conftest Mocks](Realtime_Conftest_Mocks.md) (1 shared connections)
 
 ## Source Files
 

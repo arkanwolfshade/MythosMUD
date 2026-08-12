@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_damage_player()** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test damage_player() damages player.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_room_init_defaults()** (3 connections) — `server/tests/unit/models/test_room_class.py`
+- **Test Room initialization with minimal data.** (1 connections) — `server/tests/unit/models/test_room_class.py`
 
 ## Relationships
 
-- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
+- [Health Cold Resistance](Health_Cold_Resistance.md) (1 shared connections)
+- [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/models/test_room_class.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

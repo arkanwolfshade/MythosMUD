@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_check_item_in_location_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking item in location successfully.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_restore_mp_from_meditation_higher_than_rest()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_meditation() restores more MP than rest.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [Error Handling Guide](Error_Handling_Guide.md) (1 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
+- [Cursor Agents Quick](Cursor_Agents_Quick.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

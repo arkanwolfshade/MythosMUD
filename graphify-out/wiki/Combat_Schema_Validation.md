@@ -1,6 +1,6 @@
 # Combat Schema Validation
 
-> 88 nodes
+> 46 nodes
 
 ## Key Concepts
 
@@ -13,49 +13,48 @@
 - **get_npc_database_path()** (11 connections) — `server/npc_database.py`
 - **get_npc_session_maker()** (9 connections) — `server/npc_database.py`
 - **close_npc_db()** (9 connections) — `server/npc_database.py`
-- **TestNPCDatabaseInitialization** (8 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 - **ensure_npc_database_directory()** (6 connections) — `server/npc_database.py`
-- **TestNPCSession** (6 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 - **TestCloseNpcDb** (6 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 - **reset_npc_database()** (5 connections) — `server/npc_database.py`
 - **TestInitNpcDb** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **TestGetNPCDatabasePath** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **TestEnsureNPCDatabaseDirectory** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.shutdown()** (4 connections) — `server/container/bundles/core.py`
-- **.test_get_npc_engine_raises_on_invalid_url()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **TestNPCSessionMaker** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 - **.test_init_npc_db_raises_on_none_engine()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 - **.test_close_npc_db_disposes_engine()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 - **TestResetNPCDatabase** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_get_npc_database_path_raises_for_non_postgresql()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **TestEventLoopHandling** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- *... and 63 more nodes in this community*
+- **async_sessionmaker** (3 connections)
+- **AsyncSession** (3 connections)
+- **reset_state()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_init_npc_db_success()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_close_npc_db_handles_closed_loop()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_close_npc_db_handles_no_engine()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_reset_npc_database_resets_state()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **AsyncEngine** (2 connections)
+- **Path** (2 connections)
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [Spell Registry Costs](Spell_Registry_Costs.md) (22 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (5 shared connections)
-- [Client Event Store](Client_Event_Store.md) (5 shared connections)
-- [WebSocket Code Review](WebSocket_Code_Review.md) (4 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (4 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (13 shared connections)
+- [Client Event Store](Client_Event_Store.md) (10 shared connections)
+- [Cursor Skills Overdrive](Cursor_Skills_Overdrive.md) (6 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (5 shared connections)
+- [Realtime Conftest Mocks](Realtime_Conftest_Mocks.md) (4 shared connections)
 - [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (4 shared connections)
+- [Archive Frd Random](Archive_Frd_Random.md) (4 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
 - [Player Schema Converter](Player_Schema_Converter.md) (3 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (3 shared connections)
 - [Weapon Resolution Helpers](Weapon_Resolution_Helpers.md) (3 shared connections)
-- [NPC Occupant Verification](NPC_Occupant_Verification.md) (3 shared connections)
-- [Command Parser](Command_Parser.md) (2 shared connections)
-- [Container Persistence Layer](Container_Persistence_Layer.md) (2 shared connections)
+- [Cursor Skills Delight](Cursor_Skills_Delight.md) (3 shared connections)
+- [Lizard Complexity Findings](Lizard_Complexity_Findings.md) (3 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/core.py`
 - `server/npc_database.py`
 - `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 298 (93%)
-- INFERRED: 21 (7%)
+- EXTRACTED: 205 (94%)
+- INFERRED: 13 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

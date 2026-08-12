@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_heal_player()** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test heal_player() heals player.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_room_is_empty_false()** (3 connections) — `server/tests/unit/models/test_room_class.py`
+- **Test Room.is_empty() returns False when occupants present.** (1 connections) — `server/tests/unit/models/test_room_class.py`
 
 ## Relationships
 
-- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
+- [Health Cold Resistance](Health_Cold_Resistance.md) (1 shared connections)
+- [Dependency Injection Tests](Dependency_Injection_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/models/test_room_class.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

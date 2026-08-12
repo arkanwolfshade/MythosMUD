@@ -1,58 +1,58 @@
 # Async Persistence Migration
 
-> 22 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **deque** (24 connections)
-- **test_message_queue_get_messages_error()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_has_messages_empty_list()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_cleanup_old_messages()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_cleanup_old_messages_removes_empty()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_cleanup_old_messages_string_timestamp()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_cleanup_old_messages_invalid_timestamp()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_cleanup_large_structures()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **.__init__()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.cleanup_large_structures()** (3 connections) — `server/realtime/message_queue.py`
-- **.__init__()** (3 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.__init__()** (2 connections) — `server/services/nats_metrics.py`
-- **Initialize the memory leak metrics collector.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Clean up large data structures to prevent memory bloat.          Args:** (1 connections) — `server/realtime/message_queue.py`
-- **Initialize metrics collection.** (1 connections) — `server/services/nats_subject_manager/metrics.py`
-- **Test MessageQueue.get_messages() handles errors.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **Test MessageQueue.has_messages() returns False for empty list.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **Test MessageQueue.cleanup_old_messages() removes old messages.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **Test MessageQueue.cleanup_old_messages() removes empty queues.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **Test MessageQueue.cleanup_old_messages() handles ISO string timestamps.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **Test MessageQueue.cleanup_old_messages() handles invalid timestamps.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **Test MessageQueue.cleanup_large_structures() trims large queues.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **NPCCombatLucidity** (34 connections) — `server/services/npc_combat_lucidity.py`
+- **ActiveLucidityService** (24 connections) — `server/services/active_lucidity_service.py`
+- **_EncounterCtx** (9 connections) — `server/services/npc_combat_lucidity.py`
+- **.apply_encounter_lucidity_effect()** (9 connections) — `server/services/npc_combat_lucidity.py`
+- **._apply_loss_with_fallback()** (8 connections) — `server/services/npc_combat_lucidity.py`
+- **._commit_loss()** (7 connections) — `server/services/npc_combat_lucidity.py`
+- **._apply_disturbing_fallback()** (7 connections) — `server/services/npc_combat_lucidity.py`
+- **Any** (6 connections)
+- **._archetype_from_definition()** (4 connections) — `server/services/npc_combat_lucidity.py`
+- **._resolve_lucidity_category()** (4 connections) — `server/services/npc_combat_lucidity.py`
+- **.get_lucidity_service()** (3 connections) — `server/services/npc_combat_integration_service.py`
+- **test_perform_recovery_action_naive_datetime_cooldown()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **Handle active lucidity adjustments such as encounters and recovery actions.** (1 connections) — `server/services/active_lucidity_service.py`
+- **Return lucidity dependency for integration collaborators.** (1 connections) — `server/services/npc_combat_integration_service.py`
+- **NamedTuple** (1 connections)
+- **Context for applying encounter lucidity loss.** (1 connections) — `server/services/npc_combat_lucidity.py`
+- **Manages lucidity effects for NPC encounters.** (1 connections) — `server/services/npc_combat_lucidity.py`
+- **Resolve encounter archetype name from NPC definition or id.** (1 connections) — `server/services/npc_combat_lucidity.py`
+- **Apply and commit one encounter lucidity loss for the given category.** (1 connections) — `server/services/npc_combat_lucidity.py`
+- **Retry encounter loss with the disturbing category after unknown-category failure** (1 connections) — `server/services/npc_combat_lucidity.py`
+- **Apply encounter lucidity loss, falling back to disturbing on unknown category.** (1 connections) — `server/services/npc_combat_lucidity.py`
+- **Apply lucidity loss when a player engages an eldritch entity.          Args:** (1 connections) — `server/services/npc_combat_lucidity.py`
+- **Determine encounter category based on NPC definition metadata.          Args:** (1 connections) — `server/services/npc_combat_lucidity.py`
+- **Test perform_recovery_action() handles naive datetime in cooldown.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Relationships
 
-- [Playwright E2E Specs](Playwright_E2E_Specs.md) (9 shared connections)
-- [Investigations Sessions Session](Investigations_Sessions_Session.md) (7 shared connections)
-- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (5 shared connections)
-- [Help and WebSocket Core](Help_and_WebSocket_Core.md) (2 shared connections)
-- [Cursor Plans Pydantic](Cursor_Plans_Pydantic.md) (2 shared connections)
-- [Mythos Map Builder](Mythos_Map_Builder.md) (1 shared connections)
-- [Game State Provider Tests](Game_State_Provider_Tests.md) (1 shared connections)
-- [UI Animation Testing Standards](UI_Animation_Testing_Standards.md) (1 shared connections)
-- [Zone Coordinate Generator](Zone_Coordinate_Generator.md) (1 shared connections)
-- [Combat Service Bundle](Combat_Service_Bundle.md) (1 shared connections)
-- [Manager Services Nats](Manager_Services_Nats.md) (1 shared connections)
+- [Alias Storage Layer](Alias_Storage_Layer.md) (16 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (11 shared connections)
+- [Archive Optimization Summary](Archive_Optimization_Summary.md) (4 shared connections)
+- [WebSocket Message Validator](WebSocket_Message_Validator.md) (4 shared connections)
+- [Character Creation API](Character_Creation_API.md) (3 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (3 shared connections)
+- [Mythos Calendar Time Service](Mythos_Calendar_Time_Service.md) (2 shared connections)
+- [Container Component Capacity](Container_Component_Capacity.md) (1 shared connections)
+- [Realtime Visual Indicator](Realtime_Visual_Indicator.md) (1 shared connections)
+- [Realtime Conftest Mocks](Realtime_Conftest_Mocks.md) (1 shared connections)
 
 ## Source Files
 
-- `server/monitoring/memory_leak_metrics.py`
-- `server/realtime/message_queue.py`
-- `server/services/nats_metrics.py`
-- `server/services/nats_subject_manager/metrics.py`
-- `server/tests/unit/realtime/test_message_queue.py`
+- `server/services/active_lucidity_service.py`
+- `server/services/npc_combat_integration_service.py`
+- `server/services/npc_combat_lucidity.py`
+- `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (59%)
-- INFERRED: 30 (41%)
+- EXTRACTED: 119 (92%)
+- INFERRED: 11 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

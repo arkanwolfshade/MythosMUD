@@ -1,23 +1,41 @@
 # Game Magic Spell
 
-> 2 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **test_handle_admin_set_stat_command_case_insensitive_stat_names()** (3 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **Test case-insensitive stat name handling.** (1 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
+- **MemoryMonitor** (13 connections) — `server/realtime/memory_monitor.py`
+- **.get_memory_usage()** (4 connections) — `server/realtime/memory_monitor.py`
+- **.get_memory_alerts()** (4 connections) — `server/realtime/memory_monitor.py`
+- **_max_connection_age_seconds()** (3 connections) — `server/realtime/memory_monitor.py`
+- **.__init__()** (3 connections) — `server/realtime/memory_monitor.py`
+- **.should_cleanup()** (3 connections) — `server/realtime/memory_monitor.py`
+- **.get_memory_stats()** (3 connections) — `server/realtime/memory_monitor.py`
+- **Any** (2 connections)
+- **.update_cleanup_time()** (2 connections) — `server/realtime/memory_monitor.py`
+- **.force_garbage_collection()** (2 connections) — `server/realtime/memory_monitor.py`
+- **Connection age threshold (seconds). Higher in e2e/local to avoid mid-run drops.** (1 connections) — `server/realtime/memory_monitor.py`
+- **Monitor memory usage and trigger cleanup when needed.      This class provides m** (1 connections) — `server/realtime/memory_monitor.py`
+- **Initialize the memory monitor with default settings.** (1 connections) — `server/realtime/memory_monitor.py`
+- **Check if cleanup should be triggered.          Returns:             bool: True i** (1 connections) — `server/realtime/memory_monitor.py`
+- **Get current memory usage as percentage.          Returns:             float: Mem** (1 connections) — `server/realtime/memory_monitor.py`
+- **Get detailed memory statistics.          Returns:             dict: Memory stati** (1 connections) — `server/realtime/memory_monitor.py`
+- **Get memory-related alerts based on current usage and connection statistics.** (1 connections) — `server/realtime/memory_monitor.py`
+- **Update the last cleanup time to the current time.** (1 connections) — `server/realtime/memory_monitor.py`
+- **Force garbage collection to free memory.** (1 connections) — `server/realtime/memory_monitor.py`
 
 ## Relationships
 
-- [Admin Status Commands](Admin_Status_Commands.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Game State Provider Tests](Game_State_Provider_Tests.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_admin_setstat_command.py`
+- `server/realtime/memory_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 48 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

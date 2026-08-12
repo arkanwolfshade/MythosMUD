@@ -2,7 +2,7 @@
 
 > God node · 230 connections · `server/alias_storage.py`
 
-**Community:** [Container Open Events](Container_Open_Events.md)
+**Community:** [Player Schema Converter](Player_Schema_Converter.md)
 
 ## Connections by Relation
 

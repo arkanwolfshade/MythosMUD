@@ -17,7 +17,7 @@
 
 ## Relationships
 
-- [Scenario Conversion Guide](Scenario_Conversion_Guide.md) (2 shared connections)
+- [Database Helper Tests](Database_Helper_Tests.md) (2 shared connections)
 - [Player Combat XP](Player_Combat_XP.md) (1 shared connections)
 
 ## Source Files

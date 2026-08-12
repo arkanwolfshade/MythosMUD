@@ -34,8 +34,9 @@
 ## Relationships
 
 - [Command Input Validator](Command_Input_Validator.md) (10 shared connections)
-- [Combat Attack Handler](Combat_Attack_Handler.md) (9 shared connections)
+- [Combat Attack Handler](Combat_Attack_Handler.md) (6 shared connections)
 - [WebSocket Message Validation](WebSocket_Message_Validation.md) (4 shared connections)
+- [Command Input Utilities](Command_Input_Utilities.md) (3 shared connections)
 - [Active Lucidity Service](Active_Lucidity_Service.md) (3 shared connections)
 - [Quest Flow Integration](Quest_Flow_Integration.md) (2 shared connections)
 - [Realtime Event Handlers](Realtime_Event_Handlers.md) (2 shared connections)

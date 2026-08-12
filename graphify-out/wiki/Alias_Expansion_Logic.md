@@ -34,11 +34,11 @@
 ## Relationships
 
 - [Alias Storage Services](Alias_Storage_Services.md) (7 shared connections)
-- [Async Persistence Types](Async_Persistence_Types.md) (5 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (5 shared connections)
 - [Memory Profiler Tools](Memory_Profiler_Tools.md) (3 shared connections)
 - [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
 - [Character Creation Service](Character_Creation_Service.md) (1 shared connections)
-- [Spell Registry Costs](Spell_Registry_Costs.md) (1 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (1 shared connections)
 
 ## Source Files
 

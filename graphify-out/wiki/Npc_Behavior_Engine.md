@@ -33,8 +33,8 @@
 
 - [Postgresql Anti Patterns](Postgresql_Anti_Patterns.md) (4 shared connections)
 - [Archive Planning Code](Archive_Planning_Code.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
-- [Commands Time](Commands_Time.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Admin Teleport FRD](Admin_Teleport_FRD.md) (1 shared connections)
 - [Cursor Plans Plan](Cursor_Plans_Plan.md) (1 shared connections)
 
 ## Source Files

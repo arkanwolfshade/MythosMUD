@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [Spell Registry Costs](Spell_Registry_Costs.md) (4 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (4 shared connections)
 
 ## Source Files
 

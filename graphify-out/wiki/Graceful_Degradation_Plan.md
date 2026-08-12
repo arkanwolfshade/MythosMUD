@@ -22,9 +22,9 @@
 ## Relationships
 
 - [Phase Three Complete Summary](Phase_Three_Complete_Summary.md) (3 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Plan Cursor Plans](Plan_Cursor_Plans.md) (2 shared connections)
 - [Components Map Layout](Components_Map_Layout.md) (2 shared connections)
-- [Plan Cursor Plans](Plan_Cursor_Plans.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 - [Realtime Message Builders](Realtime_Message_Builders.md) (1 shared connections)
 - [Game Profession Service](Game_Profession_Service.md) (1 shared connections)
 

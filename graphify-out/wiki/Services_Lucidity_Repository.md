@@ -1,33 +1,41 @@
 # Services Lucidity Repository
 
-> 8 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **test_get_shutdown_blocking_message_default()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_create_player_preferences_already_exists()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_is_channel_muted_false()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_is_channel_muted_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test get_shutdown_blocking_message() returns default message for unknown context** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test creating player preferences when they already exist.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test checking if channel is muted (returns False).** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test checking if channel is muted when preferences not found.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **skills_commands.py** (15 connections) — `server/commands/skills_commands.py`
+- **handle_skills_command()** (11 connections) — `server/commands/skills_commands.py`
+- **_get_container_services()** (6 connections) — `server/commands/skills_commands.py`
+- **Any** (5 connections)
+- **_resolve_player_id()** (5 connections) — `server/commands/skills_commands.py`
+- **_resolve_user_id()** (4 connections) — `server/commands/skills_commands.py`
+- **_format_skills_output()** (4 connections) — `server/commands/skills_commands.py`
+- **UUID** (2 connections)
+- **Skills command handler (plan 10.7 V4).  Returns the active character's skills as** (1 connections) — `server/commands/skills_commands.py`
+- **Get container, persistence, and skill_service from request, or None if unavailab** (1 connections) — `server/commands/skills_commands.py`
+- **Extract and validate player_id from player object, returning UUID or None.** (1 connections) — `server/commands/skills_commands.py`
+- **Resolve user_id from current_user (auth user) or fallback to player.user_id.** (1 connections) — `server/commands/skills_commands.py`
+- **Format skills list as text output lines.** (1 connections) — `server/commands/skills_commands.py`
+- **Handle the /skills command: return the active character's skills as text.      R** (1 connections) — `server/commands/skills_commands.py`
 
 ## Relationships
 
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (4 shared connections)
-- [Async Persistence Delegates](Async_Persistence_Delegates.md) (3 shared connections)
-- [Room Drop Renderer](Room_Drop_Renderer.md) (1 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (4 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (3 shared connections)
+- [Container Open Events](Container_Open_Events.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (1 shared connections)
+- [Rate Limiter Utilities](Rate_Limiter_Utilities.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_admin_shutdown_command.py`
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/commands/skills_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (81%)
-- INFERRED: 3 (19%)
+- EXTRACTED: 55 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

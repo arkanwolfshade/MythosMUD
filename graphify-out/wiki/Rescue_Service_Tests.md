@@ -1,6 +1,6 @@
 # Rescue Service Tests
 
-> 86 nodes
+> 84 nodes
 
 ## Key Concepts
 
@@ -18,7 +18,6 @@
 - **test_player_presence_tracker_grace_period.py** (6 connections) — `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
 - **_resolve_room_id_for_tutorial_reconnect()** (5 connections) — `server/realtime/player_presence_tracker.py`
 - **UUID** (4 connections)
-- **instance_manager()** (4 connections) — `server/tests/unit/game/test_instance_manager.py`
 - **test_broadcast_connection_message_impl_error()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
 - **test_track_player_disconnected_impl_error()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
 - **test_track_player_disconnected_impl_finally_cleanup()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
@@ -29,34 +28,32 @@
 - **test_resolve_room_id_no_room_id()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
 - **test_resolve_room_id_success()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
 - **test_resolve_room_id_room_no_id()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- *... and 61 more nodes in this community*
+- **test_track_player_connected_impl_new_connection()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
+- [Chat Rate Limiter](Chat_Rate_Limiter.md) (9 shared connections)
 - [NATS Message Broker](NATS_Message_Broker.md) (9 shared connections)
 - [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (8 shared connections)
-- [Player Command Developer Guide](Player_Command_Developer_Guide.md) (6 shared connections)
-- [Playwright E2E Specs](Playwright_E2E_Specs.md) (4 shared connections)
-- [Container Persistence Queries](Container_Persistence_Queries.md) (4 shared connections)
-- [Chat Rate Limiter](Chat_Rate_Limiter.md) (3 shared connections)
+- [Container Persistence Queries](Container_Persistence_Queries.md) (6 shared connections)
+- [Container Exception Handlers](Container_Exception_Handlers.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
 - [Archive Bug Fix](Archive_Bug_Fix.md) (3 shared connections)
 - [Standardized Error Responses](Standardized_Error_Responses.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Realtime WebSocket Auth](Realtime_WebSocket_Auth.md) (2 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
+- [Game State Provider](Game_State_Provider.md) (1 shared connections)
+- [Player Occupant Processor](Player_Occupant_Processor.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/player_presence_tracker.py`
-- `server/tests/unit/game/test_instance_manager.py`
 - `server/tests/unit/realtime/test_player_presence_tracker.py`
 - `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 319 (98%)
-- INFERRED: 6 (2%)
+- EXTRACTED: 315 (98%)
+- INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **test_soft_delete_character_wrong_user()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test soft_delete_character() when user_id doesn't match.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_stats_no_connected_time()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test get_stats() handles None connected time.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Relationships
 
-- [Spell Registry Costs](Spell_Registry_Costs.md) (1 shared connections)
-- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
+- [Room Subscription Helpers](Room_Subscription_Helpers.md) (1 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

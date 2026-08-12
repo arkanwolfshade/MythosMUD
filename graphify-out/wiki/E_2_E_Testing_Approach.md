@@ -1,36 +1,34 @@
 # E 2 E Testing Approach
 
-> 10 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **TestGetMythosTime** (12 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_with_holidays()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_broadcast_message_missing_stats_key()** (3 connections) — `server/tests/unit/api/test_game.py`
-- **.test_broadcast_message_empty_stats()** (3 connections) — `server/tests/unit/api/test_game.py`
-- **.test_broadcast_message_logs_info()** (3 connections) — `server/tests/unit/api/test_game.py`
-- **Test get_mythos_time endpoint.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test get_mythos_time includes holiday data when available.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test broadcast_message handles missing successful_deliveries in stats.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test broadcast_message handles empty stats dictionary.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test broadcast_message logs info messages correctly.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **test_grace_period_blocking.py** (8 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_blocks_commands()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_allows_commands_when_not_in_grace_period()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_handles_missing_services()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_handles_player_not_found()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **mock_request()** (2 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Unit tests for grace period command blocking in unified command handler.  Tests** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Create a mock request.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Test _check_grace_period_block() blocks commands for grace period players.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Test _check_grace_period_block() allows commands when player not in grace period** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Test _check_grace_period_block() handles missing services gracefully.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Test _check_grace_period_block() handles player not found gracefully.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
 
 ## Relationships
 
-- [Chat Panel Filtering](Chat_Panel_Filtering.md) (6 shared connections)
-- [Quality Audit Report](Quality_Audit_Report.md) (3 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
-- [Investigations Sessions Session](Investigations_Sessions_Session.md) (1 shared connections)
-- [Spell Effects Tests](Spell_Effects_Tests.md) (1 shared connections)
+- [Room Exploration API](Room_Exploration_API.md) (6 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/api/test_game.py`
+- `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 28 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

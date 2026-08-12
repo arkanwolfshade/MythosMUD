@@ -35,7 +35,7 @@
 
 - [Logging File Setup](Logging_File_Setup.md) (3 shared connections)
 - [Logging Path Utilities](Logging_Path_Utilities.md) (2 shared connections)
-- [Docker PostgreSQL Typo Bug](Docker_PostgreSQL_Typo_Bug.md) (1 shared connections)
+- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (1 shared connections)
 
 ## Source Files
 

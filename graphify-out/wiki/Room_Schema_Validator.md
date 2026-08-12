@@ -1,6 +1,6 @@
 # Room Schema Validator
 
-> 83 nodes
+> 81 nodes
 
 ## Key Concepts
 
@@ -18,7 +18,6 @@
 - **.validate_room_database()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **.is_one_way_exit()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **.is_self_reference_exit()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **test_schema_validator.py** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.test_init_with_default_schema()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.test_init_with_custom_schema()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.test_init_schema_file_not_found()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
@@ -29,16 +28,16 @@
 - **.test_validate_room_empty_name()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.test_validate_room_with_file_path()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.test_normalize_exits_legacy_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- *... and 58 more nodes in this community*
+- **.test_normalize_exits_new_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
+- [Admin Set Stat Command](Admin_Set_Stat_Command.md) (5 shared connections)
 - [Async Persistence Types](Async_Persistence_Types.md) (4 shared connections)
-- [Admin Set Stat Command](Admin_Set_Stat_Command.md) (4 shared connections)
 - [Hierarchical Schema Tests](Hierarchical_Schema_Tests.md) (3 shared connections)
 - [Inventory Command Factories](Inventory_Command_Factories.md) (2 shared connections)
 - [Room Fixer Toolkit](Room_Fixer_Toolkit.md) (1 shared connections)
-- [Room Definition Loader](Room_Definition_Loader.md) (1 shared connections)
 - [Migration Testing Strategy](Migration_Testing_Strategy.md) (1 shared connections)
 
 ## Source Files
@@ -49,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 181 (72%)
+- EXTRACTED: 177 (72%)
 - INFERRED: 69 (28%)
 - AMBIGUOUS: 0 (0%)
 

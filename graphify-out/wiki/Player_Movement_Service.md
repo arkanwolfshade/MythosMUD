@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [Archive Environment Contamination](Archive_Environment_Contamination.md) (3 shared connections)
-- [Merge Refactoring Summary](Merge_Refactoring_Summary.md) (3 shared connections)
+- [Help and WebSocket Core](Help_and_WebSocket_Core.md) (4 shared connections)
+- [Archive Environment Contamination](Archive_Environment_Contamination.md) (2 shared connections)
 - [Memory Leak Metrics](Memory_Leak_Metrics.md) (2 shared connections)
-- [Help and WebSocket Core](Help_and_WebSocket_Core.md) (1 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Character Info Panel Fix](Character_Info_Panel_Fix.md) (1 shared connections)
 - [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
 
 ## Source Files

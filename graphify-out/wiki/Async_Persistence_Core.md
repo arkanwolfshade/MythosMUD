@@ -1,10 +1,9 @@
 # Async Persistence Core
 
-> 49 nodes
+> 45 nodes
 
 ## Key Concepts
 
-- **RoomDataValidator** (18 connections) — `server/services/room_data_validator.py`
 - **test_room_data_validator.py** (16 connections) — `server/tests/unit/services/test_room_data_validator.py`
 - **.validate_room_data()** (10 connections) — `server/services/room_data_validator.py`
 - **Any** (8 connections)
@@ -12,7 +11,6 @@
 - **.validate_required_fields()** (6 connections) — `server/services/room_data_validator.py`
 - **.validate_field_types()** (6 connections) — `server/services/room_data_validator.py`
 - **.check_duplicate_occupants()** (6 connections) — `server/services/room_data_validator.py`
-- **.is_valid_room_id()** (5 connections) — `server/services/room_data_validator.py`
 - **.check_occupant_count_consistency()** (5 connections) — `server/services/room_data_validator.py`
 - **.check_empty_room_with_occupants()** (5 connections) — `server/services/room_data_validator.py`
 - **.validate_occupant_consistency()** (4 connections) — `server/services/room_data_validator.py`
@@ -29,14 +27,13 @@
 - **test_check_duplicate_occupants_no_duplicates()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
 - **test_check_empty_room_with_occupants()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
 - **test_validate_room_consistency()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- *... and 24 more nodes in this community*
+- **Validate room data structure and content.          Args:             room_data:** (1 connections) — `server/services/room_data_validator.py`
+- **Validate that all required fields are present.          Args:             room_d** (1 connections) — `server/services/room_data_validator.py`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
-- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (2 shared connections)
-- [Command Testing Guide](Command_Testing_Guide.md) (2 shared connections)
-- [Room Data Fixer](Room_Data_Fixer.md) (2 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (12 shared connections)
 
 ## Source Files
 
@@ -45,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 156 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 134 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

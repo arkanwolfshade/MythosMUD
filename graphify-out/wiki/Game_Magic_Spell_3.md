@@ -1,32 +1,23 @@
 # Game Magic Spell
 
-> 10 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **TestValidateCommandBasics** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_validate_command_basics_empty()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_validate_command_basics_too_long()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_validate_command_basics_invalid_content()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_validate_command_basics_valid()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _validate_command_basics function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _validate_command_basics returns result for empty command.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _validate_command_basics returns result for command too long.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _validate_command_basics returns result for invalid command content.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _validate_command_basics returns None for valid command.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **test_handle_admin_set_stat_command_case_insensitive_stat_names()** (3 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
+- **Test case-insensitive stat name handling.** (1 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
 
 ## Relationships
 
-- [Admin Teleport Commands](Admin_Teleport_Commands.md) (4 shared connections)
-- [Catatonia Check Logic](Catatonia_Check_Logic.md) (1 shared connections)
+- [Admin Status Commands](Admin_Status_Commands.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_validation.py`
+- `server/tests/unit/commands/test_admin_setstat_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

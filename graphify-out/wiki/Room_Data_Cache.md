@@ -34,8 +34,9 @@
 ## Relationships
 
 - [Caching Lru Cache](Caching_Lru_Cache.md) (6 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
-- [Room Data Fixer](Room_Data_Fixer.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Holiday Persistence Models](Holiday_Persistence_Models.md) (1 shared connections)
+- [Room Data Fixer](Room_Data_Fixer.md) (1 shared connections)
 
 ## Source Files
 

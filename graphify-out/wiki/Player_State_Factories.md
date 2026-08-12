@@ -1,53 +1,55 @@
 # Player State Factories
 
-> 30 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **AdminAuthService** (19 connections) — `server/services/admin_auth_service.py`
-- **.validate_permission()** (12 connections) — `server/services/admin_auth_service.py`
-- **AdminRole** (7 connections) — `server/services/admin_auth_service.py`
-- **Any** (6 connections)
-- **._update_session()** (6 connections) — `server/services/admin_auth_service.py`
-- **.get_user_role()** (5 connections) — `server/services/admin_auth_service.py`
-- **._has_permission()** (5 connections) — `server/services/admin_auth_service.py`
-- **._log_audit_event()** (5 connections) — `server/services/admin_auth_service.py`
-- **.get_username()** (4 connections) — `server/services/admin_auth_service.py`
-- **.get_user_id()** (4 connections) — `server/services/admin_auth_service.py`
-- **Request** (4 connections)
-- **._check_rate_limit()** (4 connections) — `server/services/admin_auth_service.py`
-- **.get_active_sessions()** (3 connections) — `server/services/admin_auth_service.py`
-- **.get_audit_log()** (3 connections) — `server/services/admin_auth_service.py`
-- **.__init__()** (2 connections) — `server/services/admin_auth_service.py`
-- **.cleanup_expired_sessions()** (2 connections) — `server/services/admin_auth_service.py`
-- **Enumeration of admin roles.** (1 connections) — `server/services/admin_auth_service.py`
-- **Service for admin authentication and authorization.** (1 connections) — `server/services/admin_auth_service.py`
-- **Initialize the admin auth service.** (1 connections) — `server/services/admin_auth_service.py`
-- **Determine the admin role for a user.          Args:             current_user: Th** (1 connections) — `server/services/admin_auth_service.py`
-- **Safely get username from current user object.** (1 connections) — `server/services/admin_auth_service.py`
-- **Safely get user ID from current user object.** (1 connections) — `server/services/admin_auth_service.py`
-- **Validate that the current user has permission to perform the action.          Ar** (1 connections) — `server/services/admin_auth_service.py`
-- **Check if a role has permission for an action.          Args:             role: T** (1 connections) — `server/services/admin_auth_service.py`
-- **Check if user has exceeded rate limits.          Args:             user_id: The** (1 connections) — `server/services/admin_auth_service.py`
-- *... and 5 more nodes in this community*
+- **player_effect_repository.py** (21 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **PlayerEffectRepository** (18 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **.get_active_effects_for_player()** (10 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **_row_to_player_effect()** (8 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **UUID** (8 connections)
+- **.add_effect()** (8 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **Any** (7 connections)
+- **AddEffectInput** (7 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **_add_effect_params()** (6 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **.delete_effect()** (6 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **._execute_add_effect()** (5 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **.get_effect_remaining_ticks()** (5 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **_str_opt()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **_int_opt()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **_opt_str()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **.has_effect()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **._remaining_ticks()** (3 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **TypedDict** (1 connections)
+- **Player effect repository for the effects system (ADR-009).  Async persistence fo** (1 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **Return str(val) or empty string if val is None.** (1 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **Return int value or default if val is None.** (1 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **Return str value or default if val is None.** (1 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **Map procedure result row to PlayerEffect model.** (1 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **Input for add_effect. effect_type, category, duration, applied_at_tick required;** (1 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **Build params dict for add_player_effect procedure.** (1 connections) — `server/persistence/repositories/player_effect_repository.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (6 shared connections)
-- [Contexts Themecontext Hooks](Contexts_Themecontext_Hooks.md) (2 shared connections)
-- [Player Model Inventory](Player_Model_Inventory.md) (2 shared connections)
-- [Container Component Capacity](Container_Component_Capacity.md) (1 shared connections)
-- [test_profession_set_mechanical_effects_empty_dict](test_profession_set_mechanical_effects_empty_dict.md) (1 shared connections)
-- [Mythosmud Obsidian Raw](Mythosmud_Obsidian_Raw.md) (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (18 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (6 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Lucidity Event Dispatcher](Lucidity_Event_Dispatcher.md) (3 shared connections)
+- [Realtime Conftest Mocks](Realtime_Conftest_Mocks.md) (2 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (2 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
+- [Draggable Panel UI](Draggable_Panel_UI.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/admin_auth_service.py`
+- `server/persistence/repositories/player_effect_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 104 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 135 (94%)
+- INFERRED: 9 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

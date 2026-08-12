@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **analyze-product.md** (1 connections) — `.claude/commands/analyze-product.md`
-- **Analyze Product** (1 connections) — `.claude/commands/analyze-product.md`
+- **create-spec.md** (1 connections) — `.claude/commands/create-spec.md`
+- **Create Spec** (1 connections) — `.claude/commands/create-spec.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `.claude/commands/analyze-product.md`
+- `.claude/commands/create-spec.md`
 
 ## Audit Trail
 

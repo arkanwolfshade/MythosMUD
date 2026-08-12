@@ -1,41 +1,43 @@
 # E2E Suite Spec Helpers
 
-> 16 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **.get_npc_definition()** (5 connections) — `server/services/npc_combat_data_provider.py`
-- **UUID** (5 connections)
-- **.get_npc_combat_data()** (5 connections) — `server/services/npc_combat_data_provider.py`
-- **Any** (4 connections)
-- **.get_npc_instance()** (4 connections) — `server/services/npc_combat_data_provider.py`
-- **.get_player_combat_data()** (4 connections) — `server/services/npc_combat_data_provider.py`
-- **.__init__()** (3 connections) — `server/services/npc_combat_data_provider.py`
-- **.get_player_name()** (3 connections) — `server/services/npc_combat_data_provider.py`
-- **.get_player_room_id()** (3 connections) — `server/services/npc_combat_data_provider.py`
-- **Initialize the data provider.          Args:             async_persistence: A** (1 connections) — `server/services/npc_combat_data_provider.py`
-- **Get NPC instance from the spawning service.          Args:             npc_id** (1 connections) — `server/services/npc_combat_data_provider.py`
-- **Get NPC definition for an NPC instance.          Uses persistence.get_npc_life** (1 connections) — `server/services/npc_combat_data_provider.py`
-- **Get player name for messaging.          Args:             player_id: ID of th** (1 connections) — `server/services/npc_combat_data_provider.py`
-- **Get the current room ID for a player.          Args:             player_id: I** (1 connections) — `server/services/npc_combat_data_provider.py`
-- **Get player combat participant data from persistence.          Args:** (1 connections) — `server/services/npc_combat_data_provider.py`
-- **Get NPC combat participant data from NPC instance.          Args:** (1 connections) — `server/services/npc_combat_data_provider.py`
+- **_parse_npc_stats_dict()** (14 connections) — `server/commands/look_npc.py`
+- **test_parse_npc_stats_dict_from_dict()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_npc_stats_dict_from_json_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_npc_stats_dict_invalid_json()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_npc_stats_dict_non_dict_non_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_npc_stats_dict_from_dict()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_parse_npc_stats_dict_from_json_string()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_parse_npc_stats_dict_invalid_json()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_parse_npc_stats_dict_other_type()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Parse NPC stats dictionary, handling both dict and JSON string formats.** (1 connections) — `server/commands/look_npc.py`
+- **Test parsing NPC stats from dictionary.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test parsing NPC stats from JSON string.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test parsing NPC stats from invalid JSON.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test parsing NPC stats from non-dict, non-string.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test _parse_npc_stats_dict() handles dict input.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _parse_npc_stats_dict() parses JSON string.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _parse_npc_stats_dict() returns empty dict for invalid JSON.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _parse_npc_stats_dict() returns empty dict for other types.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Relationships
 
-- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (8 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (2 shared connections)
-- [Players API Endpoints](Players_API_Endpoints.md) (2 shared connections)
-- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Look NPC Command](Look_NPC_Command.md) (8 shared connections)
+- [Character Stats Generator](Character_Stats_Generator.md) (5 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_data_provider.py`
+- `server/commands/look_npc.py`
+- `server/tests/unit/commands/test_look_npc.py`
+- `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 47 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

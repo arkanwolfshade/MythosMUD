@@ -1,77 +1,51 @@
 # Communication Command Handlers
 
-> 45 nodes
+> 69 nodes
 
 ## Key Concepts
 
-- **types.ts** (42 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
-- **stateUpdateUtils.ts** (42 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **Room** (36 connections) — `client/src/components/ui-v2/types.ts`
-- **Player** (32 connections) — `client/src/components/ui-v2/types.ts`
-- **ChatMessage** (30 connections) — `client/src/components/ui-v2/types.ts`
-- **LucidityStatus** (26 connections) — `client/src/types/lucidity.ts`
-- **GameState** (25 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **HealthStatus** (25 connections) — `client/src/types/health.ts`
-- **MythosTimeState** (23 connections) — `client/src/types/mythosTime.ts`
-- **index.ts** (17 connections) — `client/src/components/ui-v2/eventHandlers/index.ts`
-- **RescueState** (17 connections) — `client/src/types/lucidity.ts`
-- **EventHandlerContext** (15 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
-- **useEventProcessing.test.ts** (14 connections) — `client/src/components/ui-v2/hooks/__tests__/useEventProcessing.test.ts`
-- **useRefSynchronization.ts** (14 connections) — `client/src/components/ui-v2/hooks/useRefSynchronization.ts`
-- **stateUpdateUtils.test.ts** (14 connections) — `client/src/components/ui-v2/utils/__tests__/stateUpdateUtils.test.ts`
-- **GameClientV2RefsBundle** (11 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
-- **GameStateUpdates** (10 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
-- **CharacterInfoPanel.test.tsx** (10 connections) — `client/src/components/ui-v2/panels/__tests__/CharacterInfoPanel.test.tsx`
-- **QuestLogEntry** (10 connections) — `client/src/components/ui-v2/types.ts`
-- **GameClientV2Props** (9 connections) — `client/src/components/ui-v2/GameClientV2.tsx`
-- **index.test.ts** (8 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/index.test.ts`
-- **UseRefSynchronizationParams** (8 connections) — `client/src/components/ui-v2/hooks/useRefSynchronization.ts`
-- **GameClientV2AuxiliaryPanelsProps** (7 connections) — `client/src/components/ui-v2/GameClientV2AuxiliaryPanels.tsx`
-- **EventHandler** (7 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
-- **applyEventUpdates()** (7 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- *... and 20 more nodes in this community*
+- **test_alias_commands.py** (30 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **handle_alias_command()** (25 connections) — `server/commands/alias_commands.py`
+- **alias_commands.py** (15 connections) — `server/commands/alias_commands.py`
+- **handle_unalias_command()** (13 connections) — `server/commands/alias_commands.py`
+- **handle_aliases_command()** (12 connections) — `server/commands/alias_commands.py`
+- **_create_alias()** (5 connections) — `server/commands/alias_commands.py`
+- **_extract_alias_params()** (4 connections) — `server/commands/alias_commands.py`
+- **Any** (4 connections)
+- **_view_alias()** (4 connections) — `server/commands/alias_commands.py`
+- **_validate_alias_params()** (3 connections) — `server/commands/alias_commands.py`
+- **test_handle_alias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_no_args()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_view_existing()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_view_nonexistent()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_create_from_args()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_create_from_structured_data()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_invalid_name_too_long()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_invalid_command_too_long()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_circular_reference()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_create_error()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_aliases_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_aliases_command_no_aliases()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_aliases_command_with_aliases()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_aliases_command_error()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_unalias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [Combat Messaging Integration](Combat_Messaging_Integration.md) (33 shared connections)
-- [Level and XP Curve](Level_and_XP_Curve.md) (32 shared connections)
-- [Logout and Quit Commands](Logout_and_Quit_Commands.md) (25 shared connections)
-- [Magic System Feature Plan](Magic_System_Feature_Plan.md) (22 shared connections)
-- [API Test Fixtures](API_Test_Fixtures.md) (22 shared connections)
-- [Character Stats Model](Character_Stats_Model.md) (21 shared connections)
-- [Room Planning Archive](Room_Planning_Archive.md) (18 shared connections)
-- [Async Room Loading Tests](Async_Room_Loading_Tests.md) (17 shared connections)
-- [Connection Cleaner Tests](Connection_Cleaner_Tests.md) (17 shared connections)
-- [Chat Channel Design Spec](Chat_Channel_Design_Spec.md) (10 shared connections)
-- [Health Cold Resistance](Health_Cold_Resistance.md) (10 shared connections)
-- [Status Effect Tick Tests](Status_Effect_Tick_Tests.md) (8 shared connections)
+- [Container Open Events](Container_Open_Events.md) (11 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (7 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/components/GameTerminal.tsx`
-- `client/src/components/ui-v2/GameClientV2.tsx`
-- `client/src/components/ui-v2/GameClientV2AuxiliaryPanels.tsx`
-- `client/src/components/ui-v2/__tests__/GameClientV2.test.tsx`
-- `client/src/components/ui-v2/eventHandlers/__tests__/index.test.ts`
-- `client/src/components/ui-v2/eventHandlers/index.ts`
-- `client/src/components/ui-v2/eventHandlers/types.ts`
-- `client/src/components/ui-v2/hooks/__tests__/useEventProcessing.test.ts`
-- `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
-- `client/src/components/ui-v2/hooks/usePlayerStatusEffects.ts`
-- `client/src/components/ui-v2/hooks/useRefSynchronization.ts`
-- `client/src/components/ui-v2/panels/CharacterInfoPanel.tsx`
-- `client/src/components/ui-v2/panels/__tests__/CharacterInfoPanel.test.tsx`
-- `client/src/components/ui-v2/types.ts`
-- `client/src/components/ui-v2/utils/__tests__/stateUpdateUtils.test.ts`
-- `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- `client/src/types/health.ts`
-- `client/src/types/lucidity.ts`
-- `client/src/types/mythosTime.ts`
+- `server/commands/alias_commands.py`
+- `server/tests/unit/commands/test_alias_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 512 (99%)
-- INFERRED: 4 (1%)
+- EXTRACTED: 219 (99%)
+- INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **test_get_player_by_name_not_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test get_player_by_name() when player is not found.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **__init__.py** (1 connections) — `server/tests/unit/realtime/monitoring/__init__.py`
+- **Realtime monitoring unit tests.** (1 connections) — `server/tests/unit/realtime/monitoring/__init__.py`
 
 ## Relationships
 
-- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/realtime/monitoring/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

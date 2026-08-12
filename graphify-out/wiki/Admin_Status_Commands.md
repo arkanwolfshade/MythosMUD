@@ -35,10 +35,10 @@
 
 - [Combat Messaging Tests](Combat_Messaging_Tests.md) (7 shared connections)
 - [Archive Effects System](Archive_Effects_System.md) (3 shared connections)
-- [Container Open Events](Container_Open_Events.md) (2 shared connections)
+- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (2 shared connections)
 - [Game Magic Spell](Game_Magic_Spell.md) (2 shared connections)
 - [Upgrade Archive Dependency](Upgrade_Archive_Dependency.md) (2 shared connections)
-- [Invite and User Schemas](Invite_and_User_Schemas.md) (1 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
 - [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
 
 ## Source Files

@@ -4,21 +4,22 @@
 
 ## Key Concepts
 
-- **test_handle_item_look_in_room_drops()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **npc_config.py** (4 connections) — `server/config/npc_config.py`
+- **NPC Configuration for MythosMUD.  This module defines configuration settings for** (1 connections) — `server/config/npc_config.py`
 
 ## Relationships
 
-- [Error Handling Guide](Error_Handling_Guide.md) (1 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
+- [Legacy Error Sanitization](Legacy_Error_Sanitization.md) (1 shared connections)
+- [E 2 E Di Migration](E_2_E_Di_Migration.md) (1 shared connections)
+- [NPC Definition Schemas](NPC_Definition_Schemas.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/config/npc_config.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

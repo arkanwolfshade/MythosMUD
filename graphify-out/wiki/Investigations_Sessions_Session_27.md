@@ -1,31 +1,25 @@
 # Investigations Sessions Session
 
-> 10 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **enum** (7 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **zone_type** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **city** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **countryside** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **mountains** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **swamp** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **tundra** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **desert** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **Code Graph Entry** (3 connections) — `data/MythosMUD-Obsidian/wiki/code/Code Graph Entry.md`
+- **Code Graph Entry.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/code/Code Graph Entry.md`
+- **Live exploration (preferred for "how does X work?")** (1 connections) — `data/MythosMUD-Obsidian/wiki/code/Code Graph Entry.md`
+- **Synced community wiki (read-only dump)** (1 connections) — `data/MythosMUD-Obsidian/wiki/code/Code Graph Entry.md`
 
 ## Relationships
 
-- [Cursor Commands Remediation](Cursor_Commands_Remediation.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- `data/MythosMUD-Obsidian/wiki/code/Code Graph Entry.md`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

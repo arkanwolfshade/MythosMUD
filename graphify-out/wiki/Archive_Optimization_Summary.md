@@ -1,31 +1,38 @@
 # Archive Optimization Summary
 
-> 7 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **_register_new_connection()** (9 connections) — `server/realtime/connection_establishment.py`
-- **test_register_new_connection()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_register_new_connection_existing_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **WebSocket** (2 connections)
-- **Register a new WebSocket connection.      Args:         websocket: The WebSocket** (1 connections) — `server/realtime/connection_establishment.py`
-- **Test _register_new_connection() registers new connection.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _register_new_connection() adds to existing player connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **UnknownEncounterCategoryError** (11 connections) — `server/services/active_lucidity_service.py`
+- **.apply_encounter_lucidity_loss()** (5 connections) — `server/services/active_lucidity_service.py`
+- **UUID** (4 connections)
+- **.get_action_cooldown()** (4 connections) — `server/services/active_lucidity_service.py`
+- **Any** (3 connections)
+- **test_apply_encounter_lucidity_loss_unknown_category()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **Raised when an encounter category is not recognised.** (1 connections) — `server/services/active_lucidity_service.py`
+- **Apply LCD loss for a Mythos encounter.** (1 connections) — `server/services/active_lucidity_service.py`
+- **Fetch the cooldown record for a recovery action.** (1 connections) — `server/services/active_lucidity_service.py`
+- **Test apply_encounter_lucidity_loss() raises error for unknown category.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Relationships
 
-- [Architecture Review Plan](Architecture_Review_Plan.md) (5 shared connections)
-- [WebSocket Connection Setup](WebSocket_Connection_Setup.md) (3 shared connections)
+- [Async Persistence Migration](Async_Persistence_Migration.md) (4 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (3 shared connections)
+- [Character Creation API](Character_Creation_API.md) (3 shared connections)
+- [WebSocket Message Validator](WebSocket_Message_Validator.md) (2 shared connections)
+- [Container Component Capacity](Container_Component_Capacity.md) (1 shared connections)
+- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_establishment.py`
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/services/active_lucidity_service.py`
+- `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 29 (85%)
+- INFERRED: 5 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

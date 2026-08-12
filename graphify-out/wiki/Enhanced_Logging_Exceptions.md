@@ -1,75 +1,70 @@
 # Enhanced Logging Exceptions
 
-> 302 nodes
+> 209 nodes
 
 ## Key Concepts
 
 - **LucidityService** (77 connections) — `server/services/lucidity_service.py`
-- **PlayerLucidity** (74 connections) — `server/models/lucidity.py`
 - **lucidity_service.py** (50 connections) — `server/services/lucidity_service.py`
-- **test_lucidity_event_dispatcher.py** (34 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **rescue_commands.py** (33 connections) — `server/commands/rescue_commands.py`
-- **lucidity.py** (33 connections) — `server/models/lucidity.py`
-- **handle_ground_command()** (28 connections) — `server/commands/rescue_commands.py`
+- **player_respawn_service.py** (41 connections) — `server/services/player_respawn_service.py`
+- **PlayerRespawnService** (40 connections) — `server/services/player_respawn_service.py`
+- **combat_flee_handler.py** (23 connections) — `server/services/combat_flee_handler.py`
 - **lucidity_helpers.py** (23 connections) — `server/services/lucidity_helpers.py`
-- **test_rescue_commands.py** (23 connections) — `server/tests/unit/commands/test_rescue_commands.py`
 - **active_lucidity_service.py** (22 connections) — `server/services/active_lucidity_service.py`
-- **rescue_service.py** (19 connections) — `server/services/rescue_service.py`
-- **lucidity_event_dispatcher.py** (18 connections) — `server/services/lucidity_event_dispatcher.py`
-- **send_rescue_update_event()** (18 connections) — `server/services/lucidity_event_dispatcher.py`
-- **lucidity_trigger_handlers.py** (18 connections) — `server/services/lucidity_trigger_handlers.py`
-- **send_lucidity_change_event()** (17 connections) — `server/services/lucidity_event_dispatcher.py`
-- **CatatoniaObserverProtocol** (17 connections) — `server/services/lucidity_helpers.py`
-- **handle_rescue_command()** (14 connections) — `server/commands/rescue_commands.py`
+- **test_combat_flee_handler.py** (17 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **UUID** (16 connections)
+- **._prepare_sanitarium_respawn()** (16 connections) — `server/services/player_respawn_service.py`
+- **execute_voluntary_flee()** (15 connections) — `server/services/combat_flee_handler.py`
 - **UUID** (14 connections)
-- **LucidityChangeEventExtras** (12 connections) — `server/services/lucidity_event_dispatcher.py`
-- **send_catatonia_event()** (12 connections) — `server/services/lucidity_event_dispatcher.py`
 - **._apply_sanitarium_liability_update()** (12 connections) — `server/services/player_respawn_service.py`
-- **RescueService** (12 connections) — `server/services/rescue_service.py`
-- **UnknownEncounterCategoryError** (11 connections) — `server/services/active_lucidity_service.py`
-- **_dispatch_player_event()** (11 connections) — `server/services/lucidity_event_dispatcher.py`
+- **try_voluntary_flee_roll()** (11 connections) — `server/services/combat_flee_handler.py`
 - **decode_liabilities()** (11 connections) — `server/services/lucidity_helpers.py`
-- *... and 277 more nodes in this community*
+- **.respawn_player()** (11 connections) — `server/services/player_respawn_service.py`
+- **_make_participant()** (11 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_lucidity_service.py** (11 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **._send_lucidity_change_event_if_needed()** (10 connections) — `server/services/lucidity_service.py`
+- **._finalize_lucidity_adjustment()** (10 connections) — `server/services/lucidity_service.py`
+- **.respawn_player_from_delirium()** (10 connections) — `server/services/player_respawn_service.py`
+- **.respawn_player_from_sanitarium()** (10 connections) — `server/services/player_respawn_service.py`
+- **hallucination_frequency_service.py** (9 connections) — `server/services/hallucination_frequency_service.py`
+- **LucidityUpdateResult** (9 connections) — `server/services/lucidity_helpers.py`
+- **.apply_lucidity_adjustment()** (9 connections) — `server/services/lucidity_service.py`
+- *... and 184 more nodes in this community*
 
 ## Relationships
 
-- [Container Open Events](Container_Open_Events.md) (37 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (22 shared connections)
-- [Panel Layout Libraries Spec](Panel_Layout_Libraries_Spec.md) (20 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (17 shared connections)
-- [Application Config Settings](Application_Config_Settings.md) (15 shared connections)
-- [Connection Room Presence Utils](Connection_Room_Presence_Utils.md) (8 shared connections)
-- [Spell Registry Costs](Spell_Registry_Costs.md) (7 shared connections)
-- [Logging Correct Patterns](Logging_Correct_Patterns.md) (7 shared connections)
-- [Message Queue Cleanup](Message_Queue_Cleanup.md) (7 shared connections)
-- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (7 shared connections)
-- [Zone Config Loader](Zone_Config_Loader.md) (6 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (28 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (23 shared connections)
+- [Client Event Store](Client_Event_Store.md) (21 shared connections)
+- [Logging Correct Patterns](Logging_Correct_Patterns.md) (19 shared connections)
+- [Client Memory Leak Detector](Client_Memory_Leak_Detector.md) (19 shared connections)
+- [Redis to NATS Migration](Redis_to_NATS_Migration.md) (16 shared connections)
+- [Character Creation API](Character_Creation_API.md) (8 shared connections)
+- [Command Factory Tests](Command_Factory_Tests.md) (8 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (8 shared connections)
+- [Mythos Calendar Time Service](Mythos_Calendar_Time_Service.md) (7 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (7 shared connections)
 - [Services Combat Persistence](Services_Combat_Persistence.md) (6 shared connections)
 
 ## Source Files
 
-- `server/commands/rescue_commands.py`
-- `server/models/lucidity.py`
+- `server/constants/spawn_defaults.py`
 - `server/services/active_lucidity_service.py`
+- `server/services/combat_flee_handler.py`
 - `server/services/hallucination_frequency_service.py`
-- `server/services/lucidity_event_dispatcher.py`
+- `server/services/lucidity_command_disruption.py`
 - `server/services/lucidity_helpers.py`
 - `server/services/lucidity_service.py`
-- `server/services/lucidity_trigger_handlers.py`
 - `server/services/player_respawn_service.py`
-- `server/services/rescue_service.py`
-- `server/tests/integration/test_lucidity_round_trip.py`
-- `server/tests/unit/commands/test_rescue_commands.py`
-- `server/tests/unit/services/test_active_lucidity_service.py`
-- `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- `server/tests/unit/services/test_combat_flee_handler.py`
 - `server/tests/unit/services/test_lucidity_service.py`
 - `server/tests/unit/test_lucidity_service_smoke.py`
 - `server/utils/liability_types.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1286 (93%)
-- INFERRED: 95 (7%)
+- EXTRACTED: 935 (93%)
+- INFERRED: 73 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

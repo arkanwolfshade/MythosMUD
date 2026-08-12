@@ -1,49 +1,52 @@
 # MP Regeneration Service
 
-> 74 nodes
+> 76 nodes
 
 ## Key Concepts
 
-- **test_npc_combat_integration_service.py** (44 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **_StubConfigRoot** (6 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **integration_service()** (6 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_integration_service_init_with_shared_player_combat_service()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_integration_service_init_creates_combat_service_when_none()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **_StubGameConfig** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_integration_service_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_get_integration_config()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_is_auto_progression_enabled()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_handle_player_attack_on_npc()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_validate_and_get_npc_instance_provided()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_validate_and_get_npc_instance_lookup()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_validate_and_get_npc_instance_dead()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_validate_combat_location()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_validate_combat_location_different_rooms()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_validate_combat_location_combat_room_mismatch()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_end_combat_if_participant_in_combat_ends_combat()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_end_combat_if_participant_in_combat_no_combat()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_handle_player_attack_on_npc_room_mismatch_ends_combat()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_handle_npc_death()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_handle_npc_death_broadcasts_room_update()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_handle_npc_death_broadcast_failure_non_fatal()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_get_npc_combat_memory()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_clear_npc_combat_memory()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_get_original_string_id()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- *... and 49 more nodes in this community*
+- **test_command_admin.py** (42 connections) — `server/tests/unit/models/test_command_admin.py`
+- **SummonCommand** (21 connections) — `server/models/command_admin.py`
+- **TeleportCommand** (18 connections) — `server/models/command_admin.py`
+- **test_npc_command_subcommand_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_npc_command_subcommand_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_validate_prototype_id_invalid_characters()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_quantity_validation_min()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_quantity_validation_max()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_prototype_id_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_prototype_id_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_teleport_command_validate_direction_invalid()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_teleport_command_player_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_teleport_command_player_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_goto_command_player_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_goto_command_player_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **.validate_direction_field()** (3 connections) — `server/models/command_admin.py`
+- **test_npc_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_npc_command_with_subcommand()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_npc_command_with_args()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_validate_prototype_id_valid()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_validate_prototype_id_strips()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_quantity_default()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_quantity_valid_range()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_target_type_default()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (37 shared connections)
-- [Combat Configuration Service](Combat_Configuration_Service.md) (7 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (30 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (12 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (2 shared connections)
+- [Chat Panel Components](Chat_Panel_Components.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_combat_integration_service.py`
+- `server/models/command_admin.py`
+- `server/tests/unit/models/test_command_admin.py`
 
 ## Audit Trail
 
-- EXTRACTED: 194 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 217 (92%)
+- INFERRED: 18 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

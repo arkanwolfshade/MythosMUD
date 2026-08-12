@@ -23,9 +23,9 @@
 
 ## Relationships
 
-- [Spell Registry Costs](Spell_Registry_Costs.md) (3 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (3 shared connections)
 - [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (2 shared connections)
+- [Combat Player Broadcasts](Combat_Player_Broadcasts.md) (2 shared connections)
 
 ## Source Files
 

@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_handle_item_look_player_no_get_inventory()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _handle_item_look() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **mock_prototype_registry()** (2 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Create a mock prototype registry.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
 
 ## Relationships
 
-- [Error Handling Guide](Error_Handling_Guide.md) (1 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
+- [Look Container Command](Look_Container_Command.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/commands/test_look_container.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

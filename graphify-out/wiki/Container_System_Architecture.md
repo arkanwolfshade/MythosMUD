@@ -1,51 +1,47 @@
 # Container System Architecture
 
-> 32 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **conftest.py** (22 connections) — `server/tests/unit/realtime/conftest.py`
-- **nats_message_handler()** (3 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_utils()** (3 connections) — `server/tests/unit/realtime/conftest.py`
-- **player_room_event_handler()** (3 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_nats_service()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_subject_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_ws_connection_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_user_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_room_sync_service()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_chat_logger()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_message_builder()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_name_extractor()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_occupant_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_logger()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **Shared fixtures for realtime unit tests.  Provides fixtures used by NATS message** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a mock NATS service.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a mock subject manager.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a mock connection manager (NATS / general).** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create mock WebSocket for handler tests.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create mock connection manager for WebSocket handler tests.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a mock user manager.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a NATSMessageHandler instance.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a mock room sync service.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- *... and 7 more nodes in this community*
+- **test_message_broadcaster.py** (17 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **message_broadcaster()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **mock_send_personal_message()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_message_broadcaster_init()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_exclude_player()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_empty()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_with_uuid_exclude()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_delivery_failure()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_exclude_player()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_empty()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_room_event()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_event()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Unit tests for message broadcaster.  Tests the MessageBroadcaster class.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Create a mock send_personal_message callback.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Create a MessageBroadcaster instance.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test MessageBroadcaster initialization.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_to_room() broadcasts to room subscribers.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_to_room() excludes specified player.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_to_room() when room has no subscribers.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_global() broadcasts globally.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_to_room() with UUID exclude_player.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [Character Creation E2E](Character_Creation_E2E.md) (3 shared connections)
-- [NATS Chat Broadcasting](NATS_Chat_Broadcasting.md) (2 shared connections)
-- [Services Combat Initialization](Services_Combat_Initialization.md) (2 shared connections)
-- [Inventory Command Models](Inventory_Command_Models.md) (1 shared connections)
-- [LRU Cache Manager](LRU_Cache_Manager.md) (1 shared connections)
+- [E2E Playwright Conversion Plan](E2E_Playwright_Conversion_Plan.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/conftest.py`
+- `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (100%)
+- EXTRACTED: 61 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

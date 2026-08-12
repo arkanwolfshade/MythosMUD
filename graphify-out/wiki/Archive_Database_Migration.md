@@ -1,37 +1,34 @@
 # Archive Database Migration
 
-> 14 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_persistence_container_persistence.py** (8 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_none()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_string()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_dict()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_empty_string()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_list()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_invalid_json()** (3 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Unit tests for persistence.container_persistence module.  This module tests the** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing None JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing string JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing dict JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing empty string JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing list JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing invalid JSON string.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_command_execution_request.py** (8 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
+- **test_command_request_app_state_from_http_request_like_object()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
+- **test_command_request_app_state_from_websocket_request_context()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
+- **test_command_request_app_state_missing_app_or_state_returns_none()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
+- **Unit tests for unified command request app-state extraction.** (1 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
+- **Returns app.state for HTTP/FastAPI-style request objects.** (1 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
+- **Returns app.state for WebSocketRequestContext.** (1 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
+- **Gracefully returns None when app or state is absent.** (1 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
 
 ## Relationships
 
-- [Game Service Bundle](Game_Service_Bundle.md) (6 shared connections)
-- [Maps API Endpoints](Maps_API_Endpoints.md) (1 shared connections)
+- [Room Exploration API](Room_Exploration_API.md) (4 shared connections)
+- [Config Model Tests](Config_Model_Tests.md) (2 shared connections)
+- [Quest Journal Commands](Quest_Journal_Commands.md) (2 shared connections)
+- [Persistence Container Extended](Persistence_Container_Extended.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- `server/tests/unit/command_handler/test_command_execution_request.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (82%)
-- INFERRED: 6 (18%)
+- EXTRACTED: 22 (92%)
+- INFERRED: 2 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

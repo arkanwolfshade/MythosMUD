@@ -1,23 +1,26 @@
 # Services Exploration Service
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **mock_request()** (2 connections) — `server/tests/unit/auth/test_endpoints.py`
-- **Create a mock request object.** (1 connections) — `server/tests/unit/auth/test_endpoints.py`
+- **._send_spell_completion_message()** (6 connections) — `server/game/magic/magic_service.py`
+- **.send_spell_execution_notifications()** (5 connections) — `server/game/magic/magic_service.py`
+- **Send notifications after spell execution (completion messages and healing events** (1 connections) — `server/game/magic/magic_service.py`
+- **Send spell completion message to player.** (1 connections) — `server/game/magic/magic_service.py`
 
 ## Relationships
 
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
+- [Security Headers Middleware](Security_Headers_Middleware.md) (6 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/auth/test_endpoints.py`
+- `server/game/magic/magic_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

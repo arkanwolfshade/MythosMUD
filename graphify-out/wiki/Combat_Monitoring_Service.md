@@ -35,10 +35,9 @@
 
 - [Rate Limiter Service](Rate_Limiter_Service.md) (9 shared connections)
 - [UI Animation Testing Standards](UI_Animation_Testing_Standards.md) (8 shared connections)
-- [Command Parser](Command_Parser.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (2 shared connections)
 - [Invite Registration Model](Invite_Registration_Model.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
 - [Player Related Models](Player_Related_Models.md) (1 shared connections)
 
 ## Source Files

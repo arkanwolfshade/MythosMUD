@@ -1,6 +1,6 @@
 # Vim Editor Guidelines
 
-> 88 nodes
+> 86 nodes
 
 ## Key Concepts
 
@@ -8,7 +8,6 @@
 - **test_nats_retry_handler.py** (34 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
 - **RetryableMessage** (13 connections) — `server/realtime/nats_retry_handler.py`
 - **RetryConfig** (10 connections) — `server/realtime/nats_retry_handler.py`
-- **nats_retry_handler.py** (9 connections) — `server/realtime/nats_retry_handler.py`
 - **.retry_async()** (5 connections) — `server/realtime/nats_retry_handler.py`
 - **.calculate_backoff()** (4 connections) — `server/realtime/nats_retry_handler.py`
 - **.should_retry()** (4 connections) — `server/realtime/nats_retry_handler.py`
@@ -29,16 +28,16 @@
 - **test_nats_message_handler_init()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_retry_config_calculate_delay_base()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
 - **test_retry_config_calculate_delay_capped()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- *... and 63 more nodes in this community*
+- **test_retry_config_defaults()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- *... and 61 more nodes in this community*
 
 ## Relationships
 
-- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (3 shared connections)
-- [Inventory Command Models](Inventory_Command_Models.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (5 shared connections)
+- [SQLAlchemy Model Base](SQLAlchemy_Model_Base.md) (2 shared connections)
+- [Inventory Command Models](Inventory_Command_Models.md) (1 shared connections)
 - [NATS Chat Broadcasting](NATS_Chat_Broadcasting.md) (1 shared connections)
 - [Chat Message Filtering](Chat_Message_Filtering.md) (1 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 275 (98%)
+- EXTRACTED: 265 (98%)
 - INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 

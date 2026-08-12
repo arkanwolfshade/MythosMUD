@@ -1,49 +1,49 @@
 # Death Delirium UI Modals
 
-> 26 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **test_calendar.py** (13 connections) — `server/tests/unit/models/test_calendar.py`
-- **HolidayModel** (9 connections) — `server/models/calendar.py`
-- **NPCScheduleModel** (9 connections) — `server/models/calendar.py`
-- **calendar.py** (7 connections) — `server/models/calendar.py`
-- **test_holiday_model_creation()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_holiday_model_with_bonus_tags()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_holiday_model_repr()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_npc_schedule_model_creation()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_npc_schedule_model_with_notes()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_npc_schedule_model_repr()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_npc_schedule_model_empty_arrays()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **Base** (2 connections)
-- **test_holiday_model_table_name()** (2 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_npc_schedule_model_table_name()** (2 connections) — `server/tests/unit/models/test_calendar.py`
-- **SQLAlchemy models for calendar data (holidays and NPC schedules).** (1 connections) — `server/models/calendar.py`
-- **Mythos holidays tracker.** (1 connections) — `server/models/calendar.py`
-- **Unit tests for calendar models.  Tests the HolidayModel and NPCScheduleModel SQL** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test HolidayModel can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test HolidayModel can have bonus_tags.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test HolidayModel has correct table name.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test HolidayModel __repr__ method.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test NPCScheduleModel can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test NPCScheduleModel can have optional notes.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test NPCScheduleModel has correct table name.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test NPCScheduleModel __repr__ method.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- *... and 1 more nodes in this community*
+- **test_health_monitor.py** (16 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **health_monitor()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_health_monitor_init_custom_intervals()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **mock_is_websocket_open()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **mock_validate_token()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **mock_cleanup_dead_websocket()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **mock_performance_tracker()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_health_monitor_init()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_check_player_connection_health()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_check_player_connection_health_no_websockets()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_check_player_connection_health_unhealthy()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_check_all_connections_health()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_start_periodic_checks()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_stop_periodic_checks()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **Unit tests for health monitor.  Tests the HealthMonitor class.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **Create a mock is_websocket_open callback.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **Create a mock validate_token callback.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **Create a mock cleanup_dead_websocket callback.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **Create a mock performance tracker.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **Create a HealthMonitor instance.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **Test HealthMonitor initialization.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **Test check_player_connection_health() returns health status.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **Test check_player_connection_health() when player has no websockets.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **Test check_player_connection_health() when websockets are unhealthy.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **Test check_all_connections_health() checks all connections.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (7 shared connections)
+- [Typography Layout Spec](Typography_Layout_Spec.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/calendar.py`
-- `server/tests/unit/models/test_calendar.py`
+- `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 75 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 58 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

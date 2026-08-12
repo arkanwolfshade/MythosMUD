@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **test_apply_corruption_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test apply_corruption() when player not found.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_occupant_formatter_separate_occupants_by_type_none()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter.separate_occupants_by_type() handles None input.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Relationships
 
-- [Spell Registry Costs](Spell_Registry_Costs.md) (1 shared connections)
-- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
+- [Room Occupant Formatter](Room_Occupant_Formatter.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

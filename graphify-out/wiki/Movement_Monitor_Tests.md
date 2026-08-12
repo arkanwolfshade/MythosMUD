@@ -1,6 +1,6 @@
 # Movement Monitor Tests
 
-> 48 nodes
+> 49 nodes
 
 ## Key Concepts
 
@@ -29,18 +29,19 @@
 - **isPanelDragBlockedTarget()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
 - **isMouseEventOnHeader()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
 - **createResizeKeyHandlers()** (3 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- *... and 23 more nodes in this community*
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
 - [Command Input Validator](Command_Input_Validator.md) (4 shared connections)
 - [Magic System Feature Plan](Magic_System_Feature_Plan.md) (2 shared connections)
-- [Memory Leak Metrics Tests](Memory_Leak_Metrics_Tests.md) (2 shared connections)
+- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (2 shared connections)
 
 ## Source Files
 
 - `client/src/components/DraggablePanel.tsx`
 - `client/src/components/DraggablePanelCore.tsx`
+- `client/src/components/DraggablePanelView.tsx`
 - `client/src/components/__tests__/DraggablePanel.grid-positioning.test.tsx`
 - `client/src/components/__tests__/DraggablePanel.test.tsx`
 - `client/src/components/draggablePanelUtils.ts`
@@ -49,7 +50,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 208 (100%)
+- EXTRACTED: 210 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

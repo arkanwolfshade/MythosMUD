@@ -23,10 +23,11 @@
 
 ## Relationships
 
-- [Playwright E2E Specs](Playwright_E2E_Specs.md) (5 shared connections)
-- [Architecture Review Plan](Architecture_Review_Plan.md) (3 shared connections)
+- [Playwright E2E Specs](Playwright_E2E_Specs.md) (3 shared connections)
+- [WebSocket Connection Setup](WebSocket_Connection_Setup.md) (3 shared connections)
+- [Container Exception Handlers](Container_Exception_Handlers.md) (2 shared connections)
 - [Archive Bug Fix](Archive_Bug_Fix.md) (1 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 

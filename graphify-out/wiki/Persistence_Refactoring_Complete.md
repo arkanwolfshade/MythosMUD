@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (6 shared connections)
 - [Room Drop Renderer](Room_Drop_Renderer.md) (3 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (2 shared connections)
 - [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
 - [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
 

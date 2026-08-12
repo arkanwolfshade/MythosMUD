@@ -1,65 +1,62 @@
 # Async Persistence Types
 
-> 117 nodes
+> 63 nodes
 
 ## Key Concepts
 
 - **SchemaValidator** (29 connections) — `schemas/validator.py`
-- **utility_commands.py** (20 connections) — `server/commands/utility_commands.py`
+- **emote_service.py** (19 connections) — `server/game/emote_service.py`
 - **EmoteService** (18 connections) — `server/game/emote_service.py`
-- **handle_emote_command()** (15 connections) — `server/commands/emote_commands.py`
-- **emote_commands.py** (14 connections) — `server/commands/emote_commands.py`
 - **create_validator()** (10 connections) — `schemas/validator.py`
-- **.get_player_aliases()** (8 connections) — `server/alias_storage.py`
 - **schema_validator.py** (8 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **validator.py** (7 connections) — `schemas/validator.py`
 - **Any** (7 connections)
-- **._get_alias_file_path()** (7 connections) — `server/alias_storage.py`
-- **.save_player_aliases()** (7 connections) — `server/alias_storage.py`
-- **.create_alias()** (7 connections) — `server/alias_storage.py`
-- **._validate_alias_payload()** (7 connections) — `server/alias_storage.py`
-- **_get_emote_services()** (7 connections) — `server/commands/emote_commands.py`
 - **.validate_data()** (6 connections) — `schemas/validator.py`
 - **.validate_room()** (6 connections) — `schemas/validator.py`
-- **._load_alias_data()** (6 connections) — `server/alias_storage.py`
-- **._save_alias_data()** (6 connections) — `server/alias_storage.py`
-- **.add_alias()** (6 connections) — `server/alias_storage.py`
-- **test_emote_commands.py** (6 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **Path** (5 connections)
-- **Any** (5 connections)
 - **EmoteDefinition** (5 connections) — `server/game/emote_service.py`
+- **.format_emote_messages()** (5 connections) — `server/game/emote_service.py`
 - **.__init__()** (4 connections) — `schemas/validator.py`
-- *... and 92 more nodes in this community*
+- **.validate_room_file()** (4 connections) — `schemas/validator.py`
+- **.validate_room_database()** (4 connections) — `schemas/validator.py`
+- **.validate_alias_bundle()** (4 connections) — `schemas/validator.py`
+- **.validate_emote_file()** (4 connections) — `schemas/validator.py`
+- **_get_emote_validator()** (4 connections) — `server/game/emote_service.py`
+- **_EmoteLoadResult** (4 connections) — `server/game/emote_service.py`
+- **._load_emotes()** (4 connections) — `server/game/emote_service.py`
+- **._async_load_emotes()** (4 connections) — `server/game/emote_service.py`
+- **.get_emote_definition()** (4 connections) — `server/game/emote_service.py`
+- **._load_schema()** (3 connections) — `schemas/validator.py`
+- **Path** (3 connections)
+- **.get_exit_target()** (3 connections) — `schemas/validator.py`
+- **.get_exit_flags()** (3 connections) — `schemas/validator.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [Container Open Events](Container_Open_Events.md) (27 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (11 shared connections)
-- [Alias Expansion Logic](Alias_Expansion_Logic.md) (5 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (8 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (6 shared connections)
 - [Room Schema Validator](Room_Schema_Validator.md) (4 shared connections)
-- [Status Command Handlers](Status_Command_Handlers.md) (4 shared connections)
-- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (3 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (3 shared connections)
-- [Logging Migration Examples](Logging_Migration_Examples.md) (3 shared connections)
-- [Legacy Cleanup Summary](Legacy_Cleanup_Summary.md) (3 shared connections)
-- [Alias Storage Services](Alias_Storage_Services.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Cursor Skills Harden](Cursor_Skills_Harden.md) (2 shared connections)
+- [FastAPI Auth Integration](FastAPI_Auth_Integration.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Realtime Conftest Mocks](Realtime_Conftest_Mocks.md) (2 shared connections)
+- [Player Respawn Service](Player_Respawn_Service.md) (2 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (2 shared connections)
+- [App Creation Flow Screens](App_Creation_Flow_Screens.md) (2 shared connections)
+- [Chat Message Helpers](Chat_Message_Helpers.md) (2 shared connections)
+- [Room Fixer Toolkit](Room_Fixer_Toolkit.md) (2 shared connections)
+- [Alias Storage Services](Alias_Storage_Services.md) (1 shared connections)
 
 ## Source Files
 
 - `schemas/validator.py`
-- `server/alias_storage.py`
-- `server/commands/emote_commands.py`
-- `server/commands/utility_commands.py`
 - `server/game/emote_service.py`
-- `server/tests/unit/commands/test_emote_commands.py`
 - `tools/room_toolkit/room_validator/core/schema_validator.py`
+- `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 387 (95%)
-- INFERRED: 21 (5%)
+- EXTRACTED: 209 (93%)
+- INFERRED: 16 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

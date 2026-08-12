@@ -1,10 +1,12 @@
 # Lucidity Database Models
 
-> 39 nodes
+> 43 nodes
 
 ## Key Concepts
 
 - **.__post_init__()** (21 connections) — `server/events/event_types.py`
+- **QuestCompleted** (9 connections) — `server/events/event_types.py`
+- **PlayerMortallyWoundedEvent** (4 connections) — `server/events/event_types.py`
 - **.__post_init__()** (3 connections) — `server/events/event_types.py`
 - **.__post_init__()** (3 connections) — `server/events/event_types.py`
 - **.__post_init__()** (3 connections) — `server/events/event_types.py`
@@ -27,20 +29,18 @@
 - **.__post_init__()** (2 connections) — `server/events/event_types.py`
 - **Initialize the event with proper type.** (1 connections) — `server/events/event_types.py`
 - **Initialize the event with proper type.** (1 connections) — `server/events/event_types.py`
-- **Initialize the event with proper type.** (1 connections) — `server/events/event_types.py`
-- **Initialize the event with proper type.** (1 connections) — `server/events/event_types.py`
-- *... and 14 more nodes in this community*
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (7 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (4 shared connections)
-- [Application Config Settings](Application_Config_Settings.md) (3 shared connections)
-- [Zone Config Loader](Zone_Config_Loader.md) (2 shared connections)
-- [Character Creation E2E](Character_Creation_E2E.md) (1 shared connections)
-- [Combat Aggro Threat](Combat_Aggro_Threat.md) (1 shared connections)
-- [Combat Messaging Base](Combat_Messaging_Base.md) (1 shared connections)
-- [Command Alias Model](Command_Alias_Model.md) (1 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (11 shared connections)
+- [Client Event Store](Client_Event_Store.md) (5 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (4 shared connections)
+- [Async Persistence Layer](Async_Persistence_Layer.md) (2 shared connections)
+- [Quest Service Core](Quest_Service_Core.md) (2 shared connections)
+- [Distributed Event Bus](Distributed_Event_Bus.md) (1 shared connections)
+- [Restart Invalidating JWT](Restart_Invalidating_JWT.md) (1 shared connections)
+- [Status Effect Model](Status_Effect_Model.md) (1 shared connections)
 - [Async Audit Cursor](Async_Audit_Cursor.md) (1 shared connections)
 
 ## Source Files
@@ -49,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 97 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 110 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

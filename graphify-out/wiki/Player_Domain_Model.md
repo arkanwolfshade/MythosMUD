@@ -1,6 +1,6 @@
 # Player Domain Model
 
-> 231 nodes
+> 235 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,7 @@
 - **get_container()** (41 connections) — `server/dependencies.py`
 - **RuntimeError** (37 connections)
 - **Request** (29 connections)
+- **test_dependency_injection.py** (18 connections) — `server/tests/unit/test_dependency_injection.py`
 - **get_player_service()** (12 connections) — `server/dependencies.py`
 - **get_room_service()** (12 connections) — `server/dependencies.py`
 - **get_player_death_service()** (10 connections) — `server/dependencies.py`
@@ -28,33 +29,33 @@
 - **get_npc_lifecycle_manager()** (9 connections) — `server/dependencies.py`
 - **get_npc_spawning_service()** (9 connections) — `server/dependencies.py`
 - **get_npc_population_controller()** (9 connections) — `server/dependencies.py`
-- **get_catatonia_registry()** (9 connections) — `server/dependencies.py`
-- *... and 206 more nodes in this community*
+- *... and 210 more nodes in this community*
 
 ## Relationships
 
-- [Application DI Bundles](Application_DI_Bundles.md) (36 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (20 shared connections)
-- [Inventory Service Helpers](Inventory_Service_Helpers.md) (16 shared connections)
-- [Combat Attack Service](Combat_Attack_Service.md) (9 shared connections)
-- [Client Event Store](Client_Event_Store.md) (6 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (5 shared connections)
-- [Player Respawn Service](Player_Respawn_Service.md) (5 shared connections)
-- [Spell Registry Costs](Spell_Registry_Costs.md) (5 shared connections)
-- [User Manager Mute Tests](User_Manager_Mute_Tests.md) (4 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (34 shared connections)
+- [Client Event Store](Client_Event_Store.md) (21 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (21 shared connections)
+- [WebSocket Command Handler](WebSocket_Command_Handler.md) (16 shared connections)
+- [Container Persistence Ops](Container_Persistence_Ops.md) (9 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (8 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (4 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (4 shared connections)
+- [Game Mechanics Service](Game_Mechanics_Service.md) (3 shared connections)
 - [Client Security Utilities](Client_Security_Utilities.md) (3 shared connections)
-- [Cursor Agents Quick](Cursor_Agents_Quick.md) (3 shared connections)
 - [Catatonia Registry Service](Catatonia_Registry_Service.md) (3 shared connections)
+- [Enhanced Logging Exceptions](Enhanced_Logging_Exceptions.md) (3 shared connections)
 
 ## Source Files
 
 - `server/dependencies.py`
 - `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/test_dependency_injection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 837 (88%)
-- INFERRED: 109 (12%)
+- EXTRACTED: 860 (89%)
+- INFERRED: 111 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

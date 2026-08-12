@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Missing Hourly Clock Chimes** (1 connections) — `investigations/sessions/2025-01-XX_session-hourly-clock-chimes-missing.md`
-- **mythos_time_update Daypart-Only Messages** (1 connections) — `investigations/sessions/2025-01-XX_session-hourly-clock-chimes-missing.md`
+- **Wireframe Layout Verification** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
+- **Three-Column Panel Wireframe Layout** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-01-XX_session-hourly-clock-chimes-missing.md`
+- `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
 
 ## Audit Trail
 

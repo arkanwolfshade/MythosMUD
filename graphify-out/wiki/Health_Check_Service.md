@@ -1,52 +1,52 @@
 # Health Check Service
 
-> 32 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **_find_container_in_room()** (22 connections) — `server/commands/look_container.py`
-- **test_find_container_in_room_success()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_in_room_by_container_id()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_in_room_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_in_room_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_in_room_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_in_room_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_in_room_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_instance_number_zero()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Find a container in room containers by name or container_id.      Args:** (1 connections) — `server/commands/look_container.py`
-- **Test finding container in room by name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding container in room by container_id.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding container in room when not found.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding container in room with multiple matches.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding container in room with instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding container in room with invalid instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test _find_container_in_room() finds container by name.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_in_room() returns None when container not found.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- *... and 7 more nodes in this community*
+- **test_communication_commands_channels.py** (20 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **handle_global_command()** (12 connections) — `server/commands/communication_commands.py`
+- **handle_local_command()** (11 connections) — `server/commands/communication_commands.py`
+- **handle_system_command()** (11 connections) — `server/commands/communication_commands.py`
+- **test_handle_local_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_level_too_low()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_system_command_not_admin()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_system_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_local_command_no_room()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_local_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_local_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_system_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_system_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Local channel message.** (1 connections) — `server/commands/communication_commands.py`
+- **Global channel message (level-gated in flow).** (1 connections) — `server/commands/communication_commands.py`
+- **Admin-only system broadcast.** (1 connections) — `server/commands/communication_commands.py`
+- **Unit tests for local, global, and system chat command handlers.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Test handle_local_command with no message.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Test handle_local_command when services are not available.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Test handle_local_command successful execution.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Test handle_global_command with no message.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [Player State Command Factory](Player_State_Command_Factory.md) (10 shared connections)
-- [Look Container Command](Look_Container_Command.md) (7 shared connections)
-- [Server Process Termination](Server_Process_Termination.md) (4 shared connections)
+- [Chat NATS Publisher](Chat_NATS_Publisher.md) (13 shared connections)
+- [Container Open Events](Container_Open_Events.md) (6 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (3 shared connections)
+- [Quest Journal Commands](Quest_Journal_Commands.md) (3 shared connections)
 
 ## Source Files
 
-- `server/commands/look_container.py`
-- `server/tests/unit/commands/test_look_container.py`
-- `server/tests/unit/commands/test_look_container_helpers.py`
+- `server/commands/communication_commands.py`
+- `server/tests/unit/commands/test_communication_commands_channels.py`
 
 ## Audit Trail
 
-- EXTRACTED: 83 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 114 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -30,11 +30,12 @@
 ## Relationships
 
 - [Postgres Adapter Infrastructure](Postgres_Adapter_Infrastructure.md) (6 shared connections)
-- [PostgreSQL Adapter Tests](PostgreSQL_Adapter_Tests.md) (5 shared connections)
+- [Postgres Adapter](Postgres_Adapter.md) (4 shared connections)
 - [Postgres Connection Tests](Postgres_Connection_Tests.md) (4 shared connections)
-- [Postgres Adapter](Postgres_Adapter.md) (3 shared connections)
+- [PostgreSQL Adapter Tests](PostgreSQL_Adapter_Tests.md) (3 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 - [Game Terminal Panels](Game_Terminal_Panels.md) (1 shared connections)
-- [Connection Room Presence Utils](Connection_Room_Presence_Utils.md) (1 shared connections)
+- [Logging Correct Patterns](Logging_Correct_Patterns.md) (1 shared connections)
 
 ## Source Files
 

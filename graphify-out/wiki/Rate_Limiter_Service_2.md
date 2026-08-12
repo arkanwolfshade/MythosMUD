@@ -35,7 +35,7 @@
 
 - [Combat Monitoring Service](Combat_Monitoring_Service.md) (9 shared connections)
 - [UI Animation Testing Standards](UI_Animation_Testing_Standards.md) (5 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 

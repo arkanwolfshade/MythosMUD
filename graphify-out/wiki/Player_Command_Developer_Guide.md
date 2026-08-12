@@ -1,44 +1,49 @@
 # Player Command Developer Guide
 
-> 15 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **player_presence_utils.py** (16 connections) — `server/realtime/player_presence_utils.py`
-- **extract_player_name()** (16 connections) — `server/realtime/player_presence_utils.py`
-- **get_player_position()** (7 connections) — `server/realtime/player_presence_utils.py`
-- **_get_name_from_user()** (5 connections) — `server/realtime/player_presence_utils.py`
-- **_is_valid_name()** (4 connections) — `server/realtime/player_presence_utils.py`
-- **_is_uuid_string()** (3 connections) — `server/realtime/player_presence_utils.py`
-- **Player** (3 connections)
-- **UUID** (3 connections)
-- **Any** (1 connections)
-- **Utility functions for player presence tracking.  This module provides helper fun** (1 connections) — `server/realtime/player_presence_utils.py`
-- **Check if a value is a valid non-empty string name.      Args:         name: Valu** (1 connections) — `server/realtime/player_presence_utils.py`
-- **Check if a string is a UUID format.      Args:         value: String to check** (1 connections) — `server/realtime/player_presence_utils.py`
-- **Attempt to get player name from related User object.      Args:         player:** (1 connections) — `server/realtime/player_presence_utils.py`
-- **Extract and validate player name, ensuring it's never a UUID.      Args:** (1 connections) — `server/realtime/player_presence_utils.py`
-- **Get player position from stats.      Args:         player: The player object** (1 connections) — `server/realtime/player_presence_utils.py`
+- **AsciiMapRenderer** (52 connections) — `server/services/ascii_map_renderer.py`
+- **TestVerticalExitCharBetween** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_bidirectional_returns_pipe()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_one_way_south_returns_v()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_one_way_north_returns_caret()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_no_exit_returns_none()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_one_way_north_uses_caret_bidirectional_uses_pipe()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_one_way_north_and_one_way_south_assign_caret_and_v_by_target()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.__init__()** (2 connections) — `server/services/ascii_map_renderer.py`
+- **Renders ASCII maps from room coordinate data.      Supports multiple map styles** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Initialize the ASCII map renderer.** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Tests for _vertical_exit_char_between (|, v, ^).** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Bidirectional vertical exit renders as a vertical bar.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **One-way south exit renders as a lowercase 'v'.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **One-way north exit renders as a caret.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **When there are no vertical exits, the helper returns None.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **One-way North-only exit renders ^; bidirectional vertical exit renders |.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **One-way north renders ^ and one-way south renders v; symbols match direction to** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 
 ## Relationships
 
-- [Rescue Service Tests](Rescue_Service_Tests.md) (6 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
-- [Container Persistence Queries](Container_Persistence_Queries.md) (3 shared connections)
-- [Chat Rate Limiter](Chat_Rate_Limiter.md) (3 shared connections)
-- [NATS Message Broker](NATS_Message_Broker.md) (3 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
+- [ASCII Map Renderer](ASCII_Map_Renderer.md) (11 shared connections)
+- [Cursor Plans Pydantic](Cursor_Plans_Pydantic.md) (8 shared connections)
+- [Container Persistence Ops](Container_Persistence_Ops.md) (5 shared connections)
+- [Game Magic Spell](Game_Magic_Spell.md) (5 shared connections)
+- [Commands Inventory Item](Commands_Inventory_Item.md) (5 shared connections)
+- [Contexts Themecontext Hooks](Contexts_Themecontext_Hooks.md) (4 shared connections)
+- [Cursor Plans Best](Cursor_Plans_Best.md) (3 shared connections)
+- [Command Processor](Command_Processor.md) (2 shared connections)
+- [Command Commands Validation](Command_Commands_Validation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_presence_utils.py`
+- `server/services/ascii_map_renderer.py`
+- `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 
 ## Audit Trail
 
-- EXTRACTED: 62 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 83 (92%)
+- INFERRED: 7 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

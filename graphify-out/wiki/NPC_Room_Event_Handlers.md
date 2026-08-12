@@ -29,11 +29,10 @@
 
 ## Relationships
 
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
 - [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (3 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (2 shared connections)
-- [Application Config Settings](Application_Config_Settings.md) (2 shared connections)
-- [NPC Occupant Verification](NPC_Occupant_Verification.md) (1 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (2 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (1 shared connections)
 
 ## Source Files
 

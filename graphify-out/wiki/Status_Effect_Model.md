@@ -1,39 +1,54 @@
 # Status Effect Model
 
-> 16 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **test_combat_grace_period.py** (11 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **test_attack_command_blocked_during_grace_period()** (4 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **test_attack_command_works_when_not_in_grace_period()** (4 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **test_attack_command_allowed_after_grace_period()** (3 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **test_attack_command_blocked_when_incapacitated()** (3 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **mock_persistence()** (2 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **mock_request()** (2 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **Unit tests for combat command blocking during login grace period.  Tests that co** (1 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **Create a mock ConnectionManager.** (1 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **Create a mock FastAPI request.** (1 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **Test that attack commands are blocked during login grace period.** (1 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **Test that attack commands work normally after grace period expires.** (1 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **Test that attack commands work when player is not in grace period.** (1 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **Attack command returns incapacitated message when player has 0 to -9 DP (prone,** (1 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
+- **PartyService** (35 connections) — `server/game/party_service.py`
+- **party_service.py** (16 connections) — `server/game/party_service.py`
+- **PartyUpdated** (12 connections) — `server/events/event_types.py`
+- **test_party_flow.py** (12 connections) — `server/tests/integration/test_party_flow.py`
+- **party_events()** (4 connections) — `server/tests/integration/test_party_flow.py`
+- **party_service()** (4 connections) — `server/tests/integration/test_party_flow.py`
+- **test_party_invite_join_leave_disband_state_and_events()** (4 connections) — `server/tests/integration/test_party_flow.py`
+- **test_party_leader_leaves_disbands()** (4 connections) — `server/tests/integration/test_party_flow.py`
+- **party_service()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **Event fired when party membership or leadership changes.      Emitted by PartySe** (1 connections) — `server/events/event_types.py`
+- **Party service for MythosMUD.  In-memory ephemeral party state: parties exist onl** (1 connections) — `server/game/party_service.py`
+- **In-memory party management: create, disband, add/remove/kick members, leader che** (1 connections) — `server/game/party_service.py`
+- **Integration tests for party (ephemeral grouping) feature.  Flow: Two players; le** (1 connections) — `server/tests/integration/test_party_flow.py`
+- **Collect PartyUpdated events published during test.** (1 connections) — `server/tests/integration/test_party_flow.py`
+- **PartyService wired to real EventBus.** (1 connections) — `server/tests/integration/test_party_flow.py`
+- **Two players: A creates party, adds B; B leaves; A disbands.     Verify in-memory** (1 connections) — `server/tests/integration/test_party_flow.py`
+- **When leader leaves, party is disbanded and disbanded event is emitted.** (1 connections) — `server/tests/integration/test_party_flow.py`
+- **PartyService with no dependencies (in-memory only).** (1 connections) — `server/tests/unit/game/test_party_service.py`
 
 ## Relationships
 
-- [Player Respawn Events](Player_Respawn_Events.md) (5 shared connections)
-- [Magic Service Bundle](Magic_Service_Bundle.md) (4 shared connections)
+- [Player State Command Factory](Player_State_Command_Factory.md) (14 shared connections)
+- [Client Event Store](Client_Event_Store.md) (10 shared connections)
+- [Investigations Sessions Session](Investigations_Sessions_Session.md) (9 shared connections)
+- [Archive Planning Multiplayer](Archive_Planning_Multiplayer.md) (3 shared connections)
+- [Command Alias Model](Command_Alias_Model.md) (3 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (3 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (2 shared connections)
+- [Pylint Unique Findings](Pylint_Unique_Findings.md) (2 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (2 shared connections)
+- [Async Persistence Layer](Async_Persistence_Layer.md) (1 shared connections)
+- [Lucidity Database Models](Lucidity_Database_Models.md) (1 shared connections)
+- [Container Exception Handlers](Container_Exception_Handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_combat_grace_period.py`
+- `server/events/event_types.py`
+- `server/game/party_service.py`
+- `server/tests/integration/test_party_flow.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (90%)
-- INFERRED: 4 (10%)
+- EXTRACTED: 97 (94%)
+- INFERRED: 6 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

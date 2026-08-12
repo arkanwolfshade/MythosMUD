@@ -1,30 +1,31 @@
 # Contexts Themecontext Hooks
 
-> 5 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **AdminSession** (6 connections) — `server/services/admin_auth_service.py`
-- **test_admin_session_init()** (3 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **.__init__()** (2 connections) — `server/services/admin_auth_service.py`
-- **Represents an admin session.** (1 connections) — `server/services/admin_auth_service.py`
-- **Test AdminSession initialization.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_ascii_map_renderer_grid.py** (5 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- **TestBuildGridPlayerMarker** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- **renderer()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- **.test_player_marker_preserved_when_player_room_not_last_at_same_coords()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- **Unit tests for AsciiMapRenderer grid building.  Guards against regressions in _b** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- **Return a fresh AsciiMapRenderer instance for each test.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- **Tests for _build_grid player marker when multiple rooms share coordinates.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- **Multiple rooms at same (x,y): cell keeps player marker even if player room is no** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
 
 ## Relationships
 
-- [Player State Factories](Player_State_Factories.md) (2 shared connections)
-- [Player Model Inventory](Player_Model_Inventory.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Player Command Developer Guide](Player_Command_Developer_Guide.md) (4 shared connections)
+- [Container Persistence Ops](Container_Persistence_Ops.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/admin_auth_service.py`
-- `server/tests/unit/services/test_admin_auth_service.py`
+- `server/tests/unit/services/test_ascii_map_renderer_grid.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 18 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

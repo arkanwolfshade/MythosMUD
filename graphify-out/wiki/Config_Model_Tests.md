@@ -33,12 +33,12 @@
 
 ## Relationships
 
-- [Player Combat XP](Player_Combat_XP.md) (6 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Catatonia Check Logic](Catatonia_Check_Logic.md) (2 shared connections)
+- [Pre-commit Hook Analysis](Pre-commit_Hook_Analysis.md) (5 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Archive Database Migration](Archive_Database_Migration.md) (2 shared connections)
 - [Persistence Container Extended](Persistence_Container_Extended.md) (1 shared connections)
-- [Cursor Skills Harden](Cursor_Skills_Harden.md) (1 shared connections)
-- [Player Left Room Tests](Player_Left_Room_Tests.md) (1 shared connections)
+- [Character Info Panel Fix](Character_Info_Panel_Fix.md) (1 shared connections)
+- [Magic Service Bundle](Magic_Service_Bundle.md) (1 shared connections)
 - [Alias Storage Services](Alias_Storage_Services.md) (1 shared connections)
 
 ## Source Files

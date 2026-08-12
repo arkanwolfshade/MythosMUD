@@ -1,52 +1,72 @@
 # React Node Upgrade Summary
 
-> 44 nodes
+> 185 nodes
 
 ## Key Concepts
 
+- **ValidationError** (540 connections) — `server/exceptions.py`
+- **test_character_creation_service.py** (31 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_command_magic.py** (27 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_character_creation.py** (22 connections) — `server/tests/unit/api/test_character_creation.py`
 - **validate_room_data()** (16 connections) — `server/world_loader.py`
+- **world_loader.py** (14 connections) — `server/world_loader.py`
 - **get_room_environment()** (13 connections) — `server/world_loader.py`
 - **TestGetRoomEnvironment** (12 connections) — `server/tests/unit/test_world_loader.py`
 - **TestValidateRoomData** (11 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_strict_validation_raises()** (4 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_validation_exception_strict()** (4 connections) — `server/tests/unit/test_world_loader.py`
-- **Any** (4 connections)
-- **.test_get_room_environment_from_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_from_subzone()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_from_zone()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_default()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_room_takes_priority()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_subzone_takes_priority_over_zone()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_subzone_none()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_zone_none()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_empty_string_in_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_validation_not_available()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_with_validator()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_creates_validator()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_with_errors()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_validator_creation_fails()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_validation_exception()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **SchemaValidator** (3 connections)
-- **Test get_room_environment() function.** (1 connections) — `server/tests/unit/test_world_loader.py`
-- **Test get_room_environment() returns room-specific environment.** (1 connections) — `server/tests/unit/test_world_loader.py`
-- *... and 19 more nodes in this community*
+- **TestCreateCharacterWithStats** (10 connections) — `server/tests/unit/api/test_character_creation.py`
+- **test_world_loader.py** (10 connections) — `server/tests/unit/test_world_loader.py`
+- **TestValidateCharacterStats** (9 connections) — `server/tests/unit/api/test_character_creation.py`
+- **generate_room_id()** (9 connections) — `server/world_loader.py`
+- **MythosValidationError** (8 connections)
+- **TestGenerateRoomId** (7 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_create_character_rate_limit()** (6 connections) — `server/tests/unit/api/test_character_creation.py`
+- **test_parse_command_string_validation_error()** (4 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_unalias_command_alias_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_alias_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_emote_command_action_min_length()** (4 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_emote_command_action_max_length()** (4 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_go_command_validate_direction_invalid()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_missing_direction()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_cast_command_validate_spell_name_empty()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_spell_name_whitespace_only()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- *... and 160 more nodes in this community*
 
 ## Relationships
 
-- [Spell Registry Costs](Spell_Registry_Costs.md) (7 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (6 shared connections)
-- [Async Persistence Types](Async_Persistence_Types.md) (3 shared connections)
-- [NPC Definition Admin API](NPC_Definition_Admin_API.md) (1 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (56 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (48 shared connections)
+- [Spell Registry Costs](Spell_Registry_Costs.md) (32 shared connections)
+- [Base Command Models](Base_Command_Models.md) (30 shared connections)
+- [Admin Summon Command](Admin_Summon_Command.md) (24 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (23 shared connections)
+- [Game Mechanics Service](Game_Mechanics_Service.md) (19 shared connections)
+- [Playwright Remediation Plan](Playwright_Remediation_Plan.md) (19 shared connections)
+- [Realtime Conftest Mocks](Realtime_Conftest_Mocks.md) (18 shared connections)
+- [Room Service Tests](Room_Service_Tests.md) (18 shared connections)
+- [Inventory Service Helpers](Inventory_Service_Helpers.md) (17 shared connections)
+- [Command Factory Creators](Command_Factory_Creators.md) (14 shared connections)
 
 ## Source Files
 
+- `server/exceptions.py`
+- `server/tests/unit/api/test_character_creation.py`
+- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/game/test_character_creation_service.py`
+- `server/tests/unit/models/test_command_alias.py`
+- `server/tests/unit/models/test_command_communication.py`
+- `server/tests/unit/models/test_command_exploration.py`
+- `server/tests/unit/models/test_command_magic.py`
+- `server/tests/unit/test_exceptions.py`
+- `server/tests/unit/test_exceptions_comprehensive.py`
 - `server/tests/unit/test_world_loader.py`
+- `server/tests/unit/utils/test_command_parser.py`
+- `server/tests/unit/utils/test_command_processor.py`
 - `server/world_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 124 (93%)
-- INFERRED: 9 (7%)
+- EXTRACTED: 607 (56%)
+- INFERRED: 470 (44%)
 - AMBIGUOUS: 0 (0%)
 
 ---

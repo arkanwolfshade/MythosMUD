@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_player_by_name_not_found()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_player_by_name returns None when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_record_message()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test record_message adds timestamp to window.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [Lizard Complexity Findings](Lizard_Complexity_Findings.md) (1 shared connections)
+- [Postgresql Anti Patterns](Postgresql_Anti_Patterns.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 

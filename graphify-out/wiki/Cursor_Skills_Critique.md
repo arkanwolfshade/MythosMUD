@@ -1,28 +1,33 @@
 # Cursor Skills Critique
 
-> 5 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **.validate_parameter_value()** (5 connections) — `server/services/nats_subject_manager/validation.py`
-- **.validate_pattern_params()** (4 connections) — `server/services/nats_subject_manager/validation.py`
-- **Any** (2 connections)
-- **Validate a parameter value.          Args:             param_name: Name of the p** (1 connections) — `server/services/nats_subject_manager/validation.py`
-- **Validate all parameters used in the pattern.          Args:             pattern:** (1 connections) — `server/services/nats_subject_manager/validation.py`
+- **get_skills_catalog()** (11 connections) — `server/api/skills.py`
+- **test_get_skills_catalog_returns_list()** (4 connections) — `server/tests/unit/api/test_skills.py`
+- **test_get_skills_catalog_unauthorized()** (4 connections) — `server/tests/unit/api/test_skills.py`
+- **Request** (1 connections)
+- **Return the  skills catalog (base values, allow_at_creation).      Cthulhu Mythos** (1 connections) — `server/api/skills.py`
+- **GET /v1/skills returns SkillListResponse with skills list.** (1 connections) — `server/tests/unit/api/test_skills.py`
+- **GET /v1/skills without authenticated user returns 401.** (1 connections) — `server/tests/unit/api/test_skills.py`
 
 ## Relationships
 
-- [Cursor Setup Guide](Cursor_Setup_Guide.md) (2 shared connections)
-- [NATS Subject Exceptions](NATS_Subject_Exceptions.md) (1 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (4 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (3 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
+- [Aggressive Mob NPC](Aggressive_Mob_NPC.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/nats_subject_manager/validation.py`
+- `server/api/skills.py`
+- `server/tests/unit/api/test_skills.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 21 (91%)
+- INFERRED: 2 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

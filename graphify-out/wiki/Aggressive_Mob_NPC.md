@@ -1,9 +1,10 @@
 # Aggressive Mob NPC
 
-> 203 nodes
+> 242 nodes
 
 ## Key Concepts
 
+- **LoggedHTTPException** (405 connections) — `server/exceptions.py`
 - **ContainerServiceError** (91 connections) — `server/services/container_service.py`
 - **ContainerNotFoundError** (49 connections) — `server/services/container_service.py`
 - **ContainerCapacityError** (45 connections) — `server/services/container_service.py`
@@ -16,7 +17,6 @@
 - **handle_open_container_exceptions()** (27 connections) — `server/api/container_exception_handlers.py`
 - **container_exception_handlers.py** (26 connections) — `server/api/container_exception_handlers.py`
 - **handle_loot_all_exceptions()** (25 connections) — `server/api/container_exception_handlers.py`
-- **open_container()** (23 connections) — `server/api/container_endpoints_basic.py`
 - **handle_close_container_exceptions()** (23 connections) — `server/api/container_exception_handlers.py`
 - **TestHelperFunctions** (20 connections) — `server/tests/unit/api/test_containers.py`
 - **TestOpenContainer** (20 connections) — `server/tests/unit/api/test_containers.py`
@@ -28,39 +28,43 @@
 - **TestHandleOpenContainerExceptions** (16 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
 - **TestHandleLootAllExceptions** (16 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
 - **TestRequestModels** (16 connections) — `server/tests/unit/api/test_containers.py`
-- **CloseContainerRequest** (14 connections) — `server/api/container_models.py`
-- *... and 178 more nodes in this community*
+- **.open_container()** (15 connections) — `server/services/container_service.py`
+- *... and 217 more nodes in this community*
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (178 shared connections)
-- [Player Effects API](Player_Effects_API.md) (38 shared connections)
-- [Container Component Capacity](Container_Component_Capacity.md) (24 shared connections)
-- [Combat Player Broadcasts](Combat_Player_Broadcasts.md) (22 shared connections)
-- [Magic Command Handlers](Magic_Command_Handlers.md) (17 shared connections)
-- [Spell Registry Costs](Spell_Registry_Costs.md) (15 shared connections)
-- [Standardized Error Responses](Standardized_Error_Responses.md) (14 shared connections)
-- [Client Lifecycle Metrics](Client_Lifecycle_Metrics.md) (8 shared connections)
-- [NPC Service Tests](NPC_Service_Tests.md) (3 shared connections)
-- [Client Security Utilities](Client_Security_Utilities.md) (1 shared connections)
-- [Archive Bug Fix](Archive_Bug_Fix.md) (1 shared connections)
-- [Skill Service Tests](Skill_Service_Tests.md) (1 shared connections)
+- [NPC Service Tests](NPC_Service_Tests.md) (98 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (76 shared connections)
+- [Room Occupancy Class](Room_Occupancy_Class.md) (68 shared connections)
+- [Combat Player Broadcasts](Combat_Player_Broadcasts.md) (55 shared connections)
+- [Player Effects API](Player_Effects_API.md) (50 shared connections)
+- [Container Component Capacity](Container_Component_Capacity.md) (25 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (24 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (24 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (23 shared connections)
+- [Game Mechanics Service](Game_Mechanics_Service.md) (20 shared connections)
+- [Command Field Validators](Command_Field_Validators.md) (19 shared connections)
+- [Chat Service Whispers](Chat_Service_Whispers.md) (16 shared connections)
 
 ## Source Files
 
-- `server/api/container_endpoints_basic.py`
 - `server/api/container_exception_handlers.py`
 - `server/api/container_helpers.py`
 - `server/api/container_models.py`
+- `server/exceptions.py`
 - `server/services/container_service.py`
+- `server/services/user_manager.py`
 - `server/tests/unit/api/test_container_exception_handlers.py`
 - `server/tests/unit/api/test_container_helpers.py`
+- `server/tests/unit/api/test_container_helpers_loot.py`
 - `server/tests/unit/api/test_containers.py`
+- `server/tests/unit/test_exceptions.py`
+- `server/tests/unit/test_exceptions_comprehensive.py`
 
 ## Audit Trail
 
-- EXTRACTED: 859 (69%)
-- INFERRED: 390 (31%)
+- EXTRACTED: 1160 (65%)
+- INFERRED: 631 (35%)
 - AMBIGUOUS: 0 (0%)
 
 ---

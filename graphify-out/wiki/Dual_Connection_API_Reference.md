@@ -1,41 +1,46 @@
 # Dual Connection API Reference
 
-> 16 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **SpellMaterialsService** (15 connections) — `server/game/magic/spell_materials.py`
-- **.consume_materials()** (8 connections) — `server/game/magic/spell_materials.py`
-- **.check_materials()** (4 connections) — `server/game/magic/spell_materials.py`
-- **._process_material_requirement()** (4 connections) — `server/game/magic/spell_materials.py`
-- **Any** (4 connections)
-- **._consume_material_item()** (4 connections) — `server/game/magic/spell_materials.py`
-- **._build_final_inventory()** (4 connections) — `server/game/magic/spell_materials.py`
-- **.__init__()** (3 connections) — `server/game/magic/spell_materials.py`
-- **UUID** (3 connections)
-- **Service for handling spell material requirements.      Handles checking if playe** (1 connections) — `server/game/magic/spell_materials.py`
-- **Initialize the spell materials service.          Args:             player_servic** (1 connections) — `server/game/magic/spell_materials.py`
-- **Check if player has all required materials.          Args:             player_id** (1 connections) — `server/game/magic/spell_materials.py`
-- **Process a single material requirement.          Args:             material: Mate** (1 connections) — `server/game/magic/spell_materials.py`
-- **Consume a material item.          Args:             item: Inventory item** (1 connections) — `server/game/magic/spell_materials.py`
-- **Build final inventory with consumed materials removed.          Args:** (1 connections) — `server/game/magic/spell_materials.py`
-- **Consume spell materials from player inventory.          Args:             player** (1 connections) — `server/game/magic/spell_materials.py`
+- **.handle_player_death()** (10 connections) — `server/services/player_death_service.py`
+- **.process_mortally_wounded_tick()** (7 connections) — `server/services/player_death_service.py`
+- **._publish_death_event()** (7 connections) — `server/services/player_death_service.py`
+- **.get_dead_players()** (6 connections) — `server/services/player_death_service.py`
+- **UUID** (6 connections)
+- **.get_mortally_wounded_players()** (5 connections) — `server/services/player_death_service.py`
+- **._ensure_player_posture_lying()** (5 connections) — `server/services/player_death_service.py`
+- **._clear_player_combat_state()** (5 connections) — `server/services/player_death_service.py`
+- **AsyncSession** (4 connections)
+- **.__init__()** (3 connections) — `server/services/player_death_service.py`
+- **Any** (3 connections)
+- **Player** (3 connections)
+- **Initialize the player death service.          Args:             event_bus: Optio** (1 connections) — `server/services/player_death_service.py`
+- **Get all players currently in the mortally wounded state.          A player is co** (1 connections) — `server/services/player_death_service.py`
+- **Get all players who are dead (DP <= -10).          Args:             session: As** (1 connections) — `server/services/player_death_service.py`
+- **Process DP decay for a single mortally wounded player.          Decreases player** (1 connections) — `server/services/player_death_service.py`
+- **Ensure player posture is set to lying when dead.          Args:             play** (1 connections) — `server/services/player_death_service.py`
+- **Clear player combat state when they die.          BUGFIX #244: As documented in** (1 connections) — `server/services/player_death_service.py`
+- **Publish player died event if event bus is available.          Args:** (1 connections) — `server/services/player_death_service.py`
+- **Handle player death when DP reaches -10 or below.          Records death locatio** (1 connections) — `server/services/player_death_service.py`
 
 ## Relationships
 
-- [Application DI Bundles](Application_DI_Bundles.md) (5 shared connections)
-- [Combat Attack Service](Combat_Attack_Service.md) (5 shared connections)
-- [Security Headers Middleware](Security_Headers_Middleware.md) (1 shared connections)
-- [Player Respawn Service](Player_Respawn_Service.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (9 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (4 shared connections)
+- [Upgrade Archive Dependency](Upgrade_Archive_Dependency.md) (4 shared connections)
+- [Character Creation E2E](Character_Creation_E2E.md) (2 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_materials.py`
+- `server/services/player_death_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 51 (91%)
-- INFERRED: 5 (9%)
+- EXTRACTED: 68 (94%)
+- INFERRED: 4 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

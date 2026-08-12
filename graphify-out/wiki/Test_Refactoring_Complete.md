@@ -1,53 +1,63 @@
 # Test Refactoring Complete
 
-> 29 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **panelReducerHandlers.ts** (24 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
-- **panelManagerReducer.ts** (20 connections) — `client/src/components/ui-v2/PanelSystem/panelManagerReducer.ts`
-- **panelReducerHandlers.test.ts** (19 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
-- **savePanelLayout()** (13 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
-- **panelMinimizeDock.ts** (13 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
-- **panelMinimizeDock.test.ts** (9 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelMinimizeDock.test.ts`
-- **relayoutMinimizedDock()** (8 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
-- **handleToggleMinimize()** (8 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
-- **handleToggleMaximize()** (7 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
-- **handleScaleToViewport()** (6 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
-- **preparePanelForRestore()** (5 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
-- **getDefaultViewport()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
-- **computeMinimizedDockPosition()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
-- **preparePanelForMinimize()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
-- **PanelManagerState** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
-- **handleUpdatePosition()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
-- **handleUpdateSize()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
-- **handleSetVisibility()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
-- **handleFocusPanel()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
-- **handleClosePanel()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
-- **getMinimizedPanelIds()** (3 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
-- **handleInitPanels()** (3 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
-- **panelFixture()** (2 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
-- **stateFixture()** (2 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
-- **constrainPanelHeight()** (2 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
-- *... and 4 more nodes in this community*
+- **StatusEffect** (32 connections) — `server/models/game.py`
+- **test_game_status_effect.py** (13 connections) — `server/tests/unit/models/test_game_status_effect.py`
+- **.is_active()** (5 connections) — `server/models/game.py`
+- **.get_active_status_effects()** (4 connections) — `server/models/game.py`
+- **.__init__()** (4 connections) — `server/models/invite.py`
+- **_npc_alive_and_active()** (4 connections) — `server/npc/idle_movement.py`
+- **.is_alive()** (4 connections) — `server/npc/npc_base.py`
+- **test_status_effect_duration_validation_min()** (4 connections) — `server/tests/unit/models/test_game_status_effect.py`
+- **test_status_effect_intensity_validation_min()** (4 connections) — `server/tests/unit/models/test_game_status_effect.py`
+- **test_status_effect_intensity_validation_max()** (4 connections) — `server/tests/unit/models/test_game_status_effect.py`
+- **test_status_effect_rejects_extra_fields()** (4 connections) — `server/tests/unit/models/test_game_status_effect.py`
+- **.add_status_effect()** (3 connections) — `server/models/game.py`
+- **test_status_effect_creation()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
+- **test_status_effect_with_source()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
+- **test_status_effect_is_active_permanent()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
+- **test_status_effect_is_active_before_duration()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
+- **test_status_effect_is_active_at_duration()** (3 connections) — `server/tests/unit/models/test_game_status_effect.py`
+- **Represents a status effect applied to a character.** (1 connections) — `server/models/game.py`
+- **Check if the status effect is still active.** (1 connections) — `server/models/game.py`
+- **Add a status effect to the player.          Args:             effect: StatusEffe** (1 connections) — `server/models/game.py`
+- **Get all currently active status effects.          Args:             current_tick** (1 connections) — `server/models/game.py`
+- **Any** (1 connections)
+- **Initialize Invite with defaults.** (1 connections) — `server/models/invite.py`
+- **Return True if NPC is alive (determination_points > 0).** (1 connections) — `server/npc/npc_base.py`
+- **Allow backward-compatible assignment (npc.is_alive = False).** (1 connections) — `server/npc/npc_base.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [API Test Fixtures](API_Test_Fixtures.md) (24 shared connections)
+- [Player Creation Service](Player_Creation_Service.md) (7 shared connections)
+- [Player Respawn Service](Player_Respawn_Service.md) (5 shared connections)
+- [Combat NPC Lookup](Combat_NPC_Lookup.md) (4 shared connections)
+- [React Node Upgrade Summary](React_Node_Upgrade_Summary.md) (4 shared connections)
+- [Real-Time Architecture Docs](Real-Time_Architecture_Docs.md) (2 shared connections)
+- [Memory Profiler Tools](Memory_Profiler_Tools.md) (2 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
+- [NATS Metrics API](NATS_Metrics_API.md) (1 shared connections)
+- [E 2 E Scenarios Scenario](E_2_E_Scenarios_Scenario.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Dual Connection Monitoring Guide](Dual_Connection_Monitoring_Guide.md) (1 shared connections)
+- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/PanelSystem/__tests__/panelMinimizeDock.test.ts`
-- `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
-- `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
-- `client/src/components/ui-v2/PanelSystem/panelManagerReducer.ts`
-- `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
-- `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
+- `server/models/game.py`
+- `server/models/invite.py`
+- `server/npc/idle_movement.py`
+- `server/npc/npc_base.py`
+- `server/tests/unit/models/test_game_status_effect.py`
 
 ## Audit Trail
 
-- EXTRACTED: 184 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 107 (91%)
+- INFERRED: 11 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,10 +1,10 @@
 # Command Input Utilities
 
-> 67 nodes
+> 64 nodes
 
 ## Key Concepts
 
-- **RoomMapEditorRuntime.hooks.ts** (38 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **gameStore.ts** (36 connections) — `client/src/stores/gameStore.ts`
 - **mapUtils.ts** (27 connections) — `client/src/components/map/utils/mapUtils.ts`
 - **RoomMapViewer.tsx** (25 connections) — `client/src/components/map/RoomMapViewer.tsx`
 - **useMapLayout.ts** (22 connections) — `client/src/components/map/hooks/useMapLayout.ts`
@@ -24,27 +24,27 @@
 - **RoomMapViewer.data-loading.test.tsx** (10 connections) — `client/src/components/map/__tests__/RoomMapViewer.data-loading.test.tsx`
 - **setupDefaultMocks()** (9 connections) — `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
 - **useRoomMapEditorData()** (8 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **RoomMapEditorEditingApi** (7 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **useRoomMapEditorModalHandlers()** (7 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
 - **mapUtils.test.ts** (7 connections) — `client/src/components/map/utils/__tests__/mapUtils.test.ts`
 - **applyGridLayout()** (7 connections) — `client/src/components/map/utils/layout.ts`
 - **MapControls()** (6 connections) — `client/src/components/map/MapControls.tsx`
-- *... and 42 more nodes in this community*
+- **theme.test.tsx** (6 connections) — `client/src/components/map/__tests__/theme.test.tsx`
+- **RoomDetailsPanel()** (5 connections) — `client/src/components/map/RoomDetailsPanel.tsx`
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [Player Death Service Tests](Player_Death_Service_Tests.md) (23 shared connections)
-- [Room Map Viewer UI](Room_Map_Viewer_UI.md) (16 shared connections)
-- [Datetime Fix Summary](Datetime_Fix_Summary.md) (15 shared connections)
-- [Combat Attack Handler](Combat_Attack_Handler.md) (12 shared connections)
-- [Archive Circuit Breaker](Archive_Circuit_Breaker.md) (7 shared connections)
+- [Player Death Service Tests](Player_Death_Service_Tests.md) (30 shared connections)
+- [Room Map Viewer UI](Room_Map_Viewer_UI.md) (11 shared connections)
+- [Datetime Fix Summary](Datetime_Fix_Summary.md) (8 shared connections)
+- [Combat Attack Handler](Combat_Attack_Handler.md) (7 shared connections)
+- [PostgreSQL Audit Report](PostgreSQL_Audit_Report.md) (5 shared connections)
 - [Lie Ground Commands](Lie_Ground_Commands.md) (4 shared connections)
-- [Player GUID Formatter](Player_GUID_Formatter.md) (3 shared connections)
+- [Logging Rotating Handlers](Logging_Rotating_Handlers.md) (4 shared connections)
 - [Critical Coverage Improvement Plan](Critical_Coverage_Improvement_Plan.md) (3 shared connections)
-- [PostgreSQL Audit Report](PostgreSQL_Audit_Report.md) (3 shared connections)
+- [Quest Flow Integration](Quest_Flow_Integration.md) (3 shared connections)
+- [Connection Disconnection Cleanup](Connection_Disconnection_Cleanup.md) (3 shared connections)
 - [WebSocket Message Schemas](WebSocket_Message_Schemas.md) (2 shared connections)
-- [Realtime Event Handlers](Realtime_Event_Handlers.md) (2 shared connections)
-- [Quest Flow Integration](Quest_Flow_Integration.md) (2 shared connections)
+- [Admin Shutdown Commands](Admin_Shutdown_Commands.md) (2 shared connections)
 
 ## Source Files
 
@@ -64,14 +64,14 @@
 - `client/src/components/map/hooks/__tests__/useRoomMapData.test.ts`
 - `client/src/components/map/hooks/useMapLayout.ts`
 - `client/src/components/map/hooks/useRoomMapData.ts`
-- `client/src/components/map/utils/__tests__/applyGridLayout.test.ts`
 - `client/src/components/map/utils/__tests__/mapUtils.test.ts`
 - `client/src/components/map/utils/layout.ts`
 - `client/src/components/map/utils/mapUtils.ts`
+- `client/src/stores/__tests__/gameStore.test.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 474 (98%)
+- EXTRACTED: 433 (98%)
 - INFERRED: 8 (2%)
 - AMBIGUOUS: 0 (0%)
 

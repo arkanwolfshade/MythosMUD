@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_search_players_by_name()** (2 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test search_players_by_name() returns matching players.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_process_tick_regeneration_restores_mp()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test process_tick_regeneration() restores MP.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [Command Factory Creators](Command_Factory_Creators.md) (1 shared connections)
+- [Cursor Agents Quick](Cursor_Agents_Quick.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 

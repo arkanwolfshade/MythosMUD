@@ -32,8 +32,7 @@
 ## Relationships
 
 - [Npc Behavior Engine](Npc_Behavior_Engine.md) (4 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
 - [test_should_idle_move_false_when_registered_in_combat](test_should_idle_move_false_when_registered_in_combat.md) (1 shared connections)
 - [test_perform_recovery_action_on_cooldown](test_perform_recovery_action_on_cooldown.md) (1 shared connections)
 - [test_cleanup_old_entries](test_cleanup_old_entries.md) (1 shared connections)
@@ -43,6 +42,7 @@
 - [test_get_remaining_messages_zero](test_get_remaining_messages_zero.md) (1 shared connections)
 - [test_get_system_stats](test_get_system_stats.md) (1 shared connections)
 - [test_transition_to_updates_state](test_transition_to_updates_state.md) (1 shared connections)
+- [test_is_player_rate_limited_false](test_is_player_rate_limited_false.md) (1 shared connections)
 
 ## Source Files
 

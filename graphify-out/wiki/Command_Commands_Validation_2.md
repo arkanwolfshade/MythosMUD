@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_check_equipped_item_no_get_equipped_items_method()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking equipped item when player has no get_equipped_items method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **._auto_center_viewport()** (3 connections) — `server/services/ascii_map_renderer.py`
+- **Center viewport on the character's current room so the player is in the middle o** (1 connections) — `server/services/ascii_map_renderer.py`
 
 ## Relationships
 
-- [Error Handling Guide](Error_Handling_Guide.md) (1 shared connections)
-- [Test Modernization Plan](Test_Modernization_Plan.md) (1 shared connections)
+- [Player Command Developer Guide](Player_Command_Developer_Guide.md) (1 shared connections)
+- [ASCII Map Renderer](ASCII_Map_Renderer.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/services/ascii_map_renderer.py`
 
 ## Audit Trail
 

@@ -1,23 +1,26 @@
 # Codacy Instructions Review
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_get_user_role_none()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **Test get_user_role raises for None user.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **AI PR Reviewer Instructions** (4 connections) — `.codacy/instructions/review.md`
+- **Server Authority Review Rule** (1 connections) — `.codacy/instructions/review.md`
+- **COPPA and Security Review Mandates** (1 connections) — `.codacy/instructions/review.md`
+- **Review Coverage Thresholds** (1 connections) — `.codacy/instructions/review.md`
+- **player_id UUID Type Rule** (1 connections) — `.codacy/instructions/review.md`
 
 ## Relationships
 
-- [Player Model Inventory](Player_Model_Inventory.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_admin_auth_service.py`
+- `.codacy/instructions/review.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

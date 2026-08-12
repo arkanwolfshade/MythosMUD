@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [Room Occupant Events](Room_Occupant_Events.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Command Helper Utilities](Command_Helper_Utilities.md) (2 shared connections)
 - [Deprecated Logging Patterns](Deprecated_Logging_Patterns.md) (2 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
-- [Playwright E2E Specs](Playwright_E2E_Specs.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,51 +1,74 @@
 # Chat Channel Logger
 
-> 64 nodes
+> 239 nodes
 
 ## Key Concepts
 
+- **GameBundle** (45 connections) — `server/container/bundles/game.py`
+- **game.py** (42 connections) — `server/container/bundles/game.py`
+- **SkillService** (37 connections) — `server/game/skill_service.py`
 - **test_skill_service.py** (36 connections) — `server/tests/unit/game/test_skill_service.py`
+- **__init__.py** (28 connections) — `server/persistence/repositories/__init__.py`
+- **ScheduleService** (28 connections) — `server/services/schedule_service.py`
+- **Skill** (27 connections) — `server/models/skill.py`
+- **skill_service.py** (20 connections) — `server/game/skill_service.py`
+- **InstanceManager** (19 connections) — `server/game/instance_manager.py`
+- **SkillRepository** (19 connections) — `server/persistence/repositories/skill_repository.py`
+- **player_skill_repository.py** (18 connections) — `server/persistence/repositories/player_skill_repository.py`
+- **RoomCacheService** (17 connections) — `server/caching/cache_service.py`
+- **PlayerSkill** (17 connections) — `server/models/player_skill.py`
+- **PlayerSkillRepository** (17 connections) — `server/persistence/repositories/player_skill_repository.py`
+- **skill_repository.py** (17 connections) — `server/persistence/repositories/skill_repository.py`
+- **._init_player_quest_layer()** (16 connections) — `server/container/bundles/game.py`
+- **test_skills.py** (14 connections) — `server/tests/unit/api/test_skills.py`
+- **LevelService** (13 connections) — `server/game/level_service.py`
+- **SkillUseLogRepository** (13 connections) — `server/persistence/repositories/skill_use_log_repository.py`
+- **skill.py** (12 connections) — `server/models/skill.py`
+- **._init_movement_layer()** (11 connections) — `server/container/bundles/game.py`
+- **.initialize()** (11 connections) — `server/container/bundles/game.py`
 - **_occupation_slots_9()** (11 connections) — `server/tests/unit/game/test_skill_service.py`
-- **_personal_interest_4()** (8 connections) — `server/tests/unit/game/test_skill_service.py`
-- **skill_service()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_valid_creates_rows()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_own_language_not_allocated_equals_edu()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_cthulhu_mythos_in_occupation_rejected()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_wrong_occupation_values_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_duplicate_occupation_skill_ids_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **catalog_with_own_language_and_mythos()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_cthulhu_mythos_in_personal_rejected()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_wrong_occupation_count_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_personal_interest_not_four_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_duplicate_personal_skill_ids_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_overlap_occupation_and_personal_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **mock_skill_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **mock_player_skill_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **mock_skill_use_log_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_get_skills_catalog_returns_list()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_get_player_skills_owner_returns_list()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_get_player_skills_non_owner_returns_none()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_record_successful_skill_use_calls_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_get_skills_used_this_level_returns_repo_result()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_run_improvement_rolls_previous_level_under_1_no_op()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- *... and 39 more nodes in this community*
+- **Any** (10 connections)
+- **player_skill.py** (10 connections) — `server/models/player_skill.py`
+- *... and 214 more nodes in this community*
 
 ## Relationships
 
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (3 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
-- [Container Open Events](Container_Open_Events.md) (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (52 shared connections)
+- [Client Event Store](Client_Event_Store.md) (34 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (15 shared connections)
+- [WebSocket Code Review](WebSocket_Code_Review.md) (14 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (12 shared connections)
+- [Dead Code Cleanup Plan](Dead_Code_Cleanup_Plan.md) (8 shared connections)
+- [Container Repository CRUD](Container_Repository_CRUD.md) (8 shared connections)
+- [Player Domain Model](Player_Domain_Model.md) (8 shared connections)
+- [Alias Command Models](Alias_Command_Models.md) (7 shared connections)
+- [Container Persistence Ops](Container_Persistence_Ops.md) (7 shared connections)
+- [Npc Services Combat](Npc_Services_Combat.md) (6 shared connections)
+- [Game Mechanics Service](Game_Mechanics_Service.md) (6 shared connections)
 
 ## Source Files
 
+- `scripts/bench_cache.py`
+- `server/caching/cache_service.py`
+- `server/container/bundles/game.py`
+- `server/dependencies.py`
+- `server/game/instance_manager.py`
+- `server/game/level_service.py`
+- `server/game/skill_service.py`
+- `server/models/player_skill.py`
+- `server/models/skill.py`
+- `server/persistence/repositories/__init__.py`
+- `server/persistence/repositories/player_skill_repository.py`
+- `server/persistence/repositories/skill_repository.py`
+- `server/persistence/repositories/skill_use_log_repository.py`
+- `server/services/schedule_service.py`
+- `server/tests/unit/api/test_skills.py`
 - `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 162 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 921 (91%)
+- INFERRED: 86 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

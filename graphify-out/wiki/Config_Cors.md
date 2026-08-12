@@ -1,23 +1,25 @@
 # Config Cors
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.validate_password()** (2 connections) — `server/auth/endpoints.py`
-- **Validate password length and content.** (1 connections) — `server/auth/endpoints.py`
+- **.interrupt_casting()** (5 connections) — `server/game/magic/magic_service.py`
+- **._perform_luck_check()** (4 connections) — `server/game/magic/magic_service.py`
+- **Interrupt a casting with LUCK check.          Args:             player_id: Pl** (1 connections) — `server/game/magic/magic_service.py`
+- **Perform a LUCK check for the player.          Args:             player_id: Pl** (1 connections) — `server/game/magic/magic_service.py`
 
 ## Relationships
 
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
+- [Security Headers Middleware](Security_Headers_Middleware.md) (5 shared connections)
 
 ## Source Files
 
-- `server/auth/endpoints.py`
+- `server/game/magic/magic_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

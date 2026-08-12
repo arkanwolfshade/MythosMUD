@@ -25,8 +25,7 @@
 
 ## Relationships
 
-- [Combat Player Broadcasts](Combat_Player_Broadcasts.md) (6 shared connections)
-- [Magic Command Handlers](Magic_Command_Handlers.md) (3 shared connections)
+- [Combat Player Broadcasts](Combat_Player_Broadcasts.md) (9 shared connections)
 
 ## Source Files
 

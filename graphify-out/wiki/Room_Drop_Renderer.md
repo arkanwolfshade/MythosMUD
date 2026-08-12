@@ -1,6 +1,6 @@
 # Room Drop Renderer
 
-> 119 nodes
+> 120 nodes
 
 ## Key Concepts
 
@@ -29,31 +29,30 @@
 - **_ShutdownContainerStub** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **test_initiate_shutdown_countdown_success()** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **test_initiate_shutdown_countdown_supersedes()** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- *... and 94 more nodes in this community*
+- *... and 95 more nodes in this community*
 
 ## Relationships
 
-- [Container Open Events](Container_Open_Events.md) (11 shared connections)
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (8 shared connections)
+- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (11 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (6 shared connections)
+- [Container Open Events](Container_Open_Events.md) (5 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
 - [Persistence Refactoring Complete](Persistence_Refactoring_Complete.md) (3 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (2 shared connections)
-- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (1 shared connections)
+- [UI Player Event Handlers](UI_Player_Event_Handlers.md) (2 shared connections)
 - [Structured Logging Admin](Structured_Logging_Admin.md) (1 shared connections)
-- [Invite and User Schemas](Invite_and_User_Schemas.md) (1 shared connections)
-- [Manager Services Nats](Manager_Services_Nats.md) (1 shared connections)
-- [Services Lucidity Repository](Services_Lucidity_Repository.md) (1 shared connections)
-- [Schemas Maps Map](Schemas_Maps_Map.md) (1 shared connections)
+- [Quest Journal Commands](Quest_Journal_Commands.md) (1 shared connections)
+- [Look NPC Command](Look_NPC_Command.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/admin_shutdown_command.py`
+- `server/commands/communication_commands_support.py`
 - `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 450 (100%)
-- INFERRED: 2 (0%)
+- EXTRACTED: 451 (99%)
+- INFERRED: 5 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

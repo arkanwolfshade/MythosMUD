@@ -4,46 +4,51 @@
 
 ## Key Concepts
 
-- **test_login_grace_period.py** (24 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_start_login_grace_period()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_start_login_grace_period_already_active()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_start_login_grace_period_expires()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_cancel_login_grace_period_not_active()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_is_player_in_login_grace_period_active()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_is_player_in_login_grace_period_not_active()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_is_player_in_login_grace_period_no_manager_attribute()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_get_login_grace_period_remaining_active()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_get_login_grace_period_remaining_not_active()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_get_login_grace_period_remaining_no_start_time()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_get_login_grace_period_remaining_no_manager_attribute()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_multiple_players_grace_periods()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_grace_period_task_cancellation_cleanup()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_start_login_grace_period_effect_based_adds_effect_and_sets_in_memory()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_cancel_login_grace_period_effect_based_clears_tracking()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **Unit tests for login grace period functionality.  Tests the core login grace per** (1 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **Create a mock ConnectionManager for testing.** (1 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **Test starting a login grace period for a player.** (1 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **Test starting grace period when already active (should not duplicate).** (1 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **Test that grace period expires after duration.** (1 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **Test cancelling grace period when not active (should not error).** (1 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **Test checking if player is in grace period when active.** (1 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **Test checking if player is in grace period when not active.** (1 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
+- **hash_password()** (18 connections) — `server/auth_utils.py`
+- **verify_password()** (9 connections) — `server/auth_utils.py`
+- **test_verify_password_success()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_verify_password_failure()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_hash_password_raises_on_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_hash_password_authentication_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_hash_password_value_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_hash_password_type_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_hash_password_runtime_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_verify_password_attribute_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_hash_password_empty_string()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_verify_password_empty_string()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_hash_password_with_very_long_password()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_verify_password_with_very_long_password()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_hash_password_success()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_verify_password_returns_false_on_error()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_verify_password_runtime_error()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Hash a plaintext password using Argon2id.      This function provides superior** (1 connections) — `server/auth_utils.py`
+- **Verify a plaintext password against a hash.      This function safely handles** (1 connections) — `server/auth_utils.py`
+- **Test successful password hashing.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Test successful password verification.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Test password verification with wrong password.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Test that hash_password raises AuthenticationError on error.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Test that verify_password returns False on error.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **Test hash_password raises AuthenticationError on AuthenticationError from argon2** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [Player Respawn Events](Player_Respawn_Events.md) (21 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
+- [Auth Token Utilities](Auth_Token_Utilities.md) (17 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (10 shared connections)
+- [Command Testing Guide](Command_Testing_Guide.md) (3 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
+- [Combat Command Models](Combat_Command_Models.md) (1 shared connections)
+- [WebSocket Initial State](WebSocket_Initial_State.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_login_grace_period.py`
+- `server/auth_utils.py`
+- `server/tests/unit/auth/test_auth_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 91 (90%)
+- INFERRED: 10 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,61 +1,58 @@
 # Command Helper Utilities
 
-> 57 nodes
+> 64 nodes
 
 ## Key Concepts
 
-- **CombatDeathHandler** (18 connections) — `server/services/combat_death_handler.py`
-- **CombatEventHandler** (17 connections) — `server/services/combat_event_handler.py`
-- **.__init__()** (14 connections) — `server/services/combat_service.py`
-- **_CombatServiceDeps** (10 connections) — `server/services/combat_death_handler.py`
-- **_ConnectionManagerLike** (9 connections) — `server/services/combat_death_handler.py`
-- **_NPCCombatIntegrationLike** (9 connections) — `server/services/combat_death_handler.py`
-- **._create_corpse_on_death()** (9 connections) — `server/services/combat_death_handler.py`
-- **._publish_attack_events()** (9 connections) — `server/services/combat_event_handler.py`
-- **._log_room_subscribers_before_npc_death()** (8 connections) — `server/services/combat_death_handler.py`
-- **._resolve_original_npc_id()** (8 connections) — `server/services/combat_death_handler.py`
-- **._publish_npc_death_event()** (8 connections) — `server/services/combat_death_handler.py`
-- **._handle_npc_death()** (8 connections) — `server/services/combat_death_handler.py`
-- **.handle_attack_events_and_xp()** (8 connections) — `server/services/combat_event_handler.py`
-- **._handle_player_death_events()** (7 connections) — `server/services/combat_death_handler.py`
-- **.handle_target_state_changes()** (6 connections) — `server/services/combat_death_handler.py`
-- **._resolve_connection_manager_for_corpse_creation()** (5 connections) — `server/services/combat_death_handler.py`
-- **.award_xp_to_player()** (5 connections) — `server/services/combat_event_handler.py`
-- **.publish_combat_ended_event()** (5 connections) — `server/services/combat_event_handler.py`
-- **.get_original_string_id()** (4 connections) — `server/services/combat_death_handler.py`
-- **._resolve_participant_display_name()** (4 connections) — `server/services/combat_event_handler.py`
-- **UUID** (4 connections)
-- **._calculate_xp_reward()** (4 connections) — `server/services/combat_event_handler.py`
-- **Protocol** (3 connections)
-- **.canonical_room_id()** (3 connections) — `server/services/combat_death_handler.py`
-- **UUID** (3 connections)
-- *... and 32 more nodes in this community*
+- **connection_manager_health_cleanup.py** (30 connections) — `server/realtime/connection_manager_health_cleanup.py`
+- **Any** (15 connections)
+- **Any** (13 connections)
+- **delegate_error_handler()** (12 connections) — `server/realtime/connection_delegates.py`
+- **delegate_connection_cleaner()** (11 connections) — `server/realtime/connection_delegates.py`
+- **delegate_health_monitor()** (9 connections) — `server/realtime/connection_delegates.py`
+- **delegate_connection_cleaner_sync()** (9 connections) — `server/realtime/connection_delegates.py`
+- **delegate_health_monitor_sync()** (8 connections) — `server/realtime/connection_delegates.py`
+- **check_connection_health_impl()** (8 connections) — `server/realtime/connection_manager_health_cleanup.py`
+- **UUID** (8 connections)
+- **CleanupContext** (8 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **detect_and_handle_error_state_impl()** (7 connections) — `server/realtime/connection_manager_health_cleanup.py`
+- **handle_websocket_error_impl()** (7 connections) — `server/realtime/connection_manager_health_cleanup.py`
+- **handle_authentication_error_impl()** (7 connections) — `server/realtime/connection_manager_health_cleanup.py`
+- **handle_security_violation_impl()** (7 connections) — `server/realtime/connection_manager_health_cleanup.py`
+- **recover_from_error_impl()** (7 connections) — `server/realtime/connection_manager_health_cleanup.py`
+- **cleanup_dead_connections_impl()** (7 connections) — `server/realtime/connection_manager_health_cleanup.py`
+- **check_and_cleanup_impl()** (7 connections) — `server/realtime/connection_manager_health_cleanup.py`
+- **cleanup_orphaned_data_impl()** (7 connections) — `server/realtime/connection_manager_health_cleanup.py`
+- **_periodic_health_check_impl()** (6 connections) — `server/realtime/connection_manager_health_cleanup.py`
+- **start_health_checks_impl()** (6 connections) — `server/realtime/connection_manager_health_cleanup.py`
+- **force_cleanup_impl()** (6 connections) — `server/realtime/connection_manager_health_cleanup.py`
+- **cleanup_ghost_players_impl()** (6 connections) — `server/realtime/connection_manager_health_cleanup.py`
+- **prune_stale_players_impl()** (6 connections) — `server/realtime/connection_manager_health_cleanup.py`
+- **stop_health_checks_impl()** (5 connections) — `server/realtime/connection_manager_health_cleanup.py`
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [Inventory Command Models](Inventory_Command_Models.md) (13 shared connections)
-- [Rest Command Flow](Rest_Command_Flow.md) (11 shared connections)
-- [Combat Death Handling](Combat_Death_Handling.md) (10 shared connections)
-- [Health Check Models](Health_Check_Models.md) (9 shared connections)
-- [Async Persistence Layer](Async_Persistence_Layer.md) (8 shared connections)
-- [Client Security Utilities](Client_Security_Utilities.md) (5 shared connections)
-- [Skill Service Tests](Skill_Service_Tests.md) (5 shared connections)
-- [Emote Schema Validator](Emote_Schema_Validator.md) (5 shared connections)
-- [Container Exception Handlers](Container_Exception_Handlers.md) (3 shared connections)
-- [NPC Occupant Verification](NPC_Occupant_Verification.md) (2 shared connections)
-- [Players API Endpoints](Players_API_Endpoints.md) (2 shared connections)
-- [Event Bus Serialization](Event_Bus_Serialization.md) (2 shared connections)
+- [Container Exception Handlers](Container_Exception_Handlers.md) (28 shared connections)
+- [Room Occupant Events](Room_Occupant_Events.md) (17 shared connections)
+- [Archive Bug Fix](Archive_Bug_Fix.md) (15 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [NATS Message Broker](NATS_Message_Broker.md) (3 shared connections)
+- [Unified Command Handler](Unified_Command_Handler.md) (2 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
+- [Deprecated Logging Patterns](Deprecated_Logging_Patterns.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_death_handler.py`
-- `server/services/combat_event_handler.py`
-- `server/services/combat_service.py`
+- `server/realtime/connection_delegates.py`
+- `server/realtime/connection_manager.py`
+- `server/realtime/connection_manager_health_cleanup.py`
+- `server/realtime/maintenance/connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 189 (83%)
-- INFERRED: 39 (17%)
+- EXTRACTED: 276 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

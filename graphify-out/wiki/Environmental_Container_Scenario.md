@@ -1,53 +1,54 @@
 # Environmental Container Scenario
 
-> 25 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **CommandProcessor** (15 connections) — `server/utils/command_processor.py`
-- **get_command_processor()** (7 connections) — `server/utils/command_processor.py`
-- **.extract_command_data()** (5 connections) — `server/utils/command_processor.py`
-- **command_processor()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_get_command_processor()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **.process_command_string()** (4 connections) — `server/utils/command_processor.py`
-- **._extract_attributes()** (4 connections) — `server/utils/command_processor.py`
-- **._is_combat_command()** (4 connections) — `server/utils/command_processor.py`
-- **test_process_command_string_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **.__init__()** (3 connections) — `server/utils/command_processor.py`
-- **Any** (3 connections)
-- **.validate_command_safety()** (2 connections) — `server/utils/command_processor.py`
-- **.get_command_help()** (2 connections) — `server/utils/command_processor.py`
-- **Create a CommandProcessor instance.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **Test process_command_string handles Pydantic validation errors.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **Test get_command_processor returns global instance.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **Command processor that integrates Pydantic validation with existing command infr** (1 connections) — `server/utils/command_processor.py`
-- **Initialize the command processor.** (1 connections) — `server/utils/command_processor.py`
-- **Process a raw command string through the new validation system.          Args:** (1 connections) — `server/utils/command_processor.py`
-- **Extract attributes from validated command using a mapping configuration.** (1 connections) — `server/utils/command_processor.py`
-- **Check if a command type is a combat command.          Args:             command_** (1 connections) — `server/utils/command_processor.py`
-- **Extract command data from a validated Pydantic command object.          This met** (1 connections) — `server/utils/command_processor.py`
-- **Perform additional safety validation on command input.          This provides an** (1 connections) — `server/utils/command_processor.py`
-- **Get help information for commands.          Args:             command_name: Spec** (1 connections) — `server/utils/command_processor.py`
-- **Get the global command processor instance.      Returns:         The global Comm** (1 connections) — `server/utils/command_processor.py`
+- **HealthRepository** (20 connections) — `server/persistence/repositories/health_repository.py`
+- **health_repository.py** (16 connections) — `server/persistence/repositories/health_repository.py`
+- **.update_player_health()** (8 connections) — `server/persistence/repositories/health_repository.py`
+- **._damage_player_inner()** (7 connections) — `server/persistence/repositories/health_repository.py`
+- **Player** (6 connections)
+- **._heal_player_inner()** (6 connections) — `server/persistence/repositories/health_repository.py`
+- **._log_damage_error()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **._update_player_health_inner()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **.damage_player()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **_stats_int()** (4 connections) — `server/persistence/repositories/health_repository.py`
+- **UUID** (4 connections)
+- **.heal_player()** (4 connections) — `server/persistence/repositories/health_repository.py`
+- **.__init__()** (3 connections) — `server/persistence/repositories/health_repository.py`
+- **._calculate_effective_damage()** (3 connections) — `server/persistence/repositories/health_repository.py`
+- **Exception** (2 connections)
+- **Health repository for async persistence operations.  This module provides asyn** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Convert stat values to int with a safe fallback.** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Repository for player health persistence operations.      Handles damage, heal** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Initialize the health repository.          Args:             event_bus: Optio** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Calculate effective damage after applying simple resistance rules.          Cu** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Core damage logic without error handling wrapper.** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Log critical damage persistence failure.** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Execute atomic health update via update_player_health procedure.** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Damage a player and persist health changes atomically.          Args:** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Heal a player and persist health changes atomically.** (1 connections) — `server/persistence/repositories/health_repository.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [Cursor Agents Analyzer](Cursor_Agents_Analyzer.md) (5 shared connections)
-- [Playwright Remediation Plan](Playwright_Remediation_Plan.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Character Creation API](Character_Creation_API.md) (1 shared connections)
-- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (1 shared connections)
-- [Persistence Container Extended](Persistence_Container_Extended.md) (1 shared connections)
+- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (10 shared connections)
+- [Zone Config Loader](Zone_Config_Loader.md) (7 shared connections)
+- [Client Event Store](Client_Event_Store.md) (4 shared connections)
+- [Realtime Conftest Mocks](Realtime_Conftest_Mocks.md) (2 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (2 shared connections)
+- [Draggable Panel UI](Draggable_Panel_UI.md) (2 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_processor.py`
-- `server/utils/command_processor.py`
+- `server/persistence/repositories/health_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (93%)
-- INFERRED: 5 (7%)
+- EXTRACTED: 104 (95%)
+- INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

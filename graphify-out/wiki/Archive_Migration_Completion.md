@@ -1,25 +1,27 @@
 # Archive Migration Completion
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_unmute_channel_not_muted()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test unmuting a channel that's not muted.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Test File Migration Mapping** (2 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
+- **Test Suite Hierarchical Migration** (1 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
+- **Test Suite Refactoring Deliverables** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
 
 ## Relationships
 
-- [NPC Combat Lifecycle](NPC_Combat_Lifecycle.md) (1 shared connections)
-- [Async Persistence Delegates](Async_Persistence_Delegates.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
+- `docs/archive/TEST_MIGRATION_MAPPING.md`
+- `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 2 (50%)
+- INFERRED: 2 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

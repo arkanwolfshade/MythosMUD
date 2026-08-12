@@ -1,53 +1,53 @@
 # Flee Command Tests
 
-> 37 nodes
+> 31 nodes
 
 ## Key Concepts
 
-- **test_flee_command.py** (28 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **FleeHandlerDeps** (10 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **_request_with_persistence()** (10 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **test_flee_no_exits_returns_no_escape()** (8 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **test_flee_roll_fails_returns_failure_and_uses_action()** (8 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **test_flee_roll_succeeds_returns_success()** (8 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **_make_participant()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **_standing_player_id()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **test_get_combat_command_handler_includes_flee()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **handler()** (5 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **test_flee_not_in_combat_returns_message()** (5 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **test_flee_not_standing_forces_stand_and_returns_message()** (5 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **UUID** (3 connections)
-- **flee_handler_deps()** (3 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **_FleeCmdAppState** (3 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **_GetCombatHandlerLoaderContainer** (3 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **standing_player()** (2 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **_FleeCmdApp** (2 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **_FleeCmdRequest** (2 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **_GetCombatHandlerLoaderAppState** (2 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **_GetCombatHandlerLoaderApp** (2 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **TypedDict** (1 connections)
-- **Unit tests for /flee command (handle_flee_command).** (1 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **Typed fixture bundle for CombatCommandHandler flee tests (mocks).** (1 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **CombatCommandHandler deps for flee: combat_service, movement_service, player_pos** (1 connections) — `server/tests/unit/commands/test_flee_command.py`
-- *... and 12 more nodes in this community*
+- **PerformanceMonitor** (25 connections) — `server/monitoring/performance_monitor.py`
+- **PerformanceMetric** (9 connections) — `server/monitoring/performance_monitor.py`
+- **.record_metric()** (8 connections) — `server/monitoring/performance_monitor.py`
+- **get_performance_stats()** (7 connections) — `server/monitoring/performance_monitor.py`
+- **Any** (6 connections)
+- **.get_operation_stats()** (6 connections) — `server/monitoring/performance_monitor.py`
+- **record_performance_metric()** (6 connections) — `server/monitoring/performance_monitor.py`
+- **.get_all_stats()** (5 connections) — `server/monitoring/performance_monitor.py`
+- **._trigger_alert()** (5 connections) — `server/monitoring/performance_monitor.py`
+- **.export_metrics()** (5 connections) — `server/monitoring/performance_monitor.py`
+- **.__init__()** (4 connections) — `server/monitoring/performance_monitor.py`
+- **.get_recent_metrics()** (4 connections) — `server/monitoring/performance_monitor.py`
+- **.add_alert_callback()** (4 connections) — `server/monitoring/performance_monitor.py`
+- **.get_slow_operations()** (3 connections) — `server/monitoring/performance_monitor.py`
+- **.get_failed_operations()** (3 connections) — `server/monitoring/performance_monitor.py`
+- **.reset_metrics()** (3 connections) — `server/monitoring/performance_monitor.py`
+- **Represents a single performance metric.** (1 connections) — `server/monitoring/performance_monitor.py`
+- **Performance monitoring and metrics collection system.      This class provides c** (1 connections) — `server/monitoring/performance_monitor.py`
+- **Initialize the performance monitor.          Args:             max_metrics: Maxi** (1 connections) — `server/monitoring/performance_monitor.py`
+- **Record a performance metric.          Args:             operation: Name of the o** (1 connections) — `server/monitoring/performance_monitor.py`
+- **Get performance statistics for a specific operation.          Args:** (1 connections) — `server/monitoring/performance_monitor.py`
+- **Get performance statistics for all operations.          Returns:             Dic** (1 connections) — `server/monitoring/performance_monitor.py`
+- **Get the most recent performance metrics.          Args:             count: Numbe** (1 connections) — `server/monitoring/performance_monitor.py`
+- **Get operations that exceeded the performance threshold.          Args:** (1 connections) — `server/monitoring/performance_monitor.py`
+- **Get operations that failed.          Returns:             List of failed operati** (1 connections) — `server/monitoring/performance_monitor.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [Magic Service Bundle](Magic_Service_Bundle.md) (7 shared connections)
-- [Combat Death Handling](Combat_Death_Handling.md) (4 shared connections)
-- [Container Open Events](Container_Open_Events.md) (2 shared connections)
-- [Async Persistence Layer](Async_Persistence_Layer.md) (2 shared connections)
-- [Rest Command Flow](Rest_Command_Flow.md) (2 shared connections)
-- [Application Config Settings](Application_Config_Settings.md) (2 shared connections)
+- [Help and WebSocket Core](Help_and_WebSocket_Core.md) (11 shared connections)
+- [Performance Monitor Metrics](Performance_Monitor_Metrics.md) (4 shared connections)
+- [Combat Attack Service](Combat_Attack_Service.md) (3 shared connections)
+- [Memory Leak Metrics](Memory_Leak_Metrics.md) (3 shared connections)
+- [Archive Environment Contamination](Archive_Environment_Contamination.md) (2 shared connections)
+- [Architecture Decisions Adr](Architecture_Decisions_Adr.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_flee_command.py`
+- `server/monitoring/performance_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 141 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 110 (93%)
+- INFERRED: 8 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

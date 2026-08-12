@@ -1,6 +1,6 @@
 # ESLint Conftest Fixtures
 
-> 29 nodes
+> 31 nodes
 
 ## Key Concepts
 
@@ -13,6 +13,7 @@
 - **test_logger()** (4 connections) — `server/tests/conftest.py`
 - **_set_xdist_loadgroup_nodeid()** (4 connections) — `server/tests/conftest.py`
 - **eslint.config.js** (3 connections) — `client/eslint.config.js`
+- **reset_config_singleton()** (3 connections) — `server/tests/conftest.py`
 - **Config** (3 connections)
 - **_test_file_in_category()** (3 connections) — `server/tests/conftest.py`
 - **_get_db_name_from_url()** (2 connections) — `server/tests/conftest.py`
@@ -25,16 +26,15 @@
 - **Test configuration and fixtures for MythosMUD greenfield test suite.  This modul** (1 connections) — `server/tests/conftest.py`
 - **Extract database name from a PostgreSQL URL. Returns empty string on parse failu** (1 connections) — `server/tests/conftest.py`
 - **Ensure critical environment variables are set before each test.      Some tests** (1 connections) — `server/tests/conftest.py`
+- **Reset config singleton before and after each test.      In test mode, get_config** (1 connections) — `server/tests/conftest.py`
 - **Set deterministic random seed for reproducible tests.** (1 connections) — `server/tests/conftest.py`
 - **Create an event loop suitable for MythosMUD tests.      CRITICAL: On Windows, Se** (1 connections) — `server/tests/conftest.py`
-- **Register platform-appropriate loop factories for pytest-asyncio (Python 3.14+ sa** (1 connections) — `server/tests/conftest.py`
-- **Provide a logger for tests.** (1 connections) — `server/tests/conftest.py`
-- *... and 4 more nodes in this community*
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [Room Occupancy Class](Room_Occupancy_Class.md) (3 shared connections)
-- [Command Parser](Command_Parser.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [Rest Command Flow](Rest_Command_Flow.md) (2 shared connections)
 
 ## Source Files
 
@@ -43,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 77 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 81 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

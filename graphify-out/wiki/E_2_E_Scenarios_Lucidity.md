@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_profession_set_mechanical_effects_empty_dict()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **Test set_mechanical_effects handles empty dict.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **test_store_npc_xp_mapping_first_engagement()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test store_npc_xp_mapping_for_mixin applies lucidity effect on first engagement.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
 
 ## Relationships
 
-- [Cursor Plans Login](Cursor_Plans_Login.md) (1 shared connections)
-- [Profession Get Mechanical Effects](Profession_Get_Mechanical_Effects.md) (1 shared connections)
+- [E2E Suite Overview](E2E_Suite_Overview.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_profession.py`
+- `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

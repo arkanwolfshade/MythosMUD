@@ -1,44 +1,50 @@
 # Logging System Planning
 
-> 19 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **CommunicationIntegrationProtocol** (10 connections) — `server/npc/npc_protocols.py`
-- **CombatIntegrationProtocol** (7 connections) — `server/npc/npc_protocols.py`
-- **.speak()** (4 connections) — `server/npc/npc_base.py`
-- **.listen()** (4 connections) — `server/npc/npc_base.py`
-- **npc_protocols.py** (4 connections) — `server/npc/npc_protocols.py`
-- **Protocol** (2 connections)
-- **.handle_npc_death()** (2 connections) — `server/npc/npc_protocols.py`
-- **.send_whisper_to_player()** (2 connections) — `server/npc/npc_protocols.py`
-- **.send_message_to_room()** (2 connections) — `server/npc/npc_protocols.py`
-- **.handle_player_message()** (2 connections) — `server/npc/npc_protocols.py`
-- **NPC speaks a message.** (1 connections) — `server/npc/npc_base.py`
-- **NPC receives/listens to a message.** (1 connections) — `server/npc/npc_base.py`
-- **Protocols for NPC combat and communication integration (used by NPCBase).** (1 connections) — `server/npc/npc_protocols.py`
-- **Protocol for combat integration handle_npc_death.** (1 connections) — `server/npc/npc_protocols.py`
-- **Handle NPC death in the combat integration layer.** (1 connections) — `server/npc/npc_protocols.py`
-- **Protocol for communication integration (whisper, room message, handle player mes** (1 connections) — `server/npc/npc_protocols.py`
-- **Send a private whisper from this NPC to a single player.** (1 connections) — `server/npc/npc_protocols.py`
-- **Send a message from this NPC to all players in a room.** (1 connections) — `server/npc/npc_protocols.py`
-- **Handle an incoming player message directed at this NPC.** (1 connections) — `server/npc/npc_protocols.py`
+- **lucidityEventUtils.ts** (19 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **HallucinationMessage** (10 connections) — `client/src/types/lucidity.ts`
+- **buildLucidityStatus()** (10 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **HallucinationTicker.tsx** (9 connections) — `client/src/components/lucidity/HallucinationTicker.tsx`
+- **HallucinationTicker.test.tsx** (5 connections) — `client/src/components/lucidity/__tests__/HallucinationTicker.test.tsx`
+- **lucidityEventUtils.test.ts** (5 connections) — `client/src/utils/__tests__/lucidityEventUtils.test.ts`
+- **parseNumber()** (5 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **resolveCurrentLucidity()** (4 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **HallucinationTicker** (3 connections) — `client/src/components/lucidity/HallucinationTicker.tsx`
+- **resolveMaxLucidity()** (3 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **createHallucinationEntry()** (3 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **createRescueState()** (3 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **HallucinationTickerProps** (2 connections) — `client/src/components/lucidity/HallucinationTicker.tsx`
+- **sanitizeTier()** (2 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **resolveCurrentRawValue()** (2 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **resolveLiabilities()** (2 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **resolveOptionalText()** (2 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **buildLucidityChangeMessage()** (2 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **createHallucinationId()** (2 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **severityClass** (1 connections) — `client/src/components/lucidity/HallucinationTicker.tsx`
+- **buildHallucination()** (1 connections) — `client/src/components/lucidity/__tests__/HallucinationTicker.test.tsx`
 
 ## Relationships
 
-- [Communication Command Flows](Communication_Command_Flows.md) (5 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (3 shared connections)
-- [Tailwind UI Migration Plan](Tailwind_UI_Migration_Plan.md) (2 shared connections)
+- [Async Room Loading Tests](Async_Room_Loading_Tests.md) (10 shared connections)
+- [Magic System Feature Plan](Magic_System_Feature_Plan.md) (5 shared connections)
+- [Character Stats Model](Character_Stats_Model.md) (3 shared connections)
+- [Combat Messaging Integration](Combat_Messaging_Integration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/npc_base.py`
-- `server/npc/npc_protocols.py`
+- `client/src/components/lucidity/HallucinationTicker.tsx`
+- `client/src/components/lucidity/__tests__/HallucinationTicker.test.tsx`
+- `client/src/types/lucidity.ts`
+- `client/src/utils/__tests__/lucidityEventUtils.test.ts`
+- `client/src/utils/lucidityEventUtils.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (85%)
-- INFERRED: 7 (15%)
+- EXTRACTED: 95 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,28 +1,30 @@
 # Architecture Decisions Adr
 
-> 5 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **.__init__()** (4 connections) — `server/services/npc_combat_rewards.py`
-- **.calculate_xp_reward()** (3 connections) — `server/services/npc_combat_rewards.py`
-- **Any** (2 connections)
-- **Initialize the rewards manager.          Args:             async_persistence: As** (1 connections) — `server/services/npc_combat_rewards.py`
-- **Calculate XP reward from NPC definition.          Args:             npc_definiti** (1 connections) — `server/services/npc_combat_rewards.py`
+- **ItemInstance** (7 connections) — `server/game/items/item_instance.py`
+- **item_instance.py** (4 connections) — `server/game/items/item_instance.py`
+- **.to_inventory_stack()** (3 connections) — `server/game/items/item_instance.py`
+- **Any** (1 connections)
+- **Item instance model for runtime item representation.  This module defines the It** (1 connections) — `server/game/items/item_instance.py`
+- **Runtime representation of an item created from a prototype.** (1 connections) — `server/game/items/item_instance.py`
+- **Convert the instance into an inventory stack payload understood by legacy servic** (1 connections) — `server/game/items/item_instance.py`
 
 ## Relationships
 
-- [Argon2 Password Hashing](Argon2_Password_Hashing.md) (2 shared connections)
-- [Optimization Archive Modernization](Optimization_Archive_Modernization.md) (1 shared connections)
+- [NATS Retry Handler](NATS_Retry_Handler.md) (5 shared connections)
+- [Npc Services Combat](Npc_Services_Combat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_rewards.py`
+- `server/game/items/item_instance.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 16 (89%)
+- INFERRED: 2 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -34,9 +34,8 @@
 ## Relationships
 
 - [Warning Fixes Session](Warning_Fixes_Session.md) (4 shared connections)
-- [API Type Guards](API_Type_Guards.md) (3 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Player Schema Converter](Player_Schema_Converter.md) (1 shared connections)
+- [Client Event Store](Client_Event_Store.md) (3 shared connections)
+- [LRU Cache Manager](LRU_Cache_Manager.md) (3 shared connections)
 - [Character Creation E2E](Character_Creation_E2E.md) (1 shared connections)
 
 ## Source Files

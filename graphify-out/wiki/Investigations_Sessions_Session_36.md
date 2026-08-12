@@ -1,15 +1,12 @@
 # Investigations Sessions Session
 
-> 6 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **NPC Occupants Verification Summary** (3 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **NPC Display Final Fixes** (2 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
-- **asyncpg UUID replace AttributeError** (2 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **room_update Overwriting NPC Data** (1 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
-- **Legacy Occupants Snapshot Format** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- **Rooms API User Object AttributeError** (1 connections) — `investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md`
+- **NPCs Not Updating On Player Movement** (2 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
+- **exclude_player Occupants Snapshot Pattern** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
+- **Canonical Room ID NPC Matching Remediation** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
 
 ## Relationships
 
@@ -17,14 +14,13 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
-- `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
-- `investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md`
+- `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
+- `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (60%)
-- INFERRED: 4 (40%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

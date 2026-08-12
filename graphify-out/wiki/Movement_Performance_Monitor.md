@@ -1,13 +1,10 @@
 # Movement Performance Monitor
 
-> 44 nodes
+> 33 nodes
 
 ## Key Concepts
 
 - **MovementMonitor** (22 connections) — `server/game/movement_monitor.py`
-- **get_movement_monitor()** (14 connections) — `server/game/movement_monitor.py`
-- **movement_monitor.py** (12 connections) — `server/game/movement_monitor.py`
-- **get_movement_metrics()** (9 connections) — `server/api/monitoring.py`
 - **reset_movement_monitor()** (8 connections) — `server/game/movement_monitor.py`
 - **.get_metrics()** (6 connections) — `server/game/movement_monitor.py`
 - **.get_alerts()** (6 connections) — `server/game/movement_monitor.py`
@@ -22,34 +19,33 @@
 - **.record_integrity_check()** (3 connections) — `server/game/movement_monitor.py`
 - **._collect_room_player_map()** (3 connections) — `server/game/movement_monitor.py`
 - **.reset_metrics()** (3 connections) — `server/game/movement_monitor.py`
-- **test_get_movement_metrics_uses_monitor()** (3 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
-- **test_get_movement_metrics_logged_http_on_failure()** (3 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
 - **movement_monitor()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_movement_monitor_returns_singleton()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
 - **UUID** (2 connections)
 - **.record_concurrent_movement()** (2 connections) — `server/game/movement_monitor.py`
-- **MetricsResponse** (1 connections)
-- *... and 19 more nodes in this community*
+- **Comprehensive monitoring system for the movement system.      This class provi** (1 connections) — `server/game/movement_monitor.py`
+- **Initialize the movement monitor with empty metrics.** (1 connections) — `server/game/movement_monitor.py`
+- **Record a movement attempt with metrics.** (1 connections) — `server/game/movement_monitor.py`
+- **Record concurrent movement count.** (1 connections) — `server/game/movement_monitor.py`
+- **Record an integrity check result.** (1 connections) — `server/game/movement_monitor.py`
+- **Validate players are not in multiple rooms.** (1 connections) — `server/game/movement_monitor.py`
+- **Get comprehensive movement metrics.** (1 connections) — `server/game/movement_monitor.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [Command Field Validators](Command_Field_Validators.md) (16 shared connections)
-- [Cursor Subagents Docs](Cursor_Subagents_Docs.md) (7 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (5 shared connections)
-- [Calendar Holiday Schemas](Calendar_Holiday_Schemas.md) (4 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
+- [Command Field Validators](Command_Field_Validators.md) (11 shared connections)
+- [Cursor Subagents Docs](Cursor_Subagents_Docs.md) (4 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/monitoring.py`
 - `server/game/movement_monitor.py`
-- `server/tests/unit/api/test_monitoring_endpoints.py`
 - `server/tests/unit/game/test_movement_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 154 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 106 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

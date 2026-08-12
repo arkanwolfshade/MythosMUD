@@ -4,14 +4,15 @@
 
 ## Key Concepts
 
-- **description** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **exits** (5 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 - **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 - **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Relationships
 
 - [Npc Event Reaction](Npc_Event_Reaction.md) (1 shared connections)
+- [Item System Design](Item_System_Design.md) (1 shared connections)
 
 ## Source Files
 
@@ -19,7 +20,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,48 +1,52 @@
 # Scenario Conversion Guide
 
-> 15 nodes
+> 62 nodes
 
 ## Key Concepts
 
-- **MessageValidationError** (36 connections) — `server/realtime/message_validator.py`
-- **test_validate_size_counts_utf8_bytes()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_validate_json_structure_list_nesting_counts_toward_depth()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_parse_and_validate_csrf_inner_token_must_match_expected_not_outer_wrapper()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_validate_message_failure()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_process_message_validation_failed()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
+- **test_websocket_handler_validation_errors.py** (39 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
 - **test_validate_message_validation_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **Exception** (1 connections)
-- **Raised when message validation fails.** (1 connections) — `server/realtime/message_validator.py`
-- **Size limit uses UTF-8 byte length, not Python len(str).** (1 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **Lists contribute to nesting depth the same way as objects.** (1 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **If inner JSON carries its own csrfToken, it is validated (outer wrapper token is** (1 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **Test _validate_message() returns None when validation fails.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **Test _process_message() continues when validation fails.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **Test _validate_message returns None and sends error when validation fails.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_validate_message_restores_csrf_from_message_jwt_when_metadata_token_missing()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_chat_message_no_player()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_chat_message_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_with_broadcast()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_broadcast_no_player()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_broadcast_no_current_room_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_with_args()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_websocket_message_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_send_system_message_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_process_websocket_command_player_no_current_room_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_is_websocket_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_check_rate_limit_no_connection_id()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_check_rate_limit_passed()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_check_rate_limit_exceeded()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_validate_message_success()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_validate_message_passes_expected_token_from_connection_metadata()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_send_error_response_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_send_error_response_runtime_error_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_send_error_response_runtime_error_close_message()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_send_error_response_runtime_error_other()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_websocket_disconnect_no_connection_id()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [Database Helper Tests](Database_Helper_Tests.md) (17 shared connections)
-- [Security Issues And Fixes](Security_Issues_And_Fixes.md) (6 shared connections)
-- [Player Combat XP](Player_Combat_XP.md) (3 shared connections)
-- [Combat Feature Flags](Combat_Feature_Flags.md) (3 shared connections)
-- [Cursor Plans Best](Cursor_Plans_Best.md) (2 shared connections)
-- [Game Magic Spell](Game_Magic_Spell.md) (2 shared connections)
-- [Game Instance Manager](Game_Instance_Manager.md) (2 shared connections)
-- [Commands Npc Admin](Commands_Npc_Admin.md) (1 shared connections)
-- [CircuitBreakerOpen](CircuitBreakerOpen.md) (1 shared connections)
+- [Player Combat XP](Player_Combat_XP.md) (8 shared connections)
+- [Pre-commit Hook Analysis](Pre-commit_Hook_Analysis.md) (6 shared connections)
+- [Database Helper Tests](Database_Helper_Tests.md) (4 shared connections)
+- [Container API Endpoints](Container_API_Endpoints.md) (1 shared connections)
+- [Standardized Error Responses](Standardized_Error_Responses.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_validator.py`
-- `server/tests/unit/realtime/test_message_validator.py`
-- `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
 - `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (72%)
-- INFERRED: 18 (28%)
+- EXTRACTED: 136 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

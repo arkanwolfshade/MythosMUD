@@ -1,60 +1,58 @@
 # Player GUID Formatter
 
-> 29 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **config.ts** (14 connections) — `client/src/components/map/config.ts`
-- **ExitEdge.tsx** (13 connections) — `client/src/components/map/edges/ExitEdge.tsx`
-- **ReactFlowConfig.test.tsx** (9 connections) — `client/src/components/map/__tests__/ReactFlowConfig.test.tsx`
-- **RoomNode.tsx** (9 connections) — `client/src/components/map/nodes/RoomNode.tsx`
-- **IntersectionNode.tsx** (7 connections) — `client/src/components/map/nodes/IntersectionNode.tsx`
-- **ExitEdge** (6 connections) — `client/src/components/map/edges/ExitEdge.tsx`
-- **ExitEdge.rendering.test.tsx** (6 connections) — `client/src/components/map/edges/__tests__/ExitEdge.rendering.test.tsx`
-- **ExitEdge.test-fixtures.tsx** (6 connections) — `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
-- **RoomNode.test.tsx** (5 connections) — `client/src/components/map/nodes/__tests__/RoomNode.test.tsx`
-- **ExitEdge.edge-creation.test.tsx** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.edge-creation.test.tsx`
-- **ExitEdge.interactions.test.tsx** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.interactions.test.tsx`
-- **defaultExitEdgeProps** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
-- **IntersectionNode** (4 connections) — `client/src/components/map/nodes/IntersectionNode.tsx`
-- **RoomNode** (4 connections) — `client/src/components/map/nodes/RoomNode.tsx`
-- **IntersectionNode.test.tsx** (4 connections) — `client/src/components/map/nodes/__tests__/IntersectionNode.test.tsx`
-- **nodeTypes** (3 connections) — `client/src/components/map/config.ts`
-- **edgeTypes** (3 connections) — `client/src/components/map/config.ts`
-- **getNodeTypes()** (2 connections) — `client/src/components/map/config.ts`
-- **getEdgeTypes()** (2 connections) — `client/src/components/map/config.ts`
-- **getFlagIcon()** (2 connections) — `client/src/components/map/edges/ExitEdge.tsx`
-- **getEdgeStrokeStyle()** (2 connections) — `client/src/components/map/edges/ExitEdge.tsx`
-- **ExitEdgeLabels()** (2 connections) — `client/src/components/map/edges/ExitEdge.tsx`
-- **ExitEdgeBody()** (2 connections) — `client/src/components/map/edges/ExitEdge.tsx`
-- **RoomNodeProps** (2 connections) — `client/src/components/map/nodes/RoomNode.tsx`
-- **getNodeShape()** (2 connections) — `client/src/components/map/nodes/RoomNode.tsx`
-- *... and 4 more nodes in this community*
+- **quest_commands.py** (32 connections) — `server/commands/quest_commands.py`
+- **Any** (17 connections)
+- **handle_journal_command()** (15 connections) — `server/commands/quest_commands.py`
+- **_resolve_quest_command_context()** (10 connections) — `server/commands/quest_commands.py`
+- **_handle_quest_npc_sub()** (8 connections) — `server/commands/quest_commands.py`
+- **_get_quest_service()** (7 connections) — `server/commands/quest_commands.py`
+- **_resolve_npc_in_player_room()** (7 connections) — `server/commands/quest_commands.py`
+- **_resolve_player_id()** (6 connections) — `server/commands/quest_commands.py`
+- **UUID** (6 connections)
+- **_active_npc_ids_in_room()** (6 connections) — `server/commands/quest_commands.py`
+- **_quest_command_ready()** (6 connections) — `server/commands/quest_commands.py`
+- **_get_container_and_persistence()** (5 connections) — `server/commands/quest_commands.py`
+- **_format_one_quest_entry()** (5 connections) — `server/commands/quest_commands.py`
+- **_format_quest_log()** (5 connections) — `server/commands/quest_commands.py`
+- **_handle_quest_abandon()** (5 connections) — `server/commands/quest_commands.py`
+- **_parse_quest_subcommand()** (4 connections) — `server/commands/quest_commands.py`
+- **_format_goal_line()** (4 connections) — `server/commands/quest_commands.py`
+- **_npc_definition_id()** (4 connections) — `server/commands/quest_commands.py`
+- **_format_quest_action_results()** (4 connections) — `server/commands/quest_commands.py`
+- **Quest commands: journal / quests (quest log), quest abandon/ask/turnin.  Returns** (1 connections) — `server/commands/quest_commands.py`
+- **Get QuestService from request app container, or None if unavailable.** (1 connections) — `server/commands/quest_commands.py`
+- **Get container and async_persistence from request, or None.** (1 connections) — `server/commands/quest_commands.py`
+- **Extract player_id from player object as UUID, or None.** (1 connections) — `server/commands/quest_commands.py`
+- **Parse quest subcommand args.      Returns (subcommand, remainder, error_message)** (1 connections) — `server/commands/quest_commands.py`
+- **Resolve player, player_id and QuestService from request and current_user.     Re** (1 connections) — `server/commands/quest_commands.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [Player Death Service Tests](Player_Death_Service_Tests.md) (14 shared connections)
-- [Room Map Viewer UI](Room_Map_Viewer_UI.md) (3 shared connections)
-- [Command Input Utilities](Command_Input_Utilities.md) (3 shared connections)
+- [Server Config Loading](Server_Config_Loading.md) (11 shared connections)
+- [Look NPC Command](Look_NPC_Command.md) (5 shared connections)
+- [Player Schema Converter](Player_Schema_Converter.md) (3 shared connections)
+- [Container Open Events](Container_Open_Events.md) (3 shared connections)
+- [Quest Service Core](Quest_Service_Core.md) (3 shared connections)
+- [Player Cache](Player_Cache.md) (2 shared connections)
+- [Coverage Disconnect Grace](Coverage_Disconnect_Grace.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (2 shared connections)
+- [Rate Limiter Utilities](Rate_Limiter_Utilities.md) (2 shared connections)
+- [NPC Death Lifecycle](NPC_Death_Lifecycle.md) (1 shared connections)
+- [Command Service Tests](Command_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/__tests__/ReactFlowConfig.test.tsx`
-- `client/src/components/map/config.ts`
-- `client/src/components/map/edges/ExitEdge.tsx`
-- `client/src/components/map/edges/__tests__/ExitEdge.edge-creation.test.tsx`
-- `client/src/components/map/edges/__tests__/ExitEdge.interactions.test.tsx`
-- `client/src/components/map/edges/__tests__/ExitEdge.rendering.test.tsx`
-- `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
-- `client/src/components/map/nodes/IntersectionNode.tsx`
-- `client/src/components/map/nodes/RoomNode.tsx`
-- `client/src/components/map/nodes/__tests__/IntersectionNode.test.tsx`
-- `client/src/components/map/nodes/__tests__/RoomNode.test.tsx`
+- `server/commands/quest_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 124 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 169 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

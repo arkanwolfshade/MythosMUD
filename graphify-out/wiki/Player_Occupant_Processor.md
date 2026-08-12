@@ -1,20 +1,12 @@
 # Player Occupant Processor
 
-> 34 nodes
+> 22 nodes
 
 ## Key Concepts
 
 - **test_instance_manager.py** (15 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **instance_manager.py** (12 connections) — `server/game/instance_manager.py`
-- **seed_e2e_users.py** (9 connections) — `scripts/seed_e2e_users.py`
-- **_ensure_player_for_user()** (5 connections) — `scripts/seed_e2e_users.py`
-- **_seed_e2e_users()** (4 connections) — `scripts/seed_e2e_users.py`
-- **spawn_defaults.py** (4 connections) — `server/constants/spawn_defaults.py`
-- **main()** (3 connections) — `scripts/seed_e2e_users.py`
+- **instance_manager()** (4 connections) — `server/tests/unit/game/test_instance_manager.py`
 - **tutorial_room()** (3 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **E2eUserSpec** (2 connections) — `scripts/seed_e2e_users.py`
-- **UUID** (2 connections)
-- **datetime** (2 connections)
 - **room_cache()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
 - **test_create_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
 - **test_create_instance_raises_when_no_templates()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
@@ -23,37 +15,34 @@
 - **test_get_exit_room_id()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
 - **test_get_room_by_id_returns_none_for_non_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
 - **test_get_room_by_id_returns_room_when_in_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Connection** (1 connections)
-- **One row in users plus optional default character for login E2E.** (1 connections) — `scripts/seed_e2e_users.py`
-- **Entry point: run E2E user seed via anyio.** (1 connections) — `scripts/seed_e2e_users.py`
-- **Shared spawn / respawn room identifiers used by gameplay and E2E seed scripts.** (1 connections) — `server/constants/spawn_defaults.py`
-- **InstanceManager for MythosMUD.  Manages instanced rooms: creates, stores, and de** (1 connections) — `server/game/instance_manager.py`
 - **Unit tests for InstanceManager.  Tests instance creation, destruction, room clon** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- *... and 9 more nodes in this community*
+- **Create tutorial bedroom template room.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **Room cache with tutorial template.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **Create InstanceManager with tutorial template in cache.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **Test create_instance creates instance with cloned rooms.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **Test create_instance raises when no template rooms found.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **Test destroy_instance removes instance from store.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **Test get_first_room_id returns first room of instance.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **Test get_exit_room_id returns fixed exit room.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **Test get_room_by_id returns None for non-instance room IDs.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **Test get_room_by_id returns room when room is in an instance.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
 
 ## Relationships
 
-- [Command Factory Tests](Command_Factory_Tests.md) (4 shared connections)
-- [Auth Token Utilities](Auth_Token_Utilities.md) (3 shared connections)
-- [Dependency Injection Tests](Dependency_Injection_Tests.md) (3 shared connections)
-- [Combat Domain Events](Combat_Domain_Events.md) (2 shared connections)
-- [Room Occupancy Class](Room_Occupancy_Class.md) (2 shared connections)
-- [Application Config Settings](Application_Config_Settings.md) (1 shared connections)
-- [Communication Command Flows](Communication_Command_Flows.md) (1 shared connections)
-- [Realtime Service Bundle](Realtime_Service_Bundle.md) (1 shared connections)
+- [Chat Channel Logger](Chat_Channel_Logger.md) (2 shared connections)
+- [Health Cold Resistance](Health_Cold_Resistance.md) (2 shared connections)
+- [Client Event Store](Client_Event_Store.md) (1 shared connections)
+- [Commands Look Item](Commands_Look_Item.md) (1 shared connections)
 - [Rescue Service Tests](Rescue_Service_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/seed_e2e_users.py`
-- `server/constants/spawn_defaults.py`
-- `server/game/instance_manager.py`
 - `server/tests/unit/game/test_instance_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 48 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

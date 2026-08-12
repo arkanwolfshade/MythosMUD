@@ -4,21 +4,21 @@
 
 ## Key Concepts
 
-- **.refresh_configuration()** (5 connections) — `server/services/combat_configuration_service.py`
-- **.clear_cache()** (3 connections) — `server/services/combat_configuration_service.py`
-- **refresh_combat_configuration()** (3 connections) — `server/services/combat_configuration_service.py`
-- **Refresh configuration from source.** (1 connections) — `server/services/combat_configuration_service.py`
-- **Clear configuration cache.** (1 connections) — `server/services/combat_configuration_service.py`
-- **Refresh combat configuration by clearing cache and reloading.** (1 connections) — `server/services/combat_configuration_service.py`
+- **._calculate_exit_weights()** (5 connections) — `server/npc/idle_movement.py`
+- **._calculate_exit_weight()** (3 connections) — `server/npc/idle_movement.py`
+- **._calculate_distance_to_room()** (3 connections) — `server/npc/idle_movement.py`
+- **Calculate weight for an exit based on distance from spawn.          Args:** (1 connections) — `server/npc/idle_movement.py`
+- **Calculate weights for all exits.          Args:             valid_exits: Dict** (1 connections) — `server/npc/idle_movement.py`
+- **Calculate approximate distance between two rooms.          This is a simplifie** (1 connections) — `server/npc/idle_movement.py`
 
 ## Relationships
 
-- [Player Related Models](Player_Related_Models.md) (3 shared connections)
-- [Command Parser](Command_Parser.md) (1 shared connections)
+- [NPC Movement Integration](NPC_Movement_Integration.md) (3 shared connections)
+- [Dual Connection Monitoring Guide](Dual_Connection_Monitoring_Guide.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_configuration_service.py`
+- `server/npc/idle_movement.py`
 
 ## Audit Trail
 
