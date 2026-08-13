@@ -40,7 +40,7 @@ def _validate_magic_prerequisites(container: ApplicationContainer) -> None:
 
 async def _create_registry_and_targeting(bundle: MagicBundle, container: ApplicationContainer) -> tuple[Any, Any]:
     """Create spell registry, targeting, and effects services. Return (spell_registry, player_spell_repository)."""
-    from server.game.magic.spell_effects import SpellEffects
+    from server.game.magic.spell_effects import SpellEffects, SpellEffectsDeps
     from server.game.magic.spell_registry import SpellRegistry
     from server.game.magic.spell_targeting import SpellTargetingService
     from server.persistence.repositories.player_spell_repository import PlayerSpellRepository
@@ -68,8 +68,8 @@ async def _create_registry_and_targeting(bundle: MagicBundle, container: Applica
     logger.info("SpellTargetingService initialized")
 
     bundle.spell_effects = SpellEffects(
-        player_service=container.player_service,
-        combat_service=container.combat_service,
+        container.player_service,
+        SpellEffectsDeps(combat_service=container.combat_service),
     )
     logger.info("SpellEffects initialized")
 

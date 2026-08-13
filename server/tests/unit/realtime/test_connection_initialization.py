@@ -8,12 +8,42 @@ from unittest.mock import MagicMock, patch
 
 from server.realtime.connection_initialization import (
     initialize_connection_cleaner,
+    initialize_connection_manager,
     initialize_error_handler,
     initialize_game_state_provider,
     initialize_health_monitor,
     initialize_messaging,
     initialize_room_event_handler,
 )
+
+
+def test_initialize_connection_manager_wires_core_state():
+    """Full init should set maps, components, and specialized services."""
+    manager = MagicMock()
+    manager._is_websocket_open = MagicMock()
+    manager._validate_token = MagicMock()
+    manager._cleanup_dead_websocket = MagicMock()
+    manager.force_disconnect_player = MagicMock()
+    manager.disconnect_connection_by_id = MagicMock()
+    manager.cleanup_dead_connections = MagicMock()
+    manager.get_player_session = MagicMock()
+    manager.get_session_connections = MagicMock()
+    manager.has_websocket_connection = MagicMock()
+    manager.send_personal_message = MagicMock()
+    manager.broadcast_to_room = MagicMock()
+    manager._convert_uuids_to_strings = MagicMock()
+
+    initialize_connection_manager(manager)
+
+    assert manager.active_websockets == {}
+    assert manager.memory_monitor is not None
+    assert manager.rate_limiter is not None
+    assert manager.message_queue is not None
+    assert manager.health_monitor is not None
+    assert manager.error_handler is not None
+    assert manager.connection_cleaner is not None
+    assert manager._health_check_interval == 30.0
+    assert manager._connection_timeout == 300.0
 
 
 def test_initialize_health_monitor():
@@ -27,6 +57,7 @@ def test_initialize_health_monitor():
     mock_manager._connection_timeout = 60
     mock_manager._token_revalidation_interval = 300
 
+    # Patch the name used by connection_initialization (imported at module load).
     with patch("server.realtime.connection_initialization.HealthMonitor") as mock_health_monitor:
         initialize_health_monitor(mock_manager)
 
@@ -61,7 +92,7 @@ def test_initialize_connection_cleaner():
     mock_manager.rate_limiter = MagicMock()
     mock_manager.message_queue = MagicMock()
     mock_manager.room_manager = MagicMock()
-    mock_manager._cleanup_dead_websocket = MagicMock()
+    mock_manager.cleanup_dead_websocket = MagicMock()
     mock_manager.has_websocket_connection = MagicMock()
     mock_manager.async_persistence = MagicMock()
 
@@ -91,8 +122,8 @@ def test_initialize_messaging():
     """Test initialize_messaging() initializes messaging components."""
     mock_manager = MagicMock()
     mock_manager.message_queue = MagicMock()
-    mock_manager._cleanup_dead_websocket = MagicMock()
-    mock_manager._convert_uuids_to_strings = MagicMock()
+    mock_manager.cleanup_dead_websocket = MagicMock()
+    mock_manager.convert_uuids_to_strings = MagicMock()
     mock_manager.room_manager = MagicMock()
     mock_manager.send_personal_message = MagicMock()
 
@@ -112,7 +143,7 @@ def test_initialize_room_event_handler():
     """Test initialize_room_event_handler() initializes room event handler."""
     mock_manager = MagicMock()
     mock_manager.room_manager = MagicMock()
-    mock_manager._event_bus = MagicMock()
+    mock_manager.event_bus = MagicMock()
     mock_manager.event_publisher = MagicMock()
     mock_manager.broadcast_to_room = MagicMock()
     mock_manager.online_players = {}

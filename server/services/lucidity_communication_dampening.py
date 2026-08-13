@@ -19,6 +19,42 @@ MYTHOS_GLYPHS = ["\u2601", "\u2602", "\u2603", "\u2604", "\u2605", "\u2606", "\u
 # Syllable patterns for scrambling (simple word-based approach)
 SYLLABLE_PATTERN = re.compile(r"\b\w+\b")
 
+_CHAT_TYPES = frozenset({"chat", "say", "local", "global"})
+_INCOMING_TYPES = frozenset({"chat", "say", "local", "global", "whisper"})
+
+
+def _apply_sender_effects(result: dict[str, Any], sender_tier: str, message_type: str) -> None:
+    if message_type == "whisper" and sender_tier == "uneasy":
+        result["tags"].append("strained")
+
+    if sender_tier == "fractured" and message_type in _CHAT_TYPES:
+        if random.random() < 0.20:  # nosec B311: Game mechanics probability check, not cryptographic
+            glyph = random.choice(MYTHOS_GLYPHS)  # nosec B311: Game mechanics glyph selection, not cryptographic
+            result["message"] = result["message"] + f" {glyph}"
+
+    if sender_tier == "deranged" and message_type == "shout":
+        result["blocked"] = True
+        result["message"] = ""
+        result["tags"].append("hallucination")
+        logger.debug("Shout blocked for Deranged character", tier=sender_tier)
+
+
+def _apply_receiver_effects(result: dict[str, Any], receiver_tier: str | None, message_type: str) -> None:
+    if receiver_tier == "fractured" and message_type in _INCOMING_TYPES:
+        if random.random() < 0.30:  # nosec B311: Game mechanics probability check, not cryptographic
+            result["message"] = re.sub(r'[.,!?;:"]', "", result["message"])
+            result["tags"].append("muffled")
+
+    if receiver_tier == "deranged" and message_type in _INCOMING_TYPES:
+        if random.random() < 0.10:  # nosec B311: Game mechanics probability check, not cryptographic
+            words = result["message"].split()
+            if len(words) > 1:
+                for _ in range(min(len(words) // 4, 3)):
+                    index = random.randint(0, len(words) - 2)  # nosec B311: Game mechanics word scrambling
+                    words[index], words[index + 1] = words[index + 1], words[index]
+                result["message"] = " ".join(words)
+                result["tags"].append("scrambled")
+
 
 def apply_communication_dampening(
     message: str, sender_tier: str, receiver_tier: str | None = None, message_type: str = "chat"
@@ -44,53 +80,11 @@ def apply_communication_dampening(
         "blocked": False,
     }
 
-    # Whisper from Uneasy character: Add [strained] flag
-    if message_type == "whisper" and sender_tier == "uneasy":
-        result["tags"].append("strained")
-
-    # Fractured tier outgoing chat: 20% chance to append Mythos glyphs
-    if sender_tier == "fractured" and message_type in ("chat", "say", "local", "global"):
-        if random.random() < 0.20:  # nosec B311: Game mechanics probability check, not cryptographic
-            glyph = random.choice(MYTHOS_GLYPHS)  # nosec B311: Game mechanics glyph selection, not cryptographic
-            result["message"] = message + f" {glyph}"
-
-    # Deranged tier: Block shout commands
-    if sender_tier == "deranged" and message_type == "shout":
-        result["blocked"] = True
-        result["message"] = ""  # Message blocked, replaced with hallucination on client
-        result["tags"].append("hallucination")
-        logger.debug("Shout blocked for Deranged character", tier=sender_tier)
-
-    # Fractured tier incoming: 30% chance to lose punctuation
-    if receiver_tier == "fractured" and message_type in ("chat", "say", "local", "global", "whisper"):
-        if random.random() < 0.30:  # nosec B311: Game mechanics probability check, not cryptographic
-            # Remove punctuation
-            result["message"] = re.sub(r'[.,!?;:"]', "", message)
-            result["tags"].append("muffled")
-
-    # Deranged tier incoming: 10% chance to scramble syllables
-    if receiver_tier == "deranged" and message_type in ("chat", "say", "local", "global", "whisper"):
-        if random.random() < 0.10:  # nosec B311: Game mechanics probability check, not cryptographic
-            # Simple word scrambling: swap adjacent words
-            words = message.split()
-            if len(words) > 1:
-                # Swap random adjacent pairs
-                for _ in range(min(len(words) // 4, 3)):  # Scramble up to 3 pairs
-                    i = random.randint(0, len(words) - 2)  # nosec B311: Game mechanics word scrambling, not cryptographic
-                    words[i], words[i + 1] = words[i + 1], words[i]
-                result["message"] = " ".join(words)
-                result["tags"].append("scrambled")
-
+    _apply_sender_effects(result, sender_tier, message_type)
+    _apply_receiver_effects(result, receiver_tier, message_type)
     return result
 
 
 def should_block_shout(tier: str) -> bool:
     """Check if shout should be blocked based on tier."""
     return tier == "deranged"
-
-
-__all__ = [
-    "apply_communication_dampening",
-    "should_block_shout",
-    "MYTHOS_GLYPHS",
-]

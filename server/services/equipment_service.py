@@ -111,25 +111,21 @@ class EquipmentService:
                 ) from exc
 
         working_equipped[effective_slot] = equipped_item
-
-        # Handle wearable container creation if this is a container item
-        if self.wearable_container_service and equipped_item.get("inner_container"):
-            try:
-                # Import here to avoid circular dependency
-
-                # Get player_id from context if available
-                # For now, we'll need to pass player_id separately or get it from context
-                # This is a limitation - we may need to refactor EquipmentService to accept player_id
-                # For now, we'll skip container creation here and handle it at the API/command layer
-                pass
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Logging/cleanup code that must not fail  # noqa: B904                # Log but don't fail - container creation is not critical for equip operation
-                logger.warning(
-                    "Failed to create wearable container on equip",
-                    error=str(e),
-                    item_id=equipped_item.get("item_id"),
-                )
+        self._maybe_log_wearable_container_failure(equipped_item)
 
         return working_inventory, working_equipped
+
+    def _maybe_log_wearable_container_failure(self, equipped_item: InventoryStack) -> None:
+        if not self.wearable_container_service or not equipped_item.get("inner_container"):
+            return
+        try:
+            pass
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Logging/cleanup code that must not fail  # noqa: B904
+            logger.warning(
+                "Failed to create wearable container on equip",
+                error=str(e),
+                item_id=equipped_item.get("item_id"),
+            )
 
     def unequip_to_inventory(
         self,

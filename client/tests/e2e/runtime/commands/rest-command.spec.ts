@@ -66,12 +66,15 @@ test.describe('Rest Command', () => {
     });
     expect(seesRest).toBe(true);
 
-    // Cancel countdown so the suite does not intentional-disconnect AW or leave test 2 stuck in "already resting".
-    await executeCommand(page, 'go north');
-    await waitForMessage(page, /interrupted|go north|move north|north/i, 15000).catch(() => {});
-    await executeCommand(page, 'go south');
-    await waitForMessage(page, /go south|south|Arena/i, 15000).catch(() => {});
-    await ensureStanding(page, 8000);
+    // Cancel countdown so later suites do not inherit "You have rested and disconnected".
+    await executeCommand(page, 'stand').catch(() => {});
+    await executeCommand(page, 'go north').catch(() => {});
+    await waitForMessage(page, /interrupted|go north|move north|north|stand|rise|already standing/i, 15000).catch(
+      () => {}
+    );
+    await executeCommand(page, 'go south').catch(() => {});
+    await waitForMessage(page, /go south|south|Arena|already standing|rise/i, 15000).catch(() => {});
+    await ensureStanding(page, 15000);
   });
 
   test('should block /rest during combat', async () => {
@@ -101,5 +104,13 @@ test.describe('Rest Command', () => {
 
     // This test verifies combat blocking exists (may or may not trigger)
     expect(messages.length).toBeGreaterThan(0);
+
+    // /rest starts a 10s countdown that survives this spec's afterAll if the browser
+    // close races the task; later suites then inherit "You have rested and disconnected".
+    await executeCommand(awContext.page, 'stand').catch(() => {});
+    await executeCommand(awContext.page, 'go north').catch(() => {});
+    await waitForMessage(awContext.page, /interrupted|go north|move north|north|stand|rise/i, 15000).catch(() => {});
+    await executeCommand(awContext.page, 'go south').catch(() => {});
+    await ensureStanding(awContext.page, 15000);
   });
 });

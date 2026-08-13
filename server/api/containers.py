@@ -9,11 +9,11 @@ rate limiting, and mutation guards to prevent unauthorized artifact handling.
 
 from __future__ import annotations
 
+import importlib
+
 from fastapi import APIRouter
 
 from ..structured_logging.enhanced_logging_config import get_logger
-from .container_endpoints_basic import register_basic_endpoints
-from .container_endpoints_loot import register_loot_endpoints
 
 logger = get_logger(__name__)
 
@@ -27,8 +27,16 @@ _container_rate_limit_metrics: dict[str, dict[str, int]] = {
     "by_endpoint": {},
 }
 
-# Register endpoints from separate modules
-register_basic_endpoints(container_router)
-register_loot_endpoints(container_router)
+
+def _register_endpoints() -> None:
+    # importlib: avoid a static import edge containers -> loot/basic that closes the cycle
+    # loot/basic -> auth -> ... -> factory -> containers
+    basic = importlib.import_module("server.api.container_endpoints_basic")
+    loot = importlib.import_module("server.api.container_endpoints_loot")
+    basic.register_basic_endpoints(container_router)
+    loot.register_loot_endpoints(container_router)
+
+
+_register_endpoints()
 
 # Export endpoints and request models for testing

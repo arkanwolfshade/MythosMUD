@@ -235,9 +235,11 @@ class ContainerService:
                 player_name=player.name,
                 container_id=str(container_id),
                 event_type="container_open",
-                source_type=source_type_value,
-                room_id=container.room_id,
-                success=True,
+                details={
+                    "source_type": source_type_value,
+                    "room_id": container.room_id,
+                    "success": True,
+                },
             )
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Audit logging errors unpredictable, must not fail container operation
             logger.warning("Failed to log container open to audit log", error=str(e))
@@ -302,9 +304,11 @@ class ContainerService:
                     player_name=player.name,
                     container_id=str(container_id),
                     event_type="container_close",
-                    source_type=source_type_value,
-                    room_id=container.room_id,
-                    success=True,
+                    details={
+                        "source_type": source_type_value,
+                        "room_id": container.room_id,
+                        "success": True,
+                    },
                 )
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Audit logging errors unpredictable, must not fail container operation
             logger.warning("Failed to log container close to audit log", error=str(e))
@@ -540,12 +544,14 @@ class ContainerService:
                     player_name=player.name,
                     container_id=str(container_id),
                     event_type="container_transfer",
-                    source_type=source_type_value,
-                    room_id=container.room_id,
-                    direction="to_container",
-                    item_id=item.get("item_id"),
-                    item_name=item.get("item_name"),
-                    success=True,
+                    details={
+                        "source_type": source_type_value,
+                        "room_id": container.room_id,
+                        "direction": "to_container",
+                        "item_id": item.get("item_id"),
+                        "item_name": item.get("item_name"),
+                        "success": True,
+                    },
                 )
             except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Audit logging errors unpredictable, must not fail container operation
                 logger.warning("Failed to log container transfer to audit log", error=str(e))
@@ -676,12 +682,14 @@ class ContainerService:
                 player_name=player.name,
                 container_id=str(container_id),
                 event_type="container_transfer",
-                source_type=_get_enum_value(container.source_type),
-                room_id=container.room_id,
-                direction="from_container",
-                item_id=item.get("item_id"),
-                item_name=item.get("item_name"),
-                success=True,
+                details={
+                    "source_type": _get_enum_value(container.source_type),
+                    "room_id": container.room_id,
+                    "direction": "from_container",
+                    "item_id": item.get("item_id"),
+                    "item_name": item.get("item_name"),
+                    "success": True,
+                },
             )
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Audit logging errors unpredictable, must not fail container operation
             logger.warning("Failed to log container transfer to audit log", error=str(e))
@@ -909,9 +917,11 @@ class ContainerService:
             player_name=getattr(player, "name", "Unknown"),
             container_id=str(container_id),
             event_type="container_loot_all",
-            source_type=_get_enum_value(final_container.source_type),
-            room_id=final_container.room_id,
-            items_count=initial_items_count,
+            details={
+                "source_type": _get_enum_value(final_container.source_type),
+                "room_id": final_container.room_id,
+                "items_count": initial_items_count,
+            },
         )
 
         return {

@@ -32,5 +32,18 @@ class CreateItemInstanceInput(TypedDict, total=False):
     attunement_state: dict[str, Any] | None
     custom_name: str | None
     metadata: dict[str, Any] | None
+    metadata_payload: dict[str, Any] | None
+    origin_source: str | None
+    origin_metadata: dict[str, Any] | None
+
+
+class EnsureItemInstanceInput(TypedDict, total=False):
+    """Optional fields for ensure_item_instance."""
+
+    owner_type: str
+    owner_id: str | None
+    quantity: int
+    metadata: dict[str, Any] | None
+    metadata_payload: dict[str, Any] | None
     origin_source: str | None
     origin_metadata: dict[str, Any] | None

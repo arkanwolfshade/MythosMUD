@@ -1,6 +1,6 @@
 """Passive LCD flux scheduler guided by the Pnakotic curricula."""
 
-# pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Lucidity flux service requires many state attributes, parameters, and intermediate variables for comprehensive lucidity management.
+# pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-lines  # Reason: Lucidity flux service requires many state attributes, parameters, and intermediate variables for comprehensive lucidity management; tick/path/companion logic stays in one module for cohesion.
 
 from __future__ import annotations
 
@@ -8,6 +8,7 @@ import math
 import time
 import uuid
 from collections.abc import Iterable, Sequence
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any, cast
 
@@ -39,7 +40,21 @@ except ImportError:  # pragma: no cover - monitoring is optional in some test ha
 logger = get_logger(__name__)
 
 
-class PassiveLucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Reason: Lucidity flux service requires many state tracking and configuration attributes
+@dataclass
+class PlayerFluxCtx:
+    """Bundle for _process_single_player (lizard PARAM)."""
+
+    player: Any
+    players: list[Any]
+    lucidity_records: dict[str, Any]
+    room_cache: dict[str, Any]
+    timestamp: datetime
+    tick_count: int
+    lucidity_service: Any
+    session: AsyncSession
+
+
+class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Reason: Lucidity flux service requires many state tracking and configuration attributes
     """Applies passive LCD flux each in-game minute with structured telemetry."""
 
     def __init__(
@@ -87,30 +102,16 @@ class PassiveLucidityFluxService:  # pylint: disable=too-many-instance-attribute
                     room_cache[room_id] = room
         return room_cache
 
-    async def _process_single_player(  # pylint: disable=too-many-arguments,too-many-locals  # Reason: Player processing requires many parameters and intermediate variables
-        self,
-        player: Any,
-        players: list[Any],
-        lucidity_records: dict[str, Any],
-        room_cache: dict[str, Any],
-        timestamp: datetime,
-        tick_count: int,
-        lucidity_service: Any,
-        session: AsyncSession,
-    ) -> tuple[str, LucidityUpdateResult | None]:
+    async def _process_single_player(self, ctx: PlayerFluxCtx) -> tuple[str, LucidityUpdateResult | None]:
         """Process a single player's passive flux."""
-        player_id_value = player.player_id
-        player_id_uuid = uuid.UUID(str(player_id_value))
+        player_id_uuid = uuid.UUID(str(ctx.player.player_id))
         player_id_str = str(player_id_uuid)
-        room_id = player.current_room_id
-
-        context = await self._resolve_context_async(player, timestamp, room_cache.get(room_id))
+        room_id = ctx.player.current_room_id
+        context = await self._resolve_context_async(ctx.player, ctx.timestamp, ctx.room_cache.get(room_id))
         base_flux = context.base_flux
-        companion_flux = self._companion_modifier(player, players, lucidity_records)
-        total_flux = base_flux + companion_flux
-        total_flux = self._apply_adaptive_resistance(player_id_str, room_id, total_flux)
+        companion_flux = self._companion_modifier(ctx.player, ctx.players, ctx.lucidity_records)
+        total_flux = self._apply_adaptive_resistance(player_id_str, room_id, base_flux + companion_flux)
         delta = self._apply_residual(player_id_str, total_flux)
-
         if abs(delta) > 5 or abs(total_flux) > 5:
             logger.warning(
                 "Large flux or delta calculated for player",
@@ -118,19 +119,14 @@ class PassiveLucidityFluxService:  # pylint: disable=too-many-instance-attribute
                 room_id=room_id,
                 base_flux=base_flux,
                 companion_flux=companion_flux,
-                total_flux_before_adaptive=base_flux + companion_flux,
                 total_flux_after_adaptive=total_flux,
                 delta=delta,
                 source=context.source,
-                metadata=context.metadata,
             )
-
         if not delta:
             return player_id_str, None
-
-        await handle_hallucination_triggers(player_id_uuid, player_id_str, room_id, lucidity_records, session)
-
-        result = await lucidity_service.apply_lucidity_adjustment(
+        await handle_hallucination_triggers(player_id_uuid, player_id_str, room_id, ctx.lucidity_records, ctx.session)
+        result = await ctx.lucidity_service.apply_lucidity_adjustment(
             player_id_uuid,
             delta,
             reason_code="passive_flux",
@@ -140,11 +136,49 @@ class PassiveLucidityFluxService:  # pylint: disable=too-many-instance-attribute
                 "base_flux": base_flux,
                 "companion_flux": companion_flux,
                 "total_flux": total_flux,
-                "tick_count": tick_count,
+                "tick_count": ctx.tick_count,
                 **context.metadata,
             },
         )
         return player_id_str, result
+
+    async def _commit_flux_adjustments(self, session: AsyncSession, adjustments: list[LucidityUpdateResult]) -> None:
+        if not adjustments:
+            return
+        await session.commit()
+        for result in adjustments:
+            logger.info(
+                "Passive LCD flux applied",
+                player_id=result.player_id,
+                lcd_change=result.delta,
+                previous_lcd=result.previous_lcd,
+                new_lcd=result.new_lcd,
+                tier_before=result.previous_tier,
+                tier_after=result.new_tier,
+            )
+
+    async def _evaluate_players_tick(
+        self, session: AsyncSession, players: list[Any], tick_base: PlayerFluxCtx
+    ) -> tuple[set[str], list[LucidityUpdateResult]]:
+        processed: set[str] = set()
+        adjustments: list[LucidityUpdateResult] = []
+        for player in players:
+            processed.add(str(uuid.UUID(str(player.player_id))))
+            _pid, result = await self._process_single_player(
+                PlayerFluxCtx(
+                    player,
+                    tick_base.players,
+                    tick_base.lucidity_records,
+                    tick_base.room_cache,
+                    tick_base.timestamp,
+                    tick_base.tick_count,
+                    tick_base.lucidity_service,
+                    session,
+                )
+            )
+            if result is not None:
+                adjustments.append(result)
+        return processed, adjustments
 
     async def process_tick(  # pylint: disable=too-many-locals  # Reason: Tick processing requires many intermediate variables
         self, session: AsyncSession, tick_count: int, *, now: datetime | None = None
@@ -162,8 +196,6 @@ class PassiveLucidityFluxService:  # pylint: disable=too-many-instance-attribute
 
         evaluation_start = time.perf_counter()
         timestamp = now or self._now_provider()
-        processed_player_ids: set[str] = set()
-        adjustments: list[LucidityUpdateResult] = []
         lucidity_service = LucidityService(session, catatonia_observer=self._catatonia_observer)
 
         try:
@@ -171,31 +203,14 @@ class PassiveLucidityFluxService:  # pylint: disable=too-many-instance-attribute
             players = self._filter_active_players(all_players, timestamp)
             lucidity_records = await self._load_lucidity_records(session)
             room_cache = await self._build_room_cache(players)
-
-            for player in players:
-                player_id_value = player.player_id
-                player_id_str = str(uuid.UUID(str(player_id_value)))
-
-                processed_player_ids.add(player_id_str)
-                player_id_str, result = await self._process_single_player(
-                    player, players, lucidity_records, room_cache, timestamp, tick_count, lucidity_service, session
-                )
-
-                if result is not None:
-                    adjustments.append(result)
-
-            if adjustments:
-                await session.commit()
-                for result in adjustments:
-                    logger.info(
-                        "Passive LCD flux applied",
-                        player_id=result.player_id,
-                        lcd_change=result.delta,
-                        previous_lcd=result.previous_lcd,
-                        new_lcd=result.new_lcd,
-                        tier_before=result.previous_tier,
-                        tier_after=result.new_tier,
-                    )
+            processed_player_ids, adjustments = await self._evaluate_players_tick(
+                session,
+                players,
+                PlayerFluxCtx(
+                    None, players, lucidity_records, room_cache, timestamp, tick_count, lucidity_service, session
+                ),
+            )
+            await self._commit_flux_adjustments(session, adjustments)
             self._prune_trackers(processed_player_ids)
 
             duration_ms = (time.perf_counter() - evaluation_start) * 1000
@@ -546,3 +561,7 @@ class PassiveLucidityFluxService:  # pylint: disable=too-many-instance-attribute
             if flux is not None:
                 return flux, source
         return None, None
+
+
+# Public name expected by package __init__ and callers
+PassiveLucidityFluxService = LucidityFluxService

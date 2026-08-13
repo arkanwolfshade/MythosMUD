@@ -429,7 +429,7 @@ async def initialize_nats_and_combat_services(app: FastAPI, container: Applicati
     """
     if container.config is None:
         raise RuntimeError("Config must be initialized")
-    is_testing = container.config.logging.environment in ("unit_test", "e2e_test")
+    is_testing = container.config.logging.environment == "unit_test"
 
     if container.nats_service is not None and container.nats_service.is_connected():
         logger.info("NATS service available from container")
@@ -491,7 +491,7 @@ async def initialize_chat_service(app: FastAPI, container: ApplicationContainer)
     """
     if container.config is None:
         raise RuntimeError("Config must be initialized")
-    is_testing = container.config.logging.environment in ("unit_test", "e2e_test")
+    is_testing = container.config.logging.environment == "unit_test"
 
     subject_manager = None
     nats_service = getattr(app.state, "nats_service", None)

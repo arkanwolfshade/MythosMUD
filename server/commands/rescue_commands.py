@@ -207,7 +207,80 @@ async def handle_rescue_command(
     return await service.rescue(target_name, current_user, player_name)
 
 
-async def handle_ground_command(  # pylint: disable=too-many-arguments,too-many-locals  # Reason: Rescue command requires many parameters and intermediate variables for complex rescue logic
+async def _run_ground_session(ctx: dict[str, Any]) -> tuple[Any, dict[str, str] | None]:
+    """Run grounding ritual in DB session. Returns (result, error_dict)."""
+    target = ctx["target"]
+    target_name = ctx["target_name"]
+    target_player_id = ctx["target_player_id"]
+    rescuer_player_id = ctx["rescuer_player_id"]
+    target_player_id_str = ctx["target_player_id_str"]
+    rescuer_player_id_str = ctx["rescuer_player_id_str"]
+    rescuer_username = ctx["rescuer_username"]
+    rescuer_room = ctx["rescuer_room"]
+    registry = ctx["registry"]
+
+    async for session in get_async_session():
+        lucidity_record = await session.get(PlayerLucidity, target_player_id_str)
+        if lucidity_record is None:
+            logger.warning("Ground command missing lucidity record", target_id=target.player_id)
+            return None, {"result": "The target's aura cannot be located among the ledgers of the mind."}
+
+        if lucidity_record.current_tier != "catatonic":
+            return None, {"result": f"{target_name} isn't catatonic and needs no grounding."}
+
+        await _send_grounding_channeling_events(
+            target_player_id_str, rescuer_player_id_str, rescuer_username, target_name
+        )
+
+        try:
+            result = await _apply_grounding_adjustment(
+                session,
+                target_player_id,
+                lucidity_record,
+                rescuer_username,
+                rescuer_room or "",
+                registry,
+            )
+        except Exception as exc:  # noqa: B904  # pragma: no cover - defensive  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Database errors unpredictable, must rollback
+            await session.rollback()
+            logger.error("Ground command failed", rescuer=rescuer_username, target=target_name, error=str(exc))
+            await _send_grounding_failure_events(target_player_id, rescuer_player_id, rescuer_username, target_name)
+            return None, {"result": "Eldritch interference scatters your grounding ritual. Try again shortly."}
+
+        return result, None
+
+    return None, {"result": "Eldritch interference scatters your grounding ritual. Try again shortly."}
+
+
+async def _complete_ground_command(
+    result: Any,
+    target_name: str,
+    target_player_id: uuid.UUID,
+    rescuer_player_id: uuid.UUID,
+    rescuer_username: str,
+    registry: Any,
+) -> dict[str, str]:
+    if registry and hasattr(registry, "on_catatonia_cleared"):
+        logger.debug("Catatonia registry notified via lucidity service observer", target=target_name)
+
+    logger.info(
+        "Ground command succeeded",
+        rescuer=rescuer_username,
+        target=target_name,
+        new_lcd=result.new_lcd,
+    )
+    await _send_grounding_success_events(
+        target_player_id, rescuer_player_id, rescuer_username, target_name, result.new_lcd
+    )
+    return {
+        "result": (
+            f"You kneel beside {target_name} and anchor their mind.\n"
+            f"Stability steadies at {result.new_lcd}/100, the fragility of reality humming in your ears."
+        )
+    }
+
+
+async def handle_ground_command(
     command_data: dict[str, Any],
     current_user: dict[str, Any],
     request: Any,
@@ -237,55 +310,25 @@ async def handle_ground_command(  # pylint: disable=too-many-arguments,too-many-
         rescuer, target
     )
 
-    async for session in get_async_session():
-        lucidity_record = await session.get(PlayerLucidity, target_player_id_str)
-        if lucidity_record is None:
-            logger.warning("Ground command missing lucidity record", target_id=target.player_id)
-            return {"result": "The target's aura cannot be located among the ledgers of the mind."}
-
-        if lucidity_record.current_tier != "catatonic":
-            return {"result": f"{target_name} isn't catatonic and needs no grounding."}
-
-        await _send_grounding_channeling_events(
-            target_player_id_str, rescuer_player_id_str, rescuer_username, target_name
-        )
-
-        try:
-            if rescuer_room is None:
-                rescuer_room = ""
-            result = await _apply_grounding_adjustment(
-                session, target_player_id, lucidity_record, rescuer_username, rescuer_room, registry
-            )
-        except Exception as exc:  # noqa: B904  # pragma: no cover - defensive  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Database errors unpredictable, must rollback
-            await session.rollback()
-            logger.error(
-                "Ground command failed",
-                rescuer=rescuer_username,
-                target=target_name,
-                error=str(exc),
-            )
-            await _send_grounding_failure_events(target_player_id, rescuer_player_id, rescuer_username, target_name)
-            return {"result": "Eldritch interference scatters your grounding ritual. Try again shortly."}
-
-    if registry and hasattr(registry, "on_catatonia_cleared"):
-        logger.debug("Catatonia registry notified via lucidity service observer", target=target_name)
-
-    logger.info(
-        "Ground command succeeded",
-        rescuer=rescuer_username,
-        target=target_name,
-        new_lcd=result.new_lcd,
+    result, error_result = await _run_ground_session(
+        {
+            "target": target,
+            "target_name": target_name,
+            "target_player_id": target_player_id,
+            "rescuer_player_id": rescuer_player_id,
+            "target_player_id_str": target_player_id_str,
+            "rescuer_player_id_str": rescuer_player_id_str,
+            "rescuer_username": rescuer_username,
+            "rescuer_room": rescuer_room,
+            "registry": registry,
+        }
     )
+    if error_result:
+        return error_result
 
-    await _send_grounding_success_events(
-        target_player_id, rescuer_player_id, rescuer_username, target_name, result.new_lcd
+    return await _complete_ground_command(
+        result, target_name, target_player_id, rescuer_player_id, rescuer_username, registry
     )
-
-    narrative = (
-        f"You kneel beside {target_name} and anchor their mind.\n"
-        f"Stability steadies at {result.new_lcd}/100, the fragility of reality humming in your ears."
-    )
-    return {"result": narrative}
 
 
 __all__ = ["handle_rescue_command", "handle_ground_command"]

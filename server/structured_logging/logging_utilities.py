@@ -20,6 +20,8 @@ from typing import TYPE_CHECKING, cast
 import structlog
 from structlog.stdlib import BoundLogger
 
+from .log_time_formats import LOG_FILE_TIMESTAMP
+
 if TYPE_CHECKING:
     from server.structured_logging.player_guid_formatter import PlayerGuidFormatter as _PlayerGuidFormatterType
 
@@ -133,6 +135,67 @@ def resolve_log_base(log_base: str) -> Path:
     return current_dir / log_path
 
 
+def _collect_rotatable_logs(env_log_dir: Path, timestamp: str) -> list[Path]:
+    """Collect non-empty log files eligible for rotation."""
+    log_files: list[Path] = []
+    log_files.extend(env_log_dir.glob("*.log"))
+    log_files.extend(env_log_dir.glob("*.jsonl"))
+    log_files.extend(env_log_dir.rglob("*.log"))
+    log_files.extend(env_log_dir.rglob("*.jsonl"))
+
+    unique_files = list(set(log_files))
+    return [path for path in unique_files if not path.name.endswith(f".{timestamp}")]
+
+
+def _rotate_single_log_file(log_file: Path, timestamp: str) -> None:
+    """Rotate one log file, with Windows retry handling."""
+    try:
+        exists = log_file.exists()
+        size = log_file.stat().st_size if exists else 0
+    except FileNotFoundError:
+        return
+
+    if not exists or size <= 0:
+        return
+
+    rotated_name = f"{log_file.stem}.log.{timestamp}"
+    rotated_path = log_file.parent / rotated_name
+    max_retries = 3
+    retry_delay = 0.1
+
+    for attempt in range(max_retries):
+        try:
+            if sys.platform == "win32":
+                try:
+                    from server.structured_logging.windows_safe_rotation import copy_then_truncate
+
+                    copy_then_truncate(str(log_file), str(rotated_path))
+                except OSError:
+                    _ = log_file.rename(rotated_path)
+            else:
+                _ = log_file.rename(rotated_path)
+
+            rotation_logger = _rotation_bound_logger()
+            rotation_logger.info(
+                "Rotated log file",
+                old_name=log_file.name,
+                new_name=rotated_name,
+            )
+            return
+        except (OSError, PermissionError) as e:
+            if attempt < max_retries - 1:
+                time.sleep(retry_delay)
+                retry_delay *= 2
+                continue
+            rotation_logger = _rotation_bound_logger()
+            rotation_logger.warning(
+                "Could not rotate log file after retries",
+                name=log_file.name,
+                error=str(e),
+                attempts=max_retries,
+            )
+
+
 def rotate_log_files(env_log_dir: Path) -> None:
     """
     Rotate existing log files by renaming them with timestamps.
@@ -153,84 +216,13 @@ def rotate_log_files(env_log_dir: Path) -> None:
     if not env_log_dir.exists():
         return
 
-    # Generate timestamp for rotation
-    timestamp = datetime.now(UTC).strftime("%Y_%m_%d_%H%M%S")
-
-    # Get all log files in the directory and subdirectories
-    # Include .log, .jsonl, and other common log file extensions
-    log_files: list[Path] = []
-    log_files.extend(env_log_dir.glob("*.log"))
-    log_files.extend(env_log_dir.glob("*.jsonl"))
-    log_files.extend(env_log_dir.rglob("*.log"))  # Recursive search
-    log_files.extend(env_log_dir.rglob("*.jsonl"))  # Recursive search
-
-    # Remove duplicates and filter out already rotated files
-    log_files = list(set(log_files))
-    log_files = [f for f in log_files if not f.name.endswith(f".{timestamp}")]
-
+    timestamp = datetime.now(UTC).strftime(LOG_FILE_TIMESTAMP)
+    log_files = _collect_rotatable_logs(env_log_dir, timestamp)
     if not log_files:
         return
 
-    # Rotate each log file by renaming with timestamp
-    for log_file in log_files:  # pylint: disable=too-many-nested-blocks  # Reason: Log rotation requires complex nested logic for file validation, size checking, and timestamp-based renaming
-        # Only rotate non-empty files
-        try:
-            exists = log_file.exists()
-            size = log_file.stat().st_size if exists else 0
-        except FileNotFoundError:
-            continue
-
-        if exists and size > 0:
-            rotated_name = f"{log_file.stem}.log.{timestamp}"
-            rotated_path = log_file.parent / rotated_name
-
-            # Windows-specific retry logic for file locking issues
-            max_retries = 3
-            retry_delay = 0.1  # 100ms delay between retries
-
-            for attempt in range(max_retries):
-                try:
-                    # On Windows use copy-then-truncate to avoid rename-while-open issues
-                    if sys.platform == "win32":
-                        try:
-                            # Local import to avoid circulars
-                            from server.structured_logging.windows_safe_rotation import copy_then_truncate
-
-                            copy_then_truncate(str(log_file), str(rotated_path))
-                        except OSError:
-                            # If helper not available, fall back to rename with retry
-                            _ = log_file.rename(rotated_path)
-                    else:
-                        # Attempt the rename operation on non-Windows systems
-                        _ = log_file.rename(rotated_path)
-
-                    # Log the rotation (this will go to the new log file)
-                    # NOTE: Using structlog directly here to avoid circular import.
-                    # This is acceptable for infrastructure code during log rotation.
-                    rotation_logger = _rotation_bound_logger()
-                    rotation_logger.info(
-                        "Rotated log file",
-                        old_name=log_file.name,
-                        new_name=rotated_name,
-                    )
-                    break  # Success, exit retry loop
-
-                except (OSError, PermissionError) as e:
-                    if attempt < max_retries - 1:
-                        # Wait before retrying. Sync file-handling path only; not used from async request handlers.
-                        time.sleep(retry_delay)
-                        retry_delay *= 2  # Exponential backoff
-                    else:
-                        # Final attempt failed, log the error
-                        # NOTE: Using structlog directly here to avoid circular import.
-                        # This is acceptable for infrastructure code during log rotation.
-                        rotation_logger = _rotation_bound_logger()
-                        rotation_logger.warning(
-                            "Could not rotate log file after retries",
-                            name=log_file.name,
-                            error=str(e),
-                            attempts=max_retries,
-                        )
+    for log_file in log_files:
+        _rotate_single_log_file(log_file, timestamp)
 
 
 def detect_environment() -> str:

@@ -9,7 +9,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from server.services.npc_combat_handlers import NPCCombatHandlers
+from server.services.npc_combat_handlers import CombatResultCtx, NPCCombatHandlers
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
@@ -85,7 +85,9 @@ async def test_handle_combat_result_success(
     """Test handle_combat_result handles successful attack."""
     handle_death = AsyncMock()
     result = await npc_combat_handlers.handle_combat_result(
-        mock_combat_result, "player_001", "npc_001", "room_001", "punch", 10, mock_npc_instance, handle_death
+        CombatResultCtx(
+            mock_combat_result, "player_001", "npc_001", "room_001", "punch", 10, mock_npc_instance, handle_death
+        )
     )
     assert result is True
     mock_messaging_integration.broadcast_combat_attack.assert_awaited_once()
@@ -99,7 +101,9 @@ async def test_handle_combat_result_combat_ended(npc_combat_handlers, mock_comba
     handle_death = AsyncMock()
     with patch.object(npc_combat_handlers, "_handle_npc_death_on_combat_end", new_callable=AsyncMock) as mock_death:
         result = await npc_combat_handlers.handle_combat_result(
-            mock_combat_result, "player_001", "npc_001", "room_001", "punch", 10, mock_npc_instance, handle_death
+            CombatResultCtx(
+                mock_combat_result, "player_001", "npc_001", "room_001", "punch", 10, mock_npc_instance, handle_death
+            )
         )
         assert result is True
         mock_death.assert_awaited_once()
@@ -115,7 +119,9 @@ async def test_handle_combat_result_broadcast_error(
     handle_death = AsyncMock()
     # Should not raise
     result = await npc_combat_handlers.handle_combat_result(
-        mock_combat_result, "player_001", "npc_001", "room_001", "punch", 10, mock_npc_instance, handle_death
+        CombatResultCtx(
+            mock_combat_result, "player_001", "npc_001", "room_001", "punch", 10, mock_npc_instance, handle_death
+        )
     )
     assert result is True
 
@@ -127,7 +133,9 @@ async def test_handle_combat_result_unsuccessful(npc_combat_handlers, mock_npc_i
     mock_combat_result.success = False
     handle_death = AsyncMock()
     result = await npc_combat_handlers.handle_combat_result(
-        mock_combat_result, "player_001", "npc_001", "room_001", "punch", 0, mock_npc_instance, handle_death
+        CombatResultCtx(
+            mock_combat_result, "player_001", "npc_001", "room_001", "punch", 0, mock_npc_instance, handle_death
+        )
     )
     assert result is False
 

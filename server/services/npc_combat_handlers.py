@@ -7,6 +7,7 @@ with defensive error handling to prevent player disconnections.
 
 # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat handlers require many parameters for context and combat processing
 
+from dataclasses import dataclass
 from typing import Any, cast
 from uuid import UUID, uuid4
 
@@ -19,6 +20,20 @@ from .npc_combat_memory import NPCCombatMemory
 from .npc_combat_rewards import NPCCombatRewards
 
 logger = get_logger(__name__)
+
+
+@dataclass
+class CombatResultCtx:
+    """Bundle for handle_combat_result (lizard PARAM)."""
+
+    combat_result: Any
+    player_id: str
+    npc_id: str
+    room_id: str
+    action_type: str
+    damage: int
+    npc_instance: Any
+    handle_npc_death_callback: Any
 
 
 class NPCCombatHandlers:
@@ -48,81 +63,49 @@ class NPCCombatHandlers:
         self._lifecycle = lifecycle
         self._messaging_integration = messaging_integration
 
-    async def handle_combat_result(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Combat result handling requires many parameters for context and result processing
-        self,
-        combat_result: Any,
-        player_id: str,
-        npc_id: str,
-        room_id: str,
-        action_type: str,
-        damage: int,
-        npc_instance: Any,
-        handle_npc_death_callback: Any,
-    ) -> bool:
-        """
-        Handle combat result, including broadcasting messages and handling NPC death.
-
-        Args:
-            combat_result: Result of the combat attack
-            player_id: ID of the attacking player
-            npc_id: ID of the target NPC
-            room_id: ID of the room where combat occurs
-            action_type: Type of attack action
-            damage: Damage amount
-            npc_instance: NPC instance
-            handle_npc_death_callback: Callback function to handle NPC death
-
-        Returns:
-            True if attack was handled successfully
-        """
-        if combat_result.success:
-            # Broadcast attack message with health info
-            try:
-                await self._messaging_integration.broadcast_combat_attack(
-                    room_id=room_id,
-                    attacker_name=await self._data_provider.get_player_name(player_id),
-                    target_name=npc_instance.name,
-                    damage=damage,
-                    action_type=action_type,
-                    combat_id=str(combat_result.combat_id) if combat_result.combat_id else str(uuid4()),
-                    attacker_id=player_id,
-                )
-            except (ConnectionError, OSError, RuntimeError, ValueError, AttributeError, TypeError) as e:
-                # Broadcasting is non-critical - catch specific exceptions to prevent combat flow interruption
-                # ConnectionError/OSError: Network/connection issues with message broadcasting
-                # RuntimeError: Runtime issues in connection manager
-                # ValueError: Invalid parameters or data format issues
-                # AttributeError: Missing attributes on npc_instance or data_provider
-                # TypeError: Type mismatches in parameter passing
-                logger.error(
-                    "Error broadcasting combat attack",
-                    player_id=player_id,
-                    npc_id=npc_id,
-                    error=str(e),
-                    error_type=type(e).__name__,
-                    exc_info=True,
-                )
-
-            # If combat ended, handle NPC death
-            if combat_result.combat_ended:
-                await self._handle_npc_death_on_combat_end(
-                    player_id, npc_id, room_id, combat_result, handle_npc_death_callback
-                )
-
-            logger.info(
-                "Player attack on NPC handled with auto-progression",
-                player_id=player_id,
-                npc_id=npc_id,
-                damage=damage,
-                combat_ended=combat_result.combat_ended,
-                message=combat_result.message,
+    async def _broadcast_combat_success(self, ctx: CombatResultCtx) -> None:
+        try:
+            await self._messaging_integration.broadcast_combat_attack(
+                room_id=ctx.room_id,
+                attacker_name=await self._data_provider.get_player_name(ctx.player_id),
+                target_name=ctx.npc_instance.name,
+                damage=ctx.damage,
+                action_type=ctx.action_type,
+                combat_id=str(ctx.combat_result.combat_id) if ctx.combat_result.combat_id else str(uuid4()),
+                attacker_id=ctx.player_id,
+            )
+        except (ConnectionError, OSError, RuntimeError, ValueError, AttributeError, TypeError) as e:
+            logger.error(
+                "Error broadcasting combat attack",
+                player_id=ctx.player_id,
+                npc_id=ctx.npc_id,
+                error=str(e),
+                error_type=type(e).__name__,
+                exc_info=True,
             )
 
+    async def handle_combat_result(self, ctx: CombatResultCtx) -> bool:
+        """Handle combat result, broadcast, and NPC death."""
+        combat_result = ctx.combat_result
+        if not combat_result.success:
+            logger.warning(
+                "Combat attack failed",
+                player_id=ctx.player_id,
+                npc_id=ctx.npc_id,
+                message=combat_result.message,
+            )
             return cast(bool, combat_result.success)
-        logger.warning(
-            "Combat attack failed",
-            player_id=player_id,
-            npc_id=npc_id,
+        await self._broadcast_combat_success(ctx)
+        if combat_result.combat_ended:
+            await self._handle_npc_death_on_combat_end(
+                ctx.player_id, ctx.npc_id, ctx.room_id, combat_result, ctx.handle_npc_death_callback
+            )
+        logger.info(
+            "Player attack on NPC handled with auto-progression",
+            player_id=ctx.player_id,
+            npc_id=ctx.npc_id,
+            damage=ctx.damage,
+            combat_ended=combat_result.combat_ended,
             message=combat_result.message,
         )
         return cast(bool, combat_result.success)
@@ -183,6 +166,28 @@ class NPCCombatHandlers:
             )
             # Continue execution - don't raise exception that could disconnect player
 
+    async def _apply_npc_death_effects(
+        self, npc_id: str, room_id: str, killer_id: str | None, combat_id: str | None
+    ) -> bool:
+        npc_instance = self._data_provider.get_npc_instance(npc_id)
+        if not npc_instance:
+            logger.warning("Attempted to handle death for non-existent NPC", npc_id=npc_id)
+            return False
+        npc_definition = await self._data_provider.get_npc_definition(npc_id)
+        xp_reward = await self._rewards.calculate_xp_reward(npc_definition)
+        if killer_id:
+            await self._rewards.award_xp_to_killer(killer_id, npc_id, xp_reward)
+        self._combat_memory.clear_memory(npc_id)
+        await self._lifecycle.despawn_npc_safely(npc_id, room_id)
+        logger.info(
+            "NPC death handled successfully",
+            npc_id=npc_id,
+            killer_id=killer_id,
+            xp_reward=xp_reward,
+            combat_id=combat_id,
+        )
+        return True
+
     async def handle_npc_death(
         self,
         npc_id: str,
@@ -190,18 +195,7 @@ class NPCCombatHandlers:
         killer_id: str | None = None,
         combat_id: str | None = None,
     ) -> bool:
-        """
-        Handle NPC death and related effects.
-
-        Args:
-            npc_id: ID of the dead NPC
-            room_id: ID of the room where death occurred
-            killer_id: ID of the entity that killed the NPC
-            combat_id: ID of the combat if applicable
-
-        Returns:
-            bool: True if death was handled successfully
-        """
+        """Handle NPC death and related effects."""
         logger.info(
             "NPC death handling started",
             npc_id=npc_id,
@@ -210,43 +204,8 @@ class NPCCombatHandlers:
             combat_id=combat_id,
         )
         try:
-            # Get NPC instance
-            npc_instance = self._data_provider.get_npc_instance(npc_id)
-            if not npc_instance:
-                logger.warning(
-                    "Attempted to handle death for non-existent NPC",
-                    npc_id=npc_id,
-                )
-                return False
-
-            # Get NPC definition and calculate XP reward
-            npc_definition = await self._data_provider.get_npc_definition(npc_id)
-            xp_reward = await self._rewards.calculate_xp_reward(npc_definition)
-
-            # Award XP to killer if it's a player
-            if killer_id:
-                await self._rewards.award_xp_to_killer(killer_id, npc_id, xp_reward)
-
-            # Note: NPCDiedEvent is now published by CombatService to avoid duplication
-            # The CombatService handles the npc_died event publishing when combat ends
-            # We no longer call broadcast_combat_death() to prevent duplicate messages
-
-            # Clear combat memory and despawn NPC
-            self._combat_memory.clear_memory(npc_id)
-            await self._lifecycle.despawn_npc_safely(npc_id, room_id)
-
-            logger.info(
-                "NPC death handled successfully",
-                npc_id=npc_id,
-                killer_id=killer_id,
-                xp_reward=xp_reward,
-                combat_id=combat_id,
-            )
-
-            return True
-
+            return await self._apply_npc_death_effects(npc_id, room_id, killer_id, combat_id)
         except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
-            # CRITICAL: Prevent NPC death handling errors from disconnecting players
             logger.error(
                 "Error handling NPC death - preventing player disconnect",
                 npc_id=npc_id,
@@ -256,7 +215,6 @@ class NPCCombatHandlers:
                 error=str(e),
                 exc_info=True,
             )
-            # Return False but don't raise - prevents exception propagation
             return False
 
     def _is_valid_uuid(self, uuid_string: str) -> bool:

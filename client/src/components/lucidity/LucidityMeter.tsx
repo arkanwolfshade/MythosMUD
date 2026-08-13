@@ -46,29 +46,66 @@ const formatChange = (delta: number | undefined) => {
   if (delta === undefined || Number.isNaN(delta)) {
     return '';
   }
-
   if (delta === 0) {
     return '±0';
   }
-
   const prefix = delta > 0 ? '+' : '−';
   return `${prefix}${Math.abs(delta)}`;
 };
 
-export const LucidityMeter = memo<LucidityMeterProps>(({ status, className }) => {
-  if (!status) {
-    return null;
-  }
-
-  const tierMetadata = TIER_DESCRIPTIONS[status.tier];
+function computeLucidityBar(status: LucidityStatus) {
   const isNegativeRange = status.current < 0;
   const minValue = isNegativeRange ? -100 : 0;
   const maxValue = isNegativeRange ? 0 : Math.max(1, status.max);
   const boundedCurrent = Math.max(minValue, Math.min(maxValue, status.current));
   const range = maxValue - minValue || 1;
   const percentage = Math.max(0, Math.min(100, Math.round(((boundedCurrent - minValue) / range) * 100)));
+  return { minValue, maxValue, percentage };
+}
+
+function LucidityChangeFooter({ status }: { status: LucidityStatus }) {
   const deltaDisplay = formatChange(status.lastChange?.delta);
   const reason = status.lastChange?.reason?.replace(/_/g, ' ');
+  const hasChange = Boolean(status.lastChange);
+  const hasLiabilities = status.liabilities.length > 0;
+
+  if (!hasChange && !hasLiabilities) {
+    return null;
+  }
+
+  return (
+    <div className="flex flex-col gap-1 text-xs text-mythos-terminal-text-secondary" aria-live="polite">
+      {hasChange && (
+        <div className="flex items-center justify-between">
+          <span>Recent change</span>
+          <span className="font-semibold text-mythos-terminal-primary">
+            {deltaDisplay}
+            {reason ? ` (${reason})` : ''}
+          </span>
+        </div>
+      )}
+      {hasLiabilities && (
+        <div>
+          <span className="block font-semibold text-mythos-terminal-warning mb-1">Liabilities</span>
+          <ul className="flex flex-wrap gap-1">
+            {status.liabilities.map(liability => (
+              <li
+                key={liability}
+                className="rounded bg-mythos-terminal-background px-2 py-1 text-xs-3 uppercase tracking-wide text-mythos-terminal-warning"
+              >
+                {liability.replace(/_/g, ' ')}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function LucidityMeterBody({ status, className }: { status: LucidityStatus; className?: string }) {
+  const tierMetadata = TIER_DESCRIPTIONS[status.tier];
+  const { minValue, maxValue, percentage } = computeLucidityBar(status);
 
   return (
     <div
@@ -105,37 +142,16 @@ export const LucidityMeter = memo<LucidityMeterProps>(({ status, className }) =>
           aria-hidden="true"
         />
       </div>
-
-      {(status.lastChange || status.liabilities.length > 0) && (
-        <div className="flex flex-col gap-1 text-xs text-mythos-terminal-text-secondary" aria-live="polite">
-          {status.lastChange && (
-            <div className="flex items-center justify-between">
-              <span>Recent change</span>
-              <span className="font-semibold text-mythos-terminal-primary">
-                {deltaDisplay}
-                {reason ? ` (${reason})` : ''}
-              </span>
-            </div>
-          )}
-          {status.liabilities.length > 0 && (
-            <div>
-              <span className="block font-semibold text-mythos-terminal-warning mb-1">Liabilities</span>
-              <ul className="flex flex-wrap gap-1">
-                {status.liabilities.map(liability => (
-                  <li
-                    key={liability}
-                    className="rounded bg-mythos-terminal-background px-2 py-1 text-xs-3 uppercase tracking-wide text-mythos-terminal-warning"
-                  >
-                    {liability.replace(/_/g, ' ')}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
+      <LucidityChangeFooter status={status} />
     </div>
   );
+}
+
+export const LucidityMeter = memo<LucidityMeterProps>(({ status, className }) => {
+  if (!status) {
+    return null;
+  }
+  return <LucidityMeterBody status={status} className={className} />;
 });
 
 LucidityMeter.displayName = 'LucidityMeter';

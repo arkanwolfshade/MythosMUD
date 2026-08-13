@@ -40,10 +40,7 @@ class ChatBundle:  # pylint: disable=too-few-public-methods
         from server.game.chat_service import ChatService
         from server.services.nats_subject_manager import nats_subject_manager
 
-        is_testing = container.config.logging.environment in (  # pylint: disable=no-member
-            "unit_test",
-            "e2e_test",
-        )
+        is_testing = container.config.logging.environment == "unit_test"  # pylint: disable=no-member
 
         subject_manager = None
         nats_service = container.nats_service

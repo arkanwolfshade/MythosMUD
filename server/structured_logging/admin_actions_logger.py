@@ -10,11 +10,23 @@ teleport commands, with structured logging for audit purposes.
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, TypedDict
 
 from server.structured_logging.enhanced_logging_config import get_logger
 
+from .log_time_formats import LOG_DATE
+
 logger = get_logger(__name__)
+
+
+class TeleportActionInput(TypedDict, total=False):
+    """Optional fields for teleport action logging."""
+
+    from_room: str
+    to_room: str
+    success: bool
+    error_message: str | None
+    additional_data: dict[str, Any] | None
 
 
 class AdminActionsLogger:
@@ -55,7 +67,7 @@ class AdminActionsLogger:
 
     def _get_log_file_path(self) -> Path:
         """Get the log file path for the current date."""
-        today = datetime.now().strftime("%Y-%m-%d")
+        today = datetime.now().strftime(LOG_DATE)
         return self.log_directory / f"admin_actions_{today}.log"
 
     def _ensure_log_file_exists(self) -> None:
@@ -67,54 +79,43 @@ class AdminActionsLogger:
                 f.write(f"# Created: {datetime.now().isoformat()}\n")
                 f.write("# Format: JSON lines\n\n")
 
-    def log_teleport_action(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Teleport logging requires many parameters for complete audit context
+    def log_teleport_action(
         self,
         admin_name: str,
         target_player: str,
         action_type: str,
-        from_room: str,
-        to_room: str,
-        success: bool,
-        error_message: str | None = None,
-        additional_data: dict[str, Any] | None = None,
+        details: TeleportActionInput | None = None,
+        **legacy_details: Any,
     ) -> None:
         """
         Log a teleport action with comprehensive details.
-
-        Args:
-            admin_name: Name of the admin performing the action
-            target_player: Name of the target player
-            action_type: Type of teleport ('teleport' or 'goto')
-            from_room: Room ID the player is leaving
-            to_room: Room ID the player is arriving at
-            success: Whether the action was successful
-            error_message: Error message if the action failed
-            additional_data: Additional data to include in the log
         """
+        action_details: dict[str, Any] = dict(legacy_details)
+        if details:
+            action_details.update(details)
         log_entry = {
             "timestamp": datetime.now().isoformat(),
             "action_type": "teleport",
             "teleport_type": action_type,
             "admin_name": admin_name,
             "target_player": target_player,
-            "from_room": from_room,
-            "to_room": to_room,
-            "success": success,
-            "error_message": error_message,
-            "additional_data": additional_data or {},
+            "from_room": action_details.get("from_room"),
+            "to_room": action_details.get("to_room"),
+            "success": action_details.get("success", True),
+            "error_message": action_details.get("error_message"),
+            "additional_data": action_details.get("additional_data") or {},
         }
 
         self._log_entry(log_entry)
 
-        # Also log to the main logger for immediate visibility
-        if success:
+        if log_entry["success"]:
             logger.info(
                 "Admin teleport action logged",
                 admin_name=admin_name,
                 action_type=action_type,
                 target_player=target_player,
-                from_room=from_room,
-                to_room=to_room,
+                from_room=log_entry["from_room"],
+                to_room=log_entry["to_room"],
             )
         else:
             logger.warning(
@@ -122,10 +123,52 @@ class AdminActionsLogger:
                 admin_name=admin_name,
                 action_type=action_type,
                 target_player=target_player,
-                error_message=error_message,
+                error_message=log_entry["error_message"],
             )
 
-    def log_admin_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Admin command logging requires many parameters for complete audit context
+    def _action_entry_matches_filters(
+        self,
+        entry: dict[str, Any],
+        cutoff_time: datetime,
+        action_type: str | None,
+        admin_name: str | None,
+    ) -> bool:
+        entry_time = datetime.fromisoformat(entry["timestamp"])
+        if entry_time < cutoff_time:
+            return False
+        if action_type and entry.get("action_type") != action_type:
+            return False
+        if admin_name and entry.get("admin_name") != admin_name:
+            return False
+        return True
+
+    def _read_actions_from_file(
+        self,
+        log_file: Path,
+        cutoff_time: datetime,
+        action_type: str | None,
+        admin_name: str | None,
+    ) -> list[dict[str, Any]]:
+        actions: list[dict[str, Any]] = []
+        with open(log_file, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                try:
+                    entry = json.loads(line)
+                    if self._action_entry_matches_filters(entry, cutoff_time, action_type, admin_name):
+                        actions.append(entry)
+                except (json.JSONDecodeError, KeyError, ValueError) as e:
+                    logger.warning(
+                        "Failed to parse log entry",
+                        line_preview=line[:100],
+                        error=str(e),
+                        operation="log_parsing",
+                    )
+        return actions
+
+    def log_admin_command(
         self,
         admin_name: str,
         command: str,
@@ -136,14 +179,6 @@ class AdminActionsLogger:
     ) -> None:
         """
         Log a general admin command action.
-
-        Args:
-            admin_name: Name of the admin performing the action
-            command: Command that was executed
-            target_player: Target player if applicable
-            success: Whether the action was successful
-            error_message: Error message if the action failed
-            additional_data: Additional data to include in the log
         """
         log_entry = {
             "timestamp": datetime.now().isoformat(),
@@ -158,7 +193,6 @@ class AdminActionsLogger:
 
         self._log_entry(log_entry)
 
-        # Also log to the main logger for immediate visibility
         if success:
             logger.info("Admin command logged", admin_name=admin_name, command=command)
         else:
@@ -236,46 +270,13 @@ class AdminActionsLogger:
             from datetime import timedelta
 
             cutoff_time = datetime.now() - timedelta(hours=hours)
-            actions = []
-
-            # Get all log files in the directory
+            actions: list[dict[str, Any]] = []
             log_files = sorted(self.log_directory.glob("admin_actions_*.log"), reverse=True)
 
             for log_file in log_files:
                 if not log_file.exists():
                     continue
-
-                with open(log_file, encoding="utf-8") as f:
-                    for line in f:
-                        line = line.strip()
-                        if not line or line.startswith("#"):
-                            continue
-
-                        try:
-                            entry = json.loads(line)
-                            entry_time = datetime.fromisoformat(entry["timestamp"])
-
-                            # Check if entry is within time range
-                            if entry_time < cutoff_time:
-                                continue
-
-                            # Apply filters
-                            if action_type and entry.get("action_type") != action_type:
-                                continue
-
-                            if admin_name and entry.get("admin_name") != admin_name:
-                                continue
-
-                            actions.append(entry)
-
-                        except (json.JSONDecodeError, KeyError, ValueError) as e:
-                            logger.warning(
-                                "Failed to parse log entry",
-                                line_preview=line[:100],
-                                error=str(e),
-                                operation="log_parsing",
-                            )
-                            continue
+                actions.extend(self._read_actions_from_file(log_file, cutoff_time, action_type, admin_name))
 
             return actions
 

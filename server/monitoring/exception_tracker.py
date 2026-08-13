@@ -14,12 +14,39 @@ from collections import defaultdict
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, TypedDict
 
 from server.structured_logging.enhanced_logging_config import get_logger, log_with_context
 from server.utils.enhanced_error_logging import create_enhanced_error_context
 
 logger = get_logger(__name__)
+
+
+class ExceptionTrackInput(TypedDict, total=False):
+    """Optional fields for exception tracking context."""
+
+    context: dict[str, Any]
+    user_id: str | None
+    session_id: str | None
+    correlation_id: str | None
+    request_id: str | None
+    severity: str
+    handled: bool
+    metadata: dict[str, Any] | None
+    tracker: "ExceptionTracker | None"
+
+
+class ExceptionContextTrackInput(TypedDict, total=False):
+    """Optional fields for track_exception_with_context."""
+
+    request: Any | None
+    websocket: Any | None
+    user_id: str | None
+    session_id: str | None
+    severity: str
+    handled: bool
+    metadata: dict[str, Any] | None
+    tracker: "ExceptionTracker | None"
 
 
 @dataclass
@@ -87,91 +114,78 @@ class ExceptionTracker:
 
         logger.info("Exception tracker initialized", max_records=max_records)
 
-    def track_exception(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Exception tracking requires many parameters for complete exception context
-        self,
-        exception: Exception,
-        context: dict[str, Any] | None = None,
-        user_id: str | None = None,
-        session_id: str | None = None,
-        correlation_id: str | None = None,
-        request_id: str | None = None,
-        severity: str = "error",
-        handled: bool = False,
-        metadata: dict[str, Any] | None = None,
-    ) -> str:
-        """
-        Track an exception with full context information.
+    def _parse_track_options(self, track_input: ExceptionTrackInput | None) -> dict[str, Any]:
+        options = track_input or {}
+        return {
+            "context": options.get("context") or {},
+            "user_id": options.get("user_id"),
+            "session_id": options.get("session_id"),
+            "correlation_id": options.get("correlation_id"),
+            "request_id": options.get("request_id"),
+            "severity": options.get("severity", "error"),
+            "handled": options.get("handled", False),
+            "metadata": options.get("metadata") or {},
+        }
 
-        Args:
-            exception: The exception to track
-            context: Additional context information
-            user_id: User ID if available
-            session_id: Session ID if available
-            correlation_id: Correlation ID for request tracing
-            request_id: Request ID if available
-            severity: Severity level (debug, info, warning, error, critical)
-            handled: Whether the exception was handled
-            metadata: Additional metadata
-
-        Returns:
-            Unique exception ID
-        """
-        exception_id = str(uuid.uuid4())
-
-        if context is None:
-            context = {}
-        if metadata is None:
-            metadata = {}
-
-        # Create exception record
+    def _create_and_store_record(
+        self, exception: Exception, options: dict[str, Any], exception_id: str
+    ) -> ExceptionRecord:
         record = ExceptionRecord(
             exception_id=exception_id,
             exception_type=type(exception).__name__,
             exception_message=str(exception),
             timestamp=datetime.now(UTC),
             traceback=traceback.format_exc(),
-            context=context,
-            user_id=user_id,
-            session_id=session_id,
-            correlation_id=correlation_id,
-            request_id=request_id,
-            severity=severity,
-            handled=handled,
-            metadata=metadata,
+            context=options["context"],
+            user_id=options["user_id"],
+            session_id=options["session_id"],
+            correlation_id=options["correlation_id"],
+            request_id=options["request_id"],
+            severity=options["severity"],
+            handled=options["handled"],
+            metadata=options["metadata"],
         )
-
-        # Store the record
         self.exception_records.append(record)
-
-        # Maintain max records limit
         if len(self.exception_records) > self.max_records:
             self.exception_records = self.exception_records[-self.max_records :]
-
-        # Update statistics
         self._update_stats(record)
+        return record
 
-        # Log the exception with full context
+    def _log_tracked_exception(self, exception: Exception, options: dict[str, Any], exception_id: str) -> None:
         log_with_context(
             logger,
-            severity,
+            options["severity"],
             f"Exception tracked: {type(exception).__name__}",
             exception_id=exception_id,
             exception_type=type(exception).__name__,
             exception_message=str(exception),
-            user_id=user_id,
-            session_id=session_id,
-            correlation_id=correlation_id,
-            request_id=request_id,
-            severity=severity,
-            handled=handled,
-            context=context,
-            metadata=metadata,
+            user_id=options["user_id"],
+            session_id=options["session_id"],
+            correlation_id=options["correlation_id"],
+            request_id=options["request_id"],
+            severity=options["severity"],
+            handled=options["handled"],
+            context=options["context"],
+            metadata=options["metadata"],
             traceback=traceback.format_exc(),
         )
 
-        # Call exception handlers
-        self._call_handlers(exception, record)
+    def track_exception(self, exception: Exception, track_input: ExceptionTrackInput | None = None) -> str:
+        """
+        Track an exception with full context information.
 
+        Args:
+            exception: The exception to track
+            track_input: Optional tracking context fields
+
+        Returns:
+            Unique exception ID
+        """
+        options = self._parse_track_options(track_input)
+        exception_id = str(uuid.uuid4())
+        record = self._create_and_store_record(exception, options, exception_id)
+        self._log_tracked_exception(exception, options, exception_id)
+        self._call_handlers(exception, record)
         return exception_id
 
     def get_exception_record(self, exception_id: str) -> ExceptionRecord | None:
@@ -360,100 +374,72 @@ def get_exception_tracker() -> ExceptionTracker:
     return _exception_tracker
 
 
-def track_exception(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Exception tracking requires many parameters for complete exception context
+def track_exception(
     exception: Exception,
-    context: dict[str, Any] | None = None,
-    user_id: str | None = None,
-    session_id: str | None = None,
-    correlation_id: str | None = None,
-    request_id: str | None = None,
-    severity: str = "error",
-    handled: bool = False,
-    metadata: dict[str, Any] | None = None,
-    tracker: ExceptionTracker | None = None,
+    track_input: ExceptionTrackInput | None = None,
 ) -> str:
     """
     Track an exception with full context information.
 
     Args:
         exception: The exception to track
-        context: Additional context information
-        user_id: User ID if available
-        session_id: Session ID if available
-        correlation_id: Correlation ID for request tracing
-        request_id: Request ID if available
-        severity: Severity level (debug, info, warning, error, critical)
-        handled: Whether the exception was handled
-        metadata: Additional metadata
-        tracker: Exception tracker instance (uses global if None)
+        track_input: Optional tracking context fields
 
     Returns:
         Unique exception ID
     """
+    options = track_input or {}
+    tracker = options.get("tracker")
     if tracker is None:
         tracker = get_exception_tracker()
 
-    return tracker.track_exception(
-        exception=exception,
-        context=context,
-        user_id=user_id,
-        session_id=session_id,
-        correlation_id=correlation_id,
-        request_id=request_id,
-        severity=severity,
-        handled=handled,
-        metadata=metadata,
-    )
+    return tracker.track_exception(exception, track_input=options)
 
 
-def track_exception_with_context(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Exception tracking requires many parameters for complete exception context
+def track_exception_with_context(
     exception: Exception,
-    request: Any | None = None,
-    websocket: Any | None = None,
-    user_id: str | None = None,
-    session_id: str | None = None,
-    severity: str = "error",
-    handled: bool = False,
-    metadata: dict[str, Any] | None = None,
-    tracker: ExceptionTracker | None = None,
+    track_input: ExceptionContextTrackInput | None = None,
 ) -> str:
     """
     Track an exception with enhanced context from request/websocket.
 
     Args:
         exception: The exception to track
-        request: FastAPI request object
-        websocket: WebSocket connection
-        user_id: User ID if available
-        session_id: Session ID if available
-        severity: Severity level (debug, info, warning, error, critical)
-        handled: Whether the exception was handled
-        metadata: Additional metadata
-        tracker: Exception tracker instance (uses global if None)
+        track_input: Optional request/websocket context fields
 
     Returns:
         Unique exception ID
     """
+    options = track_input or {}
+    tracker = options.get("tracker")
     if tracker is None:
         tracker = get_exception_tracker()
 
-    # Create enhanced context
+    request = options.get("request")
+    websocket = options.get("websocket")
+    user_id = options.get("user_id")
+    session_id = options.get("session_id")
+    severity = options.get("severity", "error")
+    handled = options.get("handled", False)
+    metadata = options.get("metadata")
+
     context = create_enhanced_error_context(
         request=request, websocket=websocket, user_id=user_id, session_id=session_id, **(metadata or {})
     )
 
-    # Extract correlation and request IDs
     correlation_id: str | None = getattr(context, "correlation_id", None)
     request_id: str | None = getattr(context, "request_id", None)
 
     return tracker.track_exception(
-        exception=exception,
-        context=context.to_dict() if hasattr(context, "to_dict") else {},
-        user_id=user_id,
-        session_id=session_id,
-        correlation_id=correlation_id,
-        request_id=request_id,
-        severity=severity,
-        handled=handled,
-        metadata=metadata or {},
+        exception,
+        track_input={
+            "context": context.to_dict() if hasattr(context, "to_dict") else {},
+            "user_id": user_id,
+            "session_id": session_id,
+            "correlation_id": correlation_id,
+            "request_id": request_id,
+            "severity": severity,
+            "handled": handled,
+            "metadata": metadata or {},
+        },
     )

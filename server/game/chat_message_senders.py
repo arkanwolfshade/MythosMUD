@@ -1,4 +1,4 @@
-"""Message sending helpers for system and whisper messages."""
+"""Room-scoped message senders (say, local, custom/predefined emote)."""
 
 # pylint: disable=too-many-return-statements,too-many-lines  # Reason: Message sending handlers require multiple return statements for early validation returns (permission checks, validation, error handling). Message sending requires extensive handlers for multiple message types and delivery methods.
 
@@ -6,101 +6,87 @@ import uuid
 from typing import Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
+from .chat_channel_message_senders import (
+    normalize_player_id,
+    send_global_message,
+    send_party_message,
+    send_system_message,
+    send_whisper_message,
+)
 from .chat_message import ChatMessage
 from .chat_message_helpers import (
     create_and_log_chat_message,
-    store_global_message_in_history,
     store_message_in_room_history,
 )
 from .chat_nats_publisher import publish_chat_message_to_nats
 from .chat_validation_helpers import (
     check_channel_permissions,
-    check_global_level_requirement,
-    validate_global_message,
+    check_say_permissions,
+    validate_emote_action,
     validate_say_message,
 )
 
 logger = get_logger("communications.chat_message_senders")
 
+# Pairs room history store with its cap so senders stay under parameter-count limits.
+RoomChatHistory = tuple[dict[str, list[ChatMessage]], int]
 
-def normalize_player_id(player_id: Any) -> str:
-    """Normalize player identifiers to string form."""
-    return str(player_id)
+__all__ = [
+    "normalize_player_id",
+    "send_emote_message",
+    "send_global_message",
+    "send_local_message",
+    "send_party_message",
+    "send_predefined_emote",
+    "send_say_message",
+    "send_system_message",
+    "send_whisper_message",
+]
 
 
-async def send_system_message(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Message sending requires many parameters for context and routing
-    player_id: uuid.UUID | str,
-    message: str,
+async def _resolve_predefined_emote_sender(
+    player_id: str,
+    emote_command: str,
     player_service: Any,
     user_manager: Any,
     rate_limiter: Any,
-    chat_logger: Any,
-    room_messages: dict[str, list[ChatMessage]],
-    max_messages_per_room: int,
-    nats_service: Any,
-    subject_manager: Any | None,
-) -> dict[str, Any]:
-    """
-    Send a system message to all players.
+    emote_service: Any,
+) -> dict[str, Any] | tuple[Any, str]:
+    """Validate emote sender; return error dict or (player, room_id)."""
+    if not emote_service.is_emote_alias(emote_command):
+        logger.warning("Invalid emote command")
+        return {"success": False, "error": f"Unknown emote: {emote_command}"}
 
-    This function publishes the system message to NATS for real-time distribution
-    to all players. System messages require admin privileges and are subject to rate limiting.
-
-    Args:
-        player_id: ID of the player sending the system message
-        message: Message content
-        player_service: Player service instance
-        user_manager: User manager instance
-        rate_limiter: Rate limiter instance
-        chat_logger: Chat logger instance
-        room_messages: Dictionary storing room messages
-        max_messages_per_room: Maximum messages to store per room
-        nats_service: NATS service instance
-        subject_manager: NATS subject manager instance (optional)
-
-    Returns:
-        Dictionary with success status and message details
-    """
-    player_id = normalize_player_id(player_id)
-    logger.debug("=== CHAT SERVICE DEBUG: send_system_message called ===", player_id=player_id, message=message)
-    logger.debug("Processing system message")
-
-    # Validate input
-    if not message or not message.strip():
-        logger.debug("=== CHAT SERVICE DEBUG: Empty message ===")
-        return {"success": False, "error": "Message cannot be empty"}
-
-    if len(message.strip()) > 2000:  # Limit for system messages
-        logger.debug("=== CHAT SERVICE DEBUG: Message too long ===")
-        return {"success": False, "error": "Message too long (max 2000 characters)"}
-
-    # Get player information
     player = await player_service.get_player_by_id(player_id)
     if not player:
-        logger.warning("Player not found for system message")
+        logger.warning("Player not found for predefined emote")
         return {"success": False, "error": "Player not found"}
 
-    # Check admin requirement
-    if not user_manager.is_admin(player_id):
-        logger.debug("=== CHAT SERVICE DEBUG: Player not admin ===")
-        return {"success": False, "error": "You must be an admin to send system messages"}
-
-    # Load player's mute data to ensure it's available for permission checks
     user_manager.load_player_mutes(player_id)
 
-    # Check rate limits before allowing system message
-    if not rate_limiter.check_rate_limit(player_id, "system", player.name):
-        logger.debug("=== CHAT SERVICE DEBUG: Rate limit exceeded ===")
-        return {"success": False, "error": "Rate limit exceeded for system messages", "rate_limited": True}
+    if not rate_limiter.check_rate_limit(player_id, "emote", player.name):
+        logger.warning("Rate limit exceeded for predefined emote", player_id=player_id, player_name=player.name)
+        return {
+            "success": False,
+            "error": "Rate limit exceeded. Please wait before sending another emote.",
+            "rate_limited": True,
+        }
 
-    # Note: Admins can send system messages even when globally muted
-    # This ensures admins can always communicate important system information
+    room_id = player.current_room_id
+    if not room_id:
+        logger.warning("Player not in a room")
+        return {"success": False, "error": "Player not in a room"}
 
-    # Create chat message
-    # ChatMessage accepts UUID | str and converts internally
-    chat_message = ChatMessage(sender_id=player_id, sender_name=player.name, channel="system", content=message.strip())
+    # Emotes share say-channel mute / global mute / can_send rules
+    error_result = check_say_permissions(user_manager, player_id)
+    if error_result:
+        return error_result
 
-    # Log the chat message for AI processing
+    return player, room_id
+
+
+def _log_predefined_emote_message(chat_logger: Any, chat_message: ChatMessage, room_id: str) -> None:
+    """Log emote chat payload for AI processing."""
     chat_logger.log_chat_message(
         {
             "message_id": chat_message.id,
@@ -108,410 +94,64 @@ async def send_system_message(  # pylint: disable=too-many-arguments,too-many-po
             "sender_id": chat_message.sender_id,
             "sender_name": chat_message.sender_name,
             "content": chat_message.content,
-            "room_id": None,  # System messages don't have a specific room
+            "room_id": room_id,
             "filtered": False,
             "moderation_notes": None,
         }
     )
 
-    # Log to system channel specific log file
-    chat_logger.log_system_channel_message(
-        {
-            "message_id": chat_message.id,
-            "channel": chat_message.channel,
-            "sender_id": chat_message.sender_id,
-            "sender_name": chat_message.sender_name,
-            "content": chat_message.content,
-            "filtered": False,
-            "moderation_notes": None,
-        }
-    )
 
-    # Record message for rate limiting
-    rate_limiter.record_message(player_id, "system", player.name)
+async def _publish_predefined_emote(
+    player_id: str,
+    player: Any,
+    room_id: str,
+    emote_command: str,
+    emote_service: Any,
+    chat_logger: Any,
+    nats_service: Any,
+    subject_manager: Any | None,
+) -> dict[str, Any]:
+    """Format, log, and NATS-publish a predefined emote; return API payload."""
+    try:
+        self_message, other_message = emote_service.format_emote_messages(emote_command, player.name)
+    except ValueError as e:
+        logger.error("Failed to format emote messages", player_id=player_id, emote_command=emote_command, error=str(e))
+        return {"success": False, "error": str(e)}
 
-    # Also log to communications log (existing behavior)
-    chat_message.log_message()
-
-    logger.debug("=== CHAT SERVICE DEBUG: System chat message created ===")
-
-    # Store message in system history
-    if "system" not in room_messages:
-        room_messages["system"] = []
-
-    room_messages["system"].append(chat_message)
-
-    # Maintain message history limit
-    if len(room_messages["system"]) > max_messages_per_room:
-        room_messages["system"] = room_messages["system"][-max_messages_per_room:]
-
+    # ChatMessage accepts UUID | str and converts internally
+    chat_message = ChatMessage(sender_id=player_id, sender_name=player.name, channel="emote", content=other_message)
+    _log_predefined_emote_message(chat_logger, chat_message, room_id)
     logger.info(
-        "System message created successfully",
+        "Predefined emote message created successfully",
         player_id=player_id,
         player_name=player.name,
+        room_id=room_id,
+        emote_command=emote_command,
         message_id=chat_message.id,
     )
 
-    # Publish message to NATS for real-time distribution
-    logger.debug("=== CHAT SERVICE DEBUG: About to publish system message to NATS ===")
-    success = await publish_chat_message_to_nats(
-        chat_message, None, nats_service, subject_manager
-    )  # System messages don't have room_id
-    if not success:
-        # NATS publishing failed - detailed error already logged in _publish_chat_message_to_nats
+    logger.debug("=== CHAT SERVICE DEBUG: About to publish predefined emote message to NATS ===")
+    if not await publish_chat_message_to_nats(chat_message, room_id, nats_service, subject_manager):
         logger.error(
             "NATS publishing failed - NATS is mandatory for chat functionality",
             player_id=player_id,
             player_name=player.name,
+            room_id=room_id,
             message_id=chat_message.id,
         )
         return {"success": False, "error": "Chat system temporarily unavailable. Please try again in a moment."}
-    logger.debug("=== CHAT SERVICE DEBUG: System NATS publishing completed ===")
+    logger.debug("=== CHAT SERVICE DEBUG: NATS publishing completed ===")
 
-    return {"success": True, "message": chat_message.to_dict()}
-
-
-async def send_whisper_message(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Message sending requires many parameters and intermediate variables for complex routing logic
-    sender_id: uuid.UUID | str,
-    target_id: uuid.UUID | str,
-    message: str,
-    player_service: Any,
-    rate_limiter: Any,
-    chat_logger: Any,
-    whisper_tracker: Any,
-    room_messages: dict[str, list[ChatMessage]],
-    max_messages_per_room: int,
-    nats_service: Any,
-    subject_manager: Any | None,
-) -> dict[str, Any]:
-    """
-    Send a whisper message from one player to another.
-
-    This function publishes the whisper message to NATS for real-time distribution
-    to the target player. Whisper messages are subject to rate limiting.
-
-    Args:
-        sender_id: ID of the player sending the whisper
-        target_id: ID of the player receiving the whisper
-        message: Message content
-        player_service: Player service instance
-        rate_limiter: Rate limiter instance
-        chat_logger: Chat logger instance
-        whisper_tracker: Whisper tracker instance
-        room_messages: Dictionary storing room messages
-        max_messages_per_room: Maximum messages to store per room
-        nats_service: NATS service instance
-        subject_manager: NATS subject manager instance (optional)
-
-    Returns:
-        Dictionary with success status and message details
-    """
-    sender_id = normalize_player_id(sender_id)
-    target_id = normalize_player_id(target_id)
-
-    logger.debug("=== CHAT SERVICE DEBUG: send_whisper_message called ===", sender_id=sender_id, target_id=target_id)
-    logger.debug("Processing whisper message", sender_id=sender_id, target_id=target_id, message_length=len(message))
-
-    # Validate input
-    if not message or not message.strip():
-        logger.debug("=== CHAT SERVICE DEBUG: Empty whisper message ===")
-        return {"success": False, "error": "Message content cannot be empty"}
-
-    # Strip whitespace
-    message = message.strip()
-
-    # Check message length
-    if len(message) > 2000:
-        logger.debug("=== CHAT SERVICE DEBUG: Whisper message too long ===")
-        return {"success": False, "error": "Message too long (maximum 2000 characters)"}
-
-    # Get sender player object
-    sender_obj = await player_service.get_player_by_id(sender_id)
-    if not sender_obj:
-        logger.debug("=== CHAT SERVICE DEBUG: Sender not found ===")
-        return {"success": False, "error": "Sender not found"}
-
-    # Get target player object
-    target_obj = await player_service.get_player_by_id(target_id)
-    if not target_obj:
-        logger.debug("=== CHAT SERVICE DEBUG: Target not found ===")
-        return {"success": False, "error": "You whisper into the aether."}
-
-    # Check rate limiting
-    sender_name = getattr(sender_obj, "name", "UnknownPlayer")
-    if not rate_limiter.check_rate_limit(sender_id, "whisper", sender_name):
-        logger.debug("=== CHAT SERVICE DEBUG: Whisper rate limited ===")
-        return {"success": False, "error": "You are sending messages too quickly. Please wait a moment."}
-
-    # Create chat message
-    # ChatMessage accepts UUID | str and converts internally
-    chat_message = ChatMessage(
-        sender_id=sender_id,
-        sender_name=sender_name,
-        target_id=target_id,
-        target_name=getattr(target_obj, "name", "UnknownPlayer"),
-        channel="whisper",
-        content=message,
-    )
-
-    # Log the whisper message for AI processing
-    chat_logger.log_chat_message(
-        {
-            "message_id": chat_message.id,
-            "channel": chat_message.channel,
-            "sender_id": chat_message.sender_id,
-            "sender_name": chat_message.sender_name,
-            "target_id": chat_message.target_id,
-            "target_name": chat_message.target_name,
-            "content": chat_message.content,
-            "room_id": None,  # Whisper messages don't have a specific room
-            "filtered": False,
-            "moderation_notes": None,
-        }
-    )
-
-    # Log to whisper channel specific log file
-    chat_logger.log_whisper_channel_message(
-        {
-            "message_id": chat_message.id,
-            "channel": chat_message.channel,
-            "sender_id": chat_message.sender_id,
-            "sender_name": chat_message.sender_name,
-            "target_id": chat_message.target_id,
-            "target_name": chat_message.target_name,
-            "content": chat_message.content,
-            "filtered": False,
-            "moderation_notes": None,
-        }
-    )
-
-    # Record message for rate limiting
-    rate_limiter.record_message(sender_id, "whisper", sender_name)
-
-    # Store last whisper sender for reply functionality
-    target_name = getattr(target_obj, "name", "UnknownPlayer")
-    whisper_tracker.store_sender(target_name, sender_name)
-
-    # Also log to communications log (existing behavior)
-    chat_message.log_message()
-
-    logger.debug("=== CHAT SERVICE DEBUG: Whisper chat message created ===", message_id=chat_message.id)
-
-    # Store message in whisper history
-    if "whisper" not in room_messages:
-        room_messages["whisper"] = []
-
-    room_messages["whisper"].append(chat_message)
-
-    # Maintain message history limit
-    if len(room_messages["whisper"]) > max_messages_per_room:
-        room_messages["whisper"] = room_messages["whisper"][-max_messages_per_room:]
-
-    logger.info(
-        "Whisper message created successfully",
-        sender_id=sender_id,
-        target_id=target_id,
-        sender_name=sender_name,
-        target_name=getattr(target_obj, "name", "UnknownPlayer"),
-        message_id=chat_message.id,
-    )
-
-    # Publish message to NATS for real-time distribution
-    logger.debug("=== CHAT SERVICE DEBUG: About to publish whisper message to NATS ===")
-    success = await publish_chat_message_to_nats(
-        chat_message, None, nats_service, subject_manager
-    )  # Whisper messages don't have room_id
-    if not success:
-        # NATS publishing failed - detailed error already logged in _publish_chat_message_to_nats
-        logger.error(
-            "NATS publishing failed - NATS is mandatory for chat functionality",
-            sender_id=sender_id,
-            sender_name=sender_name,
-            message_id=chat_message.id,
-        )
-        return {"success": False, "error": "Chat system temporarily unavailable. Please try again in a moment."}
-    logger.debug("=== CHAT SERVICE DEBUG: Whisper NATS publishing completed ===")
-
-    return {"success": True, "message": chat_message.to_dict()}
+    return {
+        "success": True,
+        "self_message": self_message,
+        "other_message": other_message,
+        "message": chat_message.to_dict(),
+        "room_id": room_id,
+    }
 
 
-async def send_party_message(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Message sending requires many parameters for context and routing
-    player_id: uuid.UUID | str,
-    message: str,
-    party_id: str,
-    player_service: Any,
-    rate_limiter: Any,
-    chat_logger: Any,
-    nats_service: Any,
-    subject_manager: Any | None,
-) -> dict[str, Any]:
-    """
-    Send a party (ephemeral group) chat message to party members only.
-
-    Message is published to NATS on chat.party.group.{party_id}; delivery to
-    only current party members is enforced by PartyChannelStrategy. Rate limit
-    uses the configured party channel limit (e.g. 30 msg/min).
-
-    Args:
-        player_id: ID of the sender
-        message: Message content
-        party_id: Party ID (sender must be in this party; caller validates)
-        player_service: Player service instance
-        rate_limiter: Rate limiter instance
-        chat_logger: Chat logger instance
-        nats_service: NATS service instance
-        subject_manager: NATS subject manager instance (optional)
-
-    Returns:
-        Dictionary with success status and message details
-    """
-    player_id = normalize_player_id(player_id)
-    if not message or not message.strip():
-        return {"success": False, "error": "Message cannot be empty"}
-    if len(message.strip()) > 2000:
-        return {"success": False, "error": "Message too long (max 2000 characters)"}
-
-    player = await player_service.get_player_by_id(player_id)
-    if not player:
-        logger.warning("Player not found for party message")
-        return {"success": False, "error": "Player not found"}
-
-    if not rate_limiter.check_rate_limit(player_id, "party", player.name):
-        return {"success": False, "error": "Rate limit exceeded for party chat", "rate_limited": True}
-
-    chat_message = ChatMessage(
-        sender_id=player_id,
-        sender_name=player.name,
-        channel="party",
-        content=message.strip(),
-        party_id=party_id,
-    )
-    chat_logger.log_chat_message(
-        {
-            "message_id": chat_message.id,
-            "channel": chat_message.channel,
-            "sender_id": chat_message.sender_id,
-            "sender_name": chat_message.sender_name,
-            "content": chat_message.content,
-            "room_id": None,
-            "filtered": False,
-            "moderation_notes": None,
-        }
-    )
-    rate_limiter.record_message(player_id, "party", player.name)
-    chat_message.log_message()
-
-    success = await publish_chat_message_to_nats(chat_message, None, nats_service, subject_manager)
-    if not success:
-        logger.error(
-            "NATS publishing failed for party message",
-            player_id=player_id,
-            message_id=chat_message.id,
-        )
-        return {"success": False, "error": "Chat system temporarily unavailable. Please try again in a moment."}
-    return {"success": True, "message": chat_message.to_dict()}
-
-
-async def send_global_message(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Message sending requires many parameters for context and routing
-    player_id: uuid.UUID | str,
-    message: str,
-    player_service: Any,
-    user_manager: Any,
-    rate_limiter: Any,
-    chat_logger: Any,
-    room_messages: dict[str, list[ChatMessage]],
-    max_messages_per_room: int,
-    nats_service: Any,
-    subject_manager: Any | None,
-) -> dict[str, Any]:
-    """
-    Send a global message to all players.
-
-    This function publishes the global message to NATS for real-time distribution
-    to all players. Global messages require level 1+ and are subject to rate limiting.
-
-    Args:
-        player_id: ID of the player sending the global message
-        message: Message content
-        player_service: Player service instance
-        user_manager: User manager instance
-        rate_limiter: Rate limiter instance
-        chat_logger: Chat logger instance
-        room_messages: Dictionary storing room messages
-        max_messages_per_room: Maximum messages to store per room
-        nats_service: NATS service instance
-        subject_manager: NATS subject manager instance (optional)
-
-    Returns:
-        Dictionary with success status and message details
-    """
-    player_id = normalize_player_id(player_id)
-    logger.debug("=== CHAT SERVICE DEBUG: send_global_message called ===", player_id=player_id, message=message)
-    logger.debug("Processing global message")
-
-    error_result = validate_global_message(message)
-    if error_result:
-        return error_result
-
-    player = await player_service.get_player_by_id(player_id)
-    if not player:
-        logger.warning("Player not found for global message")
-        return {"success": False, "error": "Player not found"}
-
-    error_result = check_global_level_requirement(player, player_id)
-    if error_result:
-        return error_result
-
-    user_manager.load_player_mutes(player_id)
-
-    if not rate_limiter.check_rate_limit(player_id, "global", player.name):
-        logger.debug("=== CHAT SERVICE DEBUG: Rate limit exceeded ===")
-        return {"success": False, "error": "Rate limit exceeded for global chat", "rate_limited": True}
-
-    error_result = check_channel_permissions(user_manager, player_id, "global")
-    if error_result:
-        return error_result
-
-    chat_message = create_and_log_chat_message(player_id, player.name, message, None, "global")
-    chat_logger.log_global_channel_message(
-        {
-            "message_id": chat_message.id,
-            "channel": chat_message.channel,
-            "sender_id": chat_message.sender_id,
-            "sender_name": chat_message.sender_name,
-            "content": chat_message.content,
-            "filtered": False,
-            "moderation_notes": None,
-        }
-    )
-    rate_limiter.record_message(player_id, "global", player.name)
-    logger.debug("=== CHAT SERVICE DEBUG: Global chat message created ===")
-
-    store_global_message_in_history(room_messages, chat_message, max_messages_per_room)
-
-    logger.info(
-        "Global message created successfully",
-        player_id=player_id,
-        player_name=player.name,
-        message_id=chat_message.id,
-    )
-
-    logger.debug("=== CHAT SERVICE DEBUG: About to publish global message to NATS ===")
-    success = await publish_chat_message_to_nats(chat_message, None, nats_service, subject_manager)
-    if not success:
-        logger.error(
-            "NATS publishing failed - NATS is mandatory for chat functionality",
-            player_id=player_id,
-            player_name=player.name,
-            message_id=chat_message.id,
-        )
-        return {"success": False, "error": "Chat system temporarily unavailable. Please try again in a moment."}
-    logger.debug("=== CHAT SERVICE DEBUG: Global NATS publishing completed ===")
-
-    return {"success": True, "message": chat_message.to_dict()}
-
-
-async def send_predefined_emote(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Emote sending requires many parameters and intermediate variables for complex emote logic
+async def send_predefined_emote(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Emote sending requires many collaborator services and intermediates
     player_id: uuid.UUID | str,
     emote_command: str,
     player_service: Any,
@@ -548,163 +188,51 @@ async def send_predefined_emote(  # pylint: disable=too-many-arguments,too-many-
     # Import EmoteService here to avoid circular imports
     from .emote_service import EmoteService
 
-    # Initialize emote service
     emote_service = EmoteService()
+    resolved = await _resolve_predefined_emote_sender(
+        player_id, emote_command, player_service, user_manager, rate_limiter, emote_service
+    )
+    if isinstance(resolved, dict):
+        return resolved
+    player, room_id = resolved
 
-    # Check if this is a valid emote command
-    if not emote_service.is_emote_alias(emote_command):
-        logger.warning("Invalid emote command")
-        return {"success": False, "error": f"Unknown emote: {emote_command}"}
-
-    # Get player information
-    player = await player_service.get_player_by_id(player_id)
-    if not player:
-        logger.warning("Player not found for predefined emote")
-        return {"success": False, "error": "Player not found"}
-
-    # Load player's mute data to ensure it's available for permission checks
-    user_manager.load_player_mutes(player_id)
-
-    # Check rate limits before allowing emote
-    if not rate_limiter.check_rate_limit(player_id, "emote", player.name):
-        logger.warning("Rate limit exceeded for predefined emote", player_id=player_id, player_name=player.name)
-        return {
-            "success": False,
-            "error": "Rate limit exceeded. Please wait before sending another emote.",
-            "rate_limited": True,
-        }
-
-    # Get player's current room
-    room_id = player.current_room_id
-    if not room_id:
-        logger.warning("Player not in a room")
-        return {"success": False, "error": "Player not in a room"}
-
-    # Check if player is muted in say channel (emotes use same channel as say)
-    if user_manager.is_channel_muted(player_id, "say"):
-        logger.debug("=== CHAT SERVICE DEBUG: Player is muted ===")
-        return {"success": False, "error": "You are muted in the say channel"}
-
-    # Check if player is globally muted
-    if user_manager.is_globally_muted(player_id):
-        logger.debug("=== CHAT SERVICE DEBUG: Player is globally muted ===")
-        return {"success": False, "error": "You are globally muted and cannot send messages"}
-
-    # Check if player can send messages (admin check, etc.)
-    if not user_manager.can_send_message(player_id, channel="say"):
-        logger.debug("=== CHAT SERVICE DEBUG: Player cannot send messages ===")
-        return {"success": False, "error": "You cannot send messages at this time"}
-
-    try:
-        # Format the emote messages
-        self_message, other_message = emote_service.format_emote_messages(emote_command, player.name)
-    except ValueError as e:
-        logger.error("Failed to format emote messages", player_id=player_id, emote_command=emote_command, error=str(e))
-        return {"success": False, "error": str(e)}
-
-    # Create chat message for the predefined emote
-    # ChatMessage accepts UUID | str and converts internally
-    chat_message = ChatMessage(sender_id=player_id, sender_name=player.name, channel="emote", content=other_message)
-
-    # Log the emote message for AI processing
-    chat_logger.log_chat_message(
-        {
-            "message_id": chat_message.id,
-            "channel": chat_message.channel,
-            "sender_id": chat_message.sender_id,
-            "sender_name": chat_message.sender_name,
-            "content": chat_message.content,
-            "room_id": room_id,
-            "filtered": False,
-            "moderation_notes": None,
-        }
+    return await _publish_predefined_emote(
+        player_id, player, room_id, emote_command, emote_service, chat_logger, nats_service, subject_manager
     )
 
-    logger.info(
-        "Predefined emote message created successfully",
-        player_id=player_id,
-        player_name=player.name,
-        room_id=room_id,
-        emote_command=emote_command,
-        message_id=chat_message.id,
-    )
 
-    # Publish message to NATS for real-time distribution
-    logger.debug("=== CHAT SERVICE DEBUG: About to publish predefined emote message to NATS ===")
-    success = await publish_chat_message_to_nats(chat_message, room_id, nats_service, subject_manager)
-    if not success:
-        # NATS publishing failed - detailed error already logged in _publish_chat_message_to_nats
-        logger.error(
-            "NATS publishing failed - NATS is mandatory for chat functionality",
-            player_id=player_id,
-            player_name=player.name,
-            room_id=room_id,
-            message_id=chat_message.id,
-        )
-        return {"success": False, "error": "Chat system temporarily unavailable. Please try again in a moment."}
-    logger.debug("=== CHAT SERVICE DEBUG: NATS publishing completed ===")
-
-    return {
-        "success": True,
-        "self_message": self_message,
-        "other_message": other_message,
-        "message": chat_message.to_dict(),
-        "room_id": room_id,
-    }
-
-
-async def send_local_message(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Message sending requires many parameters and intermediate variables for complex routing logic
-    player_id: uuid.UUID | str,
+async def _resolve_room_chat_sender(
+    player_id: str,
     message: str,
+    channel: str,
     player_service: Any,
     user_manager: Any,
     rate_limiter: Any,
-    room_messages: dict[str, list[ChatMessage]],
-    max_messages_per_room: int,
-    nats_service: Any,
-    subject_manager: Any | None,
-) -> dict[str, Any]:
-    """
-    Send a local message to players in the same sub-zone.
-
-    This function publishes the message to NATS for real-time distribution
-    to all players in the same sub-zone. NATS is mandatory for this functionality.
-
-    Args:
-        player_id: ID of the player sending the message
-        message: Message content
-        player_service: Player service instance
-        user_manager: User manager instance
-        rate_limiter: Rate limiter instance
-        room_messages: Dictionary storing room messages
-        max_messages_per_room: Maximum messages to store per room
-        nats_service: NATS service instance
-        subject_manager: NATS subject manager instance (optional)
-
-    Returns:
-        Dictionary with success status and message details
-    """
-    player_id = normalize_player_id(player_id)
-    logger.debug(
-        "=== CHAT SERVICE DEBUG: send_local_message called ===",
-        player_id=player_id,
-        message=message,
-    )
-    logger.debug("Processing local message")
-
-    error_result = validate_say_message(message)
-    if error_result:
-        return error_result
+    not_found_log: str,
+    *,
+    validate_content: bool = True,
+) -> dict[str, Any] | tuple[Any, str]:
+    """Validate room chat sender; return error dict or (player, room_id)."""
+    # Emotes use validate_emote_action first; skip say content rules for that path.
+    if validate_content:
+        error_result = validate_say_message(message)
+        if error_result:
+            return error_result
 
     player = await player_service.get_player_by_id(player_id)
     if not player:
-        logger.warning("Player not found for local message")
+        logger.warning(not_found_log)
         return {"success": False, "error": "Player not found"}
 
     user_manager.load_player_mutes(player_id)
 
-    if not rate_limiter.check_rate_limit(player_id, "local", player.name):
-        logger.warning("Rate limit exceeded for local message", player_id=player_id, player_name=player.name)
+    if not rate_limiter.check_rate_limit(player_id, channel, player.name):
+        logger.warning(
+            "Rate limit exceeded for message",
+            player_id=player_id,
+            player_name=player.name,
+            channel=channel,
+        )
         return {
             "success": False,
             "error": "Rate limit exceeded. Please wait before sending another message.",
@@ -717,32 +245,47 @@ async def send_local_message(  # pylint: disable=too-many-arguments,too-many-pos
         return {"success": False, "error": "Player not in a room"}
 
     logger.debug("=== CHAT SERVICE DEBUG: Player found ===", player_id=player_id, player_name=player.name)
+    return player, room_id
 
-    error_result = check_channel_permissions(user_manager, player_id, "local")
-    if error_result:
-        return error_result
 
-    chat_message = create_and_log_chat_message(player_id, player.name, message, room_id, "local")
-    rate_limiter.record_message(player_id, "local", player.name)
-    logger.debug("=== CHAT SERVICE DEBUG: Chat message created ===")
-
-    store_message_in_room_history(room_messages, chat_message, room_id, max_messages_per_room)
-
-    logger.info(
-        "Local message created successfully",
-        player_id=player_id,
-        player_name=player.name,
-        room_id=room_id,
-        message_id=chat_message.id,
+def _register_echo_suppression(message_id: str) -> None:
+    """Register message id for sender echo suppression; tolerate import cycles."""
+    # Deferred import: message_filtering can pull chat services (circular during startup).
+    try:
+        from server.realtime.message_filtering import SUPPRESS_ECHO_MESSAGE_IDS
+    except ImportError as import_error:  # pragma: no cover - defensive guard for import cycles
+        logger.debug(
+            "=== CHAT SERVICE DEBUG: Failed to register echo suppression token ===",
+            error=str(import_error),
+            message_id=message_id,
+        )
+        return
+    SUPPRESS_ECHO_MESSAGE_IDS.add(message_id)
+    logger.debug(
+        "=== CHAT SERVICE DEBUG: Registered echo suppression token ===",
+        message_id=message_id,
+        token_count=len(SUPPRESS_ECHO_MESSAGE_IDS),
     )
 
+
+async def _publish_room_chat_response(
+    chat_message: ChatMessage,
+    player_id: str,
+    player_name: str,
+    room_id: str,
+    nats_service: Any,
+    subject_manager: Any | None,
+    *,
+    include_echo_sent_in_dict: bool = False,
+) -> dict[str, Any]:
+    """Publish chat message to NATS and build the API success payload."""
     logger.debug("=== CHAT SERVICE DEBUG: About to publish message to NATS ===")
     success = await publish_chat_message_to_nats(chat_message, room_id, nats_service, subject_manager)
     if not success:
         logger.error(
             "NATS publishing failed - NATS is mandatory for chat functionality",
             player_id=player_id,
-            player_name=player.name,
+            player_name=player_name,
             room_id=room_id,
             message_id=chat_message.id,
         )
@@ -751,25 +294,173 @@ async def send_local_message(  # pylint: disable=too-many-arguments,too-many-pos
 
     chat_message.echo_sent = True
     message_dict = chat_message.to_dict()
-    message_dict["echo_sent"] = True
-    logger.debug(
-        "=== CHAT SERVICE DEBUG: Emote message response payload ===",
-        payload_keys=list(message_dict.keys()),
-    )
-    try:
-        from server.realtime.message_filtering import SUPPRESS_ECHO_MESSAGE_IDS
-    except ImportError as import_error:  # pragma: no cover - defensive guard for import cycles
+    if include_echo_sent_in_dict:
+        message_dict["echo_sent"] = True
         logger.debug(
-            "=== CHAT SERVICE DEBUG: Failed to register echo suppression token ===",
-            error=str(import_error),
-            message_id=chat_message.id,
+            "=== CHAT SERVICE DEBUG: Emote message response payload ===",
+            payload_keys=list(message_dict.keys()),
         )
-    else:
-        SUPPRESS_ECHO_MESSAGE_IDS.add(chat_message.id)
-        logger.debug(
-            "=== CHAT SERVICE DEBUG: Registered echo suppression token ===",
-            message_id=chat_message.id,
-            token_count=len(SUPPRESS_ECHO_MESSAGE_IDS),
-        )
-
+    _register_echo_suppression(chat_message.id)
     return {"success": True, "message": message_dict, "room_id": room_id}
+
+
+async def send_local_message(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Message sending requires many collaborator services
+    player_id: uuid.UUID | str,
+    message: str,
+    player_service: Any,
+    user_manager: Any,
+    rate_limiter: Any,
+    room_history: RoomChatHistory,
+    nats_service: Any,
+    subject_manager: Any | None,
+) -> dict[str, Any]:
+    """Send a local (sub-zone) message via NATS. Returns success status and message details."""
+    player_id = normalize_player_id(player_id)
+    room_messages, max_messages_per_room = room_history
+    logger.debug(
+        "=== CHAT SERVICE DEBUG: send_local_message called ===",
+        player_id=player_id,
+        message=message,
+    )
+    logger.debug("Processing local message")
+
+    resolved = await _resolve_room_chat_sender(
+        player_id, message, "local", player_service, user_manager, rate_limiter, "Player not found for local message"
+    )
+    if isinstance(resolved, dict):
+        return resolved
+    player, room_id = resolved
+
+    error_result = check_channel_permissions(user_manager, player_id, "local")
+    if error_result:
+        return error_result
+
+    chat_message = create_and_log_chat_message(player_id, player.name, message, room_id, "local")
+    rate_limiter.record_message(player_id, "local", player.name)
+    logger.debug("=== CHAT SERVICE DEBUG: Chat message created ===")
+    store_message_in_room_history(room_messages, chat_message, room_id, max_messages_per_room)
+    logger.info(
+        "Local message created successfully",
+        player_id=player_id,
+        player_name=player.name,
+        room_id=room_id,
+        message_id=chat_message.id,
+    )
+
+    return await _publish_room_chat_response(
+        chat_message,
+        player_id,
+        player.name,
+        room_id,
+        nats_service,
+        subject_manager,
+        include_echo_sent_in_dict=True,
+    )
+
+
+async def send_say_message(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Message sending requires many collaborator services
+    player_id: uuid.UUID | str,
+    message: str,
+    player_service: Any,
+    user_manager: Any,
+    rate_limiter: Any,
+    room_history: RoomChatHistory,
+    nats_service: Any,
+    subject_manager: Any | None,
+) -> dict[str, Any]:
+    """Send a say (same-room) message via NATS. Returns success status and message details."""
+    player_id = normalize_player_id(player_id)
+    room_messages, max_messages_per_room = room_history
+    logger.debug("=== CHAT SERVICE DEBUG: send_say_message called ===", player_id=player_id, message=message)
+    logger.debug("Processing say message")
+
+    resolved = await _resolve_room_chat_sender(
+        player_id, message, "say", player_service, user_manager, rate_limiter, "Player not found for chat message"
+    )
+    if isinstance(resolved, dict):
+        return resolved
+    player, room_id = resolved
+
+    error_result = check_say_permissions(user_manager, player_id)
+    if error_result:
+        return error_result
+
+    chat_message = create_and_log_chat_message(player_id, player.name, message, room_id, "say")
+    rate_limiter.record_message(player_id, "say", player.name)
+    logger.debug("=== CHAT SERVICE DEBUG: Chat message created ===")
+    store_message_in_room_history(room_messages, chat_message, room_id, max_messages_per_room)
+    logger.info(
+        "Say message created successfully",
+        player_id=player_id,
+        player_name=player.name,
+        room_id=room_id,
+        message_id=chat_message.id,
+    )
+
+    logger.debug(
+        "Chat service NATS service status",
+        nats_service_object=nats_service,
+        nats_service_type=type(nats_service).__name__,
+        nats_connected=nats_service.is_connected() if nats_service else False,
+    )
+
+    return await _publish_room_chat_response(
+        chat_message, player_id, player.name, room_id, nats_service, subject_manager
+    )
+
+
+async def send_emote_message(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Message sending requires many collaborator services
+    player_id: uuid.UUID | str,
+    action: str,
+    player_service: Any,
+    user_manager: Any,
+    rate_limiter: Any,
+    room_history: RoomChatHistory,
+    nats_service: Any,
+    subject_manager: Any | None,
+) -> dict[str, Any]:
+    """Send a custom room emote via NATS. Returns success status and message details."""
+    player_id = normalize_player_id(player_id)
+    room_messages, max_messages_per_room = room_history
+    logger.debug("=== CHAT SERVICE DEBUG: send_emote_message called ===", player_id=player_id, action=action)
+    logger.debug("Processing emote message")
+
+    error_result = validate_emote_action(action)
+    if error_result:
+        return error_result
+
+    resolved = await _resolve_room_chat_sender(
+        player_id,
+        action,
+        "emote",
+        player_service,
+        user_manager,
+        rate_limiter,
+        "Player not found for emote message",
+        validate_content=False,
+    )
+    if isinstance(resolved, dict):
+        if resolved.get("rate_limited"):
+            resolved["error"] = "Rate limit exceeded. Please wait before sending another emote."
+        return resolved
+    player, room_id = resolved
+
+    error_result = check_channel_permissions(user_manager, player_id, "say")
+    if error_result:
+        return error_result
+
+    chat_message = create_and_log_chat_message(player_id, player.name, action, room_id, "emote")
+    rate_limiter.record_message(player_id, "emote", player.name)
+    logger.debug("=== CHAT SERVICE DEBUG: Emote message created ===", message_id=chat_message.id)
+    store_message_in_room_history(room_messages, chat_message, room_id, max_messages_per_room)
+    logger.info(
+        "Emote message created successfully",
+        player_id=player_id,
+        player_name=player.name,
+        room_id=room_id,
+        message_id=chat_message.id,
+    )
+
+    return await _publish_room_chat_response(
+        chat_message, player_id, player.name, room_id, nats_service, subject_manager
+    )

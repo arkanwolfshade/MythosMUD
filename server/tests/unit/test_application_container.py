@@ -181,3 +181,26 @@ def test_application_container_get_project_root():
     container = ApplicationContainer()
     result = container._get_project_root()
     assert isinstance(result, Path) or result is None  # type: ignore[unreachable]
+
+
+def test_nats_combat_prerequisites_fail_on_fresh_combat_bundle():
+    """Regression: e2e startup crashed when NATS combat used a second empty CombatBundle.
+
+    initialize_nats_combat must run on the same CombatBundle instance that ran initialize().
+    """
+    from unittest.mock import MagicMock
+
+    from server.container.bundles.combat import CombatBundle
+
+    empty = CombatBundle()
+    container = MagicMock()
+    container.config = MagicMock()
+    container.event_bus = MagicMock()
+    with pytest.raises(RuntimeError, match="Combat services must be initialized before NATS combat"):
+        empty._validate_nats_combat_prerequisites(container)
+
+    ready = CombatBundle()
+    ready.player_combat_service = MagicMock()
+    ready.player_death_service = MagicMock()
+    ready.player_respawn_service = MagicMock()
+    ready._validate_nats_combat_prerequisites(container)  # does not raise

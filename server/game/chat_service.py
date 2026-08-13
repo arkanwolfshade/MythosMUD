@@ -15,10 +15,8 @@ from ..services.rate_limiter import rate_limiter
 from ..services.user_manager import user_manager
 from ..structured_logging.enhanced_logging_config import get_logger
 from .chat_message import ChatMessage
-from .chat_message_helpers import (
-    create_and_log_chat_message,
-    create_and_log_say_message,
-    store_message_in_room_history,
+from .chat_message_senders import (
+    send_emote_message as send_emote_message_helper,
 )
 from .chat_message_senders import (
     send_global_message as send_global_message_helper,
@@ -33,13 +31,15 @@ from .chat_message_senders import (
     send_predefined_emote as send_predefined_emote_helper,
 )
 from .chat_message_senders import (
+    send_say_message as send_say_message_helper,
+)
+from .chat_message_senders import (
     send_system_message as send_system_message_helper,
 )
 from .chat_message_senders import (
     send_whisper_message as send_whisper_message_helper,
 )
 from .chat_moderation import ChatModeration
-from .chat_nats_publisher import publish_chat_message_to_nats
 from .chat_pose_helpers import (
     clear_player_pose,
     get_player_pose,
@@ -47,12 +47,6 @@ from .chat_pose_helpers import (
     set_player_pose,
 )
 from .chat_pose_manager import ChatPoseManager
-from .chat_validation_helpers import (
-    check_channel_permissions,
-    check_say_permissions,
-    validate_emote_action,
-    validate_say_message,
-)
 from .chat_whisper_tracker import ChatWhisperTracker
 
 if TYPE_CHECKING:
@@ -149,95 +143,16 @@ class ChatService:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
         Returns:
             Dictionary with success status and message details
         """
-
-        player_id = self._normalize_player_id(player_id)
-        logger.debug("=== CHAT SERVICE DEBUG: send_say_message called ===", player_id=player_id, message=message)
-        logger.debug("Processing say message")
-
-        error_result = validate_say_message(message)
-        if error_result:
-            return error_result
-
-        player = await self.player_service.get_player_by_id(player_id)
-        if not player:
-            logger.warning("Player not found for chat message")
-            return {"success": False, "error": "Player not found"}
-
-        self.user_manager.load_player_mutes(player_id)
-
-        if not self.rate_limiter.check_rate_limit(player_id, "say", player.name):
-            logger.warning("Rate limit exceeded for say message", player_id=player_id, player_name=player.name)
-            return {
-                "success": False,
-                "error": "Rate limit exceeded. Please wait before sending another message.",
-                "rate_limited": True,
-            }
-
-        room_id = player.current_room_id
-        if not room_id:
-            logger.warning("Player not in a room")
-            return {"success": False, "error": "Player not in a room"}
-
-        logger.debug("=== CHAT SERVICE DEBUG: Player found ===", player_id=player_id, player_name=player.name)
-
-        error_result = check_say_permissions(self.user_manager, player_id)
-        if error_result:
-            return error_result
-
-        chat_message = create_and_log_say_message(player_id, player.name, message, room_id)
-        self.rate_limiter.record_message(player_id, "say", player.name)
-        logger.debug("=== CHAT SERVICE DEBUG: Chat message created ===")
-
-        store_message_in_room_history(self._room_messages, chat_message, room_id, self._max_messages_per_room)
-
-        logger.info(
-            "Say message created successfully",
-            player_id=player_id,
-            player_name=player.name,
-            room_id=room_id,
-            message_id=chat_message.id,
+        return await send_say_message_helper(
+            player_id,
+            message,
+            self.player_service,
+            self.user_manager,
+            self.rate_limiter,
+            (self._room_messages, self._max_messages_per_room),
+            self.nats_service,
+            self.subject_manager,
         )
-
-        logger.debug("=== CHAT SERVICE DEBUG: About to publish message to NATS ===")
-        logger.debug(
-            "Chat service NATS service status",
-            nats_service_object=self.nats_service,
-            nats_service_type=type(self.nats_service).__name__,
-            nats_connected=self.nats_service.is_connected() if self.nats_service else False,
-        )
-
-        success = await publish_chat_message_to_nats(chat_message, room_id, self.nats_service, self.subject_manager)
-        if not success:
-            logger.error(
-                "NATS publishing failed - NATS is mandatory for chat functionality",
-                player_id=player_id,
-                player_name=player.name,
-                room_id=room_id,
-                message_id=chat_message.id,
-            )
-            return {"success": False, "error": "Chat system temporarily unavailable. Please try again in a moment."}
-        logger.debug("=== CHAT SERVICE DEBUG: NATS publishing completed ===")
-
-        chat_message.echo_sent = True
-        message_dict = chat_message.to_dict()
-
-        try:
-            from server.realtime.message_filtering import SUPPRESS_ECHO_MESSAGE_IDS
-        except ImportError as import_error:  # pragma: no cover - defensive against circular import edge cases
-            logger.debug(
-                "=== CHAT SERVICE DEBUG: Failed to register echo suppression token ===",
-                error=str(import_error),
-                message_id=chat_message.id,
-            )
-        else:
-            SUPPRESS_ECHO_MESSAGE_IDS.add(chat_message.id)
-            logger.debug(
-                "=== CHAT SERVICE DEBUG: Registered echo suppression token ===",
-                message_id=chat_message.id,
-                token_count=len(SUPPRESS_ECHO_MESSAGE_IDS),
-            )
-
-        return {"success": True, "message": message_dict, "room_id": room_id}
 
     async def send_local_message(self, player_id: uuid.UUID | str, message: str) -> dict[str, Any]:
         """
@@ -259,8 +174,7 @@ class ChatService:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
             self.player_service,
             self.user_manager,
             self.rate_limiter,
-            self._room_messages,
-            self._max_messages_per_room,
+            (self._room_messages, self._max_messages_per_room),
             self.nats_service,
             self.subject_manager,
         )
@@ -389,98 +303,16 @@ class ChatService:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
         Returns:
             Dictionary with success status and message details
         """
-        player_id = self._normalize_player_id(player_id)
-        logger.debug("=== CHAT SERVICE DEBUG: send_emote_message called ===", player_id=player_id, action=action)
-        logger.debug("Processing emote message")
-
-        error_result = validate_emote_action(action)
-        if error_result:
-            return error_result
-
-        player = await self.player_service.get_player_by_id(player_id)
-        if not player:
-            logger.warning("Player not found for emote message")
-            return {"success": False, "error": "Player not found"}
-
-        logger.debug(
-            "=== CHAT SERVICE DEBUG: Loading sender's mute data ===",
-            player_id=player_id,
-            player_name=player.name,
+        return await send_emote_message_helper(
+            player_id,
+            action,
+            self.player_service,
+            self.user_manager,
+            self.rate_limiter,
+            (self._room_messages, self._max_messages_per_room),
+            self.nats_service,
+            self.subject_manager,
         )
-        mute_load_result = self.user_manager.load_player_mutes(player_id)
-        logger.debug(
-            "=== CHAT SERVICE DEBUG: Sender's mute data load result ===",
-            player_id=player_id,
-            player_name=player.name,
-            mute_load_result=mute_load_result,
-        )
-
-        if not self.rate_limiter.check_rate_limit(player_id, "emote", player.name):
-            logger.warning("Rate limit exceeded for emote message", player_id=player_id, player_name=player.name)
-            return {
-                "success": False,
-                "error": "Rate limit exceeded. Please wait before sending another emote.",
-                "rate_limited": True,
-            }
-
-        room_id = player.current_room_id
-        if not room_id:
-            logger.warning("Player not in a room")
-            return {"success": False, "error": "Player not in a room"}
-
-        logger.debug("=== CHAT SERVICE DEBUG: Player found ===", player_id=player_id, player_name=player.name)
-
-        error_result = check_channel_permissions(self.user_manager, player_id, "say")
-        if error_result:
-            return error_result
-
-        chat_message = create_and_log_chat_message(player_id, player.name, action, room_id, "emote")
-        self.rate_limiter.record_message(player_id, "emote", player.name)
-        logger.debug("=== CHAT SERVICE DEBUG: Emote message created ===", message_id=chat_message.id)
-
-        store_message_in_room_history(self._room_messages, chat_message, room_id, self._max_messages_per_room)
-
-        logger.info(
-            "Emote message created successfully",
-            player_id=player_id,
-            player_name=player.name,
-            room_id=room_id,
-            message_id=chat_message.id,
-        )
-
-        logger.debug("=== CHAT SERVICE DEBUG: About to publish emote message to NATS ===")
-        success = await publish_chat_message_to_nats(chat_message, room_id, self.nats_service, self.subject_manager)
-        if not success:
-            logger.error(
-                "NATS publishing failed - NATS is mandatory for chat functionality",
-                player_id=player_id,
-                player_name=player.name,
-                room_id=room_id,
-                message_id=chat_message.id,
-            )
-            return {"success": False, "error": "Chat system temporarily unavailable. Please try again in a moment."}
-        logger.debug("=== CHAT SERVICE DEBUG: NATS publishing completed ===")
-
-        chat_message.echo_sent = True
-        message_dict = chat_message.to_dict()
-
-        try:
-            from server.realtime.message_filtering import SUPPRESS_ECHO_MESSAGE_IDS
-        except ImportError as import_error:  # pragma: no cover - defensive against circular import edge cases
-            logger.debug(
-                "=== CHAT SERVICE DEBUG: Failed to register echo suppression token ===",
-                error=str(import_error),
-                message_id=chat_message.id,
-            )
-        else:
-            SUPPRESS_ECHO_MESSAGE_IDS.add(chat_message.id)
-            logger.debug(
-                "=== CHAT SERVICE DEBUG: Registered echo suppression token ===",
-                message_id=chat_message.id,
-                token_count=len(SUPPRESS_ECHO_MESSAGE_IDS),
-            )
-
-        return {"success": True, "message": message_dict, "room_id": room_id}
 
     async def set_player_pose(self, player_id: uuid.UUID | str, pose: str) -> dict[str, Any]:
         """

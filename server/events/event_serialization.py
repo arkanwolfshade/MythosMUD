@@ -22,6 +22,29 @@ T = TypeVar("T", bound=BaseEvent)
 _EVENT_CLASS_REGISTRY: dict[str, type[BaseEvent]] = {}
 
 
+def _register_event_class(registry: dict[str, type[BaseEvent]], obj: type[BaseEvent]) -> None:
+    if not (isinstance(obj, type) and issubclass(obj, BaseEvent) and obj is not BaseEvent):
+        return
+    try:
+        inst = obj.__new__(obj)
+        if hasattr(inst, "event_type") and inst.event_type:
+            registry[inst.event_type] = obj
+        else:
+            registry[obj.__name__] = obj
+    except (TypeError, AttributeError):
+        registry[obj.__name__] = obj
+
+
+def _register_module_events(module: Any, registry: dict[str, type[BaseEvent]], *, include_base: bool) -> None:
+    for name in dir(module):
+        obj = getattr(module, name)
+        if include_base:
+            if isinstance(obj, type) and issubclass(obj, BaseEvent):
+                registry[obj.__name__] = obj
+        else:
+            _register_event_class(registry, obj)
+
+
 def _register_event_types() -> None:
     """Populate the event class registry. Lazy import to avoid circular deps."""
     if _EVENT_CLASS_REGISTRY:
@@ -29,18 +52,7 @@ def _register_event_types() -> None:
 
     from . import combat_events, event_types
 
-    for name in dir(event_types):
-        obj = getattr(event_types, name)
-        if isinstance(obj, type) and issubclass(obj, BaseEvent) and obj is not BaseEvent:
-            # Use event_type from class default, or class name
-            try:
-                inst = obj.__new__(obj)
-                if hasattr(inst, "event_type") and inst.event_type:
-                    _EVENT_CLASS_REGISTRY[inst.event_type] = obj
-                else:
-                    _EVENT_CLASS_REGISTRY[obj.__name__] = obj
-            except (TypeError, AttributeError):
-                _EVENT_CLASS_REGISTRY[obj.__name__] = obj
+    _register_module_events(event_types, _EVENT_CLASS_REGISTRY, include_base=False)
 
     # PlayerXPAwardEvent has event_type "player_xp_awarded" - lazy import to avoid pulling config
     try:
@@ -48,14 +60,29 @@ def _register_event_types() -> None:
 
         _EVENT_CLASS_REGISTRY["player_xp_awarded"] = PlayerXPAwardEvent
         _EVENT_CLASS_REGISTRY["PlayerXPAwardEvent"] = PlayerXPAwardEvent
-    except Exception:  # pylint: disable=broad-exception-caught  # Config/import may fail in isolation
+    except ImportError:
+        # Optional combat XP event type unavailable in this import context
         pass
 
-    # Combat events (in case any are ever published to EventBus)
-    for name in dir(combat_events):
-        obj = getattr(combat_events, name)
-        if isinstance(obj, type) and issubclass(obj, BaseEvent):
-            _EVENT_CLASS_REGISTRY[obj.__name__] = obj
+    _register_module_events(combat_events, _EVENT_CLASS_REGISTRY, include_base=True)
+
+
+def _extract_event_fields(event: BaseEvent) -> dict[str, Any]:
+    if is_dataclass(event) and not isinstance(event, type):
+        return asdict(event)
+    data: dict[str, Any] = {}
+    for field_name in dir(event):
+        if field_name.startswith("_") or field_name in ("event_type",):
+            continue
+        try:
+            value = getattr(event, field_name)
+            if not callable(value) and not isinstance(value, type):
+                data[field_name] = value
+        except (AttributeError, TypeError):
+            pass
+    if hasattr(event, "event_type"):
+        data["event_type"] = getattr(event, "event_type", type(event).__name__)
+    return data
 
 
 def _convert_value_for_json(value: Any) -> Any:
@@ -110,21 +137,7 @@ def serialize_event(event: BaseEvent) -> dict[str, Any]:
     _register_event_types()
 
     try:
-        if is_dataclass(event) and not isinstance(event, type):
-            data = asdict(event)
-        else:
-            data = {}
-            for f in dir(event):
-                if f.startswith("_") or f in ("event_type",):
-                    continue
-                try:
-                    v = getattr(event, f)
-                    if not callable(v) and not isinstance(v, type):
-                        data[f] = v
-                except (AttributeError, TypeError):
-                    pass
-            if hasattr(event, "event_type"):
-                data["event_type"] = getattr(event, "event_type", type(event).__name__)
+        data = _extract_event_fields(event)
     except (TypeError, AttributeError):
         data = {"event_type": type(event).__name__}
 

@@ -56,17 +56,9 @@ def _two_rooms() -> _MapRooms:
     ]
 
 
-async def _ensure_coords_stub(
-    _session: AsyncSession,
-    _zone_ctx: MapZoneContext,
-    rooms: _MapRooms,
-    _player: object,
-    _player_id: uuid.UUID | None,
-    _exploration_service: ExplorationService,
-    _current_user: User | None,
-    _room_service: RoomService,
-) -> _MapRooms:
-    return rooms
+async def _ensure_coords_stub(ctx: object) -> _MapRooms:
+    rooms = getattr(ctx, "rooms", None)
+    return cast(_MapRooms, rooms if rooms is not None else [])
 
 
 @pytest.mark.asyncio

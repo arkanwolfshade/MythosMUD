@@ -90,6 +90,8 @@ class NATSConnectionStateMachine(StateMachine):
 
         Narrows base class type (Any | MutableSet[State]) for this single-state FSM
         so mypy accepts .id and state comparisons. CI uses stricter mypy than some locals.
+
+        AI: Project pins python-statemachine>=2.5,<3; use current_state (v2), not configuration (v3).
         """
         current = self.current_state
         if not isinstance(current, State):

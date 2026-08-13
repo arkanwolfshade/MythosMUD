@@ -59,61 +59,78 @@ export const handleRescueUpdate: EventHandler = (event, context, appendMessage) 
   }
 };
 
+function parseMythosHour(mythosDatetime: string | undefined): number | null {
+  if (!mythosDatetime) {
+    return null;
+  }
+  try {
+    return new Date(mythosDatetime).getUTCHours();
+  } catch (error) {
+    logger.error('systemHandlers', 'Failed to parse mythos_datetime for clock chime', {
+      error: error instanceof Error ? error.message : String(error),
+      mythos_datetime: mythosDatetime,
+    });
+    return null;
+  }
+}
+
+function appendHourChime(
+  context: Parameters<EventHandler>[1],
+  appendMessage: NonNullable<Parameters<EventHandler>[2]>,
+  payload: MythosTimePayload,
+  timestamp: string,
+  currentHour: number
+): void {
+  const previousHour = context.lastHourRef.current;
+  if (previousHour !== null && previousHour !== currentHour) {
+    const formattedClock = formatMythosTime12Hour(payload.mythos_clock);
+    appendMessage(
+      sanitizeChatMessageForState({
+        text: `[Time] The clock chimes ${formattedClock} Mythos`,
+        timestamp,
+        messageType: 'system',
+        channel: 'system',
+        isHtml: false,
+      })
+    );
+  }
+  context.lastHourRef.current = currentHour;
+}
+
+function appendDaypartChange(
+  context: Parameters<EventHandler>[1],
+  appendMessage: NonNullable<Parameters<EventHandler>[2]>,
+  daypart: string,
+  timestamp: string
+): void {
+  const previousDaypart = context.lastDaypartRef.current;
+  if (previousDaypart && previousDaypart !== daypart) {
+    const description = DAYPART_MESSAGES[daypart] ?? `The Mythos clock shifts into the ${daypart} watch.`;
+    appendMessage(
+      sanitizeChatMessageForState({
+        text: `[Time] ${description}`,
+        timestamp,
+        messageType: 'system',
+        channel: 'system',
+        isHtml: false,
+      })
+    );
+  }
+  context.lastDaypartRef.current = daypart;
+}
+
 export const handleMythosTimeUpdate: EventHandler = (event, context, appendMessage) => {
   const payload = event.data as unknown as MythosTimePayload;
-  if (payload && payload.mythos_clock) {
-    const nextState = buildMythosTimeState(payload);
-    context.setMythosTime(nextState);
-
-    // Extract current hour from mythos_datetime for clock chime messages
-    let currentHour: number | null = null;
-    if (payload.mythos_datetime) {
-      try {
-        const mythosDate = new Date(payload.mythos_datetime);
-        currentHour = mythosDate.getUTCHours();
-      } catch (error) {
-        logger.error('systemHandlers', 'Failed to parse mythos_datetime for clock chime', {
-          error: error instanceof Error ? error.message : String(error),
-          mythos_datetime: payload.mythos_datetime,
-        });
-      }
-    }
-
-    // Create clock chime message on hourly tick
-    if (currentHour !== null) {
-      const previousHour = context.lastHourRef.current;
-      if (previousHour !== null && previousHour !== currentHour) {
-        const formattedClock = formatMythosTime12Hour(payload.mythos_clock);
-        appendMessage(
-          sanitizeChatMessageForState({
-            text: `[Time] The clock chimes ${formattedClock} Mythos`,
-            timestamp: event.timestamp,
-            messageType: 'system',
-            channel: 'system',
-            isHtml: false,
-          })
-        );
-      }
-      context.lastHourRef.current = currentHour;
-    }
-
-    // Create daypart change message
-    const previousDaypart = context.lastDaypartRef.current;
-    if (previousDaypart && previousDaypart !== nextState.daypart) {
-      const description =
-        DAYPART_MESSAGES[nextState.daypart] ?? `The Mythos clock shifts into the ${nextState.daypart} watch.`;
-      appendMessage(
-        sanitizeChatMessageForState({
-          text: `[Time] ${description}`,
-          timestamp: event.timestamp,
-          messageType: 'system',
-          channel: 'system',
-          isHtml: false,
-        })
-      );
-    }
-    context.lastDaypartRef.current = nextState.daypart;
+  if (!payload?.mythos_clock) {
+    return;
   }
+  const nextState = buildMythosTimeState(payload);
+  context.setMythosTime(nextState);
+  const currentHour = parseMythosHour(payload.mythos_datetime);
+  if (currentHour !== null) {
+    appendHourChime(context, appendMessage, payload, event.timestamp, currentHour);
+  }
+  appendDaypartChange(context, appendMessage, nextState.daypart, event.timestamp);
 };
 
 export const handleIntentionalDisconnect: EventHandler = (event, context, appendMessage) => {

@@ -6,7 +6,7 @@ Tests the connection_establishment module functions.
 
 import asyncio
 import uuid
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi import WebSocket
@@ -214,6 +214,7 @@ def test_register_new_connection_existing_player():
     connection_id = _register_new_connection(mock_websocket, player_id, mock_manager)
 
     assert connection_id in mock_manager.player_websockets[player_id]
+    assert existing_conn in mock_manager.player_websockets[player_id]
     assert len(mock_manager.player_websockets[player_id]) == 2
 
 
@@ -374,6 +375,8 @@ async def test_track_player_presence_new_player():
     mock_player = MagicMock()
     mock_manager = MagicMock()
     mock_manager.online_players = {}
+    mock_manager.grace_period_players = {}
+    mock_manager.resting_players = {}
     mock_manager._track_player_connected = AsyncMock()
 
     await _track_player_presence(player_id, mock_player, mock_manager)
@@ -388,10 +391,49 @@ async def test_track_player_presence_existing_player():
     mock_player = MagicMock()
     mock_manager = MagicMock()
     mock_manager.online_players = {player_id: mock_player}
+    mock_manager.grace_period_players = {}
+    mock_manager.resting_players = {}
     mock_manager._broadcast_connection_message = AsyncMock()
 
     await _track_player_presence(player_id, mock_player, mock_manager)
 
+    mock_manager._broadcast_connection_message.assert_called_once_with(player_id, mock_player)
+
+
+@pytest.mark.asyncio
+async def test_track_player_presence_existing_player_cancels_grace_period():
+    """Linkdead reconnect (already online) must cancel the disconnect grace timer."""
+    player_id = uuid.uuid4()
+    mock_player: MagicMock = MagicMock()
+    mock_manager: MagicMock = MagicMock()
+    mock_manager.online_players = {player_id: mock_player}
+    mock_manager.resting_players = {}
+    mock_manager._broadcast_connection_message = AsyncMock()
+    mock_cancel: AsyncMock = AsyncMock()
+
+    with patch("server.realtime.connection_establishment.cancel_grace_period", mock_cancel):
+        await _track_player_presence(player_id, mock_player, mock_manager)
+
+    mock_cancel.assert_called_once_with(player_id, mock_manager)
+    mock_manager._broadcast_connection_message.assert_called_once_with(player_id, mock_player)
+    mock_manager._track_player_connected.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_track_player_presence_existing_player_cancels_rest_countdown():
+    """WS reconnect must cancel leftover /rest so the countdown cannot kill the new session."""
+    player_id = uuid.uuid4()
+    mock_player: MagicMock = MagicMock()
+    mock_manager: MagicMock = MagicMock()
+    mock_manager.online_players = {player_id: mock_player}
+    mock_manager.grace_period_players = {}
+    mock_manager._broadcast_connection_message = AsyncMock()
+    mock_cancel_rest: AsyncMock = AsyncMock()
+
+    with patch("server.commands.rest_command.cancel_rest_countdown", mock_cancel_rest):
+        await _track_player_presence(player_id, mock_player, mock_manager)
+
+    mock_cancel_rest.assert_called_once_with(player_id, mock_manager)
     mock_manager._broadcast_connection_message.assert_called_once_with(player_id, mock_player)
 
 
@@ -450,6 +492,8 @@ async def test_establish_websocket_connection_success():
     mock_manager.room_manager = MagicMock()
     mock_manager.room_manager.subscribe_to_room = MagicMock()
     mock_manager.online_players = {}
+    mock_manager.grace_period_players = {}
+    mock_manager.resting_players = {}
     mock_manager.performance_tracker = MagicMock()
     mock_manager.performance_tracker.record_connection_establishment = MagicMock()
     mock_manager.async_persistence = MagicMock()
@@ -532,6 +576,8 @@ async def test_establish_websocket_connection_cleans_dead_connections():
     mock_manager.room_manager = MagicMock()
     mock_manager.room_manager.subscribe_to_room = MagicMock()
     mock_manager.online_players = {}
+    mock_manager.grace_period_players = {}
+    mock_manager.resting_players = {}
     mock_manager.performance_tracker = MagicMock()
     mock_manager.performance_tracker.record_connection_establishment = MagicMock()
     mock_manager.async_persistence = MagicMock()

@@ -170,6 +170,21 @@ export const handlePlayerDeliriumRespawned: EventHandler = (event, context) => {
   return updates;
 };
 
+function mergePlayerStats(
+  existingStats: Player['stats'] | undefined,
+  // Partial patch from WS events; required fields filled from existing/defaults below
+  incoming: Partial<NonNullable<Player['stats']>> & Record<string, unknown>
+): Player['stats'] {
+  const currentDp = incoming.current_dp ?? existingStats?.current_dp ?? 0;
+  const lucidity = incoming.lucidity ?? existingStats?.lucidity ?? 0;
+  return {
+    ...(existingStats || {}),
+    ...incoming,
+    current_dp: currentDp,
+    lucidity: lucidity,
+  } as Player['stats'];
+}
+
 export const handlePlayerUpdate: EventHandler = (event, context) => {
   const playerData = event.data as {
     in_combat?: boolean;
@@ -184,33 +199,19 @@ export const handlePlayerUpdate: EventHandler = (event, context) => {
   };
 
   const updates: GameStateUpdates = {};
-
-  if (context.currentPlayerRef.current) {
-    const updatedPlayer = { ...context.currentPlayerRef.current };
-
-    // Update in_combat if provided
-    if (playerData.in_combat !== undefined) {
-      updatedPlayer.in_combat = playerData.in_combat;
-    }
-
-    // Update stats if provided
-    if (playerData.stats) {
-      const existingStats = context.currentPlayerRef.current.stats;
-      // Ensure required fields are preserved if not provided in update
-      const currentDp = playerData.stats.current_dp ?? existingStats?.current_dp ?? 0;
-      const lucidity = playerData.stats.lucidity ?? existingStats?.lucidity ?? 0;
-
-      updatedPlayer.stats = {
-        ...(existingStats || {}),
-        ...playerData.stats,
-        current_dp: currentDp,
-        lucidity: lucidity,
-      } as Player['stats'];
-    }
-
-    updates.player = updatedPlayer;
+  const current = context.currentPlayerRef.current;
+  if (!current) {
+    return updates;
   }
 
+  const updatedPlayer = { ...current };
+  if (playerData.in_combat !== undefined) {
+    updatedPlayer.in_combat = playerData.in_combat;
+  }
+  if (playerData.stats) {
+    updatedPlayer.stats = mergePlayerStats(current.stats, playerData.stats);
+  }
+  updates.player = updatedPlayer;
   return updates;
 };
 

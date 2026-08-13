@@ -149,6 +149,32 @@ def _add_additional_stats_lines(status_lines: list[str], stats: dict[str, Any]) 
         status_lines.append(f"Occult Knowledge: {stats.get('occult_knowledge', 0)}")
 
 
+def _get_status_persistence(app: Any) -> Any | None:
+    if app and hasattr(app.state, "container") and app.state.container:
+        return app.state.container.async_persistence
+    if app:
+        return getattr(app.state, "persistence", None)
+    return None
+
+
+async def _build_status_result(app: Any, persistence: Any, current_user: dict[str, Any]) -> dict[str, str]:
+    player = await persistence.get_player_by_name(get_username_from_user(current_user))
+    if not player:
+        return {"result": "Player information not found."}
+
+    room = persistence.get_room_by_id(player.current_room_id) if player.current_room_id else None
+    room_name = room.name if room else "Unknown location"
+    stats = player.get_stats()
+
+    profession_info = await _get_profession_info(player, persistence)
+    in_combat = await _get_combat_status(app, player)
+
+    status_lines = _build_base_status_lines(player, room_name, stats, in_combat)
+    _add_profession_lines(status_lines, profession_info)
+    _add_additional_stats_lines(status_lines, stats)
+    return {"result": "\n".join(status_lines)}
+
+
 async def handle_status_command(
     command_data: dict[str, Any],
     current_user: dict[str, Any],
@@ -175,37 +201,19 @@ async def handle_status_command(
     logger.debug("Processing status command", player=player_name)
 
     app = request.app if request else None
-    # Prefer container, fallback to app.state for backward compatibility
-    persistence = None
-    if app and hasattr(app.state, "container") and app.state.container:
-        persistence = app.state.container.async_persistence
-    elif app:
-        persistence = getattr(app.state, "persistence", None)
+    persistence = _get_status_persistence(app)
 
     if not persistence:
         logger.warning("Status command failed - no persistence layer", player=player_name)
         return {"result": "Status information is not available."}
 
     try:
-        player = await persistence.get_player_by_name(get_username_from_user(current_user))
-        if not player:
+        result = await _build_status_result(app, persistence, current_user)
+        if result["result"] == "Player information not found.":
             logger.warning("Status command failed - player not found", player=player_name)
-            return {"result": "Player information not found."}
-
-        room = persistence.get_room_by_id(player.current_room_id) if player.current_room_id else None
-        room_name = room.name if room else "Unknown location"
-        stats = player.get_stats()
-
-        profession_info = await _get_profession_info(player, persistence)
-        in_combat = await _get_combat_status(app, player)
-
-        status_lines = _build_base_status_lines(player, room_name, stats, in_combat)
-        _add_profession_lines(status_lines, profession_info)
-        _add_additional_stats_lines(status_lines, stats)
-
-        result = "\n".join(status_lines)
-        logger.debug("Status command successful", player=player_name)
-        return {"result": result}
+        else:
+            logger.debug("Status command successful", player=player_name)
+        return result
     except (AttributeError, TypeError) as e:
         logger.error("Status command error", player=player_name, error=str(e))
         return {"result": f"Error retrieving status information: {str(e)}"}

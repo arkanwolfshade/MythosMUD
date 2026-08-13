@@ -40,7 +40,61 @@ def _format_room_posture_message(player_name: str, previous_position: str | None
     return f"{player_name} shifts their posture uneasily."
 
 
-async def _handle_position_change(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Position commands require many parameters for context and position logic
+def _get_position_command_services(request: Any) -> tuple[Any | None, Any | None]:
+    app = getattr(request, "app", None) if request else None
+    if app and hasattr(app.state, "container") and app.state.container:
+        return app.state.container.async_persistence, app.state.container.connection_manager
+    if app:
+        return getattr(app.state, "persistence", None), getattr(app.state, "connection_manager", None)
+    return None, None
+
+
+async def _broadcast_posture_change(
+    connection_manager: Any,
+    player_id: Any,
+    room_id: Any,
+    player_display_name: str,
+    previous_position: str | None,
+    new_position: str,
+    room_message: str,
+) -> None:
+    if not connection_manager or not hasattr(connection_manager, "broadcast_to_room"):
+        return
+    if not room_id or not player_id:
+        return
+    try:
+        event = build_event(
+            "player_posture_change",
+            {
+                "player_id": str(player_id) if player_id else None,
+                "player_name": player_display_name,
+                "previous_position": previous_position,
+                "position": new_position,
+                "message": room_message,
+            },
+            room_id=str(room_id) if room_id else None,
+            player_id=player_id,
+            connection_manager=connection_manager,
+        )
+        await connection_manager.broadcast_to_room(str(room_id) if room_id else "", event, exclude_player=player_id)
+        logger.info(
+            "Broadcasted posture change",
+            player_name=player_display_name,
+            player_id=player_id,
+            previous_position=previous_position,
+            new_position=new_position,
+            room_id=room_id,
+        )
+    except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as exc:
+        logger.warning(
+            "Failed to broadcast posture change",
+            player_name=player_display_name,
+            player_id=player_id,
+            error=str(exc),
+        )
+
+
+async def _handle_position_change(
     current_user: dict[str, Any],
     request: Any,
     alias_storage: AliasStorage | None,
@@ -49,83 +103,32 @@ async def _handle_position_change(  # pylint: disable=too-many-arguments,too-man
     command_name: str,
 ) -> dict[str, Any]:
     """Shared entry point for posture-changing commands."""
-    app = getattr(request, "app", None) if request else None
-
-    # Prefer container, fallback to app.state for backward compatibility
-    persistence = None
-    connection_manager = None
-    if app and hasattr(app.state, "container") and app.state.container:
-        persistence = app.state.container.async_persistence
-        connection_manager = app.state.container.connection_manager
-    elif app:
-        persistence = getattr(app.state, "persistence", None)
-        connection_manager = getattr(app.state, "connection_manager", None)
-
+    persistence, connection_manager = _get_position_command_services(request)
     target_player_name = player_name or get_username_from_user(current_user)
 
     position_service = PlayerPositionService(persistence, connection_manager, alias_storage)
     result = await position_service.change_position(target_player_name, desired_position)
 
     room_message: str | None = None
-    player_update: dict[str, str | None] | None = None
+    # Always sync posture to client (including "already standing"): UI can show Sitting
+    # after cancelled /rest while persistence already has standing.
+    previous_position = result.get("previous_position")
+    player_update: dict[str, str | None] | None = {
+        "position": result["position"],
+        "previous_position": previous_position,
+    }
     if result.get("success"):
-        previous_position = result.get("previous_position")
         player_display_name = result.get("player_display_name", target_player_name)
         room_message = _format_room_posture_message(player_display_name, previous_position, result["position"])
-        player_update = {
-            "position": result["position"],
-            "previous_position": previous_position,
-        }
-
-        player_id = result.get("player_id")
-        room_id = result.get("room_id")
-
-        if connection_manager and hasattr(connection_manager, "broadcast_to_room") and room_id and player_id:
-            try:
-                # build_event accepts UUID directly and converts internally
-                # Convert to string only for data dict (JSON serialization)
-                event = build_event(
-                    "player_posture_change",
-                    {
-                        "player_id": str(player_id)
-                        if player_id
-                        else None,  # Convert to string for JSON serialization in data dict
-                        "player_name": player_display_name,
-                        "previous_position": previous_position,
-                        "position": result["position"],
-                        "message": room_message,
-                    },
-                    room_id=str(room_id) if room_id else None,  # Convert to string for JSON serialization
-                    player_id=player_id,  # build_event accepts UUID and converts internally
-                    connection_manager=connection_manager,
-                )
-                # broadcast_to_room now accepts UUID for exclude_player and converts internally
-                await connection_manager.broadcast_to_room(
-                    str(room_id) if room_id else "", event, exclude_player=player_id
-                )
-                logger.info(
-                    "Broadcasted posture change",
-                    player_name=player_display_name,
-                    # Structlog handles UUID objects automatically, no need to convert to string
-                    player_id=player_id,
-                    previous_position=previous_position,
-                    new_position=result["position"],
-                    room_id=room_id,
-                )
-            except (
-                ValueError,
-                AttributeError,
-                ImportError,
-                SQLAlchemyError,
-                TypeError,
-            ) as exc:  # pragma: no cover - defensive logging path
-                logger.warning(
-                    "Failed to broadcast posture change",
-                    player_name=player_display_name,
-                    # Structlog handles UUID objects automatically, no need to convert to string
-                    player_id=player_id,
-                    error=str(exc),
-                )
+        await _broadcast_posture_change(
+            connection_manager,
+            result.get("player_id"),
+            result.get("room_id"),
+            player_display_name,
+            previous_position,
+            result["position"],
+            room_message,
+        )
 
     logger.info(
         "Processed position command",

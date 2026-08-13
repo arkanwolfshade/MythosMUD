@@ -27,7 +27,9 @@ warnings.filterwarnings(
     module="unittest.mock",
 )
 
-from server.realtime.monitoring.statistics_aggregator import StatisticsAggregator  # noqa: E402, I001  # pylint: disable=wrong-import-position  # Reason: Warning filter must be configured before import to suppress RuntimeWarning from HealthMonitor inspection, import order intentionally after filter setup
+from server.realtime.monitoring.statistics_aggregator import (  # noqa: E402, I001  # pylint: disable=wrong-import-position  # Reason: Warning filter must be configured before import to suppress RuntimeWarning from HealthMonitor inspection, import order intentionally after filter setup
+    StatisticsAggregator,
+)
 
 # pylint: disable=redefined-outer-name  # Reason: pytest fixtures are used as function parameters, which triggers this warning
 
@@ -103,16 +105,16 @@ def test_get_memory_stats(statistics_aggregator, mock_memory_monitor):  # pylint
     closed_websockets_count = 0
     connection_metadata: dict[str, Any] = {}
     result = statistics_aggregator.get_memory_stats(
-        active_websockets,
-        player_websockets,
-        connection_timestamps,
-        cleanup_stats,
-        player_sessions,
-        session_connections,
-        online_players,
-        last_seen,
-        closed_websockets_count,
-        connection_metadata,
+        active_websockets=active_websockets,
+        player_websockets=player_websockets,
+        connection_timestamps=connection_timestamps,
+        cleanup_stats=cleanup_stats,
+        player_sessions=player_sessions,
+        session_connections=session_connections,
+        online_players=online_players,
+        last_seen=last_seen,
+        closed_websockets_count=closed_websockets_count,
+        connection_metadata=connection_metadata,
     )
     assert "memory" in result
     assert "connections" in result

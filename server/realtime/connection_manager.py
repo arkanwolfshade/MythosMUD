@@ -8,13 +8,9 @@ and testability.
 
 # pylint: disable=too-many-instance-attributes,too-many-lines,too-many-public-methods,too-many-statements  # Reason: Connection manager requires many state tracking and service attributes. Connection manager requires extensive connection management logic for comprehensive real-time communication. Connection manager legitimately requires many public methods and statements for comprehensive connection management.
 
-import asyncio
-import time
 import uuid
-from collections import deque
 from typing import Any, cast
 
-from anyio import Lock
 from fastapi import WebSocket
 
 from ..models import Player
@@ -31,35 +27,35 @@ from .connection_helpers import (
     mark_player_seen_impl,
     send_personal_message_old_impl,
 )
-from .connection_initialization import (
-    initialize_connection_cleaner,
-    initialize_error_handler,
-    initialize_game_state_provider,
-    initialize_health_monitor,
-    initialize_messaging,
-    initialize_room_event_handler,
-)
-from .connection_manager_methods import (
+from .connection_initialization import initialize_connection_manager
+from .connection_manager_health_cleanup import (
     _check_connection_health_impl,
     _periodic_health_check_impl,
-    broadcast_global_event_impl,
-    broadcast_global_impl,
-    broadcast_room_event_impl,
-    broadcast_to_room_impl,
-    canonical_room_id_public_impl,
     check_and_cleanup_impl,
     check_connection_health_impl,
     cleanup_dead_connections_impl,
     cleanup_ghost_players_impl,
     cleanup_orphaned_data_impl,
+    detect_and_handle_error_state_impl,
+    force_cleanup_impl,
+    handle_authentication_error_impl,
+    handle_security_violation_impl,
+    handle_websocket_error_impl,
+    prune_stale_players_impl,
+    recover_from_error_impl,
+    start_health_checks_impl,
+    stop_health_checks_impl,
+)
+from .connection_manager_methods import (
+    broadcast_global_event_impl,
+    broadcast_global_impl,
+    broadcast_room_event_impl,
+    broadcast_to_room_impl,
+    canonical_room_id_public_impl,
     convert_room_players_uuids_to_names_impl,
     convert_uuids_to_strings_impl,
-    detect_and_handle_error_state_impl,
     disconnect_websocket_connection_impl,
-    force_cleanup_impl,
     force_disconnect_player_impl,
-    get_active_connection_count_impl,
-    get_connection_count_impl,
     get_connection_health_stats_impl,
     get_connection_id_from_websocket_impl,
     get_dual_connection_stats_impl,
@@ -69,38 +65,20 @@ from .connection_manager_methods import (
     get_message_delivery_stats_impl,
     get_next_sequence_impl,
     get_npcs_batch_impl,
-    get_online_player_by_display_name_method,
-    get_online_players_impl,
-    get_pending_messages_impl,
-    get_performance_stats_impl,
     get_player_impl,
-    get_player_presence_info_method,
-    get_player_session_impl,
     get_player_websocket_connection_id_impl,
     get_players_batch_impl,
-    get_rate_limit_info_impl,
     get_room_occupants_impl,
-    get_session_connections_impl,
-    handle_authentication_error_impl,
     handle_player_entered_room_impl,
     handle_player_left_room_impl,
-    handle_security_violation_impl,
-    handle_websocket_error_impl,
-    has_websocket_connection_impl,
     is_websocket_open_impl,
-    prune_stale_players_impl,
-    recover_from_error_impl,
     safe_close_websocket_impl,
     send_initial_game_state_impl,
     send_personal_message_impl,
-    start_health_checks_impl,
-    stop_health_checks_impl,
     subscribe_to_room_events_impl,
     subscribe_to_room_impl,
     unsubscribe_from_room_events_impl,
     unsubscribe_from_room_impl,
-    validate_player_presence_method,
-    validate_session_impl,
 )
 from .connection_manager_utils import lazy_import_api_function, resolve_connection_manager
 from .connection_models import ConnectionMetadata
@@ -110,26 +88,19 @@ from .connection_room_utils import (
     reconcile_room_presence_impl,
 )
 from .connection_session_management import handle_new_game_session_impl
-from .connection_statistics import get_presence_statistics_impl, get_session_stats_impl
+from .connection_statistics import (
+    get_online_player_by_display_name_impl,
+    get_player_presence_info_impl,
+    get_presence_statistics_impl,
+    get_session_stats_impl,
+    validate_player_presence_impl,
+)
 from .connection_utils import get_npc_name_from_instance
-from .errors.error_handler import ConnectionErrorHandler
-from .integration.game_state_provider import GameStateProvider
-from .integration.room_event_handler import RoomEventHandler
-from .maintenance.connection_cleaner import ConnectionCleaner
-from .memory_monitor import MemoryMonitor
-from .message_queue import MessageQueue
-from .messaging.message_broadcaster import MessageBroadcaster
-from .messaging.personal_message_sender import PersonalMessageSender
-from .monitoring.health_monitor import HealthMonitor
-from .monitoring.performance_tracker import PerformanceTracker
-from .monitoring.statistics_aggregator import StatisticsAggregator
 from .player_presence_tracker import (
     broadcast_connection_message_impl,
     track_player_connected_impl,
     track_player_disconnected_impl,
 )
-from .rate_limiter import RateLimiter
-from .room_subscription_manager import RoomSubscriptionManager
 
 logger = get_logger(__name__)
 
@@ -148,122 +119,35 @@ class ConnectionManager:
     - RoomSubscriptionManager: Room subscriptions and occupant tracking
     """
 
+    # Declared here so static analyzers see attrs set in initialize_connection_manager().
+    # pylint: disable=attribute-defined-outside-init  # Reason: attrs set via init helper
+    async_persistence: Any
+    _event_bus: Any
+    _player_combat_service: Any
+    _closed_websockets: Any
+    room_manager: Any
+    rate_limiter: Any
+    message_queue: Any
+    active_websockets: Any
+    connection_metadata: Any
+    player_websockets: Any
+    online_players: Any
+    last_seen: Any
+    last_active_update_times: Any
+    intentional_disconnects: Any
+    disconnect_lock: Any
+    processed_disconnect_lock: Any
+    processed_disconnects: Any
+    player_sessions: Any
+    session_connections: Any
+    session_disconnect_times: Any
+    performance_tracker: Any
+    sequence_counter: int
+    app: Any
+
     def __init__(self, event_publisher: Any | None = None) -> None:
         """Initialize the connection manager with modular components."""
-        # Active WebSocket connections
-        self.active_websockets: dict[str, WebSocket] = {}
-        # Player ID to WebSocket connection IDs mapping (supports multiple connections)
-        self.player_websockets: dict[uuid.UUID, list[str]] = {}
-        # Connection metadata tracking
-        self.connection_metadata: dict[str, ConnectionMetadata] = {}
-        # Global event sequence counter
-        self.sequence_counter = 0
-        # Reference to persistence layer (set during app startup)
-        self.async_persistence: Any | None = (
-            None  # ARCHITECTURAL FIX: Use async_persistence instead of sync persistence
-        )
-        # EventPublisher for NATS integration
-        self.event_publisher = event_publisher
-        # Event bus reference (set during app startup)
-        self._event_bus: Any = None
-        # FastAPI app reference (set during app startup)
-        self.app: Any = None
-        # Player combat service reference (set during app startup)
-        self._player_combat_service: Any = None
-
-        # Player presence tracking
-        # player_id -> player_info
-        self.online_players: dict[uuid.UUID, dict[str, Any]] = {}
-        # player_id -> last seen unix timestamp
-        self.last_seen: dict[uuid.UUID, float] = {}
-        # Throttled persistence updates for last_active timestamps
-        self.last_active_update_interval: float = 60.0
-        self.last_active_update_times: dict[uuid.UUID, float] = {}
-        # Track players currently being disconnected to prevent duplicate events
-        self.disconnecting_players: set[uuid.UUID] = set()
-        self.disconnect_lock = Lock()
-        # Track players whose disconnect has already been processed
-        self.processed_disconnects: set[uuid.UUID] = set()
-        self.processed_disconnect_lock = Lock()
-        # Track players in grace period after unintentional disconnect
-        self.grace_period_players: dict[uuid.UUID, asyncio.Task[Any]] = {}
-        # Track players in login grace period (10-second immunity after login)
-        self.login_grace_period_players: dict[uuid.UUID, asyncio.Task[Any]] = {}
-        # Track login grace period start times for remaining time calculation
-        self.login_grace_period_start_times: dict[uuid.UUID, float] = {}
-        # Track players currently resting (for /rest command countdown)
-        self.resting_players: dict[uuid.UUID, asyncio.Task[Any]] = {}
-        # Track players intentionally disconnecting (via /rest or /quit) - no grace period
-        self.intentional_disconnects: set[uuid.UUID] = set()
-
-        # Connection tracking with timestamps
-        self.connection_timestamps: dict[str, float] = {}
-
-        # Cleanup counters
-        self.cleanup_stats = {
-            "last_cleanup": time.time(),
-            "cleanups_performed": 0,
-            "memory_cleanups": 0,
-            "time_cleanups": 0,
-            "cleanup_operation_counts": {
-                "dead_connections": 0,
-                "orphaned_data": 0,
-                "ghost_players": 0,
-                "force_cleanup": 0,
-                "check_and_cleanup": 0,
-            },
-            "cleanup_operation_timestamps": [],
-        }
-
-        # Initialize modular components
-        self.memory_monitor = MemoryMonitor()
-        self.rate_limiter = RateLimiter()
-        self.message_queue = MessageQueue(max_messages_per_player=self.memory_monitor.max_pending_messages)
-        self.room_manager = RoomSubscriptionManager()
-        self.performance_tracker = PerformanceTracker(max_samples=1000)
-        self.statistics_aggregator = StatisticsAggregator(
-            memory_monitor=self.memory_monitor,
-            rate_limiter=self.rate_limiter,
-            message_queue=self.message_queue,
-            room_manager=self.room_manager,
-            performance_tracker=self.performance_tracker,
-        )
-        # Initialize specialized components (require callbacks, set after other components)
-        self.health_monitor: HealthMonitor | None = None
-        self.error_handler: ConnectionErrorHandler | None = None
-        self.connection_cleaner: ConnectionCleaner | None = None
-        self.game_state_provider: GameStateProvider | None = None
-        self.room_event_handler: RoomEventHandler | None = None
-        self.personal_message_sender: PersonalMessageSender | None = None
-        self.message_broadcaster: MessageBroadcaster | None = None
-
-        # Session management
-        self.player_sessions: dict[uuid.UUID, str] = {}  # player_id -> current_session_id
-        self.session_connections: dict[str, list[str]] = {}  # session_id -> list of connection_ids
-        # Disconnected sessions age off after 5 min; reconnects purge old sessions immediately
-        self.session_disconnect_times: dict[str, float] = {}  # session_id -> disconnect timestamp
-
-        # Track safely closed websocket objects to avoid duplicate closes
-        # Use deque with maxlen to prevent unbounded growth (maxlen=1000)
-        self._closed_websockets: deque[int] = deque(maxlen=1000)
-
-        # Background executor for disconnect processing when no event loop is available
-        self._disconnect_executor: Any | None = None
-
-        # Connection health check configuration
-        self._health_check_interval: float = 30.0  # Check every 30 seconds
-        self._health_check_task: Any | None = None
-        # 5 minutes idle = stale connection (aligned with MemoryMonitor.max_connection_age)
-        self._connection_timeout: float = 300.0
-        self._token_revalidation_interval: float = 300.0  # Revalidate tokens every 5 minutes
-
-        # Initialize specialized components with callbacks
-        initialize_health_monitor(self)
-        initialize_error_handler(self)
-        initialize_connection_cleaner(self)
-        initialize_game_state_provider(self)
-        initialize_messaging(self)
-        initialize_room_event_handler(self)
+        initialize_connection_manager(self, event_publisher)
 
     def _is_websocket_open(self, websocket: WebSocket) -> bool:
         """Check if a WebSocket is open."""
@@ -298,11 +182,12 @@ class ConnectionManager:
 
     def has_websocket_connection(self, player_id: uuid.UUID) -> bool:
         """Check if a player has any WebSocket connections."""
-        return has_websocket_connection_impl(self, player_id)
+        return player_id in self.player_websockets and len(self.player_websockets[player_id]) > 0
 
     def get_connection_count(self, player_id: uuid.UUID) -> dict[str, int]:
         """Get the number of connections for a player by type."""
-        return get_connection_count_impl(self, player_id)
+        websocket_count = len(self.player_websockets.get(player_id, []))
+        return {"websocket": websocket_count, "total": websocket_count}
 
     # Add compatibility methods
     async def subscribe_to_room(self, player_id: uuid.UUID, room_id: str) -> None:
@@ -365,15 +250,18 @@ class ConnectionManager:
 
     def get_player_session(self, player_id: uuid.UUID) -> str | None:
         """Get the current session ID for a player."""
-        return get_player_session_impl(self, player_id)
+        result: str | None = cast(str | None, self.player_sessions.get(player_id))
+        return result
 
     def get_session_connections(self, session_id: str) -> list[str]:
         """Get all connection IDs for a session."""
-        return get_session_connections_impl(self, session_id)
+        result: list[str] = cast(list[str], self.session_connections.get(session_id, []))
+        return result
 
     def validate_session(self, player_id: uuid.UUID, session_id: str) -> bool:
         """Validate that a session ID matches the player's current session."""
-        return validate_session_impl(self, player_id, session_id)
+        result: bool = cast(bool, self.player_sessions.get(player_id) == session_id)
+        return result
 
     def get_session_stats(self) -> dict[str, Any]:
         """Get session management statistics."""
@@ -393,15 +281,16 @@ class ConnectionManager:
 
     def get_active_connection_count(self) -> int:
         """Get the total number of active connections."""
-        return get_active_connection_count_impl(self)
+        return len(self.active_websockets)
 
     def check_rate_limit(self, player_id: uuid.UUID) -> bool:
         """Check if a player has exceeded rate limits."""
-        return self.rate_limiter.check_rate_limit(str(player_id))
+        return bool(self.rate_limiter.check_rate_limit(str(player_id)))
 
     def get_rate_limit_info(self, player_id: uuid.UUID) -> dict[str, Any]:
         """Get rate limit information for a player."""
-        return get_rate_limit_info_impl(self, player_id)
+        result: dict[str, Any] = cast(dict[str, Any], self.rate_limiter.get_rate_limit_info(str(player_id)))
+        return result
 
     async def send_personal_message(self, player_id: uuid.UUID, event: dict[str, Any]) -> dict[str, Any]:
         """Send a personal message to a player via WebSocket."""
@@ -475,7 +364,8 @@ class ConnectionManager:
 
     def get_pending_messages(self, player_id: uuid.UUID) -> list[dict[str, Any]]:
         """Get pending messages for a player."""
-        return get_pending_messages_impl(self, player_id)
+        result: list[dict[str, Any]] = cast(list[dict[str, Any]], self.message_queue.get_messages(str(player_id)))
+        return result
 
     async def _get_player(self, player_id: uuid.UUID) -> Player | None:
         """Get a player from the persistence layer (async version)."""
@@ -564,11 +454,11 @@ class ConnectionManager:
 
     def get_player_presence_info(self, player_id: uuid.UUID) -> dict[str, Any]:
         """Get detailed presence information for a player."""
-        return get_player_presence_info_method(self, player_id)
+        return get_player_presence_info_impl(player_id, self)
 
     def validate_player_presence(self, player_id: uuid.UUID) -> dict[str, Any]:
         """Validate player presence and clean up any inconsistencies."""
-        return validate_player_presence_method(self, player_id)
+        return validate_player_presence_impl(player_id, self)
 
     def get_presence_statistics(self) -> dict[str, Any]:
         """Get presence tracking statistics."""
@@ -593,11 +483,11 @@ class ConnectionManager:
 
     def get_online_players(self) -> list[dict[str, Any]]:
         """Get list of online players."""
-        return get_online_players_impl(self)
+        return list(self.online_players.values())
 
     def get_online_player_by_display_name(self, display_name: str) -> dict[str, Any] | None:
         """Get online player information by display name."""
-        return get_online_player_by_display_name_method(self, display_name)
+        return get_online_player_by_display_name_impl(display_name, self)
 
     async def get_room_occupants(self, room_id: str) -> list[dict[str, Any]]:
         """Get list of occupants in a room."""
@@ -621,7 +511,8 @@ class ConnectionManager:
 
     def get_performance_stats(self) -> dict[str, Any]:
         """Get connection performance statistics."""
-        return get_performance_stats_impl(self)
+        result: dict[str, Any] = cast(dict[str, Any], self.performance_tracker.get_stats())
+        return result
 
     def get_connection_health_stats(self) -> dict[str, Any]:
         """Get comprehensive connection health statistics."""

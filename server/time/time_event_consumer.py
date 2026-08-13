@@ -106,6 +106,34 @@ class MythosTimeEventConsumer:  # pylint: disable=too-few-public-methods  # Reas
             "upcoming_holidays": self._holiday_service.get_upcoming_summary(),
         }
 
+    @staticmethod
+    def _serialize_holiday(entry: Any) -> dict[str, Any]:
+        """Serialize a holiday entry for the SSE payload."""
+        return {
+            "id": getattr(entry, "id", ""),
+            "name": getattr(entry, "name", ""),
+            "tradition": getattr(entry, "tradition", ""),
+            "season": getattr(entry, "season", ""),
+            "duration_hours": getattr(entry, "duration_hours", 24),
+            "bonus_tags": list(getattr(entry, "bonus_tags", []) or []),
+            "notes": getattr(entry, "notes", None),
+        }
+
+    @staticmethod
+    def _serialize_schedule(schedule: Any) -> dict[str, Any]:
+        """Serialize a schedule entry for the SSE payload."""
+        return {
+            "id": getattr(schedule, "id", ""),
+            "name": getattr(schedule, "name", ""),
+            "category": getattr(schedule, "category", ""),
+            "start_hour": getattr(schedule, "start_hour", 0),
+            "end_hour": getattr(schedule, "end_hour", 0),
+            "days": list(getattr(schedule, "days", []) or []),
+            "applies_to": list(getattr(schedule, "applies_to", []) or []),
+            "effects": list(getattr(schedule, "effects", []) or []),
+            "notes": getattr(schedule, "notes", None),
+        }
+
     def _build_broadcast_payload(
         self,
         event: MythosHourTickEvent,
@@ -113,41 +141,9 @@ class MythosTimeEventConsumer:  # pylint: disable=too-few-public-methods  # Reas
         active_schedules: Sequence[Any],
     ) -> dict[str, Any]:
         """Create the SSE payload consumed by the client HUD."""
-
-        holiday_payload = [
-            {
-                "id": getattr(entry, "id", ""),
-                "name": getattr(entry, "name", ""),
-                "tradition": getattr(entry, "tradition", ""),
-                "season": getattr(entry, "season", ""),
-                "duration_hours": getattr(entry, "duration_hours", 24),
-                "bonus_tags": list(getattr(entry, "bonus_tags", []) or []),
-                "notes": getattr(entry, "notes", None),
-            }
-            for entry in active_holidays
-        ]
-
-        schedule_payload = [
-            {
-                "id": getattr(schedule, "id", ""),
-                "name": getattr(schedule, "name", ""),
-                "category": getattr(schedule, "category", ""),
-                "start_hour": getattr(schedule, "start_hour", 0),
-                "end_hour": getattr(schedule, "end_hour", 0),
-                "days": list(getattr(schedule, "days", []) or []),
-                "applies_to": list(getattr(schedule, "applies_to", []) or []),
-                "effects": list(getattr(schedule, "effects", []) or []),
-                "notes": getattr(schedule, "notes", None),
-            }
-            for schedule in active_schedules
-        ]
-
-        chronicle = self._chronicle
-        mythos_clock = chronicle.format_clock(event.mythos_datetime)
-
-        payload = {
+        return {
             "mythos_datetime": event.mythos_datetime.isoformat(),
-            "mythos_clock": mythos_clock,
+            "mythos_clock": self._chronicle.format_clock(event.mythos_datetime),
             "month_name": event.month_name,
             "day_of_month": event.day_of_month,
             "day_name": event.day_name,
@@ -157,20 +153,9 @@ class MythosTimeEventConsumer:  # pylint: disable=too-few-public-methods  # Reas
             "is_daytime": event.is_daytime,
             "is_witching_hour": event.is_witching_hour,
             "server_timestamp": datetime.now(UTC).isoformat(),
-            "active_holidays": holiday_payload,
+            "active_holidays": [self._serialize_holiday(entry) for entry in active_holidays],
             "upcoming_holidays": [
-                {
-                    "id": getattr(entry, "id", ""),
-                    "name": getattr(entry, "name", ""),
-                    "tradition": getattr(entry, "tradition", ""),
-                    "season": getattr(entry, "season", ""),
-                    "duration_hours": getattr(entry, "duration_hours", 24),
-                    "bonus_tags": list(getattr(entry, "bonus_tags", []) or []),
-                    "notes": getattr(entry, "notes", None),
-                }
-                for entry in self._holiday_service.get_upcoming_holidays()
+                self._serialize_holiday(entry) for entry in self._holiday_service.get_upcoming_holidays()
             ],
-            "active_schedules": schedule_payload,
+            "active_schedules": [self._serialize_schedule(schedule) for schedule in active_schedules],
         }
-
-        return payload

@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
+from .log_time_formats import LOG_EXPORT_TIMESTAMP, LOG_HOUR_BUCKET
 
 logger = get_logger(__name__)
 
@@ -49,6 +50,19 @@ class LogAggregationStats:  # pylint: disable=too-many-instance-attributes  # Re
     entries_by_hour: dict[str, int]
     error_rate: float
     warning_rate: float
+
+
+@dataclass
+class LogQueryFilter:
+    """Optional filters for get_logs / export."""
+
+    level: str | None = None
+    logger_name: str | None = None
+    user_id: str | None = None
+    correlation_id: str | None = None
+    start_time: datetime | None = None
+    end_time: datetime | None = None
+    limit: int = 1000
 
 
 class LogAggregator:
@@ -103,102 +117,42 @@ class LogAggregator:
             export_path=str(self.export_path) if self.export_path else None,
         )
 
-    def add_log_entry(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Log entry addition requires many parameters for complete log context
-        self,
-        level: str,
-        logger_name: str,
-        message: str,
-        data: dict[str, Any] | None = None,
-        correlation_id: str | None = None,
-        user_id: str | None = None,
-        session_id: str | None = None,
-    ) -> None:
-        """
-        Add a log entry to the aggregation system.
-
-        Args:
-            level: Log level
-            logger_name: Name of the logger
-            message: Log message
-            data: Additional log data
-            correlation_id: Correlation ID for request tracing
-            user_id: User ID if available
-            session_id: Session ID if available
-        """
-        if data is None:
-            data = {}
-
-        log_entry = LogEntry(
-            timestamp=datetime.now(UTC),
-            level=level,
-            logger_name=logger_name,
-            message=message,
-            data=data,
-            correlation_id=correlation_id,
-            user_id=user_id,
-            session_id=session_id,
-        )
-
+    def add_log_entry(self, log_entry: LogEntry) -> None:
+        """Add a log entry to the aggregation system."""
         try:
             self.log_entries.put_nowait(log_entry)
         except queue.Full:
-            # Remove oldest entry if queue is full
             try:
                 self.log_entries.get_nowait()
                 self.log_entries.put_nowait(log_entry)
             except queue.Empty:
                 pass
-
-        # Update statistics
         self._update_stats(log_entry)
 
-    def get_logs(
-        self,
-        level: str | None = None,
-        logger_name: str | None = None,
-        user_id: str | None = None,
-        correlation_id: str | None = None,
-        start_time: datetime | None = None,
-        end_time: datetime | None = None,
-        limit: int = 1000,
-    ) -> list[LogEntry]:
-        """
-        Get filtered log entries.
+    @staticmethod
+    def _eq_if_set(expected: str | None, actual: str | None) -> bool:
+        return not expected or actual == expected
 
-        Args:
-            level: Filter by log level
-            logger_name: Filter by logger name
-            user_id: Filter by user ID
-            correlation_id: Filter by correlation ID
-            start_time: Filter by start time
-            end_time: Filter by end time
-            limit: Maximum number of entries to return
+    def _log_matches_filter(self, log_entry: LogEntry, query: LogQueryFilter) -> bool:
+        return (
+            self._eq_if_set(query.level, log_entry.level)
+            and self._eq_if_set(query.logger_name, log_entry.logger_name)
+            and self._eq_if_set(query.user_id, log_entry.user_id)
+            and self._eq_if_set(query.correlation_id, log_entry.correlation_id)
+            and (not query.start_time or log_entry.timestamp >= query.start_time)
+            and (not query.end_time or log_entry.timestamp <= query.end_time)
+        )
 
-        Returns:
-            List of filtered log entries
-        """
-        filtered_logs = []
-
+    def get_logs(self, query: LogQueryFilter | None = None) -> list[LogEntry]:
+        """Get filtered log entries."""
+        query = query or LogQueryFilter()
+        filtered_logs: list[LogEntry] = []
         for log_entry in self.aggregated_logs:
-            # Apply filters
-            if level and log_entry.level != level:
+            if not self._log_matches_filter(log_entry, query):
                 continue
-            if logger_name and log_entry.logger_name != logger_name:
-                continue
-            if user_id and log_entry.user_id != user_id:
-                continue
-            if correlation_id and log_entry.correlation_id != correlation_id:
-                continue
-            if start_time and log_entry.timestamp < start_time:
-                continue
-            if end_time and log_entry.timestamp > end_time:
-                continue
-
             filtered_logs.append(log_entry)
-
-            if len(filtered_logs) >= limit:
+            if len(filtered_logs) >= query.limit:
                 break
-
         return filtered_logs
 
     def get_stats(self) -> LogAggregationStats:
@@ -220,7 +174,7 @@ class LogAggregator:
         Returns:
             List of recent error logs
         """
-        return self.get_logs(level="ERROR", limit=limit)
+        return self.get_logs(LogQueryFilter(level="ERROR", limit=limit))
 
     def get_warning_logs(self, limit: int = 100) -> list[LogEntry]:
         """
@@ -232,7 +186,7 @@ class LogAggregator:
         Returns:
             List of recent warning logs
         """
-        return self.get_logs(level="WARNING", limit=limit)
+        return self.get_logs(LogQueryFilter(level="WARNING", limit=limit))
 
     def get_user_logs(self, user_id: str, limit: int = 100) -> list[LogEntry]:
         """
@@ -245,7 +199,7 @@ class LogAggregator:
         Returns:
             List of logs for the specified user
         """
-        return self.get_logs(user_id=user_id, limit=limit)
+        return self.get_logs(LogQueryFilter(user_id=user_id, limit=limit))
 
     def get_correlation_logs(self, correlation_id: str) -> list[LogEntry]:
         """
@@ -257,7 +211,7 @@ class LogAggregator:
         Returns:
             List of logs for the specified correlation ID
         """
-        return self.get_logs(correlation_id=correlation_id)
+        return self.get_logs(LogQueryFilter(correlation_id=correlation_id))
 
     def export_logs(
         self,
@@ -280,7 +234,7 @@ class LogAggregator:
         if file_path is None:
             if self.export_path is None:
                 raise ValueError("No export path specified")
-            timestamp = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
+            timestamp = datetime.now(UTC).strftime(LOG_EXPORT_TIMESTAMP)
             export_path = self.export_path / f"logs_export_{timestamp}.{format_type}"
         else:
             export_path = Path(file_path)
@@ -289,7 +243,7 @@ class LogAggregator:
 
         # Get logs to export
         if filters:
-            logs = self.get_logs(**filters)
+            logs = self.get_logs(LogQueryFilter(**filters))
         else:
             logs = self.aggregated_logs
 
@@ -362,7 +316,7 @@ class LogAggregator:
         self.stats.entries_by_logger[log_entry.logger_name] += 1
 
         # Group by hour
-        hour_key = log_entry.timestamp.strftime("%Y-%m-%d %H:00")
+        hour_key = log_entry.timestamp.strftime(LOG_HOUR_BUCKET)
         self.stats.entries_by_hour[hour_key] += 1
 
         # Calculate rates
@@ -432,38 +386,11 @@ def get_log_aggregator() -> LogAggregator:
     return _log_aggregator
 
 
-def aggregate_log_entry(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Log aggregation requires many parameters for complete log context
-    level: str,
-    logger_name: str,
-    message: str,
-    data: dict[str, Any] | None = None,
-    correlation_id: str | None = None,
-    user_id: str | None = None,
-    session_id: str | None = None,
+def aggregate_log_entry(
+    log_entry: LogEntry,
     aggregator: LogAggregator | None = None,
 ) -> None:
-    """
-    Add a log entry to the aggregation system.
-
-    Args:
-        level: Log level
-        logger_name: Name of the logger
-        message: Log message
-        data: Additional log data
-        correlation_id: Correlation ID for request tracing
-        user_id: User ID if available
-        session_id: Session ID if available
-        aggregator: Log aggregator instance (uses global if None)
-    """
+    """Add a log entry to the aggregation system (global aggregator if none given)."""
     if aggregator is None:
         aggregator = get_log_aggregator()
-
-    aggregator.add_log_entry(
-        level=level,
-        logger_name=logger_name,
-        message=message,
-        data=data or {},
-        correlation_id=correlation_id,
-        user_id=user_id,
-        session_id=session_id,
-    )
+    aggregator.add_log_entry(log_entry)

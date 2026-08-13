@@ -47,12 +47,14 @@ function runEnsureE2eDatabase(): void {
 
 function runE2ePlayerRoomReset(): void {
   const seedEnv = { ...process.env, ...loadE2eEnv() };
-  const resetResult = spawnSync('uv', ['run', 'python', 'scripts/e2e_reset_players.py'], {
+  const resetResult = spawnSync('uv', ['run', '--no-sync', 'python', 'scripts/e2e_reset_players.py'], {
     cwd: E2E_PROJECT_ROOT,
-    shell: true,
+    // shell:false: args+shell:true is DEP0190 and can hang Playwright on Windows.
+    shell: false,
     stdio: 'pipe',
     encoding: 'utf-8',
     env: seedEnv,
+    timeout: 20000,
   });
   if (resetResult.status !== 0) {
     failBootstrap('e2e_reset_players', `e2e_reset_players.py failed (exit ${resetResult.status}).`, [
@@ -63,12 +65,13 @@ function runE2ePlayerRoomReset(): void {
 
 function runE2eSeed(): void {
   const seedEnv = { ...process.env, ...loadE2eEnv() };
-  const seedResult = spawnSync('uv', ['run', 'python', 'scripts/seed_e2e_users.py'], {
+  const seedResult = spawnSync('uv', ['run', '--no-sync', 'python', 'scripts/seed_e2e_users.py'], {
     cwd: E2E_PROJECT_ROOT,
-    shell: true,
+    shell: false,
     stdio: 'pipe',
     encoding: 'utf-8',
     env: seedEnv,
+    timeout: 20000,
   });
   if (seedResult.status !== 0) {
     failBootstrap('seed_e2e_users', `seed_e2e_users.py failed (exit ${seedResult.status}).`, [
@@ -80,12 +83,13 @@ function runE2eSeed(): void {
 
 function verifyE2eUsersInDatabase(): void {
   const seedEnv = { ...process.env, ...loadE2eEnv() };
-  const verifyResult = spawnSync('uv', ['run', 'python', 'scripts/verify_e2e_users_seeded.py'], {
+  const verifyResult = spawnSync('uv', ['run', '--no-sync', 'python', 'scripts/verify_e2e_users_seeded.py'], {
     cwd: E2E_PROJECT_ROOT,
-    shell: true,
+    shell: false,
     stdio: 'pipe',
     encoding: 'utf-8',
     env: seedEnv,
+    timeout: 20000,
   });
   if (verifyResult.status !== 0) {
     failBootstrap('verify_e2e_users', `verify_e2e_users_seeded.py failed (exit ${verifyResult.status}).`, [

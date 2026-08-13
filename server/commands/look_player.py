@@ -109,6 +109,34 @@ def _select_target_player(
     return (None, {"result": f"You see multiple players matching '{target}': {', '.join(player_names)}"})
 
 
+def _player_id_uuid(target_player: Any) -> uuid.UUID | None:
+    if not hasattr(target_player, "player_id"):
+        return None
+    try:
+        player_id = target_player.player_id
+        return uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+    except (ValueError, AttributeError, TypeError):
+        return None
+
+
+def _apply_grace_period_labels(player_name_display: str, target_player: Any, connection_manager: Any | None) -> str:
+    if not connection_manager:
+        return player_name_display
+
+    player_id = _player_id_uuid(target_player)
+    if player_id is None:
+        return player_name_display
+
+    try:
+        if is_player_in_grace_period(player_id, connection_manager):
+            player_name_display = f"{player_name_display} (linkdead)"
+        if is_player_in_login_grace_period(player_id, connection_manager):
+            player_name_display = f"{player_name_display} (warded)"
+    except (ValueError, AttributeError, ImportError, TypeError):
+        pass
+    return player_name_display
+
+
 def _format_player_look_display(target_player: Any, connection_manager: Any | None = None) -> str:
     """
     Format the display text for looking at a player.
@@ -122,23 +150,7 @@ def _format_player_look_display(target_player: Any, connection_manager: Any | No
         Formatted display text
     """
     player_name_display = target_player.name if hasattr(target_player, "name") else "Unknown"
-    # Check if player is in grace period
-    if connection_manager and hasattr(target_player, "player_id"):
-        try:
-            player_id = (
-                uuid.UUID(target_player.player_id)
-                if isinstance(target_player.player_id, str)
-                else target_player.player_id
-            )
-
-            if is_player_in_grace_period(player_id, connection_manager):
-                player_name_display = f"{player_name_display} (linkdead)"
-            # Check login grace period (can have both indicators)
-            if is_player_in_login_grace_period(player_id, connection_manager):
-                player_name_display = f"{player_name_display} (warded)"
-        except (ValueError, AttributeError, ImportError, TypeError):
-            # If we can't check grace period, use name as-is
-            pass
+    player_name_display = _apply_grace_period_labels(player_name_display, target_player, connection_manager)
 
     stats = target_player.get_stats() if hasattr(target_player, "get_stats") else {}
     position = stats.get("position", "standing") if stats else "standing"

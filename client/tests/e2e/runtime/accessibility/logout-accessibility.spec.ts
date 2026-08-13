@@ -42,8 +42,8 @@ test.describe('Logout Accessibility', () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const _role = await logoutButton.getAttribute('role').catch(() => null);
 
-    // Verify ARIA attributes are present (may be null if not implemented)
-    expect(logoutButton).toBeTruthy();
+    // Verify the logout control is actually in the document (web-first assertion).
+    await expect(logoutButton).toBeVisible();
   });
 
   test('logout button should be keyboard navigable', async () => {
@@ -62,7 +62,7 @@ test.describe('Logout Accessibility', () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const _isFocused = await logoutButton.evaluate(el => el === document.activeElement).catch(() => false);
 
-    // This test verifies keyboard navigation exists (may or may not focus logout button)
-    expect(logoutButton).toBeTruthy();
+    // Control remains reachable/visible after keyboard navigation attempt.
+    await expect(logoutButton).toBeVisible();
   });
 });

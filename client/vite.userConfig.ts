@@ -24,7 +24,7 @@ export function createViteUserConfig(mode: string): UserConfig {
     // Per Vite best practices, minimize path aliases - prefer explicit relative imports
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, './src'),
+        '@': path.resolve(import.meta.dirname, './src'),
       },
     },
 

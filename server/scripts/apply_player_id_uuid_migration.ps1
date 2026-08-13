@@ -6,13 +6,13 @@ param(
     [switch]$DryRun
 )
 
-Write-Host "Applying player_id UUID migration to databases..." -ForegroundColor Green
+Write-Output "Applying player_id UUID migration to databases..."
 
 $databases = @("mythos_dev", "mythos_unit")
 $migrationFile = "db/migrations/010_migrate_player_id_to_uuid.sql"
 
 if (-not (Test-Path $migrationFile)) {
-    Write-Host "ERROR: Migration file not found: $migrationFile" -ForegroundColor Red
+    Write-Output "ERROR: Migration file not found: $migrationFile"
     exit 1
 }
 
@@ -20,10 +20,10 @@ if (-not (Test-Path $migrationFile)) {
 $env:PGPASSWORD = "Cthulhu1"
 
 foreach ($db in $databases) {
-    Write-Host "`nProcessing database: $db" -ForegroundColor Yellow
+    Write-Output "`nProcessing database: $db"
 
     if ($DryRun) {
-        Write-Host "  [DRY RUN] Would apply migration to $db" -ForegroundColor Cyan
+        Write-Output "  [DRY RUN] Would apply migration to $db"
         continue
     }
 
@@ -32,38 +32,38 @@ foreach ($db in $databases) {
     $dbExists = psql -U postgres -d postgres -t -c $checkDb 2>&1 | Out-String
 
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "  ERROR: Failed to check if database exists" -ForegroundColor Red
-        Write-Host "  Make sure PostgreSQL is running and psql is in PATH" -ForegroundColor Yellow
+        Write-Output "  ERROR: Failed to check if database exists"
+        Write-Output "  Make sure PostgreSQL is running and psql is in PATH"
         continue
     }
 
     if ([string]::IsNullOrWhiteSpace($dbExists.Trim())) {
-        Write-Host "  WARNING: Database $db does not exist. Skipping..." -ForegroundColor Yellow
+        Write-Output "  WARNING: Database $db does not exist. Skipping..."
         continue
     }
 
-    Write-Host "  Applying migration..." -ForegroundColor Cyan
+    Write-Output "  Applying migration..."
 
     # Apply migration
     Get-Content $migrationFile | psql -U postgres -d $db
 
     if ($LASTEXITCODE -eq 0) {
-        Write-Host "  [OK] Migration applied successfully to $db" -ForegroundColor Green
+        Write-Output "  [OK] Migration applied successfully to $db"
 
         # Verify the migration
-        Write-Host "  Verifying migration..." -ForegroundColor Cyan
+        Write-Output "  Verifying migration..."
         $verifyQuery = "SELECT data_type FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'players' AND column_name = 'player_id';"
         $result = psql -U postgres -d $db -t -c $verifyQuery 2>&1 | Out-String
 
         if ($result -match 'uuid') {
-            Write-Host "  [OK] Verified: players.player_id is now UUID type" -ForegroundColor Green
+            Write-Output "  [OK] Verified: players.player_id is now UUID type"
         } else {
-            Write-Host "  [WARNING] Verification failed. players.player_id type: $result" -ForegroundColor Yellow
+            Write-Output "  [WARNING] Verification failed. players.player_id type: $result"
         }
     } else {
-        Write-Host "  [ERROR] Migration failed for $db" -ForegroundColor Red
-        Write-Host "  Check PostgreSQL logs for details" -ForegroundColor Yellow
+        Write-Output "  [ERROR] Migration failed for $db"
+        Write-Output "  Check PostgreSQL logs for details"
     }
 }
 
-Write-Host "`nMigration process completed." -ForegroundColor Green
+Write-Output "`nMigration process completed."

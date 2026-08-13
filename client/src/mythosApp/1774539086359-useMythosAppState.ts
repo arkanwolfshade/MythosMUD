@@ -75,150 +75,76 @@ function resolveNextState<T>(current: T, next: SetStateAction<T>): T {
   return typeof next === 'function' ? (next as (prev: T) => T)(current) : next;
 }
 
+function usePatchedSetter<T, K extends keyof T>(
+  patch: (partial: Partial<T>) => void,
+  key: K,
+  current: T[K]
+): (value: SetStateAction<T[K]>) => void {
+  return useCallback(
+    (value: SetStateAction<T[K]>) => {
+      patch({ [key]: resolveNextState(current, value) } as unknown as Partial<T>);
+    },
+    [patch, key, current]
+  );
+}
+
+function useAuthSliceSetters(authSlice: AuthSlice, patchAuthSlice: (partial: Partial<AuthSlice>) => void) {
+  return {
+    setIsAuthenticated: usePatchedSetter(patchAuthSlice, 'isAuthenticated', authSlice.isAuthenticated),
+    setCharacters: usePatchedSetter(patchAuthSlice, 'characters', authSlice.characters),
+    setSelectedCharacterName: usePatchedSetter(
+      patchAuthSlice,
+      'selectedCharacterName',
+      authSlice.selectedCharacterName
+    ),
+    setSelectedCharacterId: usePatchedSetter(patchAuthSlice, 'selectedCharacterId', authSlice.selectedCharacterId),
+    setAuthToken: usePatchedSetter(patchAuthSlice, 'authToken', authSlice.authToken),
+    setShowDemo: usePatchedSetter(patchAuthSlice, 'showDemo', authSlice.showDemo),
+    setShowMotd: usePatchedSetter(patchAuthSlice, 'showMotd', authSlice.showMotd),
+    setShowCharacterSelection: usePatchedSetter(
+      patchAuthSlice,
+      'showCharacterSelection',
+      authSlice.showCharacterSelection
+    ),
+    setError: usePatchedSetter(patchAuthSlice, 'error', authSlice.error),
+    setIsSubmitting: usePatchedSetter(patchAuthSlice, 'isSubmitting', authSlice.isSubmitting),
+    setIsRegistering: usePatchedSetter(patchAuthSlice, 'isRegistering', authSlice.isRegistering),
+    setIsLoggingOut: usePatchedSetter(patchAuthSlice, 'isLoggingOut', authSlice.isLoggingOut),
+  };
+}
+
+function useCreationSliceSetters(
+  creationSlice: CreationSlice,
+  patchCreationSlice: (partial: Partial<CreationSlice>) => void
+) {
+  return {
+    setPlayerName: usePatchedSetter(patchCreationSlice, 'playerName', creationSlice.playerName),
+    setPassword: usePatchedSetter(patchCreationSlice, 'password', creationSlice.password),
+    setInviteCode: usePatchedSetter(patchCreationSlice, 'inviteCode', creationSlice.inviteCode),
+    setCreationStep: usePatchedSetter(patchCreationSlice, 'creationStep', creationSlice.creationStep),
+    setPendingStats: usePatchedSetter(patchCreationSlice, 'pendingStats', creationSlice.pendingStats),
+    setSelectedProfession: usePatchedSetter(patchCreationSlice, 'selectedProfession', creationSlice.selectedProfession),
+    setPendingSkillsPayload: usePatchedSetter(
+      patchCreationSlice,
+      'pendingSkillsPayload',
+      creationSlice.pendingSkillsPayload
+    ),
+  };
+}
+
 function useReducerStateSlices() {
   const [authSlice, patchAuthSlice] = useReducer(authSliceReducer, INITIAL_AUTH_SLICE);
   const [creationSlice, patchCreationSlice] = useReducer(creationSliceReducer, INITIAL_CREATION_SLICE);
   const disconnectCallbackRef = useRef<(() => void) | null>(null);
   const usernameInputRef = useRef<HTMLInputElement | null>(null);
-
-  const setIsAuthenticated = useCallback(
-    (value: SetStateAction<boolean>) => {
-      patchAuthSlice({ isAuthenticated: resolveNextState(authSlice.isAuthenticated, value) });
-    },
-    [authSlice.isAuthenticated]
-  );
-  const setCharacters = useCallback(
-    (value: SetStateAction<CharacterInfo[]>) => {
-      patchAuthSlice({ characters: resolveNextState(authSlice.characters, value) });
-    },
-    [authSlice.characters]
-  );
-  const setSelectedCharacterName = useCallback(
-    (value: SetStateAction<string>) => {
-      patchAuthSlice({ selectedCharacterName: resolveNextState(authSlice.selectedCharacterName, value) });
-    },
-    [authSlice.selectedCharacterName]
-  );
-  const setSelectedCharacterId = useCallback(
-    (value: SetStateAction<string>) => {
-      patchAuthSlice({ selectedCharacterId: resolveNextState(authSlice.selectedCharacterId, value) });
-    },
-    [authSlice.selectedCharacterId]
-  );
-  const setAuthToken = useCallback(
-    (value: SetStateAction<string>) => {
-      patchAuthSlice({ authToken: resolveNextState(authSlice.authToken, value) });
-    },
-    [authSlice.authToken]
-  );
-  const setShowDemo = useCallback(
-    (value: SetStateAction<boolean>) => {
-      patchAuthSlice({ showDemo: resolveNextState(authSlice.showDemo, value) });
-    },
-    [authSlice.showDemo]
-  );
-  const setShowMotd = useCallback(
-    (value: SetStateAction<boolean>) => {
-      patchAuthSlice({ showMotd: resolveNextState(authSlice.showMotd, value) });
-    },
-    [authSlice.showMotd]
-  );
-  const setShowCharacterSelection = useCallback(
-    (value: SetStateAction<boolean>) => {
-      patchAuthSlice({ showCharacterSelection: resolveNextState(authSlice.showCharacterSelection, value) });
-    },
-    [authSlice.showCharacterSelection]
-  );
-  const setError = useCallback(
-    (value: SetStateAction<string | null>) => {
-      patchAuthSlice({ error: resolveNextState(authSlice.error, value) });
-    },
-    [authSlice.error]
-  );
-  const setIsSubmitting = useCallback(
-    (value: SetStateAction<boolean>) => {
-      patchAuthSlice({ isSubmitting: resolveNextState(authSlice.isSubmitting, value) });
-    },
-    [authSlice.isSubmitting]
-  );
-  const setIsRegistering = useCallback(
-    (value: SetStateAction<boolean>) => {
-      patchAuthSlice({ isRegistering: resolveNextState(authSlice.isRegistering, value) });
-    },
-    [authSlice.isRegistering]
-  );
-  const setIsLoggingOut = useCallback(
-    (value: SetStateAction<boolean>) => {
-      patchAuthSlice({ isLoggingOut: resolveNextState(authSlice.isLoggingOut, value) });
-    },
-    [authSlice.isLoggingOut]
-  );
-
-  const setPlayerName = useCallback(
-    (value: SetStateAction<string>) => {
-      patchCreationSlice({ playerName: resolveNextState(creationSlice.playerName, value) });
-    },
-    [creationSlice.playerName]
-  );
-  const setPassword = useCallback(
-    (value: SetStateAction<string>) => {
-      patchCreationSlice({ password: resolveNextState(creationSlice.password, value) });
-    },
-    [creationSlice.password]
-  );
-  const setInviteCode = useCallback(
-    (value: SetStateAction<string>) => {
-      patchCreationSlice({ inviteCode: resolveNextState(creationSlice.inviteCode, value) });
-    },
-    [creationSlice.inviteCode]
-  );
-  const setCreationStep = useCallback(
-    (value: SetStateAction<CreationStep | null>) => {
-      patchCreationSlice({ creationStep: resolveNextState(creationSlice.creationStep, value) });
-    },
-    [creationSlice.creationStep]
-  );
-  const setPendingStats = useCallback(
-    (value: SetStateAction<Stats | null>) => {
-      patchCreationSlice({ pendingStats: resolveNextState(creationSlice.pendingStats, value) });
-    },
-    [creationSlice.pendingStats]
-  );
-  const setSelectedProfession = useCallback(
-    (value: SetStateAction<Profession | undefined>) => {
-      patchCreationSlice({ selectedProfession: resolveNextState(creationSlice.selectedProfession, value) });
-    },
-    [creationSlice.selectedProfession]
-  );
-  const setPendingSkillsPayload = useCallback(
-    (value: SetStateAction<PendingSkillsPayload | null>) => {
-      patchCreationSlice({ pendingSkillsPayload: resolveNextState(creationSlice.pendingSkillsPayload, value) });
-    },
-    [creationSlice.pendingSkillsPayload]
-  );
+  const authSetters = useAuthSliceSetters(authSlice, patchAuthSlice);
+  const creationSetters = useCreationSliceSetters(creationSlice, patchCreationSlice);
 
   return {
     ...authSlice,
     ...creationSlice,
-    setIsAuthenticated,
-    setCharacters,
-    setSelectedCharacterName,
-    setSelectedCharacterId,
-    setAuthToken,
-    setShowDemo,
-    setShowMotd,
-    setShowCharacterSelection,
-    setError,
-    setIsSubmitting,
-    setIsRegistering,
-    setIsLoggingOut,
-    setPlayerName,
-    setPassword,
-    setInviteCode,
-    setCreationStep,
-    setPendingStats,
-    setSelectedProfession,
-    setPendingSkillsPayload,
+    ...authSetters,
+    ...creationSetters,
     disconnectCallbackRef,
     usernameInputRef,
   };

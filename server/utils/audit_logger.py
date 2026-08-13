@@ -12,12 +12,27 @@ AI: Audit logs are critical for incident response and compliance.
 import json
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, TypedDict
 
 from ..config import get_config
 from ..structured_logging.enhanced_logging_config import get_logger
+from ..structured_logging.log_time_formats import LOG_DATE
 
 logger = get_logger(__name__)
+
+
+class ContainerInteractionAuditInput(TypedDict, total=False):
+    """Optional fields for container interaction audit entries."""
+
+    source_type: str | None
+    room_id: str | None
+    direction: str | None
+    item_id: str | None
+    item_name: str | None
+    items_count: int | None
+    success: bool
+    session_id: str | None
+    metadata: dict[str, Any] | None
 
 
 class AuditLogger:
@@ -78,7 +93,7 @@ class AuditLogger:
 
         AI: Daily rotation prevents individual files from growing too large.
         """
-        today = datetime.now(UTC).strftime("%Y-%m-%d")
+        today = datetime.now(UTC).strftime(LOG_DATE)
         return self.log_directory / f"audit_{today}.jsonl"
 
     def log_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command logging requires many parameters for complete audit context
@@ -170,16 +185,8 @@ class AuditLogger:
         player_id: str,
         player_name: str,
         container_id: str,
-        event_type: str,  # 'container_open', 'container_close', 'container_transfer', 'container_loot_all'
-        source_type: str | None = None,
-        room_id: str | None = None,
-        direction: str | None = None,  # 'to_container' or 'from_container' for transfers
-        item_id: str | None = None,
-        item_name: str | None = None,
-        items_count: int | None = None,
-        success: bool = True,
-        session_id: str | None = None,
-        metadata: dict[str, Any] | None = None,
+        event_type: str,
+        details: ContainerInteractionAuditInput | None = None,
     ) -> None:
         """
         Log container interaction events for security and compliance.
@@ -189,37 +196,30 @@ class AuditLogger:
             player_name: Name of the player
             container_id: UUID of the container
             event_type: Type of container interaction
-            source_type: Type of container (environment, equipment, corpse)
-            room_id: Room ID where container is located
-            direction: Transfer direction for container_transfer events
-            item_id: Item ID for transfer events
-            item_name: Item name for transfer events
-            items_count: Number of items for loot_all events
-            success: Whether the operation succeeded
-            session_id: Session identifier
-            metadata: Additional context-specific data
+            details: Optional interaction details
 
         AI: Container interactions are security-sensitive and must be audited
         for compliance and forensic analysis.
         Note: IP addresses are not logged to protect user privacy (PII).
         """
+        audit_details = details or {}
         entry = {
             "timestamp": datetime.now(UTC).isoformat(),
             "event_type": event_type,
             "player_id": player_id,
             "player_name": player_name,
             "container_id": container_id,
-            "source_type": source_type,
-            "room_id": room_id,
-            "direction": direction,
-            "item_id": item_id,
-            "item_name": item_name,
-            "items_count": items_count,
-            "success": success,
-            "session_id": session_id,
+            "source_type": audit_details.get("source_type"),
+            "room_id": audit_details.get("room_id"),
+            "direction": audit_details.get("direction"),
+            "item_id": audit_details.get("item_id"),
+            "item_name": audit_details.get("item_name"),
+            "items_count": audit_details.get("items_count"),
+            "success": audit_details.get("success", True),
+            "session_id": audit_details.get("session_id"),
             "security_level": "medium",
             "compliance_required": True,
-            "metadata": metadata or {},
+            "metadata": audit_details.get("metadata") or {},
         }
 
         self._write_entry(entry)
@@ -231,6 +231,43 @@ class AuditLogger:
             container_id=container_id,
             event_type=event_type,
         )
+
+    def _entry_matches_filters(
+        self,
+        entry: dict[str, Any],
+        cutoff_time: datetime,
+        event_type: str | None,
+        player_name: str | None,
+    ) -> bool:
+        entry_time = datetime.fromisoformat(entry["timestamp"])
+        if entry_time < cutoff_time:
+            return False
+        if event_type and entry.get("event_type") != event_type:
+            return False
+        if player_name and entry.get("player") != player_name:
+            return False
+        return True
+
+    def _read_entries_from_file(
+        self,
+        log_file: Path,
+        cutoff_time: datetime,
+        event_type: str | None,
+        player_name: str | None,
+    ) -> list[dict[str, Any]]:
+        entries: list[dict[str, Any]] = []
+        with open(log_file, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    entry = json.loads(line)
+                    if self._entry_matches_filters(entry, cutoff_time, event_type, player_name):
+                        entries.append(entry)
+                except (json.JSONDecodeError, KeyError, ValueError) as e:
+                    logger.warning("Failed to parse audit log entry", file=str(log_file), error=str(e))
+        return entries
 
     def log_player_action(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Player action logging requires many parameters for complete audit context
         self,
@@ -388,43 +425,14 @@ class AuditLogger:
         from datetime import timedelta
 
         cutoff_time = datetime.now(UTC) - timedelta(hours=hours)
-        entries = []
-
-        # Get all log files in directory (sorted newest first)
+        entries: list[dict[str, Any]] = []
         log_files = sorted(self.log_directory.glob("audit_*.jsonl"), reverse=True)
 
         for log_file in log_files:
             try:
-                with open(log_file, encoding="utf-8") as f:
-                    for line in f:
-                        line = line.strip()
-                        if not line:
-                            continue
-
-                        try:
-                            entry = json.loads(line)
-                            entry_time = datetime.fromisoformat(entry["timestamp"])
-
-                            # Check if within time range
-                            if entry_time < cutoff_time:
-                                continue
-
-                            # Apply filters
-                            if event_type and entry.get("event_type") != event_type:
-                                continue
-
-                            if player_name and entry.get("player") != player_name:
-                                continue
-
-                            entries.append(entry)
-
-                        except (json.JSONDecodeError, KeyError, ValueError) as e:
-                            logger.warning("Failed to parse audit log entry", file=str(log_file), error=str(e))
-                            continue
-
+                entries.extend(self._read_entries_from_file(log_file, cutoff_time, event_type, player_name))
             except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: File read errors unpredictable, must log but continue
                 logger.error("Failed to read audit log file", file=str(log_file), error=str(e))
-                continue
 
         return entries
 

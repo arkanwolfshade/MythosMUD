@@ -293,3 +293,18 @@ def test_convert_schema_to_dict_with_dict():
     result = convert_schema_to_dict(mock_schema)
     assert result == {"key": "value"}
     mock_schema.dict.assert_called_once()
+
+
+def test_is_client_disconnected_exception_websocket_and_uvicorn_names():
+    """Peer-closed sockets surface as WebSocketDisconnect or uvicorn ClientDisconnected."""
+    from fastapi import WebSocketDisconnect
+
+    from server.realtime.websocket_helpers import is_client_disconnected_exception
+
+    assert is_client_disconnected_exception(WebSocketDisconnect(code=1006)) is True
+
+    class ClientDisconnected(Exception):
+        """Stand-in for uvicorn.protocols.utils.ClientDisconnected."""
+
+    assert is_client_disconnected_exception(ClientDisconnected()) is True
+    assert is_client_disconnected_exception(ValueError("unrelated")) is False

@@ -3,10 +3,6 @@
  *
  * A full-screen overlay that displays the room map viewer.
  * Can be closed via ESC key or a close button.
- *
- * As documented in the Pnakotic Manuscripts, proper visualization
- * of spatial relationships is essential for understanding our
- * eldritch architecture.
  */
 
 import React, { useEffect } from 'react';
@@ -14,7 +10,6 @@ import { Z_INDEX_OVERLAY_TOP } from '../constants/layout';
 import { getVersionedApiBaseUrl } from '../utils/config';
 import { AsciiMapViewer } from './map/AsciiMapViewer';
 
-// Room type compatible with both gameStore and ui-v2 types
 interface Room {
   id: string;
   name: string;
@@ -31,67 +26,50 @@ interface Room {
 }
 
 export interface MapViewProps {
-  /** Whether the map view is visible */
   isOpen: boolean;
-  /** Callback when map should close */
   onClose: () => void;
-  /** Current player's room data */
   currentRoom: Room | null;
-  /** API base URL */
   baseUrl?: string;
-  /** Auth token for authenticated requests */
   authToken?: string;
-  /** Whether to hide the header (useful when embedded in tabs) */
   hideHeader?: boolean;
 }
 
-/**
- * Map View component.
- */
-export const MapView: React.FC<MapViewProps> = ({
-  isOpen,
-  onClose,
-  currentRoom,
-  baseUrl,
-  authToken,
-  hideHeader = false,
-}) => {
-  // Handle ESC key to close map
+function useMapViewEffects(isOpen: boolean, onClose: () => void) {
   useEffect(() => {
     if (!isOpen) return;
-
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
+      if (event.key === 'Escape') onClose();
     };
-
     window.addEventListener('keydown', handleEscape);
-    return () => {
-      window.removeEventListener('keydown', handleEscape);
-    };
+    return () => window.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
-  // Prevent body scroll when map is open
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
     };
   }, [isOpen]);
+}
 
-  if (!isOpen) return null;
+function MapViewHeader({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="flex items-center justify-between p-4 border-b border-mythos-terminal-border bg-mythos-terminal-background">
+      <h2 className="text-xl font-bold text-mythos-terminal-text">Map</h2>
+      <button
+        onClick={onClose}
+        className="px-4 py-2 bg-mythos-terminal-error text-white rounded hover:bg-mythos-terminal-error/80 transition-colors"
+        aria-label="Close map"
+      >
+        Close (ESC)
+      </button>
+    </div>
+  );
+}
 
-  // Extract plane and zone from current room, or use defaults
+function MapViewBody({ currentRoom, baseUrl, authToken, hideHeader, onClose }: MapViewProps) {
   const plane = currentRoom?.plane || 'earth';
   const zone = currentRoom?.zone || 'arkhamcity';
-  const subZone = currentRoom?.sub_zone;
-  const currentRoomId = currentRoom?.id;
-
   const opaqueStyle = hideHeader
     ? { backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)', opacity: 1 }
     : {
@@ -99,26 +77,13 @@ export const MapView: React.FC<MapViewProps> = ({
         opacity: 1,
         zIndex: Z_INDEX_OVERLAY_TOP,
       };
+
   return (
     <div
       className={`${hideHeader ? 'h-full w-full' : 'fixed inset-0'} bg-mythos-terminal-background flex flex-col`}
       style={opaqueStyle}
     >
-      {/* Header with close button - only show if not hidden */}
-      {!hideHeader && (
-        <div className="flex items-center justify-between p-4 border-b border-mythos-terminal-border bg-mythos-terminal-background">
-          <h2 className="text-xl font-bold text-mythos-terminal-text">Map</h2>
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-mythos-terminal-error text-white rounded hover:bg-mythos-terminal-error/80 transition-colors"
-            aria-label="Close map"
-          >
-            Close (ESC)
-          </button>
-        </div>
-      )}
-
-      {/* Map viewer: opaque so game UI never shows through */}
+      {!hideHeader && <MapViewHeader onClose={onClose} />}
       <div
         className="flex-1 overflow-hidden min-h-0"
         style={{ backgroundColor: 'var(--color-mythos-terminal-background, #0a0a0a)' }}
@@ -127,8 +92,8 @@ export const MapView: React.FC<MapViewProps> = ({
           <AsciiMapViewer
             plane={plane}
             zone={zone}
-            subZone={subZone}
-            currentRoomId={currentRoomId}
+            subZone={currentRoom.sub_zone}
+            currentRoomId={currentRoom.id}
             baseUrl={baseUrl || getVersionedApiBaseUrl()}
             authToken={authToken}
           />
@@ -149,4 +114,10 @@ export const MapView: React.FC<MapViewProps> = ({
       </div>
     </div>
   );
+}
+
+export const MapView: React.FC<MapViewProps> = props => {
+  useMapViewEffects(props.isOpen, props.onClose);
+  if (!props.isOpen) return null;
+  return <MapViewBody {...props} />;
 };

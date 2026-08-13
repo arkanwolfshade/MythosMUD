@@ -8,8 +8,9 @@ from sqlite3 import DatabaseError
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from server.logging.enhanced_logging_config import get_logger
 from sqlalchemy.exc import SQLAlchemyError
+
+from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -83,5 +84,5 @@ async def get_alerts():
 if __name__ == "__main__":
     import uvicorn
 
-    logger.info("Starting MythosMUD webhook receiver", host="0.0.0.0", port=5001)
-    uvicorn.run(app, host="0.0.0.0", port=5001)
+    logger.info("Starting MythosMUD webhook receiver", host="127.0.0.1", port=5001)
+    uvicorn.run(app, host="127.0.0.1", port=5001)

@@ -271,7 +271,7 @@ async def test_send_party_message_success():
     service.rate_limiter.check_rate_limit = MagicMock(return_value=True)  # type: ignore[method-assign]
     service.rate_limiter.record_message = MagicMock()
     with patch(
-        "server.game.chat_message_senders.publish_chat_message_to_nats",
+        "server.game.chat_channel_message_senders.publish_chat_message_to_nats",
         new_callable=AsyncMock,
         return_value=True,
     ):

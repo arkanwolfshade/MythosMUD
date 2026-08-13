@@ -174,71 +174,55 @@ class MonitoringDashboard:
             recommendations=recommendations,
         )
 
+    def _make_rate_alert(
+        self, alert_type: str, rate: float, threshold: float, *, critical_above: float | None = None
+    ) -> Alert:
+        severity = "warning"
+        if critical_above is not None and rate > critical_above:
+            severity = "critical"
+        elif alert_type == "exception_rate":
+            severity = "critical"
+        return Alert(
+            alert_id=f"{alert_type}_{datetime.now(UTC).timestamp()}",
+            alert_type=alert_type,
+            severity=severity,
+            message=f"{alert_type.replace('_', ' ').title()} is {rate:.2f}% (threshold: {threshold}%)",
+            timestamp=datetime.now(UTC),
+            metadata={alert_type: rate},
+        )
+
+    def _make_performance_alert(self, score: float) -> Alert:
+        return Alert(
+            alert_id=f"performance_{datetime.now(UTC).timestamp()}",
+            alert_type="performance",
+            severity="critical" if score < 50.0 else "warning",
+            message=f"Performance score is {score:.2f} (threshold: 70.0)",
+            timestamp=datetime.now(UTC),
+            metadata={"performance_score": score},
+        )
+
     def check_alerts(self) -> list[Alert]:
-        """
-        Check for system alerts based on current metrics.
-
-        Returns:
-            List of new alerts
-        """
-        new_alerts = []
+        """Evaluate thresholds and record new alerts."""
+        new_alerts: list[Alert] = []
         system_health = self.get_system_health()
-
-        # Check error rate threshold
         if system_health.error_rate > self.alert_thresholds["error_rate"]:
-            alert = Alert(
-                alert_id=f"error_rate_{datetime.now(UTC).timestamp()}",
-                alert_type="error_rate",
-                severity="critical" if system_health.error_rate > 10.0 else "warning",
-                message=f"Error rate is {system_health.error_rate:.2f}% (threshold: {self.alert_thresholds['error_rate']}%)",
-                timestamp=datetime.now(UTC),
-                metadata={"error_rate": system_health.error_rate},
+            new_alerts.append(
+                self._make_rate_alert(
+                    "error_rate", system_health.error_rate, self.alert_thresholds["error_rate"], critical_above=10.0
+                )
             )
-            new_alerts.append(alert)
-
-        # Check warning rate threshold
         if system_health.warning_rate > self.alert_thresholds["warning_rate"]:
-            alert = Alert(
-                alert_id=f"warning_rate_{datetime.now(UTC).timestamp()}",
-                alert_type="warning_rate",
-                severity="warning",
-                message=f"Warning rate is {system_health.warning_rate:.2f}% (threshold: {self.alert_thresholds['warning_rate']}%)",
-                timestamp=datetime.now(UTC),
-                metadata={"warning_rate": system_health.warning_rate},
+            new_alerts.append(
+                self._make_rate_alert("warning_rate", system_health.warning_rate, self.alert_thresholds["warning_rate"])
             )
-            new_alerts.append(alert)
-
-        # Check performance score
         if system_health.performance_score < 70.0:
-            alert = Alert(
-                alert_id=f"performance_{datetime.now(UTC).timestamp()}",
-                alert_type="performance",
-                severity="critical" if system_health.performance_score < 50.0 else "warning",
-                message=f"Performance score is {system_health.performance_score:.2f} (threshold: 70.0)",
-                timestamp=datetime.now(UTC),
-                metadata={"performance_score": system_health.performance_score},
+            new_alerts.append(self._make_performance_alert(system_health.performance_score))
+        exc_rate = system_health.details.get("exception_stats", {}).get("error_rate", 0)
+        if exc_rate > self.alert_thresholds["exception_rate"]:
+            new_alerts.append(
+                self._make_rate_alert("exception_rate", exc_rate, self.alert_thresholds["exception_rate"])
             )
-            new_alerts.append(alert)
-
-        # Check exception rate
-        if (
-            system_health.details.get("exception_stats", {}).get("error_rate", 0)
-            > self.alert_thresholds["exception_rate"]
-        ):
-            alert = Alert(
-                alert_id=f"exception_rate_{datetime.now(UTC).timestamp()}",
-                alert_type="exception_rate",
-                severity="critical",
-                message=f"Exception rate is {system_health.details['exception_stats']['error_rate']:.2f}% (threshold: {self.alert_thresholds['exception_rate']}%)",
-                timestamp=datetime.now(UTC),
-                metadata={"exception_rate": system_health.details["exception_stats"]["error_rate"]},
-            )
-            new_alerts.append(alert)
-
-        # Add new alerts to the list
         self.alerts.extend(new_alerts)
-
-        # Log new alerts
         for alert in new_alerts:
             log_with_context(
                 logger,
@@ -250,7 +234,6 @@ class MonitoringDashboard:
                 alert_message=alert.message,
                 metadata=alert.metadata,
             )
-
         return new_alerts
 
     def record_custom_alert(
@@ -427,17 +410,8 @@ class MonitoringDashboard:
         return [alert for alert in self.alerts if alert.timestamp >= cutoff_time]
 
     def export_monitoring_data(self, _format: str = "json") -> dict[str, Any]:  # pylint: disable=unused-argument  # Reason: Parameter reserved for future format support (currently only JSON)
-        """
-        Export comprehensive monitoring data.
-
-        Args:
-            format: Export format (currently only JSON supported)
-
-        Returns:
-            Exported monitoring data
-        """
+        """export_monitoring_data."""
         summary = self.get_monitoring_summary()
-
         return {
             "timestamp": summary.timestamp.isoformat(),
             "system_health": {

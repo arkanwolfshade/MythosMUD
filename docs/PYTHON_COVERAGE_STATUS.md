@@ -16,7 +16,7 @@
 
 ## Normal Files Below 70% Threshold
 
-#### Showing top 50 files with largest coverage gaps
+### Showing top 50 files with largest coverage gaps
 
 | File                                                   | Current Coverage | Required | Gap    | Lines | Branches |
 | ------------------------------------------------------ | ---------------- | -------- | ------ | ----- | -------- |

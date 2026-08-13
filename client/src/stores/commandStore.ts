@@ -158,300 +158,213 @@ const createInitialState = (): CommandState => ({
   triggers: [],
 });
 
-export const useCommandStore = create<CommandStore>()(
-  devtools(
-    (set, get) => ({
-      ...createInitialState(),
+function computeNavigateHistoryState(state: CommandState, direction: number): Partial<CommandState> | CommandState {
+  if (state.commandHistory.length === 0) {
+    return state;
+  }
+  const maxIndex = state.commandHistory.length - 1;
+  let newIndex = state.commandIndex + direction;
+  if (state.commandIndex === -1 && direction < 0) {
+    newIndex = maxIndex;
+  }
+  newIndex = Math.max(0, Math.min(maxIndex, newIndex));
+  return {
+    commandIndex: newIndex,
+    currentCommand: state.commandHistory[newIndex]?.command || '',
+  };
+}
 
-      // Command input management actions
-      setCurrentCommand: (command: string) => set({ currentCommand: command }, false, 'setCurrentCommand'),
+function findMatchingTriggersInState(triggers: CommandTrigger[], text: string): CommandTrigger[] {
+  return triggers.filter(trigger => {
+    if (!trigger.enabled) return false;
 
-      clearCurrentCommand: () => set({ currentCommand: '', commandIndex: -1 }, false, 'clearCurrentCommand'),
-
-      appendToCommand: (text: string) =>
-        set(state => ({ currentCommand: state.currentCommand + text }), false, 'appendToCommand'),
-
-      // Command history actions
-      addToHistory: (command: string, success = true, result?: string) =>
-        set(
-          state => {
-            const newEntry: CommandHistoryEntry = {
-              command,
-              timestamp: Date.now(),
-              success,
-              result,
-            };
-            const newHistory = [...state.commandHistory, newEntry];
-            // Limit the number of commands to prevent memory issues
-            const limitedHistory = newHistory.slice(-MAX_COMMAND_HISTORY);
-            return {
-              commandHistory: limitedHistory,
-              commandIndex: -1, // Reset index when adding new command
-            };
-          },
-          false,
-          'addToHistory'
-        ),
-
-      clearHistory: () => set({ commandHistory: [], commandIndex: -1 }, false, 'clearHistory'),
-
-      // Command navigation actions
-      navigateHistory: (direction: number) =>
-        set(
-          state => {
-            if (state.commandHistory.length === 0) {
-              return state;
-            }
-
-            // If we're at -1 (no command selected), and going backward, go to last command
-            if (state.commandIndex === -1 && direction < 0) {
-              const lastIndex = state.commandHistory.length - 1;
-              return {
-                commandIndex: lastIndex,
-                currentCommand: state.commandHistory[lastIndex]?.command || '',
-              };
-            }
-
-            const newIndex = state.commandIndex + direction;
-            const maxIndex = state.commandHistory.length - 1;
-
-            if (newIndex < 0) {
-              return { commandIndex: 0, currentCommand: state.commandHistory[0]?.command || '' };
-            } else if (newIndex > maxIndex) {
-              return { commandIndex: maxIndex, currentCommand: state.commandHistory[maxIndex]?.command || '' };
-            } else {
-              return {
-                commandIndex: newIndex,
-                currentCommand: state.commandHistory[newIndex]?.command || '',
-              };
-            }
-          },
-          false,
-          'navigateHistory'
-        ),
-
-      // Command execution actions
-      setExecuting: (executing: boolean) => set({ isExecuting: executing }, false, 'setExecuting'),
-
-      setLastExecutedCommand: (command: string | null) =>
-        set({ lastExecutedCommand: command }, false, 'setLastExecutedCommand'),
-
-      executeCommand: (command: string) =>
-        set(
-          state => {
-            const expandedCommand = get().expandAliases(command);
-            const newEntry: CommandHistoryEntry = {
-              command: expandedCommand,
-              timestamp: Date.now(),
-              success: true,
-            };
-            const newHistory = [...state.commandHistory, newEntry];
-            const limitedHistory = newHistory.slice(-MAX_COMMAND_HISTORY);
-
-            return {
-              isExecuting: true,
-              lastExecutedCommand: expandedCommand,
-              currentCommand: '',
-              commandIndex: -1,
-              commandHistory: limitedHistory,
-            };
-          },
-          false,
-          'executeCommand'
-        ),
-
-      // Command queue actions
-      addToQueue: (command: string) =>
-        set(
-          state => {
-            const newQueue = [...state.commandQueue, command];
-            // Limit queue size to prevent unbounded growth (Task 5: Zustand Store Cleanup)
-            const limitedQueue = newQueue.slice(-MAX_COMMAND_QUEUE);
-            return { commandQueue: limitedQueue };
-          },
-          false,
-          'addToQueue'
-        ),
-
-      processNextCommand: () => {
-        let nextCommand: string | null = null;
-        set(
-          state => {
-            if (state.commandQueue.length === 0) return state;
-            const [next, ...rest] = state.commandQueue;
-            nextCommand = next;
-            return { commandQueue: rest };
-          },
-          false,
-          'processNextCommand'
-        );
-        return nextCommand;
-      },
-
-      clearQueue: () => set({ commandQueue: [] }, false, 'clearQueue'),
-
-      // Aliases actions
-      addAlias: (alias: string, command: string) =>
-        set(
-          state => ({
-            aliases: { ...state.aliases, [alias]: command },
-          }),
-          false,
-          'addAlias'
-        ),
-
-      removeAlias: (alias: string) =>
-        set(
-          state => {
-            const newAliases = { ...state.aliases };
-            delete newAliases[alias];
-            return { aliases: newAliases };
-          },
-          false,
-          'removeAlias'
-        ),
-
-      expandAliases: (command: string) => {
-        const state = get();
-        const expandedCommand = command;
-
-        // Split command into words and expand each alias
-        const words = expandedCommand.split(' ');
-        const expandedWords = words.map(word => state.aliases[word] || word);
-
-        return expandedWords.join(' ');
-      },
-
-      clearAliases: () => set({ aliases: {} }, false, 'clearAliases'),
-
-      // Triggers actions
-      addTrigger: (trigger: CommandTrigger) =>
-        set(
-          state => ({
-            triggers: [...state.triggers, trigger],
-          }),
-          false,
-          'addTrigger'
-        ),
-
-      removeTrigger: (id: string) =>
-        set(
-          state => ({
-            triggers: state.triggers.filter(trigger => trigger.id !== id),
-          }),
-          false,
-          'removeTrigger'
-        ),
-
-      toggleTrigger: (id: string) =>
-        set(
-          state => ({
-            triggers: state.triggers.map(trigger =>
-              trigger.id === id ? { ...trigger, enabled: !trigger.enabled } : trigger
-            ),
-          }),
-          false,
-          'toggleTrigger'
-        ),
-
-      findMatchingTriggers: (text: string) => {
-        const state = get();
-        return state.triggers.filter(trigger => {
-          if (!trigger.enabled) return false;
-
-          if (trigger.regex) {
-            try {
-              // ReDoS protection: limit pattern length and add timeout
-              if (trigger.pattern.length > 200) {
-                return false; // Pattern too long, potential ReDoS risk
-              }
-
-              // Validate pattern doesn't contain obvious ReDoS patterns
-              // (e.g., nested quantifiers like (a+)+)
-              const dangerousPatterns = /\([^)]*\+\)\+|\([^)]*\*\)\*|\([^)]*\?\)\?/;
-              if (dangerousPatterns.test(trigger.pattern)) {
-                return false; // Pattern contains dangerous nested quantifiers
-              }
-
-              // ReDoS protection is in place: pattern validation above (checks for dangerous nested quantifiers)
-              // and 100ms timeout below. The trigger.pattern comes from user configuration but is validated
-              // before use to prevent ReDoS attacks.
-              // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
-              const regex = new RegExp(trigger.pattern, trigger.caseSensitive ? 'g' : 'gi');
-
-              // Add timeout protection for regex execution
-              const startTime = performance.now();
-              const result = regex.test(text);
-              const executionTime = performance.now() - startTime;
-
-              // If regex takes more than 100ms, it's likely a ReDoS attack
-              if (executionTime > 100) {
-                console.warn('Regex execution took too long, potential ReDoS attack:', trigger.pattern);
-                return false;
-              }
-
-              return result;
-            } catch {
-              return false;
-            }
-          } else {
-            const searchText = trigger.caseSensitive ? text : text.toLowerCase();
-            const searchPattern = trigger.caseSensitive ? trigger.pattern : trigger.pattern.toLowerCase();
-            return searchText.includes(searchPattern);
-          }
-        });
-      },
-
-      clearTriggers: () => set({ triggers: [] }, false, 'clearTriggers'),
-
-      // State management actions
-      reset: () => set(createInitialState(), false, 'reset'),
-
-      // Selectors
-      getRecentCommands: (count: number) => {
-        const state = get();
-        return state.commandHistory.slice(-count);
-      },
-
-      getSuccessfulCommands: () => {
-        const state = get();
-        return state.commandHistory.filter(entry => entry.success);
-      },
-
-      getCommandStatistics: () => {
-        const state = get();
-        const totalCommands = state.commandHistory.length;
-        const successfulCommands = state.commandHistory.filter(entry => entry.success).length;
-        const failedCommands = totalCommands - successfulCommands;
-        const successRate = totalCommands > 0 ? successfulCommands / totalCommands : 0;
-
-        // Count command usage
-        const commandCounts: Record<string, number> = {};
-        state.commandHistory.forEach(entry => {
-          commandCounts[entry.command] = (commandCounts[entry.command] || 0) + 1;
-        });
-
-        // Find most used command
-        const mostUsedCommand = Object.entries(commandCounts).sort(([, a], [, b]) => b - a)[0]?.[0] || '';
-
-        return {
-          totalCommands,
-          successfulCommands,
-          failedCommands,
-          successRate,
-          mostUsedCommand,
-          commandCounts,
-        };
-      },
-    }),
-    {
-      name: 'command-store',
-      enabled: import.meta.env.MODE === 'development',
-      partialize: (state: CommandStore) => ({
-        commandHistory: state.commandHistory,
-        aliases: state.aliases,
-        triggers: state.triggers,
-      }),
+    if (trigger.regex) {
+      try {
+        if (trigger.pattern.length > 200) {
+          return false;
+        }
+        const dangerousPatterns = /\([^)]*\+\)\+|\([^)]*\*\)\*|\([^)]*\?\)\?/;
+        if (dangerousPatterns.test(trigger.pattern)) {
+          return false;
+        }
+        // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
+        const regex = new RegExp(trigger.pattern, trigger.caseSensitive ? 'g' : 'gi');
+        const startTime = performance.now();
+        const result = regex.test(text);
+        const executionTime = performance.now() - startTime;
+        if (executionTime > 100) {
+          console.warn('Regex execution took too long, potential ReDoS attack:', trigger.pattern);
+          return false;
+        }
+        return result;
+      } catch {
+        return false;
+      }
     }
-  )
+
+    const searchText = trigger.caseSensitive ? text : text.toLowerCase();
+    const searchPattern = trigger.caseSensitive ? trigger.pattern : trigger.pattern.toLowerCase();
+    return searchText.includes(searchPattern);
+  });
+}
+
+type CommandStoreSet = (
+  partial: CommandStore | Partial<CommandStore> | ((state: CommandStore) => CommandStore | Partial<CommandStore>),
+  replace?: false,
+  action?: string
+) => void;
+type CommandStoreGet = () => CommandStore;
+
+function createCommandQueueAndAliasActions(
+  set: CommandStoreSet,
+  get: CommandStoreGet
+): Pick<
+  CommandStore,
+  | 'addToQueue'
+  | 'processNextCommand'
+  | 'clearQueue'
+  | 'addAlias'
+  | 'removeAlias'
+  | 'expandAliases'
+  | 'clearAliases'
+  | 'addTrigger'
+  | 'removeTrigger'
+  | 'toggleTrigger'
+  | 'findMatchingTriggers'
+  | 'clearTriggers'
+  | 'reset'
+  | 'getRecentCommands'
+  | 'getSuccessfulCommands'
+  | 'getCommandStatistics'
+> {
+  return {
+    addToQueue: (command: string) =>
+      set(state => ({ commandQueue: [...state.commandQueue, command].slice(-MAX_COMMAND_QUEUE) }), false, 'addToQueue'),
+    processNextCommand: () => {
+      let nextCommand: string | null = null;
+      set(
+        state => {
+          if (state.commandQueue.length === 0) return state;
+          const [next, ...rest] = state.commandQueue;
+          nextCommand = next;
+          return { commandQueue: rest };
+        },
+        false,
+        'processNextCommand'
+      );
+      return nextCommand;
+    },
+    clearQueue: () => set({ commandQueue: [] }, false, 'clearQueue'),
+    addAlias: (alias: string, command: string) =>
+      set(state => ({ aliases: { ...state.aliases, [alias]: command } }), false, 'addAlias'),
+    removeAlias: (alias: string) =>
+      set(
+        state => {
+          const newAliases = { ...state.aliases };
+          delete newAliases[alias];
+          return { aliases: newAliases };
+        },
+        false,
+        'removeAlias'
+      ),
+    expandAliases: (command: string) => {
+      const state = get();
+      return command
+        .split(' ')
+        .map(word => state.aliases[word] || word)
+        .join(' ');
+    },
+    clearAliases: () => set({ aliases: {} }, false, 'clearAliases'),
+    addTrigger: (trigger: CommandTrigger) =>
+      set(state => ({ triggers: [...state.triggers, trigger] }), false, 'addTrigger'),
+    removeTrigger: (id: string) =>
+      set(state => ({ triggers: state.triggers.filter(trigger => trigger.id !== id) }), false, 'removeTrigger'),
+    toggleTrigger: (id: string) =>
+      set(
+        state => ({
+          triggers: state.triggers.map(trigger =>
+            trigger.id === id ? { ...trigger, enabled: !trigger.enabled } : trigger
+          ),
+        }),
+        false,
+        'toggleTrigger'
+      ),
+    findMatchingTriggers: (text: string) => findMatchingTriggersInState(get().triggers, text),
+    clearTriggers: () => set({ triggers: [] }, false, 'clearTriggers'),
+    reset: () => set(createInitialState(), false, 'reset'),
+    getRecentCommands: (count: number) => get().commandHistory.slice(-count),
+    getSuccessfulCommands: () => get().commandHistory.filter(entry => entry.success),
+    getCommandStatistics: () => {
+      const state = get();
+      const totalCommands = state.commandHistory.length;
+      const successfulCommands = state.commandHistory.filter(entry => entry.success).length;
+      const failedCommands = totalCommands - successfulCommands;
+      const successRate = totalCommands > 0 ? successfulCommands / totalCommands : 0;
+      const commandCounts: Record<string, number> = {};
+      state.commandHistory.forEach(entry => {
+        commandCounts[entry.command] = (commandCounts[entry.command] || 0) + 1;
+      });
+      const mostUsedCommand = Object.entries(commandCounts).sort(([, a], [, b]) => b - a)[0]?.[0] || '';
+      return { totalCommands, successfulCommands, failedCommands, successRate, mostUsedCommand, commandCounts };
+    },
+  };
+}
+
+function createCommandStoreSlice(set: CommandStoreSet, get: CommandStoreGet): CommandStore {
+  return {
+    ...createInitialState(),
+    setCurrentCommand: (command: string) => set({ currentCommand: command }, false, 'setCurrentCommand'),
+    clearCurrentCommand: () => set({ currentCommand: '', commandIndex: -1 }, false, 'clearCurrentCommand'),
+    appendToCommand: (text: string) =>
+      set(state => ({ currentCommand: state.currentCommand + text }), false, 'appendToCommand'),
+    addToHistory: (command: string, success = true, result?: string) =>
+      set(
+        state => {
+          const newEntry: CommandHistoryEntry = { command, timestamp: Date.now(), success, result };
+          return {
+            commandHistory: [...state.commandHistory, newEntry].slice(-MAX_COMMAND_HISTORY),
+            commandIndex: -1,
+          };
+        },
+        false,
+        'addToHistory'
+      ),
+    clearHistory: () => set({ commandHistory: [], commandIndex: -1 }, false, 'clearHistory'),
+    navigateHistory: (direction: number) =>
+      set(state => computeNavigateHistoryState(state, direction), false, 'navigateHistory'),
+    setExecuting: (executing: boolean) => set({ isExecuting: executing }, false, 'setExecuting'),
+    setLastExecutedCommand: (command: string | null) =>
+      set({ lastExecutedCommand: command }, false, 'setLastExecutedCommand'),
+    executeCommand: (command: string) =>
+      set(
+        state => {
+          const expandedCommand = get().expandAliases(command);
+          return {
+            isExecuting: true,
+            lastExecutedCommand: expandedCommand,
+            currentCommand: '',
+            commandIndex: -1,
+            commandHistory: [
+              ...state.commandHistory,
+              { command: expandedCommand, timestamp: Date.now(), success: true },
+            ].slice(-MAX_COMMAND_HISTORY),
+          };
+        },
+        false,
+        'executeCommand'
+      ),
+    ...createCommandQueueAndAliasActions(set, get),
+  };
+}
+
+export const useCommandStore = create<CommandStore>()(
+  devtools(createCommandStoreSlice, {
+    name: 'command-store',
+    enabled: import.meta.env.MODE === 'development',
+    partialize: (state: CommandStore) => ({
+      commandHistory: state.commandHistory,
+      aliases: state.aliases,
+      triggers: state.triggers,
+    }),
+  })
 );

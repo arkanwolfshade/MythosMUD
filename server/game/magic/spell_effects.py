@@ -9,6 +9,7 @@ damage, status effects, stat modifications, and other magical effects.
 
 import uuid
 from collections.abc import Callable
+from dataclasses import dataclass
 from typing import assert_never, cast
 
 from structlog.stdlib import BoundLogger
@@ -43,40 +44,29 @@ from server.structured_logging.enhanced_logging_config import get_logger
 logger: BoundLogger = get_logger(__name__)
 
 
+@dataclass(frozen=True)
+class SpellEffectsDeps:
+    """Optional deps for SpellEffects beyond player_service."""
+
+    player_spell_repository: PlayerSpellRepository | None = None
+    combat_service: CombatService | None = None
+    movement_service: MovementService | None = None
+    get_room_by_id: Callable[[str], object] | None = None
+    connection_manager: object | None = None
+
+
 class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility class with focused responsibility, minimal public interface
-    """
-    Engine for processing spell effects.
+    """Engine for processing spell effects with mastery modifiers."""
 
-    Handles applying various spell effects to targets, with mastery
-    modifiers applied to effectiveness.
-    """
-
-    def __init__(
-        self,
-        player_service: PlayerService,
-        player_spell_repository: PlayerSpellRepository | None = None,
-        combat_service: CombatService | None = None,
-        movement_service: MovementService | None = None,
-        get_room_by_id: Callable[[str], object] | None = None,
-        connection_manager: object | None = None,
-    ) -> None:
-        """
-        Initialize the spell effects engine.
-
-        Args:
-            player_service: Player service for stat modifications
-            player_spell_repository: Optional repository for mastery lookups
-            combat_service: Optional combat service for flee effect
-            movement_service: Optional movement service for flee effect
-            get_room_by_id: Optional callable (room_id -> room) for flee effect
-            connection_manager: Optional connection manager for login grace period checks
-        """
+    def __init__(self, player_service: PlayerService, deps: SpellEffectsDeps | None = None) -> None:
+        """Initialize the spell effects engine."""
+        deps = deps or SpellEffectsDeps()
         self.player_service: PlayerService = player_service
-        self.player_spell_repository: PlayerSpellRepository = player_spell_repository or PlayerSpellRepository()
-        self._combat_service: CombatService | None = combat_service
-        self._movement_service: MovementService | None = movement_service
-        self._get_room_by_id: Callable[[str], object] | None = get_room_by_id
-        self._connection_manager: object | None = connection_manager
+        self.player_spell_repository: PlayerSpellRepository = deps.player_spell_repository or PlayerSpellRepository()
+        self._combat_service: CombatService | None = deps.combat_service
+        self._movement_service: MovementService | None = deps.movement_service
+        self._get_room_by_id: Callable[[str], object] | None = deps.get_room_by_id
+        self._connection_manager: object | None = deps.connection_manager
         logger.info("SpellEffects initialized")
 
     def _spell_player_persistence(self) -> PlayerPersistenceSpellPort:

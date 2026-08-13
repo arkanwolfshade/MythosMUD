@@ -8,6 +8,7 @@ for real-time distribution to clients and other systems.
 # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-return-statements,too-many-lines  # Reason: Event publishing requires many parameters for complete event context and multiple return statements for early validation returns. Combat event publisher requires extensive event publishing logic for comprehensive combat event distribution.
 
 import uuid
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 
@@ -29,6 +30,20 @@ if TYPE_CHECKING:
     from .nats_service import NATSService
 
 logger = get_logger("services.combat_event_publisher")
+
+
+@dataclass
+class _CombatPublishJob:
+    """Bundled NATS publish inputs (keeps helper parameter count under gate)."""
+
+    event_type: str
+    subject_key: str
+    room_id: str
+    event_data: dict[str, Any]
+    timestamp: datetime
+    log_context: dict[str, Any]
+    success_fields: dict[str, Any]
+    error_label: str
 
 
 class CombatEventPublisher:
@@ -109,828 +124,372 @@ class CombatEventPublisher:
 
         return message
 
+    _LEGACY_SUBJECT_PREFIX = {
+        "combat_started": "combat.started",
+        "combat_ended": "combat.ended",
+        "combat_attack": "combat.attack",
+        "combat_npc_attacked": "combat.npc_attacked",
+        "combat_damage": "combat.damage",
+        "combat_npc_died": "combat.npc_died",
+        "combat_turn": "combat.turn",
+        "combat_timeout": "combat.timeout",
+    }
+
+    def _build_combat_subject(self, subject_key: str, room_id: str) -> str:
+        if self.subject_manager:
+            return self.subject_manager.build_subject(subject_key, room_id=room_id)
+        prefix = self._LEGACY_SUBJECT_PREFIX.get(subject_key, subject_key)
+        logger.warning(
+            "Using legacy subject construction - subject_manager not configured",
+            event_type=subject_key,
+            room_id=room_id,
+        )
+        return f"{prefix}.{room_id}"
+
+    def _nats_ready(self, log_context: dict[str, Any]) -> bool:
+        if not self.nats_service:
+            logger.error(
+                "NATS service not available for combat event publishing - event will not be broadcasted",
+                nats_service_available=False,
+                **log_context,
+            )
+            return False
+        if not self.nats_service.is_connected():
+            logger.error(
+                "NATS service not connected for combat event publishing - event will not be broadcasted",
+                nats_connected=False,
+                **log_context,
+            )
+            return False
+        return True
+
+    async def _publish_combat_payload(self, job: _CombatPublishJob) -> bool:
+        """Shared NATS publish path for combat events."""
+        try:
+            if not self._nats_ready(job.log_context):
+                return False
+            message_data = self._create_event_message(
+                event_type=job.event_type,
+                event_data=job.event_data,
+                room_id=job.room_id,
+                timestamp=job.timestamp.isoformat().replace("+00:00", "Z"),
+            )
+            subject = self._build_combat_subject(job.subject_key, job.room_id)
+            try:
+                await self.nats_service.publish(subject, message_data)
+                logger.info(f"{job.error_label} published to NATS", subject=subject, **job.success_fields)
+                return True
+            except NATSPublishError as exc:
+                logger.error(f"Failed to publish {job.error_label} to NATS", error=str(exc), **job.success_fields)
+                return False
+            except (RuntimeError, ConnectionError, TimeoutError, OSError) as exc:
+                logger.error(
+                    f"Unexpected error publishing {job.error_label} to NATS", error=str(exc), **job.success_fields
+                )
+                return False
+            except Exception as exc:  # pylint: disable=broad-exception-caught  # noqa: B904
+                # Catch generic exceptions from mocks in tests
+                logger.error(
+                    f"Unexpected error publishing {job.error_label} to NATS", error=str(exc), **job.success_fields
+                )
+                return False
+        except (AttributeError, TypeError, ValueError, KeyError) as exc:
+            logger.error(f"Error publishing {job.error_label}", error=str(exc), exc_info=True, **job.log_context)
+            return False
+
     async def publish_combat_started(self, event: CombatStartedEvent) -> bool:
-        """
-        Publish combat started event to NATS.
-
-        Args:
-            event: CombatStartedEvent to publish
-
-        Returns:
-            True if published successfully, False otherwise
-        """
-        # Extract structured data for consistent logging
+        """Publish combat started event to NATS."""
         combat_id = str(event.combat_id)
         room_id = event.room_id
-        participant_count = len(event.participants)
-        turn_order_count = len(event.turn_order)
-        try:
-            logger.info(
-                "Starting combat event publishing",
-                combat_id=combat_id,
-                room_id=room_id,
-                participant_count=participant_count,
-                turn_order_count=turn_order_count,
-                event_type="combat_started",
+        log_context = {
+            "combat_id": combat_id,
+            "room_id": room_id,
+            "event_type": "combat_started",
+            "participant_count": len(event.participants),
+            "turn_order_count": len(event.turn_order),
+        }
+        logger.info("Starting combat event publishing", **log_context)
+        if event.timestamp is None:
+            raise ValueError("Event timestamp should be set by BaseEvent.__post_init__")
+        event_data = {
+            "combat_id": combat_id,
+            "room_id": room_id,
+            "participants": event.participants,
+            "turn_order": event.turn_order,
+            "timestamp": event.timestamp.isoformat(),
+        }
+        return await self._publish_combat_payload(
+            _CombatPublishJob(
+                "combat_started",
+                "combat_started",
+                room_id,
+                event_data,
+                event.timestamp,
+                log_context,
+                {"combat_id": combat_id, "room_id": room_id, "participant_count": len(event.participants)},
+                "Combat started event",
             )
-
-            if not self.nats_service:
-                logger.error(
-                    "NATS service not available for combat event publishing - event will not be broadcasted",
-                    combat_id=combat_id,
-                    room_id=room_id,
-                    event_type="combat_started",
-                    participant_count=participant_count,
-                    nats_service_available=False,
-                )
-                return False
-
-            if not self.nats_service.is_connected():
-                logger.error(
-                    "NATS service not connected for combat event publishing - event will not be broadcasted",
-                    combat_id=combat_id,
-                    room_id=room_id,
-                    event_type="combat_started",
-                    participant_count=participant_count,
-                    nats_connected=False,
-                )
-                return False
-
-            # Ensure timestamp is set (should be guaranteed by BaseEvent.__post_init__)
-            if event.timestamp is None:
-                raise ValueError("Event timestamp should be set by BaseEvent.__post_init__")
-
-            # Create event data dictionary
-            event_data = {
-                "combat_id": combat_id,
-                "room_id": room_id,
-                "participants": event.participants,
-                "turn_order": event.turn_order,
-                "timestamp": event.timestamp.isoformat(),
-            }
-
-            # Create properly formatted message matching EventMessageSchema
-            message_data = self._create_event_message(
-                event_type="combat_started",
-                event_data=event_data,
-                room_id=room_id,
-                timestamp=event.timestamp.isoformat().replace("+00:00", "Z"),
-            )
-
-            # Build subject using standardized pattern
-            if self.subject_manager:
-                subject = self.subject_manager.build_subject("combat_started", room_id=room_id)
-            else:
-                # Legacy fallback for backward compatibility
-                subject = f"combat.started.{room_id}"
-                logger.warning(
-                    "Using legacy subject construction - subject_manager not configured",
-                    event_type="combat_started",
-                    room_id=room_id,
-                )
-
-            logger.debug(
-                "Publishing combat started event to NATS",
-                combat_id=combat_id,
-                room_id=room_id,
-                subject=subject,
-                participant_count=participant_count,
-            )
-            try:
-                await self.nats_service.publish(subject, message_data)
-                logger.info(
-                    "Combat started event published to NATS",
-                    combat_id=combat_id,
-                    room_id=room_id,
-                    subject=subject,
-                    participant_count=participant_count,
-                )
-                return True
-            except NATSPublishError as e:
-                logger.error(
-                    "Failed to publish combat started event to NATS",
-                    combat_id=combat_id,
-                    room_id=room_id,
-                    subject=subject,
-                    participant_count=participant_count,
-                    error=str(e),
-                )
-                return False
-            except (RuntimeError, ConnectionError, TimeoutError, OSError) as e:
-                # Catch network and async operation errors that may occur during NATS publishing
-                # Also catches generic exceptions from mocks in tests (which may raise Exception)
-                logger.error(
-                    "Unexpected error publishing combat started event to NATS",
-                    combat_id=combat_id,
-                    room_id=room_id,
-                    subject=subject,
-                    participant_count=participant_count,
-                    error=str(e),
-                )
-                return False
-            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904                # Catch any other unexpected exceptions (e.g., generic Exception from mocks in tests)
-                # This is necessary for test compatibility where mocks may raise generic Exception
-                logger.error(
-                    "Unexpected error publishing combat started event to NATS",
-                    combat_id=combat_id,
-                    room_id=room_id,
-                    subject=subject,
-                    participant_count=participant_count,
-                    error=str(e),
-                )
-                return False
-
-        except (AttributeError, TypeError, ValueError, KeyError) as e:
-            logger.error(
-                "Error publishing combat started event",
-                combat_id=combat_id,
-                room_id=room_id,
-                error=str(e),
-                error_type=type(e).__name__,
-                exc_info=True,
-            )
-            return False
+        )
 
     async def publish_combat_ended(self, event: CombatEndedEvent) -> bool:
-        """
-        Publish combat ended event to NATS.
-
-        Args:
-            event: CombatEndedEvent to publish
-
-        Returns:
-            True if published successfully, False otherwise
-        """
-        try:
-            if not self.nats_service:
-                logger.error(
-                    "NATS service not available for combat event publishing - event will not be broadcasted",
-                    combat_id=str(event.combat_id),
-                    room_id=event.room_id,
-                    event_type="combat_ended",
-                    reason=event.reason,
-                    duration_seconds=event.duration_seconds,
-                    participants=event.participants,
-                )
-                return False
-
-            if not self.nats_service.is_connected():
-                logger.error(
-                    "NATS service not connected for combat event publishing - event will not be broadcasted",
-                    combat_id=str(event.combat_id),
-                    room_id=event.room_id,
-                    event_type="combat_ended",
-                    nats_connected=False,
-                    reason=event.reason,
-                    duration_seconds=event.duration_seconds,
-                    participants=event.participants,
-                )
-                return False
-
-            # Create event data dictionary
-            event_data = {
-                "combat_id": str(event.combat_id),
-                "room_id": event.room_id,
-                "reason": event.reason,
-                "duration_seconds": event.duration_seconds,
-                "participants": event.participants,
-                "timestamp": event.timestamp.isoformat(),
-            }
-
-            # Create properly formatted message matching EventMessageSchema
-            message_data = self._create_event_message(
-                event_type="combat_ended",
-                event_data=event_data,
-                room_id=event.room_id,
-                timestamp=event.timestamp.isoformat().replace("+00:00", "Z"),
+        """Publish combat ended event to NATS."""
+        combat_id = str(event.combat_id)
+        log_context = {
+            "combat_id": combat_id,
+            "room_id": event.room_id,
+            "event_type": "combat_ended",
+            "reason": event.reason,
+            "duration_seconds": event.duration_seconds,
+            "participants": event.participants,
+        }
+        event_data = {
+            "combat_id": combat_id,
+            "room_id": event.room_id,
+            "reason": event.reason,
+            "duration_seconds": event.duration_seconds,
+            "participants": event.participants,
+            "timestamp": event.timestamp.isoformat(),
+        }
+        return await self._publish_combat_payload(
+            _CombatPublishJob(
+                "combat_ended",
+                "combat_ended",
+                event.room_id,
+                event_data,
+                event.timestamp,
+                log_context,
+                {"combat_id": combat_id, "room_id": event.room_id},
+                "Combat ended event",
             )
-
-            # Build subject using standardized pattern
-            if self.subject_manager:
-                subject = self.subject_manager.build_subject("combat_ended", room_id=event.room_id)
-            else:
-                # Legacy fallback for backward compatibility
-                subject = f"combat.ended.{event.room_id}"
-                logger.warning(
-                    "Using legacy subject construction - subject_manager not configured",
-                    event_type="combat_ended",
-                    room_id=event.room_id,
-                )
-
-            try:
-                await self.nats_service.publish(subject, message_data)
-                logger.info(
-                    "Combat ended event published to NATS",
-                    combat_id=str(event.combat_id),
-                    room_id=event.room_id,
-                    subject=subject,
-                )
-                return True
-            except NATSPublishError as e:
-                logger.error(
-                    "Failed to publish combat ended event to NATS",
-                    combat_id=str(event.combat_id),
-                    room_id=event.room_id,
-                    error=str(e),
-                )
-                return False
-
-        except (AttributeError, TypeError, ValueError, KeyError) as e:
-            logger.error(
-                "Error publishing combat ended event",
-                combat_id=str(event.combat_id),
-                error=str(e),
-                exc_info=True,
-            )
-            return False
+        )
 
     async def publish_player_attacked(self, event: PlayerAttackedEvent) -> bool:
-        """
-        Publish player attacked event to NATS.
-
-        Args:
-            event: PlayerAttackedEvent to publish
-
-        Returns:
-            True if published successfully, False otherwise
-        """
-        try:
-            if not self.nats_service:
-                logger.error(
-                    "NATS service not available for combat event publishing - event will not be broadcasted",
-                    combat_id=str(event.combat_id),
-                    room_id=event.room_id,
-                    event_type="player_attacked",
-                    attacker_id=str(event.attacker_id),
-                    attacker_name=event.attacker_name,
-                    target_id=str(event.target_id),
-                    target_name=event.target_name,
-                    damage=event.damage,
-                    action_type=event.action_type,
-                )
-                return False
-
-            if not self.nats_service.is_connected():
-                logger.error(
-                    "NATS service not connected for combat event publishing - event will not be broadcasted",
-                    combat_id=str(event.combat_id),
-                    room_id=event.room_id,
-                    event_type="player_attacked",
-                    nats_connected=False,
-                    attacker_id=str(event.attacker_id),
-                    attacker_name=event.attacker_name,
-                    target_id=str(event.target_id),
-                    target_name=event.target_name,
-                    damage=event.damage,
-                    action_type=event.action_type,
-                )
-                return False
-
-            # Create event data dictionary
-            event_data = {
-                "combat_id": str(event.combat_id),
-                "room_id": event.room_id,
-                "attacker_id": str(event.attacker_id),
-                "attacker_name": event.attacker_name,
-                "target_id": str(event.target_id),
-                "target_name": event.target_name,
-                "damage": event.damage,
-                "action_type": event.action_type,
-                "target_current_dp": event.target_current_dp,
-                "target_max_dp": event.target_max_dp,
-                "timestamp": event.timestamp.isoformat(),
-            }
-
-            # Create properly formatted message matching EventMessageSchema
-            message_data = self._create_event_message(
-                event_type="player_attacked",
-                event_data=event_data,
-                room_id=event.room_id,
-                timestamp=event.timestamp.isoformat().replace("+00:00", "Z"),
+        """Publish player attacked event to NATS."""
+        combat_id = str(event.combat_id)
+        log_context = {
+            "combat_id": combat_id,
+            "room_id": event.room_id,
+            "event_type": "player_attacked",
+            "attacker_id": str(event.attacker_id),
+            "attacker_name": event.attacker_name,
+            "target_id": str(event.target_id),
+            "target_name": event.target_name,
+            "damage": event.damage,
+            "action_type": event.action_type,
+        }
+        event_data = {
+            "combat_id": combat_id,
+            "room_id": event.room_id,
+            "attacker_id": str(event.attacker_id),
+            "attacker_name": event.attacker_name,
+            "target_id": str(event.target_id),
+            "target_name": event.target_name,
+            "damage": event.damage,
+            "action_type": event.action_type,
+            "target_current_dp": event.target_current_dp,
+            "target_max_dp": event.target_max_dp,
+            "timestamp": event.timestamp.isoformat(),
+        }
+        return await self._publish_combat_payload(
+            _CombatPublishJob(
+                "player_attacked",
+                "combat_attack",
+                event.room_id,
+                event_data,
+                event.timestamp,
+                log_context,
+                {
+                    "combat_id": combat_id,
+                    "attacker_name": event.attacker_name,
+                    "target_name": event.target_name,
+                    "damage": event.damage,
+                },
+                "Player attacked event",
             )
-
-            # Build subject using standardized pattern
-            if self.subject_manager:
-                subject = self.subject_manager.build_subject("combat_attack", room_id=event.room_id)
-            else:
-                # Legacy fallback for backward compatibility
-                subject = f"combat.attack.{event.room_id}"
-                logger.warning(
-                    "Using legacy subject construction - subject_manager not configured",
-                    event_type="combat_attack",
-                    room_id=event.room_id,
-                )
-
-            try:
-                await self.nats_service.publish(subject, message_data)
-                logger.info(
-                    "Player attacked event published to NATS",
-                    combat_id=str(event.combat_id),
-                    attacker_name=event.attacker_name,
-                    target_name=event.target_name,
-                    damage=event.damage,
-                )
-                return True
-            except NATSPublishError as e:
-                logger.error(
-                    "Failed to publish player attacked event to NATS",
-                    combat_id=str(event.combat_id),
-                    attacker_name=event.attacker_name,
-                    error=str(e),
-                )
-                return False
-
-        except (AttributeError, TypeError, ValueError, KeyError) as e:
-            logger.error(
-                "Error publishing player attacked event",
-                combat_id=str(event.combat_id),
-                error=str(e),
-                exc_info=True,
-            )
-            return False
+        )
 
     async def publish_npc_attacked(self, event: NPCAttackedEvent) -> bool:
-        """
-        Publish NPC attacked event to NATS.
-
-        Args:
-            event: NPCAttackedEvent to publish
-
-        Returns:
-            True if published successfully, False otherwise
-        """
-        try:
-            if not self.nats_service:
-                logger.error(
-                    "NATS service not available for combat event publishing - event will not be broadcasted",
-                    combat_id=str(event.combat_id),
-                    room_id=event.room_id,
-                    event_type="npc_attacked",
-                    attacker_id=str(event.attacker_id),
-                    attacker_name=event.attacker_name,
-                    npc_id=str(event.npc_id),
-                    npc_name=event.npc_name,
-                    damage=event.damage,
-                    action_type=event.action_type,
-                )
-                return False
-
-            if not self.nats_service.is_connected():
-                logger.error(
-                    "NATS service not connected for combat event publishing - event will not be broadcasted",
-                    combat_id=str(event.combat_id),
-                    room_id=event.room_id,
-                    event_type="npc_attacked",
-                    nats_connected=False,
-                    attacker_id=str(event.attacker_id),
-                    attacker_name=event.attacker_name,
-                    npc_id=str(event.npc_id),
-                    npc_name=event.npc_name,
-                    damage=event.damage,
-                    action_type=event.action_type,
-                )
-                return False
-
-            # Create event data dictionary
-            event_data = {
-                "combat_id": str(event.combat_id),
-                "room_id": event.room_id,
-                "attacker_id": str(event.attacker_id),
-                "attacker_name": event.attacker_name,
-                "npc_id": str(event.npc_id),
-                "npc_name": event.npc_name,
-                "damage": event.damage,
-                "action_type": event.action_type,
-                "target_current_dp": event.target_current_dp,
-                "target_max_dp": event.target_max_dp,
-                "timestamp": event.timestamp.isoformat(),
-            }
-
-            # Create properly formatted message matching EventMessageSchema
-            message_data = self._create_event_message(
-                event_type="npc_attacked",
-                event_data=event_data,
-                room_id=event.room_id,
-                timestamp=event.timestamp.isoformat().replace("+00:00", "Z"),
+        """Publish NPC attacked event to NATS."""
+        combat_id = str(event.combat_id)
+        log_context = {
+            "combat_id": combat_id,
+            "room_id": event.room_id,
+            "event_type": "npc_attacked",
+            "attacker_id": str(event.attacker_id),
+            "attacker_name": event.attacker_name,
+            "npc_id": str(event.npc_id),
+            "npc_name": event.npc_name,
+            "damage": event.damage,
+            "action_type": event.action_type,
+        }
+        event_data = {
+            "combat_id": combat_id,
+            "room_id": event.room_id,
+            "attacker_id": str(event.attacker_id),
+            "attacker_name": event.attacker_name,
+            "npc_id": str(event.npc_id),
+            "npc_name": event.npc_name,
+            "damage": event.damage,
+            "action_type": event.action_type,
+            "target_current_dp": event.target_current_dp,
+            "target_max_dp": event.target_max_dp,
+            "timestamp": event.timestamp.isoformat(),
+        }
+        return await self._publish_combat_payload(
+            _CombatPublishJob(
+                "npc_attacked",
+                "combat_npc_attacked",
+                event.room_id,
+                event_data,
+                event.timestamp,
+                log_context,
+                {
+                    "combat_id": combat_id,
+                    "attacker_name": event.attacker_name,
+                    "npc_name": event.npc_name,
+                    "damage": event.damage,
+                },
+                "NPC attacked event",
             )
-
-            # Build subject using standardized pattern
-            if self.subject_manager:
-                subject = self.subject_manager.build_subject("combat_npc_attacked", room_id=event.room_id)
-            else:
-                # Legacy fallback for backward compatibility
-                subject = f"combat.npc_attacked.{event.room_id}"
-                logger.warning(
-                    "Using legacy subject construction - subject_manager not configured",
-                    event_type="combat_npc_attacked",
-                    room_id=event.room_id,
-                )
-
-            try:
-                await self.nats_service.publish(subject, message_data)
-                logger.info(
-                    "NPC attacked event published to NATS",
-                    combat_id=str(event.combat_id),
-                    attacker_name=event.attacker_name,
-                    npc_name=event.npc_name,
-                    damage=event.damage,
-                )
-                return True
-            except NATSPublishError as e:
-                logger.error(
-                    "Failed to publish NPC attacked event to NATS",
-                    combat_id=str(event.combat_id),
-                    attacker_name=event.attacker_name,
-                    error=str(e),
-                )
-                return False
-
-        except (AttributeError, TypeError, ValueError, KeyError) as e:
-            logger.error(
-                "Error publishing NPC attacked event",
-                combat_id=str(event.combat_id),
-                error=str(e),
-                exc_info=True,
-            )
-            return False
+        )
 
     async def publish_npc_took_damage(self, event: NPCTookDamageEvent) -> bool:
-        """
-        Publish NPC took damage event to NATS.
-
-        Args:
-            event: NPCTookDamageEvent to publish
-
-        Returns:
-            True if published successfully, False otherwise
-        """
-        try:
-            if not self.nats_service:
-                logger.error(
-                    "NATS service not available for combat event publishing - event will not be broadcasted",
-                    combat_id=str(event.combat_id),
-                    room_id=event.room_id,
-                    event_type="npc_took_damage",
-                    npc_id=str(event.npc_id),
-                    npc_name=event.npc_name,
-                    damage=event.damage,
-                    current_dp=event.current_dp,
-                    max_dp=event.max_dp,
-                )
-                return False
-
-            if not self.nats_service.is_connected():
-                logger.error(
-                    "NATS service not connected for combat event publishing - event will not be broadcasted",
-                    combat_id=str(event.combat_id),
-                    room_id=event.room_id,
-                    event_type="npc_took_damage",
-                    nats_connected=False,
-                    npc_id=str(event.npc_id),
-                    npc_name=event.npc_name,
-                    damage=event.damage,
-                    current_dp=event.current_dp,
-                    max_dp=event.max_dp,
-                )
-                return False
-
-            # Create event data dictionary
-            event_data = {
-                "combat_id": str(event.combat_id),
-                "room_id": event.room_id,
-                "npc_id": str(event.npc_id),
-                "npc_name": event.npc_name,
-                "damage": event.damage,
-                "current_dp": event.current_dp,
-                "max_dp": event.max_dp,
-                "timestamp": event.timestamp.isoformat(),
-            }
-
-            # Create properly formatted message matching EventMessageSchema
-            message_data = self._create_event_message(
-                event_type="npc_took_damage",
-                event_data=event_data,
-                room_id=event.room_id,
-                timestamp=event.timestamp.isoformat().replace("+00:00", "Z"),
+        """Publish NPC took damage event to NATS."""
+        combat_id = str(event.combat_id)
+        log_context = {
+            "combat_id": combat_id,
+            "room_id": event.room_id,
+            "event_type": "npc_took_damage",
+            "npc_id": str(event.npc_id),
+            "npc_name": event.npc_name,
+            "damage": event.damage,
+            "current_dp": event.current_dp,
+            "max_dp": event.max_dp,
+        }
+        event_data = {
+            "combat_id": combat_id,
+            "room_id": event.room_id,
+            "npc_id": str(event.npc_id),
+            "npc_name": event.npc_name,
+            "damage": event.damage,
+            "current_dp": event.current_dp,
+            "max_dp": event.max_dp,
+            "timestamp": event.timestamp.isoformat(),
+        }
+        return await self._publish_combat_payload(
+            _CombatPublishJob(
+                "npc_took_damage",
+                "combat_damage",
+                event.room_id,
+                event_data,
+                event.timestamp,
+                log_context,
+                {
+                    "combat_id": combat_id,
+                    "npc_name": event.npc_name,
+                    "damage": event.damage,
+                    "current_dp": event.current_dp,
+                },
+                "NPC took damage event",
             )
-
-            # Build subject using standardized pattern
-            if self.subject_manager:
-                subject = self.subject_manager.build_subject("combat_damage", room_id=event.room_id)
-            else:
-                # Legacy fallback for backward compatibility
-                subject = f"combat.damage.{event.room_id}"
-                logger.warning(
-                    "Using legacy subject construction - subject_manager not configured",
-                    event_type="combat_damage",
-                    room_id=event.room_id,
-                )
-
-            try:
-                await self.nats_service.publish(subject, message_data)
-                logger.info(
-                    "NPC took damage event published to NATS",
-                    combat_id=str(event.combat_id),
-                    npc_name=event.npc_name,
-                    damage=event.damage,
-                    current_dp=event.current_dp,
-                )
-                return True
-            except NATSPublishError as e:
-                logger.error(
-                    "Failed to publish NPC took damage event to NATS",
-                    combat_id=str(event.combat_id),
-                    npc_name=event.npc_name,
-                    error=str(e),
-                )
-                return False
-
-        except (AttributeError, TypeError, ValueError, KeyError) as e:
-            logger.error(
-                "Error publishing NPC took damage event",
-                combat_id=str(event.combat_id),
-                error=str(e),
-                exc_info=True,
-            )
-            return False
+        )
 
     async def publish_npc_died(self, event: NPCDiedEvent) -> bool:
-        """
-        Publish NPC died event to NATS.
-
-        Args:
-            event: NPCDiedEvent to publish
-
-        Returns:
-            True if published successfully, False otherwise
-        """
-        try:
-            if not self.nats_service:
-                logger.error(
-                    "NATS service not available for combat event publishing - event will not be broadcasted",
-                    combat_id=str(event.combat_id),
-                    room_id=event.room_id,
-                    event_type="npc_died",
-                    npc_id=str(event.npc_id),
-                    npc_name=event.npc_name,
-                    xp_reward=event.xp_reward,
-                )
-                return False
-
-            if not self.nats_service.is_connected():
-                logger.error(
-                    "NATS service not connected for combat event publishing - event will not be broadcasted",
-                    combat_id=str(event.combat_id),
-                    room_id=event.room_id,
-                    event_type="npc_died",
-                    nats_connected=False,
-                    npc_id=str(event.npc_id),
-                    npc_name=event.npc_name,
-                    xp_reward=event.xp_reward,
-                )
-                return False
-
-            # Create event data dictionary
-            event_data = {
-                "combat_id": str(event.combat_id),
-                "room_id": event.room_id,
-                "npc_id": str(event.npc_id),
-                "npc_name": event.npc_name,
-                "xp_reward": event.xp_reward,
-                "timestamp": event.timestamp.isoformat(),
-            }
-            if getattr(event, "killer_id", None):
-                event_data["killer_id"] = event.killer_id
-
-            # Create properly formatted message matching EventMessageSchema
-            message_data = self._create_event_message(
-                event_type="npc_died",
-                event_data=event_data,
-                room_id=event.room_id,
-                timestamp=event.timestamp.isoformat().replace("+00:00", "Z"),
+        """Publish NPC died event to NATS."""
+        combat_id = str(event.combat_id)
+        log_context = {
+            "combat_id": combat_id,
+            "room_id": event.room_id,
+            "event_type": "npc_died",
+            "npc_id": str(event.npc_id),
+            "npc_name": event.npc_name,
+            "xp_reward": event.xp_reward,
+        }
+        event_data = {
+            "combat_id": combat_id,
+            "room_id": event.room_id,
+            "npc_id": str(event.npc_id),
+            "npc_name": event.npc_name,
+            "xp_reward": event.xp_reward,
+            "timestamp": event.timestamp.isoformat(),
+        }
+        if getattr(event, "killer_id", None):
+            event_data["killer_id"] = event.killer_id
+        return await self._publish_combat_payload(
+            _CombatPublishJob(
+                "npc_died",
+                "combat_npc_died",
+                event.room_id,
+                event_data,
+                event.timestamp,
+                log_context,
+                {"combat_id": combat_id, "npc_name": event.npc_name, "xp_reward": event.xp_reward},
+                "NPC died event",
             )
-
-            # Build subject using standardized pattern
-            if self.subject_manager:
-                subject = self.subject_manager.build_subject("combat_npc_died", room_id=event.room_id)
-            else:
-                # Legacy fallback for backward compatibility
-                subject = f"combat.npc_died.{event.room_id}"
-                logger.warning(
-                    "Using legacy subject construction - subject_manager not configured",
-                    event_type="combat_npc_died",
-                    room_id=event.room_id,
-                )
-
-            try:
-                await self.nats_service.publish(subject, message_data)
-                logger.info(
-                    "NPC died event published to NATS",
-                    combat_id=str(event.combat_id),
-                    npc_name=event.npc_name,
-                    xp_reward=event.xp_reward,
-                )
-                return True
-            except NATSPublishError as e:
-                logger.error(
-                    "Failed to publish NPC died event to NATS",
-                    combat_id=str(event.combat_id),
-                    npc_name=event.npc_name,
-                    error=str(e),
-                )
-                return False
-
-        except (AttributeError, TypeError, ValueError, KeyError) as e:
-            logger.error(
-                "Error publishing NPC died event",
-                combat_id=str(event.combat_id),
-                error=str(e),
-                exc_info=True,
-            )
-            return False
+        )
 
     async def publish_combat_turn_advanced(self, event: CombatTurnAdvancedEvent) -> bool:
-        """
-        Publish combat turn advanced event to NATS.
-
-        Args:
-            event: CombatTurnAdvancedEvent to publish
-
-        Returns:
-            True if published successfully, False otherwise
-        """
-        try:
-            if not self.nats_service:
-                logger.error(
-                    "NATS service not available for combat event publishing - event will not be broadcasted",
-                    combat_id=str(event.combat_id),
-                    room_id=event.room_id,
-                    event_type="combat_turn_advanced",
-                    current_turn=event.current_turn,
-                    combat_round=event.combat_round,
-                    next_participant=event.next_participant,
-                )
-                return False
-
-            if not self.nats_service.is_connected():
-                logger.error(
-                    "NATS service not connected for combat event publishing - event will not be broadcasted",
-                    combat_id=str(event.combat_id),
-                    room_id=event.room_id,
-                    event_type="combat_turn_advanced",
-                    nats_connected=False,
-                    current_turn=event.current_turn,
-                    combat_round=event.combat_round,
-                    next_participant=event.next_participant,
-                )
-                return False
-
-            # Create event data dictionary
-            event_data = {
-                "combat_id": str(event.combat_id),
-                "room_id": event.room_id,
-                "current_turn": event.current_turn,
-                "combat_round": event.combat_round,
-                "next_participant": event.next_participant,
-                "timestamp": event.timestamp.isoformat(),
-            }
-
-            # Create properly formatted message matching EventMessageSchema
-            message_data = self._create_event_message(
-                event_type="combat_turn_advanced",
-                event_data=event_data,
-                room_id=event.room_id,
-                timestamp=event.timestamp.isoformat().replace("+00:00", "Z"),
+        """Publish combat turn advanced event to NATS."""
+        combat_id = str(event.combat_id)
+        log_context = {
+            "combat_id": combat_id,
+            "room_id": event.room_id,
+            "event_type": "combat_turn_advanced",
+            "current_turn": event.current_turn,
+            "combat_round": event.combat_round,
+            "next_participant": event.next_participant,
+        }
+        event_data = {
+            "combat_id": combat_id,
+            "room_id": event.room_id,
+            "current_turn": event.current_turn,
+            "combat_round": event.combat_round,
+            "next_participant": event.next_participant,
+            "timestamp": event.timestamp.isoformat(),
+        }
+        return await self._publish_combat_payload(
+            _CombatPublishJob(
+                "combat_turn_advanced",
+                "combat_turn",
+                event.room_id,
+                event_data,
+                event.timestamp,
+                log_context,
+                {"combat_id": combat_id, "room_id": event.room_id, "current_turn": event.current_turn},
+                "Combat turn advanced event",
             )
-
-            # Build subject using standardized pattern
-            if self.subject_manager:
-                subject = self.subject_manager.build_subject("combat_turn", room_id=event.room_id)
-            else:
-                # Legacy fallback for backward compatibility
-                subject = f"combat.turn.{event.room_id}"
-                logger.warning(
-                    "Using legacy subject construction - subject_manager not configured",
-                    event_type="combat_turn",
-                    room_id=event.room_id,
-                )
-
-            try:
-                await self.nats_service.publish(subject, message_data)
-                logger.info(
-                    "Combat turn advanced event published to NATS",
-                    combat_id=str(event.combat_id),
-                    room_id=event.room_id,
-                    current_turn=event.current_turn,
-                )
-                return True
-            except NATSPublishError as e:
-                logger.error(
-                    "Failed to publish combat turn advanced event to NATS",
-                    combat_id=str(event.combat_id),
-                    room_id=event.room_id,
-                    error=str(e),
-                )
-                return False
-
-        except (AttributeError, TypeError, ValueError, KeyError) as e:
-            logger.error(
-                "Error publishing combat turn advanced event",
-                combat_id=str(event.combat_id),
-                error=str(e),
-                exc_info=True,
-            )
-            return False
+        )
 
     async def publish_combat_timeout(self, event: CombatTimeoutEvent) -> bool:
-        """
-        Publish combat timeout event to NATS.
-
-        Args:
-            event: CombatTimeoutEvent to publish
-
-        Returns:
-            True if published successfully, False otherwise
-        """
-        try:
-            if not self.nats_service:
-                logger.error(
-                    "NATS service not available for combat event publishing - event will not be broadcasted",
-                    combat_id=str(event.combat_id),
-                    room_id=event.room_id,
-                    event_type="combat_timeout",
-                    timeout_minutes=event.timeout_minutes,
-                    last_activity=event.last_activity.isoformat() if event.last_activity else None,
-                )
-                return False
-
-            if not self.nats_service.is_connected():
-                logger.error(
-                    "NATS service not connected for combat event publishing - event will not be broadcasted",
-                    combat_id=str(event.combat_id),
-                    room_id=event.room_id,
-                    event_type="combat_timeout",
-                    nats_connected=False,
-                    timeout_minutes=event.timeout_minutes,
-                    last_activity=event.last_activity.isoformat() if event.last_activity else None,
-                )
-                return False
-
-            # Create event data dictionary
-            event_data = {
-                "combat_id": str(event.combat_id),
-                "room_id": event.room_id,
-                "timeout_minutes": event.timeout_minutes,
-                "last_activity": event.last_activity.isoformat() if event.last_activity else None,
-                "timestamp": event.timestamp.isoformat(),
-            }
-
-            # Create properly formatted message matching EventMessageSchema
-            message_data = self._create_event_message(
-                event_type="combat_timeout",
-                event_data=event_data,
-                room_id=event.room_id,
-                timestamp=event.timestamp.isoformat().replace("+00:00", "Z"),
+        """Publish combat timeout event to NATS."""
+        combat_id = str(event.combat_id)
+        last_activity = event.last_activity.isoformat() if event.last_activity else None
+        log_context = {
+            "combat_id": combat_id,
+            "room_id": event.room_id,
+            "event_type": "combat_timeout",
+            "timeout_minutes": event.timeout_minutes,
+            "last_activity": last_activity,
+        }
+        event_data = {
+            "combat_id": combat_id,
+            "room_id": event.room_id,
+            "timeout_minutes": event.timeout_minutes,
+            "last_activity": last_activity,
+            "timestamp": event.timestamp.isoformat(),
+        }
+        return await self._publish_combat_payload(
+            _CombatPublishJob(
+                "combat_timeout",
+                "combat_timeout",
+                event.room_id,
+                event_data,
+                event.timestamp,
+                log_context,
+                {"combat_id": combat_id, "room_id": event.room_id, "timeout_minutes": event.timeout_minutes},
+                "Combat timeout event",
             )
-
-            # Build subject using standardized pattern
-            if self.subject_manager:
-                subject = self.subject_manager.build_subject("combat_timeout", room_id=event.room_id)
-            else:
-                # Legacy fallback for backward compatibility
-                subject = f"combat.timeout.{event.room_id}"
-                logger.warning(
-                    "Using legacy subject construction - subject_manager not configured",
-                    event_type="combat_timeout",
-                    room_id=event.room_id,
-                )
-
-            try:
-                await self.nats_service.publish(subject, message_data)
-                logger.info(
-                    "Combat timeout event published to NATS",
-                    combat_id=str(event.combat_id),
-                    room_id=event.room_id,
-                    timeout_minutes=event.timeout_minutes,
-                )
-                return True
-            except NATSPublishError as e:
-                logger.error(
-                    "Failed to publish combat timeout event to NATS",
-                    combat_id=str(event.combat_id),
-                    room_id=event.room_id,
-                    error=str(e),
-                )
-                return False
-
-        except (AttributeError, TypeError, ValueError, KeyError) as e:
-            logger.error(
-                "Error publishing combat timeout event",
-                combat_id=str(event.combat_id),
-                error=str(e),
-                exc_info=True,
-            )
-            return False
+        )
 
 
 # Global instance

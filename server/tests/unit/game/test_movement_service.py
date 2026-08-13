@@ -5,11 +5,14 @@ Tests the MovementService class.
 """
 
 import uuid
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from server.game.movement_service import MovementService
+
+FOYER_ID = "earth_arkhamcity_sanitarium_room_foyer_001"
+HALLWAY_EAST_ID = "earth_arkhamcity_sanitarium_room_hallway_001"
 
 
 @pytest.fixture
@@ -206,3 +209,30 @@ def test_validate_player_location_room_not_found(movement_service, mock_persiste
     mock_persistence.get_room_by_id = MagicMock(return_value=None)
     result = movement_service.validate_player_location(player_id, room_id)
     assert result is False
+
+
+@pytest.mark.asyncio
+async def test_validate_movement_rooms_allows_ghost_in_destination(movement_service, mock_persistence):
+    """E2E: foyer go-east failed because hallway still listed the player (teleport/co-locate ghost)."""
+    player_id = uuid.uuid4()
+    foyer = MagicMock()
+    foyer.id = FOYER_ID
+    foyer.has_player = MagicMock(return_value=True)
+    hallway = MagicMock()
+    hallway.id = HALLWAY_EAST_ID
+    hallway.has_player = MagicMock(return_value=True)
+
+    def rooms(room_id: str) -> MagicMock | None:
+        return {FOYER_ID: foyer, HALLWAY_EAST_ID: hallway}.get(room_id)
+
+    mock_persistence.get_room_by_id = MagicMock(side_effect=rooms)
+
+    with (
+        patch(
+            "server.game.movement_service.validate_player_room_membership", new_callable=AsyncMock, return_value=True
+        ),
+        patch("server.game.movement_service.validate_exit", return_value=True),
+    ):
+        result = await movement_service._validate_movement_rooms(player_id, FOYER_ID, HALLWAY_EAST_ID)
+
+    assert result is True

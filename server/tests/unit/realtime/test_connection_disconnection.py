@@ -285,9 +285,7 @@ async def test_cleanup_websocket_disconnect_when_mapping_cleared_during_close(
         "server.realtime.connection_disconnection.disconnect_all_websockets_impl",
         side_effect=clear_player_mapping_after_close,
     ):
-        result = await cleanup_websocket_disconnect(
-            player_id, mock_manager, is_force_disconnect=True
-        )
+        result = await cleanup_websocket_disconnect(player_id, mock_manager, is_force_disconnect=True)
 
     assert isinstance(result, bool)
     assert player_id not in player_websockets

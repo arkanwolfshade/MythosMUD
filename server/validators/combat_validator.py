@@ -15,6 +15,104 @@ from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
+_ATTACK_ALIASES = {
+    "attack",
+    "punch",
+    "kick",
+    "strike",
+    "hit",
+    "smack",
+    "thump",
+    "pummel",
+    "batter",
+    "claw",
+    "rend",
+    "maul",
+    "savage",
+}
+
+# Thematic error messages for different validation failures
+_ERROR_MESSAGES = {
+    "invalid_command": [
+        "The ancient ones whisper that such an action is beyond mortal comprehension.",
+        "Your mind recoils at the thought of such an impossible action.",
+        "The cosmic forces reject your feeble attempt at violence.",
+        "Such actions are forbidden by the laws that govern reality itself.",
+    ],
+    "no_target": [
+        "You must focus your wrath upon a specific target, lest your fury be wasted.",
+        "The void stares back at you, demanding a name to direct your hatred.",
+        "Your anger needs direction - who shall bear the brunt of your assault?",
+        "The cosmic forces require a target for your destructive intent.",
+    ],
+    "target_not_found": [
+        "Your eyes strain against the darkness, but {target} is not here.",
+        "The shadows mock your search for {target} - they are not present.",
+        "Your senses fail to detect {target} in this accursed place.",
+        "The very air seems to laugh at your futile search for {target}.",
+    ],
+    "target_dead": [
+        "{target} lies still, their life force already extinguished by forces beyond your understanding.",
+        "The corpse of {target} offers no resistance to your assault.",
+        "Your target has already been claimed by the great beyond.",
+        "The lifeless form of {target} cannot be harmed further.",
+    ],
+    "already_in_combat": [
+        "You are already engaged in a battle that would make the gods themselves tremble.",
+        "Your focus is consumed by the ongoing struggle against cosmic forces.",
+        "The battle rages on, and you cannot divide your attention.",
+        "Your current conflict demands all your concentration.",
+    ],
+    "not_in_combat": [
+        "The peace of this place is not to be disturbed by mortal violence.",
+        "The cosmic forces have not aligned for combat in this sacred space.",
+        "Your violent intent is repelled by the protective energies of this location.",
+        "The ancient ones have decreed this place free from mortal conflict.",
+    ],
+    "invalid_target": [
+        "Your target is beyond the reach of mortal violence.",
+        "The cosmic forces protect {target} from your assault.",
+        "Your attack glances harmlessly off {target}'s otherworldly defenses.",
+        "The very fabric of reality bends to protect {target} from your wrath.",
+    ],
+    "insufficient_strength": [
+        "Your mortal form lacks the strength to harm such a being.",
+        "The cosmic forces laugh at your feeble attempt to cause harm.",
+        "Your attack is but a whisper against the roar of cosmic power.",
+        "The ancient ones mock your puny efforts at violence.",
+    ],
+    "target_immune": [
+        "{target} is protected by forces beyond mortal comprehension.",
+        "Your attack passes through {target} as if they were made of shadow.",
+        "The cosmic energies surrounding {target} absorb your assault harmlessly.",
+        "Your violence is meaningless against {target}'s otherworldly nature.",
+    ],
+    "rate_limited": [
+        "The cosmic forces demand you pause before unleashing more violence.",
+        "Your mortal form needs a moment to recover from the exertion.",
+        "The ancient ones decree that you must wait before striking again.",
+        "The very air itself resists your rapid succession of attacks.",
+    ],
+    "invalid_weapon": [
+        "Your weapon is not suited for combat against such beings.",
+        "The cosmic forces reject your choice of weapon for this battle.",
+        "Your implement of violence is inadequate for the task at hand.",
+        "The ancient ones frown upon your choice of weapon.",
+    ],
+    "spell_interference": [
+        "The arcane energies swirling about interfere with your combat abilities.",
+        "Mystical forces disrupt your attempts at physical violence.",
+        "The cosmic energies in this place make combat unpredictable.",
+        "The ancient magics here interfere with your violent intent.",
+    ],
+    "target_in_party": [
+        "The bonds of fellowship protect your companion from your wrath.",
+        "You cannot turn your violence upon a party member.",
+        "The cosmic pact between you and your ally forbids such an attack.",
+        "Your party bond stays your hand against this target.",
+    ],
+}
+
 
 class CombatValidator:
     """
@@ -33,103 +131,8 @@ class CombatValidator:
                 attacking party members). When None, validate_can_attack_target allows.
         """
         self.party_service = party_service
-        self.attack_aliases = {
-            "attack",
-            "punch",
-            "kick",
-            "strike",
-            "hit",
-            "smack",
-            "thump",
-            "pummel",
-            "batter",
-            "claw",
-            "rend",
-            "maul",
-            "savage",
-        }
-
-        # Thematic error messages for different validation failures
-        self.error_messages = {
-            "invalid_command": [
-                "The ancient ones whisper that such an action is beyond mortal comprehension.",
-                "Your mind recoils at the thought of such an impossible action.",
-                "The cosmic forces reject your feeble attempt at violence.",
-                "Such actions are forbidden by the laws that govern reality itself.",
-            ],
-            "no_target": [
-                "You must focus your wrath upon a specific target, lest your fury be wasted.",
-                "The void stares back at you, demanding a name to direct your hatred.",
-                "Your anger needs direction - who shall bear the brunt of your assault?",
-                "The cosmic forces require a target for your destructive intent.",
-            ],
-            "target_not_found": [
-                "Your eyes strain against the darkness, but {target} is not here.",
-                "The shadows mock your search for {target} - they are not present.",
-                "Your senses fail to detect {target} in this accursed place.",
-                "The very air seems to laugh at your futile search for {target}.",
-            ],
-            "target_dead": [
-                "{target} lies still, their life force already extinguished by forces beyond your understanding.",
-                "The corpse of {target} offers no resistance to your assault.",
-                "Your target has already been claimed by the great beyond.",
-                "The lifeless form of {target} cannot be harmed further.",
-            ],
-            "already_in_combat": [
-                "You are already engaged in a battle that would make the gods themselves tremble.",
-                "Your focus is consumed by the ongoing struggle against cosmic forces.",
-                "The battle rages on, and you cannot divide your attention.",
-                "Your current conflict demands all your concentration.",
-            ],
-            "not_in_combat": [
-                "The peace of this place is not to be disturbed by mortal violence.",
-                "The cosmic forces have not aligned for combat in this sacred space.",
-                "Your violent intent is repelled by the protective energies of this location.",
-                "The ancient ones have decreed this place free from mortal conflict.",
-            ],
-            "invalid_target": [
-                "Your target is beyond the reach of mortal violence.",
-                "The cosmic forces protect {target} from your assault.",
-                "Your attack glances harmlessly off {target}'s otherworldly defenses.",
-                "The very fabric of reality bends to protect {target} from your wrath.",
-            ],
-            "insufficient_strength": [
-                "Your mortal form lacks the strength to harm such a being.",
-                "The cosmic forces laugh at your feeble attempt to cause harm.",
-                "Your attack is but a whisper against the roar of cosmic power.",
-                "The ancient ones mock your puny efforts at violence.",
-            ],
-            "target_immune": [
-                "{target} is protected by forces beyond mortal comprehension.",
-                "Your attack passes through {target} as if they were made of shadow.",
-                "The cosmic energies surrounding {target} absorb your assault harmlessly.",
-                "Your violence is meaningless against {target}'s otherworldly nature.",
-            ],
-            "rate_limited": [
-                "The cosmic forces demand you pause before unleashing more violence.",
-                "Your mortal form needs a moment to recover from the exertion.",
-                "The ancient ones decree that you must wait before striking again.",
-                "The very air itself resists your rapid succession of attacks.",
-            ],
-            "invalid_weapon": [
-                "Your weapon is not suited for combat against such beings.",
-                "The cosmic forces reject your choice of weapon for this battle.",
-                "Your implement of violence is inadequate for the task at hand.",
-                "The ancient ones frown upon your choice of weapon.",
-            ],
-            "spell_interference": [
-                "The arcane energies swirling about interfere with your combat abilities.",
-                "Mystical forces disrupt your attempts at physical violence.",
-                "The cosmic energies in this place make combat unpredictable.",
-                "The ancient magics here interfere with your violent intent.",
-            ],
-            "target_in_party": [
-                "The bonds of fellowship protect your companion from your wrath.",
-                "You cannot turn your violence upon a party member.",
-                "The cosmic pact between you and your ally forbids such an attack.",
-                "Your party bond stays your hand against this target.",
-            ],
-        }
+        self.attack_aliases = _ATTACK_ALIASES
+        self.error_messages = _ERROR_MESSAGES
 
     def validate_can_attack_target(self, attacker_id: str, target_id: str) -> tuple[bool, str | None]:
         """

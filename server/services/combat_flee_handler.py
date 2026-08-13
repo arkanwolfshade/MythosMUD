@@ -63,6 +63,34 @@ def try_voluntary_flee_roll(combat: CombatInstance, fleeing_participant_id: UUID
     return roll < chance
 
 
+async def _handle_failed_voluntary_flee(
+    combat_service: Any, combat: CombatInstance, fleeing_participant_id: UUID
+) -> None:
+    skip_action = CombatAction(
+        combat_id=combat.combat_id,
+        attacker_id=fleeing_participant_id,
+        target_id=fleeing_participant_id,
+        action_type="flee_skip",
+        damage=0,
+    )
+    combat.queue_action(fleeing_participant_id, skip_action)
+    logger.info(
+        "Voluntary flee failed; action consumed",
+        combat_id=combat.combat_id,
+        fleeing_id=fleeing_participant_id,
+    )
+    try:
+        await combat_service.execute_flee_failed_free_hits(combat.combat_id, fleeing_participant_id)
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Free hit execution must not break flee failure handling
+        logger.warning(
+            "Error executing flee failed free hits",
+            combat_id=combat.combat_id,
+            fleeing_id=fleeing_participant_id,
+            error=str(e),
+            error_type=type(e).__name__,
+        )
+
+
 async def execute_voluntary_flee(
     combat_service: Any,
     get_room_by_id: Callable[[str], Any],
@@ -95,31 +123,7 @@ async def execute_voluntary_flee(
     combat.clear_queued_actions(fleeing_participant_id)
 
     if not try_voluntary_flee_roll(combat, fleeing_participant_id, num_exits):
-        # Queue a no-op combat action for the next round so the fleeing participant
-        # does not perform the default attack on the round following a failed flee.
-        skip_action = CombatAction(
-            combat_id=combat.combat_id,
-            attacker_id=fleeing_participant_id,
-            target_id=fleeing_participant_id,
-            action_type="flee_skip",
-            damage=0,
-        )
-        combat.queue_action(fleeing_participant_id, skip_action)
-        logger.info(
-            "Voluntary flee failed; action consumed",
-            combat_id=combat.combat_id,
-            fleeing_id=fleeing_participant_id,
-        )
-        try:
-            await combat_service.execute_flee_failed_free_hits(combat.combat_id, fleeing_participant_id)
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Free hit execution must not break flee failure handling
-            logger.warning(
-                "Error executing flee failed free hits",
-                combat_id=combat.combat_id,
-                fleeing_id=fleeing_participant_id,
-                error=str(e),
-                error_type=type(e).__name__,
-            )
+        await _handle_failed_voluntary_flee(combat_service, combat, fleeing_participant_id)
         return False
 
     to_room_id = str(secrets.choice(list(exits.values())))

@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, Any, TypedDict, cast
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.app.game_tick_processing import get_current_tick
-from server.game.magic.casting_state_manager import CastingStateManager
+from server.game.magic.casting_state_manager import CastingStateManager, StartCastingTarget
 from server.game.magic.magic_healing_events import MagicServiceHealingMixin
 from server.game.magic.magic_service_completion import MagicServiceCompletionMixin
 from server.game.magic.spell_costs import SpellCostsService
@@ -251,15 +251,17 @@ class _MagicServiceCore(MagicServiceCompletionMixin, MagicServiceHealingMixin): 
 
         try:
             self.casting_state_manager.start_casting(
-                player_id=player_id,
-                spell=spell,
-                start_tick=current_tick,
-                combat_id=combat_id,
-                next_initiative_tick=next_initiative_tick,
-                target_name=target.target_name,
-                target_id=target.target_id,
-                target_type=target_type_str,
-                mastery=mastery,
+                player_id,
+                spell,
+                current_tick,
+                StartCastingTarget(
+                    combat_id=combat_id,
+                    next_initiative_tick=next_initiative_tick,
+                    target_name=target.target_name,
+                    target_id=target.target_id,
+                    target_type=target_type_str,
+                    mastery=mastery,
+                ),
             )
         except ValueError as e:
             return {"success": False, "message": str(e)}

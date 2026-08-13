@@ -1,10 +1,15 @@
 // Pure room derivation from events (no context refs)
 // Used by the event-sourced projector; logic aligned with roomHandlers
+// AI: keep each function CCN low; prefer if/else over ?? chains (Lizard inflates ??).
 
 import type { GameEvent } from '../eventHandlers/types';
 import type { Room } from '../types';
 
-function extractRoomMetadata(roomData: Room): Omit<Room, 'players' | 'npcs' | 'occupants' | 'occupant_count'> {
+type RoomMeta = Omit<Room, 'players' | 'npcs' | 'occupants' | 'occupant_count'>;
+type RoomOrNull = Room | null;
+type OccupantPair = { players: string[]; npcsArr: string[] };
+
+function extractRoomMetadata(roomData: Room): RoomMeta {
   // Omit occupant fields via destructuring (eslint: unused names intentional)
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   const { players: _p, npcs: _n, occupants: _o, occupant_count: _c, ...meta } = roomData;
@@ -12,148 +17,221 @@ function extractRoomMetadata(roomData: Room): Omit<Room, 'players' | 'npcs' | 'o
 }
 
 function hasOccupantData(room: Room): boolean {
-  return (room.players != null && room.players.length > 0) || (room.npcs != null && room.npcs.length > 0);
+  const hasPlayers = room.players != null && room.players.length > 0;
+  const hasNpcs = room.npcs != null && room.npcs.length > 0;
+  return hasPlayers || hasNpcs;
 }
 
-function getRoomDataFromEvent(event: GameEvent): Room | null {
-  const raw = (event.data.room || event.data.room_data) as Room | undefined;
-  if (!raw) return null;
-  const topPlayers = event.data.players as string[] | undefined;
-  const topNpcs = event.data.npcs as string[] | undefined;
-  if (topPlayers === undefined && topNpcs === undefined) {
-    return raw as Room;
+function normalizeOccupantArrays(players: unknown, npcs: unknown): OccupantPair {
+  const playersArr = Array.isArray(players) ? players : [];
+  const npcsArr = Array.isArray(npcs) ? npcs : [];
+  return { players: playersArr, npcsArr };
+}
+
+function coalesceCount(a?: number, b?: number, fallback = 0): number {
+  if (a !== undefined) {
+    return a;
   }
-  const players = topPlayers ?? raw.players ?? [];
-  const npcs = topNpcs ?? raw.npcs ?? [];
-  const playersArr = Array.isArray(players) ? players : [];
-  const npcsArr = Array.isArray(npcs) ? npcs : [];
-  const occupants = [...playersArr, ...npcsArr];
-  const topCount = event.data.occupant_count as number | undefined;
-  const count = event.data.count as number | undefined;
-  const occupantCount = topCount ?? count ?? occupants.length;
-  return {
-    ...(raw as Room),
-    players: playersArr,
-    npcs: npcsArr,
-    occupants,
-    occupant_count: occupantCount,
-  } as Room;
+  if (b !== undefined) {
+    return b;
+  }
+  return fallback;
 }
 
-function createInitialRoomState(
-  roomMetadata: Omit<Room, 'players' | 'npcs' | 'occupants' | 'occupant_count'>,
-  roomData?: Room
-): Room {
-  const players = roomData?.players ?? [];
-  const npcs = roomData?.npcs ?? [];
-  const playersArr = Array.isArray(players) ? players : [];
-  const npcsArr = Array.isArray(npcs) ? npcs : [];
-  const occupants = [...playersArr, ...npcsArr];
-  const occupant_count = roomData?.occupant_count ?? occupants.length;
+function preferOccupantList(preferred?: string[], secondary?: string[]): string[] {
+  if (preferred !== undefined) {
+    return preferred;
+  }
+  if (secondary !== undefined) {
+    return secondary;
+  }
+  return [];
+}
+
+function attachOccupants(room: Room, playersArr: string[], npcsArr: string[], occupantCount: number): Room {
   return {
-    ...roomMetadata,
+    ...room,
     players: playersArr,
     npcs: npcsArr,
-    occupants,
-    occupant_count: Number(occupant_count) || 0,
+    occupants: playersArr.concat(npcsArr),
+    occupant_count: occupantCount,
   };
+}
+
+function roomWithOccupantsFromArrays(roomData: Room): Room {
+  const pair = normalizeOccupantArrays(roomData.players, roomData.npcs);
+  const length = pair.players.length + pair.npcsArr.length;
+  const count = coalesceCount(roomData.occupant_count, undefined, length);
+  return attachOccupants(roomData, pair.players, pair.npcsArr, count);
+}
+
+function mergeTopLevelOccupants(raw: Room, event: GameEvent): Room {
+  const topPlayers = Array.isArray(event.data.players) ? event.data.players : undefined;
+  const topNpcs = Array.isArray(event.data.npcs) ? event.data.npcs : undefined;
+  const playersSrc = topPlayers !== undefined ? topPlayers : raw.players;
+  const npcsSrc = topNpcs !== undefined ? topNpcs : raw.npcs;
+  const pair = normalizeOccupantArrays(playersSrc, npcsSrc);
+  const length = pair.players.length + pair.npcsArr.length;
+  const topCount = typeof event.data.occupant_count === 'number' ? event.data.occupant_count : undefined;
+  const altCount = typeof event.data.count === 'number' ? event.data.count : undefined;
+  const occupantCount = coalesceCount(topCount, altCount, length);
+  return attachOccupants(raw, pair.players, pair.npcsArr, occupantCount);
+}
+
+function getRoomDataFromEvent(event: GameEvent): RoomOrNull {
+  const candidate = event.data.room ? event.data.room : event.data.room_data;
+  if (!candidate) {
+    return null;
+  }
+  const raw = candidate as Room;
+  if (event.data.players !== undefined || event.data.npcs !== undefined) {
+    return mergeTopLevelOccupants(raw, event);
+  }
+  return raw;
+}
+
+function resolvePayloadNpcs(existingRoom: Room, payloadRoom?: Room): string[] {
+  if (payloadRoom === undefined || payloadRoom.npcs === undefined) {
+    return preferOccupantList(undefined, existingRoom.npcs);
+  }
+  if (Array.isArray(payloadRoom.npcs)) {
+    return payloadRoom.npcs;
+  }
+  return [];
+}
+
+function roomAfterIdChange(existingRoom: Room, roomMetadata: RoomMeta): Room {
+  return {
+    ...existingRoom,
+    ...roomMetadata,
+    players: [],
+    npcs: undefined,
+    occupants: [],
+    occupant_count: 0,
+  };
+}
+
+function resolvePreservedOccupantArrays(
+  existingRoom: Room,
+  usePayloadOccupants: boolean,
+  payloadRoom?: Room
+): OccupantPair {
+  if (!usePayloadOccupants) {
+    return {
+      players: preferOccupantList(undefined, existingRoom.players),
+      npcsArr: preferOccupantList(undefined, existingRoom.npcs),
+    };
+  }
+  const playersFromPayload = payloadRoom === undefined ? undefined : payloadRoom.players;
+  const players = preferOccupantList(playersFromPayload, undefined);
+  const npcsArr = resolvePayloadNpcs(existingRoom, payloadRoom);
+  return { players, npcsArr };
+}
+
+function resolvePreservedOccupantCount(usePayloadOccupants: boolean, length: number, payloadCount?: number): number {
+  if (!usePayloadOccupants) {
+    return length;
+  }
+  return coalesceCount(payloadCount, undefined, length);
+}
+
+function roomWithPreservedOccupants(existingRoom: Room, roomMetadata: RoomMeta, payloadRoom?: Room): Room {
+  const usePayloadOccupants = payloadRoom != null && hasOccupantData(payloadRoom);
+  const pair = resolvePreservedOccupantArrays(existingRoom, usePayloadOccupants, payloadRoom);
+  const length = pair.players.length + pair.npcsArr.length;
+  const payloadCount = payloadRoom === undefined ? undefined : payloadRoom.occupant_count;
+  const occupantCount = resolvePreservedOccupantCount(usePayloadOccupants, length, payloadCount);
+  return attachOccupants({ ...existingRoom, ...roomMetadata }, pair.players, pair.npcsArr, occupantCount);
 }
 
 function createRoomUpdateWithPreservedOccupants(
   existingRoom: Room,
-  roomMetadata: Omit<Room, 'players' | 'npcs' | 'occupants' | 'occupant_count'>,
+  roomMetadata: RoomMeta,
   roomIdChanged: boolean,
   payloadRoom?: Room
 ): Room {
-  const usePayloadOccupants = payloadRoom != null && hasOccupantData(payloadRoom);
-  const players = usePayloadOccupants ? (payloadRoom?.players ?? []) : (existingRoom.players ?? []);
-  const npcs = usePayloadOccupants ? (payloadRoom?.npcs ?? []) : (existingRoom.npcs ?? []);
-  const npcsArr = Array.isArray(npcs) ? npcs : [];
-  const occupants = [...players, ...npcsArr];
-  const roomUpdate: Room = {
-    ...existingRoom,
-    ...roomMetadata,
-    players,
-    npcs: npcsArr,
-    occupants,
-    occupant_count: usePayloadOccupants ? (payloadRoom?.occupant_count ?? occupants.length) : occupants.length,
-  };
   if (roomIdChanged) {
-    roomUpdate.players = [];
-    roomUpdate.npcs = undefined;
-    roomUpdate.occupants = [];
-    roomUpdate.occupant_count = 0;
+    return roomAfterIdChange(existingRoom, roomMetadata);
   }
-  return roomUpdate;
+  return roomWithPreservedOccupants(existingRoom, roomMetadata, payloadRoom);
+}
+
+function createInitialRoomState(roomMetadata: RoomMeta, roomData?: Room): Room {
+  const pair = normalizeOccupantArrays(roomData?.players, roomData?.npcs);
+  const length = pair.players.length + pair.npcsArr.length;
+  const occupancy = coalesceCount(roomData?.occupant_count, undefined, length);
+  return attachOccupants({ ...roomMetadata } as Room, pair.players, pair.npcsArr, occupancy);
 }
 
 function createMinimalRoomFromOccupantsEvent(
   eventRoomId: string,
-  players: string[] | undefined,
-  npcs: string[] | undefined,
-  occupantCount: number | undefined
+  players?: string[],
+  npcs?: string[],
+  occupantCount?: number
 ): Room {
-  const finalPlayers = players ?? [];
-  const finalNpcs = npcs ?? [];
-  const occupants = [...finalPlayers, ...finalNpcs];
-  const count = occupantCount !== undefined ? occupantCount : occupants.length;
-  return {
+  const finalPlayers = preferOccupantList(players, undefined);
+  const finalNpcs = preferOccupantList(npcs, undefined);
+  const length = finalPlayers.length + finalNpcs.length;
+  const count = coalesceCount(occupantCount, undefined, length);
+  const base = {
     id: eventRoomId,
     name: '',
     description: '',
     exits: {},
-    players: finalPlayers,
-    npcs: finalNpcs,
-    occupants,
-    occupant_count: count,
-  };
+  } as Room;
+  return attachOccupants(base, finalPlayers, finalNpcs, count);
 }
 
-function validateRoomIdMatch(eventRoomId: string | undefined, currentRoomId: string, _npcsCount: number): boolean {
-  if (!eventRoomId || eventRoomId === currentRoomId) return true;
-  return false;
+function validateRoomIdMatch(currentRoomId: string, eventRoomId?: string): boolean {
+  if (!eventRoomId) {
+    return true;
+  }
+  return eventRoomId === currentRoomId;
 }
 
 function handleStructuredOccupantsFormat(
   currentRoom: Room,
-  players: string[] | undefined,
-  npcs: string[] | undefined,
-  occupantCount: number | undefined
+  players?: string[],
+  npcs?: string[],
+  occupantCount?: number
 ): Room {
-  const finalPlayers = players ?? currentRoom.players ?? [];
-  const finalNpcs = npcs ?? currentRoom.npcs ?? [];
-  const count = occupantCount ?? finalPlayers.length + finalNpcs.length;
-  return {
-    ...currentRoom,
-    players: finalPlayers,
-    npcs: finalNpcs,
-    occupants: [...finalPlayers, ...finalNpcs],
-    occupant_count: count,
-  };
+  const finalPlayers = preferOccupantList(players, currentRoom.players);
+  const finalNpcs = preferOccupantList(npcs, currentRoom.npcs);
+  const length = finalPlayers.length + finalNpcs.length;
+  const count = coalesceCount(occupantCount, undefined, length);
+  return attachOccupants(currentRoom, finalPlayers, finalNpcs, count);
+}
+
+function hasTopLevelOccupantLists(players?: string[], npcs?: string[]): boolean {
+  return players !== undefined || npcs !== undefined;
+}
+
+function deriveRoomFromOccupantsWithoutExisting(
+  eventRoomId?: string,
+  players?: string[],
+  npcs?: string[],
+  occupantCount?: number
+): RoomOrNull {
+  if (!eventRoomId || !hasTopLevelOccupantLists(players, npcs)) {
+    return null;
+  }
+  return createMinimalRoomFromOccupantsEvent(eventRoomId, players, npcs, occupantCount);
 }
 
 /** Derive room from game_state event */
-export function deriveRoomFromGameState(event: GameEvent): Room | null {
-  const roomData = event.data.room as Room | undefined;
-  if (!roomData) return null;
-  const players = roomData.players ?? [];
-  const npcs = roomData.npcs ?? [];
-  const playersArr = Array.isArray(players) ? players : [];
-  const npcsArr = Array.isArray(npcs) ? npcs : [];
-  const occupants = [...playersArr, ...npcsArr];
-  return {
-    ...roomData,
-    players: playersArr,
-    npcs: npcsArr,
-    occupants,
-    occupant_count: roomData.occupant_count ?? occupants.length,
-  };
+export function deriveRoomFromGameState(event: GameEvent): RoomOrNull {
+  if (!event.data.room) {
+    return null;
+  }
+  return roomWithOccupantsFromArrays(event.data.room as Room);
 }
 
 /** Derive room from room_update event (pure; uses existingRoom) */
-export function deriveRoomFromRoomUpdate(event: GameEvent, existingRoom: Room | null): Room | null {
+export function deriveRoomFromRoomUpdate(event: GameEvent, existingRoom: RoomOrNull): RoomOrNull {
   const roomData = getRoomDataFromEvent(event);
-  if (!roomData) return null;
+  if (!roomData) {
+    return null;
+  }
   const roomMetadata = extractRoomMetadata(roomData);
   if (!existingRoom) {
     return createInitialRoomState(roomMetadata, roomData);
@@ -163,43 +241,33 @@ export function deriveRoomFromRoomUpdate(event: GameEvent, existingRoom: Room | 
 }
 
 /** Derive room from room_state event (authoritative single source; replace, do not merge) */
-export function deriveRoomFromRoomState(event: GameEvent): Room | null {
-  const roomData = event.data.room as Room | undefined;
-  if (!roomData) return null;
-  const players = roomData.players ?? [];
-  const npcs = roomData.npcs ?? [];
-  const playersArr = Array.isArray(players) ? players : [];
-  const npcsArr = Array.isArray(npcs) ? npcs : [];
-  const occupants = [...playersArr, ...npcsArr];
-  const occupantCount = event.data.occupant_count as number | undefined;
-  return {
-    ...roomData,
-    players: playersArr,
-    npcs: npcsArr,
-    occupants,
-    occupant_count: occupantCount ?? roomData.occupant_count ?? occupants.length,
-  } as Room;
+export function deriveRoomFromRoomState(event: GameEvent): RoomOrNull {
+  if (!event.data.room) {
+    return null;
+  }
+  const base = roomWithOccupantsFromArrays(event.data.room as Room);
+  const occupantCount = typeof event.data.occupant_count === 'number' ? event.data.occupant_count : undefined;
+  if (occupantCount === undefined) {
+    return base;
+  }
+  return { ...base, occupant_count: occupantCount };
 }
 
 /** Derive room from room_occupants event (pure; uses existingRoom) */
-export function deriveRoomFromRoomOccupants(event: GameEvent, existingRoom: Room | null): Room | null {
-  const players = event.data.players as string[] | undefined;
-  const npcs = event.data.npcs as string[] | undefined;
-  const occupantCount = event.data.count as number | undefined;
-  const eventRoomId = event.room_id as string | undefined;
+export function deriveRoomFromRoomOccupants(event: GameEvent, existingRoom: RoomOrNull): RoomOrNull {
+  const players = Array.isArray(event.data.players) ? event.data.players : undefined;
+  const npcs = Array.isArray(event.data.npcs) ? event.data.npcs : undefined;
+  const occupantCount = typeof event.data.count === 'number' ? event.data.count : undefined;
+  const eventRoomId = typeof event.room_id === 'string' ? event.room_id : undefined;
 
   if (!existingRoom) {
-    if (eventRoomId && (players !== undefined || npcs !== undefined)) {
-      return createMinimalRoomFromOccupantsEvent(eventRoomId, players, npcs, occupantCount);
-    }
+    return deriveRoomFromOccupantsWithoutExisting(eventRoomId, players, npcs, occupantCount);
+  }
+  if (!validateRoomIdMatch(existingRoom.id, eventRoomId)) {
     return null;
   }
-
-  if (!validateRoomIdMatch(eventRoomId, existingRoom.id, npcs?.length ?? 0)) {
+  if (!hasTopLevelOccupantLists(players, npcs)) {
     return null;
   }
-  if (players !== undefined || npcs !== undefined) {
-    return handleStructuredOccupantsFormat(existingRoom, players, npcs, occupantCount);
-  }
-  return null;
+  return handleStructuredOccupantsFormat(existingRoom, players, npcs, occupantCount);
 }

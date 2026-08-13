@@ -227,15 +227,19 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
             player_id, room_id, attacker_uuid, target_uuid, damage, npc_instance
         )
 
+        from .npc_combat_handlers import CombatResultCtx
+
         return await self._handlers.handle_combat_result(
-            combat_result,
-            player_id,
-            npc_id,
-            room_id,
-            action_type,
-            damage,
-            npc_instance,
-            self.handle_npc_death,
+            CombatResultCtx(
+                combat_result,
+                player_id,
+                npc_id,
+                room_id,
+                action_type,
+                damage,
+                npc_instance,
+                self.handle_npc_death,
+            )
         )
 
     async def _run_npc_attack_on_player_after_grace(

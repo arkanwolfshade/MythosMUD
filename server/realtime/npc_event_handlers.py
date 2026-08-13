@@ -7,6 +7,7 @@ As documented in "NPC Event Propagation Protocols" - Dr. Armitage, 1928
 """
 
 import asyncio
+import inspect
 import uuid
 from typing import Any, cast
 
@@ -403,30 +404,7 @@ class NPCEventHandler:
                     # Send the spawn message to all players in the room
                     await self._send_room_message(event.room_id, spawn_message)
 
-            # Schedule room update broadcast (async operation)
-            try:
-                # Use get_running_loop() instead of deprecated get_event_loop()
-                # get_running_loop() raises RuntimeError if no loop is running
-                _ = asyncio.get_running_loop()  # Verify loop exists
-                # Schedule the async operation to run later
-                if self.task_registry:
-                    self.task_registry.register_task(
-                        self.send_occupants_update(event.room_id),
-                        f"event_handler/room_occupants_{event.room_id}",
-                        "event_handler",
-                    )
-                else:
-                    # Task 4.4: Replace with tracked task creation to prevent memory leaks
-                    tracked_manager = get_global_tracked_manager()
-                    tracked_manager.create_tracked_task(
-                        self.send_occupants_update(event.room_id),
-                        task_name=f"event_handler/room_occupants_{event.room_id}",
-                        task_type="event_handler",
-                    )
-            except RuntimeError:
-                # No running event loop - log and skip async operation
-                self._logger.debug("No event loop available for room occupants update broadcast")
-
+            self._schedule_room_occupants_update(event.room_id)
             self._logger.debug("Processed NPC entered event", npc_id=event.npc_id, room_id=event.room_id)
 
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC entered event handling errors unpredictable, must handle gracefully
@@ -485,19 +463,27 @@ class NPCEventHandler:
     def _schedule_room_occupants_update(self, room_id: str) -> None:
         """Schedule room occupants update broadcast."""
         try:
-            _ = asyncio.get_running_loop()
+            asyncio.get_running_loop()
+        except RuntimeError:
+            self._logger.debug("No event loop available for room occupants update broadcast")
+            return
+
+        occupants_coro = self.send_occupants_update(room_id)
+        try:
             if self.task_registry:
                 self.task_registry.register_task(
-                    self.send_occupants_update(room_id),
+                    occupants_coro,
                     f"event_handler/room_occupants_{room_id}",
                     "event_handler",
                 )
             else:
                 tracked_manager = get_global_tracked_manager()
                 tracked_manager.create_tracked_task(
-                    self.send_occupants_update(room_id),
+                    occupants_coro,
                     task_name=f"event_handler/room_occupants_{room_id}",
                     task_type="event_handler",
                 )
         except RuntimeError:
+            if inspect.getcoroutinestate(occupants_coro) == inspect.CORO_CREATED:
+                occupants_coro.close()
             self._logger.debug("No event loop available for room occupants update broadcast")

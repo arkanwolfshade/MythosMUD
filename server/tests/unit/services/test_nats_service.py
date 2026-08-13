@@ -287,7 +287,7 @@ async def test_connect_circuit_breaker_opens(nats_service):
         result = await nats_service.connect()
         assert result is False
         # Circuit should be open after exceeding max attempts
-        assert nats_service.state_machine.current_state.id == "circuit_open"
+        assert nats_service.state_machine.state.id == "circuit_open"
 
 
 @pytest.mark.asyncio

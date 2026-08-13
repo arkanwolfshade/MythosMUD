@@ -5,10 +5,12 @@
  */
 
 import { expect, type Page } from '@playwright/test';
+import { locationIndicatesDeathVoid, requiredAliveButDeadMessage } from '../../../../src/utils/deathVoidLocation';
 import {
   clickWithoutStability,
   ensurePlayableConnection,
   executeCommand,
+  getCommandPanelInput,
   getMessages,
   getPageSessionCredentials,
   loginPlayer,
@@ -26,8 +28,7 @@ export async function dismissDeathInterstitial(page: Page): Promise<void> {
   });
   if (await respawnBtn.isVisible({ timeout: 5000 }).catch(() => false)) {
     await clickWithoutStability(respawnBtn);
-    await page
-      .getByTestId('command-input')
+    await getCommandPanelInput(page)
       .waitFor({ state: 'visible', timeout: 30000 })
       .catch(() => {});
     await new Promise(r => setTimeout(r, 1500));
@@ -52,21 +53,30 @@ export async function ensureNotInCombat(page: Page, maxAttempts = 10): Promise<v
 
 const CULTIST_INSTANCE_ID_RE = /cultist_of_the_yellow_sign_[a-z0-9_]+/gi;
 
-async function isInDeathVoid(page: Page): Promise<boolean> {
-  // Location / live room id only. Game Info can retain limbo_death_void / Death > Void dumps.
-  return page
-    .evaluate(() => {
-      const t = document.body?.innerText ?? '';
-      if (/earth_arkhamcity_sanitarium_room_/i.test(t)) {
-        return false;
-      }
-      const loc = t.match(/Location\s*\n\s*([^\n]+)/i);
-      if (loc?.[1]) {
-        return /Death\s*>\s*Void/i.test(loc[1]);
-      }
-      return false;
-    })
-    .catch(() => false);
+export async function isInDeathVoid(page: Page): Promise<boolean> {
+  const bodyText = await page.evaluate(() => document.body?.innerText ?? '').catch(() => '');
+  return locationIndicatesDeathVoid(bodyText);
+}
+
+/** True when Location is Death > Void or the death interstitial is showing. */
+export async function isPlayerDead(page: Page): Promise<boolean> {
+  if (await isInDeathVoid(page)) {
+    return true;
+  }
+  const respawnBtn = page.getByRole('button', {
+    name: /Rejoin the earthly plane|Returning to the mortal realm/i,
+  });
+  return respawnBtn.isVisible({ timeout: 500 }).catch(() => false);
+}
+
+/**
+ * Fail if this player must be alive for the current step.
+ * Do not heal here: a corpse means this test or the previous test's cleanup is wrong.
+ */
+export async function assertPlayerAlive(page: Page, username: string): Promise<void> {
+  if (await isPlayerDead(page)) {
+    throw new Error(requiredAliveButDeadMessage(username));
+  }
 }
 
 /** Collect Cultist of the Yellow Sign instance IDs from npc zone / look text. */
@@ -146,41 +156,12 @@ export async function ensurePlayableAlive(page: Page, username: string, password
 
 /**
  * Ensure the player is standing before movement.
- * Server rejects "go" when sitting; call this before any movement command.
- * Waits for either the posture UI "standing" or the game message (e.g. "You rise to your feet.")
- * so we pass as soon as the server confirms; the Character Info panel can update later.
- * Uses .first() on posture locator (strict mode) and Promise.race with game message.
+ * Server rejects "go" when sitting. Assert Character Info posture (not Game Info leftovers).
  *
  * @param page - Playwright page instance
- * @param timeoutMs - Max wait for standing confirmation (default: 5000)
+ * @param timeoutMs - Max wait for Character Info posture to read standing (default: 8000)
  */
-export async function ensureStanding(page: Page, timeoutMs: number = 5000): Promise<void> {
-  const onLogin = await page
-    .getByTestId('username-input')
-    .isVisible({ timeout: 1000 })
-    .catch(() => false);
-  if (onLogin) {
-    const session = getPageSessionCredentials(page);
-    if (session) {
-      await loginPlayer(page, session.username, session.password);
-      await waitForPlayableSession(page, Math.max(timeoutMs, 15000));
-    } else {
-      throw new Error('Cannot ensure standing: on login screen with no saved session credentials');
-    }
-  }
-
-  const alreadyStanding = await page.evaluate(() => {
-    const bodyText = document.body?.innerText ?? '';
-    return (
-      /Posture:\s*standing\b/i.test(bodyText) ||
-      /Posture\s*\n\s*standing\b/i.test(bodyText) ||
-      /You are already standing/i.test(bodyText)
-    );
-  });
-  if (alreadyStanding) {
-    return;
-  }
-
+export async function ensureStanding(page: Page, timeoutMs: number = 8000): Promise<void> {
   const session = getPageSessionCredentials(page);
   if (session) {
     await ensurePlayableConnection(page, {
@@ -188,23 +169,44 @@ export async function ensureStanding(page: Page, timeoutMs: number = 5000): Prom
       password: session.password,
       timeoutMs: Math.max(timeoutMs, 20000),
     });
+  } else {
+    const onLogin = await page
+      .getByTestId('username-input')
+      .isVisible({ timeout: 1000 })
+      .catch(() => false);
+    if (onLogin) {
+      throw new Error('Cannot ensure standing: on login screen with no saved session credentials');
+    }
+  }
+
+  const posture = page.getByTestId('player-posture');
+  const current = (await posture.textContent({ timeout: 2000 }).catch(() => ''))?.trim() ?? '';
+  if (/^standing$/i.test(current)) {
+    return;
   }
 
   await page.bringToFront().catch(() => {});
   await executeCommand(page, 'stand');
-  // Prefer page-wide text: command_response sometimes lands before [data-message-text] wiring; linkdead can
-  // delay Game Info rows. Character Info "Posture" / value updates independently (player_position_service copy).
-  await page.waitForFunction(
-    () => {
-      const t = document.body?.innerText ?? '';
-      if (/You rise to your feet|You are already standing/i.test(t)) return true;
-      if (/Posture:\s*standing\b/i.test(t)) return true;
-      if (/Posture\s*\n\s*standing\b/i.test(t)) return true;
-      return false;
-    },
-    undefined,
-    { timeout: timeoutMs }
-  );
+  try {
+    await expect(posture).toHaveText(/^standing$/i, { timeout: timeoutMs });
+  } catch (err) {
+    const onLogin = await page
+      .getByTestId('username-input')
+      .isVisible({ timeout: 1000 })
+      .catch(() => false);
+    const creds = getPageSessionCredentials(page);
+    if (onLogin && creds) {
+      await ensurePlayableConnection(page, {
+        username: creds.username,
+        password: creds.password,
+        timeoutMs: Math.max(timeoutMs, 20000),
+      });
+      await executeCommand(page, 'stand');
+      await expect(page.getByTestId('player-posture')).toHaveText(/^standing$/i, { timeout: timeoutMs });
+      return;
+    }
+    throw err;
+  }
 }
 
 /**

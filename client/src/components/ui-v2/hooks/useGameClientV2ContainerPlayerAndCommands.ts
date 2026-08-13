@@ -15,11 +15,13 @@ export function useGameClientV2ContainerPlayerAndCommands(
     lucidityStatus: slice.lucidityStatus,
     isDead: slice.isDead,
     isDelirious: slice.isDelirious,
-    setIsDead: slice.setIsDead,
-    setIsDelirious: slice.setIsDelirious,
-    setDeliriumLocation: slice.setDeliriumLocation,
     hasRespawned: slice.hasRespawned,
-    setHasRespawned: slice.setHasRespawned,
+    setters: {
+      setIsDead: slice.setIsDead,
+      setIsDelirious: slice.setIsDelirious,
+      setDeliriumLocation: slice.setDeliriumLocation,
+      setHasRespawned: slice.setHasRespawned,
+    },
   });
 
   return useCommandHandlers({

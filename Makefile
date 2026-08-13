@@ -10,8 +10,11 @@ PROJECT_ROOT := $(PROJECT_ROOT:%/=%)
 # Common command patterns
 # Use uv-run interpreter so Windows does not spawn bare `python` (pyenv-win shims / PATH gaps
 # trigger "Select an app to open 'python'").
-PYTHON := cd $(PROJECT_ROOT) && uv run python
-UV := cd $(PROJECT_ROOT) && uv run
+# --no-sync: Windows often locks .venv/Scripts/ruff.exe (Cursor "ruff server"); uv then fails with
+# "Access is denied" when trying to replace it. Sync deps via `uv sync` / make install when needed.
+export UV_NO_SYNC := 1
+PYTHON := cd $(PROJECT_ROOT) && uv run --no-sync python
+UV := cd $(PROJECT_ROOT) && uv run --no-sync
 # PowerShell 7+ (pwsh); avoids Windows PowerShell 5.1 for gallery/modules and matches project rules
 POWERSHELL := cd $(PROJECT_ROOT) && pwsh -NoProfile -ExecutionPolicy Bypass -File
 
@@ -146,6 +149,7 @@ format:
 bandit:
 	$(PYTHON) scripts/bandit.py
 
+# scripts/pylint.py must exit non-zero if pylint is missing/unrunnable (not only on bit-32 fatals).
 pylint:
 	$(PYTHON) scripts/pylint.py
 
@@ -200,9 +204,21 @@ quality-fragmentation-guard:
 vulture:
 	$(UV) vulture
 
-# Run all Codacy tools (except those already in lint/format).
+# Run Codacy tools in recipe order (not only as parallelizable prereqs) so a hard failure
+# in bandit/pylint/etc. stops Make immediately and does not start later tools.
 # Grype is standalone: make grype (project-root SCA; not part of E2E or make all).
-codacy-tools: bandit pylint sqlfluff hadolint shellcheck psscriptanalyzer stylelint markdownlint jackson-linter lizard vulture
+codacy-tools:
+	$(MAKE) bandit
+	$(MAKE) pylint
+	$(MAKE) sqlfluff
+	$(MAKE) hadolint
+	$(MAKE) shellcheck
+	$(MAKE) psscriptanalyzer
+	$(MAKE) stylelint
+	$(MAKE) markdownlint
+	$(MAKE) jackson-linter
+	$(MAKE) lizard
+	$(MAKE) vulture
 
 # ============================================================================
 # DATABASE SETUP

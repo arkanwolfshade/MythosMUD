@@ -11,7 +11,7 @@ import { join } from 'path';
 import { E2E_PROJECT_ROOT, loadE2eEnv } from '../../../../src/test/e2e-bootstrap';
 import { ensurePlayableConnection, executeCommand, getMessages, loginPlayer, waitForMessage } from '../fixtures/auth';
 import { ensureStanding } from '../fixtures/player';
-import { TEST_TIMEOUTS } from '../fixtures/test-data';
+import { EASTERN_HALLWAY_LOOK_CUE, TEST_TIMEOUTS } from '../fixtures/test-data';
 
 const MORGAN_NAME = 'Dr. Francis Morgan';
 const DAISY_PROTOTYPE = 'misc.herb.sanitarium_daisy';
@@ -19,7 +19,7 @@ const DAISY_PROTOTYPE = 'misc.herb.sanitarium_daisy';
 function resetDaisyQuestInstances(): void {
   loadE2eEnv();
   const scriptPath = join(E2E_PROJECT_ROOT, 'scripts', 'e2e_reset_daisy_quest.py');
-  const result = spawnSync('uv', ['run', 'python', scriptPath], {
+  const result = spawnSync('uv', ['run', '--no-sync', 'python', scriptPath], {
     cwd: E2E_PROJECT_ROOT,
     encoding: 'utf-8',
     env: process.env,
@@ -80,18 +80,23 @@ test.describe('collect_n daisy quest ask/turnin', () => {
       password: 'Cthulhu1',
       timeoutMs: 45000,
     });
-    await ensureStanding(page, 10000);
+    await ensureStanding(page);
     await executeCommand(page, 'look');
     await waitForMessage(page, /Foyer|Exits|Sanitarium/i, 20000).catch(() => {});
 
     // Leave foyer so Morgan is not present (teleport does not accept room ids).
+    await ensureStanding(page);
     await executeCommand(page, 'go east');
-    await waitForMessage(page, /hallway|east|You leave|Exits/i, 25000).catch(() => {});
+    await waitForMessage(page, EASTERN_HALLWAY_LOOK_CUE, 25000);
+    await expect(page.getByText(EASTERN_HALLWAY_LOOK_CUE).first()).toBeVisible({ timeout: 15000 });
 
     await executeCommand(page, 'quest ask morgan');
-    await waitForMessage(page, /You do not see ['"]?morgan['"]? here/i, 25000);
+    // Server: You do not see '{npc_name}' here. — npc_name is the typed arg (case preserved).
+    const notHere = /do not see\s*['"]?morgan['"]?\s*here/i;
+    await waitForMessage(page, notHere, 25000);
     const messages = await getMessages(page);
-    expect(messages.some(m => /You do not see ['"]?morgan['"]? here/i.test(m))).toBe(true);
+    const body = await page.evaluate(() => document.body?.innerText ?? '');
+    expect(messages.some(m => notHere.test(m)) || notHere.test(body)).toBe(true);
   });
 
   test('ask Morgan, collect daisies, turn in', async ({ page }) => {

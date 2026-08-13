@@ -1628,7 +1628,7 @@
           "players"
         ],
         "summary": "Delete Character",
-        "description": "Soft delete a character.\n\nMULTI-CHARACTER: Soft deletes a character (sets is_deleted=True) belonging to the current user.\nCharacter data is preserved but the character is hidden from selection.\n\nArgs:\n    character_id: Character ID (player_id) to delete\n\nReturns:\n    dict: Success message\n\nRaises:\n    HTTPException: If character not found or doesn't belong to user",
+        "description": "Soft-delete a character owned by the current user (hidden, data kept).",
         "operationId": "delete_character_v1_api_players_characters__character_id__delete",
         "security": [
           {
@@ -1723,7 +1723,7 @@
           "players"
         ],
         "summary": "Start Login Grace Period Endpoint",
-        "description": "Start login grace period for a player after MOTD dismissal.\n\nThis endpoint is called when a player clicks through the MOTD screen\nto enter the game, starting their 10-second grace period of immunity.\n\nArgs:\n    player_id: The player's ID\n    request: FastAPI request object\n    current_user: Current authenticated user\n\nReturns:\n    dict: Success status and grace period details\n\nRaises:\n    HTTPException: If player not found, doesn't belong to user, or already in grace period",
+        "description": "Start login grace period after MOTD dismissal.",
         "operationId": "start_login_grace_period_endpoint_v1_api_players__player_id__start_login_grace_period_post",
         "security": [
           {
@@ -2275,7 +2275,7 @@
           "monitoring"
         ],
         "summary": "Get Memory Leak Metrics",
-        "description": "Get comprehensive memory leak metrics from all sources.\n\nReturns aggregated metrics from all monitoring sources for comprehensive\nmemory leak detection. Includes connection, event, cache, task, and NATS metrics\nalong with growth rate calculations and automated alerts.\n\nThis endpoint provides:\n- Connection metrics (websockets, metadata, orphaned connections)\n- Event system metrics (subscribers, tasks, churn rates)\n- Cache metrics (sizes, expiration, utilization)\n- Task metrics (counts, lifecycle, orphaned tasks)\n- NATS metrics (subscriptions, cleanup status)\n- Growth rates (calculated from historical data)\n- Automated alerts (based on configured thresholds)\n\nThresholds (configured in MemoryLeakMetricsCollector):\n- closed_websockets_max: 5000 (warning), 10000 (critical)\n- subscriber_growth_rate: 0.1 (10% per period)\n- cache_size_limit_factor: 1.1 (110% of max_size)\n- task_growth_rate: 0.2 (20% per period)\n\nExample normal values:\n- closed_websockets_count: < 1000\n- active_to_player_ratio: 0.8-1.2\n- subscription_churn_rate: < 0.1\n- capacity_utilization: < 1.0\n\nExample abnormal values (indicate potential leaks):\n- closed_websockets_count: > 5000\n- active_to_player_ratio: > 2.0\n- subscription_churn_rate: > 0.2\n- capacity_utilization: > 1.1\n- orphaned_connections: > 10\n- orphaned_task_count: > 5",
+        "description": "Get comprehensive memory leak metrics from all sources.",
         "operationId": "get_memory_leak_metrics_v1_monitoring_memory_leaks_get",
         "responses": {
           "200": {
@@ -2297,7 +2297,7 @@
           "monitoring"
         ],
         "summary": "Get Health Status",
-        "description": "Get comprehensive system health status with timeout protection.\n\nThis endpoint validates all critical components:\n- Server metrics (CPU, memory, uptime)\n- Database connectivity (actual query validation)\n- Connection manager health\n- Event loop health\n\nReturns appropriate HTTP status codes:\n- 200 OK: System healthy or degraded (status in response body)\n- 503 Service Unavailable: System unhealthy\n- 500 Internal Server Error: Health check itself failed",
+        "description": "Return aggregated health status for monitoring.",
         "operationId": "get_health_status_v1_monitoring_health_get",
         "responses": {
           "200": {
@@ -2976,7 +2976,7 @@
           "maps"
         ],
         "summary": "Get Ascii Map",
-        "description": "Get ASCII map for a zone/subzone.\n\nReturns HTML string with ASCII map rendered. For authenticated players,\nonly shows explored rooms. Admins see all rooms.",
+        "description": "Get ASCII map for a zone/subzone (explored rooms for players; all for admins).",
         "operationId": "get_ascii_map_v1_api_maps_ascii_get",
         "security": [
           {
@@ -3103,7 +3103,7 @@
           "maps"
         ],
         "summary": "Get Ascii Minimap",
-        "description": "Get ASCII minimap centered on player.\n\nReturns a small ASCII map showing area around the player's current room.",
+        "description": "Get ASCII minimap centered on player.",
         "operationId": "get_ascii_minimap_v1_api_maps_ascii_minimap_get",
         "security": [
           {
@@ -3194,7 +3194,7 @@
           "maps"
         ],
         "summary": "Recalculate Coordinates",
-        "description": "Trigger coordinate recalculation for a zone/subzone (admin only).\n\nReturns list of conflicts if any.",
+        "description": "Trigger coordinate recalculation for a zone/subzone (admin only).",
         "operationId": "recalculate_coordinates_v1_api_maps_coordinates_recalculate_post",
         "security": [
           {
@@ -3273,7 +3273,7 @@
           "maps"
         ],
         "summary": "Set Map Origin",
-        "description": "Set a room as the map origin for its zone/subzone (admin only).\n\nTriggers coordinate recalculation.",
+        "description": "Set a room as the map origin for its zone/subzone (admin only).",
         "operationId": "set_map_origin_v1_api_maps_rooms__room_id__origin_post",
         "security": [
           {
@@ -3471,9 +3471,8 @@
         "tags": [
           "containers"
         ],
-        "summary": "Loot All Items",
-        "description": "Loot all eligible items from a container.\n\nConvenience action to move all eligible stacks from container to player inventory,\nsubject to capacity constraints. Requires a valid mutation token from open_container.\n\nRate limited to 20 requests per 60 seconds per player.\n\nArgs:\n    request_data: LootAllRequest with container_id and mutation_token\n    request: FastAPI Request object\n    current_user: Current authenticated user\n    persistence: Persistence layer instance\n\nReturns:\n    dict containing updated container and player_inventory\n\nRaises:\n    HTTPException(403): Access denied\n    HTTPException(409): Capacity exceeded\n    HTTPException(423): Container is locked\n    HTTPException(429): Rate limit exceeded",
-        "operationId": "loot_all_items_v1_api_containers_loot_all_post",
+        "summary": " Loot All Route",
+        "operationId": "_loot_all_route_v1_api_containers_loot_all_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -4317,7 +4316,7 @@
           "subjects"
         ],
         "summary": "Validate Subject",
-        "description": "Validate a NATS subject against registered patterns.\n\nThis endpoint allows administrators to test subject validation\nand verify subject formatting before use.\n\nArgs:\n    request: Subject validation request\n    current_user: Current authenticated admin user\n    subject_manager: Subject manager dependency\n\nReturns:\n    Validation result with timing information\n\nRaises:\n    LoggedHTTPException: If validation fails or errors occur\n\nAI: Admin-only endpoint for subject validation testing.\nAI: Records validation time for performance monitoring.",
+        "description": "Validate a NATS subject against registered patterns.",
         "operationId": "validate_subject_v1_api_admin_nats_subjects_validate_post",
         "requestBody": {
           "content": {
@@ -4392,9 +4391,9 @@
           "nats",
           "subjects"
         ],
-        "summary": "Register Pattern",
-        "description": "Register a new subject pattern.\n\nThis endpoint allows administrators to dynamically register\nnew subject patterns without code changes.\n\nArgs:\n    request: Pattern registration request\n    current_user: Current authenticated admin user\n    subject_manager: Subject manager dependency\n\nReturns:\n    Registration success confirmation\n\nRaises:\n    LoggedHTTPException: If registration fails or pattern is invalid\n\nAI: Admin-only endpoint for dynamic pattern registration.\nAI: Validates pattern format before registration.",
-        "operationId": "register_pattern_v1_api_admin_nats_subjects_patterns_post",
+        "summary": " Register Pattern Try",
+        "description": "Register a new subject pattern.",
+        "operationId": "_register_pattern_try_v1_api_admin_nats_subjects_patterns_post",
         "requestBody": {
           "content": {
             "application/json": {

@@ -13,6 +13,7 @@ from fastapi import WebSocket
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
 from .connection_models import ConnectionMetadata
+from .disconnect_grace_period import cancel_grace_period
 
 logger = get_logger(__name__)
 
@@ -215,6 +216,13 @@ async def _track_player_presence(player_id: uuid.UUID, player: Any, manager: Any
         player: The player object
         manager: ConnectionManager instance
     """
+    # Linkdead reconnect stays in online_players, so cancel here (not only in _track_player_connected).
+    await cancel_grace_period(player_id, manager)
+    # Orphan /rest countdown will force_disconnect the new socket if left running.
+    # Inline import: rest_command -> combat -> ConnectionManager -> this module.
+    from ..commands.rest_command import cancel_rest_countdown
+
+    await cancel_rest_countdown(player_id, manager)
     if player_id not in manager.online_players:
         await manager._track_player_connected(player_id, player, "websocket")  # pylint: disable=protected-access  # Reason: Accessing internal manager method for player presence tracking during connection, manager is guaranteed to have this method
     else:

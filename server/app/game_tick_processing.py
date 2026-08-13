@@ -34,8 +34,13 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from ..time.time_service import get_mythos_chronicle
 
 if TYPE_CHECKING:
+    from ..async_persistence import AsyncPersistenceLayer
     from ..container import ApplicationContainer
     from ..models.player import Player
+    from ..services.combat_service import CombatService
+    from ..services.passive_lucidity_flux_service import PassiveLucidityFluxService
+    from ..services.player_death_service import PlayerDeathService
+    from ..services.player_respawn_service import PlayerRespawnService
 
 logger = get_logger("server.game_tick")
 
@@ -117,8 +122,9 @@ async def _process_damage_over_time_effect(  # pylint: disable=too-many-argument
         logger.debug("Could not check login grace period for damage over time", player_id=player_id, error=str(e))
 
     damage = effect.get("damage", 0)
-    if damage > 0 and container.async_persistence:
-        await container.async_persistence.damage_player(player, damage, "status_effect")
+    if damage > 0 and container.async_persistence is not None:
+        # async_persistence is None at container init with no class annotation (typed forever None)
+        await cast("AsyncPersistenceLayer", container.async_persistence).damage_player(player, damage, "status_effect")
         logger.debug("Applied damage over time", player_id=player_id, damage=damage, effect_type=effect.get("type", ""))
         return True
     return False
@@ -136,8 +142,9 @@ async def _process_heal_over_time_effect(
         return False
 
     healing = effect.get("healing", 0)
-    if healing > 0 and container.async_persistence:
-        await container.async_persistence.heal_player(player, healing)
+    if healing > 0 and container.async_persistence is not None:
+        # async_persistence is None at container init with no class annotation (typed forever None)
+        await cast("AsyncPersistenceLayer", container.async_persistence).heal_player(player, healing)
         logger.debug("Applied heal over time", player_id=player_id, healing=healing, effect_type=effect.get("type", ""))
         return True
     return False
@@ -185,9 +192,10 @@ async def _update_player_status_effects(
         True if player was updated, False otherwise.
     """
     effects_changed = len(updated_effects) != original_count
-    if (effects_changed or effect_applied) and container.async_persistence:
+    if (effects_changed or effect_applied) and container.async_persistence is not None:
         player.set_status_effects(updated_effects)
-        await container.async_persistence.save_player(player)
+        # async_persistence is None at container init with no class annotation (typed forever None)
+        await cast("AsyncPersistenceLayer", container.async_persistence).save_player(player)
         return True
     return False
 
@@ -215,7 +223,8 @@ async def _validate_and_get_player(
         logger.warning("Invalid player_id format", player_id=player_id)
         return None, None
 
-    player = await container.async_persistence.get_player_by_id(player_uuid)
+    # async_persistence is None at container init with no class annotation (typed forever None)
+    player = await cast("AsyncPersistenceLayer", container.async_persistence).get_player_by_id(player_uuid)
     return player, player_uuid
 
 
@@ -280,7 +289,10 @@ async def process_player_effects_expiration(app: FastAPI, tick_count: int) -> No
         return
 
     try:
-        expired = await container.async_persistence.expire_player_effects_for_tick(tick_count)
+        # async_persistence is None at container init with no class annotation (typed forever None)
+        expired = await cast("AsyncPersistenceLayer", container.async_persistence).expire_player_effects_for_tick(
+            tick_count
+        )
         for player_id_str, effect_type in expired:
             if effect_type == "login_warded":
                 try:
@@ -346,6 +358,65 @@ async def process_casting_progress(app: FastAPI, tick_count: int) -> None:
         logger.error("Error processing casting progress", tick_count=tick_count, error=str(e))
 
 
+async def _player_in_active_combat(container: "ApplicationContainer", player: "Player") -> bool:
+    """Return True when the player is in an active combat (skip passive DP decay)."""
+    if container.combat_service is None:
+        return False
+
+    # combat_service is assigned None at container init with no class annotation, so pyright
+    # infers it as forever None; cast matches get_combat_service in dependencies.py.
+    combat_service = cast("CombatService", container.combat_service)
+    # Player.player_id is str (UUID as_uuid=False)
+    combat = await combat_service.get_combat_by_participant(uuid.UUID(str(player.player_id)))
+    if combat and combat.status == CombatStatus.ACTIVE:
+        logger.debug(
+            "Skipping DP decay for mortally wounded player in active combat",
+            player_id=player.player_id,
+            player_name=player.name,
+            combat_id=combat.combat_id,
+        )
+        return True
+    return False
+
+
+async def _handle_player_death_threshold(
+    container: "ApplicationContainer", player: "Player", session: AsyncSession, new_dp: int, stats: dict[str, Any]
+) -> None:
+    """Move player to limbo and publish authoritative DP when death threshold is reached."""
+    logger.info(
+        "Player reached death threshold",
+        player_id=player.player_id,
+        player_name=player.name,
+        current_dp=new_dp,
+    )
+    if not container.player_respawn_service or not container.player_death_service:
+        return
+
+    # Cast: container attrs can be inferred as forever-None; see get_player_death_service.
+    death_service = cast("PlayerDeathService", container.player_death_service)
+    respawn_service = cast("PlayerRespawnService", container.player_respawn_service)
+    player_uuid = uuid.UUID(str(player.player_id))
+    await death_service.handle_player_death(player_uuid, str(player.current_room_id), None, session)
+    await respawn_service.move_player_to_limbo(player_uuid, str(player.current_room_id), session)
+
+    if not container.event_bus:
+        return
+
+    from uuid import UUID
+
+    from ..events.event_types import PlayerDPUpdated
+
+    player_id_uuid = UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
+    container.event_bus.publish(
+        PlayerDPUpdated(
+            player_id=player_id_uuid,
+            old_dp=new_dp + 1,
+            new_dp=new_dp,
+            max_dp=_stats_int(stats, "max_dp", 100),
+        )
+    )
+
+
 async def _process_mortally_wounded_player(
     container: "ApplicationContainer", player: "Player", session: AsyncSession
 ) -> None:
@@ -358,24 +429,11 @@ async def _process_mortally_wounded_player(
     if not container.player_death_service:
         return
 
-    # CRITICAL: Skip DP decay if player is in active combat
-    # NPCs should continue attacking until player reaches -10 DP, not automatic decay
-    if container.combat_service:
-        from uuid import UUID
+    if await _player_in_active_combat(container, player):
+        return
 
-        player_uuid = UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
-        combat = await container.combat_service.get_combat_by_participant(player_uuid)
-        if combat and combat.status == CombatStatus.ACTIVE:
-            # Player is in active combat - skip DP decay, let NPCs deal damage
-            logger.debug(
-                "Skipping DP decay for mortally wounded player in active combat",
-                player_id=player.player_id,
-                player_name=player.name,
-                combat_id=combat.combat_id,
-            )
-            return
-
-    await container.player_death_service.process_mortally_wounded_tick(player.player_id, session)
+    death_service = cast("PlayerDeathService", container.player_death_service)
+    await death_service.process_mortally_wounded_tick(uuid.UUID(str(player.player_id)), session)
 
     await session.refresh(player)
     stats = player.get_stats()
@@ -385,38 +443,7 @@ async def _process_mortally_wounded_player(
         await combat_messaging_integration.send_dp_decay_message(str(player.player_id), new_dp)
 
     if new_dp <= -10:
-        logger.info(
-            "Player reached death threshold",
-            player_id=player.player_id,
-            player_name=player.name,
-            current_dp=new_dp,
-        )
-
-        if not container.player_respawn_service:
-            return
-
-        await container.player_death_service.handle_player_death(
-            player.player_id, player.current_room_id, None, session
-        )
-
-        await container.player_respawn_service.move_player_to_limbo(player.player_id, player.current_room_id, session)
-        # Ensure client receives authoritative DP (-10) so Health panel does not show 0 when in limbo
-        if container.event_bus:
-            from uuid import UUID
-
-            from ..events.event_types import PlayerDPUpdated
-
-            # Convert player_id from str to UUID for PlayerDPUpdated event
-            player_id_uuid = UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
-
-            container.event_bus.publish(
-                PlayerDPUpdated(
-                    player_id=player_id_uuid,
-                    old_dp=new_dp + 1,
-                    new_dp=new_dp,
-                    max_dp=_stats_int(stats, "max_dp", 100),
-                )
-            )
+        await _handle_player_death_threshold(container, player, session, new_dp, stats)
 
 
 async def _process_mortally_wounded_players(
@@ -426,7 +453,8 @@ async def _process_mortally_wounded_players(
     if not container.player_death_service:
         return
 
-    mortally_wounded = await container.player_death_service.get_mortally_wounded_players(session)
+    death_service = cast("PlayerDeathService", container.player_death_service)
+    mortally_wounded = await death_service.get_mortally_wounded_players(session)
 
     if not mortally_wounded:
         return
@@ -449,7 +477,8 @@ async def _process_passive_lucidity_flux(
         return
 
     try:
-        await container.passive_lucidity_flux_service.process_tick(
+        lucidity_flux = cast("PassiveLucidityFluxService", container.passive_lucidity_flux_service)
+        await lucidity_flux.process_tick(
             session=session, tick_count=tick_count, now=datetime.datetime.now(datetime.UTC)
         )
     except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as lcd_flux_error:
@@ -522,7 +551,9 @@ async def _process_dead_players(container: "ApplicationContainer", session: Asyn
     if not container.player_death_service or not container.player_respawn_service:
         return
 
-    dead_players = await container.player_death_service.get_dead_players(session)
+    death_service = cast("PlayerDeathService", container.player_death_service)
+    respawn_service = cast("PlayerRespawnService", container.player_respawn_service)
+    dead_players = await death_service.get_dead_players(session)
 
     if not dead_players:
         return
@@ -538,8 +569,8 @@ async def _process_dead_players(container: "ApplicationContainer", session: Asyn
                 current_room_id=player.current_room_id,
             )
 
-            await container.player_respawn_service.move_player_to_limbo(
-                player.player_id, player.current_room_id, session
+            await respawn_service.move_player_to_limbo(
+                uuid.UUID(str(player.player_id)), str(player.current_room_id), session
             )
 
 

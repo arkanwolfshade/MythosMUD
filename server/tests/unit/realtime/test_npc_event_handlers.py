@@ -4,6 +4,7 @@ Unit tests for NPC event handlers.
 Tests the NPCEventHandler class.
 """
 
+import inspect
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -328,3 +329,34 @@ async def test_handle_npc_left_room_not_found(npc_event_handler, mock_connection
     event = NPCLeftRoom(npc_id="npc_001", room_id="room_001", to_room_id=None)
     await npc_event_handler.handle_npc_left(event)
     # Should complete without error
+
+
+@pytest.mark.asyncio
+async def test_schedule_room_occupants_update_does_not_leak_coro_when_register_fails(
+    mock_connection_manager: MagicMock,
+    mock_message_builder: MagicMock,
+) -> None:
+    """register_task RuntimeError must close the occupants coroutine (startup teardown)."""
+    task_registry: MagicMock = MagicMock()
+    task_registry.register_task.side_effect = RuntimeError("Task registration denied during shutdown")
+    created: list[object] = []
+
+    async def send_occupants_update(room_id: str) -> None:
+        return None
+
+    def wrapping(room_id: str):
+        coro = send_occupants_update(room_id)
+        created.append(coro)
+        return coro
+
+    handler = NPCEventHandler(
+        connection_manager=mock_connection_manager,
+        task_registry=task_registry,
+        message_builder=mock_message_builder,
+        send_occupants_update=wrapping,
+    )
+
+    handler._schedule_room_occupants_update("room_001")
+
+    assert created
+    assert inspect.getcoroutinestate(created[0]) == inspect.CORO_CLOSED

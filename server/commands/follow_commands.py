@@ -28,6 +28,41 @@ def _get_container(request: Any) -> Any:
     return getattr(app.state, "container", None)
 
 
+async def _load_follow_context(
+    container: Any, current_user: dict[str, Any]
+) -> tuple[Any, Any, str, str] | dict[str, Any]:
+    """Load follow prerequisites or return an error payload."""
+    async_persistence = getattr(container, "async_persistence", None)
+    if not async_persistence:
+        return {"result": "Follow is not available."}
+
+    username = get_username_from_user(current_user)
+    player = await async_persistence.get_player_by_name(username)
+    if not player:
+        return {"result": "You are not in the game."}
+
+    requestor_id = getattr(player, "player_id", None)
+    if not requestor_id:
+        return {"result": "Unable to identify you."}
+
+    requestor_name = getattr(player, "name", username) or username
+    return async_persistence, player, requestor_id, requestor_name
+
+
+async def _resolve_follow_target(
+    container: Any, async_persistence: Any, requestor_id: str, target_identifier: str
+) -> Any | dict[str, Any]:
+    player_service = getattr(container, "player_service", None)
+    if not player_service:
+        return {"result": "Follow is not available."}
+
+    target_resolution = TargetResolutionService(async_persistence, player_service)
+    target_result = await target_resolution.resolve_target(requestor_id, target_identifier)
+    if not target_result.success or not target_result.get_single_match():
+        return {"result": target_result.error_message or "No such player or NPC here."}
+    return target_result.get_single_match()
+
+
 async def handle_follow_command(
     command_data: dict[str, Any],
     current_user: dict[str, Any],
@@ -40,34 +75,20 @@ async def handle_follow_command(
     container = _get_container(request)
     if not container or not getattr(container, "follow_service", None):
         return {"result": "Follow is not available."}
-    async_persistence = getattr(container, "async_persistence", None)
-    if not async_persistence:
-        return {"result": "Follow is not available."}
+
+    context = await _load_follow_context(container, current_user)
+    if isinstance(context, dict):
+        return context
+
+    async_persistence, _player, requestor_id, requestor_name = context
 
     target_identifier = command_data.get("target")
     if not target_identifier or not str(target_identifier).strip():
         return {"result": "Follow who? Usage: follow <player or NPC name>"}
 
-    username = get_username_from_user(current_user)
-    player = await async_persistence.get_player_by_name(username)
-    if not player:
-        return {"result": "You are not in the game."}
-    requestor_id = getattr(player, "player_id", None)
-    if not requestor_id:
-        return {"result": "Unable to identify you."}
-    requestor_name = getattr(player, "name", username) or username
-
-    # Use same target resolution as combat (partial name match, disambiguation).
-    player_service = getattr(container, "player_service", None)
-    if not player_service:
-        return {"result": "Follow is not available."}
-    target_resolution = TargetResolutionService(async_persistence, player_service)
-    target_result = await target_resolution.resolve_target(requestor_id, str(target_identifier).strip())
-    if not target_result.success:
-        return {"result": target_result.error_message or "No such player or NPC here."}
-    match = target_result.get_single_match()
-    if not match:
-        return {"result": target_result.error_message or "No such player or NPC here."}
+    match = await _resolve_follow_target(container, async_persistence, requestor_id, str(target_identifier).strip())
+    if isinstance(match, dict):
+        return match
 
     target_id = match.target_id
     target_type_str: TargetType = "player" if match.target_type == SchemaTargetType.PLAYER else "npc"

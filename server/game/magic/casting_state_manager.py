@@ -34,6 +34,18 @@ class CastingState:  # pylint: disable=too-many-instance-attributes  # Reason: C
     spell: Any  # Spell object
 
 
+@dataclass(frozen=True)
+class StartCastingTarget:
+    """Optional target fields for start_casting."""
+
+    combat_id: uuid.UUID | None = None
+    next_initiative_tick: int | None = None
+    target_name: str | None = None
+    target_id: str | None = None
+    target_type: str | None = None
+    mastery: int = 0
+
+
 class CastingStateManager:
     """
     Manages casting state for all active spell castings.
@@ -47,41 +59,17 @@ class CastingStateManager:
         self._casting_states: dict[uuid.UUID, CastingState] = {}
         logger.info("CastingStateManager initialized")
 
-    def start_casting(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Spell casting requires many parameters for context and spell configuration
+    def start_casting(
         self,
         player_id: uuid.UUID,
         spell: Any,
         start_tick: int,
-        combat_id: uuid.UUID | None = None,
-        next_initiative_tick: int | None = None,
-        target_name: str | None = None,
-        target_id: str | None = None,
-        target_type: str | None = None,
-        mastery: int = 0,
+        target: StartCastingTarget | None = None,
     ) -> CastingState:
-        """
-        Start a new casting state.
-
-        Args:
-            player_id: ID of the player casting
-            spell: Spell object being cast
-            start_tick: Current game tick when casting starts
-            combat_id: Optional combat ID if in combat
-            next_initiative_tick: Optional next initiative tick if waiting for turn
-            target_name: Optional target name
-            target_id: Optional target ID
-            target_type: Optional target type
-            mastery: Mastery level for the spell
-
-        Returns:
-            CastingState: The created casting state
-
-        Raises:
-            ValueError: If player is already casting
-        """
+        """Start a new casting state."""
+        target = target or StartCastingTarget()
         if player_id in self._casting_states:
             raise ValueError(f"Player {player_id} is already casting a spell")
-
         casting_state = CastingState(
             player_id=player_id,
             spell_id=spell.spell_id,
@@ -89,25 +77,23 @@ class CastingStateManager:
             start_tick=start_tick,
             casting_time_seconds=spell.casting_time_seconds,
             remaining_seconds=spell.casting_time_seconds,
-            combat_id=combat_id,
-            next_initiative_tick=next_initiative_tick,
+            combat_id=target.combat_id,
+            next_initiative_tick=target.next_initiative_tick,
             mp_cost=spell.mp_cost,
-            target_name=target_name,
-            target_id=target_id,
-            target_type=target_type,
-            mastery=mastery,
+            target_name=target.target_name,
+            target_id=target.target_id,
+            target_type=target.target_type,
+            mastery=target.mastery,
             spell=spell,
         )
-
         self._casting_states[player_id] = casting_state
         logger.info(
             "Started casting",
             player_id=player_id,
             spell_id=spell.spell_id,
             casting_time=spell.casting_time_seconds,
-            combat_id=combat_id,
+            combat_id=target.combat_id,
         )
-
         return casting_state
 
     def is_casting(self, player_id: uuid.UUID) -> bool:

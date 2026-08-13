@@ -10,7 +10,7 @@
  */
 
 import { expect, test, type Page } from '@playwright/test';
-import { clickWithoutStability, ensurePlayableConnection, waitForMessage } from '../fixtures/auth';
+import { clickWithoutStability, ensurePlayableConnection, loginPlayer, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
@@ -18,9 +18,10 @@ import {
   ensurePlayerInGame,
   getPlayerMessages,
   prepareReceiverForInboundMessages,
+  resetE2ePlayerRoomsInDatabase,
   waitForAllPlayersInGame,
-  waitForCrossPlayerMessage,
 } from '../fixtures/multiplayer';
+import { ensureStanding } from '../fixtures/player';
 
 /** Intentional logout click without waiting for login UI (leave broadcast is the assertion). */
 async function clickLogout(page: Page): Promise<void> {
@@ -32,41 +33,60 @@ async function clickLogout(page: Page): Promise<void> {
 
 test.describe('Basic Connection/Disconnection Flow', () => {
   test('AW should see Ithaqua entered message when Ithaqua connects', async ({ browser }) => {
+    // Prior specs persist AW in Eastern Hallway; enter_game is room-scoped.
+    resetE2ePlayerRoomsInDatabase();
     const awContexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade']);
     const awContext = awContexts[0];
-    await ensurePlayerInGame(awContext, 15000);
-    await ensurePlayableConnection(awContext.page, {
-      username: awContext.player.username,
-      password: awContext.player.password,
-      timeoutMs: 30000,
-    });
+    let ithaquaContexts: Awaited<ReturnType<typeof createMultiPlayerContexts>> | undefined;
+    try {
+      await ensurePlayerInGame(awContext, 15000);
+      await ensurePlayableConnection(awContext.page, {
+        username: awContext.player.username,
+        password: awContext.player.password,
+        timeoutMs: 30000,
+      });
+      await ensureStanding(awContext.page, 15000);
+      await prepareReceiverForInboundMessages(awContext, 20000);
+      await awContext.page.bringToFront().catch(() => {});
 
-    // Seeded players share DEFAULT_RESPAWN_ROOM; do not use `teleport name room_id` (invalid syntax).
-    await prepareReceiverForInboundMessages(awContext, 20000);
+      // Do not call waitForCrossPlayerMessage here: it re-runs prepareReceiver and can reload AW
+      // after Ithaqua already entered. Periodic `look` also evicts the enter line from Game Info.
+      const enteredLine = awContext.page
+        .locator('[data-message-text]')
+        .filter({ hasText: /Ithaqua has entered the game/i });
+      const enteredWait = enteredLine.first().waitFor({ state: 'visible', timeout: 60000 });
 
-    const enteredWait = waitForCrossPlayerMessage(awContext, /Ithaqua has entered the game/i, 60000);
+      ithaquaContexts = await createMultiPlayerContexts(browser, ['Ithaqua']);
+      const ithaquaContext = ithaquaContexts[0];
+      await ensurePlayerInGame(ithaquaContext, 45000);
 
-    const ithaquaContexts = await createMultiPlayerContexts(browser, ['Ithaqua']);
-    const ithaquaContext = ithaquaContexts[0];
-    await ensurePlayerInGame(ithaquaContext, 45000);
+      try {
+        await enteredWait;
+      } catch {
+        await awContext.page.bringToFront().catch(() => {});
+        const retryWait = enteredLine.first().waitFor({ state: 'visible', timeout: 45000 });
+        await clickLogout(ithaquaContext.page);
+        await loginPlayer(ithaquaContext.page, ithaquaContext.player.username, ithaquaContext.player.password);
+        await ensurePlayerInGame(ithaquaContext, 45000);
+        await retryWait;
+      }
 
-    await enteredWait;
+      const awMessages = await getPlayerMessages(awContext);
+      expect(awMessages.some(msg => msg.includes('Ithaqua has entered the game'))).toBe(true);
 
-    const awMessages = await getPlayerMessages(awContext);
-    expect(awMessages.some(msg => msg.includes('Ithaqua has entered the game'))).toBe(true);
-
-    const ithaquaMessages = await getPlayerMessages(ithaquaContext);
-    const unwantedMessages = ithaquaMessages.filter(
-      msg =>
-        msg.includes('enters the room') ||
-        msg.includes('leaves the room') ||
-        msg.includes('entered the game') ||
-        msg.includes('left the game')
-    );
-    expect(unwantedMessages).toHaveLength(0);
-
-    await cleanupMultiPlayerContexts(ithaquaContexts);
-    await cleanupMultiPlayerContexts(awContexts);
+      const ithaquaMessages = await getPlayerMessages(ithaquaContext);
+      const unwantedMessages = ithaquaMessages.filter(
+        msg =>
+          msg.includes('enters the room') ||
+          msg.includes('leaves the room') ||
+          msg.includes('entered the game') ||
+          msg.includes('left the game')
+      );
+      expect(unwantedMessages).toHaveLength(0);
+    } finally {
+      await cleanupMultiPlayerContexts(ithaquaContexts).catch(() => {});
+      await cleanupMultiPlayerContexts(awContexts).catch(() => {});
+    }
   });
 
   test('AW should see Ithaqua left message when Ithaqua disconnects', async ({ browser }) => {

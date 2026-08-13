@@ -48,21 +48,66 @@ export interface AsciiMapViewerContentProps {
   onMapClick: (event: React.MouseEvent<HTMLDivElement>) => void;
 }
 
-export function AsciiMapViewerContent({
-  plane,
-  zone,
-  mapHtml,
-  viewport,
-  setViewportX,
-  setViewportY,
-  selectedPlane,
-  selectedZone,
-  selectedSubZone,
-  setSelectedPlane,
-  setSelectedZone,
-  setSelectedSubZone,
-  onMapClick,
-}: AsciiMapViewerContentProps): React.ReactElement {
+function ViewportScrollButtons(props: {
+  setViewportX: React.Dispatch<React.SetStateAction<number>>;
+  setViewportY: React.Dispatch<React.SetStateAction<number>>;
+}): React.ReactElement {
+  return (
+    <div className="absolute top-4 right-4 z-10 flex gap-2">
+      <button
+        onClick={() => props.setViewportX(prev => prev - 1)}
+        className={VIEWPORT_BUTTON_CLASS}
+        title="Scroll left"
+      >
+        ←
+      </button>
+      <button
+        onClick={() => props.setViewportX(prev => prev + 1)}
+        className={VIEWPORT_BUTTON_CLASS}
+        title="Scroll right"
+      >
+        →
+      </button>
+      <button onClick={() => props.setViewportY(prev => prev - 1)} className={VIEWPORT_BUTTON_CLASS} title="Scroll up">
+        ↑
+      </button>
+      <button
+        onClick={() => props.setViewportY(prev => prev + 1)}
+        className={VIEWPORT_BUTTON_CLASS}
+        title="Scroll down"
+      >
+        ↓
+      </button>
+      <button
+        onClick={() => {
+          props.setViewportX(0);
+          props.setViewportY(0);
+        }}
+        className={VIEWPORT_BUTTON_CLASS}
+        title="Reset viewport"
+      >
+        ⌂
+      </button>
+    </div>
+  );
+}
+
+export function AsciiMapViewerContent(props: AsciiMapViewerContentProps): React.ReactElement {
+  const {
+    plane,
+    zone,
+    mapHtml,
+    viewport,
+    setViewportX,
+    setViewportY,
+    selectedPlane,
+    selectedZone,
+    selectedSubZone,
+    setSelectedPlane,
+    setSelectedZone,
+    setSelectedSubZone,
+    onMapClick,
+  } = props;
   return (
     <div className="relative h-full w-full bg-mythos-terminal-background">
       <div className="absolute top-4 left-4 z-10">
@@ -81,30 +126,7 @@ export function AsciiMapViewerContent({
         />
       </div>
 
-      <div className="absolute top-4 right-4 z-10 flex gap-2">
-        <button onClick={() => setViewportX(prev => prev - 1)} className={VIEWPORT_BUTTON_CLASS} title="Scroll left">
-          ←
-        </button>
-        <button onClick={() => setViewportX(prev => prev + 1)} className={VIEWPORT_BUTTON_CLASS} title="Scroll right">
-          →
-        </button>
-        <button onClick={() => setViewportY(prev => prev - 1)} className={VIEWPORT_BUTTON_CLASS} title="Scroll up">
-          ↑
-        </button>
-        <button onClick={() => setViewportY(prev => prev + 1)} className={VIEWPORT_BUTTON_CLASS} title="Scroll down">
-          ↓
-        </button>
-        <button
-          onClick={() => {
-            setViewportX(0);
-            setViewportY(0);
-          }}
-          className={VIEWPORT_BUTTON_CLASS}
-          title="Reset viewport"
-        >
-          ⌂
-        </button>
-      </div>
+      <ViewportScrollButtons setViewportX={setViewportX} setViewportY={setViewportY} />
 
       <SafeHtml
         html={mapHtml}

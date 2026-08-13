@@ -66,6 +66,42 @@ async def test_get_player_occupants_success(mock_connection_manager):
 
 
 @pytest.mark.asyncio
+async def test_get_player_occupants_includes_in_room_player_without_websocket(mock_connection_manager):
+    """In-room players must appear in Occupants even with no live WS and no grace (look's rule)."""
+    other_id = uuid.uuid4()
+    mock_connection_manager.get_room_occupants.return_value = [
+        {"player_name": "Ithaqua", "player_id": str(other_id)},
+    ]
+    mock_connection_manager.has_websocket_connection = MagicMock(return_value=False)
+
+    with (
+        patch("server.realtime.occupant_display.is_player_in_grace_period", return_value=False),
+        patch("server.realtime.occupant_display.is_player_in_login_grace_period", return_value=False),
+    ):
+        result = await get_player_occupants(mock_connection_manager, "room_123")
+
+    assert "Ithaqua" in result
+
+
+@pytest.mark.asyncio
+async def test_get_player_occupants_adds_grace_badges(mock_connection_manager):
+    """Occupants panel uses the same grace badges as look."""
+    other_id = uuid.uuid4()
+    mock_connection_manager.get_room_occupants.return_value = [
+        {"player_name": "Ithaqua", "player_id": str(other_id)},
+    ]
+    mock_connection_manager.has_websocket_connection = MagicMock(return_value=False)
+
+    with (
+        patch("server.realtime.occupant_display.is_player_in_grace_period", return_value=True),
+        patch("server.realtime.occupant_display.is_player_in_login_grace_period", return_value=True),
+    ):
+        result = await get_player_occupants(mock_connection_manager, "room_123")
+
+    assert result == ["Ithaqua (linkdead) (warded)"]
+
+
+@pytest.mark.asyncio
 async def test_get_player_occupants_empty(mock_connection_manager):
     """Test get_player_occupants() returns empty list when no occupants."""
     room_id = "room_123"

@@ -101,6 +101,21 @@ def create_hasher_with_params(
     )
 
 
+def _validate_password_for_hashing(password: str) -> None:
+    """Validate password input before Argon2 hashing."""
+    if not isinstance(password, str):
+        logger.error("Password must be a string", password_type=type(password).__name__)  # type: ignore[unreachable]  # Reason: Runtime type validation catches incorrect calls, but mypy infers str from function signature and marks this branch as unreachable
+        raise AuthenticationError("Password must be a string")
+
+    if len(password) > MAX_PASSWORD_LENGTH:
+        logger.error("Password exceeds maximum length", password_length=len(password), max_length=MAX_PASSWORD_LENGTH)
+        raise AuthenticationError(f"Password must not exceed {MAX_PASSWORD_LENGTH} characters")  # pylint: disable=redefined-outer-name  # Reason: MAX_PASSWORD_LENGTH is a module-level constant, not being redefined; Pylint false positive
+
+    if not password:
+        logger.error("Password cannot be empty")
+        raise AuthenticationError("Password cannot be empty")
+
+
 def hash_password(password: str) -> str:
     """
     Hash a plaintext password using Argon2id.
@@ -120,19 +135,7 @@ def hash_password(password: str) -> str:
     Raises:
         AuthenticationError: If password is not a string, is empty, exceeds maximum length, or hashing fails
     """
-    # Runtime type validation (defensive programming - catches incorrect calls at runtime)
-    if not isinstance(password, str):
-        logger.error("Password must be a string", password_type=type(password).__name__)  # type: ignore[unreachable]  # Reason: Runtime type validation catches incorrect calls, but mypy infers str from function signature and marks this branch as unreachable
-        raise AuthenticationError("Password must be a string")
-
-    # Enforce maximum password length to prevent DoS attacks
-    if len(password) > MAX_PASSWORD_LENGTH:
-        logger.error("Password exceeds maximum length", password_length=len(password), max_length=MAX_PASSWORD_LENGTH)
-        raise AuthenticationError(f"Password must not exceed {MAX_PASSWORD_LENGTH} characters")  # pylint: disable=redefined-outer-name  # Reason: MAX_PASSWORD_LENGTH is a module-level constant, not being redefined; Pylint false positive
-
-    if not password:
-        logger.error("Password cannot be empty")
-        raise AuthenticationError("Password cannot be empty")
+    _validate_password_for_hashing(password)
 
     logger.debug("Hashing password with Argon2id")
     try:

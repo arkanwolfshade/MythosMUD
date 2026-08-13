@@ -14,6 +14,7 @@ import './multiplayer-browser-window.d.ts';
 
 import { expect, type Browser, type BrowserContext, type Page } from '@playwright/test';
 import { E2E_PROJECT_ROOT, loadE2eEnv } from '../../../../src/test/e2e-bootstrap';
+import { requiredAliveButDeadMessage } from '../../../../src/utils/deathVoidLocation';
 import { MotdPage } from '../pages';
 import {
   ensurePlayableConnection,
@@ -24,6 +25,7 @@ import {
   waitForPlayableSession,
 } from './auth';
 import type { OccupantsSnapshot } from './multiplayer-browser-helpers';
+import { assertPlayerAlive, ensurePlayableAlive, ensureStanding, isPlayerDead } from './player';
 import { TEST_PLAYERS, TEST_TIMEOUTS, type TestPlayer } from './test-data';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -136,7 +138,11 @@ export async function cleanupMultiPlayerContexts(contexts: PlayerContext[] | und
   if (!contexts || !Array.isArray(contexts)) {
     return;
   }
-  for (const { page } of contexts) {
+  for (const { page, player } of contexts) {
+    // Leave persisted room as spawn if this spec died; next serial file logs into DB state.
+    if (await isPlayerDead(page).catch(() => false)) {
+      await ensurePlayableAlive(page, player.username, player.password).catch(() => {});
+    }
     // spaFallback: afterAll must not hang 90s when Exit is disabled in void/ward.
     await logoutPlayer(page, 25000, { spaFallback: true }).catch(() => {});
     await page
@@ -223,6 +229,34 @@ async function throwOccupantsWaitTimeout(
     `[instrumentation] ensurePlayersInSameRoom failed: Player ${player.username} - ` +
     `Step 1: occupants - did not see ${expectedOccupants} within ${timeoutMs}ms (saw: ${shortSnap})`;
   throw new Error(msg);
+}
+
+function isOccupantPanelStuckBelowExpected(snap: OccupantsSnapshot, expected: number): boolean {
+  return (
+    snap.hasOccupantsMatch && snap.occupantsCount !== null && snap.occupantsCount < expected && !snap.hasPlayersMatch
+  );
+}
+
+/**
+ * Occupants (1) with no Players column will not become 2 by waiting.
+ * Death void and empty-panel titles are terminal for this attempt.
+ */
+async function throwIfCoLocateOccupantsCannotProgress(
+  contexts: PlayerContext[],
+  expectedOccupants: number
+): Promise<void> {
+  for (const { page, player } of contexts) {
+    if (await isPlayerDead(page)) {
+      throw new Error(requiredAliveButDeadMessage(player.username));
+    }
+    const snapshot = await page.evaluate(() => window.__mythosE2eCaptureOccupantsSnapshot?.()).catch(() => null);
+    if (snapshot && isOccupantPanelStuckBelowExpected(snapshot, expectedOccupants)) {
+      throw new Error(
+        `[instrumentation] Occupants stuck at ${String(snapshot.occupantsCount)} with no Players column ` +
+          `for ${player.username} (expected ${String(expectedOccupants)}). Not waiting 45s.`
+      );
+    }
+  }
 }
 
 /**
@@ -319,6 +353,7 @@ export async function ensurePlayerInGame(playerContext: PlayerContext, timeoutMs
   const { page, player } = playerContext;
   await waitForPlayableSession(page, Math.min(timeoutMs, 30000)).catch(() => {});
   await waitForPlayerGameUi(page, player.username, timeoutMs);
+  await assertPlayerAlive(page, player.username);
   await waitForPlayerWebSocket(page, player.username, timeoutMs);
   await waitForPlayerRoomSubscription(page, player.username, timeoutMs);
   await new Promise(resolve => setTimeout(resolve, 1000));
@@ -483,6 +518,8 @@ export async function ensurePlayersInSameRoom(
   expectedOccupants: number = contexts.length,
   timeoutMs: number = 45000
 ): Promise<void> {
+  await assertPlayersAlive(contexts);
+
   // Step 0: Wait for all players' header connection status to show "Connected" (same as waitForAllPlayersInGame).
   // Do not require absence of "(linkdead)" in the whole body: the Occupants panel can show "Name (linkdead)"
   // even when the header already shows "Connected", which would otherwise block this step forever.
@@ -552,7 +589,7 @@ export interface EnsureMultiplayerCoLocatedOptions {
 }
 
 const TELEPORT_SETTLE_BASE_MS = 6000;
-const MAX_COLOCATE_ATTEMPTS = 5;
+const MAX_COLOCATE_ATTEMPTS = 3;
 
 /**
  * Reset E2E player rows in mythos_e2e (same script as global-teardown).
@@ -561,7 +598,7 @@ const MAX_COLOCATE_ATTEMPTS = 5;
 export function resetE2ePlayerRoomsInDatabase(): void {
   const seedEnv = { ...process.env, ...loadE2eEnv() };
   const scriptPath = join(E2E_PROJECT_ROOT, 'scripts', 'e2e_reset_players.py');
-  const result = spawnSync('uv', ['run', 'python', scriptPath], {
+  const result = spawnSync('uv', ['run', '--no-sync', 'python', scriptPath], {
     cwd: E2E_PROJECT_ROOT,
     // shell:false so timeout is honored on Windows (shell:true has hung the Playwright worker).
     shell: false,
@@ -602,10 +639,27 @@ export async function waitForLookReflectedInUi(page: Page, timeoutMs: number = 4
 }
 
 async function resyncE2ePlayersAfterDatabaseReset(contexts: PlayerContext[], timeoutMs: number): Promise<void> {
+  // DB reset already moved rows to spawn. Do NOT Exit→/rest here: mid-countdown WS drop
+  // leaves Sitting+(linkdead) ghosts that break co-locate and chat asserts.
   for (const ctx of contexts) {
+    if (ctx.page.isClosed()) {
+      throw new Error(`Cannot resync after DB reset: browser page is closed for ${ctx.player.username}`);
+    }
     await ctx.page.bringToFront().catch(() => {});
-    await logoutPlayer(ctx.page, Math.min(timeoutMs, 60000)).catch(() => {});
-    await loginPlayer(ctx.page, ctx.player.username, ctx.player.password);
+
+    const onLogin = await ctx.page
+      .getByTestId('username-input')
+      .isVisible({ timeout: 2000 })
+      .catch(() => false);
+    if (onLogin) {
+      await loginPlayer(ctx.page, ctx.player.username, ctx.player.password);
+    } else {
+      await ensurePlayableConnection(ctx.page, {
+        username: ctx.player.username,
+        password: ctx.player.password,
+        timeoutMs: Math.min(timeoutMs, 30000),
+      });
+    }
     await ensurePlayerInGame(ctx, timeoutMs);
 
     const motdVisible = await ctx.page
@@ -619,7 +673,7 @@ async function resyncE2ePlayersAfterDatabaseReset(contexts: PlayerContext[], tim
       await ensurePlayerInGame(ctx, timeoutMs);
     }
 
-    await executeCommand(ctx.page, 'stand');
+    await ensureStanding(ctx.page, Math.min(timeoutMs, 20000));
     await executeCommandTrusted(ctx.page, 'look');
     await waitForLookReflectedInUi(ctx.page, Math.min(timeoutMs, 35000)).catch(() => {});
   }
@@ -652,6 +706,14 @@ async function ensureMultiplayerReadyForCoLocate(contexts: PlayerContext[], time
       await ensurePlayerInGame(ctx, timeoutMs);
     }
   }
+
+  await assertPlayersAlive(contexts);
+}
+
+async function assertPlayersAlive(contexts: PlayerContext[]): Promise<void> {
+  for (const ctx of contexts) {
+    await assertPlayerAlive(ctx.page, ctx.player.username);
+  }
 }
 
 async function resolveOtherCharacterName(otherContext: PlayerContext): Promise<string> {
@@ -674,6 +736,7 @@ async function runCoLocateTeleportAttempt(
     resetE2ePlayerRoomsInDatabase();
     await resyncE2ePlayersAfterDatabaseReset(contexts, timeoutMs);
   }
+  await assertPlayersAlive(contexts);
 
   await awContext.page.bringToFront().catch(() => {});
   await ensurePlayableConnection(awContext.page, {
@@ -722,6 +785,8 @@ async function runCoLocateTeleportAttempt(
     await executeCommandTrusted(ctx.page, 'look');
     await new Promise(r => setTimeout(r, 500));
   }
+
+  await throwIfCoLocateOccupantsCannotProgress(contexts, contexts.length);
 }
 
 async function retryCoLocateUntilSameRoom(
@@ -733,9 +798,8 @@ async function retryCoLocateUntilSameRoom(
   timeoutMs: number
 ): Promise<void> {
   for (let attempt = 0; attempt < MAX_COLOCATE_ATTEMPTS; attempt++) {
-    await runCoLocateTeleportAttempt(awContext, otherContext, contexts, otherCharName, attempt, timeoutMs);
-
     try {
+      await runCoLocateTeleportAttempt(awContext, otherContext, contexts, otherCharName, attempt, timeoutMs);
       await ensurePlayersInSameRoom(contexts, contexts.length, coLocateTimeoutMs);
       return;
     } catch (e) {

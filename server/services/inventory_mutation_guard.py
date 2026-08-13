@@ -78,89 +78,64 @@ class InventoryMutationGuard:
             self._async_global_lock = Lock()
         return self._async_global_lock
 
+    def _emit_duplicate_mutation_alert(self, player_id: str, token: str, cached_tokens: int) -> None:
+        logger.warning(
+            "Duplicate inventory mutation suppressed",
+            player_id=player_id,
+            token=token,
+            alert="inventory_duplicate",
+            duplicate_token=True,
+            cached_tokens=cached_tokens,
+        )
+        metrics_collector.record_message_failed("inventory_mutation", "duplicate_token")
+        dashboard = get_monitoring_dashboard()
+        alert_metadata = {"player_id": player_id, "token": token, "cached_tokens": cached_tokens}
+        record_custom_alert = getattr(dashboard, "record_custom_alert", None)
+        if not callable(record_custom_alert):
+            return
+        record_custom_alert = cast(Callable[..., None], record_custom_alert)
+        try:
+            parameters: Mapping[str, inspect.Parameter] = inspect.signature(record_custom_alert).parameters
+        except (TypeError, ValueError):
+            parameters = cast(Mapping[str, inspect.Parameter], {})
+        try:
+            if "message" in parameters:
+                record_custom_alert(  # pylint: disable=not-callable  # Reason: Verified callable via callable() check and cast above
+                    "inventory_duplicate",
+                    severity="warning",
+                    message=f"Duplicate inventory mutation suppressed for player {player_id}",
+                    metadata=alert_metadata,
+                )
+            else:
+                record_custom_alert(  # pylint: disable=not-callable  # Reason: Verified callable via callable() check and cast above
+                    "inventory_duplicate", severity="warning", metadata=alert_metadata
+                )
+        except TypeError:
+            try:
+                record_custom_alert(  # pylint: disable=not-callable  # Reason: Verified callable via callable() check and cast above
+                    "inventory_duplicate", severity="warning", metadata=alert_metadata
+                )
+            except TypeError:
+                pass
+
     @contextmanager
     def acquire(self, player_id: str, token: str | None) -> Iterator[MutationDecision]:
-        """
-        Acquire a mutation context for the given player and token.
-
-        Args:
-            player_id: Identifier for the player whose inventory will mutate.
-            token: Optional idempotency token unique to the attempted mutation.
-
-        Yields:
-            MutationDecision describing whether the caller should perform the mutation.
-        """
-
+        """Acquire sync mutation guard."""
         state = self._get_state(player_id)
         state.lock.acquire()
         duplicate_detected = False
-
         try:  # pylint: disable=too-many-nested-blocks  # Reason: Mutation guard requires complex nested logic for token validation, duplicate detection, and state management
             now = monotonic()
             self._prune_tokens(state, now)
-
             if token:
                 if token in state.recent_tokens:
                     duplicate_detected = True
-                    logger.warning(
-                        "Duplicate inventory mutation suppressed",
-                        player_id=player_id,
-                        token=token,
-                        alert="inventory_duplicate",
-                        duplicate_token=True,
-                        cached_tokens=len(state.recent_tokens),
-                    )
-                    metrics_collector.record_message_failed("inventory_mutation", "duplicate_token")
-                    dashboard = get_monitoring_dashboard()
-                    alert_metadata = {
-                        "player_id": player_id,
-                        "token": token,
-                        "cached_tokens": len(state.recent_tokens),
-                    }
-                    record_custom_alert = getattr(dashboard, "record_custom_alert", None)
-                    if callable(record_custom_alert):
-                        # Type assertion: after callable() check, we know it's callable
-                        record_custom_alert = cast(Callable[..., None], record_custom_alert)
-                        try:
-                            parameters: Mapping[str, inspect.Parameter]
-                            parameters = inspect.signature(record_custom_alert).parameters
-                        except (TypeError, ValueError):
-                            parameters = cast(Mapping[str, inspect.Parameter], {})
-                        # After callable() check and cast, we know record_custom_alert is callable
-                        # pylint: disable=not-callable  # Reason: Dynamic callable check with cast ensures function is callable, but pylint cannot infer this from runtime checks
-                        try:
-                            if "message" in parameters:
-                                record_custom_alert(  # pylint: disable=not-callable  # Reason: Verified callable via callable() check and cast above, but pylint cannot infer from runtime checks
-                                    "inventory_duplicate",
-                                    severity="warning",
-                                    message=f"Duplicate inventory mutation suppressed for player {player_id}",
-                                    metadata=alert_metadata,
-                                )
-                            else:
-                                # Legacy signature compatibility: (alert_type, *, severity=..., metadata=...)
-                                record_custom_alert(  # pylint: disable=not-callable  # Reason: Verified callable via callable() check and cast above, but pylint cannot infer from runtime checks
-                                    "inventory_duplicate",
-                                    severity="warning",
-                                    metadata=alert_metadata,
-                                )
-                        except TypeError:
-                            # Fallback to safest keyword invocation if signature introspection was misleading
-                            try:
-                                record_custom_alert(  # pylint: disable=not-callable  # Reason: Verified callable via callable() check and cast above, but pylint cannot infer from runtime checks
-                                    "inventory_duplicate",
-                                    severity="warning",
-                                    metadata=alert_metadata,
-                                )
-                            except TypeError:
-                                # If fallback also fails, silently ignore - alert recording is non-critical
-                                pass
+                    self._emit_duplicate_mutation_alert(player_id, token, len(state.recent_tokens))
                     decision = MutationDecision(should_apply=False, duplicate=True)
                     yield decision
                     return
-
                 state.recent_tokens[token] = now
                 self._enforce_limit(state)
-
             yield MutationDecision(should_apply=not duplicate_detected)
         finally:
             state.lock.release()
@@ -169,87 +144,23 @@ class InventoryMutationGuard:
 
     @asynccontextmanager
     async def acquire_async(self, player_id: str, token: str | None) -> AsyncIterator[MutationDecision]:
-        """
-        Acquire a mutation context for the given player and token (async version).
-
-        Args:
-            player_id: Identifier for the player whose inventory will mutate.
-            token: Optional idempotency token unique to the attempted mutation.
-
-        Yields:
-            MutationDecision describing whether the caller should perform the mutation.
-        """
+        """Acquire async mutation guard."""
         state = await self._get_async_state(player_id)
         lock = state.get_lock()
         await lock.acquire()
         duplicate_detected = False
-
         try:  # pylint: disable=too-many-nested-blocks  # Reason: Async mutation guard requires complex nested logic for token validation, duplicate detection, and async state management
             now = monotonic()
             self._prune_tokens_async(state, now)
-
             if token:
                 if token in state.recent_tokens:
                     duplicate_detected = True
-                    logger.warning(
-                        "Duplicate inventory mutation suppressed",
-                        player_id=player_id,
-                        token=token,
-                        alert="inventory_duplicate",
-                        duplicate_token=True,
-                        cached_tokens=len(state.recent_tokens),
-                    )
-                    metrics_collector.record_message_failed("inventory_mutation", "duplicate_token")
-                    dashboard = get_monitoring_dashboard()
-                    alert_metadata = {
-                        "player_id": player_id,
-                        "token": token,
-                        "cached_tokens": len(state.recent_tokens),
-                    }
-                    record_custom_alert = getattr(dashboard, "record_custom_alert", None)
-                    if callable(record_custom_alert):
-                        # Type assertion: after callable() check, we know it's callable
-                        record_custom_alert = cast(Callable[..., None], record_custom_alert)
-                        try:
-                            parameters: Mapping[str, inspect.Parameter]
-                            parameters = inspect.signature(record_custom_alert).parameters
-                        except (TypeError, ValueError):
-                            parameters = cast(Mapping[str, inspect.Parameter], {})
-                        # After callable() check and cast, we know record_custom_alert is callable
-                        # pylint: disable=not-callable  # Reason: Dynamic callable check with cast ensures function is callable, but pylint cannot infer this from runtime checks
-                        try:
-                            if "message" in parameters:
-                                record_custom_alert(  # pylint: disable=not-callable  # Reason: Verified callable via callable() check and cast above, but pylint cannot infer from runtime checks
-                                    "inventory_duplicate",
-                                    severity="warning",
-                                    message=f"Duplicate inventory mutation suppressed for player {player_id}",
-                                    metadata=alert_metadata,
-                                )
-                            else:
-                                # Legacy signature compatibility: (alert_type, *, severity=..., metadata=...)
-                                record_custom_alert(  # pylint: disable=not-callable  # Reason: Verified callable via callable() check and cast above, but pylint cannot infer from runtime checks
-                                    "inventory_duplicate",
-                                    severity="warning",
-                                    metadata=alert_metadata,
-                                )
-                        except TypeError:
-                            # Fallback to safest keyword invocation if signature introspection was misleading
-                            try:
-                                record_custom_alert(  # pylint: disable=not-callable  # Reason: Verified callable via callable() check and cast above, but pylint cannot infer from runtime checks
-                                    "inventory_duplicate",
-                                    severity="warning",
-                                    metadata=alert_metadata,
-                                )
-                            except TypeError:
-                                # If fallback also fails, silently ignore - alert recording is non-critical
-                                pass
+                    self._emit_duplicate_mutation_alert(player_id, token, len(state.recent_tokens))
                     decision = MutationDecision(should_apply=False, duplicate=True)
                     yield decision
                     return
-
                 state.recent_tokens[token] = now
                 self._enforce_limit_async(state)
-
             yield MutationDecision(should_apply=not duplicate_detected)
         finally:
             lock.release()

@@ -320,6 +320,29 @@ async def delete_player(
         ) from e
 
 
+async def _soft_delete_character(
+    character_id: str, current_user: User, player_service: PlayerService
+) -> DeleteCharacterResponse:
+    try:
+        character_uuid = uuid.UUID(character_id)
+    except ValueError:
+        raise LoggedHTTPException(
+            status_code=400,
+            detail="Invalid character ID format",
+            user_id=str(current_user.id) if current_user else None,
+            operation="delete_character",
+        ) from None
+    success, message = await player_service.soft_delete_character(character_uuid, current_user.id)
+    if not success:
+        raise LoggedHTTPException(
+            status_code=404,
+            detail=message,
+            user_id=str(current_user.id) if current_user else None,
+            operation="delete_character",
+        )
+    return DeleteCharacterResponse(success=True, message=message)
+
+
 @player_router.delete("/characters/{character_id}", response_model=DeleteCharacterResponse)
 async def delete_character(
     character_id: str,
@@ -327,46 +350,11 @@ async def delete_character(
     current_user: User = Depends(get_current_active_user),
     player_service: PlayerService = PlayerServiceDep,
 ) -> DeleteCharacterResponse:
-    """
-    Soft delete a character.
-
-    MULTI-CHARACTER: Soft deletes a character (sets is_deleted=True) belonging to the current user.
-    Character data is preserved but the character is hidden from selection.
-
-    Args:
-        character_id: Character ID (player_id) to delete
-
-    Returns:
-        dict: Success message
-
-    Raises:
-        HTTPException: If character not found or doesn't belong to user
-    """
+    """Soft-delete a character owned by the current user (hidden, data kept)."""
     if not current_user:
         raise LoggedHTTPException(status_code=401, detail=ErrorMessages.AUTHENTICATION_REQUIRED)
-
     try:
-        # Convert character_id to UUID
-        try:
-            character_uuid = uuid.UUID(character_id)
-        except ValueError:
-            raise LoggedHTTPException(
-                status_code=400,
-                detail="Invalid character ID format",
-                user_id=str(current_user.id) if current_user else None,
-                operation="delete_character",
-            ) from None
-
-        success, message = await player_service.soft_delete_character(character_uuid, current_user.id)
-        if not success:
-            raise LoggedHTTPException(
-                status_code=404,
-                detail=message,
-                user_id=str(current_user.id) if current_user else None,
-                operation="delete_character",
-            )
-
-        return DeleteCharacterResponse(success=True, message=message)
+        return await _soft_delete_character(character_id, current_user, player_service)
     except LoggedHTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Character deletion errors unpredictable, must create error context
@@ -464,59 +452,46 @@ def _get_connection_manager(request: FastAPIRequest) -> Any:
     return None
 
 
+async def _force_disconnect_character(
+    connection_manager: Any, other_character: Any, current_user: User, character_uuid: uuid.UUID
+) -> bool:
+    other_character_id = uuid.UUID(str(other_character.id))
+    if other_character_id not in connection_manager.player_websockets:
+        return False
+    try:
+        await connection_manager.disconnect_websocket(other_character_id, is_force_disconnect=True)
+        logger.info(
+            "Disconnected existing character connection for user (debug: mid-run drops)",
+            disconnect_reason="select_character_other",
+            user_id=str(current_user.id),
+            disconnected_character_id=str(other_character.id),
+            disconnected_character_name=other_character.name,
+            selected_character_id=str(character_uuid),
+        )
+        return True
+    except (TimeoutError, DatabaseError, AttributeError, RuntimeError, ValueError, TypeError) as disconnect_error:
+        logger.warning(
+            "Failed to disconnect character connection",
+            user_id=str(current_user.id),
+            character_id=str(other_character.id),
+            error=str(disconnect_error),
+        )
+        return False
+
+
 async def _disconnect_other_characters(
     character_uuid: uuid.UUID, current_user: User, connection_manager: Any, player_service: PlayerService
 ) -> None:
-    """
-    Disconnect all other active characters for the user.
-
-    SINGLE-CHARACTER LOGIN: Users can only be logged in with one character at a time.
-
-    Args:
-        character_uuid: UUID of the character being selected
-        current_user: Current user object
-        connection_manager: Connection manager instance
-        player_service: Player service instance for getting user characters
-    """
+    """Disconnect all other active characters (single-character login)."""
     if not connection_manager:
         return
-
     try:
-        # Get all active characters for this user using PlayerService
-        active_characters = await player_service.get_user_characters(current_user.id)
-
-        # Disconnect connections for other characters
         disconnected_count = 0
-        for other_character in active_characters:
-            if str(other_character.id) != str(character_uuid):
-                other_character_id = uuid.UUID(str(other_character.id))
-                if other_character_id in connection_manager.player_websockets:
-                    try:
-                        await connection_manager.disconnect_websocket(other_character_id, is_force_disconnect=True)
-                        disconnected_count += 1
-                        logger.info(
-                            "Disconnected existing character connection for user (debug: mid-run drops)",
-                            disconnect_reason="select_character_other",
-                            user_id=str(current_user.id),
-                            disconnected_character_id=str(other_character.id),
-                            disconnected_character_name=other_character.name,
-                            selected_character_id=str(character_uuid),
-                        )
-                    except (
-                        TimeoutError,
-                        DatabaseError,
-                        AttributeError,
-                        RuntimeError,
-                        ValueError,
-                        TypeError,
-                    ) as disconnect_error:
-                        logger.warning(
-                            "Failed to disconnect character connection",
-                            user_id=str(current_user.id),
-                            character_id=str(other_character.id),
-                            error=str(disconnect_error),
-                        )
-
+        for other_character in await player_service.get_user_characters(current_user.id):
+            if str(other_character.id) == str(character_uuid):
+                continue
+            if await _force_disconnect_character(connection_manager, other_character, current_user, character_uuid):
+                disconnected_count += 1
         if disconnected_count > 0:
             logger.info(
                 "Disconnected other character connections for user",
@@ -664,6 +639,54 @@ async def _end_combat_for_grace_period(player_id: uuid.UUID) -> None:
         )
 
 
+async def _start_login_grace_period_body(
+    player_id: uuid.UUID,
+    request: FastAPIRequest,
+    current_user: User,
+    player_service: PlayerService,
+) -> LoginGracePeriodResponse:
+    connection_manager = _get_connection_manager(request)
+    if not connection_manager:
+        raise LoggedHTTPException(
+            status_code=500,
+            detail="Connection manager not available",
+            user_id=str(current_user.id) if current_user else None,
+            operation="start_login_grace_period",
+        )
+    character = await _validate_player_for_grace_period(player_id, current_user, request, player_service)
+    if is_player_in_login_grace_period(player_id, connection_manager):
+        remaining = get_login_grace_period_remaining(player_id, connection_manager)
+        return LoginGracePeriodResponse(
+            success=True,
+            message="Login grace period already active",
+            grace_period_active=True,
+            grace_period_remaining=remaining,
+        )
+    await _end_combat_for_grace_period(player_id)
+    container = getattr(request.app.state, "container", None)
+    async_persistence = getattr(container, "async_persistence", None) if container else None
+    await start_login_grace_period(
+        player_id,
+        connection_manager,
+        async_persistence=async_persistence,
+        get_current_tick=get_current_tick,
+        get_tick_interval=get_tick_interval,
+    )
+    remaining = get_login_grace_period_remaining(player_id, connection_manager)
+    logger.info(
+        "Login grace period started",
+        player_id=player_id,
+        player_name=character.name,
+        remaining=remaining,
+    )
+    return LoginGracePeriodResponse(
+        success=True,
+        message="Login grace period started",
+        grace_period_active=True,
+        grace_period_remaining=remaining,
+    )
+
+
 @player_router.post("/{player_id}/start-login-grace-period", response_model=LoginGracePeriodResponse)
 async def start_login_grace_period_endpoint(
     player_id: uuid.UUID,
@@ -671,73 +694,9 @@ async def start_login_grace_period_endpoint(
     current_user: User = Depends(get_current_active_user),
     player_service: PlayerService = PlayerServiceDep,
 ) -> LoginGracePeriodResponse:
-    """
-    Start login grace period for a player after MOTD dismissal.
-
-    This endpoint is called when a player clicks through the MOTD screen
-    to enter the game, starting their 10-second grace period of immunity.
-
-    Args:
-        player_id: The player's ID
-        request: FastAPI request object
-        current_user: Current authenticated user
-
-    Returns:
-        dict: Success status and grace period details
-
-    Raises:
-        HTTPException: If player not found, doesn't belong to user, or already in grace period
-    """
+    """Start login grace period after MOTD dismissal."""
     try:
-        connection_manager = _get_connection_manager(request)
-        if not connection_manager:
-            raise LoggedHTTPException(
-                status_code=500,
-                detail="Connection manager not available",
-                user_id=str(current_user.id) if current_user else None,
-                operation="start_login_grace_period",
-            )
-
-        character = await _validate_player_for_grace_period(player_id, current_user, request, player_service)
-
-        # Check if already in grace period
-        if is_player_in_login_grace_period(player_id, connection_manager):
-            remaining = get_login_grace_period_remaining(player_id, connection_manager)
-            return LoginGracePeriodResponse(
-                success=True,
-                message="Login grace period already active",
-                grace_period_active=True,
-                grace_period_remaining=remaining,
-            )
-
-        # Remove player from combat if they're in combat
-        await _end_combat_for_grace_period(player_id)
-
-        # Start login grace period (effects system: pass async_persistence and tick getters)
-        container = getattr(request.app.state, "container", None)
-        async_persistence = getattr(container, "async_persistence", None) if container else None
-        await start_login_grace_period(
-            player_id,
-            connection_manager,
-            async_persistence=async_persistence,
-            get_current_tick=get_current_tick,
-            get_tick_interval=get_tick_interval,
-        )
-        remaining = get_login_grace_period_remaining(player_id, connection_manager)
-        logger.info(
-            "Login grace period started",
-            player_id=player_id,
-            player_name=character.name,
-            remaining=remaining,
-        )
-
-        return LoginGracePeriodResponse(
-            success=True,
-            message="Login grace period started",
-            grace_period_active=True,
-            grace_period_remaining=remaining,
-        )
-
+        return await _start_login_grace_period_body(player_id, request, current_user, player_service)
     except LoggedHTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Login grace period errors unpredictable (service, database, validation), must create error context and return user-friendly message

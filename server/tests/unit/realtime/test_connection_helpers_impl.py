@@ -8,6 +8,7 @@ import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from starlette.websockets import WebSocketState
 
 from server.realtime.connection_helpers import (
     _optimize_payload,
@@ -37,6 +38,7 @@ def mock_manager():
     manager.force_disconnect_player = AsyncMock()
     manager.broadcast_to_room = AsyncMock(return_value={})
     manager.broadcast_global = AsyncMock(return_value={})
+    manager.cleanup_dead_websocket = AsyncMock()
     manager._cleanup_dead_websocket = AsyncMock()
     return manager
 
@@ -122,6 +124,23 @@ async def test_handle_new_login_impl(mock_manager):
         mock_file = MagicMock()
         mock_open.return_value.__enter__.return_value = mock_file
         await handle_new_login_impl(player_id, mock_manager)
+        mock_manager.force_disconnect_player.assert_awaited_once_with(player_id)
+
+
+@pytest.mark.asyncio
+async def test_handle_new_login_impl_cancels_orphan_rest_countdown(mock_manager):
+    """New login must cancel /rest countdown so it cannot kill the new session."""
+    player_id = uuid.uuid4()
+    mock_manager.resting_players = {player_id: MagicMock()}
+    with (
+        patch(
+            "server.commands.rest_command.cancel_rest_countdown",
+            new_callable=AsyncMock,
+        ) as mock_cancel_rest,
+        patch("aiofiles.open", create=True),
+    ):
+        await handle_new_login_impl(player_id, mock_manager)
+        mock_cancel_rest.assert_awaited_once_with(player_id, mock_manager)
         mock_manager.force_disconnect_player.assert_awaited_once_with(player_id)
 
 
@@ -216,7 +235,7 @@ async def test_send_to_websockets_none_websocket(mock_manager):
     delivery_status = {"websocket_delivered": 0, "websocket_failed": 0, "active_connections": 0}
     event = {"event_type": "test"}
     result = await _send_to_websockets(player_id, event, mock_manager, delivery_status)
-    assert result is True
+    assert result is False
     assert delivery_status["websocket_delivered"] == 0
 
 
@@ -232,6 +251,24 @@ async def test_send_to_websockets_inactive_connection(mock_manager):
     # Returns False because had_connection_attempts is only True when connection is in active_websockets
     # Since connection is not in active_websockets, we continue and never set had_connection_attempts
     assert result is False
+    assert delivery_status["websocket_delivered"] == 0
+
+
+@pytest.mark.asyncio
+async def test_send_to_websockets_skips_disconnected_client_state(mock_manager):
+    """Do not send on sockets whose client_state is not CONNECTED."""
+    player_id = uuid.uuid4()
+    mock_manager.player_websockets = {player_id: ["conn_001"]}
+    mock_websocket: MagicMock = MagicMock()
+    mock_websocket.client_state = WebSocketState.DISCONNECTED
+    mock_websocket.send_json = AsyncMock()
+    mock_manager.active_websockets = {"conn_001": mock_websocket}
+    delivery_status = {"websocket_delivered": 0, "websocket_failed": 0, "active_connections": 0}
+
+    result = await _send_to_websockets(player_id, {"event_type": "test"}, mock_manager, delivery_status)
+
+    assert result is False
+    mock_websocket.send_json.assert_not_called()
     assert delivery_status["websocket_delivered"] == 0
 
 

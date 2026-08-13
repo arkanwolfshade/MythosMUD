@@ -40,7 +40,9 @@ export class CharacterSelectionPage {
       throw new Error(`Select character failed: HTTP ${response.status()} ${response.url()}`);
     }
 
-    await expect(this.page.getByTestId('motd-enter-realm').or(this.page.getByTestId('command-input'))).toBeVisible({
+    await expect(
+      this.page.getByTestId('motd-enter-realm').or(this.page.getByTestId('command-input-panel'))
+    ).toBeVisible({
       timeout: TEST_TIMEOUTS.LOGIN,
     });
   }

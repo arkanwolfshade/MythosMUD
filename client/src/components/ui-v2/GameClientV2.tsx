@@ -81,32 +81,33 @@ interface GameClientV2Props {
 
 // Main game client component with three-column layout
 // Based on findings from "Unified Interface Architecture" - Dr. Armitage, 1928
-const GameClientV2Content: React.FC<GameClientV2Props> = ({
-  playerName,
-  onLogout,
-  isLoggingOut = false,
-  player,
-  room,
-  messages,
-  commandHistory,
-  isConnected,
-  isConnecting,
-  error,
-  reconnectAttempts,
-  mythosTime,
-  healthStatus,
-  lucidityStatus,
-  onSendCommand,
-  onSendChatMessage,
-  onClearMessages,
-  onClearHistory,
-  onDownloadLogs,
-  activeEffects = [],
-  followingTarget = null,
-  questLog = [],
-  onMapClick,
-  authToken,
-}) => {
+const GameClientV2Content: React.FC<GameClientV2Props> = props => {
+  const {
+    playerName,
+    onLogout,
+    isLoggingOut = false,
+    player,
+    room,
+    messages,
+    commandHistory,
+    isConnected,
+    isConnecting,
+    error,
+    reconnectAttempts,
+    mythosTime,
+    healthStatus,
+    lucidityStatus,
+    onSendCommand,
+    onSendChatMessage,
+    onClearMessages,
+    onClearHistory,
+    onDownloadLogs,
+    activeEffects = [],
+    followingTarget = null,
+    questLog = [],
+    onMapClick,
+    authToken,
+  } = props;
   const panelManager = usePanelManager();
 
   // Prefer container-derived status; fall back to projector-authoritative player stats only.

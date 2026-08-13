@@ -17,6 +17,47 @@ from server.utils.command_parser import get_username_from_user
 logger = get_logger(__name__)
 
 
+def _get_teach_services(app: Any) -> tuple[Any, Any, Any] | dict[str, str]:
+    if not app:
+        return {"result": "System error: application not available."}
+
+    persistence = getattr(app.state, "persistence", None)
+    spell_learning_service = getattr(app.state, "spell_learning_service", None)
+    player_service = getattr(app.state, "player_service", None)
+
+    if not persistence or not player_service:
+        return {"result": "System error: required services not available."}
+    if not spell_learning_service:
+        return {"result": "Spell learning system not initialized."}
+    return persistence, spell_learning_service, player_service
+
+
+async def _resolve_npc_teacher(
+    persistence: Any, player_service: Any, player: Any, npc_name: str
+) -> Any | dict[str, str]:
+    target_resolution_service = TargetResolutionService(persistence, player_service)
+    target_result = await target_resolution_service.resolve_target(player.player_id, npc_name)
+    if not target_result.success:
+        return {"result": target_result.error_message or "NPC not found."}
+
+    target_match = target_result.get_single_match()
+    if not target_match:
+        return {"result": target_result.error_message or "No valid target found."}
+    if target_match.target_type != TargetType.NPC:
+        return {"result": f"{npc_name} is not an NPC."}
+    return target_match
+
+
+def _format_teach_result(result: dict[str, Any], spell_name: str) -> dict[str, str]:
+    if not result.get("success"):
+        return {"result": result.get("message", "Failed to learn spell.")}
+
+    message = result.get("message", f"Learned {spell_name}!")
+    if result.get("corruption_applied", 0) > 0:
+        message += f" The forbidden knowledge has tainted your mind (+{result['corruption_applied']} corruption)."
+    return {"result": message}
+
+
 async def handle_teach_command(
     command_data: dict[str, Any],
     current_user: dict[str, Any],
@@ -42,27 +83,16 @@ async def handle_teach_command(
     """
     logger.debug("Handling teach command", player_name=player_name, command_data=command_data)
 
-    # Get services from app state
     app = request.app if request else None
-    if not app:
-        return {"result": "System error: application not available."}
+    services = _get_teach_services(app)
+    if isinstance(services, dict):
+        return services
+    persistence, spell_learning_service, player_service = services
 
-    persistence = getattr(app.state, "persistence", None)
-    spell_learning_service = getattr(app.state, "spell_learning_service", None)
-    player_service = getattr(app.state, "player_service", None)
-
-    if not persistence or not player_service:
-        return {"result": "System error: required services not available."}
-
-    if not spell_learning_service:
-        return {"result": "Spell learning system not initialized."}
-
-    # Get player
     player = await persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
         return {"result": "You are not recognized by the cosmic forces."}
 
-    # Extract NPC name and spell name
     args = command_data.get("args", [])
     if len(args) < 2:
         return {"result": "Usage: /teach <npc_name> <spell_name>"}
@@ -70,35 +100,9 @@ async def handle_teach_command(
     npc_name = args[0]
     spell_name = args[1]
 
-    # Resolve NPC target
-    target_resolution_service = TargetResolutionService(persistence, player_service)
-    target_result = await target_resolution_service.resolve_target(player.player_id, npc_name)
+    target_match = await _resolve_npc_teacher(persistence, player_service, player, npc_name)
+    if isinstance(target_match, dict):
+        return target_match
 
-    if not target_result.success:
-        return {"result": target_result.error_message or "NPC not found."}
-
-    target_match = target_result.get_single_match()
-    if not target_match:
-        return {"result": target_result.error_message or "No valid target found."}
-
-    if target_match.target_type != TargetType.NPC:
-        return {"result": f"{npc_name} is not an NPC."}
-
-    # TODO: Check if NPC is a teacher and can teach this spell  # pylint: disable=fixme  # Reason: Feature placeholder for NPC teaching validation
-    # This would require NPC definition metadata (e.g., "teaches_spells": ["spell1", "spell2"])
-    # For now, allow any NPC to teach any spell (can be restricted later)
-
-    # Learn the spell from NPC
     result = await spell_learning_service.learn_spell_from_npc(player.player_id, target_match.target_id, spell_name)
-
-    if not result.get("success"):
-        return {"result": result.get("message", "Failed to learn spell.")}
-
-    message = result.get("message", f"Learned {spell_name}!")
-    if result.get("corruption_applied", 0) > 0:
-        message += f" The forbidden knowledge has tainted your mind (+{result['corruption_applied']} corruption)."
-
-    # TODO: Send message to room about NPC teaching  # pylint: disable=fixme  # Reason: Feature placeholder for room message broadcasting
-    # "Professor Armitage teaches you the spell 'Minor Heal'."
-
-    return {"result": message}
+    return _format_teach_result(result, spell_name)

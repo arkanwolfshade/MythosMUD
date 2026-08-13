@@ -105,25 +105,12 @@ def _format_recovery_success_message(action_code: str, delta: int, new_total: in
     return {"result": f"{narrative}{mp_message}\n{lore_note}"}
 
 
-async def _perform_recovery_action(
+async def _run_recovery_session(
+    app: Any,
+    player: Any,
+    room_id: str,
     action_code: str,
-    _command_data: dict[str, Any],
-    current_user: dict[str, Any],
-    request: Any,
-    _alias_storage: AliasStorage | None,
-    player_name: str,
 ) -> dict[str, str]:
-    """Common execution path for LCD recovery commands."""
-    app = getattr(request, "app", None)
-
-    # Validate context
-    _persistence, player, room_id, validation_error = await _validate_recovery_context(  # pylint: disable=unused-variable  # Reason: persistence is part of validation tuple but not used in this function
-        request, current_user, action_code, player_name
-    )
-    if validation_error:
-        return validation_error
-
-    # Prefer container, fallback to app.state for backward compatibility
     catatonia_observer = None
     if app and hasattr(app.state, "container") and app.state.container:
         catatonia_observer = app.state.container.catatonia_registry
@@ -158,10 +145,32 @@ async def _perform_recovery_action(
                 error=str(exc),
             )
             return {"result": "Anomalous interference disrupts the ritual. Try again when the stars align."}
+
         mp_message = await _restore_mp_for_action(app, action_code, player)
         return _format_recovery_success_message(action_code, result.delta, result.new_lcd, mp_message)
 
     return {"result": "The rite fizzles before contact is made with the numinous."}
+
+
+async def _perform_recovery_action(
+    action_code: str,
+    _command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    _alias_storage: AliasStorage | None,
+    player_name: str,
+) -> dict[str, str]:
+    """Common execution path for LCD recovery commands."""
+    app = getattr(request, "app", None)
+
+    # Validate context
+    _persistence, player, room_id, validation_error = await _validate_recovery_context(  # pylint: disable=unused-variable  # Reason: persistence is part of validation tuple but not used in this function
+        request, current_user, action_code, player_name
+    )
+    if validation_error:
+        return validation_error
+
+    return await _run_recovery_session(app, player, room_id, action_code)
 
 
 async def handle_pray_command(
