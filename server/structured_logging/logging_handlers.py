@@ -135,6 +135,24 @@ class WarningOnlyFilter(logging.Filter):  # pylint: disable=too-few-public-metho
         return record.levelno == logging.WARNING
 
 
+# asyncio.proactor_events / selector_events emit this after LOG_THRESHOLD writes on a dead socket.
+# Expected during WebSocket teardown (Playwright closes the browser while the server still flushes).
+ASYNCIO_CONN_LOST_SEND_MSG = "socket.send() raised exception."
+
+
+class AsyncioConnLostWriteFilter(logging.Filter):  # pylint: disable=too-few-public-methods  # Reason: Filter class; filter() is the only public API
+    """Drop asyncio's uninformative post-disconnect write warnings."""
+
+    @override
+    def filter(self, record: logging.LogRecord) -> bool:
+        if record.name != "asyncio" and not record.name.startswith("asyncio."):
+            return True
+        try:
+            return record.getMessage() != ASYNCIO_CONN_LOST_SEND_MSG
+        except Exception:  # pylint: disable=broad-exception-caught  # noqa: BLE001  # Reason: never break logging on bad record formatting
+            return True
+
+
 def _make_exec_for_aggregator(win_base: type[RotatingFileHandler]) -> Callable[[dict[str, object]], None]:
     """Build types.new_class exec callback bound to the concrete Windows base class."""
 
@@ -162,50 +180,6 @@ def _aggregator_handler_class_for_windows(win_base: type[RotatingFileHandler]) -
     return cast(type[RotatingFileHandler], created)
 
 
-def _resolve_aggregator_handler_class() -> type[RotatingFileHandler]:
-    """Pick Windows-safe aggregator handler class when available."""
-    win_safe: type[RotatingFileHandler] = RotatingFileHandler
-    try:
-        from server.structured_logging.windows_safe_rotation import (
-            WindowsSafeRotatingFileHandler as imported_win_safe,
-        )
-
-        win_safe = imported_win_safe
-    except ImportError:  # Optional enhancement - fallback to standard handler if not available
-        win_safe = RotatingFileHandler
-
-    try:
-        if sys.platform == "win32":
-            return _aggregator_handler_class_for_windows(win_safe)
-    except ImportError:
-        pass
-    return SafeRotatingFileHandler
-
-
-def _open_aggregator_handler(
-    handler_class: type[RotatingFileHandler],
-    log_path: Path,
-    max_bytes: int,
-    backup_count: int,
-) -> RotatingFileHandler:
-    """Create aggregator file handler, retrying once if the directory vanished."""
-    ensure_log_directory(log_path)
-    try:
-        return handler_class(log_path, maxBytes=max_bytes, backupCount=backup_count, encoding="utf-8")
-    except (FileNotFoundError, OSError):
-        ensure_log_directory(log_path)
-        return handler_class(log_path, maxBytes=max_bytes, backupCount=backup_count, encoding="utf-8")
-
-
-def _aggregator_formatter(player_service: object | None) -> logging.Formatter:
-    """Build aggregator formatter (PlayerGuidFormatter when service is available)."""
-    # %(message)s only: structlog already embeds timestamp/name/level in the rendered message.
-    if player_service is not None:
-        player_guid_formatter = load_player_guid_formatter_class()
-        return player_guid_formatter(player_service=player_service, fmt="%(message)s", datefmt=None)
-    return logging.Formatter("%(message)s", datefmt=None)
-
-
 def create_aggregator_handler(
     log_path: Path,
     log_level: int,
@@ -230,9 +204,73 @@ def create_aggregator_handler(
     Returns:
         Configured RotatingFileHandler instance
     """
-    handler = _open_aggregator_handler(_resolve_aggregator_handler_class(), log_path, max_bytes, backup_count)
+    # Use Windows-safe rotation handlers when available
+    _WinSafeHandler: type[RotatingFileHandler] = RotatingFileHandler
+    try:
+        from server.structured_logging.windows_safe_rotation import (
+            WindowsSafeRotatingFileHandler as _ImportedWinSafeHandler,
+        )
+
+        _WinSafeHandler = _ImportedWinSafeHandler
+    except ImportError:  # Optional enhancement - fallback to standard handler if not available
+        _WinSafeHandler = RotatingFileHandler
+
+    # Use SafeRotatingFileHandler as base for all handlers
+    _BaseHandler = SafeRotatingFileHandler
+
+    # Determine handler class with Windows safety
+    handler_class: type[RotatingFileHandler] = _BaseHandler
+    try:
+        if sys.platform == "win32":
+            # Windows-safe handler also needs directory safety
+            handler_class = _aggregator_handler_class_for_windows(_WinSafeHandler)
+    except ImportError:
+        # Fallback to safe handler on any detection error
+        handler_class = _BaseHandler
+
+    # Ensure directory exists right before creating handler to prevent race conditions
+    ensure_log_directory(log_path)
+    try:
+        handler = handler_class(
+            log_path,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
+    except (FileNotFoundError, OSError):
+        # If directory doesn't exist or was deleted, recreate it and try again
+        ensure_log_directory(log_path)
+        handler = handler_class(
+            log_path,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
+
     handler.setLevel(log_level)
+
+    # Add filter for warnings handler to exclude ERROR and CRITICAL
+    # Warnings.log should ONLY contain WARNING level logs
     if log_level == logging.WARNING:
         handler.addFilter(WarningOnlyFilter())
-    handler.setFormatter(_aggregator_formatter(player_service))
+        handler.addFilter(AsyncioConnLostWriteFilter())
+
+    # Create formatter - use PlayerGuidFormatter if player_service is available
+    # Note: Using %(message)s only since structlog already includes all metadata (timestamp, logger name, level)
+    # in the rendered message. Adding %(asctime)s - %(name)s - %(levelname)s would cause duplication.
+    formatter: logging.Formatter
+    if player_service is not None:
+        PlayerGuidFormatter = load_player_guid_formatter_class()
+        formatter = PlayerGuidFormatter(
+            player_service=player_service,
+            fmt="%(message)s",
+            datefmt=None,
+        )
+    else:
+        formatter = logging.Formatter(
+            "%(message)s",
+            datefmt=None,
+        )
+    handler.setFormatter(formatter)
+
     return handler

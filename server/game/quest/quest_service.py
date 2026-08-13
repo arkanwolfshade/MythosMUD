@@ -18,6 +18,13 @@ from server.game.quest.collect_inventory import (
     consume_prototype_from_player,
     count_prototype_in_stacks,
 )
+from server.game.quest.quest_chat_notify import (
+    notify_quest_abandoned,
+    notify_quest_completed,
+    notify_quest_progress,
+    notify_quest_started,
+    should_notify_quest_progress,
+)
 from server.models.quest import QuestInstance
 from server.schemas.quest import QuestDefinitionSchema
 from server.structured_logging.enhanced_logging_config import get_logger
@@ -193,12 +200,14 @@ class QuestService:
             )
             if _has_collect_n_goals(definition):
                 await self.sync_collect_progress(player_id)
-            return {"success": True, "message": f"Quest started: {definition.title}"}
+            notify_quest_started(player_id, definition.title)
+            return {"success": True, "message": f"Quest started: {definition.title}", "title": definition.title}
         await self._instance_repo.create(player_id, quest_id, state="active", progress={})
         logger.info("Quest started", player_id=pid, quest_id=quest_id, quest_name=definition.name)
         if _has_collect_n_goals(definition):
             await self.sync_collect_progress(player_id)
-        return {"success": True, "message": f"Quest started: {definition.title}"}
+        notify_quest_started(player_id, definition.title)
+        return {"success": True, "message": f"Quest started: {definition.title}", "title": definition.title}
 
     async def _all_required_completed(self, player_id: uuid.UUID, quest_ids: list[str]) -> bool:
         """Return True if the player has completed every quest in quest_ids."""
@@ -278,9 +287,13 @@ class QuestService:
                 continue
             if _goal_activity_target(goal, goal_type) != activity_target:
                 continue
-            new_progress = self._progress_goal(dict(instance.progress), i, goal_type, goal.config or {})
+            old_progress = dict(instance.progress or {})
+            new_progress = self._progress_goal(old_progress, i, goal_type, goal.config or {})
             await self._instance_repo.update_state_and_progress(instance.id, progress=new_progress)
-            if _goals_met(new_progress, definition) and definition.auto_complete:
+            will_complete = _goals_met(new_progress, definition) and definition.auto_complete
+            if should_notify_quest_progress(old_progress, new_progress, definition, will_complete=will_complete):
+                notify_quest_progress(player_id, definition.title)
+            if will_complete:
                 await self._complete_instance(player_id, instance, definition)
             return True
         return False
@@ -333,10 +346,14 @@ class QuestService:
         definition = _parse_definition(dict(definition_row.definition))
         if not _has_collect_n_goals(definition):
             return
-        new_progress = _build_collect_n_progress(definition, stacks, dict(instance.progress or {}))
+        old_progress = dict(instance.progress or {})
+        new_progress = _build_collect_n_progress(definition, stacks, old_progress)
         await self._instance_repo.update_state_and_progress(instance.id, progress=new_progress)
         instance.progress = new_progress
-        if _goals_met(new_progress, definition) and definition.auto_complete:
+        will_complete = _goals_met(new_progress, definition) and definition.auto_complete
+        if should_notify_quest_progress(old_progress, new_progress, definition, will_complete=will_complete):
+            notify_quest_progress(player_id, definition.title)
+        if will_complete:
             await self._complete_instance(player_id, instance, definition)
 
     async def sync_collect_progress(self, player_id: uuid.UUID) -> None:
@@ -404,6 +421,7 @@ class QuestService:
             quest_id=instance.quest_id,
             quest_name=definition.name,
         )
+        notify_quest_completed(player_id, definition.title)
         if self._event_bus:
             from server.events.event_types import QuestCompleted
 
@@ -554,7 +572,7 @@ class QuestService:
         if consume_err:
             return consume_err
         await self._complete_instance(player_id, instance, definition)
-        return {"success": True, "message": f"Quest completed: {definition.title}"}
+        return {"success": True, "message": f"Quest completed: {definition.title}", "title": definition.title}
 
     async def turn_in_at_entity(
         self,
@@ -592,6 +610,12 @@ class QuestService:
             quest_id=quest_id,
             quest_name=quest_name,
         )
+        definition_row = await self._def_repo.get_by_id(quest_id)
+        title = quest_name
+        if definition_row:
+            definition = _parse_definition(dict(definition_row.definition))
+            title = definition.title
+        notify_quest_abandoned(player_id, title)
         return {"success": True, "message": "Quest abandoned."}
 
     async def get_quest_log(self, player_id: uuid.UUID, include_completed: bool = True) -> list[dict[str, Any]]:

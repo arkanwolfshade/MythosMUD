@@ -444,7 +444,10 @@ class NPCEventHandler:
             return False
         room = async_persistence.get_room_by_id(event.room_id)
         if not room:
-            self._logger.warning("Room not found for NPC exit", room_id=event.room_id)
+            if event.room_id in (None, "", "unknown"):
+                self._logger.debug("Room not found for NPC exit", room_id=event.room_id)
+            else:
+                self._logger.warning("Room not found for NPC exit", room_id=event.room_id)
             return False
         return True
 

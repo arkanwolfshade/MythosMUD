@@ -192,7 +192,9 @@ other location
 
 **CRITICAL: NEVER use `python -m pytest` directly**
 
-**CRITICAL: ONLY use `make test` and `make test-comprehensive` from project root**
+**CRITICAL: ONLY use Makefile test targets from project root** (e.g. `make test`,
+`make test-ci`, `make test-coverage`). Do not invent targets that are not in the
+Makefile.
 
 - This prevents path resolution issues and ensures log files are created in correct locations
 - Use pytest with verbose output and short tracebacks
@@ -216,9 +218,11 @@ Maintain 70% minimum overall test coverage for all new code
 
 ### Two-tier testing strategy
 
-**Fast Suite** (`make test`): ~5-7 minutes - Unit + critical integration tests
+**Fast Suite** (`make test`): Client unit + server (excludes `integration` marker)
 
-**Comprehensive Suite** (`make test-comprehensive`): ~30 minutes - ALL tests including slow
+**CI Suite** (`make test-ci`): Coverage thresholds; Docker locally when not in CI.
+Alias: `make test-comprehensive` -> `test-ci`. E2E: `make test-client-e2e` (alias
+`make test-e2e`). Integration with Playwright: `make test-playwright`.
 
 ---
 
@@ -315,6 +319,10 @@ The definition of done for any work must include:
 - Passing linting checks
 - Passing testing (with appropriate coverage)
 - All code quality standards met
+- **In-game help** for player-facing commands and features (`help <command>` /
+  `server/help/help_content.py`, plus short entries in command help lists when applicable)
+- Content-creator documentation when the feature adds authoring tools (runbooks under
+  `docs/runbooks/` or subsystem docs)
 
 ---
 
@@ -330,13 +338,28 @@ Use uv for Python dependency management (required)
 
 ## Git workflow
 
-### Branch management protocol
+### Branch and worktree management protocol
 
-1. **Session Start**: Run `git branch --show-current` and commit to memory
-2. **Pre-Operation Check**: Before ANY git command, verify current branch
-3. **Permission Required**: Never switch branches without explicit user permission
-4. **Error Recovery**: If drift detected, immediately switch back and apologize
-5. **Verification**: After any branch operation, confirm we're on correct branch
+1. **Session Start**: Run `git branch --show-current` (and note repo root / worktree
+   path) and commit to memory
+2. **Pre-Operation Check**: Before ANY git command, verify current branch and that
+   edits target the approved working tree
+3. **Permission Required**: Never switch branches **or** create / remove / change
+   Git worktrees without explicit user permission. Never redirect work into another
+   worktree than the active Cursor root unless the user explicitly directed that.
+4. **Error Recovery**: If branch or worktree drift is detected, immediately return to
+   the approved branch/tree and apologize
+5. **Verification**: After any branch or worktree operation, confirm branch and path
+
+### Stacked PRs (`gh stack`)
+
+Prefer the **gh-stack** skill (`.cursor/skills/gh-stack/`, full reference
+`.agents/skills/gh-stack/SKILL.md`) when a change needs multiple reviewable PRs
+or the branch is already in a stack. Rule: `.cursor/rules/mythosmud-gh-stack.mdc`.
+
+- Agents: non-interactive only — `view --json`, `submit --auto`, named branches for
+  `init` / `add` / `checkout`; merge with `gh stack merge --yes`.
+- Single small independent PR may still use `gh pr create`.
 
 ### Commit message style
 
@@ -646,9 +669,9 @@ jobs:
 - In design docs: use snake_case (underscores) for technical names, not asterisks
 - When branch coverage is hard to reach (optional chaining, debug paths): lowering the per-file threshold (e.g.
   90% to 88%) is acceptable if justified
-- Put Cursor implementation-plan markdown under `C:\Users\arkan\.cursor\plans` when the user asks for that location; for
-  substantial implementation plans, include step 0 to create a new git worktree from the current branch for the work
-  when the user wants that workflow
+- Put Cursor implementation-plan markdown under `C:\Users\arkan\.cursor\plans` when the user asks for that location
+- Never create, remove, or switch Git worktrees without explicit user permission (same bar as branch switches); plans may
+  _propose_ a worktree step, but do not execute it unless the user approves; default is stay on the current working tree
 - For basedpyright `reportAny` in Python tests without file-level `reportAny` suppression, prefer typed locals (for
   example `svc: AsyncMock = AsyncMock()` or `persistence: MagicMock = MagicMock()`) assigned onto handler-shaped mocks
   instead of only `handler.svc = AsyncMock()`
@@ -657,6 +680,8 @@ jobs:
 - In Playwright E2E specs, avoid `expect` only inside promise `.catch` handlers (see `playwright/no-conditional-expect`); use
   `try`/`catch` with an unconditional assertion path, and ensure tests that mainly await helpers such as `waitForMessage` still
   contain at least one explicit `expect`
+- In-game help is part of definition of done for player-facing features (`help <command>` in
+  `server/help/help_content.py`); content tools need a runbook under `docs/runbooks/`
 
 ## Learned workspace facts
 

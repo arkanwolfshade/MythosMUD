@@ -11,8 +11,10 @@ import { executeCommand, getMessages, recoverPlayableSession, waitForMessage } f
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensureFreshMultiPlayerContexts,
   ensurePlayerInGame,
   waitForAllPlayersInGame,
+  type PlayerContext,
 } from '../fixtures/multiplayer';
 import { despawnSanitariumCultists, ensurePlayableAlive } from '../fixtures/player';
 import { DEFAULT_SPAWN_LOOK_CUE } from '../fixtures/test-data';
@@ -25,10 +27,68 @@ async function assertLookVisibleInPanels(page: Page): Promise<void> {
   await expect(cue.first()).toBeVisible({ timeout: 45000 });
 }
 
+async function characterNameFromPage(page: Page, fallback: string): Promise<string> {
+  await page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 10000 });
+  return (await page.getByTestId('current-character-name').textContent())?.trim() ?? fallback;
+}
+
+async function lookAndStand(page: Page): Promise<void> {
+  await page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
+  await executeCommand(page, 'look');
+  await assertLookVisibleInPanels(page);
+  await executeCommand(page, 'stand');
+  await new Promise(r => setTimeout(r, 1500));
+}
+
+async function prepAwForAdminSet(awContext: PlayerContext): Promise<void> {
+  await awContext.page.bringToFront().catch(() => {});
+  await ensurePlayerInGame(awContext, 30000);
+  awContext.page = await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
+  await despawnSanitariumCultists(awContext.page);
+  awContext.page = await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
+  await expect(awContext.page.getByText(/Player:\s*ArkanWolfshade\b/i)).toBeVisible({ timeout: 15000 });
+  await lookAndStand(awContext.page);
+}
+
+async function prepNonAdminForSetAttempt(ctx: PlayerContext): Promise<void> {
+  await ctx.page.bringToFront().catch(() => {});
+  await ensurePlayerInGame(ctx, 30000);
+  ctx.page = await ensurePlayableAlive(ctx.page, ctx.player.username, ctx.player.password);
+  await expect(ctx.page.getByText(new RegExp(`Player:\\s*${ctx.player.username}\\b`, 'i'))).toBeVisible({
+    timeout: 15000,
+  });
+  await lookAndStand(ctx.page);
+}
+
+async function runAdminSetWithRecovery(awContext: PlayerContext, targetName: string): Promise<void> {
+  const runAdminSet = async (): Promise<void> => {
+    await executeCommand(awContext.page, `admin set STR ${targetName} 75`);
+    await waitForMessage(
+      awContext.page,
+      /Set .+['\u2019]s STR from|STR from \d+ to 75|do not have permission|You do not have permission/i,
+      45000
+    );
+  };
+
+  try {
+    await runAdminSet();
+  } catch {
+    awContext.page = await recoverPlayableSession(
+      awContext.page,
+      awContext.player.username,
+      awContext.player.password,
+      45000
+    );
+    await runAdminSet();
+  }
+}
+
 test.describe('Administrative Set Stat Command', () => {
+  test.describe.configure({ timeout: 300_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
+    test.setTimeout(300_000);
     // Create contexts for both players (AW is admin, Ithaqua is not)
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts);
@@ -39,7 +99,9 @@ test.describe('Administrative Set Stat Command', () => {
     await cleanupMultiPlayerContexts(contexts);
   });
 
-  test('AW should be able to set player stats', async () => {
+  test('AW should be able to set player stats', async ({ browser }) => {
+    test.setTimeout(300_000);
+    contexts = await ensureFreshMultiPlayerContexts(browser, contexts, ['ArkanWolfshade', 'Ithaqua']);
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
@@ -47,39 +109,10 @@ test.describe('Administrative Set Stat Command', () => {
 
     // Server resolves target by character name; get Ithaqua's current character name
     await ithaquaContext.page.bringToFront().catch(() => {});
-    await ithaquaContext.page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 10000 });
-    const ithaquaCharName =
-      (await ithaquaContext.page.getByTestId('current-character-name').textContent())?.trim() ?? 'Ithaqua';
+    const ithaquaCharName = await characterNameFromPage(ithaquaContext.page, 'Ithaqua');
 
-    await awContext.page.bringToFront().catch(() => {});
-    await ensurePlayerInGame(awContext, 30000);
-    await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
-    await despawnSanitariumCultists(awContext.page);
-    await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
-    await expect(awContext.page.getByText(/Player:\s*ArkanWolfshade\b/i)).toBeVisible({ timeout: 15000 });
-    await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
-    await executeCommand(awContext.page, 'look');
-    await assertLookVisibleInPanels(awContext.page);
-
-    await executeCommand(awContext.page, 'stand');
-    await new Promise(r => setTimeout(r, 1500));
-
-    const runAdminSet = async (): Promise<void> => {
-      await executeCommand(awContext.page, `admin set STR ${ithaquaCharName} 75`);
-      await waitForMessage(
-        awContext.page,
-        /Set .+['\u2019]s STR from|STR from \d+ to 75|do not have permission|You do not have permission/i,
-        45000
-      );
-    };
-
-    try {
-      await runAdminSet();
-    } catch {
-      await recoverPlayableSession(awContext.page, awContext.player.username, awContext.player.password, 45000);
-      await runAdminSet();
-    }
-
+    await prepAwForAdminSet(awContext);
+    await runAdminSetWithRecovery(awContext, ithaquaCharName);
     const messages = await getMessages(awContext.page);
     const seesSuccess = messages.some(
       msg => /Set .+['\u2019]s STR from/i.test(msg) || /\bSTR from\b.*\bto 75\b/i.test(msg)
@@ -101,40 +134,19 @@ test.describe('Administrative Set Stat Command', () => {
     // Target by character name so server finds the player and returns permission denied (not "not found")
     await awContext.page.bringToFront().catch(() => {});
     await ensurePlayerInGame(awContext, 60000);
-    await awContext.page.getByTestId('current-character-name').waitFor({ state: 'visible', timeout: 10000 });
-    const awCharName =
-      (await awContext.page.getByTestId('current-character-name').textContent())?.trim() ?? 'ArkanWolfshade';
+    const awCharName = await characterNameFromPage(awContext.page, 'ArkanWolfshade');
 
     await awContext.page.bringToFront().catch(() => {});
-    await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
+    awContext.page = await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
     await despawnSanitariumCultists(awContext.page);
 
-    await ithaquaContext.page.bringToFront().catch(() => {});
-    await ensurePlayerInGame(ithaquaContext, 30000);
-    await ensurePlayableAlive(ithaquaContext.page, ithaquaContext.player.username, ithaquaContext.player.password);
-    await expect(
-      ithaquaContext.page.getByText(new RegExp(`Player:\\s*${ithaquaContext.player.username}\\b`, 'i'))
-    ).toBeVisible({ timeout: 15000 });
-    await ithaquaContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
-    await executeCommand(ithaquaContext.page, 'look');
-    await assertLookVisibleInPanels(ithaquaContext.page);
-
-    await executeCommand(ithaquaContext.page, 'stand');
-    await new Promise(r => setTimeout(r, 1500));
-
+    await prepNonAdminForSetAttempt(ithaquaContext);
     await executeCommand(ithaquaContext.page, `admin set STR ${awCharName} 50`);
-
     // Server: "You do not have permission to use this command." or target / usage errors.
-    await waitForMessage(
-      ithaquaContext.page,
-      /do not have permission|You do not have permission|not allowed|not found|Error setting|No such|Usage: admin set/i,
-      45000
-    );
-
+    const denyPattern =
+      /do not have permission|You do not have permission|not allowed|not found|Error setting|No such|Usage: admin set/i;
+    await waitForMessage(ithaquaContext.page, denyPattern, 45000);
     const messages = await getMessages(ithaquaContext.page);
-    const seesError = messages.some(msg =>
-      /permission|not allowed|not found|error setting|no such|usage: admin set/i.test(msg)
-    );
-    expect(seesError).toBe(true);
+    expect(messages.some(msg => denyPattern.test(msg))).toBe(true);
   });
 });

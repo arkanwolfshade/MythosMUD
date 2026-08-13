@@ -37,11 +37,16 @@ test.describe('Logout Errors', () => {
   test('logout button should handle logout successfully', async () => {
     test.setTimeout(120_000);
     const awContext = contexts[0];
-    const { page } = awContext;
 
     await ensurePlayerInGame(awContext, 30000);
-    await page.bringToFront().catch(() => {});
-    await recoverPlayableSession(page, awContext.player.username, awContext.player.password, 45000);
+    await awContext.page.bringToFront().catch(() => {});
+    awContext.page = await recoverPlayableSession(
+      awContext.page,
+      awContext.player.username,
+      awContext.player.password,
+      45000
+    );
+    const { page } = awContext;
 
     // performGameClientLogout sends `rest` (~10s server countdown) then disconnect; login can exceed 45s after long suites.
     const logoutButton = page.getByTestId('logout-button');

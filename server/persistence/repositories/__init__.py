@@ -1,6 +1,7 @@
 """Repository modules for async persistence layer."""
 
 from .container_repository import ContainerRepository
+from .dialogue_definition_repository import DialogueDefinitionRepository
 from .experience_repository import ExperienceRepository
 from .health_repository import HealthRepository
 from .item_repository import ItemRepository
@@ -24,6 +25,7 @@ __all__ = [
     "ItemRepository",
     "PlayerSkillRepository",
     "ProfessionRepository",
+    "DialogueDefinitionRepository",
     "QuestDefinitionRepository",
     "QuestInstanceRepository",
     "SkillRepository",

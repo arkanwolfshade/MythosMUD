@@ -1,13 +1,27 @@
 # MythosMUD Deployment
 
-## Production: HTTPS and WSS
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Production: HTTPS and WSS
+
+**[NOTE]**
 Production must be served over **HTTPS** so that WebSocket connections use **WSS**
 (secure WebSocket) and credentials remain protected. Configure TLS at the server or
 reverse proxy; see [realtime.md](realtime.md) for details.
 
-## Production: Gunicorn + Uvicorn
+## 2. Production: Gunicorn + Uvicorn
 
+**[NOTE]**
 For production, run the ASGI app with **Gunicorn** as the process manager and **Uvicorn** as the worker
 class. This provides multiple worker processes and proper request handling.
 
@@ -46,3 +60,11 @@ in `.env.local`.
 
 Local development continues to use Uvicorn only (e.g. `scripts/start_server.ps1` or
 `make run`). Gunicorn is not required for development.
+
+## 3. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

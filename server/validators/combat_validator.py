@@ -12,6 +12,7 @@ import re
 from typing import Any
 
 from server.structured_logging.enhanced_logging_config import get_logger
+from server.validators.security_validator import MAX_COMBAT_TARGET_LENGTH
 
 logger = get_logger(__name__)
 
@@ -197,7 +198,7 @@ class CombatValidator:
                 return False, error_msg, "The cosmic forces detect something amiss with your target."
 
             # Validate command length
-            if len(target_name) > 50:
+            if len(target_name) > MAX_COMBAT_TARGET_LENGTH:
                 error_msg = self._get_random_error_message("invalid_target").format(target=target_name)
                 return False, error_msg, "Your target's name is too long for mortal comprehension."
 
@@ -329,8 +330,8 @@ class CombatValidator:
         if not re.match(r"^[a-zA-Z0-9\s\-_\']+$", target_name):
             return False
 
-        # Check length
-        if len(target_name.strip()) < 1 or len(target_name) > 50:
+        # Check length (NPC instance IDs exceed display-name length)
+        if len(target_name.strip()) < 1 or len(target_name) > MAX_COMBAT_TARGET_LENGTH:
             return False
 
         return True

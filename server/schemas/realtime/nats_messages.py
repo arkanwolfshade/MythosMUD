@@ -58,12 +58,25 @@ class ChatMessageSchema(BaseMessageSchema):
     subzone: str | None = Field(None, description="Subzone for subzone-scoped messages")
     target_id: str | None = Field(None, description="Target player ID for whisper messages")
     target_name: str | None = Field(None, description="Target player name for whisper messages")
+    # Align with chat_nats_publisher / ChatMessage domain (system/npc/party payloads).
+    speaker_kind: str | None = Field(None, description="Speaker kind: player, npc, or system")
+    party_id: str | None = Field(None, description="Party ID for party-channel messages")
 
     @field_validator("channel")
     @classmethod
     def validate_channel(cls, v: str) -> str:
         """Validate channel is a known chat channel."""
-        valid_channels = {"say", "local", "global", "whisper", "emote", "pose", "system", "admin", "party"}
+        valid_channels = {
+            "say",
+            "local",
+            "global",
+            "whisper",
+            "emote",
+            "pose",
+            "system",
+            "admin",
+            "party",
+        }
         if v not in valid_channels:
             raise ValueError(f"Invalid channel: {v}. Must be one of {valid_channels}")
         return v

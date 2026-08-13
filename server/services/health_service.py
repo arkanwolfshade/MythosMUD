@@ -14,7 +14,7 @@ and chaos in our digital realm.
 import asyncio
 import time
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 import psutil
 
@@ -228,7 +228,7 @@ class HealthService:
                     }
 
             memory_stats = self.connection_manager.get_memory_stats()
-            connections_data = memory_stats.get("connections", {})
+            connections_data = cast(dict[str, Any], memory_stats.get("connections", {}))
 
             active_connections = connections_data.get("active_connections", 0)
             max_connections = connections_data.get("max_connections", 100)

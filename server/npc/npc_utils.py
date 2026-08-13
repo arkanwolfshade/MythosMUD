@@ -17,15 +17,35 @@ def extract_room_id_from_npc(npc_instance: Any) -> str:
     Returns:
         Room ID as string, or "unknown" if not found
     """
-    room_id_value = getattr(npc_instance, "current_room", None)
-    if room_id_value is None:
-        room_id_value = getattr(npc_instance, "current_room_id", None)
-    if room_id_value is None:
-        room_id_value = getattr(npc_instance, "room_id", None)
-
-    if isinstance(room_id_value, str):
-        return room_id_value
+    for attr in ("current_room", "current_room_id", "spawn_room_id", "room_id"):
+        room_id_value = getattr(npc_instance, attr, None)
+        if isinstance(room_id_value, str) and room_id_value and room_id_value != "unknown":
+            return room_id_value
     return "unknown"
+
+
+def _room_id_from_lifecycle_event(event: Any) -> str | None:
+    """Return usable room_id from a single lifecycle event, if present."""
+    if not isinstance(event, dict):
+        return None
+    details = event.get("details")
+    if not isinstance(details, dict):
+        return None
+    room_id = details.get("room_id")
+    if not isinstance(room_id, str) or not room_id or room_id == "unknown":
+        return None
+    return room_id
+
+
+def extract_room_id_from_lifecycle_record(record: Any | None) -> str | None:
+    """Return the latest non-unknown room_id from a lifecycle record's events, if any."""
+    if record is None:
+        return None
+    for event in reversed(getattr(record, "events", None) or []):
+        room_id = _room_id_from_lifecycle_event(event)
+        if room_id is not None:
+            return room_id
+    return None
 
 
 def extract_npc_metadata(npc_instance: Any) -> tuple[str, bool]:

@@ -418,7 +418,7 @@ async def test_broadcast_room_update_success(mock_connection_manager):
 
 @pytest.mark.asyncio
 async def test_broadcast_room_update_no_connection_manager():
-    """Test broadcast_room_update() resolves connection manager from app."""
+    """Test broadcast_room_update() resolves connection manager from ApplicationContainer."""
     player_id = TEST_PLAYER_ID_STR
     room_id = "room_123"
 
@@ -441,17 +441,13 @@ async def test_broadcast_room_update_no_connection_manager():
     mock_persistence.get_room_by_id.return_value = mock_room
     mock_connection_manager.async_persistence = mock_persistence
 
-    # Create a proper mock FastAPI app structure before patching
-    mock_app = MagicMock()
-    mock_app.state = MagicMock()
     mock_container = MagicMock()
     mock_container.connection_manager = mock_connection_manager
-    mock_app.state.container = mock_container
 
     with (
-        patch("server.main.app", mock_app),
+        patch("server.container.ApplicationContainer.get_instance", return_value=mock_container),
         patch("server.realtime.websocket_room_updates.get_player_occupants") as mock_get_players,
-        patch("server.realtime.websocket_room_updates.get_npc_occupants_fallback") as mock_get_npcs,
+        patch("server.realtime.websocket_room_updates.get_npc_occupants_from_lifecycle_manager") as mock_get_npcs,
         patch("server.realtime.websocket_room_updates.build_room_update_event") as mock_build_event,
         patch("server.realtime.websocket_room_updates.get_npc_instance_service") as mock_get_npc_service,
     ):

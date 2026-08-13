@@ -1,7 +1,20 @@
 # Configuration Files Reference
 
-## Complete Configuration Architecture
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Complete Configuration Architecture
+
+**[SPEC]**
 MythosMUD uses **paired configuration files** for each environment:
 
 ### Configuration Tuples
@@ -33,7 +46,9 @@ MythosMUD uses **paired configuration files** for each environment:
 - External service tokens
 - SSL certificate paths (if sensitive)
 
-## Setup Instructions
+## 2. Setup Instructions
+
+**[NOTE]**
 
 ### 1. Local Development
 
@@ -122,7 +137,9 @@ cp env.production.example .env.production
 
 ✅ `.env.production` (create with REAL secrets)
 
-## Complete File Matrix
+## 3. Complete File Matrix
+
+**[SPEC]**
 
 | File Name                       | Location     | Committed? | Created By | Purpose                            |
 | ------------------------------- | ------------ | ---------- | ---------- | ---------------------------------- |
@@ -139,15 +156,18 @@ cp env.production.example .env.production
 | `.env.production`               | project root | ❌ No      | DevOps     | Production secrets                 |
 | `env.production.example`        | project root | ✅ Yes     | Git        | Template for .env.production       |
 
-## Environment Variable Priority
+## 4. Environment Variable Priority
 
+**[SPEC]**
 For each environment, configuration is loaded in this order (highest to lowest priority):
 
 1. **.env secret file** (highest priority - overrides everything)
 2. **YAML config file** (structural configuration)
 3. **Hardcoded defaults** in `config_loader.py` (fallback only)
 
-## Quick Reference
+## 5. Quick Reference
+
+**[NOTE]**
 
 ### To Start Server in Different Modes
 
@@ -186,8 +206,9 @@ make test
 cd client; npm run test:e2e:runtime  # Terminal 2
 ```
 
-## Complete Architecture Summary
+## 6. Complete Architecture Summary
 
+**[SPEC]**
 ✅ **3 Complete Tuples**:
 
 1. `server_config.local.yaml` ↔ `.env.local`
@@ -207,3 +228,11 @@ cd client; npm run test:e2e:runtime  # Terminal 2
 - Clear error messages if misconfigured
 
 The architecture is now complete and consistent!
+
+## 7. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

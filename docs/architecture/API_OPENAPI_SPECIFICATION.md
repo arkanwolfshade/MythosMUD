@@ -1,5 +1,20 @@
 # API OpenAPI/Swagger Specification
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 **Document Version:** 1.0
 **Date:** February 2026
 **Status:** Architecture documentation
@@ -7,8 +22,9 @@
 
 ---
 
-## 1. Overview
+## 2. Overview
 
+**[SPEC]**
 MythosMUD exposes a REST API and WebSocket interface for the Cthulhu Mythos-themed MUD client. This document describes how API contracts are documented and how to use the OpenAPI specification.
 
 ### 1.1 OpenAPI Specification
@@ -29,8 +45,9 @@ When the server is running:
 
 ---
 
-## 2. Generating the OpenAPI Spec
+## 3. Generating the OpenAPI Spec
 
+**[SPEC]**
 The specification is generated from the live FastAPI application. Run:
 
 ```powershell
@@ -49,8 +66,9 @@ make openapi-spec
 
 ---
 
-## 3. API Tag Organization
+## 4. API Tag Organization
 
+**[SPEC]**
 Endpoints are grouped by tag in the specification:
 
 | Tag | Description |
@@ -74,8 +92,9 @@ Endpoints are grouped by tag in the specification:
 
 ---
 
-## 4. Service Interfaces (Internal)
+## 5. Service Interfaces (Internal)
 
+**[SPEC]**
 API routes call into **service layer** components. Service boundaries and contracts are documented in:
 
 - **Bounded contexts:** [BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md](../BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md)
@@ -86,7 +105,9 @@ The OpenAPI spec documents the **HTTP/WebSocket contracts** (request/response sh
 
 ---
 
-## 5. Using the Specification
+## 6. Using the Specification
+
+**[SPEC]**
 
 ### 5.1 Client Generation
 
@@ -112,7 +133,9 @@ npx @openapitools/openapi-generator-cli generate \
 
 ---
 
-## 6. Related Documentation
+## 7. Related Documentation
+
+**[SPEC]**
 
 | Document | Purpose |
 |----------|---------|
@@ -120,3 +143,11 @@ npx @openapitools/openapi-generator-cli generate \
 | [CONTAINER_SYSTEM_API_REFERENCE.md](../CONTAINER_SYSTEM_API_REFERENCE.md) | Container endpoints, WebSocket events, examples |
 | [EVENT_OWNERSHIP_MATRIX.md](../EVENT_OWNERSHIP_MATRIX.md) | Event flow, EventBus vs NATS, WebSocket delivery |
 | [ADR-007-fastapi-async-await.md](decisions/ADR-007-fastapi-async-await.md) | FastAPI and async backend rationale |
+
+## 8. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

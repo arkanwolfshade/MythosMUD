@@ -86,6 +86,10 @@ cmd_args = [
     "**/graphify-out/**",
     "--ignore",
     "**/graphify/**",
+    "--ignore",
+    "**/data/MythosMUD-Obsidian/**",
+    "--ignore",
+    "**/e2e-tests/**",
 ]
 
 # Add config file if it exists
@@ -118,21 +122,12 @@ result = subprocess.run(
 if result.returncode == 0:
     print("[OK] markdownlint scan completed successfully!")
     print("No Markdown issues found.")
-elif result.returncode == 1:
-    print("[WARNING] markdownlint found Markdown issues:")
-    if result.stdout:
-        safe_print(result.stdout)
-    if result.stderr:
-        safe_print(f"Errors: {result.stderr}")
-    print("\n[NOTE] Continuing despite warnings (non-blocking mode)")
-    sys.exit(0)  # Exit successfully even with warnings
-else:
-    print(f"[ERROR] markdownlint failed with exit code: {result.returncode}")
-    if result.stdout:
-        safe_print(f"Output: {result.stdout}")
-    if result.stderr:
-        safe_print(f"Errors: {result.stderr}")
-    print("\n[NOTE] Continuing despite errors (non-blocking mode)")
-    sys.exit(0)  # Exit successfully even with errors
+    print("\n[SUCCESS] All markdownlint checks passed!")
+    sys.exit(0)
 
-print("\n[SUCCESS] All markdownlint checks passed!")
+print("[ERROR] markdownlint found Markdown issues:")
+if result.stdout:
+    safe_print(result.stdout)
+if result.stderr:
+    safe_print(f"Errors: {result.stderr}")
+sys.exit(result.returncode if result.returncode != 0 else 1)

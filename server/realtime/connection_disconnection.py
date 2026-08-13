@@ -174,49 +174,6 @@ def _cleanup_player_data(player_id: uuid.UUID, manager: _DisconnectConnectionMan
     _ = manager.last_active_update_times.pop(player_id, None)
 
 
-async def _run_websocket_disconnect_cleanup(
-    player_id: uuid.UUID,
-    manager: _DisconnectConnectionManager,
-    is_force_disconnect: bool,
-) -> bool:
-    """Close sockets and clean tracking under disconnect_lock. Returns track flag."""
-    logger.info(
-        "Starting WebSocket disconnect",
-        player_id=player_id,
-        force_disconnect=is_force_disconnect,
-    )
-
-    if player_id not in manager.player_websockets:
-        return False
-
-    connection_ids = manager.player_websockets[player_id].copy()
-    logger.info(
-        "Found WebSocket connections",
-        player_id=player_id,
-        connection_count=len(connection_ids),
-        connection_ids=connection_ids,
-    )
-
-    # Close sockets first; never let close failures skip leave tracking / room cleanup.
-    try:
-        await disconnect_all_websockets_impl(connection_ids, player_id, manager)
-    except Exception as close_err:  # pylint: disable=broad-exception-caught  # Reason: best-effort socket close; cleanup below is still required for leave events
-        logger.warning(
-            "Error closing WebSockets during disconnect; continuing cleanup",
-            player_id=player_id,
-            error=str(close_err),
-            error_type=type(close_err).__name__,
-        )
-
-    # Remove from tracking (on-close handler may have already cleared this entry)
-    _ = manager.player_websockets.pop(player_id, None)
-    should_track = await _track_disconnect_if_needed(player_id, manager, is_force_disconnect)
-    _cleanup_room_subscriptions(player_id, manager, is_force_disconnect)
-    _cleanup_player_data(player_id, manager)
-    logger.info("WebSocket disconnected", player_id=player_id)
-    return should_track
-
-
 async def cleanup_websocket_disconnect(
     player_id: uuid.UUID,
     manager: _DisconnectConnectionManager,
@@ -228,8 +185,7 @@ async def cleanup_websocket_disconnect(
     Args:
         player_id: The player's ID
         manager: ConnectionManager instance
-        is_force_disconnect: If True, skip leave tracking unless intentional logout
-            (see _is_non_intentional_force_disconnect)
+        is_force_disconnect: If True, don't broadcast player_left_game
 
     Returns:
         bool: True if should track disconnect
@@ -238,7 +194,46 @@ async def cleanup_websocket_disconnect(
 
     async with manager.disconnect_lock:
         try:
-            should_track_disconnect = await _run_websocket_disconnect_cleanup(player_id, manager, is_force_disconnect)
+            logger.info(
+                "Starting WebSocket disconnect",
+                player_id=player_id,
+                force_disconnect=is_force_disconnect,
+            )
+
+            if player_id not in manager.player_websockets:
+                # Intentional logout can race with on-close clearing sockets; still track leave.
+                if player_id in getattr(manager, "intentional_disconnects", set()):
+                    should_track_disconnect = await _track_disconnect_if_needed(player_id, manager, is_force_disconnect)
+                    _cleanup_room_subscriptions(player_id, manager, is_force_disconnect)
+                    _cleanup_player_data(player_id, manager)
+                return should_track_disconnect
+
+            connection_ids = manager.player_websockets[player_id].copy()
+
+            logger.info(
+                "Found WebSocket connections",
+                player_id=player_id,
+                connection_count=len(connection_ids),
+                connection_ids=connection_ids,
+            )
+
+            # Disconnect all WebSocket connections
+            await disconnect_all_websockets_impl(connection_ids, player_id, manager)
+
+            # Remove from tracking (on-close handler may have already cleared this entry)
+            _ = manager.player_websockets.pop(player_id, None)
+
+            # Check if we need to track disconnection
+            should_track_disconnect = await _track_disconnect_if_needed(player_id, manager, is_force_disconnect)
+
+            # Clean up room subscriptions and player data
+            _cleanup_room_subscriptions(player_id, manager, is_force_disconnect)
+
+            # Clean up rate limiting and messages
+            _cleanup_player_data(player_id, manager)
+
+            logger.info("WebSocket disconnected", player_id=player_id)
+
         except (DatabaseError, AttributeError) as e:
             logger.error(
                 "Error during WebSocket disconnect",

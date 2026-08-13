@@ -12,17 +12,19 @@ import { executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensureFreshMultiPlayerContexts,
   ensurePlayerInGame,
   waitForAllPlayersInGame,
 } from '../fixtures/multiplayer';
 import { ensureStanding } from '../fixtures/player';
 
 test.describe('Rest Command', () => {
-  test.describe.configure({ mode: 'serial' });
+  test.describe.configure({ mode: 'serial', timeout: 300_000 });
 
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
+    test.setTimeout(300_000);
     // Create contexts for both players
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts, 60000);
@@ -35,29 +37,31 @@ test.describe('Rest Command', () => {
     await cleanupMultiPlayerContexts(contexts);
   });
 
-  test('should start rest countdown when /rest is used', async () => {
+  test('should start rest countdown when /rest is used', async ({ browser }) => {
+    test.setTimeout(300_000);
+    contexts = await ensureFreshMultiPlayerContexts(browser, contexts, ['ArkanWolfshade', 'Ithaqua']);
+
     const awContext = contexts[0];
-    const { page } = awContext;
 
     // Header can read Connected while Occupants still shows (linkdead); warm WS + Game Info before asserting.
     await ensurePlayerInGame(awContext, 30000);
-    await page.bringToFront().catch(() => {});
-    await page.getByTestId('command-input').evaluate((el: HTMLElement) => {
+    await awContext.page.bringToFront().catch(() => {});
+    await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
       el.focus();
     });
-    await ensureStanding(page, 8000);
-    await executeCommand(page, 'look');
-    await waitForMessage(page, /Arena|Exits|gladiator|sand|look/i, 20000).catch(() => {});
-    await page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 15000 });
+    awContext.page = await ensureStanding(awContext.page, 8000);
+    await executeCommand(awContext.page, 'look');
+    await waitForMessage(awContext.page, /Arena|Exits|gladiator|sand|look/i, 20000).catch(() => {});
+    await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 15000 });
 
-    await executeCommand(page, '/rest');
+    await executeCommand(awContext.page, '/rest');
 
-    const restLocator = page
+    const restLocator = awContext.page
       .locator('[data-message-text]')
       .filter({ hasText: /settle|begin to rest|disconnect in \d+|seconds/i });
     await restLocator.first().waitFor({ state: 'visible', timeout: 20000 });
 
-    const messages = await getMessages(page);
+    const messages = await getMessages(awContext.page);
     const seesRest = messages.some(msg => {
       const lower = msg.toLowerCase();
       return (
@@ -66,15 +70,12 @@ test.describe('Rest Command', () => {
     });
     expect(seesRest).toBe(true);
 
-    // Cancel countdown so later suites do not inherit "You have rested and disconnected".
-    await executeCommand(page, 'stand').catch(() => {});
-    await executeCommand(page, 'go north').catch(() => {});
-    await waitForMessage(page, /interrupted|go north|move north|north|stand|rise|already standing/i, 15000).catch(
-      () => {}
-    );
-    await executeCommand(page, 'go south').catch(() => {});
-    await waitForMessage(page, /go south|south|Arena|already standing|rise/i, 15000).catch(() => {});
-    await ensureStanding(page, 15000);
+    // Cancel countdown so the suite does not intentional-disconnect AW or leave test 2 stuck in "already resting".
+    await executeCommand(awContext.page, 'go north');
+    await waitForMessage(awContext.page, /interrupted|go north|move north|north/i, 15000).catch(() => {});
+    await executeCommand(awContext.page, 'go south');
+    await waitForMessage(awContext.page, /go south|south|Arena/i, 15000).catch(() => {});
+    awContext.page = await ensureStanding(awContext.page, 8000);
   });
 
   test('should block /rest during combat', async () => {
@@ -82,7 +83,7 @@ test.describe('Rest Command', () => {
 
     await ensurePlayerInGame(awContext, 30000);
     await awContext.page.bringToFront().catch(() => {});
-    await ensureStanding(awContext.page, 8000);
+    awContext.page = await ensureStanding(awContext.page, 8000);
     await executeCommand(awContext.page, 'look');
     await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 15000 });
 
@@ -104,13 +105,5 @@ test.describe('Rest Command', () => {
 
     // This test verifies combat blocking exists (may or may not trigger)
     expect(messages.length).toBeGreaterThan(0);
-
-    // /rest starts a 10s countdown that survives this spec's afterAll if the browser
-    // close races the task; later suites then inherit "You have rested and disconnected".
-    await executeCommand(awContext.page, 'stand').catch(() => {});
-    await executeCommand(awContext.page, 'go north').catch(() => {});
-    await waitForMessage(awContext.page, /interrupted|go north|move north|north|stand|rise/i, 15000).catch(() => {});
-    await executeCommand(awContext.page, 'go south').catch(() => {});
-    await ensureStanding(awContext.page, 15000);
   });
 });

@@ -58,7 +58,7 @@ jobs:
     steps:
       - name: Harden the runner (Audit all outbound calls)
         if: ${{ !env.ACT }}
-        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        uses: step-security/harden-runner@b09bb98e06d4d774595224525879c09bc6e98c40 # v2.20.1
         with:
           egress-policy: audit
       # Standard bootstrap: harden + checkout
@@ -382,7 +382,7 @@ jobs:
     steps:
       - name: Harden the runner (Audit all outbound calls)
         if: ${{ !env.ACT }}
-        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        uses: step-security/harden-runner@b09bb98e06d4d774595224525879c09bc6e98c40 # v2.20.1
         with:
           egress-policy: audit
       # Standard bootstrap: harden + checkout
@@ -473,3 +473,36 @@ jobs:
           "${CODACY_REPORTER}" final \
             --project-token "${CODACY_PROJECT_TOKEN}" \
             --commit-uuid "${CODACY_COMMIT_UUID}"
+
+  # Structural HADS check for living developer docs listed in docs/hads.manifest
+  hads-docs:
+    name: HADS docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+      - name: Validate HADS manifest
+        run: python scripts/hads/validate.py --manifest docs/hads.manifest
+
+  # Markdown style gate (living docs; archive/Obsidian/e2e reports ignored)
+  markdownlint:
+    name: Markdownlint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+      - name: Install client dependencies
+        working-directory: client
+        run: npm ci
+      - name: Run markdownlint
+        run: python scripts/markdownlint.py

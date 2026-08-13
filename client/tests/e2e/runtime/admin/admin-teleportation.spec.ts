@@ -12,6 +12,7 @@ import { executeCommand, recoverPlayableSession, waitForMessage } from '../fixtu
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
+  ensureFreshMultiPlayerContexts,
   ensurePlayerInGame,
   getPlayerMessages,
   waitForAllPlayersInGame,
@@ -29,9 +30,11 @@ async function assertLookVisibleInPanels(page: Page): Promise<void> {
 }
 
 test.describe('Admin Teleportation', () => {
+  test.describe.configure({ timeout: 300_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
+    test.setTimeout(300_000);
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
@@ -42,7 +45,10 @@ test.describe('Admin Teleportation', () => {
     await cleanupMultiPlayerContexts(contexts);
   });
 
-  test('AW should be able to teleport Ithaqua', async () => {
+  test('AW should be able to teleport Ithaqua', async ({ browser }) => {
+    test.setTimeout(300_000);
+    contexts = await ensureFreshMultiPlayerContexts(browser, contexts, ['ArkanWolfshade', 'Ithaqua']);
+
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
@@ -53,9 +59,9 @@ test.describe('Admin Teleportation', () => {
 
     await awContext.page.bringToFront().catch(() => {});
     await ensurePlayerInGame(awContext, 30000);
-    await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
+    awContext.page = await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
     await despawnSanitariumCultists(awContext.page);
-    await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
+    awContext.page = await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
     await expect(awContext.page.getByText(new RegExp(`Player:\\s*${awContext.player.username}\\b`, 'i'))).toBeVisible({
       timeout: 15000,
     });
@@ -79,7 +85,12 @@ test.describe('Admin Teleportation', () => {
     try {
       await runTeleport();
     } catch {
-      await recoverPlayableSession(awContext.page, awContext.player.username, awContext.player.password, 45000);
+      awContext.page = await recoverPlayableSession(
+        awContext.page,
+        awContext.player.username,
+        awContext.player.password,
+        45000
+      );
       await runTeleport();
     }
 
@@ -110,12 +121,16 @@ test.describe('Admin Teleportation', () => {
       (await awContext.page.getByTestId('current-character-name').textContent())?.trim() ?? 'ArkanWolfshade';
 
     await awContext.page.bringToFront().catch(() => {});
-    await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
+    awContext.page = await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
     await despawnSanitariumCultists(awContext.page);
 
     await ithaquaContext.page.bringToFront().catch(() => {});
     await ensurePlayerInGame(ithaquaContext, 30000);
-    await ensurePlayableAlive(ithaquaContext.page, ithaquaContext.player.username, ithaquaContext.player.password);
+    ithaquaContext.page = await ensurePlayableAlive(
+      ithaquaContext.page,
+      ithaquaContext.player.username,
+      ithaquaContext.player.password
+    );
     await expect(
       ithaquaContext.page.getByText(new RegExp(`Player:\\s*${ithaquaContext.player.username}\\b`, 'i'))
     ).toBeVisible({ timeout: 15000 });

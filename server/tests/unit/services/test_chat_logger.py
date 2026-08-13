@@ -223,3 +223,86 @@ def test_log_whisper_channel_message(chat_logger, temp_log_dir):  # pylint: disa
     # Check that log file was created
     log_files = list(Path(temp_log_dir).glob("chat_whisper_*.log"))
     assert len(log_files) > 0
+
+
+def test_log_local_global_system_channel_messages(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name
+    """Local/global/system channel writers create daily log files."""
+    chat_logger.log_local_channel_message(
+        {
+            "message_id": "l1",
+            "channel": "local",
+            "sender_id": "p1",
+            "sender_name": "A",
+            "content": "hi",
+            "room_id": "earth_arkhamcity_northside_room_001",
+            "subzone": "northside",
+        }
+    )
+    chat_logger.log_local_channel_message(
+        {
+            "message_id": "l2",
+            "channel": "local",
+            "sender_id": "p1",
+            "sender_name": "A",
+            "content": "hi2",
+            "room_id": "earth_arkhamcity_northside_room_001",
+        }
+    )
+    chat_logger.log_global_channel_message(
+        {
+            "message_id": "g1",
+            "channel": "global",
+            "sender_id": "p1",
+            "sender_name": "A",
+            "content": "hello world",
+            "timestamp": "2020-01-01T00:00:00+00:00",
+        }
+    )
+    chat_logger.log_system_channel_message(
+        {
+            "message_id": "s1",
+            "channel": "system",
+            "sender_id": "system",
+            "sender_name": "System",
+            "content": "notice",
+        }
+    )
+    chat_logger.wait_for_queue_processing(_timeout=1.0)
+    assert list(Path(temp_log_dir).glob("**/chat_local_*.log")) or list(Path(temp_log_dir).rglob("chat_local_*.log"))
+    assert list(Path(temp_log_dir).glob("chat_global_*.log"))
+    assert list(Path(temp_log_dir).glob("chat_system_*.log"))
+
+
+def test_log_message_flagged_and_player_left(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name
+    chat_logger.log_message_flagged("msg1", "spam", confidence=0.9, action_taken="hide")
+    chat_logger.log_player_left_room("p1", "A", "room_1", "Room")
+    chat_logger.wait_for_queue_processing(_timeout=1.0)
+    assert chat_logger.get_log_file_paths()
+
+
+def test_channel_log_stats_and_cleanup(chat_logger, temp_log_dir):  # pylint: disable=redefined-outer-name
+    """Stats and cleanup APIs cover global/local channel helpers."""
+    today = Path(temp_log_dir)
+    global_log = today / "chat_global_2000-01-01.log"
+    global_log.write_text('{"ok":true}\n', encoding="utf-8")
+    local_log = today / "chat_local_northside_2000-01-01.log"
+    local_log.write_text('{"ok":true}\n', encoding="utf-8")
+
+    assert any("chat_global_" in f for f in chat_logger.get_global_channel_log_files())
+    gstats = chat_logger.get_global_channel_log_stats()
+    assert "global_channels" in gstats
+
+    # Force old mtime so cleanup deletes
+    import os
+    import time
+
+    old = time.time() - (60 * 60 * 24 * 40)
+    os.utime(global_log, (old, old))
+    deleted = chat_logger.cleanup_old_global_channel_logs(days_to_keep=30)
+    assert str(global_log) in deleted or not global_log.exists()
+
+    assert chat_logger.get_local_channel_log_files()
+    lstats = chat_logger.get_local_channel_log_stats()
+    assert "local_channels" in lstats
+    os.utime(local_log, (old, old))
+    chat_logger.cleanup_old_local_channel_logs(days_to_keep=30)

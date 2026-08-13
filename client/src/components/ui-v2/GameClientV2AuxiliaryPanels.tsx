@@ -128,7 +128,7 @@ function renderCommandInputPanel(props: GameClientV2AuxiliaryPanelsProps): React
       isMaximized={commandInputPanel.isMaximized}
       isVisible={commandInputPanel.isVisible}
       minSize={commandInputPanel.minSize}
-      variant="elevated"
+      variant="eldritch"
       onPositionChange={panelManager.updatePosition}
       onSizeChange={panelManager.updateSize}
       onMinimize={panelManager.toggleMinimize}

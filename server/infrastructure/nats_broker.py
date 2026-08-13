@@ -411,10 +411,11 @@ class NATSMessageBroker:  # pylint: disable=too-many-instance-attributes  # Reas
 
         AI: Runs as fire-and-forget async task to prevent blocking NATS client.
         """
-        # Fire-and-forget async task to prevent blocking
+        coro = self._handle_error_async(error)
         try:
-            asyncio.create_task(self._handle_error_async(error))
+            asyncio.create_task(coro)
         except RuntimeError:
+            coro.close()
             # No event loop available - log synchronously
             self._logger.error("NATS error occurred", error=str(error))
 
@@ -431,10 +432,11 @@ class NATSMessageBroker:  # pylint: disable=too-many-instance-attributes  # Reas
 
         AI: Runs as fire-and-forget async task to prevent blocking NATS client.
         """
-        # Fire-and-forget async task to prevent blocking
+        coro = self._handle_disconnect_async()
         try:
-            asyncio.create_task(self._handle_disconnect_async())
+            asyncio.create_task(coro)
         except RuntimeError:
+            coro.close()
             # No event loop available - log synchronously
             self._logger.warning("Disconnected from NATS")
             self._running = False
@@ -453,10 +455,11 @@ class NATSMessageBroker:  # pylint: disable=too-many-instance-attributes  # Reas
 
         AI: Runs as fire-and-forget async task to prevent blocking NATS client.
         """
-        # Fire-and-forget async task to prevent blocking
+        coro = self._handle_reconnect_async()
         try:
-            asyncio.create_task(self._handle_reconnect_async())
+            asyncio.create_task(coro)
         except RuntimeError:
+            coro.close()
             # No event loop available - log synchronously
             self._logger.info("Reconnected to NATS")
             self._running = True
@@ -489,7 +492,12 @@ class NATSMessageBroker:  # pylint: disable=too-many-instance-attributes  # Reas
                 pass
 
         # Start new health check task
-        self._health_check_task = asyncio.create_task(self._health_check_loop())
+        coro = self._health_check_loop()
+        try:
+            self._health_check_task = asyncio.create_task(coro)
+        except RuntimeError:
+            coro.close()
+            raise
         self._logger.info("Health monitoring started", interval_seconds=health_check_interval)
 
     async def _stop_health_monitoring(self) -> None:

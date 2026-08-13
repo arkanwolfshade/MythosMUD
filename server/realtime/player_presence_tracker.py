@@ -138,7 +138,10 @@ async def _resolve_room_id_for_tutorial_reconnect(player: Any, manager: Any) -> 
 
     instance_manager = _get_instance_manager_from_manager(manager)
     if not instance_manager:
-        logger.warning("InstanceManager not available for tutorial reconnect", player_id=player.player_id)
+        logger.warning(
+            "InstanceManager not available for tutorial reconnect",
+            player_id=player.player_id,
+        )
         return None
 
     instance = instance_manager.get_instance(instance_id)
@@ -199,21 +202,33 @@ async def track_player_connected_impl(
     """
     try:
         is_new_connection = player_id not in manager.online_players
+        # Disconnect grace keeps the player in online_players; reconnect must still run enter setup
+        # so peers receive player_entered_game (E2E enter assertions and Occupants refresh).
+        in_disconnect_grace = player_id in getattr(manager, "grace_period_players", {})
+        needs_enter_setup = is_new_connection or in_disconnect_grace
 
         player_info = _build_player_info(player_id, player, connection_type, manager, is_new_connection)
 
         manager.online_players[player_id] = player_info
         manager.mark_player_seen(player_id)
 
-        if is_new_connection:
+        if needs_enter_setup:
             room_id = await _resolve_room_id_for_tutorial_reconnect(player, manager)
             if not room_id:
                 room_id = _resolve_room_id(player, manager)
             if room_id:
                 await handle_new_connection_setup(player_id, player, room_id, manager)
-            logger.info("Player presence tracked as connected (new connection)", player_id=player_id)
+            logger.info(
+                "Player presence tracked as connected (new connection)",
+                player_id=player_id,
+                reconnect_from_grace=in_disconnect_grace,
+            )
         else:
-            logger.info("Player additional connection tracked", player_id=player_id, connection_type=connection_type)
+            logger.info(
+                "Player additional connection tracked",
+                player_id=player_id,
+                connection_type=connection_type,
+            )
 
     except (DatabaseError, AttributeError) as e:
         logger.error("Error tracking player connection", error=str(e), exc_info=True)
@@ -233,10 +248,18 @@ async def broadcast_connection_message_impl(
                 room_id = room.id
 
         if room_id:
-            logger.debug("Player already tracked as online, skipping duplicate connection message", player_id=player_id)
+            logger.debug(
+                "Player already tracked as online, skipping duplicate connection message",
+                player_id=player_id,
+            )
 
     except (DatabaseError, AttributeError) as e:
-        logger.error("Error broadcasting connection message", player_id=player_id, error=str(e), exc_info=True)
+        logger.error(
+            "Error broadcasting connection message",
+            player_id=player_id,
+            error=str(e),
+            exc_info=True,
+        )
 
 
 def _should_skip_disconnect(player_id: uuid.UUID, manager: Any, connection_type: str | None) -> bool:
@@ -327,7 +350,10 @@ async def track_player_disconnected_impl(
 
         if is_intentional:
             # Intentional disconnect - perform immediate cleanup (no grace period)
-            logger.info("Intentional disconnect detected, skipping grace period", player_id=player_id)
+            logger.info(
+                "Intentional disconnect detected, skipping grace period",
+                player_id=player_id,
+            )
 
             # Remove from intentional disconnects set
             manager.intentional_disconnects.discard(player_id)
@@ -352,10 +378,16 @@ async def track_player_disconnected_impl(
             # Clean up remaining references
             _cleanup_player_references(player_id, manager)
 
-            logger.info("Player presence tracked as disconnected (intentional)", player_id=player_id)
+            logger.info(
+                "Player presence tracked as disconnected (intentional)",
+                player_id=player_id,
+            )
         else:
             # Unintentional disconnect - start grace period
-            logger.info("Unintentional disconnect detected, starting grace period", player_id=player_id)
+            logger.info(
+                "Unintentional disconnect detected, starting grace period",
+                player_id=player_id,
+            )
 
             # Start grace period (player will remain in-game for 30 seconds)
             await start_grace_period(player_id, manager)

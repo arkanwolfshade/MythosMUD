@@ -1,29 +1,47 @@
 # 🐙 MythosMUD Command Security Guide
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 *"The most merciful thing in the world is the inability of malicious input to corrupt our systems."* - H.P. Lovecraft
 (adapted)
 
 ---
 
-## Table of Contents
+## 2. Table of Contents
 
-1. [Overview](#overview)
-2. [Security Principles](#security-principles)
-3. [Input Validation](#input-validation)
-4. [Authorization and Access Control](#authorization-and-access-control)
-5. [Injection Prevention](#injection-prevention)
-6. [Rate Limiting](#rate-limiting)
-7. [Logging and Monitoring](#logging-and-monitoring)
-8. [Error Handling](#error-handling)
-9. [Data Protection](#data-protection)
-10. [Security Testing](#security-testing)
-11. [Common Vulnerabilities](#common-vulnerabilities)
-12. [Security Checklist](#security-checklist)
+**[SPEC]**
+
+1. [Overview](#3-overview)
+2. [Security Principles](#4-security-principles)
+3. [Input Validation](#5-input-validation)
+4. [Authorization and Access Control](#6-authorization-and-access-control)
+5. [Injection Prevention](#7-injection-prevention)
+6. [Rate Limiting](#8-rate-limiting)
+7. [Logging and Monitoring](#9-logging-and-monitoring)
+8. [Error Handling](#10-error-handling)
+9. [Data Protection](#11-data-protection)
+10. [Security Testing](#12-security-testing)
+11. [Common Vulnerabilities](#13-common-vulnerabilities)
+12. [Security Checklist](#14-security-checklist)
 
 ---
 
-## Overview
+## 3. Overview
 
+**[SPEC]**
 Security is paramount in MythosMUD command development. This guide provides comprehensive security practices to protect
 against common vulnerabilities and ensure the safety of players and the system.
 
@@ -54,7 +72,9 @@ Common threats to command systems:
 
 ---
 
-## Security Principles
+## 4. Security Principles
+
+**[NOTE]**
 
 ### Defense in Depth
 
@@ -150,7 +170,9 @@ async def handle_secure_command(command_data, current_user, request, alias_stora
 
 ---
 
-## Input Validation
+## 5. Input Validation
+
+**[NOTE]**
 
 ### Pydantic Model Validation
 
@@ -280,7 +302,9 @@ def sanitize_filename(filename: str) -> str:
 
 ---
 
-## Authorization and Access Control
+## 6. Authorization and Access Control
+
+**[NOTE]**
 
 ### Role-Based Access Control
 
@@ -401,7 +425,9 @@ async def handle_session_authorized_command(command_data, current_user, request,
 
 ---
 
-## Injection Prevention
+## 7. Injection Prevention
+
+**[NOTE]**
 
 ### SQL Injection Prevention
 
@@ -536,7 +562,9 @@ async def handle_xss_safe_command(command_data, current_user, request, alias_sto
 
 ---
 
-## Rate Limiting
+## 8. Rate Limiting
+
+**[NOTE]**
 
 ### Token Bucket Rate Limiting
 
@@ -643,7 +671,9 @@ teleport_rate_limiter = SlidingWindowRateLimiter(max_requests=1, window_seconds=
 
 ---
 
-## Logging and Monitoring
+## 9. Logging and Monitoring
+
+**[NOTE]**
 
 ### Security Event Logging
 
@@ -796,7 +826,9 @@ async def handle_audited_command(command_data, current_user, request, alias_stor
 
 ---
 
-## Error Handling
+## 10. Error Handling
+
+**[NOTE]**
 
 ### Secure Error Messages
 
@@ -885,7 +917,9 @@ async def handle_insecure_error_command(command_data, current_user, request, ali
 
 ---
 
-## Data Protection
+## 11. Data Protection
+
+**[NOTE]**
 
 ### Sensitive Data Handling
 
@@ -975,7 +1009,9 @@ async def handle_encrypted_command(command_data, current_user, request, alias_st
 
 ---
 
-## Security Testing
+## 12. Security Testing
+
+**[NOTE]**
 
 ### Automated Security Tests
 
@@ -1089,7 +1125,9 @@ class SecurityPenetrationTests:
 
 ---
 
-## Common Vulnerabilities
+## 13. Common Vulnerabilities
+
+**[NOTE]**
 
 ### 1. SQL Injection
 
@@ -1175,7 +1213,9 @@ if os.path.commonpath([full_path, "files"]) != "files":
 
 ---
 
-## Security Checklist
+## 14. Security Checklist
+
+**[SPEC]**
 
 ### Before Deploying Any Command
 
@@ -1250,8 +1290,9 @@ if os.path.commonpath([full_path, "files"]) != "files":
 
 ---
 
-## Conclusion
+## 15. Conclusion
 
+**[SPEC]**
 Security is not a one-time effort but an ongoing process. By following these guidelines and maintaining vigilance, you
 can help ensure that MythosMUD remains a safe and secure environment for all players.
 
@@ -1269,3 +1310,11 @@ Remember:
 ---
 
 *This guide should be updated regularly as new security threats emerge and best practices evolve.*
+
+## 16. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

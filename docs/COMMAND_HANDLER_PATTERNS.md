@@ -1,27 +1,45 @@
 # 🐙 MythosMUD Command Handler Patterns
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 *"Patterns emerge from chaos, and in those patterns we find the structure of our reality."* - Dr. Henry Armitage,
 Miskatonic University
 
 ---
 
-## Table of Contents
+## 2. Table of Contents
 
-1. [Overview](#overview)
-2. [Basic Handler Structure](#basic-handler-structure)
-3. [Common Handler Patterns](#common-handler-patterns)
-4. [Accessing Game Systems](#accessing-game-systems)
-5. [Error Handling Patterns](#error-handling-patterns)
-6. [Logging Patterns](#logging-patterns)
-7. [Security Patterns](#security-patterns)
-8. [Performance Patterns](#performance-patterns)
-9. [Testing Patterns](#testing-patterns)
-10. [Anti-Patterns to Avoid](#anti-patterns-to-avoid)
+**[SPEC]**
+
+1. [Overview](#3-overview)
+2. [Basic Handler Structure](#4-basic-handler-structure)
+3. [Common Handler Patterns](#5-common-handler-patterns)
+4. [Accessing Game Systems](#6-accessing-game-systems)
+5. [Error Handling Patterns](#7-error-handling-patterns)
+6. [Logging Patterns](#8-logging-patterns)
+7. [Security Patterns](#9-security-patterns)
+8. [Performance Patterns](#10-performance-patterns)
+9. [Testing Patterns](#11-testing-patterns)
+10. [Anti-Patterns to Avoid](#12-anti-patterns-to-avoid)
 
 ---
 
-## Overview
+## 3. Overview
 
+**[NOTE]**
 Command handlers in MythosMUD are async functions that process validated command data and interact with the game
 systems. They follow consistent patterns to ensure maintainability, security, and performance.
 
@@ -54,7 +72,9 @@ async def handle_command_name(
 
 ---
 
-## Basic Handler Structure
+## 4. Basic Handler Structure
+
+**[NOTE]**
 
 ### Minimal Handler
 
@@ -127,7 +147,9 @@ async def handle_standard_command(
 
 ---
 
-## Common Handler Patterns
+## 5. Common Handler Patterns
+
+**[NOTE]**
 
 ### 1. Room-Based Commands
 
@@ -420,7 +442,9 @@ async def handle_validation_command(
 
 ---
 
-## Accessing Game Systems
+## 6. Accessing Game Systems
+
+**[NOTE]**
 
 ### Persistence Layer
 
@@ -480,7 +504,9 @@ success = movement_service.move_player(
 
 ---
 
-## Error Handling Patterns
+## 7. Error Handling Patterns
+
+**[NOTE]**
 
 ### Graceful Degradation
 
@@ -581,7 +607,9 @@ async def handle_specific_errors(
 
 ---
 
-## Logging Patterns
+## 8. Logging Patterns
+
+**[NOTE]**
 
 ### Standard Logging
 
@@ -695,7 +723,9 @@ async def handle_security_logged_command(
 
 ---
 
-## Security Patterns
+## 9. Security Patterns
+
+**[NOTE]**
 
 ### Input Sanitization
 
@@ -793,7 +823,9 @@ async def handle_rate_limited_command(
 
 ---
 
-## Performance Patterns
+## 10. Performance Patterns
+
+**[NOTE]**
 
 ### Caching
 
@@ -903,7 +935,9 @@ async def handle_batch_command(
 
 ---
 
-## Testing Patterns
+## 11. Testing Patterns
+
+**[NOTE]**
 
 ### Mock Setup
 
@@ -985,7 +1019,9 @@ async def test_command_handler_errors():
 
 ---
 
-## Anti-Patterns to Avoid
+## 12. Anti-Patterns to Avoid
+
+**[NOTE]**
 
 ### 1. Blocking Operations
 
@@ -1090,3 +1126,11 @@ async def handle_validated_command(...):
 ---
 
 *This reference document should be updated as new patterns emerge and existing ones evolve.*
+
+## 13. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

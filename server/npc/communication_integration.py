@@ -65,7 +65,7 @@ class NPCCommunicationIntegration:
             bool: True if message was sent successfully
         """
         try:
-            # Publish NPC spoke event
+            # Publish NPC spoke event; ChatService delivery is via NPCSpoke bridge.
             if self.event_bus:
                 self.event_bus.publish(
                     NPCSpoke(
@@ -75,8 +75,6 @@ class NPCCommunicationIntegration:
                         channel=channel,
                     )
                 )
-
-            # Direct ChatService dispatch is not used for NPCs; events drive distribution
 
             logger.info("NPC sent message to room", npc_id=npc_id, room_id=room_id, message=message, channel=channel)
             return True
@@ -99,7 +97,7 @@ class NPCCommunicationIntegration:
             bool: True if whisper was sent successfully
         """
         try:
-            # Publish NPC spoke event with target
+            # Publish NPC spoke event with target; ChatService whisper later if needed.
             if self.event_bus:
                 self.event_bus.publish(
                     NPCSpoke(
@@ -110,8 +108,6 @@ class NPCCommunicationIntegration:
                         target_id=target_player_id,
                     )
                 )
-
-            # Direct ChatService dispatch is not used for NPCs; events drive distribution
 
             logger.info(
                 "NPC sent whisper to player",

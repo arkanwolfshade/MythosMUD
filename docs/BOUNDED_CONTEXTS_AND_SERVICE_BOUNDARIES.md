@@ -1,12 +1,28 @@
 # Bounded Contexts and Service Boundaries
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 **Document Version:** 1.0
 **Date:** January 2026
 **Status:** Architecture documentation
 **Purpose:** Define explicit bounded contexts and service boundaries for MythosMUD per the Architecture Review Plan.
 
-## 1. Overview
+## 2. Overview
 
+**[SPEC]**
 This document defines **bounded contexts** (DDD-style) and **service boundaries** for the MythosMUD server. It aligns with:
 
 - **ApplicationContainer** domain bundles: `docs/APPLICATION_CONTAINER_ANALYSIS.md`
@@ -15,7 +31,9 @@ This document defines **bounded contexts** (DDD-style) and **service boundaries*
 
 Bounded contexts are logical boundaries within which a particular model and vocabulary apply. Service boundaries define which services belong to which context, what they own, and how they interact.
 
-## 2. Bounded Contexts
+## 3. Bounded Contexts
+
+**[SPEC]**
 
 | Context            | Description                                                                 | Container bundle(s) |
 | ------------------ | --------------------------------------------------------------------------- | ------------------- |
@@ -29,7 +47,9 @@ Bounded contexts are logical boundaries within which a particular model and voca
 | **Temporal**       | In-game time, holidays, schedule, mythos tick consumer                      | TimeBundle          |
 | **Monitoring**     | Performance, exceptions, dashboard, log aggregation                         | MonitoringBundle    |
 
-## 3. Service Boundaries by Context
+## 4. Service Boundaries by Context
+
+**[SPEC]**
 
 ### 3.1 Core
 
@@ -224,7 +244,9 @@ Bounded contexts are logical boundaries within which a particular model and voca
 
 ---
 
-## 4. Cross-Context Dependencies (Summary)
+## 5. Cross-Context Dependencies (Summary)
+
+**[NOTE]**
 
 ```
 Core
@@ -238,7 +260,9 @@ Core
  └── Monitoring (standalone)
 ```
 
-## 5. Service Boundary Rules
+## 6. Service Boundary Rules
+
+**[SPEC]**
 
 1. **Single owner:** Each service belongs to exactly one bounded context.
 2. **Cross-context access:** Use published interfaces (e.g. PlayerService, RoomService) rather than reaching into another context’s internals.
@@ -246,9 +270,19 @@ Core
 4. **Persistence:** All persistence goes through Core (async_persistence and repositories); no context bypasses the persistence layer.
 5. **Realtime delivery:** Only Realtime context sends WebSocket messages; other contexts publish events or NATS messages, and Realtime (or NATS handler) delivers to clients.
 
-## 6. References
+## 7. References
+
+**[SPEC]**
 
 - **ApplicationContainer and bundles:** `docs/APPLICATION_CONTAINER_ANALYSIS.md`
 - **Event ownership and duplication:** `docs/EVENT_OWNERSHIP_MATRIX.md`
 - **Architecture Review Plan:** `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
 - **Container implementation:** `server/container/` (main.py, utils.py, bundles/)
+
+## 8. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

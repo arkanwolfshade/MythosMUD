@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, cast
 
 from structlog.stdlib import BoundLogger
 
+from ..events.event_types import NPCSpoke
 from ..models.npc import NPCDefinition
 from ..structured_logging.enhanced_logging_config import get_logger
 from .behavior_engine import BehaviorEngine
@@ -21,6 +22,7 @@ from .npc_config_parsing import (
     to_int_or_default,
 )
 from .npc_default_reactions import register_default_reactions_for_npc
+from .npc_display_names import register_npc_display_name
 from .npc_protocols import CombatIntegrationProtocol, CommunicationIntegrationProtocol
 
 if TYPE_CHECKING:
@@ -74,6 +76,10 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
         self.combat_integration: object | None = None
         self.communication_integration: object | None = None
 
+        self._register_reactions_and_chat_name()
+
+    def _register_reactions_and_chat_name(self) -> None:
+        """Register default reactions, room context, and chat display name."""
         if self.event_reaction_system:
             register_default_reactions_for_npc(
                 self.npc_id,
@@ -81,6 +87,14 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
                 self._behavior_config,
                 self.event_reaction_system,
             )
+            self.event_reaction_system.set_npc_context(
+                self.npc_id,
+                current_room=self.current_room,
+                name=self.name,
+                is_alive=True,
+                behavior_config=self._behavior_config,
+            )
+        register_npc_display_name(self.npc_id, self.name)
 
     @staticmethod
     def _safe_get(obj: object, attr: str, default: object) -> object:
@@ -368,6 +382,8 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
 
         if success:
             self.current_room = room_id
+            if self.event_reaction_system:
+                self.event_reaction_system.set_npc_context(self.npc_id, current_room=room_id)
             logger.debug("NPC moved to room with integration", npc_id=self.npc_id, room_id=room_id)
             return True
 
@@ -377,6 +393,8 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
     def _move_simple(self, room_id: str) -> bool:
         """Move NPC without integration (simple room update)."""
         self.current_room = room_id
+        if self.event_reaction_system:
+            self.event_reaction_system.set_npc_context(self.npc_id, current_room=room_id)
         logger.debug("NPC moved to room (simple)", npc_id=self.npc_id, room_id=room_id)
         return True
 
@@ -414,8 +432,6 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
                 result2: bool = comms.send_message_to_room(self.npc_id, self.current_room, message, channel)
                 return result2
             if self.event_bus:
-                from ..events.event_types import NPCSpoke
-
                 self.event_bus.publish(
                     NPCSpoke(
                         npc_id=self.npc_id,
@@ -423,6 +439,7 @@ class NPCBase(ABC):  # pylint: disable=too-many-instance-attributes  # Reason: N
                         message=message,
                         channel=channel,
                         target_id=target_id,
+                        npc_name=self.name,
                     )
                 )
             return True

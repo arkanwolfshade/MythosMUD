@@ -15,6 +15,7 @@ from ..models.command import (
     RestCommand,
     SkillsCommand,
     StatusCommand,
+    TalkCommand,
     TimeCommand,
     WhoamiCommand,
     WhoCommand,
@@ -117,3 +118,8 @@ class PlayerStateCommandFactory:
     def create_quest_command(args: list[str]) -> QuestCommand:
         """Create QuestCommand from arguments (e.g. abandon <quest name>)."""
         return QuestCommand(args=args or [])
+
+    @staticmethod
+    def create_talk_command(args: list[str]) -> TalkCommand:
+        """Create TalkCommand from arguments (npc name or option number)."""
+        return TalkCommand(args=args or [])

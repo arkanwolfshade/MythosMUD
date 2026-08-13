@@ -429,7 +429,7 @@ Logs are structured for easy aggregation with tools like:
 
 ### Grafana Loki
 
-**CloudWatch Logs**
+### CloudWatch Logs
 
 ### Alerting Examples
 

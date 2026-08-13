@@ -1,14 +1,29 @@
 # Follow Subsystem Design
 
-## Overview
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 The follow subsystem lets a player follow another player or an NPC. State is in-memory only (no
 persistence). When the followed entity moves (PlayerEnteredRoom or NPCEnteredRoom), followers are
 moved to the same room via MovementService; on move failure or inability to stand, the follower is
 auto-unfollowed. Player-to-player follow requires target acceptance: a pending request (60s TTL) and
 a follow_request event to the target; NPC follow is immediate.
 
-## Architecture
+## 2. Architecture
+
+**[NOTE]**
 
 ```mermaid
 flowchart LR
@@ -57,7 +72,9 @@ flowchart LR
 - **ConnectionManager / send_game_event**: Sends command_response, follow_state, follow_request to
   clients.
 
-## Key design decisions
+## 3. Key design decisions
+
+**[NOTE]**
 
 - **In-memory only**: No DB table for follow state; disconnect clears state (on_player_disconnect).
 - **NPC follow immediate, player follow request/accept**: Following an NPC is set immediately;
@@ -74,7 +91,9 @@ flowchart LR
 - **Mute check**: Before creating a player follow request, target muting the requestor causes
   "They are not accepting follow requests."
 
-## Constraints
+## 4. Constraints
+
+**[SPEC]**
 
 - **One follow per player**: A player can only follow one target at a time; must unfollow first.
 - **No self-follow**: request_follow rejects when requestor_id == target_id.
@@ -84,7 +103,9 @@ flowchart LR
 - **Dependencies**: EventBus, MovementService, optional UserManager (mute), ConnectionManager,
   AsyncPersistence (display names, room check), PlayerPositionService (auto-stand).
 
-## Component interactions
+## 5. Component interactions
+
+**[NOTE]**
 
 1. **follow &lt;target&gt;** – Resolve target (player/NPC) in room via TargetResolutionService; call
    follow_service.request_follow. For NPC: set \_follow_target, send follow_state to client. For
@@ -98,7 +119,9 @@ flowchart LR
 5. **on_player_disconnect** – Remove player from \_follow_target and \_pending_requests; remove any
    followers whose target was this player.
 
-## Developer guide
+## 6. Developer guide
+
+**[NOTE]**
 
 - **New follow type**: Extend TargetType and \_FollowTargetValue; add resolution in follow_commands and
   request_follow branch; ensure event type exists (e.g. NPCEnteredRoom) and is subscribed.
@@ -109,7 +132,9 @@ flowchart LR
 - **Client**: Client must handle follow_request (show accept/decline UI) and call accept/decline
   endpoint or command; follow_state event updates "who I follow" in UI.
 
-## Troubleshooting
+## 7. Troubleshooting
+
+**[NOTE]**
 
 - **"You lost your target"**: Movement failed (combat, posture, no exit, or already in room).
   Check MovementService validation and logs: "Follower lost target (move failed)", "could not
@@ -125,8 +150,18 @@ flowchart LR
 
 See also [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
 
-## Related docs
+## 8. Related docs
+
+**[SPEC]**
 
 - [SUBSYSTEM_MOVEMENT_DESIGN.md](SUBSYSTEM_MOVEMENT_DESIGN.md)
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
 - [EVENT_OWNERSHIP_MATRIX.md](../EVENT_OWNERSHIP_MATRIX.md)
+
+## 9. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

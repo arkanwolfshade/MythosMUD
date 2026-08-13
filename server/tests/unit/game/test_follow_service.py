@@ -7,12 +7,14 @@ disconnect cleanup.
 """
 
 import uuid
+from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
 from server.events.event_types import NPCEnteredRoom, PlayerEnteredRoom
 from server.game.follow_service import FOLLOW_REQUEST_TTL_SECONDS, FollowService
+from server.tests.unit.realtime.envelope_assertions import assert_event_envelope
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
@@ -108,6 +110,25 @@ async def test_request_follow_player_creates_pending(follow_service, user_manage
     assert data["requestor_id"] == requestor_id
     assert data["target_id"] == target_id
     assert data["requestor_name"] == "Alice"
+
+
+@pytest.mark.asyncio
+async def test_follow_request_event_envelope_shape(event_bus, movement_service, user_manager):
+    """follow_request producer emits a build_event-shaped envelope."""
+    conn_mgr = MagicMock()
+    conn_mgr.send_personal_message = AsyncMock()
+    service = FollowService(
+        event_bus=event_bus,
+        movement_service=movement_service,
+        user_manager=user_manager,
+        connection_manager=conn_mgr,
+    )
+    target_id = str(uuid.uuid4())
+    requestor_id = str(uuid.uuid4())
+    await service._send_follow_request_to_target(target_id, "req-1", "Alice", requestor_id)
+    conn_mgr.send_personal_message.assert_awaited_once()
+    event = conn_mgr.send_personal_message.await_args.args[1]
+    assert_event_envelope(event, event_type="follow_request")
 
 
 @pytest.mark.asyncio
@@ -372,3 +393,48 @@ async def test_ensure_follower_standing_fails_to_stand(follow_service):
 def test_follow_request_ttl_constant():
     """Pending requests use 60s TTL as per plan."""
     assert FOLLOW_REQUEST_TTL_SECONDS == 60
+
+
+def test_get_following_display_name_npc(follow_service):
+    """Display name is stored for NPC follows."""
+    fid = str(uuid.uuid4())
+    follow_service._follow_target[fid] = ("npc_1", "npc", "Guard Captain")
+    assert follow_service.get_following_display_name(fid) == "Guard Captain"
+    assert follow_service.get_following_display_name(str(uuid.uuid4())) is None
+
+
+def test_expire_pending_requests_removes_stale(follow_service):
+    """Expired pending requests are removed from state."""
+    service = FollowService(
+        event_bus=None,
+        movement_service=follow_service._movement_service,
+        user_manager=follow_service._user_manager,
+        connection_manager=MagicMock(),
+    )
+    req_id = "req-expired"
+    service._pending_requests[req_id] = {
+        "requestor_id": "player_1",
+        "target_id": "player_2",
+        "created_at": datetime.now(UTC) - timedelta(seconds=FOLLOW_REQUEST_TTL_SECONDS + 5),
+    }
+    service._expire_pending_requests()
+    assert req_id not in service._pending_requests
+
+
+def test_send_result_to_player_no_connection_manager(follow_service):
+    """Without connection manager, send is a no-op."""
+    follow_service._send_result_to_player("player_1", "hello")
+
+
+def test_send_follow_state_skips_without_manager(follow_service):
+    """Follow state send is a no-op without connection manager."""
+    follow_service._send_follow_state_to_player("player_1", {"target_id": "npc_1"})
+
+
+def test_str_id_accepts_uuid():
+    """_str_id normalizes UUID objects to strings."""
+    from server.game.follow_service import _str_id
+
+    uid = uuid.uuid4()
+    assert _str_id(uid) == str(uid)
+    assert _str_id(str(uid)) == str(uid)

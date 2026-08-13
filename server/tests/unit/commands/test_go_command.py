@@ -440,3 +440,48 @@ async def test_handle_go_command_success():
 
     assert result["room_changed"] is True
     assert result["room_id"] == "north_room"
+
+
+@pytest.mark.asyncio
+async def test_handle_go_command_rest_interrupt_still_moves():
+    """Resting must cancel rest and complete the move in one go (not abort with interrupt-only)."""
+    command_data: dict[str, Any] = {"direction": "north"}
+    player_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.current_room_id = "test_room"
+    mock_player.player_id = player_id
+    mock_player.get_stats = MagicMock(return_value={"position": "standing"})
+    mock_room = MagicMock()
+    mock_room.id = "test_room"
+    mock_room.exits = {"north": "north_room"}
+    mock_target_room = MagicMock()
+    mock_persistence = AsyncMock()
+    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_persistence.get_room_by_id = MagicMock(
+        side_effect=lambda rid: mock_target_room if rid == "north_room" else mock_room
+    )
+
+    mock_movement_service = MagicMock()
+    mock_movement_service.move_player = AsyncMock(return_value=True)
+    mock_connection_manager = MagicMock()
+    mock_state = MagicMock()
+    mock_state.container = MagicMock()
+    mock_state.container.async_persistence = mock_persistence
+    mock_state.container.movement_service = mock_movement_service
+    mock_state.container.connection_manager = mock_connection_manager
+    mock_app = MagicMock()
+    mock_app.state = mock_state
+    mock_request = MagicMock()
+    mock_request.app = mock_app
+
+    with (
+        patch("server.commands.go_command.is_player_resting", return_value=True),
+        patch("server.commands.go_command.cancel_rest_countdown", new_callable=AsyncMock) as mock_cancel,
+    ):
+        result = await handle_go_command(command_data, {"username": "testuser"}, mock_request, None, "testplayer")
+
+    mock_cancel.assert_awaited_once()
+    assert result["room_changed"] is True
+    assert result["room_id"] == "north_room"
+    assert "rest is interrupted" in result["result"].lower()
+    assert "you go north" in result["result"].lower()

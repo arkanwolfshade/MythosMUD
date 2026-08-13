@@ -132,6 +132,7 @@ class NPCEventReactionSystem:
         self._npc_reactions: dict[str, list[NPCEventReaction]] = {}
         self._event_subscriptions: dict[type[BaseEvent], set[str]] = {}
         self._reaction_cooldowns: dict[str, float] = {}
+        self._npc_contexts: dict[str, dict[str, Any]] = {}
 
         # Subscribe to all relevant event types
         self._subscribe_to_events()
@@ -243,11 +244,29 @@ class NPCEventReactionSystem:
                         logger.debug("NPC reaction executed", npc_id=npc_id, event_type=event_type.__name__)
                         break  # Only execute highest priority reaction
 
+    def set_npc_context(self, npc_id: str, **fields: Any) -> None:
+        """Update stored NPC context used by reaction conditions (room, name, alive)."""
+        ctx = self._npc_contexts.setdefault(
+            npc_id,
+            {
+                "npc_id": npc_id,
+                "current_room": "unknown",
+                "is_alive": True,
+                "stats": {},
+                "behavior_config": {},
+            },
+        )
+        for key, value in fields.items():
+            if value is not None:
+                ctx[key] = value
+
+    def clear_npc_context(self, npc_id: str) -> None:
+        """Drop stored context when an NPC despawns."""
+        self._npc_contexts.pop(npc_id, None)
+
     def _get_npc_context(self, npc_id: str) -> dict[str, Any] | None:
         """
         Get context information for an NPC.
-
-        This method attempts to get actual NPC context from the NPC system.
 
         Args:
             npc_id: The ID of the NPC
@@ -255,12 +274,17 @@ class NPCEventReactionSystem:
         Returns:
             dict: NPC context information
         """
-        # Try to get NPC context from the NPC system
-        # This would need to be connected to the actual NPC management system
         try:
-            # For now, return a basic context
-            # In a real implementation, this would query the NPC system
-            return {"npc_id": npc_id, "current_room": "unknown", "is_alive": True, "stats": {}, "behavior_config": {}}
+            stored = self._npc_contexts.get(npc_id)
+            if stored:
+                return stored
+            return {
+                "npc_id": npc_id,
+                "current_room": "unknown",
+                "is_alive": True,
+                "stats": {},
+                "behavior_config": {},
+            }
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC context retrieval errors unpredictable, must return None
             logger.error("Error getting NPC context", npc_id=npc_id, error=str(e))
             return None
@@ -307,9 +331,20 @@ class NPCEventReactionTemplates:
         def condition(event: PlayerEnteredRoom, npc_context: dict[str, Any]) -> bool:
             return event.room_id == npc_context.get("current_room")
 
-        def action(event: PlayerEnteredRoom, _npc_context: dict[str, Any]) -> bool:  # pylint: disable=unused-argument  # Reason: Parameter required for action signature, context not used in this action
-            # This would need to be connected to the NPC's speak method
-            logger.info("NPC would greet player", npc_id=npc_id, player_id=event.player_id, message=greeting_message)
+        def action(event: PlayerEnteredRoom, npc_context: dict[str, Any]) -> bool:
+            room_id = npc_context.get("current_room")
+            if not room_id or room_id == "unknown":
+                return False
+            # Circular import: chat_npc_system -> npc package -> this module
+            from ..game.chat_npc_system import schedule_npc_room_speech
+
+            schedule_npc_room_speech(
+                npc_id=npc_id,
+                room_id=str(room_id),
+                message=greeting_message,
+                npc_name=npc_context.get("name") if isinstance(npc_context.get("name"), str) else None,
+            )
+            logger.info("NPC greet scheduled", npc_id=npc_id, player_id=event.player_id, message=greeting_message)
             return True
 
         return NPCEventReaction(event_type=PlayerEnteredRoom, condition=condition, action=action, priority=1)
@@ -321,8 +356,20 @@ class NPCEventReactionTemplates:
         def condition(event: PlayerLeftRoom, npc_context: dict[str, Any]) -> bool:
             return event.room_id == npc_context.get("current_room")
 
-        def action(event: PlayerLeftRoom, _npc_context: dict[str, Any]) -> bool:  # pylint: disable=unused-argument  # Reason: Parameter required for action signature, context not used in this action
-            logger.info("NPC would say farewell", npc_id=npc_id, player_id=event.player_id, message=farewell_message)
+        def action(event: PlayerLeftRoom, npc_context: dict[str, Any]) -> bool:
+            room_id = npc_context.get("current_room")
+            if not room_id or room_id == "unknown":
+                return False
+            # Circular import: chat_npc_system -> npc package -> this module
+            from ..game.chat_npc_system import schedule_npc_room_speech
+
+            schedule_npc_room_speech(
+                npc_id=npc_id,
+                room_id=str(room_id),
+                message=farewell_message,
+                npc_name=npc_context.get("name") if isinstance(npc_context.get("name"), str) else None,
+            )
+            logger.info("NPC farewell scheduled", npc_id=npc_id, player_id=event.player_id, message=farewell_message)
             return True
 
         return NPCEventReaction(event_type=PlayerLeftRoom, condition=condition, action=action, priority=1)
@@ -352,10 +399,20 @@ class NPCEventReactionTemplates:
         def condition(event: NPCListened, npc_context: dict[str, Any]) -> bool:
             return event.npc_id == npc_id and event.room_id == npc_context.get("current_room")
 
-        def action(event: NPCListened, _npc_context: dict[str, Any]) -> bool:  # pylint: disable=unused-argument  # Reason: Parameter required for action signature, context not used in this action
-            logger.info(
-                "NPC would respond to player", npc_id=npc_id, speaker_id=event.speaker_id, message=response_message
+        def action(event: NPCListened, npc_context: dict[str, Any]) -> bool:
+            room_id = npc_context.get("current_room")
+            if not room_id or room_id == "unknown":
+                return False
+            # Circular import: chat_npc_system -> npc package -> this module
+            from ..game.chat_npc_system import schedule_npc_room_speech
+
+            schedule_npc_room_speech(
+                npc_id=npc_id,
+                room_id=str(room_id),
+                message=response_message,
+                npc_name=npc_context.get("name") if isinstance(npc_context.get("name"), str) else None,
             )
+            logger.info("NPC response scheduled", npc_id=npc_id, speaker_id=event.speaker_id, message=response_message)
             return True
 
         return NPCEventReaction(event_type=NPCListened, condition=condition, action=action, priority=2)

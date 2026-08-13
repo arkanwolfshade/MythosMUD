@@ -1,14 +1,29 @@
 # Rest Subsystem Design
 
-## Overview
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 The rest subsystem implements the /rest command for clean disconnection. In rest locations (room
 attribute rest_location, e.g. inns/hotels/motels), the player disconnects immediately when not in
 combat. Elsewhere, the player is set to sitting and a 10-second countdown starts; completion
 disconnects the player without a grace period. The countdown is interrupted by combat, movement
 (go), or spellcasting; it is not interrupted by chat, look, or inventory.
 
-## Architecture
+## 2. Architecture
+
+**[NOTE]**
 
 ```mermaid
 flowchart LR
@@ -54,7 +69,9 @@ flowchart LR
   is_player_resting to interrupt or detect rest.
 - **PlayerPositionService**: Used to set player to sitting before countdown (change_position).
 
-## Key design decisions
+## 3. Key design decisions
+
+**[NOTE]**
 
 - **Rest location = instant disconnect**: Room.rest_location true means no countdown; immediate
   intentional disconnect. Used for safe logout in inns.
@@ -69,7 +86,9 @@ flowchart LR
 - **Public helpers**: `is_player_resting(player_id, connection_manager)` and `cancel_rest_countdown`
   are used by go_command, combat, and magic_commands; they are the contract for "rest is active."
 
-## Constraints
+## 4. Constraints
+
+**[NOTE]**
 
 - **No rest in combat**: \_check_player_in_combat uses combat_service.get_combat_by_participant;
   if in combat, rest is blocked entirely.
@@ -81,7 +100,9 @@ flowchart LR
   disconnects, force_disconnect_player), PlayerPositionService, combat_service (app.state or
   container).
 
-## Component interactions
+## 5. Component interactions
+
+**[NOTE]**
 
 1. **/rest** – Get persistence, connection_manager. If already in resting_players, return. If in
    combat, return "You cannot rest during combat." If room.rest_location, call
@@ -94,7 +115,9 @@ flowchart LR
    1s. Then send intentional_disconnect event, call disconnect_func (force_disconnect_player).
    Finally block always removes player_id from resting_players.
 
-## Developer guide
+## 6. Developer guide
+
+**[NOTE]**
 
 - **Changing countdown duration**: REST_COUNTDOWN_DURATION in rest_command.py and rest_countdown_task.py
   (keep in sync or centralize in one module).
@@ -107,7 +130,9 @@ flowchart LR
 - **Room attribute**: Ensure room loader sets rest_location on inn/hotel/motel rooms so instant
   disconnect works.
 
-## Troubleshooting
+## 7. Troubleshooting
+
+**[NOTE]**
 
 - **"You cannot rest during combat"**: combat_service.get_combat_by_participant returned non-None.
   End combat or flee first.
@@ -122,7 +147,17 @@ flowchart LR
 
 See also [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
 
-## Related docs
+## 8. Related docs
+
+**[SPEC]**
 
 - [SUBSYSTEM_MOVEMENT_DESIGN.md](SUBSYSTEM_MOVEMENT_DESIGN.md) (rest interrupt on go)
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
+
+## 9. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

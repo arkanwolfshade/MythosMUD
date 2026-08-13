@@ -13,7 +13,6 @@ from fastapi import WebSocket
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
 from .connection_models import ConnectionMetadata
-from .disconnect_grace_period import cancel_grace_period
 
 logger = get_logger(__name__)
 
@@ -195,7 +194,10 @@ async def _setup_player_and_room(player_id: uuid.UUID, manager: Any) -> tuple[bo
     player = await manager._get_player(player_id)  # pylint: disable=protected-access  # Reason: Accessing internal manager method for player retrieval during connection establishment, manager is guaranteed to have this method
     if not player:
         if manager.async_persistence is None:
-            logger.warning("Persistence not available, connecting without player tracking", player_id=player_id)
+            logger.warning(
+                "Persistence not available, connecting without player tracking",
+                player_id=player_id,
+            )
         else:
             logger.error("Player not found", player_id=player_id)
             return False, None
@@ -216,14 +218,9 @@ async def _track_player_presence(player_id: uuid.UUID, player: Any, manager: Any
         player: The player object
         manager: ConnectionManager instance
     """
-    # Linkdead reconnect stays in online_players, so cancel here (not only in _track_player_connected).
-    await cancel_grace_period(player_id, manager)
-    # Orphan /rest countdown will force_disconnect the new socket if left running.
-    # Inline import: rest_command -> combat -> ConnectionManager -> this module.
-    from ..commands.rest_command import cancel_rest_countdown
-
-    await cancel_rest_countdown(player_id, manager)
-    if player_id not in manager.online_players:
+    in_disconnect_grace = player_id in getattr(manager, "grace_period_players", {})
+    if player_id not in manager.online_players or in_disconnect_grace:
+        # New join, or reconnect during disconnect grace (still listed online until grace ends).
         await manager._track_player_connected(player_id, player, "websocket")  # pylint: disable=protected-access  # Reason: Accessing internal manager method for player presence tracking during connection, manager is guaranteed to have this method
     else:
         logger.info(
@@ -251,7 +248,21 @@ def _cleanup_failed_connection(connection_id: str | None, player_id: uuid.UUID, 
         if connection_id in manager.connection_metadata:
             del manager.connection_metadata[connection_id]
     except (DatabaseError, AttributeError) as cleanup_error:
-        logger.warning("Error during connection failure cleanup", player_id=player_id, cleanup_error=str(cleanup_error))
+        logger.warning(
+            "Error during connection failure cleanup",
+            player_id=player_id,
+            cleanup_error=str(cleanup_error),
+        )
+
+
+async def _cancel_rest_countdown_if_active(player_id: uuid.UUID, manager: Any) -> None:
+    """Cancel leftover /rest countdown from a prior session (crashed client / mid-rest reconnect)."""
+    resting = getattr(manager, "resting_players", None)
+    if not isinstance(resting, dict) or player_id not in resting:
+        return
+    from server.commands.rest_command import cancel_rest_countdown
+
+    await cancel_rest_countdown(player_id, manager)
 
 
 async def establish_websocket_connection(
@@ -314,6 +325,7 @@ async def establish_websocket_connection(
 
         # Track player presence
         await _track_player_presence(player_id, player, manager)
+        await _cancel_rest_countdown_if_active(player_id, manager)
 
         # Track performance metrics
         duration_ms = (time.time() - start_time) * 1000

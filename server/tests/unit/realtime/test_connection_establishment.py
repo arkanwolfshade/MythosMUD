@@ -592,3 +592,37 @@ async def test_establish_websocket_connection_cleans_dead_connections():
     assert success is True
     # Dead connection should be cleaned up
     assert dead_conn not in mock_manager.active_websockets
+
+
+@pytest.mark.asyncio
+async def test_establish_websocket_connection_cancels_rest_countdown():
+    """Reconnect cancels an in-progress rest countdown so it cannot poison the new session."""
+    mock_websocket = AsyncMock(spec=WebSocket)
+    player_id = uuid.uuid4()
+    mock_manager = MagicMock()
+    mock_manager.player_websockets = {}
+    mock_manager.active_websockets = {}
+    mock_manager.connection_metadata = {}
+    mock_manager.session_connections = {}
+    mock_manager.player_sessions = {}
+    mock_manager.disconnect_lock = asyncio.Lock()
+    mock_manager.room_manager = MagicMock()
+    mock_manager.room_manager.subscribe_to_room = MagicMock()
+    mock_manager.online_players = {}
+    mock_manager.performance_tracker = MagicMock()
+    mock_manager.performance_tracker.record_connection_establishment = MagicMock()
+    mock_manager.async_persistence = MagicMock()
+
+    rest_task = asyncio.create_task(asyncio.sleep(100))
+    mock_manager.resting_players = {player_id: rest_task}
+
+    mock_player = MagicMock()
+    mock_player.current_room_id = "room_123"
+    mock_manager._get_player = AsyncMock(return_value=mock_player)
+    mock_manager._track_player_connected = AsyncMock()
+
+    success, _connection_id = await establish_websocket_connection(mock_websocket, player_id, mock_manager)
+
+    assert success is True
+    assert player_id not in mock_manager.resting_players
+    assert rest_task.cancelled() or rest_task.done()

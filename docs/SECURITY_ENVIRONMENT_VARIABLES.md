@@ -1,8 +1,25 @@
 # Security: Environment Variables
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 This document describes the environment variables used for secure configuration in MythosMUD.
 
-## Database Configuration
+## 2. Database Configuration
+
+**[SPEC]**
 
 ### Required for Production
 
@@ -86,3 +103,11 @@ export ENVIRONMENT=production
 
    - Scripts will warn if default passwords are used in production
    - Set `ENVIRONMENT=production` or `ENVIRONMENT=staging` to enable warnings
+
+## 3. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

@@ -127,6 +127,7 @@ export const handleCommandResponse: EventHandler = (event, context, appendMessag
 export const handleChatMessage: EventHandler = (_event, _context, appendMessage) => {
   const message = _event.data.message as string;
   const channel = _event.data.channel as string;
+  const speakerKind = typeof _event.data.speaker_kind === 'string' ? (_event.data.speaker_kind as string) : undefined;
   if (message) {
     let messageType: string;
     switch (channel) {
@@ -142,6 +143,9 @@ export const handleChatMessage: EventHandler = (_event, _context, appendMessage)
       case 'party':
         messageType = 'chat';
         break;
+      case 'system':
+        messageType = 'system';
+        break;
       case 'say':
       case 'local':
       default:
@@ -156,6 +160,7 @@ export const handleChatMessage: EventHandler = (_event, _context, appendMessage)
       messageType: messageType,
       channel: channel,
       type: resolveChatTypeFromChannel(channel),
+      ...(speakerKind ? { speakerKind } : {}),
     });
   }
 };

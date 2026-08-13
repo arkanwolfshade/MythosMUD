@@ -39,6 +39,10 @@ Follow `.cursor/rules/worktrees.mdc`:
 
 ## Preconditions and Safety
 
+- **Permission Required** (same as branch switches): Do **not** create, remove,
+  force-remove, or redirect work into a different worktree unless the user
+  explicitly asked for that in this conversation. Plans that list a worktree
+  step are proposals until approved. Default: stay on the current tree.
 - You are working on Windows with PowerShell; **do not** chain commands with
   `&&`. Run each command separately via the Shell tool.
 - **Never** create a worktree inside `.git/` or nested inside another

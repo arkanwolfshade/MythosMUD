@@ -190,10 +190,20 @@ class SystemAdminChannelStrategy(ChannelBroadcastingStrategy):  # pylint: disabl
         sender_id: uuid.UUID,
         nats_handler: Any,
     ) -> None:
-        """Broadcast system/admin message to all players."""
-        # AI Agent: Use connection_manager from nats_handler (injected dependency)
-        # Convert UUID to string for broadcast_global which expects string
+        """Broadcast system/admin message; personal when target_player_id is set."""
         sender_id_str = str(sender_id)
+        if target_player_id:
+            # Personal system (quest lifecycle): deliver only to the target player.
+            await nats_handler._apply_dampening_and_send_message(  # pylint: disable=protected-access  # Reason: same internal API as WhisperChannelStrategy
+                chat_event, sender_id_str, str(target_player_id), self.channel_type
+            )
+            logger.debug(
+                "Sent personal system message",
+                channel_type=self.channel_type,
+                sender_id=sender_id,
+                target_player_id=target_player_id,
+            )
+            return
         await nats_handler.connection_manager.broadcast_global(chat_event, exclude_player=sender_id_str)
         logger.debug("Broadcasted message", channel_type=self.channel_type, sender_id=sender_id)
 

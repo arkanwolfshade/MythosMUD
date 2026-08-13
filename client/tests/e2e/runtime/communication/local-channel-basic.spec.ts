@@ -30,12 +30,12 @@ import { ensureStanding } from '../fixtures/player';
  * land on [data-message-text] until both sessions recover. Same pattern as chat-messages.spec.ts.
  */
 async function nudgeStandBothPlayers(aw: PlayerContext, other: PlayerContext): Promise<void> {
-  await ensurePlayableConnection(aw.page, {
+  aw.page = await ensurePlayableConnection(aw.page, {
     username: aw.player.username,
     password: aw.player.password,
     timeoutMs: 25000,
   });
-  await ensurePlayableConnection(other.page, {
+  other.page = await ensurePlayableConnection(other.page, {
     username: other.player.username,
     password: other.player.password,
     timeoutMs: 25000,
@@ -96,9 +96,11 @@ async function executeUnmuteAndWaitForAck(
 }
 
 test.describe('Local Channel Basic', () => {
+  test.describe.configure({ timeout: 360_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
+    test.setTimeout(360_000);
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
@@ -148,13 +150,11 @@ test.describe('Local Channel Basic', () => {
     await executeUnmuteAndWaitForAck(awContext, ithaquaContext, 'ArkanWolfshade');
     await new Promise(r => setTimeout(r, 500));
 
-    // AW sends local channel message
+    await prepareReceiverForInboundMessages(ithaquaContext, 20000);
     await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
       el.focus();
     });
     await executeCommand(awContext.page, 'local Hello everyone in the sanitarium');
-
-    await prepareReceiverForInboundMessages(ithaquaContext, 20000);
 
     await Promise.all([
       waitForMessage(awContext.page, 'You say locally: Hello everyone in the sanitarium', 45000),
@@ -192,40 +192,39 @@ test.describe('Local Channel Basic', () => {
     await ensurePlayerInGame(ithaquaContext, 20000);
     // Unmute / stand can desync occupant labels while header still says Connected; bilateral look heals Step 1.
     await awContext.page.bringToFront().catch(() => {});
-    await ensureStanding(awContext.page, 8000);
+    awContext.page = await ensureStanding(awContext.page, 8000);
     await executeCommand(awContext.page, 'look');
     await ithaquaContext.page.bringToFront().catch(() => {});
-    await ensureStanding(ithaquaContext.page, 8000);
+    ithaquaContext.page = await ensureStanding(ithaquaContext.page, 8000);
     await executeCommand(ithaquaContext.page, 'look');
     await new Promise(r => setTimeout(r, 2500));
     await ensurePlayersInSameRoom(contexts, 2, 45000);
     await new Promise(r => setTimeout(r, 2000));
 
     await nudgeStandBothPlayers(awContext, ithaquaContext);
+    await ensurePlayersInSameRoom(contexts, 2, 45000);
 
     await prepareReceiverForInboundMessages(awContext, 20000);
-    await new Promise(r => setTimeout(r, 1500));
-
     await ithaquaContext.page.bringToFront().catch(() => {});
-    await ensurePlayableConnection(ithaquaContext.page, {
+    ithaquaContext.page = await ensurePlayableConnection(ithaquaContext.page, {
       username: ithaquaContext.player.username,
       password: ithaquaContext.player.password,
       timeoutMs: 30000,
     });
-    await ensurePlayableConnection(awContext.page, {
+    awContext.page = await ensurePlayableConnection(awContext.page, {
       username: awContext.player.username,
       password: awContext.player.password,
       timeoutMs: 30000,
     });
-    await ensurePlayerInGame(ithaquaContext, 30000);
-
-    await executeCommand(ithaquaContext.page, 'local Greetings ArkanWolfshade');
-
+    await ensurePlayersInSameRoom(contexts, 2, 45000);
     await prepareReceiverForInboundMessages(awContext, 20000);
 
+    const crossWait = waitForCrossPlayerMessage(awContext, /Ithaqua \(local\): Greetings ArkanWolfshade/i, 45000);
+    await executeCommand(ithaquaContext.page, 'local Greetings ArkanWolfshade');
+
     await Promise.all([
-      waitForMessage(ithaquaContext.page, 'You say locally: Greetings ArkanWolfshade'),
-      waitForCrossPlayerMessage(awContext, /Ithaqua \(local\): Greetings ArkanWolfshade/i, 45000),
+      waitForMessage(ithaquaContext.page, 'You say locally: Greetings ArkanWolfshade', 45000),
+      crossWait,
     ]);
 
     // Verify AW sees the reply

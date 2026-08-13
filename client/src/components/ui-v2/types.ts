@@ -82,6 +82,8 @@ export interface ChatMessage {
   messageType?: string;
   channel?: string;
   type?: string;
+  /** Optional: 'npc' | 'system' when server marks non-player speakers. */
+  speakerKind?: string;
   aliasChain?: Array<{
     original: string;
     expanded: string;

@@ -26,12 +26,12 @@ from .rate_limiter import RateLimiter
 from .room_subscription_manager import RoomSubscriptionManager
 
 
-def initialize_connection_maps(manager: Any, event_publisher: Any | None) -> None:
-    """Initialize connection maps, presence tracking, and service references."""
-    # pylint: disable=protected-access  # Reason: init helper owns private ConnectionManager attrs
-    manager.active_websockets = {}  # dict[str, WebSocket]
-    manager.player_websockets = {}  # dict[uuid.UUID, list[str]]
-    manager.connection_metadata = {}  # dict[str, ConnectionMetadata]
+def initialize_connection_state(manager: Any, event_publisher: Any | None = None) -> None:
+    """Initialize websocket, presence, session, and health-check state attributes."""
+    # pylint: disable=protected-access  # Reason: Friend-module init for ConnectionManager private attrs; keeps __init__ thin
+    manager.active_websockets = {}
+    manager.player_websockets = {}
+    manager.connection_metadata = {}
     manager.sequence_counter = 0
     # ARCHITECTURAL FIX: Use async_persistence instead of sync persistence
     manager.async_persistence = None
@@ -40,24 +40,21 @@ def initialize_connection_maps(manager: Any, event_publisher: Any | None) -> Non
     manager.app = None
     manager._player_combat_service = None
 
-    manager.online_players = {}  # dict[uuid.UUID, dict[str, Any]]
-    manager.last_seen = {}  # dict[uuid.UUID, float]
+    manager.online_players = {}
+    manager.last_seen = {}
     manager.last_active_update_interval = 60.0
-    manager.last_active_update_times = {}  # dict[uuid.UUID, float]
-    manager.disconnecting_players = set()  # set[uuid.UUID]
+    manager.last_active_update_times = {}
+    manager.disconnecting_players = set()
     manager.disconnect_lock = Lock()
-    manager.processed_disconnects = set()  # set[uuid.UUID]
+    manager.processed_disconnects = set()
     manager.processed_disconnect_lock = Lock()
-    manager.grace_period_players = {}  # dict[uuid.UUID, asyncio.Task[Any]]
-    manager.login_grace_period_players = {}  # dict[uuid.UUID, asyncio.Task[Any]]
-    manager.login_grace_period_start_times = {}  # dict[uuid.UUID, float]
-    manager.resting_players = {}  # dict[uuid.UUID, asyncio.Task[Any]]
-    manager.intentional_disconnects = set()  # set[uuid.UUID]
-    manager.connection_timestamps = {}  # dict[str, float]
+    manager.grace_period_players = {}
+    manager.login_grace_period_players = {}
+    manager.login_grace_period_start_times = {}
+    manager.resting_players = {}
+    manager.intentional_disconnects = set()
+    manager.connection_timestamps = {}
 
-
-def initialize_core_components(manager: Any) -> None:
-    """Initialize cleanup stats, modular services, and specialized placeholders."""
     manager.cleanup_stats = {
         "last_cleanup": time.time(),
         "cleanups_performed": 0,
@@ -73,6 +70,22 @@ def initialize_core_components(manager: Any) -> None:
         "cleanup_operation_timestamps": [],
     }
 
+    manager.player_sessions = {}
+    manager.session_connections = {}
+    # Disconnected sessions age off after 5 min; reconnects purge old sessions immediately
+    manager.session_disconnect_times = {}
+    # Use deque with maxlen to prevent unbounded growth (maxlen=1000)
+    manager._closed_websockets = deque(maxlen=1000)
+    manager._disconnect_executor = None
+    manager._health_check_interval = 30.0
+    manager._health_check_task = None
+    # 5 minutes idle = stale connection (aligned with MemoryMonitor.max_connection_age)
+    manager._connection_timeout = 300.0
+    manager._token_revalidation_interval = 300.0
+
+
+def initialize_core_components(manager: Any) -> None:
+    """Initialize modular components and nullable specialized-component stubs."""
     manager.memory_monitor = MemoryMonitor()
     manager.rate_limiter = RateLimiter()
     manager.message_queue = MessageQueue(max_messages_per_player=manager.memory_monitor.max_pending_messages)
@@ -85,6 +98,7 @@ def initialize_core_components(manager: Any) -> None:
         room_manager=manager.room_manager,
         performance_tracker=manager.performance_tracker,
     )
+    # Specialized components require callbacks; set after other components exist
     manager.health_monitor = None
     manager.error_handler = None
     manager.connection_cleaner = None
@@ -92,41 +106,6 @@ def initialize_core_components(manager: Any) -> None:
     manager.room_event_handler = None
     manager.personal_message_sender = None
     manager.message_broadcaster = None
-
-
-def initialize_session_and_health_config(manager: Any) -> None:
-    """Initialize session maps, closed-socket tracking, and health-check config."""
-    # pylint: disable=protected-access  # Reason: init helper owns private ConnectionManager attrs
-    manager.player_sessions = {}  # dict[uuid.UUID, str]
-    manager.session_connections = {}  # dict[str, list[str]]
-    # Disconnected sessions age off after 5 min; reconnects purge old sessions immediately
-    manager.session_disconnect_times = {}  # dict[str, float]
-    # Use deque with maxlen to prevent unbounded growth (maxlen=1000)
-    manager._closed_websockets = deque(maxlen=1000)
-    manager._disconnect_executor = None
-    manager._health_check_interval = 30.0
-    manager._health_check_task = None
-    # 5 minutes idle = stale connection (aligned with MemoryMonitor.max_connection_age)
-    manager._connection_timeout = 300.0
-    manager._token_revalidation_interval = 300.0
-
-
-def initialize_specialized_components(manager: Any) -> None:
-    """Wire specialized components that need manager callbacks."""
-    initialize_health_monitor(manager)
-    initialize_error_handler(manager)
-    initialize_connection_cleaner(manager)
-    initialize_game_state_provider(manager)
-    initialize_messaging(manager)
-    initialize_room_event_handler(manager)
-
-
-def initialize_connection_manager(manager: Any, event_publisher: Any | None = None) -> None:
-    """Fully initialize a ConnectionManager instance."""
-    initialize_connection_maps(manager, event_publisher)
-    initialize_core_components(manager)
-    initialize_session_and_health_config(manager)
-    initialize_specialized_components(manager)
 
 
 def initialize_health_monitor(manager: Any) -> None:

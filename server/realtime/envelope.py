@@ -24,7 +24,7 @@ from typing import Protocol, cast, override
 
 
 class _SupportsEventSequence(Protocol):
-    """Minimal typing for connection_manager passed to build_event (see get_next_sequence_impl)."""
+    """Minimal typing for connection_manager passed to build_event (sequence_counter only)."""
 
     sequence_counter: int
 
@@ -87,12 +87,14 @@ def build_event(  # pylint: disable=too-many-arguments,too-many-positional-argum
 
     AI Agent: connection_manager is now optional parameter instead of global import
     """
+    # Prefer explicit sequence_number; otherwise bump connection_manager counter.
+    # Inline bump (same as get_next_sequence_impl) — do not import connection_manager_methods
+    # (that module imports build_event; a cycle breaks static analysis).
     if sequence_number is not None:
         seq = sequence_number
     elif connection_manager is not None:
-        from .connection_manager_methods import get_next_sequence_impl
-
-        seq = get_next_sequence_impl(connection_manager)
+        connection_manager.sequence_counter += 1
+        seq = connection_manager.sequence_counter
     else:
         seq = _get_next_global_sequence()  # Fallback for backward compatibility
     event: dict[str, object] = {

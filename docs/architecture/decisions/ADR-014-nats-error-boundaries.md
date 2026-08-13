@@ -1,5 +1,20 @@
 # ADR-014: Circuit Breaker + Dead Letter Queue for NATS Error Boundaries
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 **Date**: 2025-10-11
 **Status**: Accepted
 **Decision Makers**: Prof. Wolfshade, AI Assistant
@@ -7,8 +22,9 @@
 
 ---
 
-## Context and Problem Statement
+## 2. Context and Problem Statement
 
+**[SPEC]**
 The NATS message handler had broad exception catching without recovery mechanisms:
 
 1. **No Retry Logic**: Transient failures caused permanent message loss
@@ -21,8 +37,9 @@ The NATS message handler had broad exception catching without recovery mechanism
 
 ---
 
-## Decision Drivers
+## 3. Decision Drivers
 
+**[SPEC]**
 **Message Reliability**: Must prevent message loss
 
 **Resilience**: Must handle transient and persistent failures gracefully
@@ -35,7 +52,9 @@ The NATS message handler had broad exception catching without recovery mechanism
 
 ---
 
-## Considered Options
+## 4. Considered Options
+
+**[SPEC]**
 
 ### Option 1: Circuit Breaker + DLQ + Retry (Custom Implementation)
 
@@ -84,8 +103,9 @@ The NATS message handler had broad exception catching without recovery mechanism
 
 ---
 
-## Decision Outcome
+## 5. Decision Outcome
 
+**[SPEC]**
 **Chosen Option**: **Custom Circuit Breaker + DLQ + Retry Implementation**
 
 **Rationale**:
@@ -105,7 +125,9 @@ The NATS message handler had broad exception catching without recovery mechanism
 
 ---
 
-## Implementation Details
+## 6. Implementation Details
+
+**[NOTE]**
 
 ### 1. Retry Handler with Exponential Backoff
 
@@ -178,7 +200,9 @@ class NATSMessageHandler:
 
 ---
 
-## Consequences
+## 7. Consequences
+
+**[SPEC]**
 
 ### Positive
 
@@ -203,7 +227,9 @@ class NATSMessageHandler:
 
 ---
 
-## Validation
+## 8. Validation
+
+**[SPEC]**
 
 - All 60 NATS error boundary tests passing (100%)
 - Retry handler: 13/13 tests passing
@@ -215,7 +241,9 @@ class NATSMessageHandler:
 
 ---
 
-## Operational Considerations
+## 9. Operational Considerations
+
+**[SPEC]**
 
 ### Monitoring
 
@@ -241,7 +269,9 @@ Alert on:
 
 ---
 
-## References
+## 10. References
+
+**[SPEC]**
 
 - [Martin Fowler - Circuit Breaker](https://martinfowler.com/bliki/CircuitBreaker.html)
 - [AWS - Dead Letter Queues](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html)
@@ -255,8 +285,18 @@ Alert on:
 
 ---
 
-## Related ADRs
+## 11. Related ADRs
+
+**[SPEC]**
 
 - [ADR-011](ADR-011-xstate-frontend-fsm.md): XState for Frontend Connection FSM
 - [ADR-012](ADR-012-python-statemachine-backend.md): python-statemachine for Backend Connection FSM
 - [ADR-013](ADR-013-pydantic-configuration.md): Pydantic Configuration Management
+
+## 12. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

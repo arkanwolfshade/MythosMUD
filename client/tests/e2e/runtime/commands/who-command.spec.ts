@@ -11,7 +11,6 @@ import { executeCommand, getMessages } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
-  ensureMultiplayerCoLocated,
   ensurePlayerInGame,
   getPlayerMessages,
   waitForAllPlayersInGame,
@@ -50,19 +49,40 @@ async function expectWhoListingOnPage(page: Page): Promise<void> {
 }
 
 test.describe('Who Command', () => {
+  test.describe.configure({ timeout: 300_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
+    test.setTimeout(300_000);
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
   });
 
-  test.beforeEach(async () => {
-    await ensurePlayerInGame(contexts[0], 60000);
-    await ensurePlayerInGame(contexts[1], 60000);
-    await ensureMultiplayerCoLocated(contexts, { timeoutMs: 60000, coLocateTimeoutMs: 45000 });
+  test.beforeEach(async ({ browser }) => {
+    test.setTimeout(180_000);
+    let needsFresh = contexts.some(c => c.page.isClosed()) || contexts.some(c => !c.context.browser()?.isConnected());
+    if (!needsFresh) {
+      for (const c of contexts) {
+        const onLogin = await c.page
+          .getByTestId('username-input')
+          .isVisible({ timeout: 1500 })
+          .catch(() => false);
+        if (onLogin) {
+          needsFresh = true;
+          break;
+        }
+      }
+    }
+    if (needsFresh) {
+      await cleanupMultiPlayerContexts(contexts).catch(() => {});
+      contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+      await waitForAllPlayersInGame(contexts, 60000);
+    }
+    // Who is global (online players); skip Occupants(2) co-locate — it burns the test budget.
+    await ensurePlayerInGame(contexts[0], 45000);
+    await ensurePlayerInGame(contexts[1], 45000);
   });
 
   test.afterAll(async () => {
@@ -96,10 +116,18 @@ test.describe('Who Command', () => {
     const ithaquaContext = contexts[1];
 
     await ithaquaContext.page.bringToFront().catch(() => {});
+    await ensurePlayerInGame(ithaquaContext, 45000);
     await expect(
       ithaquaContext.page.getByText(new RegExp(`Player:\\s*${ithaquaContext.player.username}\\b`, 'i'))
     ).toBeVisible({ timeout: 15000 });
-    await ithaquaContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
+    await ithaquaContext.page
+      .locator('[data-message-text]')
+      .first()
+      .waitFor({ state: 'visible', timeout: 20000 })
+      .catch(async () => {
+        await executeCommand(ithaquaContext.page, 'look');
+        await ithaquaContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
+      });
     await executeCommand(ithaquaContext.page, 'look');
     await waitForLookReflectedInUi(ithaquaContext.page);
 

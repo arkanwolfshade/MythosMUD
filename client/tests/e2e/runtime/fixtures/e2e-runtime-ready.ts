@@ -14,10 +14,11 @@ export async function ensureE2eRuntimeReady(
   for (const ctx of contexts) {
     await ctx.page.bringToFront().catch(() => {});
     await waitForPlayableSession(ctx.page, timeoutMs);
-    await ensurePlayableConnection(ctx.page, {
+    ctx.page = await ensurePlayableConnection(ctx.page, {
       username: ctx.player.username,
       password: ctx.player.password,
       timeoutMs,
     });
+    ctx.context = ctx.page.context();
   }
 }

@@ -50,8 +50,7 @@ def is_client_disconnected_exception(exc: BaseException) -> bool:
     if isinstance(exc, (ConnectionError, OSError, TimeoutError)):
         return True
     if isinstance(exc, RuntimeError):
-        msg = str(exc)
-        return "close message has been sent" in msg or 'Cannot call "send"' in msg
+        return is_websocket_disconnect_message(str(exc))
     return False
 
 

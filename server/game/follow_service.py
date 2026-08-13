@@ -10,11 +10,14 @@ Player-to-player follow requires target acceptance (pending request + follow_req
 
 from __future__ import annotations
 
+import asyncio
 import uuid
+from collections.abc import Coroutine
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, Literal, TypeGuard
 
 from server.events.event_types import NPCEnteredRoom, PlayerEnteredRoom
+from server.realtime.connection_manager_api import send_game_event
 from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
@@ -113,23 +116,27 @@ class FollowService:
                         requestor_id=requestor_id,
                     )
 
+    def _schedule_coro(self, coro: Coroutine[Any, Any, Any]) -> None:
+        """Fire-and-forget; close coro if no running event loop (e.g. sync unit tests)."""
+        try:
+            asyncio.create_task(coro)
+        except RuntimeError:
+            coro.close()
+            raise
+
     def _send_result_to_player(self, player_id: str, result: str) -> None:
         """Send a command_response-style message to a single player."""
         if not self._connection_manager:
             return
         try:
-            import asyncio
-
-            from server.realtime.connection_manager_api import send_game_event
-
-            asyncio.create_task(
+            self._schedule_coro(
                 send_game_event(
                     player_id,
                     "command_response",
                     {"result": result},
                 )
             )
-        except (ImportError, ValueError, TypeError, RuntimeError) as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             self._logger.warning(
                 "Failed to send follow message to player",
                 player_id=player_id,
@@ -141,21 +148,17 @@ class FollowService:
         if not self._connection_manager:
             return
         try:
-            import asyncio
-
-            from server.realtime.connection_manager_api import send_game_event
-
             data: dict[str, Any] = {"result": result}
             if position is not None:
                 data["player_update"] = {"position": position}
-            asyncio.create_task(
+            self._schedule_coro(
                 send_game_event(
                     player_id,
                     "command_response",
                     data,
                 )
             )
-        except (ImportError, ValueError, TypeError, RuntimeError) as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             self._logger.warning(
                 "Failed to send result and player update to player",
                 player_id=player_id,
@@ -167,18 +170,14 @@ class FollowService:
         if not self._connection_manager:
             return
         try:
-            import asyncio
-
-            from server.realtime.connection_manager_api import send_game_event
-
-            asyncio.create_task(
+            self._schedule_coro(
                 send_game_event(
                     player_id,
                     "follow_state",
                     {"following": following},
                 )
             )
-        except (ImportError, ValueError, TypeError, RuntimeError) as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             self._logger.warning(
                 "Failed to send follow_state to player",
                 player_id=player_id,
@@ -245,9 +244,11 @@ class FollowService:
             "target_id": target_id,
             "created_at": datetime.now(UTC),
         }
-        import asyncio
-
-        asyncio.create_task(self._send_follow_request_to_target(target_id, request_id, requestor_name, rid))
+        try:
+            self._schedule_coro(self._send_follow_request_to_target(target_id, request_id, requestor_name, rid))
+        except RuntimeError:
+            # No running loop (e.g. sync unit tests); request remains pending in memory.
+            pass
         self._logger.info(
             "Follow request created",
             request_id=request_id,

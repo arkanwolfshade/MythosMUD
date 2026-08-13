@@ -1,16 +1,33 @@
 # Database Connection Pool Configuration
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 This document explains the connection pool configuration strategy for MythosMUD's PostgreSQL database connections.
 
-## Overview
+## 2. Overview
 
+**[SPEC]**
 The codebase uses two different connection pool implementations:
 
 1. **SQLAlchemy AsyncAdaptedQueuePool** - For SQLAlchemy ORM operations
 2. **asyncpg Pool** - For direct asyncpg operations (AsyncPersistenceLayer)
 
-## SQLAlchemy Connection Pool
+## 3. SQLAlchemy Connection Pool
 
+**[SPEC]**
 **Location**: `server/database.py`
 
 **Pool Type**: `AsyncAdaptedQueuePool` (default for async engines)
@@ -34,8 +51,9 @@ pool_timeout: int = 30
 
 **Test Configuration**: Uses `NullPool` (no connection pooling) for test isolation
 
-## AsyncPG Connection Pool
+## 4. AsyncPG Connection Pool
 
+**[SPEC]**
 **Location**: `server/async_persistence.py`
 
 **Pool Type**: `asyncpg.Pool`
@@ -54,7 +72,9 @@ asyncpg_pool_max_size: int = 10
 asyncpg_command_timeout: int = 60
 ```
 
-## Pool Sizing Strategy
+## 5. Pool Sizing Strategy
+
+**[SPEC]**
 
 ### Production Recommendations
 
@@ -87,8 +107,9 @@ max_overflow = pool_size * 2
 - `pool_size = (100 / 0.1) * 1.2 = 12` (round to 15)
 - `max_overflow = 15 * 2 = 30`
 
-## Configuration via Environment Variables
+## 6. Configuration via Environment Variables
 
+**[NOTE]**
 All pool settings can be configured via environment variables:
 
 ```bash
@@ -105,7 +126,9 @@ DATABASE_ASYNCPG_POOL_MAX_SIZE=20
 DATABASE_ASYNCPG_COMMAND_TIMEOUT=60
 ```
 
-## Monitoring Pool Health
+## 7. Monitoring Pool Health
+
+**[SPEC]**
 
 ### Key Metrics to Track
 
@@ -146,7 +169,9 @@ Enable debug logging to monitor pool behavior:
 logger.setLevel(logging.DEBUG)
 ```
 
-## Troubleshooting Pool Exhaustion
+## 8. Troubleshooting Pool Exhaustion
+
+**[SPEC]**
 
 ### Symptoms
 
@@ -195,7 +220,9 @@ logger.setLevel(logging.DEBUG)
    - Use PgBouncer for connection pooling
    - Reduces connection overhead
 
-## Best Practices
+## 9. Best Practices
+
+**[NOTE]**
 
 ### Do's
 
@@ -221,7 +248,9 @@ logger.setLevel(logging.DEBUG)
 
 ❌ Don't mix pool configurations across environments
 
-## Performance Tuning
+## 10. Performance Tuning
+
+**[NOTE]**
 
 ### Connection Pool Pre-Ping
 
@@ -242,8 +271,9 @@ AsyncPG's `command_timeout` prevents queries from hanging indefinitely.
 
 **Recommended**: 60 seconds (current default)
 
-## Production Checklist
+## 11. Production Checklist
 
+**[SPEC]**
 [ ] Pool size configured for expected load
 
 - [ ] Monitoring enabled for pool metrics
@@ -253,8 +283,9 @@ AsyncPG's `command_timeout` prevents queries from hanging indefinitely.
 - [ ] Load testing performed with pool settings
 - [ ] Backup pool configuration ready
 
-## References
+## 12. References
 
+**[SPEC]**
 [SQLAlchemy Connection Pooling](https://docs.sqlalchemy.org/en/20/core/pooling.html)
 
 - [asyncpg Connection Pooling](https://magicstack.github.io/asyncpg/current/api/index.html#connection-pools)
@@ -265,3 +296,11 @@ AsyncPG's `command_timeout` prevents queries from hanging indefinitely.
 *"In the restricted archives, we learn that connection pools are like the dimensional gateways of the Mythos - they must
 be carefully maintained lest they collapse under the weight of too many simultaneous travelers, or remain empty and
 unused, wasting precious resources."*
+
+## 13. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

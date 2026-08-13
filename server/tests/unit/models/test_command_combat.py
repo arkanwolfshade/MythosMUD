@@ -9,7 +9,12 @@ from unittest.mock import patch
 import pytest
 from pydantic import ValidationError
 
-from server.models.command_combat import AttackCommand, KickCommand, PunchCommand, StrikeCommand
+from server.models.command_combat import (
+    AttackCommand,
+    KickCommand,
+    PunchCommand,
+    StrikeCommand,
+)
 
 # --- Tests for AttackCommand ---
 
@@ -49,17 +54,31 @@ def test_attack_command_validate_target_none():
 
 def test_attack_command_target_min_length():
     """Test AttackCommand validates target min length."""
-    with patch("server.models.command_combat.validate_combat_target", side_effect=ValidationError):
+    with patch(
+        "server.models.command_combat.validate_combat_target",
+        side_effect=ValidationError,
+    ):
         with pytest.raises(ValidationError):
             AttackCommand(target="")
 
 
 def test_attack_command_target_max_length():
-    """Test AttackCommand validates target max length."""
-    long_target = "a" * 51  # Exceeds max_length=50
-    with patch("server.models.command_combat.validate_combat_target", side_effect=ValidationError):
+    """Test AttackCommand validates target max length (instance IDs need up to 200)."""
+    long_target = "a" * 201  # Exceeds max_length=200
+    with patch(
+        "server.models.command_combat.validate_combat_target",
+        side_effect=ValidationError,
+    ):
         with pytest.raises(ValidationError):
             AttackCommand(target=long_target)
+
+
+def test_attack_command_accepts_long_instance_id():
+    """Cultist instance IDs exceed the old 50-char limit."""
+    instance_id = "cultist_of_the_yellow_sign_earth_arkhamcity_sanitarium_room_foyer_001_1785207460_3864"
+    with patch("server.models.command_combat.validate_combat_target", return_value=instance_id):
+        command = AttackCommand(target=instance_id)
+        assert command.target == instance_id
 
 
 # --- Tests for PunchCommand ---
@@ -100,15 +119,21 @@ def test_punch_command_validate_target_none():
 
 def test_punch_command_target_min_length():
     """Test PunchCommand validates target min length."""
-    with patch("server.models.command_combat.validate_combat_target", side_effect=ValidationError):
+    with patch(
+        "server.models.command_combat.validate_combat_target",
+        side_effect=ValidationError,
+    ):
         with pytest.raises(ValidationError):
             PunchCommand(target="")
 
 
 def test_punch_command_target_max_length():
     """Test PunchCommand validates target max length."""
-    long_target = "a" * 51  # Exceeds max_length=50
-    with patch("server.models.command_combat.validate_combat_target", side_effect=ValidationError):
+    long_target = "a" * 201  # Exceeds max_length=200
+    with patch(
+        "server.models.command_combat.validate_combat_target",
+        side_effect=ValidationError,
+    ):
         with pytest.raises(ValidationError):
             PunchCommand(target=long_target)
 
@@ -151,15 +176,21 @@ def test_kick_command_validate_target_none():
 
 def test_kick_command_target_min_length():
     """Test KickCommand validates target min length."""
-    with patch("server.models.command_combat.validate_combat_target", side_effect=ValidationError):
+    with patch(
+        "server.models.command_combat.validate_combat_target",
+        side_effect=ValidationError,
+    ):
         with pytest.raises(ValidationError):
             KickCommand(target="")
 
 
 def test_kick_command_target_max_length():
     """Test KickCommand validates target max length."""
-    long_target = "a" * 51  # Exceeds max_length=50
-    with patch("server.models.command_combat.validate_combat_target", side_effect=ValidationError):
+    long_target = "a" * 201  # Exceeds max_length=200
+    with patch(
+        "server.models.command_combat.validate_combat_target",
+        side_effect=ValidationError,
+    ):
         with pytest.raises(ValidationError):
             KickCommand(target=long_target)
 
@@ -202,14 +233,20 @@ def test_strike_command_validate_target_none():
 
 def test_strike_command_target_min_length():
     """Test StrikeCommand validates target min length."""
-    with patch("server.models.command_combat.validate_combat_target", side_effect=ValidationError):
+    with patch(
+        "server.models.command_combat.validate_combat_target",
+        side_effect=ValidationError,
+    ):
         with pytest.raises(ValidationError):
             StrikeCommand(target="")
 
 
 def test_strike_command_target_max_length():
     """Test StrikeCommand validates target max length."""
-    long_target = "a" * 51  # Exceeds max_length=50
-    with patch("server.models.command_combat.validate_combat_target", side_effect=ValidationError):
+    long_target = "a" * 201  # Exceeds max_length=200
+    with patch(
+        "server.models.command_combat.validate_combat_target",
+        side_effect=ValidationError,
+    ):
         with pytest.raises(ValidationError):
             StrikeCommand(target=long_target)

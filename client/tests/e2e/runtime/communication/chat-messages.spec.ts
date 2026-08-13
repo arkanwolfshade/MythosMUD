@@ -28,12 +28,12 @@ import {
  * render on [data-message-text] until sessions recover. Matches local-channel-basic pattern.
  */
 async function nudgeStandBothPlayers(aw: PlayerContext, other: PlayerContext): Promise<void> {
-  await ensurePlayableConnection(aw.page, {
+  aw.page = await ensurePlayableConnection(aw.page, {
     username: aw.player.username,
     password: aw.player.password,
     timeoutMs: 25000,
   });
-  await ensurePlayableConnection(other.page, {
+  other.page = await ensurePlayableConnection(other.page, {
     username: other.player.username,
     password: other.player.password,
     timeoutMs: 25000,
@@ -78,9 +78,11 @@ async function primeBothForCoLocate(contexts: PlayerContext[]): Promise<void> {
 }
 
 test.describe('Chat Messages Between Players', () => {
+  test.describe.configure({ timeout: 360_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
+    test.setTimeout(360_000);
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
@@ -214,12 +216,12 @@ test.describe('Chat Messages Between Players', () => {
     await new Promise(r => setTimeout(r, 1500));
 
     await ithaquaContext.page.bringToFront().catch(() => {});
-    await ensurePlayableConnection(ithaquaContext.page, {
+    ithaquaContext.page = await ensurePlayableConnection(ithaquaContext.page, {
       username: ithaquaContext.player.username,
       password: ithaquaContext.player.password,
       timeoutMs: 30000,
     });
-    await ensurePlayableConnection(awContext.page, {
+    awContext.page = await ensurePlayableConnection(awContext.page, {
       username: awContext.player.username,
       password: awContext.player.password,
       timeoutMs: 30000,

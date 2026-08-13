@@ -66,4 +66,9 @@ class ChatBundle:  # pylint: disable=too-few-public-methods
             logger.error("Chat service NATS connection failed")
             raise RuntimeError("Chat service NATS connection failed - NATS is mandatory for chat system")
 
+        from server.game.chat_npc_system import set_chat_service_for_npc_system, subscribe_npc_spoke_to_chat
+
+        set_chat_service_for_npc_system(self.chat_service)
+        subscribe_npc_spoke_to_chat(container.event_bus)
+
         logger.info("Chat service initialized")

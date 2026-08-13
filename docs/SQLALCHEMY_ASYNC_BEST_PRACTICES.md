@@ -1,12 +1,26 @@
 # SQLAlchemy Async Best Practices
 
-## Overview
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 This document outlines best practices for using SQLAlchemy in async contexts within the MythosMUD project to prevent
 `ObjectNotExecutableError` and other async-related database issues.
 
-## The Problem
+## 2. The Problem
 
+**[NOTE]**
 When using SQLAlchemy 2.0+ in async contexts, raw SQL strings cannot be passed directly to `execute()` methods. This
 causes the following error:
 
@@ -14,7 +28,9 @@ causes the following error:
 sqlalchemy.exc.ObjectNotExecutableError: Not an executable object: 'PRAGMA foreign_keys = ON'
 ```
 
-## The Solution
+## 3. The Solution
+
+**[NOTE]**
 
 ### ✅ Correct Pattern
 
@@ -41,8 +57,9 @@ async def incorrect_usage():
         await session.execute("SELECT * FROM users WHERE id = :user_id", {"user_id": user_id})
 ```
 
-## When to Use `text()`
+## 4. When to Use `text()`
 
+**[NOTE]**
 Use `text()` wrapper for:
 
 **Raw SQL strings** in async contexts
@@ -76,8 +93,9 @@ await session.execute(text("DELETE FROM temp_data WHERE created_at < :cutoff"), 
 await session.execute(text("SELECT * FROM players ORDER BY RANDOM() LIMIT 1"))
 ```
 
-## When NOT to Use `text()`
+## 5. When NOT to Use `text()`
 
+**[NOTE]**
 Don't use `text()` for:
 
 **ORM queries** (use SQLAlchemy ORM methods)
@@ -104,7 +122,9 @@ async with aiosqlite.connect(db_path) as db:
     await db.execute("PRAGMA foreign_keys = ON")  # No text() needed
 ```
 
-## Prevention Tools
+## 6. Prevention Tools
+
+**[NOTE]**
 
 ### Custom Linter
 
@@ -131,7 +151,9 @@ Consider adding these patterns to your IDE's code inspection rules:
 - Warn on `await.*execute\(["']` without `text()` wrapper
 - Suggest `text()` import when using raw SQL in async contexts
 
-## Common Patterns in MythosMUD
+## 7. Common Patterns in MythosMUD
+
+**[NOTE]**
 
 ### Database Initialization
 
@@ -173,7 +195,9 @@ async def cleanup_test_data():
     await session.commit()
 ```
 
-## Troubleshooting
+## 8. Troubleshooting
+
+**[NOTE]**
 
 ### Error: `ObjectNotExecutableError`
 
@@ -209,8 +233,9 @@ from sqlalchemy import text
 - Prefer ORM queries when possible for better performance
 - Use `text()` only when necessary for complex or database-specific SQL
 
-## References
+## 9. References
 
+**[NOTE]**
 [SQLAlchemy 2.0 Async Documentation](https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html)
 
 - [SQLAlchemy Core Text
@@ -224,3 +249,11 @@ from sqlalchemy import text
 *"In the restricted archives of Miskatonic University, we learn that proper incantations are essential when working with
 dimensional gateways. The `text()` ritual must be performed whenever raw SQL strings cross the threshold of async
 execution, lest the ObjectNotExecutableError consume the unwary developer's code."*
+
+## 10. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

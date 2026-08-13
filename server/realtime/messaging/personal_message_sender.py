@@ -16,10 +16,10 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING, Any, cast
 
 from fastapi import WebSocketDisconnect
-from starlette.websockets import WebSocketState
 
 from ...exceptions import DatabaseError
 from ...structured_logging.enhanced_logging_config import get_logger
+from ..websocket_helpers import is_websocket_disconnect_message
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable
@@ -29,27 +29,6 @@ if TYPE_CHECKING:
     from ..message_queue import MessageQueue
 
 logger = get_logger(__name__)
-
-
-def _websocket_is_sendable(websocket: Any) -> bool:
-    """False when Starlette client/application state cannot accept a send."""
-    client_state = getattr(websocket, "client_state", None)
-    app_state = getattr(websocket, "application_state", None)
-    if client_state in (WebSocketState.DISCONNECTED, WebSocketState.CONNECTING):
-        return False
-    return app_state != WebSocketState.DISCONNECTED
-
-
-def _is_expected_websocket_close(error_message: str) -> bool:
-    """True for send-after-close / accept-first races (log at debug, not warning)."""
-    err_lower = error_message.lower()
-    send_after_close = "websocket.send" in err_lower and (
-        "websocket.close" in err_lower or "response already completed" in err_lower
-    )
-    expected_close = (
-        "close message has been sent" in err_lower or "cannot call" in err_lower or "need to call" in err_lower
-    )
-    return send_after_close or expected_close
 
 
 class PersonalMessageSender:
@@ -133,7 +112,10 @@ class PersonalMessageSender:
             return False
 
         try:
-            if not _websocket_is_sendable(websocket):
+            from starlette.websockets import WebSocketState
+
+            ws_state = getattr(websocket, "application_state", None)
+            if ws_state in (WebSocketState.DISCONNECTED, WebSocketState.CONNECTING):
                 delivery_status["websocket_failed"] += 1
                 await self.cleanup_dead_websocket(player_id, connection_id)
                 return False
@@ -144,18 +126,23 @@ class PersonalMessageSender:
             return True
         except (RuntimeError, ConnectionError, WebSocketDisconnect) as ws_error:
             error_message = str(ws_error)
-            if not _is_expected_websocket_close(error_message):
+            err_lower = error_message.lower()
+            # Expected when connection is closing / never accepted: debug only (E2E teardown noise).
+            is_send_after_close = "websocket.send" in err_lower and (
+                "websocket.close" in err_lower or "response already completed" in err_lower
+            )
+            if is_send_after_close or is_websocket_disconnect_message(error_message) or not error_message.strip():
+                logger.debug(
+                    "WebSocket send skipped (connection closing)",
+                    player_id=player_id,
+                    connection_id=connection_id,
+                )
+            else:
                 logger.warning(
                     "WebSocket send failed",
                     player_id=player_id,
                     connection_id=connection_id,
                     error=error_message,
-                )
-            else:
-                logger.debug(
-                    "WebSocket send skipped (connection closing)",
-                    player_id=player_id,
-                    connection_id=connection_id,
                 )
             delivery_status["websocket_failed"] += 1
             await self.cleanup_dead_websocket(player_id, connection_id)

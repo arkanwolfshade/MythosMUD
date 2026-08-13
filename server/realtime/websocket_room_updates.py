@@ -10,8 +10,9 @@ from typing import TYPE_CHECKING, Any
 from ..services.npc_instance_service import get_npc_instance_service
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.room_renderer import build_room_drop_summary, clone_room_drops
+from .disconnect_grace_period import is_player_in_grace_period
 from .envelope import build_event
-from .occupant_display import format_occupant_display_name
+from .login_grace_period import is_player_in_login_grace_period
 from .websocket_helpers import convert_uuids_to_strings, get_npc_name_from_instance
 
 if TYPE_CHECKING:
@@ -21,22 +22,61 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
+def _parse_occupant_player_id(player_id_raw: object) -> uuid.UUID:
+    """Parse occupant player_id; raises TypeError/ValueError on bad input."""
+    if isinstance(player_id_raw, uuid.UUID):
+        return player_id_raw
+    if isinstance(player_id_raw, str):
+        return uuid.UUID(player_id_raw)
+    raise TypeError("player_id must be UUID or str")
+
+
+def _decorate_occupant_name(
+    name: str, player_id: uuid.UUID, connection_manager: "ConnectionManager | Any"
+) -> str | None:
+    """
+    Apply grace-period labels, or None if the player should be hidden from the room list.
+    """
+    if not connection_manager.has_websocket_connection(player_id) and not is_player_in_grace_period(
+        player_id, connection_manager
+    ):
+        return None
+    if is_player_in_grace_period(player_id, connection_manager) and "(linkdead)" not in name:
+        name = f"{name} (linkdead)"
+    if is_player_in_login_grace_period(player_id, connection_manager) and "(warded)" not in name:
+        name = f"{name} (warded)"
+    return name
+
+
 async def get_player_occupants(connection_manager: "ConnectionManager | Any", room_id: str) -> list[str]:
     """
     Get player occupant names from room.
 
     Includes "(linkdead)" indicator for players in grace period.
     """
-    occupant_names = []
+    occupant_names: list[str] = []
     try:
         room_occupants = await connection_manager.get_room_occupants(room_id)
         for occ in room_occupants or []:
             # Only include actual players: skip NPCs even if dict has player_name (e.g. merged format with is_npc).
             if occ.get("is_npc") or "npc_name" in occ:
                 continue
-            name = occ.get("player_name") or occ.get("name")
-            if name:
-                occupant_names.append(format_occupant_display_name(str(name), occ.get("player_id"), connection_manager))
+            name_obj = occ.get("player_name") or occ.get("name")
+            if not isinstance(name_obj, str):
+                continue
+            name = name_obj
+            player_id_raw = occ.get("player_id")
+            if player_id_raw is not None and connection_manager:
+                try:
+                    player_id = _parse_occupant_player_id(player_id_raw)
+                    decorated = _decorate_occupant_name(name, player_id, connection_manager)
+                    if decorated is None:
+                        continue
+                    name = decorated
+                except (ValueError, AttributeError, ImportError, TypeError):
+                    # If we can't check grace period, use name as-is
+                    pass
+            occupant_names.append(name)
     except (AttributeError, KeyError, TypeError, ValueError) as e:
         logger.error("Error transforming room occupants", room_id=room_id, error=str(e))
     return occupant_names
@@ -231,19 +271,23 @@ async def broadcast_room_update(  # pylint: disable=too-many-locals,too-many-sta
     Args:
         player_id: The player who triggered the update
         room_id: The room's ID
-        connection_manager: ConnectionManager instance (optional, will resolve from app.state if not provided)
+        connection_manager: ConnectionManager instance (optional, will resolve from ApplicationContainer if not provided)
     """
     logger.debug("broadcast_room_update called", player_id=player_id, room_id=room_id)
     try:
         if connection_manager is None:
-            # Import inside function to avoid circular import (main.py imports websocket_room_updates indirectly)
-            from ..main import (
-                app,  # pylint: disable=import-outside-toplevel  # Reason: Import inside function to avoid circular import, main.py imports websocket_room_updates indirectly
+            # Resolve via DI container; never import main.app (that closes factory/lifespan cycles)
+            from ..container import (
+                ApplicationContainer,  # pylint: disable=import-outside-toplevel  # Reason: Lazy import keeps realtime off the container module graph at import time
             )
 
-            connection_manager = app.state.container.connection_manager
+            connection_manager = getattr(ApplicationContainer.get_instance(), "connection_manager", None)
 
-        async_persistence = getattr(connection_manager, "async_persistence", None) if connection_manager else None
+        if connection_manager is None:
+            logger.warning("Connection manager not available for room update")
+            return
+
+        async_persistence = getattr(connection_manager, "async_persistence", None)
         if not async_persistence:
             logger.warning("Async persistence layer not available for room update")
             return

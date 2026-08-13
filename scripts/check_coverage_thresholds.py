@@ -8,6 +8,7 @@ from pathlib import Path
 from defusedxml import ElementTree as etree
 
 # Critical files requiring 90% coverage (or custom threshold as specified)
+# Keep in sync with scripts/analyze_coverage_gaps.py CRITICAL_FILES.
 CRITICAL_FILES = {
     "server/auth/argon2_utils.py": 85,  # Lowered due to PasswordHasher read-only methods being untestable
     "server/auth_utils.py": 90,
@@ -88,10 +89,9 @@ def parse_coverage_xml(coverage_xml_path: Path) -> dict[str, float]:
     return file_coverage
 
 
-def check_thresholds(file_coverage: dict[str, float]) -> tuple[list[str], list[str]]:
-    """Check files against their thresholds. Returns (failures, warnings)."""
+def check_thresholds(file_coverage: dict[str, float]) -> list[str]:
+    """Check files against their thresholds. Returns hard-fail messages."""
     failures = []
-    warnings = []
 
     # Check critical files
     for file_path, threshold in CRITICAL_FILES.items():
@@ -99,7 +99,7 @@ def check_thresholds(file_coverage: dict[str, float]) -> tuple[list[str], list[s
         if coverage < threshold:
             failures.append(f"CRITICAL: {file_path} has {coverage:.2f}% coverage, requires {threshold}%")
 
-    # Check normal files (all other server files)
+    # Check normal files (all other server files) — hard-fail after Phase A ratchet
     for file_path, coverage in file_coverage.items():
         # Skip if it's a critical file (already checked)
         if file_path in CRITICAL_FILES:
@@ -110,9 +110,9 @@ def check_thresholds(file_coverage: dict[str, float]) -> tuple[list[str], list[s
             continue
 
         if coverage < NORMAL_THRESHOLD:
-            warnings.append(f"NORMAL: {file_path} has {coverage:.2f}% coverage, requires {NORMAL_THRESHOLD}%")
+            failures.append(f"NORMAL: {file_path} has {coverage:.2f}% coverage, requires {NORMAL_THRESHOLD}%")
 
-    return failures, warnings
+    return failures
 
 
 def _ensure_coverage_xml_or_exit(coverage_xml: Path) -> None:
@@ -128,25 +128,17 @@ def _ensure_coverage_xml_or_exit(coverage_xml: Path) -> None:
     sys.exit(1)
 
 
-def _print_results_and_exit(failures: list[str], warnings: list[str]) -> None:
+def _print_results_and_exit(failures: list[str]) -> None:
     """Print coverage results and exit with appropriate code."""
     if failures:
-        print("\n[FAIL] CRITICAL FILES BELOW THRESHOLD:")
-        for failure in failures:
+        print("\n[FAIL] FILES BELOW COVERAGE THRESHOLD:")
+        for failure in failures[:20]:
             print(f"  {failure}")
-    if warnings:
-        print(f"\n[WARN] NORMAL FILES BELOW {NORMAL_THRESHOLD}% THRESHOLD ({len(warnings)} files):")
-        for warning in warnings[:10]:
-            print(f"  {warning}")
-        if len(warnings) > 10:
-            print(f"  ... and {len(warnings) - 10} more files")
-    if failures:
-        print(f"\n[FAIL] {len(failures)} critical file(s) below threshold")
+        if len(failures) > 20:
+            print(f"  ... and {len(failures) - 20} more files")
+        print(f"\n[FAIL] {len(failures)} file(s) below threshold (normal floor={NORMAL_THRESHOLD}%)")
         sys.exit(1)
-    if warnings:
-        print(f"\n[WARN] {len(warnings)} normal file(s) below threshold (non-blocking)")
-        print("Consider improving coverage for these files in future work.")
-    print("\n[PASS] All critical files meet coverage thresholds!")
+    print("\n[PASS] All critical and normal files meet coverage thresholds!")
     sys.exit(0)
 
 
@@ -157,8 +149,8 @@ def main():
     _ensure_coverage_xml_or_exit(coverage_xml)
     print(f"Checking coverage thresholds from {coverage_xml}...")
     file_coverage = parse_coverage_xml(coverage_xml)
-    failures, warnings = check_thresholds(file_coverage)
-    _print_results_and_exit(failures, warnings)
+    failures = check_thresholds(file_coverage)
+    _print_results_and_exit(failures)
 
 
 if __name__ == "__main__":

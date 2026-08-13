@@ -1,20 +1,40 @@
 # Migration 019 Testing Guide
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 **Date:** 2025-01-14
 **Migration:** `019_postgresql_anti_patterns_fixes.sql`
 
-## Overview
+## 2. Overview
 
+**[NOTE]**
 This guide provides step-by-step instructions for testing Migration 019 before applying it to production databases.
 
-## Prerequisites
+## 3. Prerequisites
+
+**[SPEC]**
 
 1. **PostgreSQL 10+** (required for `generated always as identity`)
 2. **Database backup** (always backup before migrations)
 3. **Test database** (use `mythos_dev` or `mythos_unit` for testing)
 4. **psql** command-line tool installed
 
-## Testing Steps
+## 4. Testing Steps
+
+**[NOTE]**
 
 ### Step 1: Backup Database
 
@@ -316,8 +336,9 @@ UNION ALL
 SELECT 'player_spells', MAX(id) FROM player_spells;
 ```
 
-## Rollback Plan
+## 5. Rollback Plan
 
+**[NOTE]**
 If migration fails or causes issues:
 
 ### Option 1: Restore from Backup
@@ -340,7 +361,9 @@ The migration converts columns to identity, which cannot be easily reversed. If 
 1. Restore from backup (recommended)
 2. Or manually convert identity columns back to serial (complex, not recommended)
 
-## Troubleshooting
+## 6. Troubleshooting
+
+**[NOTE]**
 
 ### Issue: "function convert_serial_to_identity does not exist"
 
@@ -360,8 +383,9 @@ function ran correctly.
 **Solution:** The migration updates foreign key types automatically. If errors occur, verify that all referenced tables
 were migrated.
 
-## Success Criteria
+## 7. Success Criteria
 
+**[NOTE]**
 ✅ All `id` columns are `bigint` with `is_identity = YES`
 ✅ All foreign keys match their referenced primary key types
 ✅ Text columns converted from `varchar(n)` to `text`
@@ -370,8 +394,9 @@ were migrated.
 ✅ Application tests pass
 ✅ Migration is idempotent (can run multiple times)
 
-## Production Deployment Checklist
+## 8. Production Deployment Checklist
 
+**[SPEC]**
 Before applying to production:
 
 - [ ] Tested on development database
@@ -383,10 +408,19 @@ Before applying to production:
 - [ ] Prepared rollback plan
 - [ ] Documented any issues found during testing
 
-## Related Documentation
+## 9. Related Documentation
 
+**[SPEC]**
 [Migration 019 README](../db/migrations/019_POSTGRESQL_ANTI_PATTERNS_FIXES_README.md)
 
 - [PostgreSQL Anti-Patterns Review](../docs/POSTGRESQL_ANTI_PATTERNS_REVIEW.md)
 - [Python Model Updates](../docs/PYTHON_MODEL_UPDATES_REQUIRED.md)
 - [Migration Verification](../docs/MIGRATION_019_VERIFICATION.md)
+
+## 10. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

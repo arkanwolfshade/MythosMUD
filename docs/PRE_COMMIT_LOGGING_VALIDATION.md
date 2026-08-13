@@ -1,11 +1,26 @@
 # Pre-commit Logging Validation
 
-## Overview
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 The enhanced logging system now includes pre-commit hooks that automatically validate logging patterns to ensure all
 code uses the enhanced logging system correctly.
 
-## Implementation
+## 2. Implementation
+
+**[NOTE]**
 
 ### Pre-commit Hook Configuration
 
@@ -51,7 +66,9 @@ Scans all Python files in the `server/` directory
 - Excludes test files, `__pycache__`, and virtual environment files
 - Provides detailed error messages with line numbers
 
-## Usage
+## 3. Usage
+
+**[NOTE]**
 
 ### Automatic Validation
 
@@ -80,8 +97,9 @@ To install the pre-commit hooks:
 pre-commit install
 ```
 
-## Error Messages
+## 4. Error Messages
 
+**[NOTE]**
 The linter provides clear error messages for each violation:
 
 ```
@@ -91,8 +109,9 @@ File: server/example.py
   Line 20: FORBIDDEN: f-string formatting in log messages - Use structured logging instead
 ```
 
-## Correct Usage Examples
+## 5. Correct Usage Examples
 
+**[NOTE]**
 The linter enforces these correct patterns:
 
 ```python
@@ -110,8 +129,9 @@ logger.info("User action completed", user_id=user.id, action="login", success=Tr
 logger.error("Operation failed", operation="user_creation", error=str(e), retry_count=3)
 ```
 
-## Forbidden Patterns
+## 6. Forbidden Patterns
 
+**[NOTE]**
 The linter blocks these patterns:
 
 ```python
@@ -129,7 +149,9 @@ logger.info("message", context={"key": "value"})
 logger.info(f"User {user_id} performed {action}")
 ```
 
-## Integration with Development Workflow
+## 7. Integration with Development Workflow
+
+**[NOTE]**
 
 ### Pre-commit Integration
 
@@ -152,7 +174,9 @@ Works with any text editor or IDE
 - Provides real-time feedback during development
 - Integrates with existing pre-commit hook infrastructure
 
-## Benefits
+## 8. Benefits
+
+**[NOTE]**
 
 ### 🚀 **Automated Validation**
 
@@ -182,7 +206,9 @@ Centralized validation logic
 - Easy to update validation rules
 - Consistent with project standards
 
-## Troubleshooting
+## 9. Troubleshooting
+
+**[NOTE]**
 
 ### Common Issues
 
@@ -211,8 +237,9 @@ For issues with the logging pattern linter:
 3. See `docs/examples/logging/` for examples
 4. Update the linter script if needed
 
-## Future Enhancements
+## 10. Future Enhancements
 
+**[SPEC]**
 Potential improvements to the logging pattern linter:
 
 **Auto-fix capability**: Automatically fix simple violations
@@ -225,8 +252,9 @@ Potential improvements to the logging pattern linter:
 
 **Integration with other tools**: ESLint, Black, etc.
 
-## Documentation References
+## 11. Documentation References
 
+**[SPEC]**
 **Complete Guide**: [docs/LOGGING_BEST_PRACTICES.md](LOGGING_BEST_PRACTICES.md)
 
 **Quick Reference**: [docs/LOGGING_QUICK_REFERENCE.md](LOGGING_QUICK_REFERENCE.md)
@@ -237,3 +265,11 @@ Potential improvements to the logging pattern linter:
 
 The pre-commit logging validation ensures that all future development maintains the high standards of the enhanced
 logging system while providing immediate feedback to developers.
+
+## 12. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

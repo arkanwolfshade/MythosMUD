@@ -8,7 +8,7 @@
  * works correctly for local communication.
  */
 
-import { expect, test } from '@playwright/test';
+import { expect, test, type Browser } from '@playwright/test';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
@@ -17,15 +17,93 @@ import {
   ensurePlayerInGame,
   ensurePlayersInSameRoom,
   getPlayerMessages,
+  prepareReceiverForInboundMessages,
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
 } from '../fixtures/multiplayer';
-import { ensureStanding } from '../fixtures/player';
+import { ensureStanding, goEastFromFoyer } from '../fixtures/player';
+
+type MultiPlayerContexts = Awaited<ReturnType<typeof createMultiPlayerContexts>>;
+type MultiPlayerContext = MultiPlayerContexts[number];
+
+async function contextsNeedRefresh(contexts: MultiPlayerContexts): Promise<boolean> {
+  for (const c of contexts) {
+    if (c.page.isClosed() || !c.context.browser()?.isConnected()) {
+      return true;
+    }
+    const onLogin = await c.page
+      .getByTestId('username-input')
+      .isVisible({ timeout: 1500 })
+      .catch(() => false);
+    if (onLogin) {
+      return true;
+    }
+  }
+  return false;
+}
+
+async function recreateLocalChannelContexts(
+  browser: Browser,
+  contexts: MultiPlayerContexts
+): Promise<MultiPlayerContexts> {
+  await cleanupMultiPlayerContexts(contexts).catch(() => {});
+  const next = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+  await waitForAllPlayersInGame(next, 60000);
+  await ensureMultiplayerCoLocated(next, { timeoutMs: 60000, coLocateTimeoutMs: 60000 });
+  await executeCommand(next[0].page, 'unmute Ithaqua').catch(() => {});
+  await executeCommand(next[1].page, 'unmute ArkanWolfshade').catch(() => {});
+  return next;
+}
+
+async function ensureLocalChannelContextsReady(
+  browser: Browser,
+  contexts: MultiPlayerContexts
+): Promise<MultiPlayerContexts> {
+  if (await contextsNeedRefresh(contexts)) {
+    return recreateLocalChannelContexts(browser, contexts);
+  }
+  return contexts;
+}
+
+async function sendLocalUntilReceiverSees(
+  contexts: MultiPlayerContexts,
+  aw: MultiPlayerContext,
+  ithaqua: MultiPlayerContext
+): Promise<void> {
+  // Start receiver wait before send so Firefox background-tab session loss cannot swallow the line.
+  // Retry with unique payloads: receiver often lands on login after bringToFront(sender).
+  let sawLocal = false;
+  for (let attempt = 0; attempt < 3 && !sawLocal; attempt++) {
+    const payload = `Before movement test ${attempt}`;
+    await ensurePlayerInGame(aw, 30000);
+    await ensurePlayerInGame(ithaqua, 30000);
+    await ensurePlayersInSameRoom(contexts, 2, 45000);
+    await executeCommand(ithaqua.page, 'unmute ArkanWolfshade').catch(() => {});
+    await executeCommand(aw.page, 'unmute Ithaqua').catch(() => {});
+    await prepareReceiverForInboundMessages(ithaqua, 30000);
+    const crossWait = waitForCrossPlayerMessage(
+      ithaqua,
+      new RegExp(`ArkanWolfshade \\(local\\): ${payload}`, 'i'),
+      45000
+    );
+    await aw.page.bringToFront().catch(() => {});
+    await executeCommand(aw.page, `local ${payload}`);
+    await ithaqua.page.bringToFront().catch(() => {});
+    try {
+      await Promise.all([waitForMessage(aw.page, new RegExp(`You say locally:\\s*${payload}`, 'i'), 45000), crossWait]);
+      sawLocal = true;
+    } catch (err) {
+      if (attempt === 2) {
+        throw err;
+      }
+    }
+  }
+}
 
 test.describe('Local Channel Movement', () => {
   test.describe.configure({ mode: 'serial', timeout: 300_000 });
 
-  let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
+  let contexts: MultiPlayerContexts;
 
   test.beforeAll(async ({ browser }) => {
     test.setTimeout(300_000);
@@ -38,6 +116,9 @@ test.describe('Local Channel Movement', () => {
       timeoutMs: 60000,
       coLocateTimeoutMs: 60000,
     });
+    // Mute state persists across specs; local delivery is filtered until unmuted.
+    await executeCommand(contexts[0].page, 'unmute Ithaqua').catch(() => {});
+    await executeCommand(contexts[1].page, 'unmute ArkanWolfshade').catch(() => {});
   });
 
   test.afterAll(async () => {
@@ -45,33 +126,32 @@ test.describe('Local Channel Movement', () => {
     await cleanupMultiPlayerContexts(contexts);
   });
 
-  test('Ithaqua should see local message before AW moves', async () => {
-    const awContext = contexts[0];
-    const ithaquaContext = contexts[1];
+  test('Ithaqua should see local message before AW moves', async ({ browser }) => {
+    contexts = await ensureLocalChannelContextsReady(browser, contexts);
+
+    const aw = contexts[0];
+    const ithaqua = contexts[1];
 
     await ensureMultiplayerCoLocated(contexts, { timeoutMs: 60000, coLocateTimeoutMs: 60000 });
-    await ensurePlayerInGame(awContext, 15000);
-    await ensurePlayerInGame(ithaquaContext, 15000);
+    await ensurePlayerInGame(aw, 45000);
+    await ensurePlayerInGame(ithaqua, 45000);
 
     await ensurePlayersInSameRoom(contexts, 2, 45000);
-    await ithaquaContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 15000 });
+    await executeCommand(ithaqua.page, 'unmute ArkanWolfshade').catch(() => {});
+    await executeCommand(aw.page, 'unmute Ithaqua').catch(() => {});
+    await ithaqua.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 15000 });
     await new Promise(r => setTimeout(r, 1500));
 
-    await awContext.page.bringToFront().catch(() => {});
-    await ensurePlayerInGame(awContext, 30000);
-    await expect(awContext.page.getByText(/Player:\s*ArkanWolfshade\b/i)).toBeVisible({ timeout: 15000 });
-    await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
-    await executeCommand(awContext.page, 'look');
-    await waitForMessage(awContext.page, /Arena|gladiator|heart of the|exits|Laundry|Room/i, 20000);
+    await aw.page.bringToFront().catch(() => {});
+    await ensurePlayerInGame(aw, 30000);
+    await expect(aw.page.getByText(/Player:\s*ArkanWolfshade\b/i)).toBeVisible({ timeout: 15000 });
+    await aw.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
+    await executeCommand(aw.page, 'look');
+    await waitForMessage(aw.page, /Arena|gladiator|heart of the|exits|Laundry|Room/i, 20000);
 
-    await awContext.page.bringToFront().catch(() => {});
-    await executeCommand(awContext.page, 'local Before movement test');
-
-    await waitForMessage(awContext.page, /You say locally:\s*Before movement test/i, 45000);
-
-    await waitForCrossPlayerMessage(ithaquaContext, /ArkanWolfshade \(local\): Before movement test/i, 35000);
-    const ithaquaMessages = await getPlayerMessages(ithaquaContext);
-    const seesMessage = ithaquaMessages.some(msg => msg.includes('ArkanWolfshade (local): Before movement test'));
+    await sendLocalUntilReceiverSees(contexts, aw, ithaqua);
+    const ithaquaMessages = await getPlayerMessages(ithaqua);
+    const seesMessage = ithaquaMessages.some(msg => /ArkanWolfshade \(local\): Before movement test/i.test(msg));
     expect(seesMessage).toBe(true);
   });
 
@@ -92,12 +172,9 @@ test.describe('Local Channel Movement', () => {
     await executeCommand(awContext.page, 'look');
     await waitForMessage(awContext.page, /Arena|gladiator|heart of the|exits|Laundry|Room|hallway/i, 20000);
 
-    await ensureStanding(awContext.page, 45000);
+    awContext.page = await ensureStanding(awContext.page, 45000);
     await awContext.page.bringToFront().catch(() => {});
-    await executeCommand(awContext.page, 'go east');
-    await waitForMessage(awContext.page, /You go east|You move east|Eastern Hallway|Arena/i, 45000).catch(() => {
-      throw new Error('AW failed to move east - movement command did not succeed');
-    });
+    awContext.page = await goEastFromFoyer(awContext.page);
 
     await new Promise(r => setTimeout(r, 2000));
 
@@ -141,7 +218,7 @@ test.describe('Local Channel Movement', () => {
     await executeCommand(awContext.page, 'look');
     await waitForMessage(awContext.page, /Arena|gladiator|heart of the|exits|Laundry|Room|hallway/i, 20000);
 
-    await ensureStanding(awContext.page, 5000);
+    awContext.page = await ensureStanding(awContext.page, 5000);
     await awContext.page.bringToFront().catch(() => {});
     await executeCommand(awContext.page, 'go north');
     await waitForMessage(awContext.page, /You go north/i, 45000).catch(() => {

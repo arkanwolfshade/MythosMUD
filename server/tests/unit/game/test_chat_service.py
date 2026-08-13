@@ -259,6 +259,105 @@ async def test_send_party_message_rate_limited():
 
 
 @pytest.mark.asyncio
+async def test_send_say_message_success():
+    """Test send_say_message() success publishes to NATS and stores room history."""
+    mock_persistence = MagicMock()
+    mock_room_service = MagicMock()
+    mock_player_service = AsyncMock()
+    player_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.name = "TestPlayer"
+    mock_player.current_room_id = "room_001"
+    mock_player_service.get_player_by_id = AsyncMock(return_value=mock_player)
+    service = ChatService(mock_persistence, mock_room_service, mock_player_service)
+    service.rate_limiter.check_rate_limit = MagicMock(return_value=True)  # type: ignore[method-assign]
+    service.rate_limiter.record_message = MagicMock()
+    service.user_manager.is_channel_muted = MagicMock(return_value=False)  # type: ignore[method-assign]
+    service.user_manager.is_globally_muted = MagicMock(return_value=False)  # type: ignore[method-assign]
+    service.user_manager.can_send_message = MagicMock(return_value=True)  # type: ignore[method-assign]
+    with patch(
+        "server.game.chat_service.publish_chat_message_to_nats",
+        new_callable=AsyncMock,
+        return_value=True,
+    ):
+        result = await service.send_say_message(player_id, "Hello room")
+    assert result["success"] is True
+    assert result["message"]["content"] == "Hello room"
+    assert len(service.get_room_messages("room_001")) == 1
+
+
+@pytest.mark.asyncio
+async def test_send_local_message_success():
+    """Test send_local_message() success path."""
+    mock_persistence = MagicMock()
+    mock_room_service = MagicMock()
+    mock_player_service = AsyncMock()
+    mock_player = MagicMock()
+    mock_player.name = "TestPlayer"
+    mock_player.current_room_id = "room_001"
+    mock_player_service.get_player_by_id = AsyncMock(return_value=mock_player)
+    service = ChatService(mock_persistence, mock_room_service, mock_player_service)
+    service.rate_limiter.check_rate_limit = MagicMock(return_value=True)  # type: ignore[method-assign]
+    service.rate_limiter.record_message = MagicMock()
+    with patch(
+        "server.game.chat_service.send_local_message_helper",
+        new_callable=AsyncMock,
+        return_value={"success": True, "message": {"channel": "local", "content": "Local hello"}},
+    ):
+        result = await service.send_local_message(uuid.uuid4(), "Local hello")
+    assert result["success"] is True
+    assert result["message"]["channel"] == "local"
+
+
+@pytest.mark.asyncio
+async def test_send_global_message_success():
+    """Test send_global_message() success path."""
+    mock_persistence = MagicMock()
+    mock_room_service = MagicMock()
+    mock_player_service = AsyncMock()
+    mock_player = MagicMock()
+    mock_player.name = "TestPlayer"
+    mock_player_service.get_player_by_id = AsyncMock(return_value=mock_player)
+    service = ChatService(mock_persistence, mock_room_service, mock_player_service)
+    service.rate_limiter.check_rate_limit = MagicMock(return_value=True)  # type: ignore[method-assign]
+    service.rate_limiter.record_message = MagicMock()
+    with patch(
+        "server.game.chat_service.send_global_message_helper",
+        new_callable=AsyncMock,
+        return_value={"success": True, "message": {"channel": "global", "content": "Hello world"}},
+    ):
+        result = await service.send_global_message(uuid.uuid4(), "Hello world")
+    assert result["success"] is True
+    assert result["message"]["channel"] == "global"
+
+
+@pytest.mark.asyncio
+async def test_send_emote_message_success():
+    """Test send_emote_message() success path."""
+    mock_persistence = MagicMock()
+    mock_room_service = MagicMock()
+    mock_player_service = AsyncMock()
+    mock_player = MagicMock()
+    mock_player.name = "TestPlayer"
+    mock_player.current_room_id = "room_001"
+    mock_player_service.get_player_by_id = AsyncMock(return_value=mock_player)
+    service = ChatService(mock_persistence, mock_room_service, mock_player_service)
+    service.rate_limiter.check_rate_limit = MagicMock(return_value=True)  # type: ignore[method-assign]
+    service.rate_limiter.record_message = MagicMock()
+    service.user_manager.load_player_mutes = MagicMock(return_value=True)  # type: ignore[method-assign]
+    service.user_manager.is_channel_muted = MagicMock(return_value=False)  # type: ignore[method-assign]
+    service.user_manager.is_globally_muted = MagicMock(return_value=False)  # type: ignore[method-assign]
+    service.user_manager.can_send_message = MagicMock(return_value=True)  # type: ignore[method-assign]
+    with patch(
+        "server.game.chat_service.publish_chat_message_to_nats",
+        new_callable=AsyncMock,
+        return_value=True,
+    ):
+        result = await service.send_emote_message(uuid.uuid4(), "waves")
+    assert result["success"] is True
+
+
+@pytest.mark.asyncio
 async def test_send_party_message_success():
     """Test send_party_message() success path: message published to NATS."""
     mock_persistence = MagicMock()

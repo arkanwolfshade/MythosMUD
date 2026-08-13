@@ -1,5 +1,21 @@
 # Contributing to MythosMUD
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
+
 > "In the archives of Miskatonic University, we welcome those who seek knowledge, provided they understand the risks and
 > respect the protocols."
 
@@ -9,22 +25,23 @@ meet our academic standards.
 
 ---
 
-## Table of Contents
+## 2. Table of Contents
 
+**[SPEC]**
 [Contributing to MythosMUD](#contributing-to-mythosmud)
 
 - [Contributing to MythosMUD](#contributing-to-mythosmud)
-  - [Table of Contents](#table-of-contents)
+  - [Table of Contents](#2-table-of-contents)
 
-  - [Code of Conduct](#code-of-conduct)
+  - [Code of Conduct](#3-code-of-conduct)
     - [Project-Specific Values](#project-specific-values)
 
-  - [Getting Started](#getting-started)
+  - [Getting Started](#4-getting-started)
     - [Prerequisites](#prerequisites)
     - [Development Environment Setup](#development-environment-setup)
     - [Understanding the Codebase](#understanding-the-codebase)
 
-  - [Development Workflow](#development-workflow)
+  - [Development Workflow](#5-development-workflow)
     - [Finding Tasks](#finding-tasks)
     - [Creating a Branch](#creating-a-branch)
     - [Making Changes](#making-changes)
@@ -42,40 +59,40 @@ meet our academic standards.
     - [Committing Your Work](#committing-your-work)
     - [Submitting a Pull Request](#submitting-a-pull-request)
 
-  - [Coding Standards](#coding-standards)
+  - [Coding Standards](#6-coding-standards)
     - [Python Guidelines](#python-guidelines)
     - [TypeScript/React Guidelines](#typescriptreact-guidelines)
     - [Logging Best Practices](#logging-best-practices)
       - [✅ CORRECT Usage](#-correct-usage)
-
       - [❌ WRONG Usage (Will Cause Failures)](#-wrong-usage-will-cause-failures)
 
     - [Security Requirements](#security-requirements)
 
-  - [Testing Requirements](#testing-requirements)
+  - [Testing Requirements](#7-testing-requirements)
     - [Writing Tests](#writing-tests)
     - [Test Coverage](#test-coverage)
     - [Running Tests](#running-tests)
-  - [Documentation](#documentation)
+  - [Documentation](#8-documentation)
     - [Code Documentation](#code-documentation)
     - [Project Documentation](#project-documentation)
     - [Mythos References](#mythos-references)
-  - [Community](#community)
+  - [Community](#9-community)
     - [Getting Help](#getting-help)
     - [Communication Guidelines](#communication-guidelines)
     - [Review Process](#review-process)
-  - [Recognition](#recognition)
-  - [Additional Resources](#additional-resources)
+  - [Recognition](#10-recognition)
+  - [Additional Resources](#11-additional-resources)
     - [Essential Reading](#essential-reading)
     - [Technical Documentation](#technical-documentation)
     - [Testing Resources](#testing-resources)
     - [Style Guides](#style-guides)
-  - [Questions?](#questions)
+  - [Questions?](#12-questions)
 
 ---
 
-## Code of Conduct
+## 3. Code of Conduct
 
+**[SPEC]**
 This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are
 expected to uphold this code. Please report unacceptable behavior to
 [mythosmud-coc.destitute749@simplelogin.com](mailto:mythosmud-coc.destitute749@simplelogin.com).
@@ -105,7 +122,9 @@ We guard our community as carefully as we guard against eldritch threats.
 
 ---
 
-## Getting Started
+## 4. Getting Started
+
+**[SPEC]**
 
 ### Prerequisites
 
@@ -127,9 +146,9 @@ Before you begin your research, ensure you have the proper tools:
 
 **Visual Studio Code** or **Cursor IDE** with Python and TypeScript extensions
 
-**PostgreSQL** (for production testing, optional for development)
+**PostgreSQL 15+** (required for local development and tests)
 
-**Docker** (for containerized testing, optional)
+**Docker** (optional; used by `make test-ci` locally to mirror CI)
 
 ### Development Environment Setup
 
@@ -178,12 +197,20 @@ Before you begin your research, ensure you have the proper tools:
 
    **CRITICAL**: Edit `.env.local` and `.env.unit_test` to set your local configuration. Never commit these files!
 
-5. **Set up test environment:**
+5. **Set up test environment and apply procedures:**
 
    ```powershell
    # Required before first test run
 
    make setup-test-env
+
+   # Create mythos_dev + apply DDL (from .env.local DATABASE_URL)
+
+   .\scripts\setup_postgresql_test_db.ps1 -EnvFile .env.local
+
+   # Apply procedures to mythos_dev
+
+   make apply-procedures
    ```
 
 6. **Verify setup:**
@@ -195,6 +222,7 @@ Before you begin your research, ensure you have the proper tools:
 
    # Start the development server
 
+   .\scripts\stop_server.ps1
    .\scripts\start_local.ps1
    ```
 
@@ -215,7 +243,7 @@ Before making changes, familiarize yourself with the project structure:
 **`/docs`** - Comprehensive documentation
 
 - **`/scripts`** - Utility scripts for development
-- **`/e2e-tests`** - End-to-end testing framework
+- **`/client/tests/e2e`** - Playwright end-to-end specs
 - **`/schemas`** - JSON schemas for validation
 
 Key documentation to review:
@@ -228,7 +256,9 @@ Key documentation to review:
 
 ---
 
-## Development Workflow
+## 5. Development Workflow
+
+**[SPEC]**
 
 ### Finding Tasks
 
@@ -302,7 +332,7 @@ Python: Follow PEP 8 via ruff (120 char line limit)
 
 - TypeScript: Follow project ESLint/Prettier config
 - Use meaningful variable and function names
-- Add comments for complex logic (see [Coding Standards](#coding-standards))
+- Add comments for complex logic (see [Coding Standards](#6-coding-standards))
 
 #### 4. **Use Enhanced Logging**
 
@@ -339,25 +369,23 @@ One feature or fix per pull request
 **CRITICAL**: All changes must be tested before submission.
 
 ```powershell
-# Run all tests
+# Run all tests (client unit + server; excludes integration marker)
 
 make test
 
 # Run specific test categories
 
-make test        # Server tests only
+make test-server        # Server tests only
 make test-client        # Client unit tests
-make test-client-runtime # Client E2E tests
+make test-client-e2e    # Client E2E tests (Playwright)
 
 # Run with coverage
 
-cd server
-uv run pytest --cov=. --cov-report=html
+make test-coverage
 
 # Run linting
 
 make lint
-
 ```
 
 **Test Requirements**:
@@ -367,7 +395,7 @@ make lint
 - All bug fixes must have regression tests
 - Tests must pass before PR submission
 
-See [Testing Requirements](#testing-requirements) for details.
+See [Testing Requirements](#7-testing-requirements) for details.
 
 ### Committing Your Work
 
@@ -440,7 +468,7 @@ uv run ruff check . --fix
 
 cd client
 npm run format
-npm run lint:fix
+npm run lint
 ```
 
 ### Submitting a Pull Request
@@ -480,7 +508,9 @@ npm run lint:fix
 
 ---
 
-## Coding Standards
+## 6. Coding Standards
+
+**[NOTE]**
 
 ### Python Guidelines
 
@@ -770,7 +800,9 @@ See [SECURITY.md](SECURITY.md) for comprehensive security policies.
 
 ---
 
-## Testing Requirements
+## 7. Testing Requirements
+
+**[NOTE]**
 
 ### Writing Tests
 
@@ -943,13 +975,13 @@ TOTAL                                    1234     89    93%
 **NEVER** use `python -m pytest` directly
 
 ```powershell
-# Run all tests
+# Run all tests (client unit + server)
 
 make test
 
 # Run server tests only
 
-make test
+make test-server
 
 # Run client unit tests (Vitest)
 
@@ -957,10 +989,11 @@ make test-client
 
 # Run client E2E tests (Playwright)
 
-make test-client-runtime
+make test-client-e2e
 
 # Run tests with coverage
 
+make test-coverage
 make test-server-coverage
 
 # Check coverage thresholds (after running tests)
@@ -1000,8 +1033,9 @@ See [server/tests/SETUP.md](server/tests/SETUP.md) for detailed testing guide.
 
 ---
 
-## Documentation
+## 8. Documentation
 
+**[NOTE]**
 **Documentation is as important as code.** When making changes:
 
 ### Code Documentation
@@ -1067,6 +1101,22 @@ When making significant changes, update relevant documentation:
 
 **Code comments**: For implementation details
 
+### HADS (living developer docs)
+
+**[SPEC]**
+
+- New or materially updated **living** developer docs must use HADS structure
+  (H1, `**Version X.Y.Z**`, `## AI READING INSTRUCTION`, `[SPEC]`/`[NOTE]`/`[BUG]`/`[?]`,
+  Changelog)
+- List converted paths in [`docs/hads.manifest`](docs/hads.manifest)
+- Validate locally: `python scripts/hads/validate.py --manifest docs/hads.manifest`
+- CI runs the same check on manifest paths
+- Out of scope for HADS: `docs/archive/`, `AGENTS.md`, `.cursor/` rules/skills, Obsidian wiki
+- One-shot reports (audits, remediations, session summaries) go under `docs/archive/` — not HADS
+
+**[NOTE]**
+See [`scripts/hads/README.md`](scripts/hads/README.md) for the vendored validator pin and usage.
+
 ### Mythos References
 
 We encourage (but don't require) adding Lovecraftian flavor to documentation:
@@ -1092,7 +1142,9 @@ class PositionTracker:
 
 ---
 
-## Community
+## 9. Community
+
+**[SPEC]**
 
 ### Getting Help
 
@@ -1133,8 +1185,9 @@ Be respectful and professional
 
 ---
 
-## Recognition
+## 10. Recognition
 
+**[SPEC]**
 We value all contributions, large and small. Contributors will be:
 
 - Listed in project documentation
@@ -1156,7 +1209,9 @@ We value all contributions, large and small. Contributors will be:
 
 ---
 
-## Additional Resources
+## 11. Additional Resources
+
+**[SPEC]**
 
 ### Essential Reading
 
@@ -1192,8 +1247,9 @@ We value all contributions, large and small. Contributors will be:
 
 ---
 
-## Questions?
+## 12. Questions?
 
+**[SPEC]**
 If you have questions about contributing:
 
 1. Check existing documentation
@@ -1214,3 +1270,11 @@ If you have questions about contributing:
 **Last Updated**: January 2025
 **Version**: 1.0
 **Maintainers**: @arkanwolfshade, @TylerWolfshade
+
+## 13. Changelog
+
+**[SPEC]**
+
+| Version | Date       | Change                             |
+| ------- | ---------- | ---------------------------------- |
+| 1.0.0   | 2026-07-30 | Initial HADS structural conversion |

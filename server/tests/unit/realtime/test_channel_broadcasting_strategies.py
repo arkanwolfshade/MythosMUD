@@ -218,6 +218,27 @@ async def test_system_admin_channel_strategy_broadcast():
 
 
 @pytest.mark.asyncio
+async def test_system_admin_channel_strategy_personal_target():
+    """Personal system messages deliver to target_player_id only."""
+    from server.realtime.channel_broadcasting_strategies import SystemAdminChannelStrategy
+
+    strategy = SystemAdminChannelStrategy("system")
+    mock_nats_handler = MagicMock()
+    mock_nats_handler._apply_dampening_and_send_message = AsyncMock()
+    mock_nats_handler.connection_manager.broadcast_global = AsyncMock()
+    chat_event = {"type": "chat", "message": "[SYSTEM] Quest started"}
+    target_player_id = uuid.uuid4()
+    sender_id = uuid.uuid4()
+
+    await strategy.broadcast(chat_event, "", "", target_player_id, sender_id, mock_nats_handler)
+
+    mock_nats_handler._apply_dampening_and_send_message.assert_awaited_once_with(
+        chat_event, str(sender_id), str(target_player_id), "system"
+    )
+    mock_nats_handler.connection_manager.broadcast_global.assert_not_called()
+
+
+@pytest.mark.asyncio
 async def test_unknown_channel_strategy_broadcast():
     """Test UnknownChannelStrategy.broadcast() handles unknown channel."""
     strategy = UnknownChannelStrategy("unknown")

@@ -6,6 +6,7 @@ Tests the ConnectionCleaner class.
 
 import time
 import uuid
+from types import SimpleNamespace
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
@@ -154,14 +155,81 @@ async def test_cleanup_orphaned_data(connection_cleaner):
 
 
 @pytest.mark.asyncio
-async def test_cleanup_dead_connections(connection_cleaner):
-    """Test cleanup_dead_connections() cleans up dead connections."""
-    active_websockets = {"ws_001": MagicMock()}
-    player_websockets = {uuid.uuid4(): ["ws_001"]}
-    connection_metadata: dict[str, Any] = {}
-    await connection_cleaner.cleanup_dead_connections(active_websockets, player_websockets, connection_metadata)
-    # Should not raise
-    assert True  # If we get here, it succeeded
+async def test_cleanup_dead_connections(connection_cleaner, mock_cleanup_dead_websocket):
+    """Test cleanup_dead_connections() cleans up dead websocket connections."""
+    player_id = uuid.uuid4()
+    dead_ws = MagicMock()
+    dead_ws.client_state.name = "DISCONNECTED"
+    active_websockets = {"ws_001": dead_ws}
+    player_websockets = {player_id: ["ws_001"]}
+    result = await connection_cleaner.cleanup_dead_connections(player_websockets, active_websockets)
+    assert result["connections_cleaned"] == 1
+    mock_cleanup_dead_websocket.assert_awaited_once_with(player_id, "ws_001")
+
+
+@pytest.mark.asyncio
+async def test_cleanup_orphaned_data_closes_stale_websocket(connection_cleaner, mock_memory_monitor):
+    """Test cleanup_orphaned_data() closes stale active connections."""
+    mock_memory_monitor.max_connection_age = 10
+    mock_memory_monitor.max_rate_limit_entries = 100
+    mock_memory_monitor.max_pending_messages = 100
+    stale_ws = AsyncMock()
+    stale_ws.close = AsyncMock()
+    meta = SimpleNamespace(player_id=uuid.uuid4())
+    connection_timestamps = {"ws_stale": time.time() - 100}
+    active_websockets = {"ws_stale": stale_ws}
+    cleanup_stats = {"cleanups_performed": 0}
+    connection_metadata = {"ws_stale": meta}
+    await connection_cleaner.cleanup_orphaned_data(
+        connection_timestamps, active_websockets, cleanup_stats, connection_metadata
+    )
+    stale_ws.close.assert_awaited_once()
+    assert "ws_stale" not in active_websockets
+    assert cleanup_stats["cleanups_performed"] == 1
+
+
+def test_cleanup_ghost_players_removes_offline_room_members(
+    connection_cleaner, mock_get_async_persistence, mock_has_websocket_connection
+):
+    """Test cleanup_ghost_players() removes players not in online_players."""
+    online_id = uuid.uuid4()
+    ghost_id = uuid.uuid4()
+    room = MagicMock()
+    room.id = "room_001"
+    room.get_players.return_value = {str(online_id), str(ghost_id)}
+    mock_get_async_persistence.return_value = MagicMock(list_rooms=lambda: [room])
+    mock_has_websocket_connection.side_effect = lambda pid: pid == online_id
+    connection_cleaner.cleanup_ghost_players({online_id: {"name": "Online"}})
+    room.remove_player_silently.assert_called_once_with(str(ghost_id))
+
+
+def test_stale_prune_max_age_local(monkeypatch):
+    """Test _stale_prune_max_age_seconds uses longer threshold in local env."""
+    from server.realtime.maintenance import connection_cleaner as cc
+
+    monkeypatch.setenv("LOGGING_ENVIRONMENT", "local")
+    assert cc._stale_prune_max_age_seconds() == 300
+    monkeypatch.setenv("LOGGING_ENVIRONMENT", "production")
+    assert cc._stale_prune_max_age_seconds() == 90
+
+
+@pytest.mark.asyncio
+async def test_check_and_cleanup_skips_when_not_due(connection_cleaner):
+    """Test check_and_cleanup() no-ops when memory monitor does not request cleanup."""
+    from server.realtime.maintenance.connection_cleaner import CleanupContext
+
+    connection_cleaner.memory_monitor.should_cleanup.return_value = False
+    ctx = CleanupContext(
+        online_players={},
+        last_seen={},
+        player_websockets={},
+        active_websockets={},
+        connection_timestamps={},
+        cleanup_stats={"memory_cleanups": 0, "last_cleanup": 0, "cleanups_performed": 0},
+        last_active_update_times={},
+    )
+    await connection_cleaner.check_and_cleanup(ctx)
+    assert ctx.cleanup_stats["memory_cleanups"] == 0
 
 
 def test_cleanup_ghost_players(connection_cleaner, mock_room_manager):

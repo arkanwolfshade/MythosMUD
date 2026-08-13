@@ -1,12 +1,30 @@
 # Cursor CLI Documentation
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 *"In the restricted archives, we learn that automation requires proper tools. The Cursor CLI provides powerful coding assistance directly from the terminal, enabling both interactive sessions and automated workflows."*
 
-## Overview
+## 2. Overview
 
+**[NOTE]**
 Cursor CLI lets you interact with AI agents directly from your terminal to write, review, and modify code. Whether you prefer an interactive terminal interface or print automation for scripts and CI pipelines, the CLI provides powerful coding assistance right where you work.
 
-## Installation
+## 3. Installation
+
+**[NOTE]**
 
 ### Windows PowerShell
 
@@ -34,7 +52,9 @@ Expected output:
 x64
 ```
 
-## Core Commands
+## 4. Core Commands
+
+**[NOTE]**
 
 ### Interactive Mode
 
@@ -64,8 +84,9 @@ Use with git changes included for review:
 cursor agent -p "review these changes for security issues" --output-format text
 ```
 
-## Modes
+## 5. Modes
 
+**[SPEC]**
 The CLI supports the same modes as the editor:
 
 | Mode      | Description                                                  | Shortcut      |
@@ -88,8 +109,9 @@ cursor agent --mode=plan -p "refactor the persistence layer"
 cursor agent --mode=ask -p "explore the authentication flow"
 ```
 
-## Project Scripts
+## 6. Project Scripts
 
+**[NOTE]**
 MythosMUD includes PowerShell scripts that wrap Cursor CLI for common workflows:
 
 ### cursor-cli-agent.ps1
@@ -122,7 +144,9 @@ Test failure remediation:
 .\scripts\cursor-cli-test-fix.ps1 -TestName test_login_failure -AnalyzeOnly
 ```
 
-## Common Options
+## 7. Common Options
+
+**[NOTE]**
 
 ### Model Selection
 
@@ -144,8 +168,9 @@ cursor agent -p "review code" --output-format json
 cursor agent -p "fix bugs"  # Print mode (non-interactive)
 ```
 
-## Sessions
+## 8. Sessions
 
+**[NOTE]**
 Resume previous conversations to maintain context:
 
 ```powershell
@@ -159,8 +184,9 @@ cursor agent resume
 cursor agent --resume="chat-id-here"
 ```
 
-## Cloud Agent Handoff
+## 9. Cloud Agent Handoff
 
+**[NOTE]**
 Push your conversation to a Cloud Agent to continue running while you're away:
 
 ```powershell
@@ -170,7 +196,9 @@ cursor agent "&refactor the auth module and add comprehensive tests"
 
 Pick up your Cloud Agent tasks on web or mobile at [cursor.com/agents](https://cursor.com/agents).
 
-## Use Cases
+## 10. Use Cases
+
+**[NOTE]**
 
 ### Code Writing/Review
 
@@ -204,7 +232,9 @@ cursor agent "generate a new API endpoint for user management"
 cursor agent -p "review these changes for security issues" --output-format text > review.txt
 ```
 
-## Integration with Project Workflows
+## 11. Integration with Project Workflows
+
+**[NOTE]**
 
 ### Test Failure Remediation
 
@@ -224,7 +254,9 @@ cursor agent -p "review these changes for security issues" --output-format text 
 .\scripts\cursor-cli-review.ps1 -Path server/services/ -Focus performance
 ```
 
-## Best Practices
+## 12. Best Practices
+
+**[SPEC]**
 
 ### Interactive vs Non-Interactive
 
@@ -242,7 +274,9 @@ cursor agent -p "review these changes for security issues" --output-format text 
 - **Text**: Human-readable output for reviews and reports
 - **JSON**: Structured output for automation and parsing
 
-## Troubleshooting
+## 13. Troubleshooting
+
+**[NOTE]**
 
 ### CLI Not Found
 
@@ -274,16 +308,28 @@ cursor agent --help
 cursor agent -p "your prompt"
 ```
 
-## References
+## 14. References
+
+**[SPEC]**
 
 - [Cursor CLI Documentation](https://cursor.com/docs/cli/overview)
 - [Cursor CLI Reference](https://docs.cursor.com/en/cli/reference/parameters)
 - Project scripts: `scripts/cursor-cli-*.ps1`
 - Workflow examples: `docs/CURSOR_WORKFLOWS.md`
 
-## Notes
+## 15. Notes
+
+**[SPEC]**
 
 - The CLI is currently in beta and should only be used in trusted environments
 - CLI usage consumes API credits based on your Cursor plan
 - Non-interactive mode is best for automation and CI/CD
 - Interactive mode provides better context and conversation flow
+
+## 16. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

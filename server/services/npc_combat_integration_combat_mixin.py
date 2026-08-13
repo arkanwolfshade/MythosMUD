@@ -72,8 +72,8 @@ class NPCCombatIntegrationCombatMixin:
         Damage amount is the caller-supplied ``attack_damage``; combat resolution (armor, etc.)
         is handled inside ``process_attack``.
         """
-        from ..app.lifespan import (
-            get_current_tick,  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Lazy import avoids circular import at module load
+        from ..app.game_tick_processing import (
+            get_current_tick,  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Lazy import; tick lives here, not lifespan (avoids app boot import cycle)
         )
 
         current_tick = get_current_tick()
@@ -122,8 +122,8 @@ class NPCCombatIntegrationCombatMixin:
         npc_instance: object,
     ) -> CombatResult:
         """Process combat attack, starting new combat or continuing existing one."""
-        from ..app.lifespan import (
-            get_current_tick,  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Lazy import avoids circular import at module load
+        from ..app.game_tick_processing import (
+            get_current_tick,  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Lazy import; tick lives here, not lifespan (avoids app boot import cycle)
         )
 
         current_tick = get_current_tick()

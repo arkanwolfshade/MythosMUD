@@ -1,14 +1,31 @@
 # ADR-016: Aggro and Threat Management System
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 **Status:** Accepted
 **Date:** 2026-02-26
 
-## Context
+## 2. Context
 
+**[NOTE]**
 MythosMUD combat needs predictable, group-friendly NPC targeting so that tanks can hold aggro, healers and DPS can contribute without constant target flicker, and players understand why a mob switched targets. Traditional Diku/ROM-style "round-robin" or random targeting does not support tank/healer roles or threat-based control. A threat (hate) system with stability thresholds and room-based scope was desired, with future support for kiting (pulling a mob from an adjacent room).
 
-## Decision
+## 3. Decision
 
+**[SPEC]**
 Adopt a **room-based aggro and threat management system** with the following choices:
 
 - **Combat space:** Strictly room-based. Everyone in the same room is "in the fight"; no sub-room positioning. Target selection and threat are evaluated per room.
@@ -21,25 +38,41 @@ Adopt a **room-based aggro and threat management system** with the following cho
 
 Detailed formulas, data structures, UpdateAggro() behaviour, and test scenarios are in the companion design doc.
 
-## Alternatives Considered
+## 4. Alternatives Considered
+
+**[SPEC]**
 
 1. **Coordinate or position-in-room** – Rejected for initial scope; room-based keeps implementation simple and matches "everyone in the room is in the fight."
 2. **Taunt as ranged pull** – Rejected; taunt is room-local so that kiting is explicitly "attack (or pull) from next room," not taunt-from-afar.
 3. **No stability threshold** – Rejected; immediate switch on any threat lead would cause target flicker and poor tank/healer experience.
 4. **Full round-robin / random target** – Rejected; does not support tanking or threat-based control.
 
-## Consequences
+## 5. Consequences
+
+**[SPEC]**
 
 - **Positive:** Clear tank/healer/DPS roles; predictable aggro with minimal spam; design supports future kiting via attack-from-adjacent-room; sparse hate list scales to many players in room.
 - **Negative:** Per-mob state (hate list, current target) must be maintained and tick-driven; stealth/aggro shedding behaviour must be defined (TBD in design doc).
 - **Neutral:** Optional per-NPC target priority (healer/caster/weakest) can be added later without changing core model.
 
-## Related ADRs
+## 6. Related ADRs
+
+**[SPEC]**
 
 - ADR-001: Layered Architecture with Event-Driven Components (combat tick / events)
 - (Future) Kiting / cross-room pull: to be detailed when that feature is implemented
 
-## References
+## 7. References
+
+**[SPEC]**
 
 - [Aggro and Threat System Design](../aggro-threat-system.md) – Formulas, data structures, pseudocode, test scenarios
 - [Aggro and Threat Implementation Plan](../aggro-threat-implementation-plan.md) – Implementation summary and key files
+
+## 8. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

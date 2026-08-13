@@ -1,0 +1,65 @@
+// MythosMUD jCodemunch project overrides.
+// Keeps the index on real source/tests; graphify dumps, lockfiles, and data fixtures
+// otherwise inflate file/symbol/untested counts past the 2000-file folder cap.
+{
+  // Primary languages for symbol extraction. JSON/YAML still get discovered unless
+  // ignored below — ignore them so they do not consume the folder file budget.
+  "languages": ["python", "typescript", "tsx", "javascript", "sql", "powershell"],
+
+  // Headroom once noise is excluded; default 2000 was truncating ~2132 source files.
+  // Note: some MCP index_folder paths still call get_max_folder_files() without repo=,
+  // so pin JCODEMUNCH_MAX_FOLDER_FILES=4000 in .cursor/mcp.json until upstream always
+  // passes repo= (walk path already does in newer builds).
+  "max_folder_files": 4000,
+
+  "extra_ignore_patterns": [
+    // Live code-graph dumps (partially tracked / force-included via gitignore exceptions)
+    "graphify-out/",
+    "**/graphify-out/",
+    "**/.graphify_labels.json",
+    "**/.graphify_*.json",
+
+    // Durable wiki / fixtures / Chaosium PDFs — not application source
+    "data/MythosMUD-Obsidian/",
+    "**/MythosMUD-Obsidian/",
+    "data/e2e_test/",
+    "data/local/",
+    "data/unit_test/",
+    "data/players/",
+    "data/npcs/",
+
+    // Editor / agent state (not game source)
+    ".cursor/",
+    ".codacy/",
+    ".github/workflows/",
+
+    // Lockfiles and generated package metadata
+    "**/package-lock.json",
+    "**/pnpm-lock.yaml",
+    "**/yarn.lock",
+    "uv.lock",
+    "poetry.lock",
+    "Cargo.lock",
+
+    // Config / CI YAML and JSON noise (no useful AST symbols for code search)
+    "**/*.yml",
+    "**/*.yaml",
+    "**/*.json",
+    "**/*.jsonc",
+
+    // Build / coverage / vendored
+    "htmlcov/",
+    "coverage/",
+    "client/dist/",
+    "client/coverage/",
+    "**/*.min.js",
+    "**/node_modules/",
+    ".venv/",
+    "**/.venv/",
+    "**/__pycache__/",
+    ".tox/",
+    ".mypy_cache/",
+    ".ruff_cache/",
+    ".pytest_cache/",
+  ],
+}

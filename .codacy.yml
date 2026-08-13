@@ -26,6 +26,9 @@ exclude_paths:
   - "**/node_modules/**"
   - "**/dist/**"
   - "**/build/**"
+  # Lockfiles are not product source; Lizard file-nloc on uv.lock is pure noise.
+  - "uv.lock"
+  - "**/uv.lock"
   # Makefile is build DSL, not Python/Go source; avoid false parse errors from Pylint/Revive.
   - "Makefile"
   - "**/mythosmud_data/**"
@@ -54,9 +57,18 @@ exclude_paths:
   - "**/playwright-report/**"
   - "**/playwright-report-data/**"
   - "**/test-results/**"
-  # Graphify knowledge graph + synced community wiki dump (generated, not product code).
+  # Graphify knowledge graph artifacts, caches, and local config (not product code).
+  # Cover root trees, nested copies (e.g. client/src/__tests__/graphify-out), and
+  # any path whose name contains graphify (scripts, env examples, ignore files).
+  - "graphify-out/**"
   - "**/graphify-out/**"
+  - "graphify/**"
   - "**/graphify/**"
+  - "**/*graphify*"
+  - "**/.graphify*"
+  - ".graphifyignore"
+  - "env.graphify.example"
+  - ".env.graphify.local"
 
 # Bandit: exclude test paths so B101 (assert) and B106 (hardcoded pwd) are not reported in tests.
 # Codacy uses engines.<tool>.exclude_paths; ignore_patterns are not applied to tool analysis.
@@ -74,9 +86,15 @@ engines:
     exclude_paths:
       - "server/services/user_manager.py"
       - "scripts/ci/quality_fragmentation_guard.py"
-      # Lockfiles are not source; Lizard file-nloc on package-lock.json is noise.
-      - "**/package-lock.json"
+      # Lockfiles are not source; Lizard file-nloc is noise.
+      - "uv.lock"
       - "**/uv.lock"
+      - "**/package-lock.json"
+      # Generated graphify trees (CLI local scans; root exclude_paths covers Cloud).
+      - "graphify-out/**"
+      - "**/graphify-out/**"
+      - "**/graphify/**"
+      - "**/*graphify*"
       # Client unit tests: large fixtures inflate file-nloc; product gate is client/src app code.
       - "client/src/**/__tests__/**"
       - "client/src/**/*.test.ts"
@@ -94,12 +112,17 @@ engines:
       - "**/test_*.py"
       - "**/*_test.py"
       - "**/conftest.py"
-  # Codacy Cloud tool-level excludes (see root exclude_paths for Makefile too).
-  # Note: Codacy CLI v2 may still run Pylint/Revive on an opened Makefile; see .vscode/settings.json.
+      # OpenAPI example strings in Pydantic schemas are documentation only, not real secrets.
+      - "server/schemas/**"
   pylintpython3:
+    # Pydantic/schema models are data holders; R0903 "too few public methods" is expected.
     exclude_paths:
       - "Makefile"
       - "**/Makefile"
+      - "server/schemas/**"
+      - "server/models/**"
+  # Codacy Cloud tool-level excludes (see root exclude_paths for Makefile too).
+  # Note: Codacy CLI v2 may still run Pylint/Revive on an opened Makefile; see .vscode/settings.json.
   revive:
     exclude_paths:
       - "Makefile"
@@ -108,7 +131,7 @@ engines:
     exclude_paths:
       - "openapi.json"
     # Skip GHSA-qwww-vcr4-c8h2 via root .trivyignore (RSC-only; SPA uses RR 7.x).
-  # TSQLLint is SQL Server–oriented; MythosMUD SQL is PostgreSQL. Exclude rather than
+  # TSQLLint is SQL Server-oriented; MythosMUD SQL is PostgreSQL. Exclude rather than
   # adding invalid T-SQL SET directives to Postgres migrations/verification scripts.
   tsqllint:
     exclude_paths:
@@ -120,6 +143,10 @@ engines:
 # Assert and test passwords are standard in pytest; bandit.yml skips them but Codacy
 # may still report - these patterns suppress for all pytest-related paths.
 ignore_patterns:
+  # Mixin extracted from container_service; Codacy R0801 is a false positive (no twin block).
+  - pattern_id: "PyLintPython3_R0801"
+    file_paths:
+      - "server/services/container_service_access.py"
   # Bandit B101: Use of assert detected (acceptable in pytest - assert is the test API)
   # NOTE: Also configured in bandit.yml - see bandit.yml for native Bandit runs.
   # Multiple pattern_id variants for Codacy/Prospector (Bandit_B101, bandit.B101, etc.)
@@ -149,16 +176,22 @@ ignore_patterns:
       - "**/tests/**/*.py"
       - "**/*_test.py"
       - "**/conftest.py"
+  # Bandit B105/B106: OpenAPI example passwords / tokens in Pydantic schemas (docs only)
+  - pattern_id: "Bandit_B105"
+    file_paths:
+      - "server/schemas/**"
+      - "scripts/verify_migration.py"
+      - "scripts/apply_players_migration.py"
+  - pattern_id: "Bandit_B106"
+    file_paths:
+      - "server/schemas/**"
   # Bandit B608: SQL injection false positive in integration fixtures (db_name used only in ValueError
   # messages for protected-DB checks, not in any SQL; see PR #408 discussion r2838388474)
   - pattern_id: "Bandit_B608"
     file_paths:
       - "server/tests/fixtures/integration/__init__.py"
   # Bandit B105: Hardcoded password (acceptable for development defaults with environment variable fallback)
-  - pattern_id: "Bandit_B105"
-    file_paths:
-      - "scripts/verify_migration.py"
-      - "scripts/apply_players_migration.py"
+  # (schema paths already listed above with scripts)
   # Semgrep: XSS warnings in SafeHtml.test.tsx (false positives - tests verify XSS protection)
   - pattern_id: "typescript.react.security.audit.dangerouslysetinnerhtml.dangerouslysetinnerhtml"
     file_paths:
@@ -314,6 +347,15 @@ ignore_patterns:
   # Lizard CCN: do NOT ignore Lizard_ccn-medium globally. Codacy CLI/cloud thresholds are set to
   # CCN 11 in engines.lizard.config and .codacy/tools-configs/lizard.yaml so CCN 9-10 are not
   # reported; CCN > 10 must be fixed in code (project CI gate).
+  # Pylint R0903: too-few-public-methods on Pydantic models / typed containers (by design).
+  - pattern_id: "Pylint_R0903"
+    file_paths:
+      - "server/schemas/**"
+      - "server/models/**"
+  - pattern_id: "R0903"
+    file_paths:
+      - "server/schemas/**"
+      - "server/models/**"
   # Lizard file NLOC medium uses tool default threshold 500 in Codacy CLI. Project policy is 550.
   # Suppress this single file until Codacy CLI honors engines.lizard.config.file-nloc=550.
   - pattern_id: "Lizard_file-nloc-medium"
@@ -395,4 +437,7 @@ ignore_patterns:
 # Caret ranges + committed lockfiles remain best practice; JSON cannot host inline
 # suppressions. PR #409 r2842724151: no duplicate dependency keys in client/package.json.
 #
-# Trivy SCA: GHSA-qwww-vcr4-c8h2 also listed in .trivyignore (engine-native ignore).
+# Trivy SCA: GHSA-qwww-vcr4-c8h2 (react-router RSC CSRF) ignored in .trivyignore -
+# SPA does not use RSC APIs; same rationale as Dependabot #162 and dependency-review
+# allow-ghsas. Codacy SRM High for this GHSA should be dismissed as tolerable_risk
+# (SPA path; no RSC) until react-router-dom >= 8.3 is a planned client upgrade.

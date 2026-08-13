@@ -1,13 +1,28 @@
 # Movement Subsystem Design
 
-## Overview
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 The movement subsystem handles atomic player movement between rooms. It ensures a player is never in
 multiple rooms simultaneously (ACID-style semantics), validates exits, enforces combat and posture
 constraints, persists location, and triggers real-time events so clients see arrivals and departures.
 Movement is foundational: follow, NPC population, and room visibility all depend on it.
 
-## Architecture
+## 2. Architecture
+
+**[NOTE]**
 
 ```mermaid
 flowchart LR
@@ -64,7 +79,9 @@ flowchart LR
 - **InstanceManager** (optional): Tutorial exit handling: when player moves to instance exit room,
   `tutorial_instance_id` is cleared and instance destroyed.
 
-## Key design decisions
+## 3. Key design decisions
+
+**[NOTE]**
 
 - **Server authority**: Only the server decides if a move succeeds; client sends direction only.
 - **Atomic move**: Under a single lock: validate → remove from source room → add to destination room →
@@ -80,7 +97,9 @@ flowchart LR
 - **Tutorial exit**: When moving to the instance’s configured exit room, the service clears
   `tutorial_instance_id` and destroys the instance (ADR-009).
 
-## Constraints
+## 4. Constraints
+
+**[SPEC]**
 
 - **Same room**: Moving to the same room is rejected (validation returns false).
 - **Player in source room**: Player must be in `from_room` (in-memory or DB reconciliation via
@@ -91,7 +110,9 @@ flowchart LR
   InstanceManager. Exploration marking is best-effort (non-blocking on failure).
 - **Thread safety**: All move operations use `MovementService._lock` (RLock).
 
-## Component interactions
+## 5. Component interactions
+
+**[NOTE]**
 
 1. **go command** → Gets app container (persistence, connection_manager, movement_service). Validates
    posture (standing), interrupts rest if needed, resolves exit from current room, then calls
@@ -106,7 +127,9 @@ from_room_id=...)`, `save_player` (current_room_id), optional tutorial exit and 
    EVENT_OWNERSHIP_MATRIX, NATS_SUBJECT_PATTERNS). Follow subsystem subscribes to PlayerEnteredRoom
    to move followers.
 
-## Developer guide
+## 6. Developer guide
+
+**[NOTE]**
 
 - **Adding a new movement blocker**: Extend `_validate_movement()` in MovementService (e.g. new check
   similar to `_check_combat_state` or `_check_player_posture`). Keep validation synchronous where
@@ -120,7 +143,9 @@ from_room_id=...)`, `save_player` (current_room_id), optional tutorial exit and 
   integration tests for go command and EventBus/NATS propagation. Use `reset_movement_monitor()` in
   tests to avoid cross-test metric leakage.
 
-## Troubleshooting
+## 7. Troubleshooting
+
+**[NOTE]**
 
 - **“You can't go that way”**: Exit missing for direction, or target room not found (check room IDs
   and instance remapping). Logs: `"No valid exit"`, `"Exit validation failed - room ID mismatch"`,
@@ -141,9 +166,19 @@ from_room_id=...)`, `save_player` (current_room_id), optional tutorial exit and 
 See also [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc) and
 [MYTHOSMUD_DEBUGGING_AGENT](../../.cursor/rules/MYTHOSMUD_DEBUGGING_AGENT.mdc).
 
-## Related docs
+## 8. Related docs
+
+**[SPEC]**
 
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
 - [EVENT_OWNERSHIP_MATRIX.md](../EVENT_OWNERSHIP_MATRIX.md)
 - [NATS_SUBJECT_PATTERNS.md](../NATS_SUBJECT_PATTERNS.md)
 - [ADR-009: Instanced rooms](../architecture/decisions/ADR-009-instanced-rooms.md)
+
+## 9. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

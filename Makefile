@@ -10,11 +10,8 @@ PROJECT_ROOT := $(PROJECT_ROOT:%/=%)
 # Common command patterns
 # Use uv-run interpreter so Windows does not spawn bare `python` (pyenv-win shims / PATH gaps
 # trigger "Select an app to open 'python'").
-# --no-sync: Windows often locks .venv/Scripts/ruff.exe (Cursor "ruff server"); uv then fails with
-# "Access is denied" when trying to replace it. Sync deps via `uv sync` / make install when needed.
-export UV_NO_SYNC := 1
-PYTHON := cd $(PROJECT_ROOT) && uv run --no-sync python
-UV := cd $(PROJECT_ROOT) && uv run --no-sync
+PYTHON := cd $(PROJECT_ROOT) && uv run python
+UV := cd $(PROJECT_ROOT) && uv run
 # PowerShell 7+ (pwsh); avoids Windows PowerShell 5.1 for gallery/modules and matches project rules
 POWERSHELL := cd $(PROJECT_ROOT) && pwsh -NoProfile -ExecutionPolicy Bypass -File
 
@@ -49,7 +46,7 @@ PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --co
 .PHONY: setup-test-env setup-test-env-force check-postgresql setup-postgresql-test-db bootstrap-e2e-database ensure-e2e-database verify-schema
 .PHONY: openapi-spec sync-obsidian-graphify
 .PHONY: test test-coverage test-client test-client-e2e test-playwright test-client-coverage test-server test-server-coverage test-ci
-.PHONY: coverage all
+.PHONY: test-comprehensive test-e2e coverage all
 
 # ============================================================================
 # HELP
@@ -81,7 +78,7 @@ help:
 	@echo "  grype          - Dependency SCA from project root (excludes E2E harness trees; not in make all)"
 	@echo "  lizard         - Code complexity analyzer"
 	@echo "  quality-fragmentation-guard - Run local PR fragmentation/complexity guard"
-	@echo "  codacy-tools   - Run all Codacy tools"
+	@echo "  codacy-tools   - Run all Codacy tools (fail-fast)"
 	@echo ""
 	@echo "Database Setup:"
 	@echo "  setup-test-env         - Create test environment files"
@@ -97,8 +94,8 @@ help:
 	@echo "  sync-obsidian-graphify - Sync graphify community wiki into Obsidian LLM vault"
 	@echo ""
 	@echo "Testing:"
-	@echo "  test                  - Run all tests (client + server, no coverage)"
-	@echo "  test-coverage         - Run all tests with coverage"
+	@echo "  test                  - Run all tests (client + server; fail-fast)"
+	@echo "  test-coverage         - Run all tests with coverage (fail-fast)"
 	@echo "  test-client           - Run client unit tests only (no coverage)"
 	@echo "  test-client-e2e       - Run client E2E tests (Playwright)"
 	@echo "  test-playwright   - Run client E2E + server integration tests (requires running server; mucks with runtime data)"
@@ -106,6 +103,8 @@ help:
 	@echo "  test-server           - Run server tests only (no coverage)"
 	@echo "  test-server-coverage  - Run server tests with coverage"
 	@echo "  test-ci               - CI/CD test suite (enforces coverage thresholds)"
+	@echo "  test-comprehensive    - Alias for test-ci"
+	@echo "  test-e2e              - Alias for test-client-e2e"
 	@echo ""
 	@echo "Build & Deploy:"
 	@echo "  clean             - Remove build, dist, and cache files"
@@ -149,7 +148,6 @@ format:
 bandit:
 	$(PYTHON) scripts/bandit.py
 
-# scripts/pylint.py must exit non-zero if pylint is missing/unrunnable (not only on bit-32 fatals).
 pylint:
 	$(PYTHON) scripts/pylint.py
 
@@ -204,21 +202,13 @@ quality-fragmentation-guard:
 vulture:
 	$(UV) vulture
 
-# Run Codacy tools in recipe order (not only as parallelizable prereqs) so a hard failure
-# in bandit/pylint/etc. stops Make immediately and does not start later tools.
+# Run all Codacy tools (except those already in lint/format).
 # Grype is standalone: make grype (project-root SCA; not part of E2E or make all).
+# Fail-fast: stop on first non-zero exit or traceback in stage output (see run_make_stages.py).
+CODACY_TOOL_STAGES := bandit pylint sqlfluff hadolint shellcheck psscriptanalyzer \
+	stylelint markdownlint jackson-linter lizard vulture
 codacy-tools:
-	$(MAKE) bandit
-	$(MAKE) pylint
-	$(MAKE) sqlfluff
-	$(MAKE) hadolint
-	$(MAKE) shellcheck
-	$(MAKE) psscriptanalyzer
-	$(MAKE) stylelint
-	$(MAKE) markdownlint
-	$(MAKE) jackson-linter
-	$(MAKE) lizard
-	$(MAKE) vulture
+	@$(PYTHON) scripts/run_make_stages.py --make "$(MAKE)" -- $(CODACY_TOOL_STAGES)
 
 # ============================================================================
 # DATABASE SETUP
@@ -287,6 +277,7 @@ test-playwright: setup-test-env ensure-e2e-database
 	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_e2e
 	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_e2e
 	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_e2e
+	$(POWERSHELL) scripts/apply_dialogue_migration.ps1 -TargetDbs mythos_e2e
 	@echo "Running Playwright E2E then integration tests (fails fast on Playwright/bootstrap errors)..."
 	$(POWERSHELL) scripts/run_test_playwright.ps1 $(PYTEST_OPTS)
 
@@ -300,6 +291,7 @@ test-server: setup-test-env setup-postgresql-test-db
 	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_unit
 	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_unit
 	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/apply_dialogue_migration.ps1 -TargetDbs mythos_unit
 	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS)
 
 test-server-coverage: setup-test-env setup-postgresql-test-db
@@ -308,11 +300,15 @@ test-server-coverage: setup-test-env setup-postgresql-test-db
 	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_unit
 	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_unit
 	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/apply_dialogue_migration.ps1 -TargetDbs mythos_unit
 	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS) $(PYTEST_COV_OPTS)
 
-test: test-client test-server
+# Fail-fast multi-stage runners (loud banner + skip remaining stages on first failure).
+test:
+	@$(PYTHON) scripts/run_make_stages.py --make "$(MAKE)" -- test-client test-server
 
-test-coverage: test-client-coverage test-server-coverage
+test-coverage:
+	@$(PYTHON) scripts/run_make_stages.py --make "$(MAKE)" -- test-client-coverage test-server-coverage
 
 # CI/CD test suite (with coverage, enforces thresholds)
 # Runs in Docker locally to match CI/CD Ubuntu environment
@@ -323,7 +319,9 @@ test-coverage: test-client-coverage test-server-coverage
 test-ci:
 	$(PYTHON) scripts/run_test_ci.py
 
-# Legacy alias for backward compatibility
+# Legacy aliases for docs / agent muscle memory
+test-comprehensive: test-ci
+test-e2e: test-client-e2e
 coverage: test-coverage
 
 # ============================================================================
@@ -355,4 +353,14 @@ run-production:
 # COMPOSITE TARGETS
 # ============================================================================
 
-all: format mypy lint lint-sqlalchemy codacy-tools quality-fragmentation-guard check-postgresql build openapi-spec test-coverage sync-obsidian-graphify
+# Flattened stages so FAIL-FAST names the exact leaf target (not a nested composite).
+# Warning: grepping tool "WARNING" strings is intentionally not a fail condition here;
+# tools already exit non-zero for real failures. Tracebacks still fail even on exit 0.
+ALL_STAGES := format mypy lint lint-sqlalchemy \
+	$(CODACY_TOOL_STAGES) \
+	quality-fragmentation-guard check-postgresql build openapi-spec \
+	test-client-coverage test-server-coverage \
+	sync-obsidian-graphify
+
+all:
+	@$(PYTHON) scripts/run_make_stages.py --make "$(MAKE)" -- $(ALL_STAGES)

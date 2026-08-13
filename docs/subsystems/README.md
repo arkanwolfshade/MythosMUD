@@ -1,10 +1,27 @@
 # Game Subsystem Design Documents
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 This directory contains reverse-engineered design documents for MythosMUD game subsystems. Each document
 describes architecture, key decisions, constraints, component interactions, developer guidance, and
 troubleshooting. Code is the source of truth; these docs are derived from it.
 
-## Index
+## 2. Index
+
+**[SPEC]**
 
 | Subsystem      | Document                                                                 | Summary                                                                                                  |
 | -------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
@@ -24,10 +41,20 @@ troubleshooting. Code is the source of truth; these docs are derived from it.
 | NPC system     | [SUBSYSTEM_NPC_DESIGN.md](SUBSYSTEM_NPC_DESIGN.md)                       | Lifecycle, spawning, behavior, combat/movement/communication integration; population control.            |
 | Admin commands | [SUBSYSTEM_ADMIN_COMMANDS_DESIGN.md](SUBSYSTEM_ADMIN_COMMANDS_DESIGN.md) | Mute, teleport, goto, shutdown, summon, setstat, setlucidity, npc; validate_admin_permission; audit log. |
 
-## Related documentation
+## 3. Related documentation
+
+**[SPEC]**
 
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md) – Command handler interface and routing.
 - [EVENT_OWNERSHIP_MATRIX.md](../EVENT_OWNERSHIP_MATRIX.md) – Event types and ownership.
 - [NATS_SUBJECT_PATTERNS.md](../NATS_SUBJECT_PATTERNS.md) – NATS subjects for real-time events.
 - [architecture/decisions/ADR-009-instanced-rooms.md](../architecture/decisions/ADR-009-instanced-rooms.md) –
   Instanced rooms (tutorial, movement integration).
+
+## 4. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

@@ -24,6 +24,14 @@ from .command_factories_utility import UtilityCommandFactory
 class CommandFactory:
     """Factory class for creating command objects from parsed arguments."""
 
+    _communication: CommunicationCommandFactory
+    _exploration: ExplorationCommandFactory
+    _inventory: InventoryCommandFactory
+    _moderation: ModerationCommandFactory
+    _player_state: PlayerStateCommandFactory
+    _combat: CombatCommandFactory
+    _utility: UtilityCommandFactory
+
     def __init__(self) -> None:
         """Initialize the command factory with specialized sub-factories."""
         self._communication = CommunicationCommandFactory()
@@ -221,6 +229,10 @@ class CommandFactory:
     def create_quest_command(self, args: list[str]) -> BaseCommand:
         """Create QuestCommand from arguments (e.g. abandon <quest name>)."""
         return self._player_state.create_quest_command(args)
+
+    def create_talk_command(self, args: list[str]) -> BaseCommand:
+        """Create TalkCommand from arguments (npc name or option number)."""
+        return self._player_state.create_talk_command(args)
 
     # Combat commands
     def create_attack_command(self, args: list[str]) -> BaseCommand:

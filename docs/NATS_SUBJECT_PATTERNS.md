@@ -1,10 +1,26 @@
 # NATS Subject Pattern Management
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 > _As noted in the restricted archives of Miskatonic University, proper subject naming conventions are essential for
 > maintaining the integrity of our messaging infrastructure across dimensional boundaries._
 
-## Overview
+## 2. Overview
 
+**[SPEC]**
 The NATS Subject Manager provides centralized management of NATS subject naming conventions for MythosMUD's real-time
 messaging system. It eliminates hardcoded subject strings, provides validation, and enables dynamic pattern
 registration.
@@ -23,7 +39,9 @@ registration.
 
 - **Admin API**: REST endpoints for pattern management and monitoring
 
-## Architecture
+## 3. Architecture
+
+**[NOTE]**
 
 ### Pattern Hierarchy
 
@@ -51,7 +69,9 @@ events.player_entered.{room_id}   # Player entered room events
 combat.attack.{room_id}           # Combat attack events
 ```
 
-## Usage
+## 4. Usage
+
+**[NOTE]**
 
 ### Basic Usage
 
@@ -119,7 +139,9 @@ for pattern in chat_patterns:
     await nats_service.subscribe(pattern, message_handler)
 ```
 
-## Predefined Patterns
+## 5. Predefined Patterns
+
+**[SPEC]**
 
 ### Chat Patterns
 
@@ -157,8 +179,9 @@ for pattern in chat_patterns:
 | `combat_ended`        | `combat.ended.{room_id}`        | room_id    | Combat ended events   |
 | `combat_npc_died`     | `combat.npc_died.{room_id}`     | room_id    | NPC death events      |
 
-## Dynamic Pattern Registration
+## 6. Dynamic Pattern Registration
 
+**[NOTE]**
 Administrators can register new patterns at runtime via the Admin API:
 
 ```python
@@ -182,7 +205,9 @@ manager.register_pattern(
 )
 ```
 
-## Performance Optimization
+## 7. Performance Optimization
+
+**[NOTE]**
 
 ### Caching
 
@@ -253,7 +278,9 @@ Established performance baselines:
 
 - **Concurrent Operations**: Thread-safe, supports concurrent access
 
-## Admin API Reference
+## 8. Admin API Reference
+
+**[NOTE]**
 
 ### GET /api/admin/nats/subjects/health
 
@@ -340,7 +367,9 @@ Register a new subject pattern (admin-only).
 }
 ```
 
-## Migration Guide
+## 9. Migration Guide
+
+**[NOTE]**
 
 ### Migrating from Hardcoded Subjects
 
@@ -394,7 +423,9 @@ subject = self.subject_manager.build_subject(
 )
 ```
 
-## Error Handling
+## 10. Error Handling
+
+**[NOTE]**
 
 ### Pattern Not Found
 
@@ -423,7 +454,9 @@ except SubjectValidationError as e:
     logger.error("Invalid parameter value", error=str(e))
 ```
 
-## Configuration
+## 11. Configuration
+
+**[NOTE]**
 
 ### Initialization Options
 
@@ -455,7 +488,9 @@ manager.build_subject("chat_say_room", room_id="room_with_underscore")
 manager.build_subject("chat_say_room", room_id="room-with-hyphens")
 ```
 
-## Best Practices
+## 12. Best Practices
+
+**[NOTE]**
 
 ### 1. Always Use Pattern Names
 
@@ -531,7 +566,9 @@ except SubjectValidationError as e:
     raise
 ```
 
-## Testing
+## 13. Testing
+
+**[NOTE]**
 
 ### Unit Testing
 
@@ -569,7 +606,9 @@ def test_cache_performance():
     assert elapsed < 0.01  # Should be very fast with cache
 ```
 
-## Monitoring and Observability
+## 14. Monitoring and Observability
+
+**[NOTE]**
 
 ### Health Endpoint
 
@@ -607,7 +646,9 @@ if avg_validation_time > 1.0:
     alert("High validation latency", avg_time_ms=avg_validation_time)
 ```
 
-## Troubleshooting
+## 15. Troubleshooting
+
+**[SPEC]**
 
 ### Common Issues
 
@@ -641,8 +682,9 @@ if avg_validation_time > 1.0:
 2. Check if pattern was registered (call `get_all_patterns()`)
 3. Register missing pattern via Admin API
 
-## Future Enhancements
+## 16. Future Enhancements
 
+**[SPEC]**
 **Pattern Namespaces**: Organize patterns by feature area
 
 **Pattern Versioning**: Support multiple versions of patterns
@@ -655,7 +697,9 @@ if avg_validation_time > 1.0:
 
 - **Pattern Deprecation**: Mark patterns as deprecated with warnings
 
-## Migration Status
+## 17. Migration Status
+
+**[SPEC]**
 
 ### ✅ Fully Migrated Components
 
@@ -699,17 +743,28 @@ The following utility functions are marked as deprecated:
 - `server/utils/room_utils.get_local_channel_subject()` - Emits DeprecationWarning
 - Only used in tests, safe to use but not recommended for new code
 
-## Related Documentation
+## 18. Related Documentation
+
+**[SPEC]**
 
 - [Real-Time Architecture](REAL_TIME_ARCHITECTURE.md) - Overall real-time system design
 - [Enhanced Logging Guide](ENHANCED_LOGGING_GUIDE.md) - Structured logging practices
 - [realtime.md](realtime.md) - WebSocket authentication and production deployment
 
-## References
+## 19. References
 
+**[SPEC]**
 [NATS Subject-Based Messaging](https://docs.nats.io/nats-concepts/subjects)
 
 - [NATS Best Practices](https://docs.nats.io/running-a-nats-service/nats_admin/best_practices)
 - Source: `server/services/nats_subject_manager/` (package)
 - Tests: `server/tests/unit/services/nats_subject_manager/`
 - API Controller: `server/api/admin/subject_controller.py`
+
+## 20. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

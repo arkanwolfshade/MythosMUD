@@ -14,6 +14,10 @@ Work is not done until these pass:
 3. **Lint** — `make lint` (and `make lint-sqlalchemy` if touching SQLAlchemy)
 4. **Tests** — `make test` (fast) or `make test-coverage` (with coverage)
 5. **Codacy** — After any file edit, run Codacy analysis per project rules (see [.cursor/rules/codacy.mdc](../../rules/codacy.mdc))
+6. **In-game help** — Player-facing commands/features have `help <topic>` content in
+   `server/help/help_content.py` (and command-help lists when applicable)
+7. **Authoring docs** — If the feature adds content tools, add or update a runbook under
+   `docs/runbooks/` (or the relevant subsystem doc)
 
 All commands are run from the **project root**.
 

@@ -1,19 +1,37 @@
 # Cursor IDE Setup Guide for Optimal Subagent Usage
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 _"In the restricted archives, we learn that proper configuration is essential for efficient research. This guide ensures Cursor IDE is optimally configured to leverage our specialized subagents."_
 
-## Overview
+## 2. Overview
 
+**[NOTE]**
 This guide helps you configure Cursor IDE and chat to automatically and effectively use the custom subagents we've created for MythosMUD.
 
-## Automatic Subagent Discovery
+## 3. Automatic Subagent Discovery
 
+**[NOTE]**
 **Good News**: Cursor automatically discovers subagents in `.cursor/agents/` - no additional configuration needed!
 
 The subagents are already available to Cursor's agent. However, you can optimize their usage with the following settings and practices.
 
-## Cross-Machine Portability (DRY Source of Truth)
+## 4. Cross-Machine Portability (DRY Source of Truth)
 
+**[SPEC]**
 Use this section as the canonical checklist for making your Cursor + MythosMUD setup portable across machines.
 Do not duplicate this guidance in other docs; reference this section instead.
 
@@ -72,7 +90,9 @@ For each new machine:
 - In other docs, reference this section instead of repeating setup instructions
 - When rules/skills change, update the repo-tracked sources first
 
-## Cursor IDE Settings
+## 5. Cursor IDE Settings
+
+**[SPEC]**
 
 ### 1. Enable Max Mode (If on Legacy Plan)
 
@@ -106,7 +126,9 @@ Optimize chat for subagent usage:
    - "Parallel execution" (if available)
    - "Context isolation" (if available)
 
-## Best Practices for Automatic Subagent Usage
+## 6. Best Practices for Automatic Subagent Usage
+
+**[NOTE]**
 
 ### 1. Use Descriptive Prompts
 
@@ -160,7 +182,9 @@ Cursor automatically uses subagents when:
 - **Parallel Workstreams**: Multiple tasks that can run simultaneously
 - **Specialized Analysis**: Security, performance, or testing analysis
 
-## Chat Conversation Patterns
+## 7. Chat Conversation Patterns
+
+**[SPEC]**
 
 ### Pattern 1: Exploration Tasks
 
@@ -195,7 +219,9 @@ Cursor automatically uses subagents when:
 - Or automatically invokes `bug-investigator` subagent directly
 - Returns comprehensive investigation report
 
-## Optimizing Subagent Performance
+## 8. Optimizing Subagent Performance
+
+**[NOTE]**
 
 ### 1. Provide Context
 
@@ -227,7 +253,9 @@ You can request parallel subagent execution:
 and simultaneously use the test analyzer to check test coverage for Player-related code"
 ```
 
-## Monitoring Subagent Usage
+## 9. Monitoring Subagent Usage
+
+**[SPEC]**
 
 ### How to Know When Subagents Are Used
 
@@ -246,7 +274,9 @@ Subagent output typically includes:
 - **Actionable Recommendations**: Specific next steps
 - **Evidence**: Code references, file paths, line numbers
 
-## Troubleshooting
+## 10. Troubleshooting
+
+**[SPEC]**
 
 ### Subagents Not Being Used Automatically
 
@@ -281,7 +311,9 @@ Subagent output typically includes:
 - Use main agent for simple tasks
 - See `.cursor/rules/subagent-usage.mdc` for guidance
 
-## Advanced Configuration
+## 11. Advanced Configuration
+
+**[SPEC]**
 
 ### Custom Subagent Prompts
 
@@ -299,7 +331,9 @@ Commands can be configured to always use specific subagents. See:
 - `.cursor/commands/investigate-bug.md` - Example of subagent integration
 - `.cursor/commands/server-test-remediation.md` - Example of subagent integration
 
-## Quick Reference
+## 12. Quick Reference
+
+**[NOTE]**
 
 ### Available Subagents
 
@@ -325,17 +359,29 @@ Commands can be configured to always use specific subagents. See:
 @client-test-remediation
 ```
 
-## References
+## 13. References
+
+**[SPEC]**
 
 - Subagent Documentation: `docs/CURSOR_SUBAGENTS.md`
 - Usage Guidelines: `.cursor/rules/subagent-usage.mdc`
 - Workflow Examples: `docs/CURSOR_WORKFLOWS.md`
 - CLI Usage: `docs/CURSOR_CLI.md`
 
-## Notes
+## 14. Notes
+
+**[SPEC]**
 
 - Subagents are automatically discovered - no manual configuration needed
 - Cursor decides when to use subagents based on task complexity
 - You can always explicitly request subagent usage
 - Commands provide convenient wrappers for common subagent workflows
 - Rules provide guidance on optimal subagent usage
+
+## 15. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

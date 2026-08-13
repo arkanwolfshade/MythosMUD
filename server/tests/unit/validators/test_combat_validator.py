@@ -10,6 +10,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from server.validators.combat_validator import CombatValidator
+from server.validators.security_validator import MAX_COMBAT_TARGET_LENGTH
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
@@ -99,11 +100,7 @@ def test_validate_combat_command_suspicious_patterns(combat_validator):
 
 def test_validate_combat_command_target_too_long(combat_validator):
     """Test validate_combat_command with target name too long."""
-    # Note: _is_valid_target_name checks length > 50 at line 294
-    # The explicit check at line 161 would only trigger if _is_valid_target_name passes
-    # but len(target_name) > 50, which is impossible since _is_valid_target_name already checks this
-    # So line 161 is unreachable for length > 50, but we test that length > 50 is caught
-    long_target = "a" * 51
+    long_target = "a" * (MAX_COMBAT_TARGET_LENGTH + 1)
     command_data = {"command_type": "attack", "args": [long_target]}
     player_context: dict[str, Any] = {}
 
@@ -111,8 +108,6 @@ def test_validate_combat_command_target_too_long(combat_validator):
 
     assert is_valid is False
     assert error_msg is not None
-    # Target will fail _is_valid_target_name check before reaching explicit length check
-    # The explicit length check at line 161 is effectively unreachable
 
 
 def test_validate_combat_command_rate_limited(combat_validator):
@@ -347,7 +342,7 @@ def test_is_valid_target_name_invalid(combat_validator):
     assert combat_validator._is_valid_target_name("") is False
     assert combat_validator._is_valid_target_name(None) is False
     assert combat_validator._is_valid_target_name("Target<script>") is False
-    assert combat_validator._is_valid_target_name("a" * 51) is False  # Too long
+    assert combat_validator._is_valid_target_name("a" * (MAX_COMBAT_TARGET_LENGTH + 1)) is False  # Too long
     assert combat_validator._is_valid_target_name("   ") is False  # Empty after strip
 
 
@@ -573,7 +568,7 @@ def test_validate_combat_command_target_too_long_with_mock(combat_validator):
     # This tests the warning path that would trigger if format check somehow passed
     from unittest.mock import patch
 
-    long_target = "a" * 51
+    long_target = "a" * (MAX_COMBAT_TARGET_LENGTH + 1)
     command_data = {"command_type": "attack", "args": [long_target]}
     player_context: dict[str, Any] = {}
 

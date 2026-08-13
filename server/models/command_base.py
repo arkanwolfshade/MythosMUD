@@ -102,6 +102,8 @@ class CommandType(StrEnum):
     JOURNAL = "journal"
     QUESTS = "quests"
     QUEST = "quest"
+    # Dialogue (#583)
+    TALK = "talk"
 
 
 class BaseCommand(BaseModel):

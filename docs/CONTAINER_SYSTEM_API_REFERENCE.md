@@ -1,22 +1,38 @@
 # Container System API Reference
 
-## Overview
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 The unified container system provides secure storage for environmental props, wearable gear, and corpse containers. All
 container operations are audited for security and compliance, with proper access control, rate limiting, and mutation
 guards.
 
-## Table of Contents
+## 2. Table of Contents
 
-1. [Container Endpoints](#container-endpoints)
-2. [WebSocket Events](#websocket-events)
-3. [Authentication](#authentication)
-4. [Rate Limiting](#rate-limiting)
-5. [Error Handling](#error-handling)
-6. [Examples](#examples)
+**[SPEC]**
 
-## Container Endpoints
+1. [Container Endpoints](#3-container-endpoints)
+2. [WebSocket Events](#4-websocket-events)
+3. [Authentication](#5-authentication)
+4. [Rate Limiting](#6-rate-limiting)
+5. [Error Handling](#7-error-handling)
+6. [Examples](#8-examples)
 
+## 3. Container Endpoints
+
+**[NOTE]**
 All container endpoints are prefixed with `/api/containers` and require authentication.
 
 ### Open Container
@@ -229,8 +245,9 @@ operations.
 
 **Rate Limiting**: 20 requests per 60 seconds per player
 
-## WebSocket Events
+## 4. WebSocket Events
 
+**[NOTE]**
 The container system emits real-time WebSocket events for container state changes.
 
 ### container.opened
@@ -309,16 +326,18 @@ Emitted when a corpse container decays and is cleaned up.
 }
 ```
 
-## Authentication
+## 5. Authentication
 
+**[NOTE]**
 All container endpoints require authentication via JWT token in the `Authorization` header:
 
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
-## Rate Limiting
+## 6. Rate Limiting
 
+**[NOTE]**
 All container endpoints are rate limited to **20 requests per 60 seconds per player**.
 
 When rate limit is exceeded, the API returns:
@@ -326,8 +345,9 @@ When rate limit is exceeded, the API returns:
 - Status Code: `429 Too Many Requests`
 - Response: `{"detail": "Rate limit exceeded. Retry after <seconds> seconds"}`
 
-## Error Handling
+## 7. Error Handling
 
+**[NOTE]**
 All errors follow the standard error response format:
 
 ```json
@@ -351,7 +371,9 @@ All errors follow the standard error response format:
 - `INVALID_MUTATION_TOKEN`: Mutation token is invalid or expired
 - `RATE_LIMIT_EXCEEDED`: Too many requests
 
-## Examples
+## 8. Examples
+
+**[NOTE]**
 
 ### Complete Workflow: Opening and Looting a Container
 
@@ -419,11 +441,20 @@ await fetch('/api/containers/close', {
 });
 ```
 
-## Security and Compliance
+## 9. Security and Compliance
 
+**[SPEC]**
 All container operations are **audit logged** for security and compliance
 
 - Container metadata is validated to ensure **COPPA compliance** (no personal data)
 - All operations use **mutation guards** to prevent race conditions
 - **Rate limiting** prevents abuse and DoS attacks
 - **Access control** enforces proximity, ownership, roles, and grace periods
+
+## 10. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

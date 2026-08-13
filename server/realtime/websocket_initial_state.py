@@ -287,14 +287,14 @@ async def prepare_initial_room_data(
     """Prepare room data for initial state event."""
     room_data_for_update = room if isinstance(room, dict) else room.to_dict()
     room_data_for_update = await connection_manager.convert_room_players_uuids_to_names(room_data_for_update)
-    return cast(dict[str, object], room_data_for_update)
+    return room_data_for_update
 
 
 def _get_event_handler_from_app_host(
     host: "ConnectionManager | WebSocket",
 ) -> "RealTimeEventHandler | None":
     """Resolve real-time event handler from a connection manager or websocket app."""
-    app = cast(object | None, host.app)
+    app = cast(object | None, getattr(host, "app", None))
     if app is None:
         return None
     app_state = cast(_AppStateForEventHandler, cast(_AppWithState, app).state)

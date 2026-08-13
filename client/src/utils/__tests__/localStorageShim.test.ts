@@ -1,6 +1,12 @@
+/// <reference types="node" />
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { installLocalStorageShim } from '../localStorageShim';
+
+/** Avoid Reflect (not always in test TS lib) and TS2790 on required Window props. */
+function deleteProp(target: object, key: string): void {
+  delete (target as Record<string, unknown>)[key];
+}
 
 describe('installLocalStorageShim', () => {
   let globalDescriptor: PropertyDescriptor | undefined;
@@ -21,19 +27,19 @@ describe('installLocalStorageShim', () => {
     if (globalWindowDescriptor) {
       Object.defineProperty(globalThis, 'window', globalWindowDescriptor);
     } else {
-      Reflect.deleteProperty(globalThis, 'window');
+      deleteProp(globalThis, 'window');
     }
     if (typeof globalThis.window !== 'undefined') {
       if (windowDescriptor) {
         Object.defineProperty(globalThis.window, 'localStorage', windowDescriptor);
       } else {
-        Reflect.deleteProperty(globalThis.window, 'localStorage');
+        deleteProp(globalThis.window, 'localStorage');
       }
     }
     if (globalDescriptor) {
       Object.defineProperty(globalThis, 'localStorage', globalDescriptor);
     } else {
-      Reflect.deleteProperty(globalThis, 'localStorage');
+      deleteProp(globalThis, 'localStorage');
     }
   });
 
@@ -56,6 +62,81 @@ describe('installLocalStorageShim', () => {
 
     expect(globalThis.localStorage).toBe(mockStorage);
     expect(mockStorage.setItem).not.toHaveBeenCalled();
+  });
+
+  it('does not invoke Node-style localStorage accessor getters', () => {
+    const get = vi.fn(() => undefined);
+    Object.defineProperty(globalThis, 'localStorage', {
+      get,
+      set: () => {},
+      configurable: true,
+      enumerable: false,
+    });
+
+    installLocalStorageShim();
+
+    expect(get).not.toHaveBeenCalled();
+    expect(typeof globalThis.localStorage.setItem).toBe('function');
+    globalThis.localStorage.setItem('a', '1');
+    expect(globalThis.localStorage.getItem('a')).toBe('1');
+  });
+
+  it('reads usable accessor storage when Node webstorage guard does not apply', () => {
+    const mockStorage = {
+      clear: vi.fn(),
+      removeItem: vi.fn(),
+      setItem: vi.fn(),
+      getItem: vi.fn(),
+      key: vi.fn(),
+      length: 0,
+    };
+    const get = vi.fn(() => mockStorage);
+    Object.defineProperty(globalThis, 'localStorage', {
+      get,
+      configurable: true,
+      enumerable: false,
+    });
+
+    const versionsDesc = Object.getOwnPropertyDescriptor(process, 'versions');
+    Object.defineProperty(process, 'versions', {
+      value: { ...process.versions, node: undefined },
+      configurable: true,
+    });
+    try {
+      installLocalStorageShim();
+      expect(get).toHaveBeenCalled();
+      expect(globalThis.localStorage).toBe(mockStorage);
+    } finally {
+      if (versionsDesc) {
+        Object.defineProperty(process, 'versions', versionsDesc);
+      }
+    }
+  });
+
+  it('installs shim when accessor throws outside Node webstorage guard', () => {
+    Object.defineProperty(globalThis, 'localStorage', {
+      get() {
+        throw new Error('denied');
+      },
+      configurable: true,
+      enumerable: false,
+    });
+
+    const versionsDesc = Object.getOwnPropertyDescriptor(process, 'versions');
+    Object.defineProperty(process, 'versions', {
+      value: { ...process.versions, node: undefined },
+      configurable: true,
+    });
+    try {
+      installLocalStorageShim();
+      expect(typeof globalThis.localStorage.setItem).toBe('function');
+      globalThis.localStorage.setItem('caught', '1');
+      expect(globalThis.localStorage.getItem('caught')).toBe('1');
+    } finally {
+      if (versionsDesc) {
+        Object.defineProperty(process, 'versions', versionsDesc);
+      }
+    }
   });
 
   it('replaces broken storage missing clear', () => {
@@ -143,7 +224,7 @@ describe('installLocalStorageShim', () => {
   });
 
   it('installs when localStorage is undefined', () => {
-    Reflect.deleteProperty(globalThis, 'localStorage');
+    deleteProp(globalThis, 'localStorage');
 
     installLocalStorageShim();
 
@@ -165,7 +246,7 @@ describe('installLocalStorageShim', () => {
   });
 
   it('coerces keys and values with setItem/getItem', () => {
-    Reflect.deleteProperty(globalThis, 'localStorage');
+    deleteProp(globalThis, 'localStorage');
     installLocalStorageShim();
     const storage = globalThis.localStorage;
 
@@ -174,7 +255,7 @@ describe('installLocalStorageShim', () => {
   });
 
   it('supports length, key order, and removeItem', () => {
-    Reflect.deleteProperty(globalThis, 'localStorage');
+    deleteProp(globalThis, 'localStorage');
     installLocalStorageShim();
     const storage = globalThis.localStorage;
 
@@ -191,11 +272,11 @@ describe('installLocalStorageShim', () => {
   });
 
   it('aliases window.localStorage to the same instance when window exists', () => {
-    Reflect.deleteProperty(globalThis, 'localStorage');
+    deleteProp(globalThis, 'localStorage');
     if (typeof globalThis.window === 'undefined') {
       return;
     }
-    Reflect.deleteProperty(globalThis.window, 'localStorage');
+    deleteProp(globalThis.window, 'localStorage');
 
     installLocalStorageShim();
 
@@ -209,8 +290,8 @@ describe('installLocalStorageShim', () => {
       return;
     }
 
-    Reflect.deleteProperty(globalThis, 'window');
-    Reflect.deleteProperty(globalThis, 'localStorage');
+    deleteProp(globalThis, 'window');
+    deleteProp(globalThis, 'localStorage');
 
     installLocalStorageShim();
 

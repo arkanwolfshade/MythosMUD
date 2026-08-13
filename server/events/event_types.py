@@ -259,6 +259,7 @@ class NPCSpoke(BaseEvent):
     message: str
     channel: str = "local"  # Communication channel (local, say, whisper, etc.)
     target_id: str | None = None  # Specific target if whispering or directed speech
+    npc_name: str | None = None  # Optional display name for chat delivery
 
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""

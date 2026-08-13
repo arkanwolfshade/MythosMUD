@@ -1,10 +1,26 @@
 # ADR-015: PostgreSQL Procedures and Functions for Data Access
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 **Status:** Accepted
 **Date:** 2026-02-26
 
-## Context
+## 2. Context
 
+**[SPEC]**
 MythosMUD uses PostgreSQL as the primary datastore (ADR-006) with repository-style data access (ADR-005). The codebase had evolved with a mix of SQLAlchemy ORM (select, merge, delete), raw SQL via `text()`, and sync psycopg2 in a few places. This led to:
 
 - Inline SQL scattered across repositories and API layers
@@ -14,8 +30,9 @@ MythosMUD uses PostgreSQL as the primary datastore (ADR-006) with repository-sty
 
 A migration to centralize all DML/DQL in PostgreSQL stored procedures and functions was undertaken so that Python manages transactions and maps procedure results to domain objects, while the database owns query shape and logic.
 
-## Decision
+## 3. Decision
 
+**[SPEC]**
 Migrate all Python–PostgreSQL data access to **stored procedures and functions**:
 
 - **Procedure storage**: One `.sql` file per domain under `db/procedures/` (e.g. `players.sql`, `rooms.sql`, `quests.sql`). Each file uses `CREATE OR REPLACE FUNCTION` (and PROCEDURE where needed) with schema applied via `psql -v schema_name=<schema>`.
@@ -24,25 +41,41 @@ Migrate all Python–PostgreSQL data access to **stored procedures and functions
 - **Schema resolution**: Connections use `search_path` set from the database name (mythos_dev, mythos_unit, mythos_e2e) so procedure names are unqualified in SQL; `database.py` normalizes `search_path` for these databases.
 - **Naming**: `verb_entity` (e.g. `get_player_by_id`, `upsert_player`, `get_rooms_with_exits`). Functions return rows (SETOF or single row); procedures used where multi-statement mutations with OUT parameters are needed.
 
-## Alternatives Considered
+## 4. Alternatives Considered
+
+**[SPEC]**
 
 1. **Keep ORM + raw SQL** – Rejected: did not address scattered SQL or give a single contract at the DB boundary.
 2. **Schema-qualified names in Python** – Rejected in favour of search_path: unqualified names keep Python agnostic of schema; one connection per environment.
 3. **Alembic for procedure versioning** – Deferred: procedures are applied as part of build/test; versioned migrations for procedure changes can be added later if needed.
 
-## Consequences
+## 5. Consequences
+
+**[SPEC]**
 
 - **Positive**: Single place for query logic; procedure return shape is a clear contract; fewer round-trips where procedures aggregate data (e.g. get_rooms_with_exits); test and dev DBs get procedures via the same script; integration tests can assert procedure return shape.
 - **Negative**: Procedure definitions must be kept in sync with table schema; DB type mismatches (e.g. json vs jsonb) surface at call sites until fixed in the procedure.
 - **Neutral**: SQLAlchemy ORM mappings remain for now where used by Alembic or other tooling; `postgres_adapter.py` can be deprecated or removed once unused.
 
-## Related ADRs
+## 6. Related ADRs
+
+**[SPEC]**
 
 - ADR-005: Repository Pattern for Data Access
 - ADR-006: PostgreSQL as Primary Datastore
 
-## References
+## 7. References
+
+**[SPEC]**
 
 - `db/procedures/README.md` – Apply order and usage
 - `scripts/apply_procedures.ps1` – Application script
 - `server/tests/integration/test_procedures_return_shape.py` – Return-shape tests
+
+## 8. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

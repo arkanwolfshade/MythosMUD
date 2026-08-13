@@ -4,8 +4,18 @@ Unit tests for admin_commands helper functions.
 Tests helper functions in admin_commands.py module.
 """
 
+import uuid
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
+
 from server.commands.admin_teleport_commands import DIRECTION_OPPOSITES
-from server.commands.admin_teleport_utils import create_teleport_effect_message
+from server.commands.admin_teleport_utils import (
+    broadcast_teleport_effects,
+    create_teleport_effect_message,
+    get_online_player_by_display_name,
+    notify_player_of_teleport,
+)
 
 
 def test_direction_opposites():
@@ -78,3 +88,36 @@ def test_create_teleport_effect_message_unknown_type():
     result = create_teleport_effect_message("TestPlayer", "departure", teleport_type="unknown")
     assert "TestPlayer" in result
     assert "mysterious" in result.lower()
+
+
+@pytest.mark.asyncio
+async def test_get_online_player_by_display_name_no_manager() -> None:
+    assert await get_online_player_by_display_name("Bob", None) is None
+
+
+@pytest.mark.asyncio
+async def test_get_online_player_by_display_name_found() -> None:
+    cm = MagicMock()
+    cm.get_online_player_by_display_name.return_value = {"player_id": str(uuid.uuid4())}
+    result = await get_online_player_by_display_name("Bob", cm)
+    assert result is not None
+
+
+@pytest.mark.asyncio
+async def test_broadcast_teleport_effects() -> None:
+    cm = MagicMock()
+    cm.broadcast_to_room = AsyncMock()
+    with patch("server.commands.admin_teleport_utils.build_event", return_value={"event": "x"}):
+        await broadcast_teleport_effects(cm, "Alice", "room_a", "room_b", "teleport", direction="north")
+    assert cm.broadcast_to_room.await_count == 2
+
+
+@pytest.mark.asyncio
+async def test_notify_player_of_teleport_custom_message() -> None:
+    player_id = uuid.uuid4()
+    cm = MagicMock()
+    cm.get_online_player_by_display_name.return_value = {"player_id": str(player_id)}
+    cm.send_personal_message = AsyncMock()
+    with patch("server.commands.admin_teleport_utils.build_event", return_value={"event": "x"}):
+        await notify_player_of_teleport(cm, "Bob", "Admin", "teleported_to", message="Custom msg")
+    cm.send_personal_message.assert_awaited_once()

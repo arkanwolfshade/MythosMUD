@@ -5,17 +5,21 @@ Tests the websocket_helpers module functions. Player-related tests are in
 test_websocket_helpers_player.py.
 """
 
+import logging
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.realtime.websocket_handler_message_loop import handle_websocket_runtime_error
 from server.realtime.websocket_helpers import (
     check_shutdown_and_reject,
     convert_schema_to_dict,
     convert_uuids_to_strings,
     get_npc_name_from_instance,
     get_occupant_names,
+    is_client_disconnected_exception,
+    is_websocket_disconnect_message,
     load_player_mute_data,
     validate_occupant_name,
 )
@@ -295,16 +299,23 @@ def test_convert_schema_to_dict_with_dict():
     mock_schema.dict.assert_called_once()
 
 
-def test_is_client_disconnected_exception_websocket_and_uvicorn_names():
-    """Peer-closed sockets surface as WebSocketDisconnect or uvicorn ClientDisconnected."""
-    from fastapi import WebSocketDisconnect
+def test_is_websocket_disconnect_message_accept_first() -> None:
+    assert is_websocket_disconnect_message('WebSocket is not connected. Need to call "accept" first.')
 
-    from server.realtime.websocket_helpers import is_client_disconnected_exception
 
-    assert is_client_disconnected_exception(WebSocketDisconnect(code=1006)) is True
+def test_is_client_disconnected_exception_runtime_accept_first() -> None:
+    assert is_client_disconnected_exception(RuntimeError('WebSocket is not connected. Need to call "accept" first.'))
 
-    class ClientDisconnected(Exception):
-        """Stand-in for uvicorn.protocols.utils.ClientDisconnected."""
 
-    assert is_client_disconnected_exception(ClientDisconnected()) is True
-    assert is_client_disconnected_exception(ValueError("unrelated")) is False
+def test_handle_websocket_runtime_error_disconnect_is_debug(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    with caplog.at_level(logging.WARNING, logger="server.realtime.websocket_handler_message_loop"):
+        should_break, should_raise = handle_websocket_runtime_error(
+            RuntimeError('WebSocket is not connected. Need to call "accept" first.'),
+            "player-1",
+            "conn-1",
+        )
+    assert should_break is True
+    assert should_raise is False
+    assert not any("WebSocket connection lost" in r.message for r in caplog.records)

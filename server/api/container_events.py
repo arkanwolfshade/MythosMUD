@@ -7,7 +7,8 @@ including opening, closing, transferring items, and loot-all operations.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from collections.abc import Mapping
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from ..models.container import ContainerComponent
@@ -20,13 +21,18 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from .container_models import LootAllRequest
 
 if TYPE_CHECKING:
+    from ..async_persistence import AsyncPersistenceLayer
+    from ..realtime.connection_manager import ConnectionManager
     from .container_models import TransferContainerRequest
 
 logger = get_logger(__name__)
 
 
 async def emit_container_opened_events(
-    connection_manager: Any, result: dict[str, Any], player_id: UUID, container_id: UUID
+    connection_manager: ConnectionManager | None,
+    result: Mapping[str, object],
+    player_id: UUID,
+    container_id: UUID,
 ) -> None:
     """
     Emit WebSocket events for container opening.
@@ -45,12 +51,12 @@ async def emit_container_opened_events(
             from datetime import UTC, datetime, timedelta
 
             container = ContainerComponent.model_validate(result["container"])
-            mutation_token = result["mutation_token"]
+            mutation_token = str(result["mutation_token"])
             expires_at = (
                 datetime.now(UTC) + timedelta(minutes=5)
             )  # TODO: Get actual expiry from mutation guard  # pylint: disable=fixme  # Reason: Placeholder until mutation guard expiry API is implemented
 
-            await emit_container_opened(
+            _ = await emit_container_opened(
                 connection_manager=connection_manager,
                 container=container,
                 player_id=player_id,
@@ -59,7 +65,7 @@ async def emit_container_opened_events(
             )
 
             if container.room_id:
-                await emit_container_opened_to_room(
+                _ = await emit_container_opened_to_room(
                     connection_manager=connection_manager,
                     container=container,
                     room_id=container.room_id,
@@ -77,9 +83,9 @@ async def emit_container_opened_events(
 
 
 async def emit_transfer_event(
-    connection_manager: Any,
+    connection_manager: ConnectionManager | None,
     request_data: TransferContainerRequest,
-    result: dict[str, Any],
+    result: Mapping[str, object],
     player_id: UUID,
 ) -> None:
     """
@@ -98,14 +104,14 @@ async def emit_transfer_event(
         if connection_manager and result.get("container"):
             container = ContainerComponent.model_validate(result["container"])
             if container.room_id:
-                diff = {
+                diff: dict[str, object] = {
                     "items": {
                         "direction": request_data.direction,
                         "stack": request_data.stack,
                         "quantity": request_data.quantity,
                     },
                 }
-                await emit_container_updated(
+                _ = await emit_container_updated(
                     connection_manager=connection_manager,
                     container_id=request_data.container_id,
                     room_id=container.room_id,
@@ -121,11 +127,11 @@ async def emit_transfer_event(
         )
 
 
-async def _emit_close_container_event(
-    connection_manager: Any,
+async def emit_close_container_event(
+    connection_manager: ConnectionManager | None,
     container_id: UUID,
     player_id: UUID,
-    persistence: Any,
+    persistence: AsyncPersistenceLayer,
 ) -> None:
     """
     Emit WebSocket event for container closing.
@@ -147,7 +153,7 @@ async def _emit_close_container_event(
 
                 container = ContainerComponent.model_validate(container_data)
                 if container.room_id:
-                    await emit_container_closed(
+                    _ = await emit_container_closed(
                         connection_manager=connection_manager,
                         container_id=container_id,
                         room_id=container.room_id,
@@ -163,7 +169,7 @@ async def _emit_close_container_event(
 
 
 async def emit_loot_all_event(
-    connection_manager: Any,
+    connection_manager: ConnectionManager | None,
     request_data: LootAllRequest,
     final_container: ContainerComponent,
     player_id: UUID,
@@ -184,13 +190,13 @@ async def emit_loot_all_event(
     """
     try:
         if connection_manager and final_container.room_id:
-            diff = {
+            diff: dict[str, object] = {
                 "items": {
                     "loot_all": True,
                     "items_removed": len(container.items) - len(final_container.items),
                 },
             }
-            await emit_container_updated(
+            _ = await emit_container_updated(
                 connection_manager=connection_manager,
                 container_id=request_data.container_id,
                 room_id=final_container.room_id,

@@ -15,6 +15,7 @@ import {
   ensurePlayerInGame,
   ensurePlayersInSameRoom,
   getPlayerMessages,
+  prepareReceiverForInboundMessages,
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
   type PlayerContext,
@@ -32,10 +33,11 @@ async function nudgeStandBoth(aw: PlayerContext, other: PlayerContext): Promise<
 }
 
 test.describe('Movement Between Rooms', () => {
-  test.describe.configure({ mode: 'serial' });
+  test.describe.configure({ mode: 'serial', timeout: 360_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
+    test.setTimeout(360_000);
     // Create contexts for both players
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     await waitForAllPlayersInGame(contexts, 60000);
@@ -48,17 +50,17 @@ test.describe('Movement Between Rooms', () => {
     const [awContext, ithaquaContext] = contexts;
     await ensureMultiplayerCoLocated(contexts, { timeoutMs: 60000, coLocateTimeoutMs: 60000 });
     await ensurePlayersInSameRoom(contexts, 2, 60000);
-    await ensureStanding(awContext.page, 15000);
-    await ensureStanding(ithaquaContext.page, 15000);
+    awContext.page = await ensureStanding(awContext.page, 15000);
+    ithaquaContext.page = await ensureStanding(ithaquaContext.page, 15000);
     // Navigate both to Main Foyer (has east exit): south -> west -> north
-    await ensureStanding(awContext.page, 15000);
+    awContext.page = await ensureStanding(awContext.page, 15000);
     await executeCommand(awContext.page, 'go south');
     await new Promise(r => setTimeout(r, 1500));
     await executeCommand(awContext.page, 'go west');
     await new Promise(r => setTimeout(r, 1500));
     await executeCommand(awContext.page, 'go north');
     await new Promise(r => setTimeout(r, 1500));
-    await ensureStanding(ithaquaContext.page, 5000);
+    ithaquaContext.page = await ensureStanding(ithaquaContext.page, 5000);
     await executeCommand(ithaquaContext.page, 'go south');
     await new Promise(r => setTimeout(r, 1500));
     await executeCommand(ithaquaContext.page, 'go west');
@@ -98,7 +100,7 @@ test.describe('Movement Between Rooms', () => {
 
     const awMovesEast = async (): Promise<void> => {
       await awContext.page.bringToFront().catch(() => {});
-      await ensureStanding(awContext.page, 15000);
+      awContext.page = await ensureStanding(awContext.page, 15000);
       // Movement echoes are system-typed -> Game Info only (Chat stays empty). Prime WS/projector like other MP specs.
       await awContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
       await awContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
@@ -126,7 +128,7 @@ test.describe('Movement Between Rooms', () => {
       await executeCommand(ithaquaContext.page, 'look');
       await new Promise(r => setTimeout(r, 1500));
       await awContext.page.bringToFront().catch(() => {});
-      await ensureStanding(awContext.page, 15000);
+      awContext.page = await ensureStanding(awContext.page, 15000);
       await executeCommand(awContext.page, 'go west');
       await new Promise(r => setTimeout(r, 2000));
       await ensurePlayersInSameRoom(contexts, 2, 45000);
@@ -153,30 +155,34 @@ test.describe('Movement Between Rooms', () => {
   });
 
   test('AW should see Ithaqua enter when Ithaqua moves to same room', async () => {
+    test.setTimeout(300_000);
     const awContext = contexts[0];
     const ithaquaContext = contexts[1];
 
-    // Re-ensure both in game before move (avoids timeout when second player left)
-    await ensurePlayerInGame(awContext, 10000);
-    await ensurePlayerInGame(ithaquaContext, 10000);
-    await new Promise(r => setTimeout(r, 2000));
+    await ensurePlayerInGame(awContext, 45000);
+    await ensurePlayerInGame(ithaquaContext, 45000);
+    // Prior tests / relogin can put both in foyer; park AW east first so Ithaqua's go east emits enter.
+    await ensureMultiplayerCoLocated(contexts, { timeoutMs: 60000, coLocateTimeoutMs: 45000 });
+    await ensurePlayersInSameRoom(contexts, 2, 45000);
+    await nudgeStandBoth(awContext, ithaquaContext);
 
-    // AW is in Eastern Hallway from previous test; Ithaqua is in Main Foyer - Ithaqua goes east to join AW
-    await ensureStanding(ithaquaContext.page, 5000);
+    await awContext.page.bringToFront().catch(() => {});
+    awContext.page = await ensureStanding(awContext.page, 15000);
+    await executeCommand(awContext.page, 'go east');
+    await waitForMessage(awContext.page, /You go east|You move east|You head east|Eastern|Hallway/i, 45000);
+
+    await prepareReceiverForInboundMessages(awContext, 30000);
+    ithaquaContext.page = await ensureStanding(ithaquaContext.page, 15000);
     await ithaquaContext.page.bringToFront().catch(() => {});
     await ithaquaContext.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: 20000 });
-    await ithaquaContext.page.getByTestId('command-input').evaluate((el: HTMLElement) => {
-      el.focus();
-    });
     await executeCommand(ithaquaContext.page, 'go east');
     await waitForMessage(ithaquaContext.page, /You go east|You move east|You head east|Eastern|Hallway/i, 45000).catch(
       () => {}
     );
 
-    // Verify AW sees Ithaqua enter
-    await waitForCrossPlayerMessage(awContext, 'Ithaqua enters the room', 45000);
+    await waitForCrossPlayerMessage(awContext, /Ithaqua enters the room/i, 45000);
     const awMessages = await getMessages(awContext.page);
-    const seesIthaquaEnter = awMessages.some(msg => msg.includes('Ithaqua enters the room'));
+    const seesIthaquaEnter = awMessages.some(msg => /Ithaqua enters the room/i.test(msg));
     expect(seesIthaquaEnter).toBe(true);
   });
 

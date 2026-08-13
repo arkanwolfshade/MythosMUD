@@ -365,3 +365,152 @@ async def test_publish_player_attacked_no_nats_service():
     )
     result = await publisher.publish_player_attacked(event)
     assert result is False
+
+
+def _player_attacked_event():
+    from server.events.combat_events import PlayerAttackedEvent
+
+    return PlayerAttackedEvent(
+        combat_id=uuid.uuid4(),
+        room_id="room_001",
+        attacker_id=uuid.uuid4(),
+        attacker_name="Attacker",
+        target_id=uuid.uuid4(),
+        target_name="Target",
+        damage=10,
+        action_type="attack",
+        target_current_dp=90,
+        target_max_dp=100,
+    )
+
+
+def _npc_attacked_event():
+    from server.events.combat_events import NPCAttackedEvent
+
+    return NPCAttackedEvent(
+        combat_id=uuid.uuid4(),
+        room_id="room_001",
+        attacker_id=uuid.uuid4(),
+        attacker_name="Player",
+        npc_id="npc_001",  # type: ignore[arg-type]
+        npc_name="Ghoul",
+        damage=5,
+        action_type="attack",
+        target_current_dp=8,
+        target_max_dp=20,
+    )
+
+
+def _npc_took_damage_event():
+    from server.events.combat_events import NPCTookDamageEvent
+
+    return NPCTookDamageEvent(
+        combat_id=uuid.uuid4(),
+        room_id="room_001",
+        npc_id="npc_001",
+        npc_name="Ghoul",
+        damage=4,
+        current_dp=6,
+        max_dp=20,
+    )
+
+
+def _npc_died_event():
+    from server.events.combat_events import NPCDiedEvent
+
+    return NPCDiedEvent(
+        combat_id=uuid.uuid4(),
+        room_id="room_001",
+        npc_id="npc_001",
+        npc_name="Ghoul",
+        xp_reward=10,
+    )
+
+
+def _turn_advanced_event():
+    from server.events.combat_events import CombatTurnAdvancedEvent
+
+    return CombatTurnAdvancedEvent(
+        combat_id=uuid.uuid4(),
+        room_id="room_001",
+        current_turn=2,
+        combat_round=1,
+        next_participant="player_001",
+    )
+
+
+def _timeout_event():
+    from server.events.combat_events import CombatTimeoutEvent
+
+    return CombatTimeoutEvent(
+        combat_id=uuid.uuid4(),
+        room_id="room_001",
+        timeout_minutes=5,
+        last_activity=None,  # type: ignore[arg-type]
+    )
+
+
+def _ended_event():
+    from server.events.combat_events import CombatEndedEvent
+
+    return CombatEndedEvent(
+        combat_id=uuid.uuid4(),
+        room_id="room_001",
+        reason="victory",
+        duration_seconds=60,
+        participants=[],  # type: ignore[arg-type]
+    )
+
+
+@pytest.mark.asyncio
+async def test_publish_paths_not_connected(combat_event_publisher, mock_nats_service):
+    """Not-connected NATS returns False across remaining publish methods."""
+    mock_nats_service.is_connected.return_value = False
+    assert await combat_event_publisher.publish_player_attacked(_player_attacked_event()) is False
+    assert await combat_event_publisher.publish_npc_attacked(_npc_attacked_event()) is False
+    assert await combat_event_publisher.publish_npc_took_damage(_npc_took_damage_event()) is False
+    assert await combat_event_publisher.publish_npc_died(_npc_died_event()) is False
+    assert await combat_event_publisher.publish_combat_turn_advanced(_turn_advanced_event()) is False
+    assert await combat_event_publisher.publish_combat_timeout(_timeout_event()) is False
+
+
+@pytest.mark.asyncio
+async def test_publish_paths_no_nats_service():
+    """None nats_service returns False for remaining publish methods."""
+    publisher = CombatEventPublisher(nats_service=None)
+    assert await publisher.publish_npc_attacked(_npc_attacked_event()) is False
+    assert await publisher.publish_npc_took_damage(_npc_took_damage_event()) is False
+    assert await publisher.publish_npc_died(_npc_died_event()) is False
+    assert await publisher.publish_combat_turn_advanced(_turn_advanced_event()) is False
+    assert await publisher.publish_combat_timeout(_timeout_event()) is False
+
+
+@pytest.mark.asyncio
+async def test_publish_paths_nats_publish_error(combat_event_publisher, mock_nats_service):
+    """NATSPublishError on publish is swallowed and returns False."""
+    from server.services.nats_exceptions import NATSPublishError
+
+    mock_nats_service.publish = AsyncMock(side_effect=NATSPublishError("boom"))
+    assert await combat_event_publisher.publish_combat_ended(_ended_event()) is False
+    assert await combat_event_publisher.publish_player_attacked(_player_attacked_event()) is False
+    assert await combat_event_publisher.publish_npc_attacked(_npc_attacked_event()) is False
+    assert await combat_event_publisher.publish_npc_took_damage(_npc_took_damage_event()) is False
+    assert await combat_event_publisher.publish_npc_died(_npc_died_event()) is False
+    assert await combat_event_publisher.publish_combat_turn_advanced(_turn_advanced_event()) is False
+    assert await combat_event_publisher.publish_combat_timeout(_timeout_event()) is False
+
+
+@pytest.mark.asyncio
+async def test_publish_legacy_subject_without_manager(mock_nats_service):
+    """Legacy subject construction when subject_manager is absent."""
+    publisher = CombatEventPublisher(nats_service=mock_nats_service, subject_manager=None)
+    from server.events.combat_events import CombatStartedEvent
+
+    event = CombatStartedEvent(
+        combat_id=uuid.uuid4(),
+        room_id="room_001",
+        participants={},
+        turn_order=[],
+    )
+    assert await publisher.publish_combat_started(event) is True
+    mock_nats_service.publish.assert_awaited()

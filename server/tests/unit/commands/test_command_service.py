@@ -221,11 +221,10 @@ def test_extract_parsed_fields_handles_missing_attributes(command_service):
 async def test_execute_command_handler_success(command_service, mock_request, mock_user):
     """Test _execute_command_handler successfully executes handler."""
     mock_handler = AsyncMock(return_value={"result": "Success"})
-    mock_parsed = MagicMock()
 
     command_data: dict[str, Any] = {"command_type": "test", "args": []}
     result = await command_service._execute_command_handler(
-        mock_handler, command_data, mock_parsed, mock_user, mock_request, None, "TestPlayer", "test"
+        mock_handler, command_data, mock_user, mock_request, None, "TestPlayer", "test"
     )
 
     assert result == {"result": "Success"}
@@ -236,11 +235,10 @@ async def test_execute_command_handler_success(command_service, mock_request, mo
 async def test_execute_command_handler_error(command_service, mock_request, mock_user):
     """Test _execute_command_handler handles handler errors."""
     mock_handler = AsyncMock(side_effect=ValueError("Handler error"))
-    mock_parsed = MagicMock()
 
     command_data: dict[str, Any] = {"command_type": "test"}
     result = await command_service._execute_command_handler(
-        mock_handler, command_data, mock_parsed, mock_user, mock_request, None, "TestPlayer", "test"
+        mock_handler, command_data, mock_user, mock_request, None, "TestPlayer", "test"
     )
 
     assert "Error processing command" in result["result"]
@@ -348,14 +346,12 @@ async def test_execute_command_handler_returns_non_dict(command_service, mock_re
     """Test _execute_command_handler handles handler returning non-dict."""
     # This shouldn't happen in practice, but test defensive code
     mock_handler = AsyncMock(return_value="string result")
-    mock_parsed = MagicMock()
 
     command_data: dict[str, Any] = {"command_type": "test"}
 
-    # The code catches TypeError and returns an error dict instead of raising
+    # dict(str) raises ValueError; handler catches it and returns an error dict
     result = await command_service._execute_command_handler(
-        mock_handler, command_data, mock_parsed, mock_user, mock_request, None, "TestPlayer", "test"
+        mock_handler, command_data, mock_user, mock_request, None, "TestPlayer", "test"
     )
 
     assert "Error processing command" in result["result"]
-    assert "Command handler must return a dict" in result["result"]

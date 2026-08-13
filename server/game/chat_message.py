@@ -45,6 +45,8 @@ class ChatMessage:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
         self.party_id = party_id
         self.timestamp = datetime.now(UTC)
         self.echo_sent = False
+        # Optional: "npc" | "system" | unset (player). Client may style NPC lines.
+        self.speaker_kind: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         """Convert message to dictionary for serialization."""
@@ -68,6 +70,9 @@ class ChatMessage:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
         # Indicate metadata flags when present
         if getattr(self, "echo_sent", False):
             result["echo_sent"] = True
+        speaker_kind = getattr(self, "speaker_kind", None)
+        if speaker_kind:
+            result["speaker_kind"] = speaker_kind
 
         return result
 

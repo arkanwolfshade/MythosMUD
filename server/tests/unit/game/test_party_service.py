@@ -7,10 +7,12 @@ is_leader, get_party_members, on_player_disconnect.
 """
 
 import uuid
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
 from server.game.party_service import Party, PartyService
+from server.tests.unit.realtime.envelope_assertions import assert_event_envelope
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names
@@ -360,3 +362,17 @@ def test_is_in_same_party_false_when_one_not_in_party(party_service):
     other_id = str(uuid.uuid4())
     assert party_service.is_in_same_party(leader_id, other_id) is False
     assert party_service.is_in_same_party(other_id, leader_id) is False
+
+
+@pytest.mark.asyncio
+async def test_party_invite_event_envelope_shape():
+    """party_invite producer emits a build_event-shaped envelope."""
+    conn_mgr = MagicMock()
+    conn_mgr.send_personal_message = AsyncMock()
+    service = PartyService(connection_manager=conn_mgr)
+    target_id = str(uuid.uuid4())
+    inviter_id = str(uuid.uuid4())
+    await service._send_party_invite_to_target(target_id, "invite-1", "Leader", inviter_id)
+    conn_mgr.send_personal_message.assert_awaited_once()
+    event = conn_mgr.send_personal_message.await_args.args[1]
+    assert_event_envelope(event, event_type="party_invite")

@@ -79,7 +79,8 @@ def handle_websocket_runtime_error(e: RuntimeError, player_id_str: str, connecti
     """
     error_message = str(e)
     if is_websocket_disconnect_message(error_message):
-        logger.warning(
+        # Expected on client close / E2E teardown; not an operational fault.
+        logger.debug(
             "WebSocket connection lost (not connected)",
             player_id=player_id_str,
             connection_id=connection_id,

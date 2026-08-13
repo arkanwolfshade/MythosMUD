@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING, Any, cast
 from ..services.nats_exceptions import NATSPublishError
 from ..services.nats_subject_manager import SubjectValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
+from .chat_validator import validate_chat_message, validate_room_access
 
 if TYPE_CHECKING:
     from .chat_message import ChatMessage
@@ -45,6 +46,13 @@ def _subject_party_standardized(chat_message: "ChatMessage", subject_manager: An
     return None
 
 
+def _subject_system_standardized(chat_message: "ChatMessage", subject_manager: Any) -> str | None:
+    """System subject; personal system (quest lifecycle) routes like whisper when target_id is set."""
+    if getattr(chat_message, "target_id", None):
+        return _subject_whisper_standardized(chat_message, subject_manager)
+    return cast(str, subject_manager.build_subject("chat_system"))
+
+
 def _build_standardized_subject(chat_message: "ChatMessage", room_id: str | None, subject_manager: Any) -> str | None:
     """Build NATS subject using standardized patterns via subject_manager."""
     try:
@@ -57,7 +65,7 @@ def _build_standardized_subject(chat_message: "ChatMessage", room_id: str | None
         if channel == "global":
             return cast(str, subject_manager.build_subject("chat_global"))
         if channel == "system":
-            return cast(str, subject_manager.build_subject("chat_system"))
+            return _subject_system_standardized(chat_message, subject_manager)
         if channel == "whisper":
             return _subject_whisper_standardized(chat_message, subject_manager)
         if channel == "emote":
@@ -86,6 +94,9 @@ def _build_legacy_subject(chat_message: "ChatMessage", room_id: str | None) -> s
         case "global":
             return "chat.global"
         case "system":
+            target_id = getattr(chat_message, "target_id", None)
+            if target_id:
+                return f"chat.whisper.player.{target_id}"
             return "chat.system"
         case "whisper":
             target_id = getattr(chat_message, "target_id", None)
@@ -122,99 +133,113 @@ def build_nats_subject(chat_message: "ChatMessage", room_id: str | None, subject
     return _build_legacy_subject(chat_message, room_id)
 
 
+def _nats_service_ready(nats_service: Any, chat_message: "ChatMessage", room_id: str | None) -> bool:
+    """Return True when NATS is present, connected, and pool-ready."""
+    if not nats_service:
+        logger.error(
+            "NATS service not available - NATS is mandatory for chat functionality",
+            message_id=chat_message.id,
+            room_id=room_id,
+        )
+        return False
+    if not nats_service.is_connected():
+        logger.error(
+            "NATS service not connected - NATS is mandatory for chat functionality",
+            message_id=chat_message.id,
+            room_id=room_id,
+            nats_service_type=type(nats_service).__name__,
+        )
+        return False
+    # Default True when attribute missing (services without pooling).
+    if not getattr(nats_service, "_pool_initialized", True):
+        logger.error(
+            "NATS connection pool not initialized - cannot publish",
+            message_id=chat_message.id,
+            room_id=room_id,
+        )
+        return False
+    logger.debug(
+        "NATS service available and connected",
+        nats_service_type=type(nats_service).__name__,
+        nats_connected=True,
+        message_id=chat_message.id,
+    )
+    return True
+
+
+def _build_nats_message_data(chat_message: "ChatMessage", room_id: str | None) -> dict[str, Any]:
+    """Build the NATS payload dict for a chat message."""
+    message_data: dict[str, Any] = {
+        "message_id": chat_message.id,
+        "sender_id": chat_message.sender_id,
+        "sender_name": chat_message.sender_name,
+        "channel": chat_message.channel,
+        "content": chat_message.content,
+        "timestamp": chat_message.timestamp.isoformat(),
+        "room_id": room_id,
+    }
+    if getattr(chat_message, "target_id", None):
+        message_data["target_id"] = chat_message.target_id
+    if getattr(chat_message, "target_name", None):
+        message_data["target_name"] = chat_message.target_name
+    if getattr(chat_message, "party_id", None):
+        message_data["party_id"] = chat_message.party_id
+    speaker_kind = getattr(chat_message, "speaker_kind", None)
+    if speaker_kind:
+        message_data["speaker_kind"] = speaker_kind
+    return message_data
+
+
+def _chat_passes_nats_validation(chat_message: "ChatMessage", room_id: str | None) -> bool:
+    """Return True when message content and room access checks pass."""
+    if not validate_chat_message(chat_message):
+        logger.warning("Chat message validation failed", message_id=chat_message.id)
+        return False
+    if not validate_room_access(chat_message.sender_id, room_id):
+        logger.warning("Room access validation failed", sender_id=chat_message.sender_id, room_id=room_id)
+        return False
+    return True
+
+
+def _log_nats_publish_error(error: NATSPublishError, chat_message: "ChatMessage", room_id: str | None) -> None:
+    """Log a NATSPublishError from chat publish."""
+    logger.error(
+        "Failed to publish chat message to NATS",
+        error=str(error),
+        error_type=type(error).__name__,
+        message_id=chat_message.id,
+        subject=getattr(error, "subject", None),
+        room_id=room_id,
+        original_error=str(getattr(error, "original_error", None)) if hasattr(error, "original_error") else None,
+    )
+
+
+def _log_nats_unexpected_error(error: Exception, chat_message: "ChatMessage", room_id: str | None) -> None:
+    """Log an unexpected failure from chat publish."""
+    logger.error(
+        "Unexpected error publishing chat message to NATS",
+        error=str(error),
+        error_type=type(error).__name__,
+        message_id=chat_message.id,
+        room_id=room_id,
+        exc_info=True,
+    )
+
+
 async def publish_chat_message_to_nats(
     chat_message: "ChatMessage",
     room_id: str | None,
     nats_service: Any,
     subject_manager: Any | None = None,
 ) -> bool:
-    """
-    Publish a chat message to NATS for real-time distribution.
-
-    This function publishes the message to the appropriate NATS subject
-    for distribution to all subscribers.
-
-    Args:
-        chat_message: The chat message to publish
-        room_id: The room ID for the message
-        nats_service: NATS service instance for publishing
-        subject_manager: Optional NATSSubjectManager for subject building
-
-    Returns:
-        True if published successfully, False otherwise
-    """
-    from .chat_validator import validate_chat_message, validate_room_access
-
+    """Publish a chat message to NATS for real-time distribution."""
     try:
-        # Pre-transmission validation
-        if not validate_chat_message(chat_message):
-            logger.warning("Chat message validation failed", message_id=chat_message.id)
+        if not _chat_passes_nats_validation(chat_message, room_id):
+            return False
+        if not _nats_service_ready(nats_service, chat_message, room_id):
             return False
 
-        if not validate_room_access(chat_message.sender_id, room_id):
-            logger.warning("Room access validation failed", sender_id=chat_message.sender_id, room_id=room_id)
-            return False
-
-        # Check if NATS service is available and connected
-        if not nats_service:
-            logger.error(
-                "NATS service not available - NATS is mandatory for chat functionality",
-                message_id=chat_message.id,
-                room_id=room_id,
-            )
-            return False
-
-        # Check connection status before attempting publish
-        if not nats_service.is_connected():
-            logger.error(
-                "NATS service not connected - NATS is mandatory for chat functionality",
-                message_id=chat_message.id,
-                room_id=room_id,
-                nats_service_type=type(nats_service).__name__,
-            )
-            return False
-
-        # Check connection pool initialization (if available)
-        # Using getattr to avoid accessing protected member directly
-        # Default to True if attribute doesn't exist (for services without pooling)
-        pool_initialized = getattr(nats_service, "_pool_initialized", True)
-        if not pool_initialized:
-            logger.error(
-                "NATS connection pool not initialized - cannot publish",
-                message_id=chat_message.id,
-                room_id=room_id,
-            )
-            return False
-
-        logger.debug(
-            "NATS service available and connected",
-            nats_service_type=type(nats_service).__name__,
-            nats_connected=True,
-            message_id=chat_message.id,
-        )
-
-        # Create message data for NATS
-        message_data = {
-            "message_id": chat_message.id,
-            "sender_id": chat_message.sender_id,
-            "sender_name": chat_message.sender_name,
-            "channel": chat_message.channel,
-            "content": chat_message.content,
-            "timestamp": chat_message.timestamp.isoformat(),
-            "room_id": room_id,
-        }
-
-        # Add target information for whisper messages
-        if hasattr(chat_message, "target_id") and chat_message.target_id:
-            # target_id is guaranteed to be str | None after ChatMessage.__init__
-            message_data["target_id"] = chat_message.target_id
-        if hasattr(chat_message, "target_name") and chat_message.target_name:
-            message_data["target_name"] = chat_message.target_name
-        # Add party_id for party channel (ephemeral group chat)
-        if hasattr(chat_message, "party_id") and chat_message.party_id:
-            message_data["party_id"] = chat_message.party_id
-
-        # Build NATS subject using standardized patterns
+        message_data = _build_nats_message_data(chat_message, room_id)
         subject = build_nats_subject(chat_message, room_id, subject_manager)
         logger.debug(
             "NATS subject determined",
@@ -224,8 +249,7 @@ async def publish_chat_message_to_nats(
             using_subject_manager=subject_manager is not None,
         )
 
-        # Publish to NATS
-        # Note: publish() returns None on success, raises NATSPublishError on failure
+        # publish() returns None on success, raises NATSPublishError on failure
         await nats_service.publish(subject, message_data)
         logger.info(
             "Chat message published to NATS successfully",
@@ -235,28 +259,9 @@ async def publish_chat_message_to_nats(
             room_id=room_id,
         )
         return True
-
     except NATSPublishError as e:
-        # NATS publish failed with specific error
-        logger.error(
-            "Failed to publish chat message to NATS",
-            error=str(e),
-            error_type=type(e).__name__,
-            message_id=chat_message.id,
-            subject=getattr(e, "subject", None),
-            room_id=room_id,
-            original_error=str(getattr(e, "original_error", None)) if hasattr(e, "original_error") else None,
-        )
+        _log_nats_publish_error(e, chat_message, room_id)
         return False
-
     except (AttributeError, TypeError, ValueError, KeyError, RuntimeError) as e:
-        # Unexpected error during publish (attribute access, type issues, value errors, etc.)
-        logger.error(
-            "Unexpected error publishing chat message to NATS",
-            error=str(e),
-            error_type=type(e).__name__,
-            message_id=chat_message.id,
-            room_id=room_id,
-            exc_info=True,
-        )
+        _log_nats_unexpected_error(e, chat_message, room_id)
         return False

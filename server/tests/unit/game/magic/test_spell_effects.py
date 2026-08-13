@@ -384,6 +384,161 @@ async def test_process_create_object_invalid_target(spell_effects):
 
 
 @pytest.mark.asyncio
+async def test_spell_effects_property_accessors(mock_player_service):
+    combat = MagicMock()
+    movement = MagicMock()
+    get_room = MagicMock()
+    conn = MagicMock()
+    effects = SpellEffects(
+        mock_player_service,
+        combat_service=combat,
+        movement_service=movement,
+        get_room_by_id=get_room,
+        connection_manager=conn,
+    )
+    assert effects.combat_service is combat
+    assert effects.movement_service is movement
+    assert effects.get_room_by_id is get_room
+    assert effects.connection_manager is conn
+
+
+@pytest.mark.asyncio
+async def test_process_lucidity_adjust_success_and_loss(spell_effects, mock_target_match):
+    player = MagicMock()
+    persistence = MagicMock()
+    persistence.get_player_by_id = AsyncMock(return_value=player)
+    persistence.apply_lucidity_gain = AsyncMock()
+    persistence.apply_lucidity_loss = AsyncMock()
+    spell_effects.player_service.persistence = persistence
+
+    spell = MagicMock()
+    spell.spell_id = "lucid"
+    spell.effect_data = {"adjust_amount": 10}
+    result = await spell_effects._process_lucidity_adjust(spell, mock_target_match, 1.0)
+    assert result["success"] is True
+    persistence.apply_lucidity_gain.assert_awaited()
+
+    spell.effect_data = {"lucidity_delta": -5}
+    result = await spell_effects._process_lucidity_adjust(spell, mock_target_match, 1.0)
+    assert result["success"] is True
+    persistence.apply_lucidity_loss.assert_awaited()
+
+    spell.effect_data = {"adjust_amount": 0}
+    assert (await spell_effects._process_lucidity_adjust(spell, mock_target_match, 1.0))["success"] is False
+
+    persistence.get_player_by_id = AsyncMock(return_value=None)
+    spell.effect_data = {"adjust_amount": 3}
+    assert (await spell_effects._process_lucidity_adjust(spell, mock_target_match, 1.0))["success"] is False
+
+
+@pytest.mark.asyncio
+async def test_process_corruption_adjust_success(spell_effects, mock_target_match):
+    player = MagicMock()
+    player.get_stats.return_value = {"corruption": 10}
+    player.set_stats = MagicMock()
+    persistence = MagicMock()
+    persistence.get_player_by_id = AsyncMock(return_value=player)
+    persistence.save_player = AsyncMock()
+    spell_effects.player_service.persistence = persistence
+
+    spell = MagicMock()
+    spell.effect_data = {"adjust_amount": 5}
+    result = await spell_effects._process_corruption_adjust(spell, mock_target_match, 1.0)
+    assert result["success"] is True
+    assert result["new_corruption"] == 15
+    persistence.save_player.assert_awaited()
+
+    spell.effect_data = {"adjust_amount": 0}
+    assert (await spell_effects._process_corruption_adjust(spell, mock_target_match, 1.0))["success"] is False
+
+
+@pytest.mark.asyncio
+async def test_process_teleport_success_and_failures(spell_effects, mock_target_match):
+    spell = MagicMock()
+    spell.effect_data = {}
+    assert (await spell_effects._process_teleport(spell, mock_target_match, 1.0))["success"] is False
+
+    spell.effect_data = {"destination_room_id": "dest_room"}
+    persistence = MagicMock()
+    persistence.get_player_by_id = AsyncMock(return_value=None)
+    spell_effects.player_service.persistence = persistence
+    assert (await spell_effects._process_teleport(spell, mock_target_match, 1.0))["success"] is False
+
+    player = MagicMock()
+    player.current_room_id = "room_001"
+    player.name = "Ada"
+    persistence.get_player_by_id = AsyncMock(return_value=player)
+    spell_effects.player_service.update_player_location = AsyncMock(return_value=False)
+    assert (await spell_effects._process_teleport(spell, mock_target_match, 1.0))["success"] is False
+
+    spell_effects.player_service.update_player_location = AsyncMock(return_value=True)
+    result = await spell_effects._process_teleport(spell, mock_target_match, 1.0)
+    assert result["success"] is True
+    assert result["destination_room_id"] == "dest_room"
+
+
+@pytest.mark.asyncio
+async def test_process_damage_to_npc_success(mock_player_service):
+    combat = MagicMock()
+    combat.sync_npc_participant_dp_after_spell_damage = MagicMock()
+    combat.publish_npc_damage_event = AsyncMock()
+    combat.publish_npc_died_event = AsyncMock()
+    combat.get_combat_id_for_participant = MagicMock(return_value=None)
+    effects = SpellEffects(mock_player_service, combat_service=combat)
+
+    npc = MagicMock()
+    npc.is_alive = True
+    npc.take_damage.return_value = True
+    npc.current_room = "room_001"
+    npc.npc_id = uuid.uuid4()
+    npc.get_combat_stats.return_value = {"current_dp": 40, "max_dp": 50}
+
+    target = TargetMatch(
+        target_id=str(uuid.uuid4()),
+        target_type=TargetType.NPC,
+        target_name="Ghoul",
+        room_id="room_001",
+    )
+    caster_id = uuid.uuid4()
+    with patch("server.game.magic.spell_effects.get_npc_instance_for_steal_life", return_value=npc):
+        result = await effects._process_damage_to_npc(target, 10, "fire", caster_id)
+    assert result["success"] is True
+    npc.take_damage.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_process_damage_to_npc_unavailable(mock_player_service):
+    effects = SpellEffects(mock_player_service, combat_service=MagicMock())
+    target = TargetMatch(
+        target_id=str(uuid.uuid4()),
+        target_type=TargetType.NPC,
+        target_name="Ghoul",
+        room_id="room_001",
+    )
+    with patch("server.game.magic.spell_effects.get_npc_instance_for_steal_life", return_value=None):
+        result = await effects._process_damage_to_npc(target, 10, "fire", uuid.uuid4())
+    assert result["success"] is False
+
+
+def test_add_spell_damage_threat_noops_without_combat(mock_player_service):
+    effects = SpellEffects(mock_player_service, combat_service=None)
+    target = TargetMatch(
+        target_id=str(uuid.uuid4()),
+        target_type=TargetType.NPC,
+        target_name="Ghoul",
+        room_id="room_001",
+    )
+    effects._add_spell_damage_threat_to_combat(target, uuid.uuid4(), 5)
+
+
+def test_resolve_room_for_npc_spell_publish(mock_player_service):
+    effects = SpellEffects(mock_player_service, combat_service=None)
+    npc = MagicMock()
+    npc.current_room = "room_a"
+    assert effects._resolve_room_for_npc_spell_publish(npc, "npc-1") == "room_a"
+
+
+@pytest.mark.asyncio
 async def test_publish_npc_spell_damage_syncs_participant_when_npc_room_missing(mock_player_service):
     """
     Regress: Fire bolt (and other NPC damage spells) update the live NPC via take_damage first.

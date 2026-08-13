@@ -259,26 +259,29 @@ async def test_quest_ask_usage_when_no_npc(current_user, mock_request):
 
 @pytest.mark.asyncio
 async def test_quest_ask_success(current_user, mock_request):
-    """Quest ask starts offered quest via NPC trigger."""
+    """Quest ask starts offered quest via NPC trigger and emits NPC say."""
     player_id = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.player_id = player_id
+    mock_player.current_room_id = "room_sanitarium_foyer"
     mock_persistence = AsyncMock()
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_quest_service = MagicMock()
     mock_quest_service.start_quest_by_trigger = AsyncMock(
-        return_value=[{"success": True, "message": "Quest started: Gather Daisies"}]
+        return_value=[{"success": True, "message": "Quest started: Gather Daisies", "title": "Gather Daisies"}]
     )
     mock_container = MagicMock()
     mock_npc = MagicMock()
     mock_npc.name = "Dr. Morgan"
+    mock_npc.npc_id = "npc-morgan-1"
     mock_npc.definition = MagicMock(id="54")
 
     with ExitStack() as stack:
         _enter_quest_command_patches(stack, mock_quest_service, mock_persistence, mock_container)
         stack.enter_context(
-            patch("server.commands.quest_commands._resolve_npc_in_player_room", return_value=(mock_npc, None))
+            patch("server.commands.quest_commands.resolve_npc_in_player_room", return_value=(mock_npc, None))
         )
+        emit = stack.enter_context(patch("server.commands.quest_commands.emit_quest_npc_say"))
         result = await handle_quest_command(
             command_data={"args": ["ask", "morgan"]},
             current_user=current_user,
@@ -289,6 +292,10 @@ async def test_quest_ask_success(current_user, mock_request):
 
     assert "started" in result["result"].lower()
     mock_quest_service.start_quest_by_trigger.assert_awaited_once_with(player_id, "npc", "54")
+    emit.assert_called_once()
+    assert emit.call_args.kwargs["npc_name"] == "Dr. Morgan"
+    assert emit.call_args.kwargs["room_id"] == "room_sanitarium_foyer"
+    assert "Gather Daisies" in emit.call_args.kwargs["line"]
 
 
 @pytest.mark.asyncio
@@ -306,7 +313,7 @@ async def test_quest_ask_npc_not_in_room(current_user, mock_request):
         _enter_quest_command_patches(stack, mock_quest_service, mock_persistence, mock_container)
         stack.enter_context(
             patch(
-                "server.commands.quest_commands._resolve_npc_in_player_room",
+                "server.commands.quest_commands.resolve_npc_in_player_room",
                 return_value=(None, "You do not see 'ghost' here."),
             )
         )
@@ -323,26 +330,29 @@ async def test_quest_ask_npc_not_in_room(current_user, mock_request):
 
 @pytest.mark.asyncio
 async def test_quest_turnin_success(current_user, mock_request):
-    """Quest turnin completes quests at the NPC."""
+    """Quest turnin completes quests at the NPC and emits NPC say."""
     player_id = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.player_id = player_id
+    mock_player.current_room_id = "room_sanitarium_foyer"
     mock_persistence = AsyncMock()
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_quest_service = MagicMock()
     mock_quest_service.turn_in_at_entity = AsyncMock(
-        return_value=[{"success": True, "message": "Quest completed: Gather Daisies"}]
+        return_value=[{"success": True, "message": "Quest completed: Gather Daisies", "title": "Gather Daisies"}]
     )
     mock_container = MagicMock()
     mock_npc = MagicMock()
     mock_npc.name = "Dr. Morgan"
+    mock_npc.npc_id = "npc-morgan-1"
     mock_npc.definition = MagicMock(id="54")
 
     with ExitStack() as stack:
         _enter_quest_command_patches(stack, mock_quest_service, mock_persistence, mock_container)
         stack.enter_context(
-            patch("server.commands.quest_commands._resolve_npc_in_player_room", return_value=(mock_npc, None))
+            patch("server.commands.quest_commands.resolve_npc_in_player_room", return_value=(mock_npc, None))
         )
+        emit = stack.enter_context(patch("server.commands.quest_commands.emit_quest_npc_say"))
         result = await handle_quest_command(
             command_data={"args": ["turnin", "morgan"]},
             current_user=current_user,
@@ -353,6 +363,9 @@ async def test_quest_turnin_success(current_user, mock_request):
 
     assert "completed" in result["result"].lower()
     mock_quest_service.turn_in_at_entity.assert_awaited_once_with(player_id, "npc", "54")
+    emit.assert_called_once()
+    assert "Gather Daisies" in emit.call_args.kwargs["line"]
+    assert "completed" in emit.call_args.kwargs["line"].lower()
 
 
 @pytest.mark.asyncio
@@ -370,7 +383,7 @@ async def test_quest_turnin_npc_not_in_room(current_user, mock_request):
         _enter_quest_command_patches(stack, mock_quest_service, mock_persistence, mock_container)
         stack.enter_context(
             patch(
-                "server.commands.quest_commands._resolve_npc_in_player_room",
+                "server.commands.quest_commands.resolve_npc_in_player_room",
                 return_value=(None, "You do not see 'ghost' here."),
             )
         )

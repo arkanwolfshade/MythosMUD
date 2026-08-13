@@ -172,3 +172,99 @@ def test_memory_profiler_print_model_memory_usage():
         profiler.print_model_memory_usage(result)
 
         mock_print.assert_called()
+
+
+def test_memory_profiler_print_model_memory_usage_error():
+    """Test MemoryProfiler.print_model_memory_usage() handles error dict."""
+    profiler = MemoryProfiler()
+    with patch("builtins.print") as mock_print:
+        profiler.print_model_memory_usage({"error": "boom", "model_class": "SampleModel"})
+        mock_print.assert_called()
+
+
+def test_memory_profiler_measure_model_serialization():
+    """Test MemoryProfiler.measure_model_serialization() returns stats."""
+    profiler = MemoryProfiler()
+    instances = [SampleModel(name="a", value=1)]
+
+    with (
+        patch("server.utils.memory_profiler.gc.collect"),
+        patch("server.utils.memory_profiler.tracemalloc.start"),
+        patch("server.utils.memory_profiler.tracemalloc.stop"),
+        patch.object(profiler.process, "memory_info", return_value=MagicMock(rss=1000)),
+    ):
+        profiler.baseline_memory = 500
+        result = profiler.measure_model_serialization(instances, iterations=2)
+
+    assert result["instances_count"] == 1
+    assert result["iterations"] == 2
+    assert "memory_per_serialization_bytes" in result
+
+
+def test_memory_profiler_measure_model_deserialization():
+    """Test MemoryProfiler.measure_model_deserialization() returns stats."""
+    profiler = MemoryProfiler()
+    data = [{"name": "a", "value": 1}]
+
+    with (
+        patch("server.utils.memory_profiler.gc.collect"),
+        patch("server.utils.memory_profiler.tracemalloc.start"),
+        patch("server.utils.memory_profiler.tracemalloc.stop"),
+        patch.object(profiler.process, "memory_info", return_value=MagicMock(rss=1000)),
+    ):
+        profiler.baseline_memory = 500
+        result = profiler.measure_model_deserialization(SampleModel, data, iterations=2)
+
+    assert result["model_class"] == "SampleModel"
+    assert result["total_deserializations"] == 2
+
+
+class OtherModel(BaseModel):
+    """Second model for compare_models_memory_usage."""
+
+    label: str
+
+
+def test_memory_profiler_compare_models_memory_usage():
+    """Test MemoryProfiler.compare_models_memory_usage() aggregates stats."""
+    profiler = MemoryProfiler()
+
+    with patch.object(profiler, "measure_model_instantiation") as mock_measure:
+        mock_measure.side_effect = [
+            {"memory_per_instance_bytes": 10.0},
+            {"memory_per_instance_bytes": 20.0},
+        ]
+        results = profiler.compare_models_memory_usage(
+            [SampleModel, OtherModel],
+            iterations=1,
+            SampleModel={"name": "x"},
+            OtherModel={"label": "y"},
+        )
+
+    assert "_statistics" in results
+    assert results["_statistics"]["total_models"] == 2
+
+
+def test_memory_profiler_print_comparison_results():
+    """Test MemoryProfiler.print_comparison_results() prints stats block."""
+    profiler = MemoryProfiler()
+    results = {
+        "SampleModel": {
+            "model_class": "SampleModel",
+            "iterations": 1,
+            "memory_delta_bytes": 100,
+            "memory_per_instance_bytes": 100,
+            "memory_per_instance_kb": 0.1,
+            "peak_memory_bytes": 200,
+        },
+        "_statistics": {
+            "total_models": 1,
+            "min_memory_bytes": 100,
+            "max_memory_bytes": 100,
+            "avg_memory_bytes": 100,
+        },
+    }
+
+    with patch("builtins.print") as mock_print:
+        profiler.print_comparison_results(results)
+        assert mock_print.call_count >= 2

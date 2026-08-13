@@ -1,9 +1,26 @@
 # 🚀 MythosMUD Real-Time Architecture
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 This document describes the real-time architecture implemented for MythosMUD, combining RESTful authentication with
 WebSocket-based real-time gameplay updates.
 
-## Rationale
+## 2. Rationale
+
+**[SPEC]**
 
 ### Recommended Architecture
 
@@ -24,7 +41,9 @@ WebSocket-based real-time gameplay updates.
 - **Battle-Tested**: WebSocket is mature and well-supported
 - **Unified Message Delivery**: All real-time communication through one protocol
 
-## Architecture Overview
+## 3. Architecture Overview
+
+**[NOTE]**
 
 ### **Three-Tier Design**
 
@@ -42,7 +61,9 @@ WebSocket-based real-time gameplay updates.
 3. **Interactive Commands**: WebSocket connections
 4. **Data Persistence**: PostgreSQL database
 
-## Technology Stack
+## 4. Technology Stack
+
+**[SPEC]**
 
 ### **Frontend (React + TypeScript)**
 
@@ -70,7 +91,9 @@ WebSocket-based real-time gameplay updates.
 
 **Message Format**: JSON with sequence numbers
 
-## Implementation Details
+## 5. Implementation Details
+
+**[NOTE]**
 
 ### **1. Authentication Flow**
 
@@ -134,7 +157,9 @@ All real-time messages follow this structure:
 }
 ```
 
-## Connection Management
+## 6. Connection Management
+
+**[NOTE]**
 
 ### **Modular Architecture (Refactored December 2025)**
 
@@ -185,7 +210,7 @@ server/realtime/
 - Components: 7 specialized modules
 - Test Coverage: 99.8% maintained
 
-See `REFACTORING_SUMMARY.md` for complete details.
+See `archive/REFACTORING_SUMMARY.md` for complete details.
 
 ### **Connection States**
 
@@ -215,7 +240,9 @@ const handleError = (error: string) => {
 };
 ```
 
-## Game Event Types
+## 7. Game Event Types
+
+**[NOTE]**
 
 ### **Core Events**
 
@@ -250,7 +277,9 @@ function handleGameEvent(event: GameEvent) {
 }
 ```
 
-## Performance Considerations
+## 8. Performance Considerations
+
+**[SPEC]**
 
 ### **Message Ordering**
 
@@ -278,7 +307,9 @@ function handleGameEvent(event: GameEvent) {
 
 **Event garbage collection**: Old events automatically removed
 
-## Security Considerations
+## 9. Security Considerations
+
+**[SPEC]**
 
 ### **Authentication**
 
@@ -304,7 +335,9 @@ function handleGameEvent(event: GameEvent) {
 
 **Admin controls**: Separate admin-only events
 
-## Development Workflow
+## 10. Development Workflow
+
+**[NOTE]**
 
 ### **Local Development**
 
@@ -338,7 +371,9 @@ ws.onmessage = (event) => {
 };
 ```
 
-## Future Enhancements
+## 11. Future Enhancements
+
+**[SPEC]**
 
 ### **Planned Features**
 
@@ -355,7 +390,9 @@ ws.onmessage = (event) => {
 3. **CDN Integration**: Static asset delivery
 4. **Caching**: Redis for frequently accessed data
 
-## Troubleshooting
+## 12. Troubleshooting
+
+**[SPEC]**
 
 ### **Common Issues**
 
@@ -374,11 +411,20 @@ ws.onmessage = (event) => {
 
 **Postman**: Test REST endpoints
 
-## Conclusion
+## 13. Conclusion
 
+**[NOTE]**
 This real-time architecture provides a robust foundation for MythosMUD's multiplayer gameplay while maintaining
 simplicity for development and debugging. The WebSocket-only approach offers reliable state updates and responsive
 interactive commands through a single, unified connection.
 
 The implementation is designed to be beginner-friendly while supporting the performance and scalability requirements of
 a multiplayer game. Future enhancements can be added incrementally without disrupting the core architecture.
+
+## 14. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

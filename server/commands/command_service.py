@@ -5,12 +5,15 @@ This module provides the main command processing service that orchestrates
 command validation, routing, and execution.
 """
 
+# pylint: disable=too-many-lines  # Reason: CommandService is the command routing coordinator; split when a second domain appears
+
 import traceback
-from collections.abc import Awaitable, Callable
-from typing import Any, cast
+from collections.abc import Awaitable, Callable, Mapping
+from typing import cast
 
 from ..alias_storage import AliasStorage
 from ..exceptions import ValidationError as MythosValidationError
+from ..models.command import Command
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import parse_command
 from ..validators.security_validator import strip_ansi_codes
@@ -89,6 +92,7 @@ from .rescue_commands import handle_ground_command
 from .rest_command import handle_rest_command
 from .skills_commands import handle_skills_command
 from .system_commands import handle_help_command
+from .talk_command import handle_talk_command
 from .teach_command import handle_teach_command
 from .utility_commands import (
     handle_emote_command,
@@ -103,8 +107,104 @@ from .utility_commands import (
 logger = get_logger(__name__)
 
 # Type alias for command handler functions
-# Note: Return type uses Any for values since handlers may return str, bool, or other types
-CommandHandler = Callable[[dict[str, Any], dict[str, Any], Any, AliasStorage | None, str], Awaitable[dict[str, Any]]]
+# Mapping (not dict) for returns: handlers often return dict[str, str]; dict values are invariant
+CommandHandler = Callable[
+    [dict[str, object], dict[str, object], object, AliasStorage | None, str],
+    Awaitable[Mapping[str, object]],
+]
+
+# Module-level registry keeps CommandService.__init__ under Lizard NLOC limits.
+_COMMAND_HANDLERS: dict[str, CommandHandler] = {
+    # System commands
+    "help": handle_help_command,
+    # Alias commands
+    "alias": handle_alias_command,
+    "aliases": handle_aliases_command,
+    "unalias": handle_unalias_command,
+    # Exploration commands
+    "look": handle_look_command,
+    "go": handle_go_command,
+    "follow": handle_follow_command,
+    "unfollow": handle_unfollow_command,
+    "following": handle_following_command,
+    "party": handle_party_command,
+    "read": handle_read_command,
+    # Communication commands
+    "say": handle_say_command,
+    "me": handle_me_command,
+    "pose": handle_pose_command,
+    "local": handle_local_command,
+    "l": handle_local_command,  # Alias for local
+    "global": handle_global_command,
+    "g": handle_global_command,  # Alias for global
+    "system": handle_system_command,
+    "whisper": handle_whisper_command,
+    "reply": handle_reply_command,
+    "emote": handle_emote_command,
+    "channel": handle_channel_command,
+    # Administrative commands
+    "mute": handle_mute_command,
+    "unmute": handle_unmute_command,
+    "mute_global": handle_mute_global_command,
+    "unmute_global": handle_unmute_global_command,
+    "add_admin": handle_add_admin_command,
+    "admin": handle_admin_command,
+    "mutes": handle_mutes_command,
+    "summon": handle_summon_command,
+    # Admin teleport commands (confirmation removed for immediate execution)
+    "teleport": handle_teleport_command,
+    "goto": handle_goto_command,
+    # Admin server management commands
+    "shutdown": handle_shutdown_command,
+    # Utility commands
+    "who": handle_who_command,
+    "whoami": handle_whoami_command,
+    "quit": handle_quit_command,
+    "logout": handle_logout_command,
+    "status": handle_status_command,
+    "time": handle_time_command,
+    "skills": handle_skills_command,
+    "journal": handle_journal_command,
+    "quests": handle_journal_command,
+    "quest": handle_quest_command,
+    "talk": handle_talk_command,
+    "inventory": cast(CommandHandler, handle_inventory_command),
+    # Magic commands
+    "cast": handle_cast_command,
+    "spells": handle_spells_command,
+    "spell": handle_spell_command,
+    "learn": handle_learn_command,
+    "stop": handle_stop_command,
+    "teach": handle_teach_command,
+    "pickup": cast(CommandHandler, handle_pickup_command),
+    "drop": cast(CommandHandler, handle_drop_command),
+    "put": cast(CommandHandler, handle_put_command),
+    "get": cast(CommandHandler, handle_get_command),
+    "equip": cast(CommandHandler, handle_equip_command),
+    "unequip": cast(CommandHandler, handle_unequip_command),
+    # Position commands
+    "sit": handle_sit_command,
+    "stand": handle_stand_command,
+    "lie": handle_lie_command,
+    "rest": handle_rest_command,
+    # NPC Admin commands
+    "npc": handle_npc_command,
+    # Combat commands
+    "attack": handle_attack_command,
+    "punch": handle_punch_command,
+    "kick": handle_kick_command,
+    "strike": handle_strike_command,
+    "flee": handle_flee_command,
+    "taunt": handle_taunt_command,
+    # lucidity recovery rites
+    "pray": handle_pray_command,
+    "meditate": handle_meditate_command,
+    "group_solace": handle_group_solace_command,
+    "therapy": handle_therapy_command,
+    "folk_tonic": handle_folk_tonic_command,
+    "debrief": handle_debrief_command,
+    "ground": handle_ground_command,
+}
 
 
 class CommandService:
@@ -117,105 +217,17 @@ class CommandService:
 
     def __init__(self) -> None:
         """Initialize the command service."""
-        self.command_handlers: dict[str, CommandHandler] = {
-            # System commands
-            "help": handle_help_command,
-            # Alias commands
-            "alias": handle_alias_command,
-            "aliases": handle_aliases_command,
-            "unalias": handle_unalias_command,
-            # Exploration commands
-            "look": handle_look_command,
-            "go": handle_go_command,
-            "follow": handle_follow_command,
-            "unfollow": handle_unfollow_command,
-            "following": handle_following_command,
-            "party": handle_party_command,
-            "read": handle_read_command,
-            # Communication commands
-            "say": handle_say_command,
-            "me": handle_me_command,
-            "pose": handle_pose_command,
-            "local": handle_local_command,
-            "l": handle_local_command,  # Alias for local
-            "global": handle_global_command,
-            "g": handle_global_command,  # Alias for global
-            "system": handle_system_command,
-            "whisper": handle_whisper_command,
-            "reply": handle_reply_command,
-            "emote": handle_emote_command,
-            "channel": handle_channel_command,
-            # Administrative commands
-            "mute": handle_mute_command,
-            "unmute": handle_unmute_command,
-            "mute_global": handle_mute_global_command,
-            "unmute_global": handle_unmute_global_command,
-            "add_admin": handle_add_admin_command,
-            "admin": handle_admin_command,
-            "mutes": handle_mutes_command,
-            "summon": handle_summon_command,
-            # Admin teleport commands (confirmation removed for immediate execution)
-            "teleport": handle_teleport_command,
-            "goto": handle_goto_command,
-            # Admin server management commands
-            "shutdown": handle_shutdown_command,
-            # Utility commands
-            "who": handle_who_command,
-            "whoami": handle_whoami_command,
-            "quit": handle_quit_command,
-            "logout": handle_logout_command,
-            "status": handle_status_command,
-            "time": handle_time_command,
-            "skills": handle_skills_command,
-            "journal": handle_journal_command,
-            "quests": handle_journal_command,
-            "quest": handle_quest_command,
-            "inventory": cast(CommandHandler, handle_inventory_command),
-            # Magic commands
-            "cast": handle_cast_command,
-            "spells": handle_spells_command,
-            "spell": handle_spell_command,
-            "learn": handle_learn_command,
-            "stop": handle_stop_command,
-            "teach": handle_teach_command,
-            "pickup": cast(CommandHandler, handle_pickup_command),
-            "drop": cast(CommandHandler, handle_drop_command),
-            "put": cast(CommandHandler, handle_put_command),
-            "get": cast(CommandHandler, handle_get_command),
-            "equip": cast(CommandHandler, handle_equip_command),
-            "unequip": cast(CommandHandler, handle_unequip_command),
-            # Position commands
-            "sit": handle_sit_command,
-            "stand": handle_stand_command,
-            "lie": handle_lie_command,
-            "rest": handle_rest_command,
-            # NPC Admin commands
-            "npc": handle_npc_command,
-            # Combat commands
-            "attack": handle_attack_command,
-            "punch": handle_punch_command,
-            "kick": handle_kick_command,
-            "strike": handle_strike_command,
-            "flee": handle_flee_command,
-            "taunt": handle_taunt_command,
-            # lucidity recovery rites
-            "pray": handle_pray_command,
-            "meditate": handle_meditate_command,
-            "group_solace": handle_group_solace_command,
-            "therapy": handle_therapy_command,
-            "folk_tonic": handle_folk_tonic_command,
-            "debrief": handle_debrief_command,
-            "ground": handle_ground_command,
-        }
+        # Copy so register_command_handler / unregister do not mutate the module registry.
+        self.command_handlers: dict[str, CommandHandler] = dict(_COMMAND_HANDLERS)
 
     async def process_validated_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command processing requires many parameters for context and routing
         self,
-        command_data: dict[str, Any],
-        current_user: dict[str, Any],
-        request: Any,
+        command_data: dict[str, object],
+        current_user: dict[str, object],
+        request: object,
         alias_storage: AliasStorage | None,
         player_name: str,
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         """
         Process a validated command with routing.
 
@@ -231,10 +243,11 @@ class CommandService:
         """
         logger.debug("Processing validated command", player=player_name, command_data=command_data)
 
-        command_type = command_data.get("command_type")
-        if not command_type:
+        command_type_obj: object = command_data.get("command_type")
+        if not isinstance(command_type_obj, str) or not command_type_obj:
             logger.error("No command type in validated command data", player=player_name, command_data=command_data)
             return {"result": "Invalid command format"}
+        command_type = command_type_obj
 
         # Get the appropriate handler
         handler: CommandHandler | None = self.command_handlers.get(command_type)
@@ -246,16 +259,11 @@ class CommandService:
             # Call handler with command_data (standardized format)
             # At this point handler is guaranteed to be CommandHandler (not None) due to check above
             logger.debug("DEBUG: About to call handler", handler=handler, command_data=command_data)
-            if handler is None:
-                raise RuntimeError("Handler must not be None")
             result = await handler(command_data, current_user, request, alias_storage, player_name)
             logger.debug(
                 "Command processed successfully with command_data", player=player_name, command_type=command_type
             )
-            # Type check to help MyPy understand the return type
-            if not isinstance(result, dict):
-                raise TypeError("Command handler must return a dict")
-            return result
+            return dict(result)
         except (ValueError, TypeError, AttributeError, KeyError, RuntimeError, MythosValidationError) as e:
             # Format exception traceback and sanitize ANSI codes for Windows compatibility
             try:
@@ -287,7 +295,9 @@ class CommandService:
                     pass
             return {"result": f"Error processing {command_type} command: {str(e)}"}
 
-    def _parse_command_string(self, command: str, player_name: str) -> tuple[Any, str, list[Any]] | dict[str, str]:
+    def _parse_command_string(
+        self, command: str, player_name: str
+    ) -> tuple[Command, str, list[object]] | dict[str, str]:
         """
         Parse and validate command string.
 
@@ -297,12 +307,15 @@ class CommandService:
         try:
             parsed_command = parse_command(command)
             cmd = parsed_command.command_type.value
-            args = getattr(parsed_command, "args", [])
+            raw_args: object = getattr(parsed_command, "args", [])
+            args: list[object] = cast(list[object], raw_args) if isinstance(raw_args, list) else []
 
             # CRITICAL: For commands with subcommands (admin, npc), reconstruct args array
             # to include subcommand as first element for backward compatibility with handlers
-            if hasattr(parsed_command, "subcommand") and parsed_command.subcommand:
-                args = [parsed_command.subcommand] + args
+            # getattr: parse_command returns a union; LookCommand etc. have no subcommand field
+            subcommand: object = getattr(parsed_command, "subcommand", None)
+            if subcommand:
+                args = [subcommand, *args]
 
             logger.debug("Command parsed successfully", player=player_name, command=cmd, args=args)
             return (parsed_command, cmd, args)
@@ -313,14 +326,16 @@ class CommandService:
             logger.error("Unexpected error during command parsing", error=str(e))
             return {"result": f"Error processing command: {str(e)}"}
 
-    def _prepare_command_data(self, parsed_command: Any, cmd: str, args: list[Any], player_name: str) -> dict[str, Any]:
+    def _prepare_command_data(
+        self, parsed_command: Command, cmd: str, args: list[object], player_name: str
+    ) -> dict[str, object]:
         """
         Prepare command_data dictionary by merging parsed command fields.
 
         Returns:
             dict: Prepared command_data dictionary
         """
-        command_data = {
+        command_data: dict[str, object] = {
             "command_type": cmd,
             "args": args,
             "target_player": args[0] if args else None,
@@ -338,17 +353,21 @@ class CommandService:
         )
         return command_data
 
-    def _fallback_parsed_fields(self, parsed_command: Any, command_data: dict[str, Any]) -> dict[str, Any]:
+    def _fallback_parsed_fields(self, parsed_command: Command, command_data: dict[str, object]) -> dict[str, object]:
         """Extract non-private, non-callable attributes from parsed_command, excluding keys already in command_data."""
-        return {
-            key: getattr(parsed_command, key)
-            for key in dir(parsed_command)
-            if not key.startswith("_") and not callable(getattr(parsed_command, key)) and key not in command_data
-        }
+        fields: dict[str, object] = {}
+        for key in dir(parsed_command):
+            if key.startswith("_") or key in command_data:
+                continue
+            attr: object = cast(object, getattr(parsed_command, key))
+            if callable(attr):
+                continue
+            fields[key] = attr
+        return fields
 
     def _extract_parsed_fields(
-        self, parsed_command: Any, cmd: str, player_name: str, command_data: dict[str, Any]
-    ) -> dict[str, Any]:
+        self, parsed_command: Command, cmd: str, player_name: str, command_data: dict[str, object]
+    ) -> dict[str, object]:
         """
         Extract fields from parsed_command using model_dump or fallback method.
 
@@ -357,7 +376,7 @@ class CommandService:
         """
         try:
             self._log_parsed_command_inspection(parsed_command, cmd, player_name)
-            parsed_fields = parsed_command.model_dump()
+            parsed_fields = cast(dict[str, object], parsed_command.model_dump())
             self._log_model_dump_result(parsed_fields, cmd, player_name)
             parsed_fields = {k: v for k, v in parsed_fields.items() if v is not None}
             logger.info(
@@ -387,7 +406,7 @@ class CommandService:
             )
             raise
 
-    def _log_parsed_command_inspection(self, parsed_command: Any, cmd: str, player_name: str) -> None:
+    def _log_parsed_command_inspection(self, parsed_command: Command, cmd: str, player_name: str) -> None:
         """Log parsed command object inspection details."""
         logger.debug(
             "Parsed command object inspection",
@@ -400,7 +419,7 @@ class CommandService:
         )
 
         if hasattr(parsed_command, "item"):
-            item_value = getattr(parsed_command, "item", None)
+            item_value: object = getattr(parsed_command, "item", None)
             logger.debug(
                 "Parsed command item value",
                 player=player_name,
@@ -409,7 +428,7 @@ class CommandService:
                 item_type=type(item_value).__name__,
             )
         if hasattr(parsed_command, "container"):
-            container_value = getattr(parsed_command, "container", None)
+            container_value: object = getattr(parsed_command, "container", None)
             logger.debug(
                 "Parsed command container value",
                 player=player_name,
@@ -421,7 +440,7 @@ class CommandService:
         # Use model_dump() to get all serialized fields without triggering deprecation warnings
         # This avoids accessing deprecated model_computed_fields and model_fields attributes
         # that would be triggered by dir() or direct attribute access
-        all_attrs = parsed_command.model_dump()
+        all_attrs = cast(dict[str, object], parsed_command.model_dump())
         logger.debug(
             "Parsed command all attributes",
             player=player_name,
@@ -430,7 +449,7 @@ class CommandService:
             all_attrs=all_attrs,
         )
 
-    def _log_model_dump_result(self, parsed_fields: dict[str, Any], cmd: str, player_name: str) -> None:
+    def _log_model_dump_result(self, parsed_fields: dict[str, object], cmd: str, player_name: str) -> None:
         """Log model_dump result details."""
         logger.debug(
             "Model dump result",
@@ -445,14 +464,13 @@ class CommandService:
     async def _execute_command_handler(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command execution requires many parameters for context and handler invocation
         self,
         handler: CommandHandler,
-        command_data: dict[str, Any],
-        parsed_command: Any,
-        current_user: dict[str, Any],
-        request: Any,
+        command_data: dict[str, object],
+        current_user: dict[str, object],
+        request: object,
         alias_storage: AliasStorage | None,
         player_name: str,
         cmd: str,
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         """
         Execute command handler with error handling.
 
@@ -460,20 +478,15 @@ class CommandService:
             dict: Command result
         """
         try:
-            if handler is None:
-                raise RuntimeError("Handler must not be None")
             result = await handler(command_data, current_user, request, alias_storage, player_name)
             logger.debug("Command processed successfully with command_data", player=player_name, command=cmd)
-            if not isinstance(result, dict):
-                raise TypeError("Command handler must return a dict")
-            return result
+            return dict(result)
         except (ValueError, TypeError, AttributeError, KeyError, RuntimeError, MythosValidationError) as e:
             logger.error(
                 "Command processing error",
                 player=player_name,
                 command=cmd,
                 command_data=command_data,
-                parsed_command=str(parsed_command),
                 handler_function=str(handler),
                 error_type=type(e).__name__,
                 error_message=str(e),
@@ -484,11 +497,11 @@ class CommandService:
     async def process_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command processing requires many parameters for context and routing
         self,
         command: str,
-        current_user: dict[str, Any],
-        request: Any,
+        current_user: dict[str, object],
+        request: object,
         alias_storage: AliasStorage | None,
         player_name: str,
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         """
         Process a command with full validation and routing.
 
@@ -507,7 +520,7 @@ class CommandService:
         # Step 1: Parse and validate command
         parse_result = self._parse_command_string(command, player_name)
         if isinstance(parse_result, dict):
-            return parse_result  # Error result
+            return dict(parse_result)  # Error result
         parsed_command, cmd, args = parse_result
 
         # Step 2: Route to appropriate handler
@@ -518,14 +531,14 @@ class CommandService:
         handler: CommandHandler = self.command_handlers[cmd]
         command_data = self._prepare_command_data(parsed_command, cmd, args, player_name)
         return await self._execute_command_handler(
-            handler, command_data, parsed_command, current_user, request, alias_storage, player_name, cmd
+            handler, command_data, current_user, request, alias_storage, player_name, cmd
         )
 
     def get_available_commands(self) -> list[str]:
         """Get list of available commands."""
         return list(self.command_handlers.keys())
 
-    def register_command_handler(self, command: str, handler: Callable[..., Awaitable[dict[str, Any]]]) -> None:
+    def register_command_handler(self, command: str, handler: CommandHandler) -> None:
         """
         Register a new command handler.
 

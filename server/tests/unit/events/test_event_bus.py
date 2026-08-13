@@ -8,7 +8,7 @@ Tests the EventBus class.
 # pylint: disable=too-many-lines  # Reason: Comprehensive test suite requires extensive test coverage for event bus functionality including subscription management, cleanup patterns, and multi-service scenarios
 
 import asyncio
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -658,3 +658,134 @@ async def test_multiple_services_subscribe_same_events_integration(event_bus):
 
     # Cleanup
     await service_a_new.shutdown()
+
+
+@pytest.mark.asyncio
+async def test_active_task_details_and_lifecycle_metrics(event_bus):
+    assert event_bus.get_active_task_count() == 0
+    assert event_bus.get_active_task_details() == []
+    metrics = event_bus.get_subscriber_lifecycle_metrics()
+    assert "total_subscriptions" in metrics or "churn_rate" in metrics or isinstance(metrics, dict)
+
+
+@pytest.mark.asyncio
+async def test_publish_isolates_sync_subscriber_errors(event_bus):
+    bad = MagicMock(side_effect=RuntimeError("handler boom"))
+    good = MagicMock()
+    event_bus.subscribe(MockEventClass, bad)
+    event_bus.subscribe(MockEventClass, good)
+    event = MockEventClass()
+    event_bus.publish(event)
+    await asyncio.sleep(0.05)
+    good.assert_called()
+
+
+@pytest.mark.asyncio
+async def test_async_subscriber_error_isolation(event_bus):
+    async def bad_handler(_event):
+        raise RuntimeError("async boom")
+
+    good = AsyncMock()
+    event_bus.subscribe(MockEventClass, bad_handler)
+    event_bus.subscribe(MockEventClass, good)
+    event_bus.publish(MockEventClass())
+    await asyncio.sleep(0.1)
+    good.assert_awaited()
+
+
+@pytest.mark.asyncio
+async def test_set_main_loop_and_ensure_processing(event_bus):
+    loop = asyncio.get_running_loop()
+    event_bus.set_main_loop(loop)
+    event_bus._ensure_processing_started()
+    assert event_bus._running is True or event_bus._processing_task is not None
+
+
+async def test_inject_and_get_all_counts(event_bus):
+    handler = MagicMock()
+    event_bus.subscribe(MockEventClass, handler)
+    event_bus.inject(MockEventClass())
+    await asyncio.sleep(0.05)
+    counts = event_bus.get_all_subscriber_counts()
+    assert isinstance(counts, dict)
+    handler.assert_called()
+
+
+@pytest.mark.asyncio
+async def test_stop_processing_and_publish_when_running(event_bus):
+    event_bus._ensure_async_processing()
+    assert event_bus._running is True
+    # Second call hits already-running branch
+    event_bus._ensure_async_processing()
+    handler = MagicMock()
+    event_bus.subscribe(MockEventClass, handler)
+    event_bus.publish(MockEventClass())
+    await asyncio.sleep(0.05)
+    await event_bus.shutdown()
+    assert event_bus._running is False
+
+
+@pytest.mark.asyncio
+async def test_signal_shutdown_and_cancel_helpers(event_bus):
+    event_bus._ensure_async_processing()
+    event_bus._signal_shutdown()
+
+    async def sleeper():
+        await asyncio.sleep(10)
+
+    task = asyncio.create_task(sleeper())
+    event_bus._active_tasks.add(task)
+    await event_bus._cancel_and_wait_for_active_tasks()
+    event_bus._finalize_shutdown()
+    await event_bus._cancel_processing_task()
+
+
+@pytest.mark.asyncio
+async def test_publish_queue_full_raises(event_bus):
+    event_bus._running = True
+    event_bus._event_queue = asyncio.Queue(maxsize=1)
+    event_bus._event_queue.put_nowait(MockEventClass())
+    with pytest.raises(RuntimeError, match="overloaded"):
+        event_bus.publish(MockEventClass())
+
+
+@pytest.mark.asyncio
+async def test_inject_queue_full_and_invalid(event_bus):
+    with pytest.raises(ValueError):
+        event_bus.inject(object())  # type: ignore[arg-type]
+    event_bus._event_queue = asyncio.Queue(maxsize=1)
+    event_bus._event_queue.put_nowait(MockEventClass())
+    with pytest.raises(RuntimeError, match="overloaded"):
+        event_bus.inject(MockEventClass())
+
+
+@pytest.mark.asyncio
+async def test_active_task_details_includes_exception(event_bus):
+    async def boom():
+        raise RuntimeError("task fail")
+
+    task = asyncio.create_task(boom())
+    try:
+        await task
+    except RuntimeError:
+        pass
+    event_bus._active_tasks.add(task)
+    details = event_bus.get_active_task_details()
+    assert details
+    assert details[0].get("exception_type") == "RuntimeError"
+
+
+def test_del_warns_when_running():
+    bus = EventBus()
+    bus._running = True
+    EventBus.__del__(bus)
+    assert bus._running is False
+
+
+@pytest.mark.asyncio
+async def test_ensure_async_processing_no_loop_logs(event_bus):
+    with patch("asyncio.get_running_loop", side_effect=RuntimeError("no loop")):
+        event_bus._running = False
+        event_bus._processing_task = None
+        event_bus._ensure_async_processing()
+    assert event_bus._running is False

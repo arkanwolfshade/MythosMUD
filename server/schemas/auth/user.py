@@ -16,7 +16,7 @@ from ..shared.base import ResponseBaseModel, SecureBaseModel
 class UserBase(SecureBaseModel):
     """Base user schema with common fields."""
 
-    __slots__ = ()  # Performance optimization
+    __slots__: tuple[str, ...] = ()  # Performance optimization
 
     username: str = Field(..., description="User's username")
     is_active: bool = Field(default=True, description="Whether user is active")
@@ -26,7 +26,7 @@ class UserBase(SecureBaseModel):
 class UserCreate(UserBase):
     """Schema for creating a new user."""
 
-    __slots__ = ()  # Performance optimization
+    __slots__: tuple[str, ...] = ()  # Performance optimization
 
     # Maximum length matches argon2_utils.py to prevent DoS attacks
     password: str = Field(..., min_length=8, max_length=1024, description="User's password")
@@ -35,7 +35,7 @@ class UserCreate(UserBase):
         json_schema_extra={
             "example": {
                 "username": "user",
-                "password": "securepassword123",
+                "password": "ExampleOnly!NotARealSecret9",
                 "is_active": True,
                 "is_superuser": False,
                 "is_verified": False,
@@ -47,7 +47,7 @@ class UserCreate(UserBase):
 class UserRead(ResponseBaseModel):
     """Schema for reading user data."""
 
-    __slots__ = ()  # Performance optimization
+    __slots__: tuple[str, ...] = ()  # Performance optimization
 
     user_id: uuid.UUID = Field(..., description="User's unique identifier")
     username: str = Field(..., description="User's username")
@@ -79,7 +79,7 @@ class UserRead(ResponseBaseModel):
 class UserUpdate(SecureBaseModel):
     """Schema for updating user data."""
 
-    __slots__ = ()  # Performance optimization
+    __slots__: tuple[str, ...] = ()  # Performance optimization
 
     username: str | None = Field(None, description="User's username")
     # Maximum length matches argon2_utils.py to prevent DoS attacks
@@ -95,7 +95,7 @@ class UserUpdate(SecureBaseModel):
         json_schema_extra={
             "example": {
                 "username": "neweuser",
-                "password": "newsecurepassword123",
+                "password": "ExampleOnly!UpdatedNotSecret9",
                 "is_active": True,
                 "is_superuser": False,
                 "is_verified": True,

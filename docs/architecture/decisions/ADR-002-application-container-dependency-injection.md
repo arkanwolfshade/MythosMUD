@@ -1,14 +1,31 @@
 # ADR-002: ApplicationContainer for Dependency Injection
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 **Status:** Accepted
 **Date:** 2026-02-02
 
-## Context
+## 2. Context
 
+**[NOTE]**
 Before the ApplicationContainer refactor, MythosMUD used 19+ global singletons for services such as PlayerService, RoomService, ConnectionManager, and EventBus. Global singletons cause tight coupling, make unit testing difficult (services cannot be mocked or replaced), and obscure the dependency graph. Test setup required mutating global state, leading to fragile, order-dependent tests.
 
-## Decision
+## 3. Decision
 
+**[SPEC]**
 Implement a single **ApplicationContainer** class in the `server/container/` package (orchestrator in `main.py`, domain bundles in `bundles/`) that:
 
 - Manages all service lifecycle and dependency resolution
@@ -19,24 +36,40 @@ Implement a single **ApplicationContainer** class in the `server/container/` pac
 
 The container is initialized once at application startup and passed (or accessed via a single accessor) where services are needed.
 
-## Alternatives Considered
+## 4. Alternatives Considered
+
+**[SPEC]**
 
 1. **Continue with global singletons** - Rejected: testing and maintainability suffer
 2. **Third-party DI framework (e.g., dependency-injector, injector)** - Rejected: ApplicationContainer provides sufficient control; avoids extra dependency; custom phases (e.g., warm room cache before starting real-time) are explicit
 3. **Domain-specific sub-containers** - Implemented as internal bundles with flattened attributes; see APPLICATION_CONTAINER_ANALYSIS.md
 
-## Consequences
+## 5. Consequences
+
+**[SPEC]**
 
 - **Positive**: Eliminated global singletons; explicit dependency graph; testable services via mock injection; proper lifecycle management
 - **Negative**: Some circular dependencies handled with TYPE_CHECKING; orchestration lives in `main.py`, domain logic in bundles under `server/container/bundles/`
 - **Neutral**: Initialization order is explicit but complex; document initialization phases for maintainers
 
-## Related ADRs
+## 6. Related ADRs
+
+**[SPEC]**
 
 - ADR-001: Layered Architecture with Event-Driven Components
 - ADR-005: Repository Pattern for Data Access
 
-## References
+## 7. References
+
+**[SPEC]**
 
 - [ApplicationContainer Analysis](../../APPLICATION_CONTAINER_ANALYSIS.md)
 - [Bounded Contexts and Service Boundaries](../../BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md)
+
+## 8. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

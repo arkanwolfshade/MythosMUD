@@ -10,6 +10,7 @@ cleanup and shutdown coordination with timeout boundaries.
 
 import asyncio
 from collections.abc import Callable, Coroutine
+from inspect import CORO_CREATED, getcoroutinestate
 from typing import Any
 
 import anyio
@@ -171,6 +172,7 @@ class TaskRegistry:  # pylint: disable=too-many-instance-attributes  # Reason: T
         """
         if self._shutdown_in_progress:
             logger.warning("Attempting to register task during shutdown - denied", task_name=task_name)
+            coro.close()
             raise RuntimeError("Task registration denied during shutdown")
 
         task_name = self._ensure_unique_task_name(task_name)
@@ -186,6 +188,9 @@ class TaskRegistry:  # pylint: disable=too-many-instance-attributes  # Reason: T
             return task
 
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Task registration errors unpredictable, must raise RuntimeError
+            # Close only if create_task never started the coro (avoids clobbering an already-scheduled task).
+            if getcoroutinestate(coro) == CORO_CREATED:
+                coro.close()
             logger.error("Failed to register task", task_name=task_name, error=str(e))
             raise RuntimeError(f"Task registration failed for {task_name}") from e
 

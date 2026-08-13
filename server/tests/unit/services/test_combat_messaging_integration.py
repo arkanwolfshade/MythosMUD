@@ -10,6 +10,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.services.combat_messaging_integration import CombatMessagingIntegration
+from server.tests.unit.realtime.envelope_assertions import assert_event_envelope
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
@@ -84,6 +85,8 @@ async def test_broadcast_combat_start(messaging_integration, mock_connection_man
     result = await messaging_integration.broadcast_combat_start("room_001", "Attacker", "Target", "combat_001")
     assert isinstance(result, dict)
     mock_connection_manager.broadcast_to_room.assert_awaited_once()
+    event = mock_connection_manager.broadcast_to_room.await_args.args[1]
+    assert_event_envelope(event, event_type="combat_started", require_room_id=True)
 
 
 @pytest.mark.asyncio

@@ -6,29 +6,88 @@
 
 import './multiplayer-browser-window.d.ts';
 
-import { expect, type Page } from '@playwright/test';
+import { expect, type BrowserContext, type Page } from '@playwright/test';
 import { CharacterSelectionPage, LoginPage, MotdPage } from '../pages';
-import { toMessageMatchPattern } from './message-match';
 import { TEST_TIMEOUTS } from './test-data';
 
 /** Last login credentials per page — used by executeCommand recovery in multiplayer tests. */
 const pageSessionCredentials = new WeakMap<Page, { username: string; password: string }>();
 
+/** Live page per username — survives Firefox page death when we reopen on the same context. */
+const livePagesByUsername = new Map<string, Page>();
+
 export function rememberPageSession(page: Page, username: string, password: string): void {
   pageSessionCredentials.set(page, { username, password });
+  livePagesByUsername.set(username, page);
 }
 
 export function getPageSessionCredentials(page: Page): { username: string; password: string } | undefined {
   return pageSessionCredentials.get(page);
 }
 
+export function getLivePageForUsername(username: string): Page | undefined {
+  const page = livePagesByUsername.get(username);
+  if (page && !page.isClosed()) {
+    return page;
+  }
+  return undefined;
+}
+
+/**
+ * If `page` is closed, open a new page on the same browser context and re-login.
+ * Updates live-page tracking so later executeCommand calls use the new page.
+ */
+export async function reopenClosedPage(
+  page: Page,
+  username: string,
+  password: string,
+  timeoutMs: number = 45000
+): Promise<Page> {
+  if (!page.isClosed()) {
+    rememberPageSession(page, username, password);
+    return page;
+  }
+  let context: BrowserContext;
+  try {
+    context = page.context();
+  } catch {
+    throw new Error(`Cannot recover playable session for ${username}: browser page is closed`);
+  }
+  const browser = context.browser();
+  if (browser === null) {
+    throw new Error(`Cannot recover playable session for ${username}: browser context is closed`);
+  }
+  let next: Page;
+  try {
+    next = await context.newPage();
+  } catch {
+    // Context died with the page (common under Firefox serial load); mint a fresh context.
+    if (!browser.isConnected()) {
+      throw new Error(`Cannot recover playable session for ${username}: browser has been closed`);
+    }
+    context = await browser.newContext();
+    next = await context.newPage();
+  }
+  rememberPageSession(next, username, password);
+  await loginPlayer(next, username, password);
+  await waitForPlayableSession(next, timeoutMs);
+  return next;
+}
+
 function isPageUsable(page: Page): boolean {
   return !page.isClosed();
 }
 
-/** Commands panel input only — never a chat-history compose field. */
-export function getCommandPanelInput(page: Page) {
-  return page.getByTestId('command-input-panel').getByTestId('command-input');
+/** Prefer the live reopened page for this username when the caller's page handle is stale. */
+function resolveActivePage(page: Page): Page {
+  const session = getPageSessionCredentials(page);
+  if (session) {
+    const live = getLivePageForUsername(session.username);
+    if (live) {
+      return live;
+    }
+  }
+  return page;
 }
 
 /**
@@ -74,7 +133,7 @@ export async function loginPlayer(page: Page, username: string, password: string
 
   const postLoginUi = page
     .locator('.character-selection-screen')
-    .or(page.getByTestId('command-input-panel'))
+    .or(page.getByTestId('command-input'))
     .or(page.getByTestId('motd-enter-realm'));
   await expect(postLoginUi.first()).toBeVisible({ timeout: TEST_TIMEOUTS.LOGIN });
 
@@ -96,11 +155,47 @@ export async function loginPlayer(page: Page, username: string, password: string
     await motdPage.waitForGameReady(TEST_TIMEOUTS.GAME_LOAD);
   }
 
-  await expect(getCommandPanelInput(page)).toBeVisible({ timeout: TEST_TIMEOUTS.GAME_LOAD });
+  await expect(page.getByTestId('command-input')).toBeVisible({ timeout: TEST_TIMEOUTS.GAME_LOAD });
 }
 
 /** Grace-period disconnect copy shown in Game Info when the server blocks commands. */
 const GRACE_PERIOD_MESSAGE = 'You are disconnected and cannot perform actions';
+
+/** Rest disconnect countdown — session is about to drop; do not wait for presence/chat. */
+const REST_DISCONNECT_POLLUTION_RE = /You will disconnect in \d+ seconds|You have rested and disconnected/i;
+
+/**
+ * Fail fast when the page shows a mid-rest disconnect countdown (poisons enter/chat waits).
+ * Attempt a direct `stand` first; do not relogin here (that cascades under Firefox serial load).
+ */
+export async function assertNoRestDisconnectPollution(page: Page): Promise<void> {
+  if (!isPageUsable(page)) {
+    throw new Error('Cannot check rest pollution: browser page is closed');
+  }
+  const isPolluted = async (): Promise<boolean> =>
+    page.evaluate(reSource => {
+      const re = new RegExp(reSource, 'i');
+      return re.test(document.body?.innerText ?? '');
+    }, REST_DISCONNECT_POLLUTION_RE.source);
+
+  if (!(await isPolluted())) {
+    return;
+  }
+
+  const input = page.getByTestId('command-input');
+  if (await input.isVisible({ timeout: 2000 }).catch(() => false)) {
+    await input.fill('stand');
+    await input.press('Enter');
+    await new Promise(r => setTimeout(r, 800));
+  }
+
+  if (await isPolluted()) {
+    throw new Error(
+      'Rest disconnect countdown/pollution detected in Game Info; aborting presence/chat wait. ' +
+        'Reconnect should cancel rest; if this persists, cancel rest before multiplayer waits.'
+    );
+  }
+}
 
 export interface LogoutPlayerOptions {
   /**
@@ -166,7 +261,7 @@ export async function logoutPlayer(
  * Send Command enablement is enforced separately in executeCommand.
  */
 export async function waitForPlayableSession(page: Page, timeoutMs: number = 30000): Promise<void> {
-  await expect(getCommandPanelInput(page)).toBeVisible({ timeout: Math.min(timeoutMs, 15000) });
+  await expect(page.getByTestId('command-input')).toBeVisible({ timeout: Math.min(timeoutMs, 15000) });
 
   await page
     .waitForFunction((msg: string) => !(document.body?.innerText ?? '').includes(msg), GRACE_PERIOD_MESSAGE, {
@@ -193,7 +288,7 @@ export interface EnsurePlayableConnectionOptions {
 export async function assertCommandChannelReady(page: Page, budgetMs: number): Promise<boolean> {
   try {
     await waitForPlayableSession(page, Math.min(budgetMs, 30000));
-    const commandInput = getCommandPanelInput(page);
+    const commandInput = page.getByTestId('command-input');
     await expect(commandInput).toBeVisible({ timeout: Math.min(budgetMs, 10000) });
     await expect(commandInput).toBeEnabled({ timeout: Math.min(budgetMs, 10000) });
     return true;
@@ -206,38 +301,53 @@ async function reconnectPlayableSession(
   page: Page,
   options: EnsurePlayableConnectionOptions | undefined,
   timeoutMs: number
-): Promise<void> {
+): Promise<Page> {
   if (options?.username && options?.password) {
     // Full reload drops the SPA session and returns to login; re-enter the game instead.
-    await recoverPlayableSession(page, options.username, options.password, timeoutMs);
-    return;
+    return recoverPlayableSession(page, options.username, options.password, timeoutMs);
   }
 
   await refreshPlayableSession(page, timeoutMs);
   if (await assertCommandChannelReady(page, timeoutMs)) {
-    return;
+    return page;
   }
 
   await waitForPlayableSession(page, timeoutMs);
+  return page;
+}
+
+async function reopenIfClosed(page: Page, options: EnsurePlayableConnectionOptions | undefined): Promise<Page> {
+  if (isPageUsable(page)) {
+    return page;
+  }
+  if (!options?.username || !options?.password) {
+    throw new Error('Cannot ensure playable connection: browser page is closed');
+  }
+  return reopenClosedPage(page, options.username, options.password, options.timeoutMs ?? 45000);
+}
+
+function resolveEnsuredPage(activePage: Page, username: string | undefined): Page {
+  // Caller may still hold a closed Page handle; return the live tab after recovery.
+  if (username) {
+    return getLivePageForUsername(username) ?? resolveActivePage(activePage);
+  }
+  return resolveActivePage(activePage);
 }
 
 /**
  * Gate before command execution: header Connected, no grace-period copy, command input enabled.
  * Send Command stays disabled until the input has text; do not probe readiness with that button.
  */
-export async function ensurePlayableConnection(page: Page, options?: EnsurePlayableConnectionOptions): Promise<void> {
-  if (!isPageUsable(page)) {
-    throw new Error('Cannot ensure playable connection: browser page is closed');
-  }
-
+export async function ensurePlayableConnection(page: Page, options?: EnsurePlayableConnectionOptions): Promise<Page> {
+  let activePage = await reopenIfClosed(resolveActivePage(page), options);
   const timeoutMs = options?.timeoutMs ?? 45000;
-  await page.bringToFront().catch(() => {});
+  await activePage.bringToFront().catch(() => {});
 
-  if (await assertCommandChannelReady(page, timeoutMs)) {
-    return;
+  if (!(await assertCommandChannelReady(activePage, timeoutMs))) {
+    activePage = await reconnectPlayableSession(activePage, options, timeoutMs);
   }
 
-  await reconnectPlayableSession(page, options, timeoutMs);
+  return resolveEnsuredPage(activePage, options?.username);
 }
 
 const RECOVER_COMMAND_READY_MS = 8000;
@@ -289,38 +399,44 @@ async function recoverPlayableViaSpaNavigation(
 /**
  * Restore a playable session when linkdead/disconnect left Send Command disabled.
  * Re-logs in only when reload did not restore command input.
+ * Returns the live page (may differ from the input handle after reopen).
  */
 export async function recoverPlayableSession(
   page: Page,
   username: string,
   password: string,
   timeoutMs: number = 45000
-): Promise<void> {
-  if (!isPageUsable(page)) {
-    throw new Error('Cannot recover playable session: browser page is closed');
+): Promise<Page> {
+  let activePage = page;
+  if (!isPageUsable(activePage)) {
+    activePage = await reopenClosedPage(activePage, username, password, timeoutMs);
+    if (await assertCommandChannelReady(activePage, RECOVER_COMMAND_READY_MS)) {
+      return activePage;
+    }
   }
 
-  await page.bringToFront().catch(() => {});
+  await activePage.bringToFront().catch(() => {});
 
-  if (await isUsernameLoginVisible(page)) {
-    await restorePlayableAfterLogin(page, username, password, timeoutMs);
-    return;
+  if (await isUsernameLoginVisible(activePage)) {
+    await restorePlayableAfterLogin(activePage, username, password, timeoutMs);
+    return activePage;
   }
 
-  if (await assertCommandChannelReady(page, RECOVER_COMMAND_READY_MS)) {
-    return;
+  if (await assertCommandChannelReady(activePage, RECOVER_COMMAND_READY_MS)) {
+    return activePage;
   }
 
-  if (await tryInPlacePlayableRecovery(page, timeoutMs)) {
-    return;
+  if (await tryInPlacePlayableRecovery(activePage, timeoutMs)) {
+    return activePage;
   }
 
-  if (await isUsernameLoginVisible(page)) {
-    await restorePlayableAfterLogin(page, username, password, timeoutMs);
-    return;
+  if (await isUsernameLoginVisible(activePage)) {
+    await restorePlayableAfterLogin(activePage, username, password, timeoutMs);
+    return activePage;
   }
 
-  await recoverPlayableViaSpaNavigation(page, username, password, timeoutMs);
+  await recoverPlayableViaSpaNavigation(activePage, username, password, timeoutMs);
+  return activePage;
 }
 
 /**
@@ -366,7 +482,7 @@ export async function refreshPlayableSession(page: Page, timeoutMs: number = 450
  * Focus the command input without Playwright click stability (Firefox eldritch-border animation).
  */
 export async function focusCommandInput(page: Page): Promise<void> {
-  const commandInput = getCommandPanelInput(page);
+  const commandInput = page.getByTestId('command-input');
   await expect(commandInput).toBeVisible({ timeout: TEST_TIMEOUTS.COMMAND });
   await commandInput.evaluate((el: HTMLElement) => {
     el.focus();
@@ -384,82 +500,82 @@ export async function clickWithoutStability(
   });
 }
 
+async function assertNotStuckOnLogin(page: Page): Promise<void> {
+  const onLogin = await page
+    .getByTestId('username-input')
+    .isVisible()
+    .catch(() => false);
+  if (onLogin) {
+    throw new Error(
+      'Cannot execute command: Still on login screen. Login may have failed or not completed. URL: ' + page.url()
+    );
+  }
+}
+
+/** Prefer tracked live tab; reopen when the caller's Page handle is closed. */
+async function resolveExecuteCommandPage(page: Page): Promise<Page> {
+  const session = getPageSessionCredentials(page);
+  if (!session) {
+    return page;
+  }
+  const tracked = getLivePageForUsername(session.username);
+  if (tracked) {
+    return tracked;
+  }
+  if (page.isClosed()) {
+    return reopenClosedPage(page, session.username, session.password, TEST_TIMEOUTS.GAME_LOAD);
+  }
+  return page;
+}
+
 /**
  * Submit a command when the session is already verified playable (no recovery loop).
  * Use after ensurePlayableConnection to avoid logout/relogin during multiplayer co-locate.
  */
 export async function executeCommandTrusted(page: Page, command: string): Promise<void> {
-  const isOnLoginScreen = await page
-    .getByTestId('username-input')
-    .isVisible()
-    .catch(() => false);
-
-  if (isOnLoginScreen) {
-    throw new Error(
-      'Cannot execute command: Still on login screen. Login may have failed or not completed. URL: ' + page.url()
-    );
-  }
-
-  await executeCommandWithoutRecovery(page, command);
+  const activePage = resolveActivePage(page);
+  await assertNotStuckOnLogin(activePage);
+  await executeCommandWithoutRecovery(activePage, command);
 }
 
 export async function executeCommandWithoutRecovery(page: Page, command: string): Promise<void> {
-  const commandPanel = page.getByTestId('command-input-panel');
-  const commandInput = commandPanel.getByTestId('command-input');
+  const commandInput = page.getByTestId('command-input');
   await expect(commandInput).toBeVisible({ timeout: TEST_TIMEOUTS.COMMAND });
-  await expect(page.getByTestId('chat-history-panel').getByTestId('command-input')).toHaveCount(0);
   await commandInput.evaluate((el: HTMLElement) => {
     el.focus();
   });
   await commandInput.clear();
   await commandInput.fill(command);
   await expect(commandInput).toHaveValue(command, { timeout: 5000 });
-  const sendCommand = commandPanel.getByRole('button', { name: 'Send Command' });
+  const sendCommand = page.getByRole('button', { name: 'Send Command' });
   await expect(sendCommand).toBeEnabled({ timeout: TEST_TIMEOUTS.GAME_LOAD });
   await commandInput.press('Enter');
   await expect(commandInput).toBeVisible({ timeout: 3000 });
 }
 
 /**
- * Execute a command via the Commands panel input (not Chat History).
+ * Execute a command via the command input field.
  *
  * @param page - Playwright page instance
  * @param command - Command to execute
  * @returns Promise that resolves when command is sent
  */
 export async function executeCommand(page: Page, command: string): Promise<void> {
-  if (!isPageUsable(page)) {
-    throw new Error('Cannot execute command: browser page is closed');
-  }
-
   const session = getPageSessionCredentials(page);
-  // Always try recovery first when we have credentials (idle rest / Exit / focus loss lands on login).
-  if (session) {
-    await ensurePlayableConnection(page, {
-      username: session.username,
-      password: session.password,
-      timeoutMs: TEST_TIMEOUTS.GAME_LOAD,
-    });
-  } else {
-    const isOnLoginScreen = await page
-      .getByTestId('username-input')
-      .isVisible()
-      .catch(() => false);
-    if (isOnLoginScreen) {
-      throw new Error(
-        'Cannot execute command: Still on login screen with no saved session credentials. URL: ' + page.url()
-      );
-    }
-    await ensurePlayableConnection(page, { timeoutMs: TEST_TIMEOUTS.GAME_LOAD });
-  }
-  await executeCommandWithoutRecovery(page, command);
+  const activePage = await resolveExecuteCommandPage(page);
+  await assertNotStuckOnLogin(activePage);
+
+  const creds = getPageSessionCredentials(activePage) ?? session;
+  // ensurePlayableConnection may reopen after page death; use its returned live Page.
+  const live = await ensurePlayableConnection(activePage, {
+    ...creds,
+    timeoutMs: TEST_TIMEOUTS.GAME_LOAD,
+  });
+  await executeCommandWithoutRecovery(live, command);
 }
 
 /**
  * Wait for a message to appear in the game log.
- *
- * Strings are matched literally (see toMessageMatchPattern). Poll + bringToFront so Firefox
- * background tabs keep painting Game Info; recover if idle rest dumps the session to login.
  *
  * @param page - Playwright page instance
  * @param expectedText - Text to wait for (can be string or regex)
@@ -470,41 +586,13 @@ export async function waitForMessage(
   expectedText: string | RegExp,
   timeout: number = TEST_TIMEOUTS.MESSAGE
 ): Promise<void> {
-  const { src, fl } = toMessageMatchPattern(expectedText);
-  const session = getPageSessionCredentials(page);
-  await expect
-    .poll(
-      async () => {
-        await page.bringToFront().catch(() => {});
-        if (await isUsernameLoginVisible(page, 500)) {
-          if (session) {
-            await ensurePlayableConnection(page, {
-              username: session.username,
-              password: session.password,
-              timeoutMs: Math.min(timeout, 30000),
-            });
-          }
-          return false;
-        }
-        return page.evaluate(
-          ({ matchSrc, matchFl }: { matchSrc: string; matchFl: string }) => {
-            try {
-              const re = new RegExp(matchSrc, matchFl);
-              const nodes = Array.from(document.querySelectorAll('[data-message-text]'));
-              if (nodes.some(n => re.test((n.getAttribute('data-message-text') || n.textContent || '').trim()))) {
-                return true;
-              }
-              return re.test(document.body?.innerText ?? '');
-            } catch {
-              return false;
-            }
-          },
-          { matchSrc: src, matchFl: fl }
-        );
-      },
-      { timeout, message: `waitForMessage ${src}` }
-    )
-    .toBe(true);
+  const activePage = resolveActivePage(page);
+  const messageLocator = activePage.locator('[data-message-text]');
+  if (typeof expectedText === 'string') {
+    await expect(messageLocator.filter({ hasText: expectedText }).first()).toBeVisible({ timeout });
+  } else {
+    await expect(messageLocator.filter({ hasText: expectedText }).first()).toBeVisible({ timeout });
+  }
 }
 
 /**
@@ -514,7 +602,8 @@ export async function waitForMessage(
  * @returns Array of message texts
  */
 export async function getMessages(page: Page): Promise<string[]> {
-  return await page.evaluate(() => {
+  const activePage = resolveActivePage(page);
+  return activePage.evaluate(() => {
     const messages = Array.from(document.querySelectorAll('[data-message-text]'));
     return messages.map(msg => (msg.getAttribute('data-message-text') || '').trim());
   });

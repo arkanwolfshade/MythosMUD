@@ -34,12 +34,12 @@ export const colors = {
     900: 'bg-gray-900',
   },
 
-  // Status Colors
+  // Status Colors (aligned to mythos-terminal)
   status: {
-    success: 'bg-green-500',
-    error: 'bg-red-500',
-    warning: 'bg-yellow-500',
-    info: 'bg-blue-500',
+    success: 'bg-mythos-terminal-success',
+    error: 'bg-mythos-terminal-error',
+    warning: 'bg-mythos-terminal-warning',
+    info: 'bg-mythos-terminal-secondary',
   },
 } as const;
 
