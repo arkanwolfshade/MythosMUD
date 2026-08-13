@@ -562,8 +562,14 @@ class MovementService:
             return False
 
         if to_room.has_player(player_id):
-            self._logger.error("Player is already in room", player_id=player_id, room_id=to_room_id)
-            return False
+            # Teleport/co-locate can leave a ghost on the dest list while current_room is from_room.
+            # player_entered(force_event=True) is idempotent; blocking here makes go east fail in foyer.
+            self._logger.warning(
+                "Player already listed in destination room; continuing transfer",
+                player_id=player_id,
+                room_id=to_room_id,
+                from_room=from_room_id,
+            )
 
         if not self._validate_exit(from_room, to_room_id):
             self._logger.error("No valid exit", from_room=from_room_id, to_room=to_room_id)

@@ -208,6 +208,40 @@ def test_validate_player_location_room_not_found(movement_service, mock_persiste
     assert result is False
 
 
+@pytest.mark.asyncio
+async def test_validate_movement_allows_ghost_in_destination(movement_service, mock_persistence):
+    """Foyer go-east must not abort when hallway still lists the player (co-locate ghost)."""
+    player_id = uuid.uuid4()
+    player = MagicMock()
+    player.player_id = player_id
+    foyer = MagicMock()
+    foyer.id = "earth_arkhamcity_sanitarium_room_foyer_001"
+    foyer.has_player = MagicMock(return_value=True)
+    foyer.exits = {"east": "earth_arkhamcity_sanitarium_room_hallway_001"}
+    hallway = MagicMock()
+    hallway.id = "earth_arkhamcity_sanitarium_room_hallway_001"
+    hallway.has_player = MagicMock(return_value=True)
+
+    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
+    mock_persistence.get_room_by_id = MagicMock(
+        side_effect=lambda rid: foyer if "foyer" in rid else hallway if "hallway" in rid else None
+    )
+
+    with (
+        patch.object(movement_service, "_check_combat_state", return_value=True),
+        patch.object(movement_service, "_check_player_posture", return_value=True),
+        patch.object(movement_service, "_validate_player_room_membership", new_callable=AsyncMock, return_value=True),
+        patch.object(movement_service, "_validate_exit", return_value=True),
+    ):
+        result = await movement_service._validate_movement(
+            player,
+            "earth_arkhamcity_sanitarium_room_foyer_001",
+            "earth_arkhamcity_sanitarium_room_hallway_001",
+        )
+
+    assert result is True
+
+
 def test_set_player_combat_service(movement_service):
     """Test set_player_combat_service updates combat service reference."""
     combat_svc = MagicMock()

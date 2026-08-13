@@ -66,6 +66,42 @@ async def test_get_player_occupants_success(mock_connection_manager):
 
 
 @pytest.mark.asyncio
+async def test_get_player_occupants_includes_in_room_player_without_websocket(mock_connection_manager):
+    """In-room players must appear in Occupants even with no live WS and no grace (look's rule)."""
+    other_id = uuid.uuid4()
+    mock_connection_manager.get_room_occupants.return_value = [
+        {"player_name": "Ithaqua", "player_id": str(other_id)},
+    ]
+    mock_connection_manager.has_websocket_connection = MagicMock(return_value=False)
+
+    with (
+        patch("server.realtime.occupant_display.is_player_in_grace_period", return_value=False),
+        patch("server.realtime.occupant_display.is_player_in_login_grace_period", return_value=False),
+    ):
+        result = await get_player_occupants(mock_connection_manager, "room_123")
+
+    assert "Ithaqua" in result
+
+
+@pytest.mark.asyncio
+async def test_get_player_occupants_adds_grace_badges(mock_connection_manager):
+    """Occupants panel uses the same grace badges as look."""
+    other_id = uuid.uuid4()
+    mock_connection_manager.get_room_occupants.return_value = [
+        {"player_name": "Ithaqua", "player_id": str(other_id)},
+    ]
+    mock_connection_manager.has_websocket_connection = MagicMock(return_value=False)
+
+    with (
+        patch("server.realtime.occupant_display.is_player_in_grace_period", return_value=True),
+        patch("server.realtime.occupant_display.is_player_in_login_grace_period", return_value=True),
+    ):
+        result = await get_player_occupants(mock_connection_manager, "room_123")
+
+    assert result == ["Ithaqua (linkdead) (warded)"]
+
+
+@pytest.mark.asyncio
 async def test_get_player_occupants_empty(mock_connection_manager):
     """Test get_player_occupants() returns empty list when no occupants."""
     room_id = "room_123"
@@ -382,7 +418,7 @@ async def test_broadcast_room_update_success(mock_connection_manager):
 
 @pytest.mark.asyncio
 async def test_broadcast_room_update_no_connection_manager():
-    """Test broadcast_room_update() resolves connection manager from ApplicationContainer."""
+    """Test broadcast_room_update() resolves connection manager from app."""
     player_id = TEST_PLAYER_ID_STR
     room_id = "room_123"
 
@@ -405,13 +441,17 @@ async def test_broadcast_room_update_no_connection_manager():
     mock_persistence.get_room_by_id.return_value = mock_room
     mock_connection_manager.async_persistence = mock_persistence
 
+    # Create a proper mock FastAPI app structure before patching
+    mock_app = MagicMock()
+    mock_app.state = MagicMock()
     mock_container = MagicMock()
     mock_container.connection_manager = mock_connection_manager
+    mock_app.state.container = mock_container
 
     with (
-        patch("server.container.ApplicationContainer.get_instance", return_value=mock_container),
+        patch("server.main.app", mock_app),
         patch("server.realtime.websocket_room_updates.get_player_occupants") as mock_get_players,
-        patch("server.realtime.websocket_room_updates.get_npc_occupants_from_lifecycle_manager") as mock_get_npcs,
+        patch("server.realtime.websocket_room_updates.get_npc_occupants_fallback") as mock_get_npcs,
         patch("server.realtime.websocket_room_updates.build_room_update_event") as mock_build_event,
         patch("server.realtime.websocket_room_updates.get_npc_instance_service") as mock_get_npc_service,
     ):
