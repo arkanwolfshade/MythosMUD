@@ -20,8 +20,8 @@
 
 ## Relationships
 
-- [EventBus](EventBus.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 

@@ -1,6 +1,6 @@
 # PlayerRespawnService
 
-> 55 nodes
+> 48 nodes
 
 ## Key Concepts
 
@@ -13,7 +13,6 @@
 - **Player** (8 connections)
 - **._prepare_delirium_respawn()** (7 connections) — `server/services/player_respawn_service.py`
 - **._publish_standard_respawn_event()** (7 connections) — `server/services/player_respawn_service.py`
-- **_utc_now()** (7 connections) — `server/services/player_respawn_service.py`
 - **AsyncSession** (7 connections)
 - **_PlayerCombatClearing** (6 connections) — `server/services/player_respawn_service.py`
 - **_RespawnEventPublisher** (6 connections) — `server/services/player_respawn_service.py`
@@ -29,31 +28,30 @@
 - **._apply_sanitarium_player_state()** (4 connections) — `server/services/player_respawn_service.py`
 - **.__init__()** (4 connections) — `server/services/player_respawn_service.py`
 - **.clear_player_combat_state()** (3 connections) — `server/services/player_respawn_service.py`
-- *... and 30 more nodes in this community*
+- **._normalize_current_dp()** (3 connections) — `server/services/player_respawn_service.py`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [LucidityService](LucidityService.md) (11 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
+- [Player](Player.md) (17 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (5 shared connections)
 - [test_player_respawn_service.py](test_player_respawn_service.py.md) (5 shared connections)
-- [CombatService](CombatService.md) (4 shared connections)
-- [coerce_int](coerce_int.md) (2 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (2 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [event_types.py](event_types.py.md) (3 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 - [game_tick_processing.py](game_tick_processing.py.md) (1 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
 - [PlayerService](PlayerService.md) (1 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
+- [hallucinations.py](hallucinations.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/services/player_respawn_service.py`
-- `server/tests/unit/services/test_player_respawn_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 130 (94%)
-- INFERRED: 9 (6%)
+- EXTRACTED: 120 (93%)
+- INFERRED: 9 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

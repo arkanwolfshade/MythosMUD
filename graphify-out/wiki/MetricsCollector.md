@@ -1,12 +1,13 @@
 # MetricsCollector
 
-> 21 nodes
+> 23 nodes
 
 ## Key Concepts
 
 - **MetricsCollector** (12 connections) — `server/middleware/metrics_collector.py`
 - **.get_metrics()** (3 connections) — `server/middleware/metrics_collector.py`
 - **.get_summary()** (3 connections) — `server/middleware/metrics_collector.py`
+- **.__init__()** (3 connections) — `server/middleware/metrics_collector.py`
 - **.record_circuit_state_change()** (2 connections) — `server/middleware/metrics_collector.py`
 - **.record_message_dlq()** (2 connections) — `server/middleware/metrics_collector.py`
 - **.record_message_failed()** (2 connections) — `server/middleware/metrics_collector.py`
@@ -21,6 +22,7 @@
 - **Reset all metrics counters. Useful for clearing metrics after a deployment or…** (1 connections) — `server/middleware/metrics_collector.py`
 - **Simple metrics collector for NATS message delivery. Thread-safe metrics…** (1 connections) — `server/middleware/metrics_collector.py`
 - **Get concise metrics summary. Returns: High-level metrics summary AI: For quick…** (1 connections) — `server/middleware/metrics_collector.py`
+- **Initialize metrics collector. AI: Uses Lock for thread-safety in async context.** (1 connections) — `server/middleware/metrics_collector.py`
 - **Record a successfully processed message. Args: channel: Message channel for…** (1 connections) — `server/middleware/metrics_collector.py`
 - **Record a failed message. Args: channel: Message channel error_type: Type of…** (1 connections) — `server/middleware/metrics_collector.py`
 - **Record a message retry attempt. Args: channel: Message channel attempt: Retry…** (1 connections) — `server/middleware/metrics_collector.py`
@@ -29,7 +31,7 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (1 shared connections)
-- [NPCMessageQueue](NPCMessageQueue.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files
 
@@ -37,8 +39,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 24 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

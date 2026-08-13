@@ -34,9 +34,8 @@
 ## Relationships
 
 - [AliasStorage](AliasStorage.md) (6 shared connections)
+- [get_username_from_user](get_username_from_user.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
 
 ## Source Files
 

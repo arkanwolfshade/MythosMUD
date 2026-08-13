@@ -1,6 +1,6 @@
 # get_help_content
 
-> 19 nodes
+> 23 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,8 @@
 - **test_websocket_handler_help.py** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
 - **get_commands_by_category()** (3 connections) — `server/help/help_content.py`
 - **_get_general_help()** (3 connections) — `server/help/help_content.py`
+- **test_get_help_content()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_get_help_content_with_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
 - **test_get_help_content_general()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
 - **test_get_help_content_specific()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
 - **help/__init__.py** (3 connections) — `server/help/__init__.py`
@@ -20,6 +22,8 @@
 - **Get list of all command categories.** (1 connections) — `server/help/help_content.py`
 - **Get all commands in a specific category.** (1 connections) — `server/help/help_content.py`
 - **Help system for MythosMUD. This package provides help content and command…** (1 connections) — `server/help/__init__.py`
+- **Test get_help_content returns help content.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **Test get_help_content returns help for specific command.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
 - **Unit tests for help content used in the realtime/WebSocket path. Uses the…** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
 - **Test get_help_content() returns general help when no command specified.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
 - **Test get_help_content() returns specific command help for look.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
@@ -27,19 +31,21 @@
 ## Relationships
 
 - [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (4 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (3 shared connections)
 - [AliasStorage](AliasStorage.md) (3 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [CommandRequest](CommandRequest.md) (1 shared connections)
 
 ## Source Files
 
 - `server/help/__init__.py`
 - `server/help/help_content.py`
+- `server/tests/unit/realtime/test_websocket_handler_core.py`
 - `server/tests/unit/realtime/test_websocket_handler_help.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

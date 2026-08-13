@@ -1,11 +1,13 @@
 # MessageBroadcaster
 
-> 35 nodes
+> 67 nodes
 
 ## Key Concepts
 
 - **MessageBroadcaster** (19 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **test_message_broadcaster.py** (17 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 - **message_broadcaster.py** (15 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **asyncio** (10 connections)
 - **UUID** (9 connections)
 - **.broadcast_global()** (7 connections) — `server/realtime/messaging/message_broadcaster.py`
 - **_stats_counter()** (7 connections) — `server/realtime/messaging/message_broadcaster.py`
@@ -21,34 +23,31 @@
 - **.broadcast_global_event()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
 - **.broadcast_room_event()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
 - **_narrow_gather_delivery_dict()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **message_broadcaster()** (4 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 - **._prepare_room_targets()** (3 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **Messaging components for connection management. This package provides modular…** (1 connections) — `server/realtime/messaging/__init__.py`
-- **Message broadcasting for connection management. This module provides room and…** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **Convert string player IDs to UUIDs for message sending. Args: target_list: List…** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **Process results from batch message delivery. Args: delivery_results: Results…** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **Fallback to individual message sending if batch fails. Args: target_mapping:…** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **Dedupe subscribers and count exclusions.** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **Run batch gather (or fallback) for a room broadcast.** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
-- *... and 10 more nodes in this community*
+- **mock_room_manager()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **mock_send_personal_message()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_empty()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
+- [connection_initialization.py](connection_initialization.py.md) (4 shared connections)
 - [build_event](build_event.md) (4 shared connections)
-- [test_message_broadcaster.py](test_message_broadcaster.py.md) (3 shared connections)
-- [test_connection_initialization.py](test_connection_initialization.py.md) (1 shared connections)
-- [.__init__](__init__.md) (1 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [RoomSubscriptionManager](RoomSubscriptionManager.md) (2 shared connections)
 - [PersonalMessageSender](PersonalMessageSender.md) (1 shared connections)
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/messaging/__init__.py`
 - `server/realtime/messaging/message_broadcaster.py`
+- `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 
 ## Audit Trail
 
-- EXTRACTED: 77 (100%)
+- EXTRACTED: 119 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

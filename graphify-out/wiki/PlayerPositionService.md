@@ -1,11 +1,12 @@
 # PlayerPositionService
 
-> 69 nodes
+> 71 nodes
 
 ## Key Concepts
 
 - **PlayerPositionService** (46 connections) — `server/services/player_position_service.py`
 - **test_player_position_service.py** (27 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **player_position_service.py** (12 connections) — `server/services/player_position_service.py`
 - **asyncio** (12 connections)
 - **.change_position()** (10 connections) — `server/services/player_position_service.py`
 - **Any** (7 connections)
@@ -28,17 +29,16 @@
 - **test_change_position_updates_existing_connection_info()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
 - **.ensure_default_aliases()** (3 connections) — `server/services/player_position_service.py`
 - **.__init__()** (3 connections) — `server/services/player_position_service.py`
-- **._validate_position()** (3 connections) — `server/services/player_position_service.py`
-- *... and 44 more nodes in this community*
+- *... and 46 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [AliasStorage](AliasStorage.md) (3 shared connections)
-- [test_rest_command.py](test_rest_command.py.md) (3 shared connections)
-- [PlayerService](PlayerService.md) (3 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (2 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (7 shared connections)
+- [AliasStorage](AliasStorage.md) (6 shared connections)
+- [test_rest_command.py](test_rest_command.py.md) (4 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 130 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 140 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

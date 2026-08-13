@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
+- [connection_initialization.py](connection_initialization.py.md) (3 shared connections)
 
 ## Source Files
 

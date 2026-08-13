@@ -32,7 +32,7 @@
 - enhanced_logging_config.py `EXTRACTED`
 
 ### imports
-- server/exceptions.py `EXTRACTED`
+- [server/exceptions.py](server-exceptions.py.md) `EXTRACTED`
 - [connection_manager.py](connection_manager.py.md) `EXTRACTED`
 - [server/dependencies.py](server-dependencies.py.md) `EXTRACTED`
 - combat_service.py `EXTRACTED`
@@ -41,7 +41,7 @@
 - [game_tick_processing.py](game_tick_processing.py.md) `EXTRACTED`
 - database.py `EXTRACTED`
 - async_persistence.py `EXTRACTED`
-- players.py `EXTRACTED`
+- [players.py](players.py.md) `EXTRACTED`
 - alias_storage.py `EXTRACTED`
 - [websocket_handler.py](websocket_handler.py.md) `EXTRACTED`
 - [maps.py](maps.py.md) `EXTRACTED`

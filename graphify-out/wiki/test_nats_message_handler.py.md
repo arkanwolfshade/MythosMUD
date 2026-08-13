@@ -1,6 +1,6 @@
 # test_nats_message_handler.py
 
-> 132 nodes
+> 134 nodes
 
 ## Key Concepts
 
@@ -22,34 +22,32 @@
 - **test_subscribe_to_subject_nats_error_returns_false()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_unsubscribe_from_subject_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_unsubscribe_from_subject_not_found()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_circuit_breaker_open_exception()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_connection_manager_property_injected_returns_none()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_connection_manager_setter_updates_helpers()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_handle_nats_message_event_data_detection()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_handle_nats_message_event_type_detection()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_handle_nats_message_retry_on_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_handle_nats_message_runtime_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_nats_message_success()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- *... and 107 more nodes in this community*
+- *... and 109 more nodes in this community*
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (15 shared connections)
-- [test_circuit_breaker.py](test_circuit_breaker.py.md) (2 shared connections)
-- [circuit_breaker.py](circuit_breaker.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (19 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (3 shared connections)
 - [AttributeError](AttributeError.md) (2 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
-- [.call](call.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
 - [NATSMessageHandler](NATSMessageHandler.md) (1 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/circuit_breaker.py`
+- `server/tests/unit/realtime/test_circuit_breaker.py`
 - `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 210 (99%)
+- EXTRACTED: 212 (99%)
 - INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 

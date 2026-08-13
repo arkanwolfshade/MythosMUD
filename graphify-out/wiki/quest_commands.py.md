@@ -37,12 +37,11 @@
 - [AliasStorage](AliasStorage.md) (6 shared connections)
 - [test_look_npc.py](test_look_npc.py.md) (5 shared connections)
 - [QuestService](QuestService.md) (3 shared connections)
+- [get_username_from_user](get_username_from_user.md) (3 shared connections)
 - [_get_npc_room_id](_get_npc_room_id.md) (2 shared connections)
 - [_should_include_npc](_should_include_npc.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [quest_service](quest_service.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
 
 ## Source Files
 

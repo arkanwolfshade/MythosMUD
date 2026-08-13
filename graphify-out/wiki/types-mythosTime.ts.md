@@ -33,14 +33,13 @@
 
 ## Relationships
 
-- [GameClientV2.tsx](GameClientV2.tsx.md) (28 shared connections)
+- [GameClientV2.tsx](GameClientV2.tsx.md) (25 shared connections)
+- [GameTerminal.tsx](GameTerminal.tsx.md) (7 shared connections)
 - [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (6 shared connections)
 - [projectorRoom.ts](projectorRoom.ts.md) (5 shared connections)
 - [logger.ts](logger.ts.md) (5 shared connections)
-- [GameTerminal.tsx](GameTerminal.tsx.md) (4 shared connections)
+- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (4 shared connections)
 - [EldritchIcon.tsx](EldritchIcon.tsx.md) (3 shared connections)
-- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (2 shared connections)
-- [messageHandlers.ts](messageHandlers.ts.md) (2 shared connections)
 - [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
 - [CommandPanel.tsx](CommandPanel.tsx.md) (2 shared connections)
 - [stateUpdateUtils.ts](stateUpdateUtils.ts.md) (2 shared connections)

@@ -1,31 +1,27 @@
 # .__call__
 
-> 7 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **.__call__()** (8 connections) — `server/middleware/correlation_middleware.py`
-- **_get_header()** (4 connections) — `server/middleware/correlation_middleware.py`
-- **Scope** (2 connections)
-- **Receive** (1 connections)
-- **Send** (1 connections)
-- **Return first header value for name (case-insensitive) from ASGI scope.** (1 connections) — `server/middleware/correlation_middleware.py`
-- **ASGI application interface. Args: scope: ASGI connection scope receive: ASGI…** (1 connections) — `server/middleware/correlation_middleware.py`
+- **.__call__()** (3 connections) — `server/utils/liability_types.py`
+- **.__call__()** (3 connections) — `server/utils/liability_types.py`
+- **LiabilityStackEntry** (2 connections)
+- **Decode stored liability text (or empty state) into stack rows.** (1 connections) — `server/utils/liability_types.py`
+- **Encode stack rows into JSON suitable for PlayerLucidity.liabilities.** (1 connections) — `server/utils/liability_types.py`
 
 ## Relationships
 
-- [get_config](get_config.md) (2 shared connections)
-- [fastapi_integration.py](fastapi_integration.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [Player](Player.md) (2 shared connections)
 
 ## Source Files
 
-- `server/middleware/correlation_middleware.py`
+- `server/utils/liability_types.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (82%)
-- INFERRED: 2 (18%)
+- EXTRACTED: 6 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

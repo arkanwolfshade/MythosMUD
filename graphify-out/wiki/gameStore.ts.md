@@ -38,7 +38,7 @@
 - [utils/layout.ts](utils-layout.ts.md) (13 shared connections)
 - [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (6 shared connections)
 - [useRoomEditModal.ts](useRoomEditModal.ts.md) (5 shared connections)
-- [GameTerminalPresentation.tsx](GameTerminalPresentation.tsx.md) (5 shared connections)
+- [GameLogPanel.tsx](GameLogPanel.tsx.md) (5 shared connections)
 - [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (4 shared connections)
 - [stateNormalization.ts](stateNormalization.ts.md) (3 shared connections)
 - [MapPerformanceMonitor](MapPerformanceMonitor.md) (3 shared connections)

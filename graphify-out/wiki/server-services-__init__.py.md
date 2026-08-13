@@ -1,71 +1,65 @@
 # server/services/__init__.py
 
-> 241 nodes
+> 176 nodes
 
 ## Key Concepts
 
 - **server/services/__init__.py** (47 connections) — `server/services/__init__.py`
 - **InventoryMutationGuard** (43 connections) — `server/services/inventory_mutation_guard.py`
 - **InventoryService** (43 connections) — `server/services/inventory_service.py`
-- **container_service.py** (37 connections) — `server/services/container_service.py`
-- **inventory_unequip_command.py** (32 connections) — `server/commands/inventory_unequip_command.py`
 - **InventoryStack** (30 connections) — `server/services/inventory_service.py`
 - **inventory_service.py** (29 connections) — `server/services/inventory_service.py`
 - **InventoryCapacityError** (24 connections) — `server/services/inventory_service.py`
 - **test_equipment_service.py** (22 connections) — `server/tests/unit/services/test_equipment_service.py`
-- **get_shared_services()** (21 connections) — `server/commands/inventory_service_helpers.py`
 - **equipment_service.py** (21 connections) — `server/services/equipment_service.py`
 - **inventory_mutation_guard.py** (20 connections) — `server/services/inventory_mutation_guard.py`
 - **test_inventory_service.py** (20 connections) — `server/tests/unit/services/test_inventory_service.py`
 - **EquipmentService** (18 connections) — `server/services/equipment_service.py`
 - **MutationDecision** (18 connections) — `server/services/inventory_mutation_guard.py`
-- **test_inventory_mutation_guard.py** (17 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **inventory_service_helpers.py** (16 connections) — `server/commands/inventory_service_helpers.py`
 - **SlotValidationError** (14 connections) — `server/services/equipment_service.py`
 - **EquipmentCapacityError** (13 connections) — `server/services/equipment_service.py`
 - **EquipmentServiceError** (10 connections) — `server/services/equipment_service.py`
 - **InventoryValidationError** (10 connections) — `server/services/inventory_service.py`
 - **.equip_from_inventory()** (10 connections) — `server/services/equipment_service.py`
-- **test_inventory_mutation_guard_error_handling.py** (10 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
 - **test_inventory_mutation_guard_sync.py** (10 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
 - **InventoryServiceError** (9 connections) — `server/services/inventory_service.py`
-- *... and 216 more nodes in this community*
+- **InventorySplitError** (9 connections) — `server/services/inventory_service.py`
+- **._clone_stack()** (9 connections) — `server/services/inventory_service.py`
+- **.unequip_to_inventory()** (8 connections) — `server/services/equipment_service.py`
+- **.acquire()** (8 connections) — `server/services/inventory_mutation_guard.py`
+- **.acquire_async()** (8 connections) — `server/services/inventory_mutation_guard.py`
+- **.add_stack()** (8 connections) — `server/services/inventory_service.py`
+- *... and 151 more nodes in this community*
 
 ## Relationships
 
-- [ContainerServiceError](ContainerServiceError.md) (37 shared connections)
-- [inventory_equip_command.py](inventory_equip_command.py.md) (23 shared connections)
-- [get_logger](get_logger.md) (22 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (15 shared connections)
-- [ContainerComponent](ContainerComponent.md) (10 shared connections)
-- [WearableContainerService](WearableContainerService.md) (9 shared connections)
-- [ContainerService](ContainerService.md) (9 shared connections)
-- [test_inventory_helpers.py](test_inventory_helpers.py.md) (6 shared connections)
-- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (6 shared connections)
-- [container_helpers_inventory_display.py](container_helpers_inventory_display.py.md) (5 shared connections)
-- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (5 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (41 shared connections)
+- [inventory_equip_command.py](inventory_equip_command.py.md) (27 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (11 shared connections)
+- [test_wearable_container_service.py](test_wearable_container_service.py.md) (9 shared connections)
+- [test_inventory_mutation_guard.py](test_inventory_mutation_guard.py.md) (7 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (5 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
 - [test_inventory_commands.py](test_inventory_commands.py.md) (4 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (4 shared connections)
+- [NPCCombatLucidity](NPCCombatLucidity.md) (4 shared connections)
+- [test_inventory_mutation_guard_async.py](test_inventory_mutation_guard_async.py.md) (3 shared connections)
+- [test_inventory_mutation_guard_error_handling.py](test_inventory_mutation_guard_error_handling.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_service_helpers.py`
-- `server/commands/inventory_unequip_command.py`
 - `server/services/__init__.py`
-- `server/services/container_service.py`
 - `server/services/equipment_service.py`
 - `server/services/inventory_mutation_guard.py`
 - `server/services/inventory_service.py`
-- `server/tests/unit/commands/test_inventory_service_helpers.py`
 - `server/tests/unit/services/test_equipment_service.py`
-- `server/tests/unit/services/test_inventory_mutation_guard.py`
-- `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
 - `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
 - `server/tests/unit/services/test_inventory_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 544 (90%)
-- INFERRED: 58 (10%)
+- EXTRACTED: 399 (88%)
+- INFERRED: 57 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

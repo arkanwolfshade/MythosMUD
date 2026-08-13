@@ -34,13 +34,13 @@
 ## Relationships
 
 - [NATSMetrics](NATSMetrics.md) (16 shared connections)
-- [event_types.py](event_types.py.md) (6 shared connections)
-- [NATSService](NATSService.md) (4 shared connections)
+- [NATSService](NATSService.md) (5 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
 - [test_nats_service_init_with_subject_manager](test_nats_service_init_with_subject_manager.md) (3 shared connections)
 - [NATSConnectionStateMachine](NATSConnectionStateMachine.md) (2 shared connections)
 - [nats_service](nats_service.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [NATSConfig](NATSConfig.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [AppConfig](AppConfig.md) (1 shared connections)
 - [NATSSubjectManager](NATSSubjectManager.md) (1 shared connections)
 
 ## Source Files

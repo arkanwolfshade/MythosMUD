@@ -1,19 +1,10 @@
 # test_party_service.py
 
-> 67 nodes
+> 50 nodes
 
 ## Key Concepts
 
 - **test_party_service.py** (35 connections) — `server/tests/unit/game/test_party_service.py`
-- **Party** (12 connections) — `server/game/party_service.py`
-- **asyncio** (4 connections)
-- **test_accept_party_invite_success()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_decline_party_invite_success()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_party_post_init_includes_leader_in_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_party_post_init_preserves_other_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_request_party_invite_creates_pending()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_request_party_invite_target_already_in_party_rejected()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **.__post_init__()** (2 connections) — `server/game/party_service.py`
 - **test_add_member_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_add_member_no_such_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_add_member_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
@@ -29,23 +20,32 @@
 - **test_is_in_same_party_false_when_one_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_is_in_same_party_true_when_both_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_is_leader_false_when_member()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- *... and 42 more nodes in this community*
+- **test_is_leader_false_when_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_kick_member_leader_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_kick_member_non_leader_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_kick_self_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_on_player_disconnect_leader_disbands_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_on_player_disconnect_member_removed()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_on_player_disconnect_not_in_party_no_op()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_remove_member_leader_leaves_disbands()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_remove_member_leave_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [PartyService](PartyService.md) (6 shared connections)
-- [EventBus](EventBus.md) (3 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [asyncio](asyncio.md) (4 shared connections)
+- [Party](Party.md) (3 shared connections)
+- [PartyService](PartyService.md) (2 shared connections)
+- [party_service](party_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/party_service.py`
 - `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 78 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 59 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

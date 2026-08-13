@@ -33,11 +33,10 @@
 
 ## Relationships
 
-- [ChatService](ChatService.md) (3 shared connections)
+- [ChatService](ChatService.md) (4 shared connections)
 - [chat_service.py](chat_service.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [ChatModeration](ChatModeration.md) (1 shared connections)
-- [UUID](UUID.md) (1 shared connections)
 - [test_chat_logger.py](test_chat_logger.py.md) (1 shared connections)
 
 ## Source Files

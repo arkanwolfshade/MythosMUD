@@ -1,6 +1,6 @@
 # game_tick_processing.py
 
-> 133 nodes
+> 107 nodes
 
 ## Key Concepts
 
@@ -18,33 +18,33 @@
 - **process_status_effects()** (9 connections) — `server/app/game_tick_processing.py`
 - **get_tick_interval()** (8 connections) — `server/app/game_tick_processing.py`
 - **_process_heal_over_time_effect()** (8 connections) — `server/app/game_tick_processing.py`
-- **_process_session_dp_decay_and_death()** (8 connections) — `server/app/game_tick_processing.py`
 - **Any** (8 connections)
 - **cleanup_decayed_corpses()** (7 connections) — `server/app/game_tick_processing.py`
-- **_handle_player_death_threshold()** (7 connections) — `server/app/game_tick_processing.py`
 - **process_combat_tick()** (7 connections) — `server/app/game_tick_processing.py`
-- **_process_mortally_wounded_player()** (7 connections) — `server/app/game_tick_processing.py`
 - **_process_player_status_effects()** (7 connections) — `server/app/game_tick_processing.py`
 - **_update_player_status_effects()** (7 connections) — `server/app/game_tick_processing.py`
-- **AsyncSession** (7 connections)
 - **_cleanup_single_decayed_corpse()** (6 connections) — `server/app/game_tick_processing.py`
 - **_create_corpse_lifecycle_service()** (6 connections) — `server/app/game_tick_processing.py`
-- *... and 108 more nodes in this community*
+- **_process_all_status_effects()** (6 connections) — `server/app/game_tick_processing.py`
+- **process_dp_decay_and_death()** (6 connections) — `server/app/game_tick_processing.py`
+- **process_player_effects_expiration()** (6 connections) — `server/app/game_tick_processing.py`
+- **reset_current_tick()** (6 connections) — `server/app/game_tick_processing.py`
+- *... and 82 more nodes in this community*
 
 ## Relationships
 
+- [get_logger](get_logger.md) (13 shared connections)
+- [_process_session_dp_decay_and_death](_process_session_dp_decay_and_death.md) (12 shared connections)
 - [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (9 shared connections)
-- [CombatService](CombatService.md) (6 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (8 shared connections)
 - [lifespan.py](lifespan.py.md) (5 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (5 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [MythosChronicle](MythosChronicle.md) (4 shared connections)
+- [players.py](players.py.md) (5 shared connections)
+- [test_corpse_lifecycle_service.py](test_corpse_lifecycle_service.py.md) (4 shared connections)
+- [Player](Player.md) (4 shared connections)
 - [send_game_event](send_game_event.md) (3 shared connections)
 - [test_container_websocket_events.py](test_container_websocket_events.py.md) (3 shared connections)
-- [CorpseLifecycleService](CorpseLifecycleService.md) (3 shared connections)
-- [PlayerService](PlayerService.md) (3 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
-- [coerce_int](coerce_int.md) (3 shared connections)
+- [lifecycle_periodic.py](lifecycle_periodic.py.md) (3 shared connections)
+- [mock_app](mock_app.md) (3 shared connections)
 
 ## Source Files
 
@@ -54,7 +54,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 311 (98%)
+- EXTRACTED: 278 (98%)
 - INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 

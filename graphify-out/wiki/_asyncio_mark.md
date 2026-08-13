@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (15 shared connections)
+- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (17 shared connections)
 - [admin_shutdown_command.py](admin_shutdown_command.py.md) (3 shared connections)
 - [validate_shutdown_admin_permission](validate_shutdown_admin_permission.md) (3 shared connections)
-- [is_shutdown_pending](is_shutdown_pending.md) (2 shared connections)
 - [AliasStorage](AliasStorage.md) (1 shared connections)
 
 ## Source Files

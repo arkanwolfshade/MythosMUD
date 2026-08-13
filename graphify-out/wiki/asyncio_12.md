@@ -1,47 +1,47 @@
 # asyncio
 
-> 25 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **asyncio** (12 connections)
-- **test_handle_item_look_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_in_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_look_in_skips_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_with_instance_number()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_player_no_get_equipped_items()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is in inventory.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look with look_in flag skips equipped items.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _handle_item_look() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _try_lookup_item_implicit() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _try_lookup_item_implicit() when player has no get_equipped_items method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **asyncio** (46 connections)
+- **test_create_player_with_stats_success()** (4 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_apply_corruption()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_gain_occult_knowledge()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_user_characters()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_search_players_by_name()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_soft_delete_character_already_deleted()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_update_player_location_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test create_player_with_stats() successful creation.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test search_players_by_name() returns matching players.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test update_player_location() when player not found.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test apply_corruption() applies corruption.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test gain_occult_knowledge() increases occult knowledge.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test get_user_characters() returns user's characters.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test soft_delete_character() when character already deleted.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 
 ## Relationships
 
-- [_find_item_in_equipped](_find_item_in_equipped.md) (12 shared connections)
-- [test_look_item.py](test_look_item.py.md) (12 shared connections)
+- [test_player_service.py](test_player_service.py.md) (13 shared connections)
+- [Stats](Stats.md) (1 shared connections)
+- [test_apply_fear](test_apply_fear.md) (1 shared connections)
+- [test_apply_fear_player_not_found](test_apply_fear_player_not_found.md) (1 shared connections)
+- [test_apply_lucidity_loss](test_apply_lucidity_loss.md) (1 shared connections)
+- [test_create_player_name_exists](test_create_player_name_exists.md) (1 shared connections)
+- [test_create_player_success](test_create_player_success.md) (1 shared connections)
+- [test_create_player_with_stats_character_limit](test_create_player_with_stats_character_limit.md) (1 shared connections)
+- [test_create_player_with_stats_name_exists](test_create_player_with_stats_name_exists.md) (1 shared connections)
+- [test_damage_player](test_damage_player.md) (1 shared connections)
+- [test_damage_player_player_not_found](test_damage_player_player_not_found.md) (1 shared connections)
+- [test_delete_player_not_found](test_delete_player_not_found.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
+- EXTRACTED: 61 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

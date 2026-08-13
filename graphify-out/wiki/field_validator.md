@@ -22,7 +22,7 @@
 ## Relationships
 
 - [HolidayService](HolidayService.md) (3 shared connections)
-- [ScheduleEntry](ScheduleEntry.md) (3 shared connections)
+- [DatabaseError](DatabaseError.md) (3 shared connections)
 
 ## Source Files
 

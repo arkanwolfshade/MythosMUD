@@ -1,6 +1,6 @@
 # useDraggablePanelInteractions.ts
 
-> 49 nodes
+> 48 nodes
 
 ## Key Concepts
 
@@ -29,19 +29,18 @@
 - **applyResizeMove()** (3 connections) — `client/src/components/useDraggablePanelInteractions.ts`
 - **beginHeaderDrag()** (3 connections) — `client/src/components/useDraggablePanelInteractions.ts`
 - **computeKeyboardResizeDimensions()** (3 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- *... and 24 more nodes in this community*
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
 - [EldritchIcon.tsx](EldritchIcon.tsx.md) (4 shared connections)
 - [GameTerminal.tsx](GameTerminal.tsx.md) (2 shared connections)
-- [GameTerminalPresentation.tsx](GameTerminalPresentation.tsx.md) (2 shared connections)
+- [GameLogPanel.tsx](GameLogPanel.tsx.md) (2 shared connections)
 
 ## Source Files
 
 - `client/src/components/DraggablePanel.tsx`
 - `client/src/components/DraggablePanelCore.tsx`
-- `client/src/components/DraggablePanelView.tsx`
 - `client/src/components/__tests__/DraggablePanel.grid-positioning.test.tsx`
 - `client/src/components/__tests__/DraggablePanel.test.tsx`
 - `client/src/components/draggablePanelUtils.ts`
@@ -50,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 105 (100%)
+- EXTRACTED: 104 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

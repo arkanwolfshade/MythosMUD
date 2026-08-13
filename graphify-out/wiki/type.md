@@ -1,6 +1,6 @@
 # type
 
-> 14 nodes
+> 16 nodes
 
 ## Key Concepts
 
@@ -10,12 +10,14 @@
 - **items** (3 connections) — `schemas/items/item_prototype.schema.json`
 - **items** (3 connections) — `schemas/items/item_prototype.schema.json`
 - **effect_components** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **tags** (3 connections) — `schemas/items/item_prototype.schema.json`
 - **items** (3 connections) — `schemas/items/item_prototype.schema.json`
 - **items** (3 connections) — `schemas/items/item_prototype.schema.json`
 - **minLength** (2 connections) — `schemas/items/item_prototype.schema.json`
 - **type** (1 connections) — `schemas/items/item_prototype.schema.json`
 - **type** (1 connections) — `schemas/items/item_prototype.schema.json`
 - **uniqueItems** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
 - **type** (1 connections) — `schemas/items/item_prototype.schema.json`
 - **uniqueItems** (1 connections) — `schemas/items/item_prototype.schema.json`
 
@@ -30,7 +32,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

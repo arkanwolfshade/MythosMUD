@@ -33,13 +33,12 @@
 
 ## Relationships
 
-- [prototype_registry.py](prototype_registry.py.md) (7 shared connections)
 - [PrototypeRegistry](PrototypeRegistry.md) (5 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [prototype_registry.py](prototype_registry.py.md) (5 shared connections)
+- [PrototypeRegistryError](PrototypeRegistryError.md) (4 shared connections)
 - [combat_attack.py](combat_attack.py.md) (3 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
 - [ItemPrototypeModel](ItemPrototypeModel.md) (2 shared connections)
-- [items/models.py](items-models.py.md) (2 shared connections)
 - [registry_with_switchblade](registry_with_switchblade.md) (2 shared connections)
 
 ## Source Files

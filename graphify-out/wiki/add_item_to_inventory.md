@@ -9,7 +9,7 @@
 
 ## Relationships
 
-- [EventBus](EventBus.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 - [QuestService](QuestService.md) (1 shared connections)
 
 ## Source Files

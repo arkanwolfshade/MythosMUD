@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [GameClientV2.tsx](GameClientV2.tsx.md) (14 shared connections)
+- [GameClientV2.tsx](GameClientV2.tsx.md) (16 shared connections)
 - [GameTerminal.tsx](GameTerminal.tsx.md) (2 shared connections)
 - [logger.ts](logger.ts.md) (2 shared connections)
-- [messageHandlers.ts](messageHandlers.ts.md) (2 shared connections)
 - [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
 
 ## Source Files

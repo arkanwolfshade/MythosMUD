@@ -18,7 +18,7 @@
 
 - [test_room_service.py](test_room_service.py.md) (4 shared connections)
 - [RoomService](RoomService.md) (1 shared connections)
-- [test_health.py](test_health.py.md) (1 shared connections)
+- [HealthService](HealthService.md) (1 shared connections)
 
 ## Source Files
 

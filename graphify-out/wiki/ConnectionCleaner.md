@@ -1,16 +1,13 @@
 # ConnectionCleaner
 
-> 86 nodes
+> 46 nodes
 
 ## Key Concepts
 
 - **ConnectionCleaner** (27 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **test_connection_cleaner.py** (22 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 - **Any** (14 connections)
 - **UUID** (10 connections)
-- **CleanupContext** (8 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **.cleanup_ghost_players()** (8 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **fixture** (8 connections)
 - **.prune_stale_players()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **.check_and_cleanup()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **.cleanup_dead_connections()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
@@ -28,25 +25,28 @@
 - **.__init__()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **._remove_ghost_players_from_room()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **_stale_prune_max_age_seconds()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **connection_cleaner()** (4 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- *... and 61 more nodes in this community*
+- **._identify_stale_connections()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._is_websocket_dead()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **server/realtime/maintenance/__init__.py** (3 connections) — `server/realtime/maintenance/__init__.py`
+- **Identify players whose last_seen timestamp exceeds the max age. Args:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (10 shared connections)
-- [connection_manager.py](connection_manager.py.md) (2 shared connections)
-- [test_connection_initialization.py](test_connection_initialization.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [test_connection_cleaner.py](test_connection_cleaner.py.md) (3 shared connections)
+- [connection_initialization.py](connection_initialization.py.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/maintenance/__init__.py`
 - `server/realtime/maintenance/connection_cleaner.py`
-- `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 145 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 90 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

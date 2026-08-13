@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [User](User.md) (9 shared connections)
-- [log_and_raise](log_and_raise.md) (4 shared connections)
+- [test_users.py](test_users.py.md) (8 shared connections)
+- [User](User.md) (4 shared connections)
 - [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
-- [.get_instance](get_instance.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [test_database_helpers.py](test_database_helpers.py.md) (1 shared connections)
 - [.is_alive](is_alive.md) (1 shared connections)
 
 ## Source Files

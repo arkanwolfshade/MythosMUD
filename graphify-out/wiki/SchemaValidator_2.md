@@ -33,13 +33,13 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
 - [EmoteService](EmoteService.md) (5 shared connections)
 - [AliasStorage](AliasStorage.md) (4 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (4 shared connections)
+- [DatabaseError](DatabaseError.md) (3 shared connections)
 - [PathValidator](PathValidator.md) (2 shared connections)
 - [SchemaValidator](SchemaValidator.md) (1 shared connections)
 - [test_alias_storage.py](test_alias_storage.py.md) (1 shared connections)
-- [validate_room_data](validate_room_data.md) (1 shared connections)
 
 ## Source Files
 

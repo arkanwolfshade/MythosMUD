@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [log_and_raise](log_and_raise.md) (5 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [get_session_maker](get_session_maker.md) (5 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files
 

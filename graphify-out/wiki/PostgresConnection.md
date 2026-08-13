@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [test_postgres_adapter.py](test_postgres_adapter.py.md) (4 shared connections)
-- [TestPostgresConnectionPool](TestPostgresConnectionPool.md) (3 shared connections)
+- [test_postgres_adapter.py](test_postgres_adapter.py.md) (5 shared connections)
 - [Any](Any.md) (3 shared connections)
+- [TestUtilityFunctions](TestUtilityFunctions.md) (2 shared connections)
 - [PostgresCursor](PostgresCursor.md) (2 shared connections)
 - [PostgresRow](PostgresRow.md) (2 shared connections)
 - [fixture](fixture.md) (2 shared connections)

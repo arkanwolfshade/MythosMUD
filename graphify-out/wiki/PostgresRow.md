@@ -33,11 +33,11 @@
 ## Relationships
 
 - [PostgresCursor](PostgresCursor.md) (4 shared connections)
+- [test_postgres_adapter.py](test_postgres_adapter.py.md) (4 shared connections)
 - [Any](Any.md) (4 shared connections)
-- [test_postgres_adapter.py](test_postgres_adapter.py.md) (3 shared connections)
 - [PostgresConnection](PostgresConnection.md) (2 shared connections)
-- [TestPostgresConnectionPool](TestPostgresConnectionPool.md) (2 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
+- [TestUtilityFunctions](TestUtilityFunctions.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,78 +1,78 @@
 # get_logger
 
-> 965 nodes
+> 1078 nodes
 
 ## Key Concepts
 
 - **get_logger()** (509 connections) — `server/structured_logging/enhanced_logging_config.py`
 - **enhanced_logging_config.py** (484 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **server/exceptions.py** (196 connections) — `server/exceptions.py`
-- **DatabaseError** (167 connections) — `server/exceptions.py`
-- **ValidationError** (158 connections) — `server/exceptions.py`
-- **log_and_raise_enhanced()** (97 connections) — `server/utils/enhanced_error_logging.py`
-- **time.py** (89 connections) — `server/container/bundles/time.py`
+- **CombatService** (181 connections) — `server/services/combat_service.py`
+- **CombatParticipant** (167 connections) — `server/models/combat.py`
+- **AsyncPersistenceLayer** (163 connections) — `server/async_persistence.py`
+- **ConnectionManager** (162 connections) — `server/realtime/connection_manager.py`
+- **CombatInstance** (155 connections) — `server/models/combat.py`
+- **get_config()** (105 connections) — `server/config/__init__.py`
+- **combat_service.py** (100 connections) — `server/services/combat_service.py`
 - **async_persistence.py** (74 connections) — `server/async_persistence.py`
-- **MythosMUDError** (68 connections) — `server/exceptions.py`
-- **models/user.py** (56 connections) — `server/models/user.py`
-- **error_logging.py** (55 connections) — `server/utils/error_logging.py`
-- **test_auth_utils.py** (52 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **users.py** (46 connections) — `server/auth/users.py`
-- **threading.py** (45 connections) — `server/npc/threading.py`
-- **legacy_error_handlers.py** (44 connections) — `server/legacy_error_handlers.py`
-- **test_exceptions.py** (43 connections) — `server/tests/unit/test_exceptions.py`
-- **ErrorType** (41 connections) — `server/error_types.py`
-- **ErrorContext** (41 connections) — `server/exceptions.py`
-- **connection_initialization.py** (41 connections) — `server/realtime/connection_initialization.py`
-- **player_respawn_service.py** (41 connections) — `server/services/player_respawn_service.py`
-- **test_legacy_error_handlers.py** (41 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **enhanced_error_logging.py** (38 connections) — `server/utils/enhanced_error_logging.py`
-- **error_types.py** (37 connections) — `server/error_types.py`
-- **CircuitBreaker** (36 connections) — `server/legacy_error_handlers.py`
-- **TestErrorMapping** (35 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- *... and 940 more nodes in this community*
+- **NATSError** (60 connections) — `server/services/nats_exceptions.py`
+- **test_combat.py** (60 connections) — `server/tests/unit/models/test_combat.py`
+- **CombatCommandHandler** (54 connections) — `server/commands/combat_handler.py`
+- **models/combat.py** (50 connections) — `server/models/combat.py`
+- **combat_handler.py** (47 connections) — `server/commands/combat_handler.py`
+- **combat_turn_participant_actions.py** (46 connections) — `server/services/combat_turn_participant_actions.py`
+- **nats_message_handler.py** (39 connections) — `server/realtime/nats_message_handler.py`
+- **TargetResolutionResult** (37 connections) — `server/schemas/shared/target_resolution.py`
+- **test_combat_handler.py** (37 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **CombatParticipantData** (36 connections) — `server/services/combat_types.py`
+- **CombatParticipantType** (35 connections) — `server/models/combat.py`
+- **player_combat_service.py** (35 connections) — `server/services/player_combat_service.py`
+- **movement_service.py** (34 connections) — `server/game/movement_service.py`
+- **combat_taunt.py** (32 connections) — `server/commands/combat_taunt.py`
+- **TargetType** (31 connections) — `server/schemas/shared/target_resolution.py`
+- *... and 1053 more nodes in this community*
 
 ## Relationships
 
-- [log_and_raise](log_and_raise.md) (135 shared connections)
-- [EventBus](EventBus.md) (92 shared connections)
-- [PlayerService](PlayerService.md) (76 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (73 shared connections)
-- [StandardizedErrorResponse](StandardizedErrorResponse.md) (56 shared connections)
-- [.get_instance](get_instance.md) (56 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (55 shared connections)
-- [event_types.py](event_types.py.md) (49 shared connections)
-- [AliasStorage](AliasStorage.md) (47 shared connections)
-- [persistence/container_persistence.py](persistence-container_persistence.py.md) (44 shared connections)
-- [User](User.md) (44 shared connections)
-- [BaseCommand](BaseCommand.md) (41 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (200 shared connections)
+- [PlayerService](PlayerService.md) (158 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (113 shared connections)
+- [DatabaseError](DatabaseError.md) (95 shared connections)
+- [event_types.py](event_types.py.md) (94 shared connections)
+- [Player](Player.md) (68 shared connections)
+- [test_aggro_threat.py](test_aggro_threat.py.md) (62 shared connections)
+- [UUID](UUID.md) (56 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (52 shared connections)
+- [AliasStorage](AliasStorage.md) (44 shared connections)
+- [CombatTurnProcessor](CombatTurnProcessor.md) (43 shared connections)
+- [TauntCommandHandler](TauntCommandHandler.md) (32 shared connections)
 
 ## Source Files
 
 - `monitoring/webhook-receiver.py`
-- `server/api/__init__.py`
-- `server/api/admin/__init__.py`
-- `server/api/admin/npc_spawn_rules_api.py`
-- `server/api/admin/subject_controller.py`
 - `server/api/base.py`
 - `server/api/containers.py`
-- `server/api/game.py`
-- `server/api/player_helpers.py`
-- `server/api/player_respawn.py`
-- `server/api/professions.py`
-- `server/api/skills.py`
-- `server/app/memory_cleanup_service.py`
-- `server/app/memory_lifespan_coordinator.py`
+- `server/app/lifespan_startup.py`
 - `server/app/task_registry.py`
-- `server/app/tracked_task_manager.py`
 - `server/async_persistence.py`
-- `server/async_persistence_direct_queries.py`
-- `server/async_persistence_room_loader.py`
 - `server/auth/argon2_utils.py`
+- `server/auth_utils.py`
+- `server/caching/cache_service.py`
+- `server/commands/combat.py`
+- `server/commands/combat_app_protocols.py`
+- `server/commands/combat_handler.py`
+- `server/commands/combat_helpers.py`
+- `server/commands/combat_loader.py`
+- `server/commands/combat_taunt.py`
+- `server/commands/container_helpers_inventory_logging.py`
+- `server/commands/go_command.py`
+- `server/config/__init__.py`
+- `server/config/models/cors.py`
+- `server/constants/spawn_defaults.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4406 (94%)
-- INFERRED: 271 (6%)
+- EXTRACTED: 4524 (95%)
+- INFERRED: 239 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

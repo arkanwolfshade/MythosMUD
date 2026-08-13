@@ -1,38 +1,40 @@
 # test_zone_config_loader.py
 
-> 20 nodes
+> 70 nodes
 
 ## Key Concepts
 
 - **test_zone_config_loader.py** (35 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **async_load_zone_configurations()** (13 connections) — `server/npc/zone_config_loader.py`
+- **process_zone_rows()** (13 connections) — `server/npc/zone_config_loader.py`
+- **_empty_zone_load_result()** (13 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **ZoneLoadResult** (12 connections) — `server/npc/zone_config_loader.py`
 - **parse_json_field()** (11 connections) — `server/npc/zone_config_loader.py`
-- **test_load_zone_configurations_error()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_load_zone_configurations_merges_zone_and_subzone()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_load_zone_configurations_success()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_parse_json_field_dict()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_parse_json_field_invalid_json()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_parse_json_field_list()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_parse_json_field_none()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_parse_json_field_string()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Parse a JSON field from database, handling both dict/list and string formats.…** (1 connections) — `server/npc/zone_config_loader.py`
-- **Unit tests for zone configuration loader. Tests the zone_config_loader module…** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test load_zone_configurations() loads configurations.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test load_zone_configurations() merges zone and subzone configs.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test parse_json_field() returns default when None.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test load_zone_configurations() raises RuntimeError on failure.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test parse_json_field() parses JSON string.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test parse_json_field() returns dict as-is.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test parse_json_field() returns list as-is.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test parse_json_field() raises error on invalid JSON string.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **asyncio** (11 connections)
+- **extract_zone_name()** (9 connections) — `server/npc/zone_config_loader.py`
+- **process_subzone_rows()** (9 connections) — `server/npc/zone_config_loader.py`
+- **_store_subzone_row()** (9 connections) — `server/npc/zone_config_loader.py`
+- **parse_zone_special_rules()** (6 connections) — `server/npc/zone_config_loader.py`
+- **test_async_load_zone_configurations_converts_url()** (6 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_passes_search_path_for_mythos_e2e()** (6 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_closes_connection()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_error()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_no_database_url()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_success()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_process_subzone_rows()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_process_subzone_rows_empty()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_process_zone_rows()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_process_zone_rows_empty()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_process_zone_rows_json_strings()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_extract_zone_name_empty()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_extract_zone_name_multiple_slashes()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_extract_zone_name_no_slash()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- *... and 45 more nodes in this community*
 
 ## Relationships
 
-- [async_load_zone_configurations](async_load_zone_configurations.md) (8 shared connections)
-- [EventBus](EventBus.md) (6 shared connections)
-- [zone_config_loader.py](zone_config_loader.py.md) (5 shared connections)
-- [process_zone_rows](process_zone_rows.md) (5 shared connections)
-- [extract_zone_name](extract_zone_name.md) (5 shared connections)
-- [process_subzone_rows](process_subzone_rows.md) (3 shared connections)
+- [test_population_control.py](test_population_control.py.md) (22 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 56 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 145 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

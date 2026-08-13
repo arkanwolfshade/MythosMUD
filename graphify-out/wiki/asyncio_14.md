@@ -4,44 +4,40 @@
 
 ## Key Concepts
 
-- **asyncio** (46 connections)
-- **test_create_player_with_stats_success()** (4 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_apply_corruption()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_gain_occult_knowledge()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_get_user_characters()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_search_players_by_name()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_soft_delete_character_already_deleted()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_update_player_location_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test create_player_with_stats() successful creation.** (1 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test search_players_by_name() returns matching players.** (1 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test update_player_location() when player not found.** (1 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test apply_corruption() applies corruption.** (1 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test gain_occult_knowledge() increases occult knowledge.** (1 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test get_user_characters() returns user's characters.** (1 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test soft_delete_character() when character already deleted.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **asyncio** (35 connections)
+- **test_get_npc_definition_found()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_update_npc_definition_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_npc_service_init()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_update_npc_definition_not_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_create_npc_definition_invalid_probability()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_get_npc_definitions_database_error()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_get_system_statistics_database_error()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test NPCService initialization.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test get_npc_definitions() handles database errors.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test get_npc_definition() returns definition when found.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test create_npc_definition() raises ValueError for invalid probability.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test update_npc_definition() successfully updates definition.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test update_npc_definition() returns None when not found.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test get_system_statistics() handles database errors.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
 
 ## Relationships
 
-- [test_player_service.py](test_player_service.py.md) (13 shared connections)
-- [Stats](Stats.md) (1 shared connections)
-- [test_apply_fear](test_apply_fear.md) (1 shared connections)
-- [test_apply_fear_player_not_found](test_apply_fear_player_not_found.md) (1 shared connections)
-- [test_apply_lucidity_loss](test_apply_lucidity_loss.md) (1 shared connections)
-- [test_create_player_name_exists](test_create_player_name_exists.md) (1 shared connections)
-- [test_create_player_success](test_create_player_success.md) (1 shared connections)
-- [test_create_player_with_stats_character_limit](test_create_player_with_stats_character_limit.md) (1 shared connections)
-- [test_create_player_with_stats_name_exists](test_create_player_with_stats_name_exists.md) (1 shared connections)
-- [test_damage_player](test_damage_player.md) (1 shared connections)
-- [test_damage_player_player_not_found](test_damage_player_player_not_found.md) (1 shared connections)
-- [test_delete_player_not_found](test_delete_player_not_found.md) (1 shared connections)
+- [test_npc_service.py](test_npc_service.py.md) (13 shared connections)
+- [_def_row](_def_row.md) (10 shared connections)
+- [_mock_result_mappings_all](_mock_result_mappings_all.md) (10 shared connections)
+- [_spawn_rule_row](_spawn_rule_row.md) (4 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [test_create_spawn_rule_invalid_min_population](test_create_spawn_rule_invalid_min_population.md) (1 shared connections)
+- [test_update_npc_definition_invalid_probability](test_update_npc_definition_invalid_probability.md) (1 shared connections)
+- [test_update_npc_definition_invalid_type](test_update_npc_definition_invalid_type.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/services/test_npc_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (100%)
+- EXTRACTED: 55 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

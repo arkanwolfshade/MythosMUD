@@ -1,6 +1,6 @@
 # CommandRequest
 
-> 32 nodes
+> 34 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,7 @@
 - **TestProcessCommandUnified** (7 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
 - **asyncio** (7 connections)
 - **TestLegacyFunctions** (6 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **get_help_content()** (6 connections) — `server/command_handler_unified.py`
 - **TestHandleCommand** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
 - **.test_handle_command_success()** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
 - **.test_handle_command_unauthorized()** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
@@ -23,18 +24,18 @@
 - **post** (1 connections)
 - **Request** (1 connections)
 - **Handle incoming HTTP command requests.** (1 connections) — `server/command_handler_unified.py`
+- **Get help content for commands. This is a compatibility function that delegates…** (1 connections) — `server/command_handler_unified.py`
 - **Request model for command processing.** (1 connections) — `server/command_handler_unified.py`
 - **Test process_command_unified processes normal commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
 - **Test handle_command HTTP endpoint.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
 - **Test handle_command raises HTTPException when not authenticated.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test handle_command successfully processes command.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test legacy compatibility functions.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- *... and 7 more nodes in this community*
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
 - [command_handler_unified.py](command_handler_unified.py.md) (16 shared connections)
 - [AliasStorage](AliasStorage.md) (1 shared connections)
+- [get_help_content](get_help_content.md) (1 shared connections)
 - [get_username_from_user](get_username_from_user.md) (1 shared connections)
 
 ## Source Files
@@ -44,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 54 (92%)
+- EXTRACTED: 58 (92%)
 - INFERRED: 5 (8%)
 - AMBIGUOUS: 0 (0%)
 

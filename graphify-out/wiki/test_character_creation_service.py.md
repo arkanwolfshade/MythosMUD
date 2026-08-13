@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [Stats](Stats.md) (3 shared connections)
 - [log_and_raise](log_and_raise.md) (3 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (3 shared connections)
 - [api/character_creation.py](api-character_creation.py.md) (2 shared connections)
 
 ## Source Files

@@ -3040,8 +3040,8 @@
     "semantic_hash": ""
   },
   "client/tests/e2e/runtime/connection/basic-connection.spec.ts": {
-    "mtime": 1786576992.8660889,
-    "ast_hash": "f5d7d69dbb19f3463fd2725755e4822e",
+    "mtime": 1786639790.8931985,
+    "ast_hash": "ced0ad1ed1a425d9d672418c414a7470",
     "semantic_hash": ""
   },
   "client/tests/e2e/runtime/connection/clean-game-state.spec.ts": {
@@ -6830,8 +6830,8 @@
     "semantic_hash": ""
   },
   "server/realtime/connection_establishment.py": {
-    "mtime": 1786638883.257962,
-    "ast_hash": "8d67082e05cbf24bfc6556a3fa973457",
+    "mtime": 1786642863.6439161,
+    "ast_hash": "ec6f12c4f2fb1181a09ad53f08dd4d0e",
     "semantic_hash": ""
   },
   "server/realtime/connection_event_helpers.py": {
@@ -6840,8 +6840,8 @@
     "semantic_hash": "c5f9c21e09e9a971dd37dbd35accecfc"
   },
   "server/realtime/connection_helpers.py": {
-    "mtime": 1786571994.9146974,
-    "ast_hash": "739a3aee394097cf67f8dbc7c7208829",
+    "mtime": 1786642863.6434088,
+    "ast_hash": "be4611ac4c8dae196e999b5d6f745686",
     "semantic_hash": ""
   },
   "server/realtime/connection_initialization.py": {
@@ -7020,9 +7020,9 @@
     "semantic_hash": "23bb30455dd9fbd08afc66d5afe0d1c0"
   },
   "server/realtime/messaging/personal_message_sender.py": {
-    "mtime": 1786122798.6800396,
-    "ast_hash": "b2d037c1eaa902f31c50232ec6edc975",
-    "semantic_hash": "b2d037c1eaa902f31c50232ec6edc975"
+    "mtime": 1786642863.6434088,
+    "ast_hash": "8c24a8dc2d2c2e051b635eb5f3438fe8",
+    "semantic_hash": ""
   },
   "server/realtime/monitoring/__init__.py": {
     "mtime": 1775192600.7368546,
@@ -9475,8 +9475,8 @@
     "semantic_hash": ""
   },
   "server/tests/unit/realtime/test_connection_establishment.py": {
-    "mtime": 1786638883.257962,
-    "ast_hash": "6fc2030e7fc49d6806c84d3e0836c0cb",
+    "mtime": 1786642863.6474695,
+    "ast_hash": "be6f9947cf9da429ae03fdfd5e4d95d0",
     "semantic_hash": ""
   },
   "server/tests/unit/realtime/test_connection_event_helpers.py": {
@@ -9490,8 +9490,8 @@
     "semantic_hash": "5e86a0cecce2a93decfa5c506ea30c00"
   },
   "server/tests/unit/realtime/test_connection_helpers_impl.py": {
-    "mtime": 1786571994.932794,
-    "ast_hash": "90eaca7cdd85f5c0c77f7b0725e61b96",
+    "mtime": 1786642863.6444345,
+    "ast_hash": "b54e4103d588576bc2be368725d84e6f",
     "semantic_hash": ""
   },
   "server/tests/unit/realtime/test_connection_initialization.py": {
@@ -10980,7 +10980,7 @@
     "semantic_hash": "14a662582b3347bd10912dbe7dd9b8a2"
   },
   ".codacy/codacy.yaml": {
-    "mtime": 1786638888.438452,
+    "mtime": 1786642871.5193508,
     "ast_hash": "b657d1aa91f6ddc9bd0130ad3cbf457d",
     "semantic_hash": ""
   },
@@ -15342,6 +15342,11 @@
   "data/MythosMUD-Obsidian/wiki/world/Paris (Reign of Terror).md": {
     "mtime": 1786571688.0047095,
     "ast_hash": "3f56bd133b86bbf8b2848756d1769a8d",
+    "semantic_hash": ""
+  },
+  "server/tests/unit/realtime/test_personal_message_sender.py": {
+    "mtime": 1786642863.6444345,
+    "ast_hash": "abf34ebc36f5a65b28f1c78a1abb58a6",
     "semantic_hash": ""
   }
 }

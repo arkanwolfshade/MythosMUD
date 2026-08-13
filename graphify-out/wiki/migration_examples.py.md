@@ -1,12 +1,23 @@
 # migration_examples.py
 
-> 14 nodes
+> 36 nodes
 
 ## Key Concepts
 
 - **migration_examples.py** (20 connections) — `docs/examples/logging/migration_examples.py`
-- **migration_example_5()** (3 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_4()** (4 connections) — `docs/examples/logging/migration_examples.py`
+- **process_item()** (4 connections) — `docs/examples/logging/migration_examples.py`
+- **risky_operation()** (4 connections) — `docs/examples/logging/migration_examples.py`
+- **expensive_operation()** (3 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_10()** (3 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_11()** (3 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_14()** (3 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_3()** (3 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_1()** (2 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_12()** (2 connections) — `docs/examples/logging/migration_examples.py`
 - **migration_example_13()** (2 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_15()** (2 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_2()** (2 connections) — `docs/examples/logging/migration_examples.py`
 - **migration_example_6()** (2 connections) — `docs/examples/logging/migration_examples.py`
 - **migration_example_7()** (2 connections) — `docs/examples/logging/migration_examples.py`
 - **migration_example_8()** (2 connections) — `docs/examples/logging/migration_examples.py`
@@ -14,22 +25,17 @@
 - **async_work()** (1 connections) — `docs/examples/logging/migration_examples.py`
 - **Example 8: API logging migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
 - **Example 9: WebSocket logging migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
-- **Example 13: Log level correction migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
-- **Example 5: Request context migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
-- **Example 6: Security logging migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
-- **Example 7: Database logging migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
+- **Example 10: Batch processing logging migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
+- **Example 1: Basic logging migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
+- **Example 11: Exception tracking migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
+- **Example 12: Async logging migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [process_item](process_item.md) (3 shared connections)
-- [risky_operation](risky_operation.md) (3 shared connections)
-- [migration_example_4](migration_example_4.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [migration_example_1](migration_example_1.md) (1 shared connections)
-- [migration_example_12](migration_example_12.md) (1 shared connections)
-- [migration_example_15](migration_example_15.md) (1 shared connections)
-- [migration_example_2](migration_example_2.md) (1 shared connections)
-- [database](database.md) (1 shared connections)
+- [lifespan.py](lifespan.py.md) (1 shared connections)
+- [correct_patterns.py](correct_patterns.py.md) (1 shared connections)
+- [bind_request_context](bind_request_context.md) (1 shared connections)
 
 ## Source Files
 
@@ -37,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 26 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 42 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

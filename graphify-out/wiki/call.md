@@ -1,38 +1,30 @@
 # .call
 
-> 15 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **.call()** (9 connections) — `server/realtime/circuit_breaker.py`
-- **._transition_to()** (6 connections) — `server/realtime/circuit_breaker.py`
-- **.get_stats()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **._on_failure()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **._on_success()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **._time_until_retry()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **._should_attempt_reset()** (3 connections) — `server/realtime/circuit_breaker.py`
-- **Any** (2 connections)
-- **Handle successful function call. Updates state based on current circuit state:…** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Handle failed function call. Updates state based on failure count: - Increments…** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Check if enough time has passed to attempt circuit reset. Returns: True if…** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Calculate seconds until circuit can attempt reset. Returns: Seconds until retry…** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Transition circuit to new state. Args: new_state: State to transition to AI:…** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Get circuit breaker statistics. Returns: Dictionary with circuit breaker…** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Execute function through circuit breaker. Enforces circuit breaker logic: -…** (1 connections) — `server/realtime/circuit_breaker.py`
+- **.call()** (7 connections) — `server/legacy_error_handlers.py`
+- **._on_failure()** (3 connections) — `server/legacy_error_handlers.py`
+- **._on_success()** (3 connections) — `server/legacy_error_handlers.py`
+- **._should_attempt_reset()** (3 connections) — `server/legacy_error_handlers.py`
+- **_CircuitBreakerResult** (1 connections)
+- **Execute function with circuit breaker protection. Args: func: Function to…** (1 connections) — `server/legacy_error_handlers.py`
+- **Handle successful operation.** (1 connections) — `server/legacy_error_handlers.py`
+- **Handle failed operation.** (1 connections) — `server/legacy_error_handlers.py`
+- **Check if circuit breaker should attempt reset.** (1 connections) — `server/legacy_error_handlers.py`
 
 ## Relationships
 
-- [CircuitBreaker](CircuitBreaker.md) (7 shared connections)
-- [test_nats_message_handler.py](test_nats_message_handler.py.md) (1 shared connections)
-- [circuit_breaker.py](circuit_breaker.py.md) (1 shared connections)
+- [MythosMUDError](MythosMUDError.md) (5 shared connections)
 
 ## Source Files
 
-- `server/realtime/circuit_breaker.py`
+- `server/legacy_error_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

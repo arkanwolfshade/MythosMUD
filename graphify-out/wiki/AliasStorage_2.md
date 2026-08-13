@@ -28,11 +28,11 @@
 - [admin_teleport_commands.py](admin_teleport_commands.py.md) `EXTRACTED`
 - [look_command.py](look_command.py.md) `EXTRACTED`
 - [admin_shutdown_command.py](admin_shutdown_command.py.md) `EXTRACTED`
-- inventory_pickup_command.py `EXTRACTED`
-- [admin_summon_command.py](admin_summon_command.py.md) `EXTRACTED`
+- [inventory_pickup_command.py](inventory_pickup_command.py.md) `EXTRACTED`
+- admin_summon_command.py `EXTRACTED`
 - admin_commands.py `EXTRACTED`
-- [rescue_commands.py](rescue_commands.py.md) `EXTRACTED`
-- [combat_taunt.py](combat_taunt.py.md) `EXTRACTED`
+- rescue_commands.py `EXTRACTED`
+- combat_taunt.py `EXTRACTED`
 - inventory_unequip_command.py `EXTRACTED`
 - [quest_commands.py](quest_commands.py.md) `EXTRACTED`
 - [websocket_handler_commands.py](websocket_handler_commands.py.md) `EXTRACTED`
@@ -88,7 +88,7 @@
 - CombatCommandHandler `INFERRED`
 - MagicCommandHandler `INFERRED`
 - [TestHelperFunctions](TestHelperFunctions.md) `INFERRED`
-- TauntCommandHandler `INFERRED`
+- [TauntCommandHandler](TauntCommandHandler.md) `INFERRED`
 - CombatCommandHandlerExtras `INFERRED`
 - [SchemaValidator](SchemaValidator.md) `INFERRED`
 - _NpcWithLife `INFERRED`

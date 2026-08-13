@@ -9,7 +9,7 @@
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (1 shared connections)
+- [PlayerService](PlayerService.md) (1 shared connections)
 - [QuestService](QuestService.md) (1 shared connections)
 
 ## Source Files

@@ -23,16 +23,16 @@
 
 - [asyncio](asyncio.md) (13 shared connections)
 - [PlayerService](PlayerService.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
 - [player_service](player_service.md) (2 shared connections)
 - [Stats](Stats.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 - [test_get_player_by_id_not_found](test_get_player_by_id_not_found.md) (1 shared connections)
 - [test_get_player_by_name_found](test_get_player_by_name_found.md) (1 shared connections)
 - [test_get_player_by_name_not_found](test_get_player_by_name_not_found.md) (1 shared connections)
 - [test_list_players](test_list_players.md) (1 shared connections)
 - [test_resolve_player_name_found](test_resolve_player_name_found.md) (1 shared connections)
 - [test_resolve_player_name_not_found](test_resolve_player_name_not_found.md) (1 shared connections)
-- [test_create_player_with_stats_character_limit](test_create_player_with_stats_character_limit.md) (1 shared connections)
 
 ## Source Files
 

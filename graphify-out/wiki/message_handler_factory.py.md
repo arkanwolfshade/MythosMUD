@@ -1,6 +1,6 @@
 # message_handler_factory.py
 
-> 60 nodes
+> 58 nodes
 
 ## Key Concepts
 
@@ -14,7 +14,6 @@
 - **CommandMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
 - **PingMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
 - **asyncio** (7 connections)
-- **.handle_message()** (6 connections) — `server/realtime/message_handler_factory.py`
 - **FollowResponseMessageHandler** (5 connections) — `server/realtime/message_handler_factory.py`
 - **PartyInviteResponseMessageHandler** (5 connections) — `server/realtime/message_handler_factory.py`
 - **.get_handler()** (5 connections) — `server/realtime/message_handler_factory.py`
@@ -29,18 +28,19 @@
 - **test_message_handler_factory_game_command_alias()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
 - **test_message_handler_factory_get_handler_found()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
 - **test_message_handler_factory_get_handler_not_found()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- *... and 35 more nodes in this community*
+- **test_message_handler_factory_get_supported_message_types()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
 - [Any](Any.md) (9 shared connections)
-- [message_handlers.py](message_handlers.py.md) (6 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [StandardizedErrorResponse](StandardizedErrorResponse.md) (2 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (6 shared connections)
+- [ErrorType](ErrorType.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [MessageBroker](MessageBroker.md) (1 shared connections)
 - [NATSMessageBroker](NATSMessageBroker.md) (1 shared connections)
 - [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (1 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 123 (99%)
+- EXTRACTED: 119 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

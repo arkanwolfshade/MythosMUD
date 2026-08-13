@@ -35,16 +35,16 @@
 
 - [test_manager.py](test_manager.py.md) (10 shared connections)
 - [PatternNotFoundError](PatternNotFoundError.md) (9 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
+- [User](User.md) (7 shared connections)
 - [SubjectValidator](SubjectValidator.md) (5 shared connections)
-- [event_types.py](event_types.py.md) (2 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [TaskRegistry](TaskRegistry.md) (2 shared connections)
+- [NATSService](NATSService.md) (2 shared connections)
 - [test_pattern_matcher.py](test_pattern_matcher.py.md) (2 shared connections)
 - [test_nats_service_init_with_subject_manager](test_nats_service_init_with_subject_manager.md) (1 shared connections)
 - [NATSMessageBroker](NATSMessageBroker.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
 - [test_nats_service.py](test_nats_service.py.md) (1 shared connections)
-- [NATSConfig](NATSConfig.md) (1 shared connections)
 
 ## Source Files
 

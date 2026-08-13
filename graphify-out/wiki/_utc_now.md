@@ -20,7 +20,7 @@
 
 ## Relationships
 
-- [LucidityService](LucidityService.md) (3 shared connections)
+- [Player](Player.md) (3 shared connections)
 
 ## Source Files
 

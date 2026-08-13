@@ -37,8 +37,9 @@
 - [catatonia_check.py](catatonia_check.py.md) (4 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
 - [EmoteService](EmoteService.md) (2 shared connections)
-- [test_command_validator.py](test_command_validator.py.md) (2 shared connections)
-- [get_config](get_config.md) (1 shared connections)
+- [test_command_validator.py](test_command_validator.py.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
 
 ## Source Files
 

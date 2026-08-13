@@ -1,6 +1,6 @@
 # LogAggregator
 
-> 46 nodes
+> 48 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,7 @@
 - **log_aggregator.py** (14 connections) — `server/structured_logging/log_aggregator.py`
 - **.get_logs()** (10 connections) — `server/structured_logging/log_aggregator.py`
 - **LogQueryFilter** (9 connections) — `server/structured_logging/log_aggregator.py`
+- **get_log_aggregator()** (8 connections) — `server/structured_logging/log_aggregator.py`
 - **.export_logs()** (8 connections) — `server/structured_logging/log_aggregator.py`
 - **aggregate_log_entry()** (5 connections) — `server/structured_logging/log_aggregator.py`
 - **._export_csv()** (5 connections) — `server/structured_logging/log_aggregator.py`
@@ -28,16 +29,15 @@
 - **._eq_if_set()** (2 connections) — `server/structured_logging/log_aggregator.py`
 - **._process_logs()** (2 connections) — `server/structured_logging/log_aggregator.py`
 - **.shutdown()** (2 connections) — `server/structured_logging/log_aggregator.py`
-- **Any** (1 connections)
-- *... and 21 more nodes in this community*
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [MonitoringDashboard](MonitoringDashboard.md) (7 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (5 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
+- [lifespan.py](lifespan.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
-- [lifespan.py](lifespan.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 94 (99%)
+- EXTRACTED: 99 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

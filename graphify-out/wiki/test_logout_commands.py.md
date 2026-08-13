@@ -38,9 +38,8 @@
 - [get_cached_player](get_cached_player.md) (5 shared connections)
 - [fixture](fixture.md) (4 shared connections)
 - [test_who_commands.py](test_who_commands.py.md) (3 shared connections)
-- [get_username_from_user](get_username_from_user.md) (2 shared connections)
+- [get_username_from_user](get_username_from_user.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
 
 ## Source Files
 

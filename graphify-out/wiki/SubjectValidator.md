@@ -41,7 +41,7 @@
 - [test_pattern_matcher.py](test_pattern_matcher.py.md) (3 shared connections)
 - [chat_nats_publisher.py](chat_nats_publisher.py.md) (1 shared connections)
 - [NATSMessageBroker](NATSMessageBroker.md) (1 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,10 +1,11 @@
 # MemoryProfiler
 
-> 61 nodes
+> 63 nodes
 
 ## Key Concepts
 
 - **MemoryProfiler** (32 connections) — `server/utils/memory_profiler.py`
+- **HealthResponse** (16 connections) — `server/models/health.py`
 - **test_memory_profiler.py** (15 connections) — `server/tests/unit/utils/test_memory_profiler.py`
 - **memory_profiler.py** (10 connections) — `server/utils/memory_profiler.py`
 - **.measure_model_deserialization()** (8 connections) — `server/utils/memory_profiler.py`
@@ -28,27 +29,29 @@
 - **test_memory_profiler_init()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
 - **test_memory_profiler_measure_model_instantiation()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
 - **test_memory_profiler_measure_model_instantiation_zero_iterations()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_print_memory_summary()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- *... and 36 more nodes in this community*
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
+- [test_health.py](test_health.py.md) (9 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (4 shared connections)
 - [Alias](Alias.md) (2 shared connections)
-- [test_health.py](test_health.py.md) (2 shared connections)
-- [test_health_service.py](test_health_service.py.md) (2 shared connections)
+- [Player](Player.md) (1 shared connections)
+- [HealthService](HealthService.md) (1 shared connections)
 - [Stats](Stats.md) (1 shared connections)
 - [StatusEffect](StatusEffect.md) (1 shared connections)
-- [TargetMatch](TargetMatch.md) (1 shared connections)
+- [PlayerService](PlayerService.md) (1 shared connections)
 
 ## Source Files
 
+- `server/models/health.py`
 - `server/tests/unit/utils/test_memory_profiler.py`
 - `server/utils/memory_profiler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 102 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 116 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

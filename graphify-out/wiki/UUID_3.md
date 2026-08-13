@@ -1,37 +1,41 @@
 # UUID
 
-> 11 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **UUID** (6 connections)
-- **.player_entered()** (5 connections) — `server/models/room.py`
-- **.has_player()** (4 connections) — `server/models/room.py`
-- **.player_left()** (4 connections) — `server/models/room.py`
-- **.add_player_silently()** (3 connections) — `server/models/room.py`
-- **.remove_player_silently()** (3 connections) — `server/models/room.py`
-- **Add a player to the room without triggering an event. This method is used for…** (1 connections) — `server/models/room.py`
-- **Remove a player from the room without triggering an event. This method is used…** (1 connections) — `server/models/room.py`
-- **Remove a player from the room and trigger event. Args: player_id: The ID of the…** (1 connections) — `server/models/room.py`
-- **Check if a player is in the room. Args: player_id: The ID of the player to…** (1 connections) — `server/models/room.py`
-- **Add a player to the room and trigger event. Args: player_id: The ID of the…** (1 connections) — `server/models/room.py`
+- **UUID** (8 connections)
+- **Any** (7 connections)
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast party message to party members only, with dampening and mute checks.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Send whisper message to specific player with communication dampening.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast system/admin message to all players.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Handle unknown channel type.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast message according to channel strategy. Args: chat_event: WebSocket…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast room-based message with server-side filtering.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast global message to all connected players.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- [Room](Room.md) (5 shared connections)
-- [websocket_helpers.py](websocket_helpers.py.md) (2 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (1 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (1 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
+- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (5 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
+- [RoomBasedChannelStrategy](RoomBasedChannelStrategy.md) (1 shared connections)
+- [UnknownChannelStrategy](UnknownChannelStrategy.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/room.py`
+- `server/realtime/channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (90%)
-- INFERRED: 2 (10%)
+- EXTRACTED: 29 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

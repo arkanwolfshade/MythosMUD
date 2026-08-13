@@ -1,6 +1,6 @@
 # command_handler_unified.py
 
-> 56 nodes
+> 67 nodes
 
 ## Key Concepts
 
@@ -19,38 +19,37 @@
 - **_check_rate_limit()** (10 connections) — `server/command_handler_unified.py`
 - **test_command_handler_unified.py** (10 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
 - **CommandExecutionRequest** (9 connections)
+- **handle_expanded_command()** (8 connections) — `server/command_handler/alias_expansion.py`
 - **process_command()** (8 connections) — `server/command_handler_unified.py`
-- **test_grace_period_blocking.py** (8 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
 - **test_command_aliases.py** (8 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **TestPrepareCommandForProcessing** (7 connections) — `server/tests/unit/commands/test_command_preparation.py`
 - **_get_grace_check_context()** (7 connections) — `server/command_handler_unified.py`
 - **check_alias_safety()** (6 connections) — `server/command_handler/alias_expansion.py`
 - **validate_expanded_command()** (6 connections) — `server/command_handler/alias_expansion.py`
 - **_get_casting_block_result()** (6 connections) — `server/command_handler_unified.py`
-- **get_help_content()** (6 connections) — `server/command_handler_unified.py`
-- **test_check_grace_period_block_allows_commands_when_not_in_grace_period()** (4 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **test_check_grace_period_block_blocks_commands()** (4 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- *... and 31 more nodes in this community*
+- **TestEnsureAliasStorage** (5 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **test_command_preparation.py** (4 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
 - [TestHelperFunctions](TestHelperFunctions.md) (36 shared connections)
 - [CommandRequest](CommandRequest.md) (16 shared connections)
-- [AliasStorage](AliasStorage.md) (13 shared connections)
-- [catatonia_check.py](catatonia_check.py.md) (10 shared connections)
+- [catatonia_check.py](catatonia_check.py.md) (15 shared connections)
+- [AliasStorage](AliasStorage.md) (14 shared connections)
 - [asyncio](asyncio.md) (9 shared connections)
 - [test_command_validator.py](test_command_validator.py.md) (7 shared connections)
+- [test_grace_period_blocking.py](test_grace_period_blocking.py.md) (6 shared connections)
 - [command_input.py](command_input.py.md) (6 shared connections)
-- [TestPrepareCommandForProcessing](TestPrepareCommandForProcessing.md) (6 shared connections)
-- [command_request_app_state](command_request_app_state.md) (5 shared connections)
+- [WebSocketRequestContext](WebSocketRequestContext.md) (5 shared connections)
 - [TestCheckGracePeriodBlock](TestCheckGracePeriodBlock.md) (5 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
 - [TestCheckAllCommandBlocks](TestCheckAllCommandBlocks.md) (4 shared connections)
-- [TestCheckCastingState](TestCheckCastingState.md) (4 shared connections)
 
 ## Source Files
 
 - `server/command_handler/alias_expansion.py`
 - `server/command_handler_unified.py`
-- `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
 - `server/tests/unit/commands/test_command_aliases.py`
 - `server/tests/unit/commands/test_command_handler_unified.py`
 - `server/tests/unit/commands/test_command_handler_unified_helpers.py`
@@ -58,7 +57,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 264 (100%)
+- EXTRACTED: 270 (100%)
 - INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 

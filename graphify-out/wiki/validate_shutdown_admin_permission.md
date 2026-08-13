@@ -19,8 +19,8 @@
 - [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (4 shared connections)
 - [admin_shutdown_command.py](admin_shutdown_command.py.md) (3 shared connections)
 - [_asyncio_mark](_asyncio_mark.md) (3 shared connections)
-- [communication_commands_flows.py](communication_commands_flows.py.md) (1 shared connections)
-- [test_admin_commands.py](test_admin_commands.py.md) (1 shared connections)
+- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
 - [test_look_npc.py](test_look_npc.py.md) (1 shared connections)
 
 ## Source Files

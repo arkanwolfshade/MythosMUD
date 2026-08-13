@@ -1,6 +1,6 @@
 # SkillAssignmentScreen.tsx
 
-> 45 nodes
+> 46 nodes
 
 ## Key Concepts
 
@@ -11,10 +11,10 @@
 - **MotdInterstitialScreen.tsx** (8 connections) — `client/src/components/MotdInterstitialScreen.tsx`
 - **MotdContent.tsx** (6 connections) — `client/src/components/MotdContent.tsx`
 - **CharacterNameScreen()** (4 connections) — `client/src/components/CharacterNameScreen.tsx`
-- **getCreateCharacterErrorMessage()** (4 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **SkillAssignmentForm()** (4 connections) — `client/src/components/SkillAssignmentScreen.tsx`
 - **SkillAssignmentScreen()** (4 connections) — `client/src/components/SkillAssignmentScreen.tsx`
 - **useSkillAssignmentForm()** (4 connections) — `client/src/components/SkillAssignmentScreen.tsx`
+- **CharacterNameScreenProps** (3 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **SkillsPayload** (3 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **SkillAssignmentScreenProps** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
 - **MotdContent()** (3 connections) — `client/src/components/MotdContent.tsx`
@@ -29,17 +29,17 @@
 - **OccupationSlotPayload** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **PersonalInterestPayload** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **SkillCatalogEntry** (2 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- *... and 20 more nodes in this community*
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (7 shared connections)
-- [deleteCharacterFlow.ts](deleteCharacterFlow.ts.md) (7 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (11 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (6 shared connections)
 - [logger.ts](logger.ts.md) (4 shared connections)
-- [useStatsRollingActions.ts](useStatsRollingActions.ts.md) (3 shared connections)
 - [App.tsx](App.tsx.md) (2 shared connections)
 - [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (2 shared connections)
 - [EldritchIcon.tsx](EldritchIcon.tsx.md) (2 shared connections)
+- [errorHandler.ts](errorHandler.ts.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,7 +54,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 104 (100%)
+- EXTRACTED: 105 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

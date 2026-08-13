@@ -23,13 +23,12 @@
 
 ## Relationships
 
+- [get_logger](get_logger.md) (3 shared connections)
 - [PlayerEnteredRoom](PlayerEnteredRoom.md) (2 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
 - [event_types.py](event_types.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
 - [quest_service](quest_service.md) (1 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (1 shared connections)
 
 ## Source Files
 

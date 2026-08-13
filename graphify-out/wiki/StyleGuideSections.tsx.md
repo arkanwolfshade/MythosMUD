@@ -34,8 +34,7 @@
 ## Relationships
 
 - [EldritchIcon.tsx](EldritchIcon.tsx.md) (14 shared connections)
-- [channels.ts](channels.ts.md) (4 shared connections)
-- [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (2 shared connections)
+- [ChatPanelRuntimeViewParts.tsx](ChatPanelRuntimeViewParts.tsx.md) (6 shared connections)
 - [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (2 shared connections)
 - [designTokens.ts](designTokens.ts.md) (2 shared connections)
 - [MythosPanel.tsx](MythosPanel.tsx.md) (2 shared connections)

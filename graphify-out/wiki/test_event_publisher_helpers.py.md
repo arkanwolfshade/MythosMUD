@@ -22,8 +22,7 @@
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [TaskRegistry](TaskRegistry.md) (3 shared connections)
 
 ## Source Files
 

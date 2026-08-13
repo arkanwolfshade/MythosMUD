@@ -1,20 +1,12 @@
 # test_command_factories_exploration.py
 
-> 108 nodes
+> 92 nodes
 
 ## Key Concepts
 
 - **test_command_factories_exploration.py** (48 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
 - **.create_look_command()** (18 connections) — `server/utils/command_factories_exploration.py`
 - **.create_party_command()** (12 connections) — `server/utils/command_factories_exploration.py`
-- **.create_lie_command()** (8 connections) — `server/utils/command_factories_exploration.py`
-- **.create_follow_command()** (7 connections) — `server/utils/command_factories_exploration.py`
-- **.create_go_command()** (7 connections) — `server/utils/command_factories_exploration.py`
-- **.create_ground_command()** (7 connections) — `server/utils/command_factories_exploration.py`
-- **.create_following_command()** (6 connections) — `server/utils/command_factories_exploration.py`
-- **.create_sit_command()** (6 connections) — `server/utils/command_factories_exploration.py`
-- **.create_stand_command()** (6 connections) — `server/utils/command_factories_exploration.py`
-- **.create_unfollow_command()** (6 connections) — `server/utils/command_factories_exploration.py`
 - **test_create_follow_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
 - **test_create_follow_command_empty_target()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
 - **test_create_follow_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
@@ -29,12 +21,20 @@
 - **test_create_lie_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
 - **test_create_lie_command_with_down()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
 - **test_create_lie_command_with_invalid_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- *... and 83 more nodes in this community*
+- **test_create_lie_command_with_multiple_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_direction()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_direction_instance()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_explicit_container_type()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_explicit_item_type()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_explicit_npc_type()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_explicit_player_type()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- *... and 67 more nodes in this community*
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (24 shared connections)
-- [get_logger](get_logger.md) (12 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (32 shared connections)
+- [test_command_exploration.py](test_command_exploration.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 174 (99%)
+- EXTRACTED: 142 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

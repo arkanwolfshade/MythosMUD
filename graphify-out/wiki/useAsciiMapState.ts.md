@@ -1,6 +1,6 @@
 # useAsciiMapState.ts
 
-> 59 nodes
+> 57 nodes
 
 ## Key Concepts
 
@@ -12,7 +12,6 @@
 - **fetchAsciiMap()** (9 connections) — `client/src/api/maps.ts`
 - **useAsciiMapState()** (9 connections) — `client/src/components/map/useAsciiMapState.ts`
 - **fetchAsciiMinimap()** (8 connections) — `client/src/api/maps.ts`
-- **isAsciiMapApiResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
 - **useAsciiMap.ts** (6 connections) — `client/src/components/map/useAsciiMap.ts`
 - **AsciiMapViewer()** (5 connections) — `client/src/components/map/AsciiMapViewer.tsx`
 - **useAsciiMapViewerBindings()** (5 connections) — `client/src/components/map/AsciiMapViewer.tsx`
@@ -29,14 +28,14 @@
 - **buildHeaders()** (3 connections) — `client/src/api/maps.ts`
 - **useAsciiMinimapData()** (3 connections) — `client/src/components/map/AsciiMinimap.tsx`
 - **useAsciiMapFetchCb()** (3 connections) — `client/src/components/map/useAsciiMapState.ts`
-- *... and 34 more nodes in this community*
+- **maps.test.ts** (3 connections) — `client/src/api/__tests__/maps.test.ts`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [apiTypeGuards.ts](apiTypeGuards.ts.md) (6 shared connections)
-- [SafeHtml.tsx](SafeHtml.tsx.md) (4 shared connections)
-- [utils/config.ts](utils-config.ts.md) (3 shared connections)
-- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (2 shared connections)
+- [apiTypeGuards.ts](apiTypeGuards.ts.md) (5 shared connections)
+- [utils/config.ts](utils-config.ts.md) (5 shared connections)
+- [security.ts](security.ts.md) (4 shared connections)
 - [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
 - [gameStore.ts](gameStore.ts.md) (2 shared connections)
 
@@ -57,7 +56,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 125 (100%)
+- EXTRACTED: 120 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

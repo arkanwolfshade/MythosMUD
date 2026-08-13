@@ -24,8 +24,7 @@
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
-- [MythosChronicle](MythosChronicle.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (7 shared connections)
 - [lifespan.py](lifespan.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 

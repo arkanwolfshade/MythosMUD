@@ -33,10 +33,8 @@
 
 ## Relationships
 
-- [PlayerCombatService](PlayerCombatService.md) (10 shared connections)
-- [CombatService](CombatService.md) (8 shared connections)
-- [log_and_raise](log_and_raise.md) (1 shared connections)
-- [server/models/game.py](server-models-game.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (18 shared connections)
+- [Player](Player.md) (2 shared connections)
 
 ## Source Files
 

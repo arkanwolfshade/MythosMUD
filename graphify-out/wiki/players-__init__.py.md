@@ -34,15 +34,15 @@
 ## Relationships
 
 - [api/character_creation.py](api-character_creation.py.md) (18 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (11 shared connections)
-- [get_logger](get_logger.md) (11 shared connections)
-- [test_player_schemas.py](test_player_schemas.py.md) (9 shared connections)
+- [players.py](players.py.md) (12 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (10 shared connections)
+- [User](User.md) (9 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (8 shared connections)
 - [PlayerService](PlayerService.md) (8 shared connections)
-- [User](User.md) (7 shared connections)
-- [test_professions_endpoints.py](test_professions_endpoints.py.md) (6 shared connections)
-- [rooms.py](rooms.py.md) (3 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (2 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (2 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (6 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [ErrorType](ErrorType.md) (2 shared connections)
+- [rooms.py](rooms.py.md) (2 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
 - [PlayerRead](PlayerRead.md) (1 shared connections)
 

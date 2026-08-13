@@ -34,7 +34,7 @@
 ## Relationships
 
 - [server/services/__init__.py](server-services-__init__.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files
 

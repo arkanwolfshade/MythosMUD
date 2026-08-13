@@ -1,15 +1,13 @@
 # test_combat_persistence_handler_persistence.py
 
-> 39 nodes
+> 33 nodes
 
 ## Key Concepts
 
 - **test_combat_persistence_handler_persistence.py** (22 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **asyncio** (16 connections)
-- **persistence_handler()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **test_persist_player_dp_sync_get_stats_error()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **test_persist_player_dp_sync_get_stats_error_new()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
-- **mock_combat_service()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **test_persist_player_dp_background()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **test_persist_player_dp_background_persistence_failure()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **test_persist_player_dp_background_task_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
@@ -23,18 +21,22 @@
 - **test_persist_player_dp_sync_verify_player_save_called()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **test_verify_player_save_player_not_found()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **test_verify_player_save_success()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
-- **fixture** (3 connections)
-- **mock_player()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **Unit tests for combat persistence handler - persistence operations. Tests…** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **Test _persist_player_dp_sync calls _verify_player_save.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **Test _persist_player_dp_sync handles save_player error.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **Test _persist_player_dp_sync completes full flow with verification and logging.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
-- *... and 14 more nodes in this community*
+- **Test _persist_player_dp_sync handles get_stats error.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Test _persist_player_dp_sync complete flow including verification.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Test _persist_player_dp_sync handles get_stats error gracefully.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Test _persist_player_dp_background schedules background task.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [test_combat_persistence_handler_events.py](test_combat_persistence_handler_events.py.md) (3 shared connections)
+- [persistence_handler](persistence_handler.md) (3 shared connections)
 - [AttributeError](AttributeError.md) (2 shared connections)
+- [CombatPersistenceHandler](CombatPersistenceHandler.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 58 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 52 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

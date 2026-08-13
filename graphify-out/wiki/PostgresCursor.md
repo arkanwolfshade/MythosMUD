@@ -29,15 +29,15 @@
 
 ## Relationships
 
+- [test_postgres_adapter.py](test_postgres_adapter.py.md) (4 shared connections)
 - [PostgresRow](PostgresRow.md) (4 shared connections)
-- [test_postgres_adapter.py](test_postgres_adapter.py.md) (3 shared connections)
 - [PostgresConnection](PostgresConnection.md) (2 shared connections)
-- [TestPostgresConnectionPool](TestPostgresConnectionPool.md) (2 shared connections)
 - [Any](Any.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
+- [TestUtilityFunctions](TestUtilityFunctions.md) (1 shared connections)
 - [fixture](fixture.md) (1 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [test_lucidity_models.py](test_lucidity_models.py.md) (1 shared connections)
+- [rooms.py](rooms.py.md) (1 shared connections)
+- [LucidityRepository](LucidityRepository.md) (1 shared connections)
 
 ## Source Files
 

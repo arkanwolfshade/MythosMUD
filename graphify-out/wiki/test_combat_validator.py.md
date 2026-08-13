@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- [PlayerCombatService](PlayerCombatService.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [test_validate_combat_command_target_too_long](test_validate_combat_command_target_too_long.md) (1 shared connections)
 - [test_validate_combat_command_rate_limited](test_validate_combat_command_rate_limited.md) (1 shared connections)
 - [test_validate_combat_command_exception_handling](test_validate_combat_command_exception_handling.md) (1 shared connections)

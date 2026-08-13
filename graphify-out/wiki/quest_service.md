@@ -19,7 +19,7 @@
 - [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
 - [quest_commands.py](quest_commands.py.md) (1 shared connections)
 - [quest_events.py](quest_events.py.md) (1 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (1 shared connections)
+- [UUID](UUID.md) (1 shared connections)
 - [player_connection_setup.py](player_connection_setup.py.md) (1 shared connections)
 
 ## Source Files

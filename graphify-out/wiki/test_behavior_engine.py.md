@@ -34,7 +34,7 @@
 ## Relationships
 
 - [BehaviorEngine](BehaviorEngine.md) (21 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 - [test_evaluate_equality_false](test_evaluate_equality_false.md) (1 shared connections)
 - [test_evaluate_equality_string](test_evaluate_equality_string.md) (1 shared connections)
 - [test_behavior_engine_init](test_behavior_engine_init.md) (1 shared connections)

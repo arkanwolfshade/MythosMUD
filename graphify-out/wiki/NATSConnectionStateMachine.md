@@ -1,6 +1,6 @@
 # NATSConnectionStateMachine
 
-> 104 nodes
+> 107 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **test_connection_state_machine.py** (39 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 - **connection_state_machine.py** (10 connections) — `server/realtime/connection_state_machine.py`
 - **ConnectionEvent** (4 connections) — `server/realtime/connection_state_machine.py`
+- **.on_connection_failed()** (3 connections) — `server/realtime/connection_state_machine.py`
 - **test_can_attempt_connection_circuit_open()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 - **test_can_attempt_connection_connected()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 - **test_can_attempt_connection_connecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
@@ -28,17 +29,14 @@
 - **test_get_stats_with_error()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 - **test_invalid_transition_raises_error()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 - **test_last_connected_time_set()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_last_error_set()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- *... and 79 more nodes in this community*
+- *... and 82 more nodes in this community*
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [test_nats_service.py](test_nats_service.py.md) (2 shared connections)
 - [.on_enter_state](on_enter_state.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
 - [NATSService](NATSService.md) (1 shared connections)
-- [.on_connection_failed](on_connection_failed.md) (1 shared connections)
 - [.state](state.md) (1 shared connections)
 
 ## Source Files
@@ -48,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 152 (100%)
+- EXTRACTED: 154 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,12 +1,10 @@
 # HealthRepository
 
-> 44 nodes
+> 25 nodes
 
 ## Key Concepts
 
 - **HealthRepository** (20 connections) — `server/persistence/repositories/health_repository.py`
-- **.__init__()** (13 connections) — `server/async_persistence.py`
-- **RoomRepository** (12 connections) — `server/persistence/repositories/room_repository.py`
 - **._damage_player_inner()** (7 connections) — `server/persistence/repositories/health_repository.py`
 - **.update_player_health()** (7 connections) — `server/persistence/repositories/health_repository.py`
 - **._heal_player_inner()** (6 connections) — `server/persistence/repositories/health_repository.py`
@@ -16,44 +14,40 @@
 - **Player** (5 connections)
 - **.heal_player()** (4 connections) — `server/persistence/repositories/health_repository.py`
 - **_stats_int()** (4 connections) — `server/persistence/repositories/health_repository.py`
-- **test_cold_damage_resistance_reduces_damage()** (4 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
-- **test_damage_defaults_current_dp_to_20_when_missing()** (4 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
 - **._calculate_effective_damage()** (3 connections) — `server/persistence/repositories/health_repository.py`
 - **.__init__()** (3 connections) — `server/persistence/repositories/health_repository.py`
-- **.__init__()** (3 connections) — `server/persistence/repositories/room_repository.py`
 - **UUID** (3 connections)
-- **.get_room_by_id()** (2 connections) — `server/persistence/repositories/room_repository.py`
-- **.list_rooms()** (2 connections) — `server/persistence/repositories/room_repository.py`
-- **.save_room()** (2 connections) — `server/persistence/repositories/room_repository.py`
-- **.save_rooms()** (2 connections) — `server/persistence/repositories/room_repository.py`
-- **asyncio** (2 connections)
 - **Exception** (1 connections)
-- **Initialize the async persistence layer. This facade delegates to focused async…** (1 connections) — `server/async_persistence.py`
-- *... and 19 more nodes in this community*
+- **Log critical damage persistence failure.** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Execute atomic health update via update_player_health procedure.** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Damage a player and persist health changes atomically. Args: player: Player to…** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Heal a player and persist health changes atomically.** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Core heal logic without error handling wrapper.** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Update player current_dp field atomically. Args: player_id: Player UUID or…** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Convert stat values to int with a safe fallback.** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Repository for player health persistence operations. Handles damage, healing,…** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Initialize the health repository. Args: event_bus: Optional EventBus for…** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Calculate effective damage after applying simple resistance rules. Currently…** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **Core damage logic without error handling wrapper.** (1 connections) — `server/persistence/repositories/health_repository.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (13 shared connections)
-- [log_and_raise](log_and_raise.md) (8 shared connections)
-- [persistence/container_persistence.py](persistence-container_persistence.py.md) (3 shared connections)
-- [Room](Room.md) (1 shared connections)
-- [item_instance_persistence.py](item_instance_persistence.py.md) (1 shared connections)
-- [RoomCacheLoader](RoomCacheLoader.md) (1 shared connections)
-- [Profession](Profession.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (5 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [test_cold_damage_resistance_reduces_damage](test_cold_damage_resistance_reduces_damage.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [server/persistence/__init__.py](server-persistence-__init__.py.md) (1 shared connections)
+- [log_and_raise](log_and_raise.md) (1 shared connections)
+- [get_session_maker](get_session_maker.md) (1 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
 - `server/persistence/repositories/health_repository.py`
-- `server/persistence/repositories/room_repository.py`
-- `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
 
 ## Audit Trail
 
-- EXTRACTED: 84 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 50 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

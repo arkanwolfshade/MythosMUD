@@ -1,6 +1,6 @@
 # ui-v2/types.ts
 
-> 117 nodes
+> 110 nodes
 
 ## Key Concepts
 
@@ -28,23 +28,23 @@
 - **resolveInitialPanelLayout()** (9 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
 - **PanelContainerShared.tsx** (9 connections) — `client/src/components/ui-v2/PanelSystem/PanelContainerShared.tsx`
 - **usePanelContainerBody.ts** (9 connections) — `client/src/components/ui-v2/PanelSystem/usePanelContainerBody.ts`
-- **panelLayout.ts** (9 connections) — `client/src/components/ui-v2/utils/panelLayout.ts`
-- *... and 92 more nodes in this community*
+- **relayoutMinimizedDock()** (8 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
+- *... and 85 more nodes in this community*
 
 ## Relationships
 
-- [GameClientV2.tsx](GameClientV2.tsx.md) (47 shared connections)
+- [GameClientV2.tsx](GameClientV2.tsx.md) (48 shared connections)
 - [EldritchIcon.tsx](EldritchIcon.tsx.md) (10 shared connections)
-- [projectorRoom.ts](projectorRoom.ts.md) (5 shared connections)
-- [messageHandlers.ts](messageHandlers.ts.md) (4 shared connections)
+- [projectorRoom.ts](projectorRoom.ts.md) (7 shared connections)
 - [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (4 shared connections)
-- [stateUpdateUtils.ts](stateUpdateUtils.ts.md) (4 shared connections)
+- [stateUpdateUtils.ts](stateUpdateUtils.ts.md) (3 shared connections)
 - [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (2 shared connections)
 - [useAsciiMapState.ts](useAsciiMapState.ts.md) (2 shared connections)
 - [types/mythosTime.ts](types-mythosTime.ts.md) (2 shared connections)
 - [playerHandlers.ts](playerHandlers.ts.md) (2 shared connections)
 - [roomHandlers.ts](roomHandlers.ts.md) (2 shared connections)
-- [GameEvent](GameEvent.md) (2 shared connections)
+- [messageHandlers.ts](messageHandlers.ts.md) (2 shared connections)
+- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (2 shared connections)
 
 ## Source Files
 
@@ -71,8 +71,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 392 (99%)
-- INFERRED: 4 (1%)
+- EXTRACTED: 380 (99%)
+- INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

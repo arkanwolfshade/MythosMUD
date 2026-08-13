@@ -33,7 +33,9 @@
 
 ## Relationships
 
-- [CombatConfiguration](CombatConfiguration.md) (7 shared connections)
+- [CombatConfigurationScope](CombatConfigurationScope.md) (3 shared connections)
+- [CombatConfiguration](CombatConfiguration.md) (2 shared connections)
+- [CombatConfigurationService](CombatConfigurationService.md) (2 shared connections)
 
 ## Source Files
 

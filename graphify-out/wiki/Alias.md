@@ -35,9 +35,9 @@
 
 - [AliasStorage](AliasStorage.md) (18 shared connections)
 - [test_alias_storage.py](test_alias_storage.py.md) (7 shared connections)
-- [log_and_raise](log_and_raise.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
 - [MemoryProfiler](MemoryProfiler.md) (2 shared connections)
-- [websocket_helpers.py](websocket_helpers.py.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
 

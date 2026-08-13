@@ -1,6 +1,6 @@
 # test_async_persistence_core.py
 
-> 55 nodes
+> 61 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,9 @@
 - **asyncio** (23 connections)
 - **test_get_user_by_username_case_insensitive_success()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
 - **test_async_list_rooms_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_async_persistence_layer_init_deprecated_params()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_async_persistence_layer_init_skip_room_cache()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_async_persistence_layer_init_with_room_cache()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
 - **test_close()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
 - **test_delete_player_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
 - **test_get_active_players_by_user_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
@@ -26,18 +29,16 @@
 - **test_get_user_by_username_case_insensitive_not_found()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
 - **test_list_players_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
 - **test_save_player_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_save_players_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_update_player_last_active_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_update_player_last_active_none()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- *... and 30 more nodes in this community*
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (4 shared connections)
-- [User](User.md) (2 shared connections)
-- [log_and_raise](log_and_raise.md) (2 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [User](User.md) (3 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 - [Profession](Profession.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 90 (100%)
+- EXTRACTED: 96 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

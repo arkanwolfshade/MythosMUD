@@ -1,6 +1,6 @@
 # StatusEffect
 
-> 80 nodes
+> 81 nodes
 
 ## Key Concepts
 
@@ -10,6 +10,7 @@
 - **InventoryItem** (17 connections) — `server/models/game.py`
 - **test_game_status_effect.py** (13 connections) — `server/tests/unit/models/test_game_status_effect.py`
 - **test_game_inventory_item.py** (6 connections) — `server/tests/unit/models/test_game_inventory_item.py`
+- **BaseModel** (5 connections)
 - **test_player_add_item_existing()** (4 connections) — `server/tests/unit/models/test_game_player.py`
 - **test_player_add_status_effect()** (4 connections) — `server/tests/unit/models/test_game_player.py`
 - **test_player_can_carry_weight_false()** (4 connections) — `server/tests/unit/models/test_game_player.py`
@@ -28,19 +29,19 @@
 - **test_inventory_item_default_quantity()** (3 connections) — `server/tests/unit/models/test_game_inventory_item.py`
 - **test_inventory_item_quantity_validation_min()** (3 connections) — `server/tests/unit/models/test_game_inventory_item.py`
 - **test_player_add_item_default_quantity()** (3 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_add_item_new()** (3 connections) — `server/tests/unit/models/test_game_player.py`
-- *... and 55 more nodes in this community*
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
-- [server/models/game.py](server-models-game.py.md) (15 shared connections)
-- [TargetMatch](TargetMatch.md) (7 shared connections)
-- [Stats](Stats.md) (3 shared connections)
-- [test_player_schemas.py](test_player_schemas.py.md) (2 shared connections)
-- [log_and_raise](log_and_raise.md) (1 shared connections)
+- [Player](Player.md) (7 shared connections)
+- [PlayerService](PlayerService.md) (7 shared connections)
+- [player_schema_converter.py](player_schema_converter.py.md) (6 shared connections)
+- [Stats](Stats.md) (4 shared connections)
+- [players.py](players.py.md) (2 shared connections)
 - [MemoryProfiler](MemoryProfiler.md) (1 shared connections)
 - [.is_alive](is_alive.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 148 (100%)
+- EXTRACTED: 150 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

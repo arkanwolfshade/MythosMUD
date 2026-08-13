@@ -1,53 +1,52 @@
 # RoomIDUtils
 
-> 74 nodes
+> 43 nodes
 
 ## Key Concepts
 
 - **RoomIDUtils** (20 connections) — `server/realtime/room_id_utils.py`
-- **NPCOccupantProcessor** (18 connections) — `server/realtime/npc_occupant_processor.py`
 - **test_room_id_utils.py** (15 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **Any** (11 connections)
-- **npc_occupant_processor.py** (8 connections) — `server/realtime/npc_occupant_processor.py`
 - **.normalize_room_id_for_comparison()** (7 connections) — `server/realtime/room_id_utils.py`
-- **.query_npcs_for_room()** (6 connections) — `server/realtime/npc_occupant_processor.py`
-- **._filter_fallback_npcs()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_fallback_npcs()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_lifecycle_manager_for_filtering()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_npc_lifecycle_manager()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **.__init__()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._scan_active_npcs_for_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._should_include_npc_in_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._validate_npc_room_tracking()** (5 connections) — `server/realtime/npc_occupant_processor.py`
 - **.check_normalized_ids_match()** (5 connections) — `server/realtime/room_id_utils.py`
 - **.check_normalized_room_matches()** (5 connections) — `server/realtime/room_id_utils.py`
 - **.check_npc_room_match()** (5 connections) — `server/realtime/room_id_utils.py`
-- **room_id_utils.py** (5 connections) — `server/realtime/room_id_utils.py`
-- **._filter_single_fallback_npc()** (4 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_npc_room_id()** (4 connections) — `server/realtime/npc_occupant_processor.py`
 - **.check_fallback_room_matches()** (4 connections) — `server/realtime/room_id_utils.py`
-- **.process_npcs_for_occupants()** (3 connections) — `server/realtime/npc_occupant_processor.py`
 - **.__init__()** (3 connections) — `server/realtime/room_id_utils.py`
 - **test_check_fallback_room_matches()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- *... and 49 more nodes in this community*
+- **test_check_normalized_ids_match()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_normalized_ids_match_none()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_normalized_room_matches()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_npc_room_match()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_get_canonical_room_id()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_get_canonical_room_id_no_manager()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_normalize_room_id_for_comparison_empty()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_normalize_room_id_for_comparison_none()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_normalize_room_id_for_comparison_string()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_normalize_room_id_for_comparison_whitespace()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_room_id_utils_init()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **.get_canonical_room_id()** (2 connections) — `server/realtime/room_id_utils.py`
+- **Any** (1 connections)
+- **Check if NPC room IDs match target room IDs using fallback comparison. Args:…** (1 connections) — `server/realtime/room_id_utils.py`
+- **Check if NPC room matches target room using normalized comparison. Args:…** (1 connections) — `server/realtime/room_id_utils.py`
+- **Utilities for room ID normalization and comparison.** (1 connections) — `server/realtime/room_id_utils.py`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [RealTimeEventHandler](RealTimeEventHandler.md) (6 shared connections)
-- [EventBus](EventBus.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (2 shared connections)
+- [test_login_grace_period_visual_indicator.py](test_login_grace_period_visual_indicator.py.md) (4 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (2 shared connections)
+- [.__init__](__init__.md) (1 shared connections)
+- [RealTimeEventHandler](RealTimeEventHandler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/npc_occupant_processor.py`
 - `server/realtime/room_id_utils.py`
 - `server/tests/unit/realtime/test_room_id_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 123 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 64 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

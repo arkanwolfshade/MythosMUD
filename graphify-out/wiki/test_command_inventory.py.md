@@ -1,6 +1,6 @@
 # test_command_inventory.py
 
-> 144 nodes
+> 134 nodes
 
 ## Key Concepts
 
@@ -8,11 +8,6 @@
 - **EquipCommand** (23 connections) — `server/models/command_inventory.py`
 - **PickupCommand** (22 connections) — `server/models/command_inventory.py`
 - **UnequipCommand** (22 connections) — `server/models/command_inventory.py`
-- **command_inventory.py** (13 connections) — `server/models/command_inventory.py`
-- **DropCommand** (12 connections) — `server/models/command_inventory.py`
-- **GetCommand** (12 connections) — `server/models/command_inventory.py`
-- **PutCommand** (12 connections) — `server/models/command_inventory.py`
-- **InventoryCommand** (8 connections) — `server/models/command_inventory.py`
 - **field_validator** (5 connections)
 - **.validate_equip_requirements()** (3 connections) — `server/models/command_inventory.py`
 - **.validate_search_term()** (3 connections) — `server/models/command_inventory.py`
@@ -29,12 +24,16 @@
 - **test_drop_command_with_quantity()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
 - **test_equip_command_index_validation_min()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
 - **test_equip_command_search_term_max_length()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- *... and 119 more nodes in this community*
+- **test_equip_command_target_slot_max_length()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_equip_command_validate_requirements_neither_provided()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_equip_command_validate_search_term_empty_string()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_equip_command_validate_search_term_strips()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_equip_command_validate_search_term_whitespace_only()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- *... and 109 more nodes in this community*
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (25 shared connections)
-- [test_command_factories_inventory.py](test_command_factories_inventory.py.md) (7 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (36 shared connections)
 
 ## Source Files
 
@@ -43,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 228 (94%)
-- INFERRED: 14 (6%)
+- EXTRACTED: 207 (97%)
+- INFERRED: 6 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

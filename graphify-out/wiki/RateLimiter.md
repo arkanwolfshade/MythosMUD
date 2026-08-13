@@ -1,36 +1,52 @@
 # RateLimiter
 
-> 9 nodes
+> 85 nodes
 
 ## Key Concepts
 
-- **RateLimiter** (10 connections) — `server/utils/rate_limiter.py`
-- **rate_limiter()** (4 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **server/utils/__init__.py** (3 connections) — `server/utils/__init__.py`
-- **.__init__()** (2 connections) — `server/utils/rate_limiter.py`
-- **fixture** (1 connections)
-- **Create a RateLimiter instance for testing.** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **Utility modules for MythosMUD server. This package contains various utility…** (1 connections) — `server/utils/__init__.py`
-- **Simple in-memory rate limiter for API endpoints. This rate limiter tracks…** (1 connections) — `server/utils/rate_limiter.py`
-- **Initialize the rate limiter. Args: max_requests: Maximum number of requests…** (1 connections) — `server/utils/rate_limiter.py`
+- **RateLimiter** (51 connections) — `server/realtime/rate_limiter.py`
+- **test_connection_rate_limiter.py** (33 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **.get_message_rate_limit_info()** (3 connections) — `server/realtime/rate_limiter.py`
+- **.get_rate_limit_info()** (3 connections) — `server/realtime/rate_limiter.py`
+- **.get_stats()** (3 connections) — `server/realtime/rate_limiter.py`
+- **test_rate_limiter_check_message_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_check_message_rate_limit_first()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_check_message_rate_limit_within_limit()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_check_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_check_rate_limit_first_attempt()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_check_rate_limit_old_attempts_removed()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_check_rate_limit_within_limit()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_large_structures()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_large_structures_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_old_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_old_attempts_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_old_attempts_removes_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_old_message_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_old_message_attempts_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_cleanup_old_message_attempts_removes_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_get_message_rate_limit_info()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_get_message_rate_limit_info_no_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_get_rate_limit_info()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_get_rate_limit_info_no_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- **test_rate_limiter_get_stats()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
-- [.enforce_rate_limit](enforce_rate_limit.md) (3 shared connections)
-- [test_rate_limiter_utils.py](test_rate_limiter_utils.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (1 shared connections)
+- [test_connection_disconnection.py](test_connection_disconnection.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [connection_initialization.py](connection_initialization.py.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_rate_limiter_utils.py`
-- `server/utils/__init__.py`
-- `server/utils/rate_limiter.py`
+- `server/realtime/rate_limiter.py`
+- `server/tests/unit/realtime/test_connection_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 125 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

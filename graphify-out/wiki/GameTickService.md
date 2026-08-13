@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
+- [TaskRegistry](TaskRegistry.md) (3 shared connections)
 
 ## Source Files
 

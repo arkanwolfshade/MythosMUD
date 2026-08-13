@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (14 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (14 shared connections)
 - [game_tick_processing.py](game_tick_processing.py.md) (3 shared connections)
 - [build_event](build_event.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)

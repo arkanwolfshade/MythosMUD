@@ -31,8 +31,8 @@
 
 - [test_behavior_engine.py](test_behavior_engine.py.md) (21 shared connections)
 - [Any](Any.md) (12 shared connections)
-- [EventBus](EventBus.md) (5 shared connections)
-- [.__init__](__init__.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (5 shared connections)
+- [npc_config_parsing.py](npc_config_parsing.py.md) (1 shared connections)
 - [test_add_rule_missing_fields](test_add_rule_missing_fields.md) (1 shared connections)
 - [test_add_rule_success](test_add_rule_success.md) (1 shared connections)
 - [test_behavior_engine_init](test_behavior_engine_init.md) (1 shared connections)

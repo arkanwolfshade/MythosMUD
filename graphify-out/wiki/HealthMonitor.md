@@ -1,6 +1,6 @@
 # HealthMonitor
 
-> 32 nodes
+> 30 nodes
 
 ## Key Concepts
 
@@ -19,7 +19,6 @@
 - **.__init__()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
 - **.stop_periodic_checks()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
 - **._validate_and_update_token()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
-- **test_health_monitor_init_custom_intervals()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **Any** (2 connections)
 - **Find player_id for cleanup when metadata is missing.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
 - **Check if connection is stale based on timeout.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
@@ -29,22 +28,23 @@
 - **Clean up stale connections.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
 - **Check health of all connections and clean up stale/dead ones. This method: -…** (1 connections) — `server/realtime/monitoring/health_monitor.py`
 - **Periodic health check task that runs continuously. This task: - Runs health…** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- *... and 7 more nodes in this community*
+- **Start the periodic health check task. This should be called during application…** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
+- [connection_initialization.py](connection_initialization.py.md) (3 shared connections)
 - [test_health_monitor.py](test_health_monitor.py.md) (3 shared connections)
-- [test_connection_initialization.py](test_connection_initialization.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [TaskRegistry](TaskRegistry.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/monitoring/health_monitor.py`
-- `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (98%)
+- EXTRACTED: 55 (98%)
 - INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 

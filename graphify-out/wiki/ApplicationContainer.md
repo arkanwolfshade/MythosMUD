@@ -1,78 +1,78 @@
 # ApplicationContainer
 
-> 293 nodes
+> 1107 nodes
 
 ## Key Concepts
 
 - **ApplicationContainer** (145 connections) — `server/container/main.py`
+- **EventBus** (127 connections) — `server/events/event_bus.py`
+- **NPCDefinition** (108 connections) — `server/models/npc.py`
+- **time.py** (89 connections) — `server/container/bundles/time.py`
+- **NPCBase** (81 connections) — `server/npc/npc_base.py`
+- **get_npc_instance_service()** (79 connections) — `server/services/npc_instance_service.py`
+- **NPCLifecycleManager** (73 connections) — `server/npc/lifecycle_manager.py`
+- **NPCCombatIntegration** (63 connections) — `server/npc/combat_integration.py`
+- **NPCPopulationController** (62 connections) — `server/npc/population_control.py`
 - **lifespan_startup.py** (60 connections) — `server/app/lifespan_startup.py`
+- **test_npc_instance_service.py** (53 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **NPCSpawningService** (48 connections) — `server/npc/spawning_service.py`
+- **lifecycle_manager.py** (48 connections) — `server/npc/lifecycle_manager.py`
+- **threading.py** (45 connections) — `server/npc/threading.py`
+- **PopulationStats** (42 connections) — `server/npc/population_stats.py`
+- **population_control.py** (42 connections) — `server/npc/population_control.py`
+- **npc_base.py** (41 connections) — `server/npc/npc_base.py`
+- **NPCLeftRoom** (40 connections) — `server/events/event_types.py`
+- **models/npc.py** (37 connections) — `server/models/npc.py`
+- **spawning_service.py** (37 connections) — `server/npc/spawning_service.py`
 - **.get_instance()** (34 connections) — `server/container/main.py`
 - **container/main.py** (33 connections) — `server/container/main.py`
-- **test_application_container.py** (28 connections) — `server/tests/unit/test_application_container.py`
-- **test_lifespan_startup.py** (26 connections) — `server/tests/unit/app/test_lifespan_startup.py`
-- **CombatBundle** (24 connections) — `server/container/bundles/combat.py`
-- **RealtimeBundle** (24 connections) — `server/container/bundles/realtime.py`
-- **MythosTimeEventConsumer** (22 connections) — `server/time/time_event_consumer.py`
-- **EventPublisher** (20 connections) — `server/realtime/event_publisher.py`
-- **bundles/__init__.py** (19 connections) — `server/container/bundles/__init__.py`
-- **get_container()** (17 connections) — `server/container/main.py`
-- **CoreBundle** (14 connections) — `server/container/bundles/core.py`
-- **NPCService** (14 connections) — `server/services/npc_service/__init__.py`
-- **initialize_container_and_legacy_services()** (14 connections) — `server/app/lifespan_startup.py`
-- **MonitoringBundle** (13 connections) — `server/container/bundles/monitoring.py`
-- **FastAPI** (13 connections)
-- **bundles/combat.py** (13 connections) — `server/container/bundles/combat.py`
-- **bundles/realtime.py** (13 connections) — `server/container/bundles/realtime.py`
-- **asyncio** (12 connections)
-- **initialize_combat_services()** (11 connections) — `server/app/lifespan_startup.py`
-- **setup_connection_manager()** (11 connections) — `server/app/lifespan_startup.py`
-- **lifespan_event_subscriptions.py** (11 connections) — `server/app/lifespan_event_subscriptions.py`
-- **bundles/monitoring.py** (11 connections) — `server/container/bundles/monitoring.py`
-- **_create_npc_services_on_app()** (10 connections) — `server/app/lifespan_startup.py`
-- *... and 268 more nodes in this community*
+- **AggressiveMobNPC** (32 connections) — `server/npc/aggressive_mob_npc.py`
+- **npc_instance_service.py** (32 connections) — `server/services/npc_instance_service.py`
+- **test_npc_utils.py** (30 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- *... and 1082 more nodes in this community*
 
 ## Relationships
 
-- [PlayerService](PlayerService.md) (42 shared connections)
-- [EventBus](EventBus.md) (41 shared connections)
-- [get_logger](get_logger.md) (33 shared connections)
-- [CombatService](CombatService.md) (16 shared connections)
-- [lifespan.py](lifespan.py.md) (14 shared connections)
-- [test_player_death_service.py](test_player_death_service.py.md) (8 shared connections)
-- [npc_database.py](npc_database.py.md) (8 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (6 shared connections)
-- [LucidityService](LucidityService.md) (6 shared connections)
-- [ChatService](ChatService.md) (5 shared connections)
-- [PlayerRespawnService](PlayerRespawnService.md) (5 shared connections)
-- [CatatoniaRegistry](CatatoniaRegistry.md) (5 shared connections)
+- [get_logger](get_logger.md) (200 shared connections)
+- [event_types.py](event_types.py.md) (70 shared connections)
+- [DatabaseError](DatabaseError.md) (55 shared connections)
+- [NPCSpawnRule](NPCSpawnRule.md) (53 shared connections)
+- [PlayerService](PlayerService.md) (47 shared connections)
+- [test_population_control.py](test_population_control.py.md) (42 shared connections)
+- [Any](Any.md) (33 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (30 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (25 shared connections)
+- [TaskRegistry](TaskRegistry.md) (24 shared connections)
+- [test_npc_combat_integration_class.py](test_npc_combat_integration_class.py.md) (20 shared connections)
+- [lifespan.py](lifespan.py.md) (19 shared connections)
 
 ## Source Files
 
 - `server/app/lifespan_event_subscriptions.py`
 - `server/app/lifespan_startup.py`
+- `server/caching/lru_cache.py`
+- `server/commands/combat_handler.py`
+- `server/commands/shutdown_process_termination.py`
+- `server/commands/time_commands.py`
 - `server/container/__init__.py`
 - `server/container/bundles/__init__.py`
 - `server/container/bundles/chat.py`
 - `server/container/bundles/combat.py`
 - `server/container/bundles/core.py`
 - `server/container/bundles/monitoring.py`
+- `server/container/bundles/npc.py`
 - `server/container/bundles/realtime.py`
 - `server/container/bundles/time.py`
 - `server/container/main.py`
 - `server/container/utils.py`
-- `server/realtime/event_publisher.py`
-- `server/services/npc_service/__init__.py`
-- `server/services/npc_startup_service.py`
-- `server/tests/fixtures/unit/__init__.py`
-- `server/tests/unit/app/test_lifespan_startup.py`
-- `server/tests/unit/container/test_realtime_bundle_nats.py`
-- `server/tests/unit/test_application_container.py`
-- `server/time/time_event_consumer.py`
+- `server/events/event_bus.py`
+- `server/events/event_types.py`
+- `server/models/npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 781 (94%)
-- INFERRED: 52 (6%)
+- EXTRACTED: 2916 (93%)
+- INFERRED: 211 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

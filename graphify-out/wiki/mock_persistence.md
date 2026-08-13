@@ -1,27 +1,28 @@
 # mock_persistence
 
-> 6 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **mock_persistence()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **mock_request()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **mock_player()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **mock_request()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
 - **fixture** (3 connections)
-- **mock_user()** (2 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Create a mock request object.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Create a mock request with app state and container.** (1 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **Create a mock persistence.** (1 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **Create a mock player.** (1 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
 
 ## Relationships
 
-- [ContainerServiceError](ContainerServiceError.md) (3 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/api/test_container_helpers.py`
+- `server/tests/unit/commands/test_lucidity_recovery_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

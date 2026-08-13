@@ -1,11 +1,10 @@
 # test_container_helpers_inventory_ops.py
 
-> 87 nodes
+> 86 nodes
 
 ## Key Concepts
 
 - **test_container_helpers_inventory_ops.py** (52 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **container_helpers_inventory.py** (31 connections) — `server/commands/container_helpers_inventory.py`
 - **container_helpers_inventory_ops.py** (29 connections) — `server/commands/container_helpers_inventory_ops.py`
 - **transfer_item_to_container()** (20 connections) — `server/commands/container_helpers_inventory_ops.py`
 - **asyncio** (19 connections)
@@ -29,30 +28,32 @@
 - **test_transfer_item_from_container_no_transfer_from()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
 - **test_transfer_item_from_container_persist_failure_returns_error()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
 - **test_transfer_item_from_container_success_updates_inventory()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- *... and 62 more nodes in this community*
+- **test_transfer_item_from_container_transfer_raises()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
+- *... and 61 more nodes in this community*
 
 ## Relationships
 
-- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (15 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (9 shared connections)
-- [inventory_put_command.py](inventory_put_command.py.md) (4 shared connections)
-- [container_helpers_inventory_display.py](container_helpers_inventory_display.py.md) (4 shared connections)
-- [ContainerService](ContainerService.md) (3 shared connections)
-- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (2 shared connections)
-- [log_and_raise](log_and_raise.md) (2 shared connections)
+- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (14 shared connections)
+- [inventory_pickup_command.py](inventory_pickup_command.py.md) (5 shared connections)
+- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (3 shared connections)
+- [inventory_put_command.py](inventory_put_command.py.md) (3 shared connections)
+- [.transfer_from_container](transfer_from_container.md) (3 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
 - [.state](state.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/container_helpers_inventory.py`
 - `server/commands/container_helpers_inventory_ops.py`
+- `server/services/container_service.py`
 - `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 243 (95%)
-- INFERRED: 14 (5%)
+- EXTRACTED: 226 (95%)
+- INFERRED: 13 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

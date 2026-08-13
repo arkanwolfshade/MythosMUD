@@ -15,7 +15,7 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 

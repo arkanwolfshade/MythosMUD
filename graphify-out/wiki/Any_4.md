@@ -1,42 +1,47 @@
 # Any
 
-> 20 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **Any** (10 connections)
-- **._extract_parsed_fields()** (7 connections) — `server/commands/command_service.py`
-- **.process_command()** (7 connections) — `server/commands/command_service.py`
-- **._execute_command_handler()** (6 connections) — `server/commands/command_service.py`
-- **._parse_command_string()** (5 connections) — `server/commands/command_service.py`
-- **._prepare_command_data()** (5 connections) — `server/commands/command_service.py`
-- **._fallback_parsed_fields()** (4 connections) — `server/commands/command_service.py`
-- **._log_model_dump_result()** (4 connections) — `server/commands/command_service.py`
-- **._log_parsed_command_inspection()** (4 connections) — `server/commands/command_service.py`
-- **.register_command_handler()** (3 connections) — `server/commands/command_service.py`
-- **CommandHandler** (1 connections)
-- **Parse and validate command string. Returns: tuple of (parsed_command, cmd,…** (1 connections) — `server/commands/command_service.py`
-- **Prepare command_data dictionary by merging parsed command fields. Returns:…** (1 connections) — `server/commands/command_service.py`
-- **Extract non-private, non-callable attributes from parsed_command, excluding…** (1 connections) — `server/commands/command_service.py`
-- **Extract fields from parsed_command using model_dump or fallback method.…** (1 connections) — `server/commands/command_service.py`
-- **Log parsed command object inspection details.** (1 connections) — `server/commands/command_service.py`
-- **Log model_dump result details.** (1 connections) — `server/commands/command_service.py`
-- **Execute command handler with error handling. Returns: dict: Command result** (1 connections) — `server/commands/command_service.py`
-- **Process a command with full validation and routing. Args: command: The raw…** (1 connections) — `server/commands/command_service.py`
-- **Register a new command handler. Args: command: Command name handler: Handler…** (1 connections) — `server/commands/command_service.py`
+- **Any** (13 connections)
+- **.render_map()** (11 connections) — `server/services/ascii_map_renderer.py`
+- **._build_grid()** (6 connections) — `server/services/ascii_map_renderer.py`
+- **._build_exit_lookup()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._determine_map_style()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._get_exit_entries_for_room()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._get_horizontal_exit_char()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._render_room_row()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._resolve_exit_target()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._get_room_symbol()** (4 connections) — `server/services/ascii_map_renderer.py`
+- **._horizontal_exit_char_between()** (4 connections) — `server/services/ascii_map_renderer.py`
+- **._render_empty_map()** (3 connections) — `server/services/ascii_map_renderer.py`
+- **Resolve one exit to (target_x, target_y) and is_bidirectional. Returns None if…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Return list of (direction, (target_x, target_y), is_bidirectional) for exits…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Build exit lookup map from room data.** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Render a single row of rooms with horizontal exits.** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Render an ASCII map as HTML. Args: rooms: List of room dictionaries with…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Return the horizontal exit character (—, >, or <) given east/west exit state,…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Get exit character to display after a room for horizontal (east/west) exits.…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Determine map style from room data. Args: rooms: List of room dictionaries…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Build a coordinate grid from room data. Args: rooms: List of room dictionaries…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Get ASCII symbol for a room. Args: room: Room dictionary map_style: Current map…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Render an empty map. Args: width: Viewport width height: Viewport height…** (1 connections) — `server/services/ascii_map_renderer.py`
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (12 shared connections)
-- [test_command_parser.py](test_command_parser.py.md) (1 shared connections)
+- [AsciiMapRenderer](AsciiMapRenderer.md) (11 shared connections)
+- [._get_vertical_exit_char](_get_vertical_exit_char.md) (4 shared connections)
+- [._exit_is_bidirectional](_exit_is_bidirectional.md) (2 shared connections)
+- [._auto_center_viewport](_auto_center_viewport.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/command_service.py`
+- `server/services/ascii_map_renderer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
+- EXTRACTED: 50 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

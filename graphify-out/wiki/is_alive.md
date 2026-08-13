@@ -17,10 +17,11 @@
 
 ## Relationships
 
-- [EventBus](EventBus.md) (2 shared connections)
 - [StatusEffect](StatusEffect.md) (1 shared connections)
 - [Invite](Invite.md) (1 shared connections)
-- [IdleMovementHandler](IdleMovementHandler.md) (1 shared connections)
+- [.execute_idle_movement](execute_idle_movement.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files
 

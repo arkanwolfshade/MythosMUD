@@ -34,8 +34,9 @@
 ## Relationships
 
 - [RateLimiter](RateLimiter.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
 - [rate_limiter](rate_limiter.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [test_check_rate_limit_within_limits](test_check_rate_limit_within_limits.md) (1 shared connections)
 - [test_check_rate_limit_exceeds_limit](test_check_rate_limit_exceeds_limit.md) (1 shared connections)
 - [test_record_message](test_record_message.md) (1 shared connections)
@@ -44,7 +45,6 @@
 - [test_reset_player_limits_all_channels](test_reset_player_limits_all_channels.md) (1 shared connections)
 - [test_get_system_stats](test_get_system_stats.md) (1 shared connections)
 - [test_get_system_stats_no_players](test_get_system_stats_no_players.md) (1 shared connections)
-- [test_is_player_rate_limited_true](test_is_player_rate_limited_true.md) (1 shared connections)
 
 ## Source Files
 

@@ -23,28 +23,28 @@
 - **ChatHeader.tsx** (9 connections) — `client/src/components/panels/chat/ChatHeader.tsx`
 - **CommandHistoryPanel.tsx** (9 connections) — `client/src/components/ui-v2/panels/CommandHistoryPanel.tsx`
 - **ChatHistoryToggle.tsx** (8 connections) — `client/src/components/panels/chat/ChatHistoryToggle.tsx`
+- **ChatStatistics.tsx** (8 connections) — `client/src/components/panels/chat/ChatStatistics.tsx`
 - **ChatPanelTest.test.tsx** (5 connections) — `client/src/components/ChatPanelTest.test.tsx`
 - **DraggablePanelResizeHandles.tsx** (5 connections) — `client/src/components/DraggablePanelResizeHandles.tsx`
 - **EldritchEffectsDemo()** (4 connections) — `client/src/components/EldritchEffectsDemo.tsx`
 - **hasEffect()** (4 connections) — `client/src/components/eldritchEffectsDemoData.ts`
 - **pairClass()** (4 connections) — `client/src/components/eldritchEffectsDemoData.ts`
-- **effectClass()** (3 connections) — `client/src/components/eldritchEffectsDemoData.ts`
 - *... and 64 more nodes in this community*
 
 ## Relationships
 
+- [ChatPanelRuntimeViewParts.tsx](ChatPanelRuntimeViewParts.tsx.md) (15 shared connections)
 - [StyleGuideSections.tsx](StyleGuideSections.tsx.md) (14 shared connections)
-- [channels.ts](channels.ts.md) (12 shared connections)
 - [MythosPanel.tsx](MythosPanel.tsx.md) (12 shared connections)
-- [ansiToHtml.ts](ansiToHtml.ts.md) (11 shared connections)
+- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (11 shared connections)
 - [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (10 shared connections)
 - [CommandPanel.tsx](CommandPanel.tsx.md) (10 shared connections)
 - [ui-v2/types.ts](ui-v2-types.ts.md) (10 shared connections)
-- [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (8 shared connections)
+- [GameClientV2.tsx](GameClientV2.tsx.md) (9 shared connections)
 - [GameLogPanel.tsx](GameLogPanel.tsx.md) (8 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (5 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (4 shared connections)
 - [useDraggablePanelInteractions.ts](useDraggablePanelInteractions.ts.md) (4 shared connections)
+- [ChatPanelRefactoredView.tsx](ChatPanelRefactoredView.tsx.md) (4 shared connections)
+- [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (3 shared connections)
 
 ## Source Files
 
@@ -61,7 +61,7 @@
 - `client/src/components/eldritchEffectsDemoData.ts`
 - `client/src/components/panels/chat/ChatHeader.tsx`
 - `client/src/components/panels/chat/ChatHistoryToggle.tsx`
-- `client/src/components/panels/chat/__tests__/ChatHeader.test.tsx`
+- `client/src/components/panels/chat/ChatStatistics.tsx`
 - `client/src/components/ui-v2/PanelSystem/PanelContainerViews.tsx`
 - `client/src/components/ui-v2/panels/CommandHistoryPanel.tsx`
 - `client/src/components/ui-v2/panels/CommandInputPanel.tsx`
@@ -71,7 +71,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 285 (100%)
+- EXTRACTED: 288 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

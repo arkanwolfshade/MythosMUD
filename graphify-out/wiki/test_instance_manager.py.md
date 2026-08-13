@@ -30,11 +30,10 @@
 
 ## Relationships
 
-- [PlayerService](PlayerService.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
 - [Room](Room.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
 
 ## Source Files
 

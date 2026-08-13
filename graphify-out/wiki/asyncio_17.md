@@ -4,40 +4,43 @@
 
 ## Key Concepts
 
-- **asyncio** (35 connections)
-- **test_get_npc_definition_by_name_found()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_update_npc_definition_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_npc_service_init()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_update_npc_definition_not_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_npc_definition_invalid_max_population()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definitions_database_error()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_system_statistics_database_error()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
-- **Test NPCService initialization.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
-- **Test get_npc_definitions() handles database errors.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
-- **Test get_npc_definition_by_name() returns definition when found.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
-- **Test create_npc_definition() raises ValueError for invalid max population.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
-- **Test update_npc_definition() successfully updates definition.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
-- **Test update_npc_definition() returns None when not found.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
-- **Test get_system_statistics() handles database errors.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **asyncio** (16 connections)
+- **test_echo_message_to_sender_exception()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_apply_dampening_and_send_message_blocked()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_apply_dampening_and_send_message_no_original_content()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_get_player_lucidity_tier_exception_in_processing()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_send_messages_to_players_invalid_player_id()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_send_messages_to_players_no_original_content()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_send_messages_to_players_with_tags()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _send_messages_to_players handles missing original_content.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _send_messages_to_players adds tags from dampening.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _send_messages_to_players handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _echo_message_to_sender handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _apply_dampening_and_send_message handles blocked messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _apply_dampening_and_send_message handles missing original_content.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _get_player_lucidity_tier handles exceptions during processing.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [test_npc_service.py](test_npc_service.py.md) (13 shared connections)
-- [_def_row](_def_row.md) (10 shared connections)
-- [_mock_result_mappings_all](_mock_result_mappings_all.md) (10 shared connections)
-- [_spawn_rule_row](_spawn_rule_row.md) (4 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [test_create_npc_definition_with_base_stats](test_create_npc_definition_with_base_stats.md) (1 shared connections)
-- [test_update_npc_definition_invalid_probability](test_update_npc_definition_invalid_probability.md) (1 shared connections)
-- [test_update_npc_definition_invalid_type](test_update_npc_definition_invalid_type.md) (1 shared connections)
+- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (7 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [test_apply_dampening_and_send_message_exception](test_apply_dampening_and_send_message_exception.md) (1 shared connections)
+- [test_broadcast_by_channel_type_exception](test_broadcast_by_channel_type_exception.md) (1 shared connections)
+- [test_broadcast_to_room_with_filtering_exception](test_broadcast_to_room_with_filtering_exception.md) (1 shared connections)
+- [test_echo_message_to_sender_success](test_echo_message_to_sender_success.md) (1 shared connections)
+- [test_get_player_lucidity_tier](test_get_player_lucidity_tier.md) (1 shared connections)
+- [test_get_player_lucidity_tier_default](test_get_player_lucidity_tier_default.md) (1 shared connections)
+- [test_get_player_lucidity_tier_with_uuid](test_get_player_lucidity_tier_with_uuid.md) (1 shared connections)
+- [test_process_message_with_retry_failure](test_process_message_with_retry_failure.md) (1 shared connections)
+- [test_send_messages_to_players_blocked](test_send_messages_to_players_blocked.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (100%)
+- EXTRACTED: 31 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

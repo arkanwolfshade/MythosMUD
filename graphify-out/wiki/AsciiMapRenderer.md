@@ -1,52 +1,52 @@
 # AsciiMapRenderer
 
-> 102 nodes
+> 18 nodes
 
 ## Key Concepts
 
 - **AsciiMapRenderer** (52 connections) — `server/services/ascii_map_renderer.py`
-- **Any** (13 connections)
-- **.render_map()** (11 connections) — `server/services/ascii_map_renderer.py`
 - **TestVerticalExitCharBetween** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **ascii_map_renderer.py** (9 connections) — `server/services/ascii_map_renderer.py`
-- **test_ascii_map_renderer_exits.py** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **TestHorizontalExitCharBetween** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **TestResolveExitTarget** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **._build_grid()** (6 connections) — `server/services/ascii_map_renderer.py`
-- **_ExitRowContext** (5 connections) — `server/services/ascii_map_renderer.py`
-- **TestGetExitEntriesForRoom** (5 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **._build_exit_lookup()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._determine_map_style()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._exit_is_bidirectional()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._get_exit_entries_for_room()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._get_horizontal_exit_char()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._get_vertical_exit_char()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._render_exit_row()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._render_room_row()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._resolve_exit_target()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **test_ascii_map_renderer_grid.py** (5 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
-- **TestGetHorizontalExitCharViewportBounds** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **TestBuildGridPlayerMarker** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
-- **._get_room_symbol()** (4 connections) — `server/services/ascii_map_renderer.py`
-- **._horizontal_exit_char_between()** (4 connections) — `server/services/ascii_map_renderer.py`
-- *... and 77 more nodes in this community*
+- **.test_bidirectional_returns_pipe()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_no_exit_returns_none()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_one_way_north_and_one_way_south_assign_caret_and_v_by_target()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_one_way_north_returns_caret()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_one_way_north_uses_caret_bidirectional_uses_pipe()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_one_way_south_returns_v()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.__init__()** (2 connections) — `server/services/ascii_map_renderer.py`
+- **Renders ASCII maps from room coordinate data. Supports multiple map styles…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Initialize the ASCII map renderer.** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Tests for _vertical_exit_char_between (|, v, ^).** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Bidirectional vertical exit renders as a vertical bar.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **One-way south exit renders as a lowercase 'v'.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **One-way north exit renders as a caret.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **When there are no vertical exits, the helper returns None.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **One-way North-only exit renders ^; bidirectional vertical exit renders |.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **One-way north renders ^ and one-way south renders v; symbols match direction to…** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 
 ## Relationships
 
-- [map_minimap.py](map_minimap.py.md) (3 shared connections)
-- [maps.py](maps.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [Any](Any.md) (11 shared connections)
+- [test_ascii_map_renderer_exits.py](test_ascii_map_renderer_exits.py.md) (5 shared connections)
+- [TestHorizontalExitCharBetween](TestHorizontalExitCharBetween.md) (5 shared connections)
+- [TestResolveExitTarget](TestResolveExitTarget.md) (5 shared connections)
+- [test_ascii_map_renderer_grid.py](test_ascii_map_renderer_grid.py.md) (4 shared connections)
+- [TestGetExitEntriesForRoom](TestGetExitEntriesForRoom.md) (3 shared connections)
+- [._get_vertical_exit_char](_get_vertical_exit_char.md) (3 shared connections)
+- [map_minimap.py](map_minimap.py.md) (2 shared connections)
+- [maps.py](maps.py.md) (2 shared connections)
+- [._exit_is_bidirectional](_exit_is_bidirectional.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [._auto_center_viewport](_auto_center_viewport.md) (1 shared connections)
 
 ## Source Files
 
 - `server/services/ascii_map_renderer.py`
 - `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- `server/tests/unit/services/test_ascii_map_renderer_grid.py`
 
 ## Audit Trail
 
-- EXTRACTED: 162 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 61 (91%)
+- INFERRED: 6 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

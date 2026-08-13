@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [ChatLogger](ChatLogger.md) (1 shared connections)
-- [extract_subzone_from_room_id](extract_subzone_from_room_id.md) (1 shared connections)
 
 ## Source Files
 

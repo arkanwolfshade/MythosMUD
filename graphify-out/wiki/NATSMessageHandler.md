@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [build_event](build_event.md) (5 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
 - [DeadLetterQueue](DeadLetterQueue.md) (4 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 - [MessageFilteringHelper](MessageFilteringHelper.md) (3 shared connections)
 - [RealTimeEventHandler](RealTimeEventHandler.md) (2 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (2 shared connections)
+- [UUID](UUID.md) (2 shared connections)
 - [apply_communication_dampening](apply_communication_dampening.md) (2 shared connections)
 - [format_message_content](format_message_content.md) (2 shared connections)
 - [CircuitBreaker](CircuitBreaker.md) (1 shared connections)
 - [test_nats_message_handler.py](test_nats_message_handler.py.md) (1 shared connections)
 - [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [EventHandler](EventHandler.md) (1 shared connections)
 
 ## Source Files
 

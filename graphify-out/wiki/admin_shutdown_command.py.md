@@ -35,14 +35,15 @@
 
 - [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (16 shared connections)
 - [AliasStorage](AliasStorage.md) (8 shared connections)
-- [is_shutdown_pending](is_shutdown_pending.md) (4 shared connections)
 - [_asyncio_mark](_asyncio_mark.md) (3 shared connections)
 - [shutdown_sequence.py](shutdown_sequence.py.md) (3 shared connections)
 - [validate_shutdown_admin_permission](validate_shutdown_admin_permission.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [test_users.py](test_users.py.md) (3 shared connections)
+- [calculate_notification_times](calculate_notification_times.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 - [AdminActionsLogger](AdminActionsLogger.md) (1 shared connections)
 - [admin_teleport_commands.py](admin_teleport_commands.py.md) (1 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (1 shared connections)
 
 ## Source Files
 

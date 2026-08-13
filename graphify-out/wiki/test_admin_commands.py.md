@@ -1,14 +1,11 @@
 # test_admin_commands.py
 
-> 70 nodes
+> 63 nodes
 
 ## Key Concepts
 
 - **test_admin_commands.py** (37 connections) — `server/tests/unit/commands/test_admin_commands.py`
 - **asyncio** (30 connections)
-- **handle_admin_command()** (14 connections) — `server/commands/admin_commands.py`
-- **_handle_admin_status_command()** (7 connections) — `server/commands/admin_commands.py`
-- **_handle_admin_time_command()** (6 connections) — `server/commands/admin_commands.py`
 - **test_handle_mute_command_exception()** (5 connections) — `server/tests/unit/commands/test_admin_commands.py`
 - **test_handle_add_admin_command_no_target()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
 - **test_handle_add_admin_command_no_user_manager()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
@@ -29,26 +26,25 @@
 - **test_handle_mute_global_command_success()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
 - **test_handle_mutes_command_no_user_manager()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
 - **test_handle_mutes_command_success()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- *... and 45 more nodes in this community*
+- **test_handle_mutes_command_with_mutes()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_teleport_command_no_app()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_teleport_command_no_target()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (35 shared connections)
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) (6 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [_handle_admin_set_stat_command](_handle_admin_set_stat_command.md) (1 shared connections)
-- [validate_shutdown_admin_permission](validate_shutdown_admin_permission.md) (1 shared connections)
-- [MythosChronicle](MythosChronicle.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (28 shared connections)
+- [admin_teleport_commands.py](admin_teleport_commands.py.md) (7 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_commands.py`
 - `server/tests/unit/commands/test_admin_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 124 (83%)
-- INFERRED: 25 (17%)
+- EXTRACTED: 105 (82%)
+- INFERRED: 23 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

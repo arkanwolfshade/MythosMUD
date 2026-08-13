@@ -37,7 +37,7 @@
 - [_format_npc_description](_format_npc_description.md) (10 shared connections)
 - [_get_npc_room_id](_get_npc_room_id.md) (8 shared connections)
 - [_should_include_npc](_should_include_npc.md) (6 shared connections)
-- [EventBus](EventBus.md) (5 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (5 shared connections)
 - [quest_commands.py](quest_commands.py.md) (5 shared connections)
 - [look_command.py](look_command.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)

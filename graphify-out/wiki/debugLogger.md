@@ -34,7 +34,7 @@
 ## Relationships
 
 - [GameTerminal.tsx](GameTerminal.tsx.md) (3 shared connections)
-- [GameTerminalPresentation.tsx](GameTerminalPresentation.tsx.md) (3 shared connections)
+- [GameLogPanel.tsx](GameLogPanel.tsx.md) (3 shared connections)
 
 ## Source Files
 

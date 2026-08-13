@@ -25,9 +25,9 @@
 ## Relationships
 
 - [Room](Room.md) (8 shared connections)
-- [EventBus](EventBus.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
 - [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (1 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (1 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files

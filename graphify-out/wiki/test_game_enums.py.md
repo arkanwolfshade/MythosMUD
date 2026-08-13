@@ -21,9 +21,8 @@
 
 ## Relationships
 
-- [log_and_raise](log_and_raise.md) (2 shared connections)
-- [TargetMatch](TargetMatch.md) (1 shared connections)
-- [server/models/game.py](server-models-game.py.md) (1 shared connections)
+- [Player](Player.md) (3 shared connections)
+- [PlayerService](PlayerService.md) (1 shared connections)
 
 ## Source Files
 

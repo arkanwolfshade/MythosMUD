@@ -33,10 +33,9 @@
 
 ## Relationships
 
+- [ErrorType](ErrorType.md) (4 shared connections)
 - [WebSocketMessageValidator](WebSocketMessageValidator.md) (3 shared connections)
-- [StandardizedErrorResponse](StandardizedErrorResponse.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
 - [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
 
 ## Source Files

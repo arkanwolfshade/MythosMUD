@@ -4,55 +4,44 @@
 
 ## Key Concepts
 
-- **asyncio** (41 connections)
-- **test_create_player_preferences_already_exists()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_create_player_preferences_with_string_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_get_muted_channels_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_get_muted_channels_invalid_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_get_muted_channels_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_get_player_preferences_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_is_channel_muted_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_mute_channel_invalid_channel()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_mute_channel_system_channel()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_unmute_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_unmute_channel_invalid_channel()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_unmute_channel_invalid_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_unmute_channel_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_unmute_channel_not_muted()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_unmute_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_update_default_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_update_default_channel_invalid_channel()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_update_default_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test creating player preferences with string UUID.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test creating player preferences when they already exist.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test getting player preferences successfully.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test updating default channel successfully.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test updating default channel with invalid channel name.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test muting system channel (should fail).** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **asyncio** (18 connections)
+- **test_add_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_add_admin_no_container_duplicate()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_add_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_add_admin_player_not_found()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_add_admin_success()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_admin_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_admin_not_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_player_muted_async_false()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_player_muted_async_true()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_load_player_mutes_async_cache_valid()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_load_player_mutes_batch_all_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_load_player_mutes_batch_empty_list()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_remove_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_remove_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_remove_admin_player_not_found()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_remove_admin_success()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test is_player_muted_async() returns True when player is muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test is_player_muted_async() returns False when player is not muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test add_admin() handles missing container.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test add_admin() handles missing persistence.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test add_admin() handles player not found.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test remove_admin() handles missing container.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 - *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [test_player_preferences_service.py](test_player_preferences_service.py.md) (26 shared connections)
-- [test_create_player_preferences_integrity_error](test_create_player_preferences_integrity_error.md) (1 shared connections)
-- [test_create_player_preferences_success](test_create_player_preferences_success.md) (1 shared connections)
-- [test_delete_player_preferences_not_found](test_delete_player_preferences_not_found.md) (1 shared connections)
-- [test_delete_player_preferences_success](test_delete_player_preferences_success.md) (1 shared connections)
-- [test_get_muted_channels_success](test_get_muted_channels_success.md) (1 shared connections)
-- [test_get_player_preferences_invalid_id](test_get_player_preferences_invalid_id.md) (1 shared connections)
-- [test_get_player_preferences_not_found](test_get_player_preferences_not_found.md) (1 shared connections)
-- [test_is_channel_muted_invalid_channel](test_is_channel_muted_invalid_channel.md) (1 shared connections)
-- [test_is_channel_muted_invalid_id](test_is_channel_muted_invalid_id.md) (1 shared connections)
-- [test_is_channel_muted_not_found](test_is_channel_muted_not_found.md) (1 shared connections)
-- [test_mute_channel_already_muted](test_mute_channel_already_muted.md) (1 shared connections)
+- [test_user_manager.py](test_user_manager.py.md) (18 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 77 (100%)
+- EXTRACTED: 54 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

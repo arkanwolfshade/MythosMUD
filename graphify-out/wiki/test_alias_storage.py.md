@@ -36,7 +36,7 @@
 - [AliasStorage](AliasStorage.md) (8 shared connections)
 - [Alias](Alias.md) (7 shared connections)
 - [SchemaValidator](SchemaValidator.md) (1 shared connections)
-- [PlayerService](PlayerService.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 - [WebSocketRequestContext](WebSocketRequestContext.md) (1 shared connections)
 
 ## Source Files

@@ -1,49 +1,30 @@
 # UUID
 
-> 58 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **UUID** (26 connections)
-- **Any** (14 connections)
-- **.get_player_mutes()** (4 connections) — `server/game/chat_service.py`
-- **.send_emote_message()** (4 connections) — `server/game/chat_service.py`
-- **.send_global_message()** (4 connections) — `server/game/chat_service.py`
-- **.send_local_message()** (4 connections) — `server/game/chat_service.py`
-- **.send_party_message()** (4 connections) — `server/game/chat_service.py`
-- **.send_predefined_emote()** (4 connections) — `server/game/chat_service.py`
-- **.send_say_message()** (4 connections) — `server/game/chat_service.py`
-- **.send_system_message()** (4 connections) — `server/game/chat_service.py`
-- **.send_whisper_message()** (4 connections) — `server/game/chat_service.py`
-- **.set_player_pose()** (4 connections) — `server/game/chat_service.py`
-- **.add_admin()** (3 connections) — `server/game/chat_service.py`
-- **.clear_player_pose()** (3 connections) — `server/game/chat_service.py`
-- **.get_mute_status()** (3 connections) — `server/game/chat_service.py`
-- **.get_player_pose()** (3 connections) — `server/game/chat_service.py`
-- **.get_room_messages()** (3 connections) — `server/game/chat_service.py`
-- **.get_user_management_stats()** (3 connections) — `server/game/chat_service.py`
-- **.is_admin()** (3 connections) — `server/game/chat_service.py`
-- **.is_channel_muted()** (3 connections) — `server/game/chat_service.py`
-- **.is_globally_muted()** (3 connections) — `server/game/chat_service.py`
-- **.is_player_muted()** (3 connections) — `server/game/chat_service.py`
-- **.mute_channel()** (3 connections) — `server/game/chat_service.py`
-- **.mute_global()** (3 connections) — `server/game/chat_service.py`
-- **.mute_player()** (3 connections) — `server/game/chat_service.py`
-- *... and 33 more nodes in this community*
+- **UUID** (5 connections)
+- **.get_original_string_id()** (3 connections) — `server/game/magic/spell_effect_types.py`
+- **.get_player_by_id()** (3 connections) — `server/game/magic/spell_effect_types.py`
+- **.damage_player()** (3 connections) — `server/game/magic/spell_effect_types.py`
+- **.heal_player()** (3 connections) — `server/game/magic/spell_effect_types.py`
+- **Apply healing to a player by id.** (1 connections) — `server/game/magic/spell_effect_types.py`
+- **Apply typed damage to a player; returns damage result payload.** (1 connections) — `server/game/magic/spell_effect_types.py`
+- **Load player by id; None if missing.** (1 connections) — `server/game/magic/spell_effect_types.py`
+- **Return registry string id for npc_uuid, or None if unmapped.** (1 connections) — `server/game/magic/spell_effect_types.py`
 
 ## Relationships
 
-- [ChatService](ChatService.md) (28 shared connections)
-- [ChatPoseManager](ChatPoseManager.md) (1 shared connections)
-- [chat_service.py](chat_service.py.md) (1 shared connections)
+- [PlayerService](PlayerService.md) (5 shared connections)
 
 ## Source Files
 
-- `server/game/chat_service.py`
+- `server/game/magic/spell_effect_types.py`
 
 ## Audit Trail
 
-- EXTRACTED: 96 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

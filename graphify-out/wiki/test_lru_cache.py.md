@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
 - [LRUCache](LRUCache.md) (1 shared connections)
 
 ## Source Files

@@ -1,38 +1,31 @@
 # fixture
 
-> 13 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **fixture** (6 connections)
-- **skill_service()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
-- **catalog_with_own_language_and_mythos()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **mock_player_skill_repo()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **mock_skill_repo()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **mock_skill_use_log_repo()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Mock PlayerSkillRepository.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Mock AsyncPersistenceLayer (get_profession_by_id, get_player_by_id).** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Mock SkillUseLogRepository for use logging and improvement (plan 10.4).** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **SkillService with mocks.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Minimal catalog: accounting, library_use, own_language, cthulhu_mythos (for…** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Mock SkillRepository returning catalog.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **fixture** (4 connections)
+- **mock_container_service()** (3 connections) — `server/tests/unit/api/test_containers.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/api/test_containers.py`
+- **mock_request()** (3 connections) — `server/tests/unit/api/test_containers.py`
+- **mock_user()** (3 connections) — `server/tests/unit/api/test_containers.py`
+- **Create a mock request object.** (1 connections) — `server/tests/unit/api/test_containers.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/api/test_containers.py`
+- **Create a mock container service.** (1 connections) — `server/tests/unit/api/test_containers.py`
 
 ## Relationships
 
-- [test_skill_service.py](test_skill_service.py.md) (6 shared connections)
-- [log_and_raise](log_and_raise.md) (1 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (1 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (4 shared connections)
+- [User](User.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `server/tests/unit/api/test_containers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

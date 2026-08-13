@@ -36,7 +36,7 @@
 - [connectionStore.ts](connectionStore.ts.md) (3 shared connections)
 - [stateNormalization.ts](stateNormalization.ts.md) (3 shared connections)
 - [commandStore.ts](commandStore.ts.md) (3 shared connections)
-- [GameTerminalPresentation.tsx](GameTerminalPresentation.tsx.md) (3 shared connections)
+- [GameLogPanel.tsx](GameLogPanel.tsx.md) (3 shared connections)
 - [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (2 shared connections)
 - [gameStore.ts](gameStore.ts.md) (2 shared connections)
 

@@ -1,13 +1,12 @@
 # QuestService
 
-> 79 nodes
+> 73 nodes
 
 ## Key Concepts
 
 - **QuestService** (53 connections) — `server/game/quest/quest_service.py`
 - **Any** (27 connections)
 - **UUID** (26 connections)
-- **QuestInstance** (20 connections) — `server/models/quest.py`
 - **QuestDefinitionSchema** (18 connections) — `server/schemas/quest/quest.py`
 - **_parse_definition()** (12 connections) — `server/game/quest/quest_service.py`
 - **._apply_activity_progress()** (11 connections) — `server/game/quest/quest_service.py`
@@ -19,7 +18,6 @@
 - **.start_quest()** (9 connections) — `server/game/quest/quest_service.py`
 - **._start_quest_validation_error()** (9 connections) — `server/game/quest/quest_service.py`
 - **.sync_collect_progress()** (9 connections) — `server/game/quest/quest_service.py`
-- **QuestCompleted** (8 connections) — `server/events/event_types.py`
 - **._apply_rewards()** (8 connections) — `server/game/quest/quest_service.py`
 - **_goals_met()** (7 connections) — `server/game/quest/quest_service.py`
 - **._apply_item_reward()** (7 connections) — `server/game/quest/quest_service.py`
@@ -29,34 +27,34 @@
 - **.start_quest_by_trigger()** (6 connections) — `server/game/quest/quest_service.py`
 - **.turn_in_at_entity()** (6 connections) — `server/game/quest/quest_service.py`
 - **._turn_in_inventory_full_error()** (6 connections) — `server/game/quest/quest_service.py`
-- *... and 54 more nodes in this community*
+- **_call_add_item_to_inventory()** (5 connections) — `server/game/quest/quest_service.py`
+- **_definition_completion_mode_error()** (5 connections) — `server/game/quest/quest_service.py`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
-- [quest_service.py](quest_service.py.md) (20 shared connections)
+- [quest_service.py](quest_service.py.md) (18 shared connections)
 - [test_quest_instance_repository.py](test_quest_instance_repository.py.md) (9 shared connections)
+- [players.py](players.py.md) (5 shared connections)
 - [test_quest_service_collect.py](test_quest_service_collect.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
 - [quest_commands.py](quest_commands.py.md) (3 shared connections)
-- [schemas/quest/__init__.py](schemas-quest-__init__.py.md) (3 shared connections)
-- [event_types.py](event_types.py.md) (2 shared connections)
-- [PlayerService](PlayerService.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
 - [test_quest_service.py](test_quest_service.py.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (2 shared connections)
-- [log_and_raise](log_and_raise.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
+- [quest_service](quest_service.md) (1 shared connections)
+- [.add_item_to_inventory](add_item_to_inventory.md) (1 shared connections)
+- [.save_player](save_player.md) (1 shared connections)
 
 ## Source Files
 
-- `server/events/event_types.py`
 - `server/game/quest/quest_service.py`
-- `server/models/quest.py`
 - `server/schemas/quest/quest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 233 (97%)
-- INFERRED: 7 (3%)
+- EXTRACTED: 213 (98%)
+- INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

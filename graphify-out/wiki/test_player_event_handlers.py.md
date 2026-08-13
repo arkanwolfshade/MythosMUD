@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [RealTimeEventHandler](RealTimeEventHandler.md) (12 shared connections)
+- [event_types.py](event_types.py.md) (10 shared connections)
 - [PlayerEnteredRoom](PlayerEnteredRoom.md) (4 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (1 shared connections)
+- [RealTimeEventHandler](RealTimeEventHandler.md) (3 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

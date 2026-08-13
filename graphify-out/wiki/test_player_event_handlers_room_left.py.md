@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [RealTimeEventHandler](RealTimeEventHandler.md) (6 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (7 shared connections)
 
 ## Source Files
 

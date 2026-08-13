@@ -1,61 +1,61 @@
 # .state
 
-> 43 nodes
+> 67 nodes
 
 ## Key Concepts
 
 - **.state()** (36 connections) — `server/realtime/connection_state_machine.py`
-- **real_time.py** (34 connections) — `server/api/real_time.py`
-- **get_async_persistence()** (19 connections) — `server/async_persistence.py`
-- **_resolve_player_id()** (10 connections) — `server/api/real_time.py`
-- **websocket_endpoint()** (10 connections) — `server/api/real_time.py`
-- **_ensure_connection_manager()** (9 connections) — `server/api/real_time.py`
-- **get_player_connections()** (9 connections) — `server/api/real_time.py`
-- **handle_new_game_session()** (9 connections) — `server/api/real_time.py`
+- **rescue_commands.py** (33 connections) — `server/commands/rescue_commands.py`
+- **handle_ground_command()** (28 connections) — `server/commands/rescue_commands.py`
+- **test_rescue_commands.py** (23 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **asyncio** (17 connections)
+- **handle_rescue_command()** (14 connections) — `server/commands/rescue_commands.py`
 - **Any** (9 connections)
-- **_resolve_player_id_from_test()** (8 connections) — `server/api/real_time.py`
-- **_resolve_player_id_from_token()** (8 connections) — `server/api/real_time.py`
-- **websocket_endpoint_route()** (8 connections) — `server/api/real_time.py`
-- **WebSocket** (8 connections)
-- **get_connection_statistics()** (7 connections) — `server/api/real_time.py`
-- **_validate_websocket_connection_manager()** (7 connections) — `server/api/real_time.py`
-- **UUID** (7 connections)
-- **_parse_websocket_token()** (6 connections) — `server/api/real_time.py`
-- **_resolve_connection_manager_from_state()** (6 connections) — `server/api/real_time.py`
-- **_resolve_player_id_from_path_or_token()** (6 connections) — `server/api/real_time.py`
-- **_validate_and_accept_websocket()** (5 connections) — `server/api/real_time.py`
-- **_parse_subprotocol_token()** (4 connections) — `server/api/real_time.py`
-- **Request** (4 connections)
-- **_extract_bearer_token()** (3 connections) — `server/api/real_time.py`
-- **get** (2 connections)
-- **post** (1 connections)
-- *... and 18 more nodes in this community*
+- **_run_ground_session()** (8 connections) — `server/commands/rescue_commands.py`
+- **_apply_grounding_adjustment()** (7 connections) — `server/commands/rescue_commands.py`
+- **patch** (7 connections)
+- **UUID** (6 connections)
+- **_complete_ground_command()** (5 connections) — `server/commands/rescue_commands.py`
+- **_get_ground_services()** (5 connections) — `server/commands/rescue_commands.py`
+- **_normalize_player_ids()** (5 connections) — `server/commands/rescue_commands.py`
+- **_send_grounding_failure_events()** (5 connections) — `server/commands/rescue_commands.py`
+- **_send_grounding_success_events()** (5 connections) — `server/commands/rescue_commands.py`
+- **_validate_ground_context()** (5 connections) — `server/commands/rescue_commands.py`
+- **test_handle_ground_command_apply_lucidity_error()** (5 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_lucidity_record_not_found()** (5 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_not_catatonic()** (5 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_success()** (5 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_target_player_key()** (5 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_rescue_command()** (5 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_rescue_command_target_player_key()** (5 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **_send_grounding_channeling_events()** (4 connections) — `server/commands/rescue_commands.py`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (11 shared connections)
-- [realtime/realtime.py](realtime-realtime.py.md) (8 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (7 shared connections)
-- [log_and_raise](log_and_raise.md) (4 shared connections)
-- [create_access_token](create_access_token.md) (3 shared connections)
-- [test_websocket_handler_coverage_gaps.py](test_websocket_handler_coverage_gaps.py.md) (3 shared connections)
-- [websocket_helpers.py](websocket_helpers.py.md) (3 shared connections)
-- [websocket_initial_state.py](websocket_initial_state.py.md) (3 shared connections)
+- [AliasStorage](AliasStorage.md) (13 shared connections)
+- [Player](Player.md) (8 shared connections)
+- [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (5 shared connections)
+- [get_username_from_user](get_username_from_user.md) (3 shared connections)
+- [rescue_service.py](rescue_service.py.md) (3 shared connections)
+- [get_async_session](get_async_session.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (3 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (2 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
+- [UUID](UUID.md) (3 shared connections)
+- [real_time.py](real_time.py.md) (2 shared connections)
+- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (2 shared connections)
+- [test_inventory_helpers.py](test_inventory_helpers.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/api/real_time.py`
-- `server/async_persistence.py`
+- `server/commands/rescue_commands.py`
 - `server/realtime/connection_state_machine.py`
+- `server/tests/unit/commands/test_rescue_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 134 (80%)
-- INFERRED: 34 (20%)
+- EXTRACTED: 164 (82%)
+- INFERRED: 37 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [EventBus](EventBus.md) (19 shared connections)
-- [event_types.py](event_types.py.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (20 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
 
 ## Source Files
 

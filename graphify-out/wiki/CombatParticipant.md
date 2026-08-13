@@ -2,7 +2,7 @@
 
 > God node · 167 connections · `server/models/combat.py`
 
-**Community:** [CombatService](CombatService.md)
+**Community:** [get_logger](get_logger.md)
 
 ## Connections by Relation
 
@@ -35,21 +35,21 @@
 - combat_service.py `EXTRACTED`
 - test_combat.py `EXTRACTED`
 - combat_turn_participant_actions.py `EXTRACTED`
-- test_combat_attack_handler.py `EXTRACTED`
+- [test_combat_attack_handler.py](test_combat_attack_handler.py.md) `EXTRACTED`
 - test_combat_turn_processor.py `EXTRACTED`
-- [combat_taunt.py](combat_taunt.py.md) `EXTRACTED`
+- combat_taunt.py `EXTRACTED`
 - combat_service_npc.py `EXTRACTED`
 - [test_aggro_threat.py](test_aggro_threat.py.md) `EXTRACTED`
-- [aggro_threat.py](aggro_threat.py.md) `EXTRACTED`
+- aggro_threat.py `EXTRACTED`
 - [test_flee_command.py](test_flee_command.py.md) `EXTRACTED`
 - [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) `EXTRACTED`
 - test_damage_grace_period.py `EXTRACTED`
 - combat_service_attack.py `EXTRACTED`
-- combat_flee_handler.py `EXTRACTED`
+- [combat_flee_handler.py](combat_flee_handler.py.md) `EXTRACTED`
 - combat_death_handler.py `EXTRACTED`
 - test_combat_taunt.py `EXTRACTED`
 - combat_turn_processor.py `EXTRACTED`
-- test_combat_service.py `EXTRACTED`
+- [test_combat_service.py](test_combat_service.py.md) `EXTRACTED`
 - combat_attack_handler.py `EXTRACTED`
 - combat_event_handler.py `EXTRACTED`
 

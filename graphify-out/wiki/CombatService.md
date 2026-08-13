@@ -1,79 +1,109 @@
 # CombatService
 
-> 752 nodes
+> God node · 181 connections · `server/services/combat_service.py`
 
-## Key Concepts
+**Community:** [get_logger](get_logger.md)
 
-- **CombatService** (181 connections) — `server/services/combat_service.py`
-- **CombatParticipant** (167 connections) — `server/models/combat.py`
-- **CombatInstance** (155 connections) — `server/models/combat.py`
-- **combat_service.py** (100 connections) — `server/services/combat_service.py`
-- **test_combat.py** (60 connections) — `server/tests/unit/models/test_combat.py`
-- **models/combat.py** (50 connections) — `server/models/combat.py`
-- **CombatTurnProcessor** (48 connections) — `server/services/combat_turn_processor.py`
-- **combat_turn_participant_actions.py** (46 connections) — `server/services/combat_turn_participant_actions.py`
-- **test_combat_attack_handler.py** (37 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_combat_turn_processor.py** (36 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
-- **CombatParticipantType** (35 connections) — `server/models/combat.py`
-- **combat_service_npc.py** (30 connections) — `server/services/combat_service_npc.py`
-- **combat_service_start.py** (27 connections) — `server/services/combat_service_start.py`
-- **combat_service_attack.py** (26 connections) — `server/services/combat_service_attack.py`
-- **combat_flee_handler.py** (23 connections) — `server/services/combat_flee_handler.py`
-- **CombatAction** (21 connections) — `server/models/combat.py`
-- **CombatResult** (20 connections) — `server/models/combat.py`
-- **UUID** (20 connections)
-- **CombatAttackHandler** (19 connections) — `server/services/combat_attack_handler.py`
-- **combat_turn_processor.py** (19 connections) — `server/services/combat_turn_processor.py`
-- **CombatDeathHandler** (18 connections) — `server/services/combat_death_handler.py`
-- **test_combat_cleanup_handler.py** (18 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **test_combat_service.py** (18 connections) — `server/tests/unit/services/test_combat_service.py`
-- **combat_attack_handler.py** (17 connections) — `server/services/combat_attack_handler.py`
-- **test_combat_flee_handler.py** (17 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- *... and 727 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- initialize_nats_and_combat_services() `EXTRACTED`
+- ._create_combat_service_with_nats() `EXTRACTED`
+- combat_service() `EXTRACTED`
 
-- [event_types.py](event_types.py.md) (59 shared connections)
-- [TargetMatch](TargetMatch.md) (44 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (37 shared connections)
-- [CombatParticipantData](CombatParticipantData.md) (27 shared connections)
-- [get_logger](get_logger.md) (25 shared connections)
-- [combat_taunt.py](combat_taunt.py.md) (23 shared connections)
-- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (19 shared connections)
-- [PlayerService](PlayerService.md) (18 shared connections)
-- [aggro_threat.py](aggro_threat.py.md) (17 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (16 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (16 shared connections)
-- [get_config](get_config.md) (14 shared connections)
+### contains
+- combat_service.py `EXTRACTED`
 
-## Source Files
+### imports
+- [server/dependencies.py](server-dependencies.py.md) `EXTRACTED`
+- [game_tick_processing.py](game_tick_processing.py.md) `EXTRACTED`
+- lifespan_startup.py `EXTRACTED`
+- npc_combat_integration_service.py `EXTRACTED`
+- spell_effects.py `EXTRACTED`
+- combat_handler.py `EXTRACTED`
+- combat_turn_participant_actions.py `EXTRACTED`
+- magic_service.py `EXTRACTED`
+- spell_effects_heal.py `EXTRACTED`
+- combat_taunt.py `EXTRACTED`
+- combat_service_npc.py `EXTRACTED`
+- combat_service_start.py `EXTRACTED`
+- combat_service_attack.py `EXTRACTED`
+- combat_loader.py `EXTRACTED`
+- magic_service_completion.py `EXTRACTED`
+- [combat_flee.py](combat_flee.py.md) `EXTRACTED`
+- spell_targeting.py `EXTRACTED`
+- combat_turn_processor.py `EXTRACTED`
+- npc_combat_integration_validation_mixin.py `EXTRACTED`
+- [test_combat_service.py](test_combat_service.py.md) `EXTRACTED`
 
-- `server/container/bundles/combat.py`
-- `server/game/magic/spell_effects_internal.py`
-- `server/models/combat.py`
-- `server/services/aggro_threat.py`
-- `server/services/combat_attack_handler.py`
-- `server/services/combat_cleanup_handler.py`
-- `server/services/combat_death_handler.py`
-- `server/services/combat_flee_handler.py`
-- `server/services/combat_messaging/base.py`
-- `server/services/combat_service.py`
-- `server/services/combat_service_attack.py`
-- `server/services/combat_service_end.py`
-- `server/services/combat_service_npc.py`
-- `server/services/combat_service_start.py`
-- `server/services/combat_service_state.py`
-- `server/services/combat_service_types.py`
-- `server/services/combat_turn_participant_actions.py`
-- `server/services/combat_turn_processor.py`
-- `server/services/combat_types.py`
-- `server/services/lucidity_command_disruption.py`
+### method
+- .__init__() `EXTRACTED`
+- .validate_melee_or_end_combat() `EXTRACTED`
+- .finalize_attack_result() `EXTRACTED`
+- .start_combat() `EXTRACTED`
+- .end_combat_if_npc_died() `EXTRACTED`
+- ._handle_player_dp_update() `EXTRACTED`
+- .validate_and_get_combat_participants() `EXTRACTED`
+- .apply_attack_damage() `EXTRACTED`
+- .handle_attack_events_and_xp() `EXTRACTED`
+- .apply_damage_and_check_involuntary_flee() `EXTRACTED`
+- .auto_progression_enabled() `EXTRACTED`
+- .turn_interval_seconds() `EXTRACTED`
+- ._get_combat_id_for_npc() `EXTRACTED`
+- .get_combat() `EXTRACTED`
+- .get_combat_by_participant() `EXTRACTED`
+- .validate_melee_location() `EXTRACTED`
+- .check_involuntary_flee() `EXTRACTED`
+- .handle_target_state_changes() `EXTRACTED`
+- .award_xp_to_player() `EXTRACTED`
+- .process_attack() `EXTRACTED`
 
-## Audit Trail
+### rationale_for
+- Service for managing combat instances and state. `EXTRACTED`
 
-- EXTRACTED: 1787 (96%)
-- INFERRED: 72 (4%)
-- AMBIGUOUS: 0 (0%)
+### references
+- run_heal_effect() `EXTRACTED`
+- get_combat_id_for_npc() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- _run_steal_life() `EXTRACTED`
+- _steal_life_apply_target_damage() `EXTRACTED`
+- _resolve_npc_target() `EXTRACTED`
+- _run_standard_heal_after_validation() `EXTRACTED`
+- get_npc_instance_for_steal_life() `EXTRACTED`
+- _steal_life_resolve_target_dp() `EXTRACTED`
+- finalize_attack_result() `EXTRACTED`
+- find_participant_uuid_by_string_id() `EXTRACTED`
+- resolve_npc_participant_id_in_combat() `EXTRACTED`
+- apply_target_rest_and_grace_checks() `EXTRACTED`
+- process_npc_turn() `EXTRACTED`
+- process_player_turn() `EXTRACTED`
+- _make_service() `EXTRACTED`
+- _steal_life_publish_npc_events() `EXTRACTED`
+- validate_melee_location() `EXTRACTED`
+- validate_melee_or_end_combat() `EXTRACTED`
+
+### uses
+- EventBus `INFERRED`
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) `INFERRED`
+- PlayerCombatService `INFERRED`
+- [NATSService](NATSService.md) `INFERRED`
+- CombatCommandHandler `INFERRED`
+- SpellEffects `INFERRED`
+- [CombatTurnProcessor](CombatTurnProcessor.md) `INFERRED`
+- [_MagicServiceCore](_MagicServiceCore.md) `INFERRED`
+- [PlayerRespawnService](PlayerRespawnService.md) `INFERRED`
+- CombatParticipantData `INFERRED`
+- CombatEventPublisher `INFERRED`
+- NPCCombatDataProvider `INFERRED`
+- [TauntCommandHandler](TauntCommandHandler.md) `INFERRED`
+- MagicService `INFERRED`
+- PlayerDeathService `INFERRED`
+- SpellTargetingService `INFERRED`
+- CombatCommandHandlerExtras `INFERRED`
+- SpellEffectsDeps `INFERRED`
+- CombatBundle `INFERRED`
+- [CombatPersistenceHandler](CombatPersistenceHandler.md) `INFERRED`
 
 ---
 

@@ -10,7 +10,7 @@
 
 ## Relationships
 
-- [ContainerServiceError](ContainerServiceError.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
 
 ## Source Files
 

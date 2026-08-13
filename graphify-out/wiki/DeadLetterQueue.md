@@ -1,13 +1,12 @@
 # DeadLetterQueue
 
-> 82 nodes
+> 80 nodes
 
 ## Key Concepts
 
 - **DeadLetterQueue** (35 connections) — `server/realtime/dead_letter_queue.py`
 - **test_dead_letter_queue.py** (28 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
 - **DeadLetterMessage** (25 connections) — `server/realtime/dead_letter_queue.py`
-- **dead_letter_queue.py** (8 connections) — `server/realtime/dead_letter_queue.py`
 - **Any** (7 connections)
 - **.from_dict()** (6 connections) — `server/realtime/dead_letter_queue.py`
 - **Path** (5 connections)
@@ -29,14 +28,13 @@
 - **test_replay_message()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
 - **.to_dict()** (3 connections) — `server/realtime/dead_letter_queue.py`
 - **.delete_message()** (3 connections) — `server/realtime/dead_letter_queue.py`
-- *... and 57 more nodes in this community*
+- **.dequeue()** (3 connections) — `server/realtime/dead_letter_queue.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
+- [get_logger](get_logger.md) (6 shared connections)
 - [NATSMessageHandler](NATSMessageHandler.md) (4 shared connections)
-- [build_event](build_event.md) (3 shared connections)
-- [get_config](get_config.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
 - [MessageFilteringHelper](MessageFilteringHelper.md) (1 shared connections)
 
 ## Source Files
@@ -46,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 141 (99%)
+- EXTRACTED: 136 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

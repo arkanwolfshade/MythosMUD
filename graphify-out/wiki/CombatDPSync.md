@@ -29,10 +29,9 @@
 
 ## Relationships
 
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [EventBus](EventBus.md) (2 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
 
 ## Source Files
 

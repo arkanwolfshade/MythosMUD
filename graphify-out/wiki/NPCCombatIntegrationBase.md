@@ -1,6 +1,6 @@
 # NPCCombatIntegrationBase
 
-> 44 nodes
+> 49 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,7 @@
 - **.apply_combat_effects()** (8 connections) — `server/npc/combat_integration_base.py`
 - **._apply_player_combat_effects()** (8 connections) — `server/npc/combat_integration_base.py`
 - **._is_target_in_login_grace_period()** (7 connections) — `server/npc/combat_integration_base.py`
+- **NpcCombatServiceProtocol** (6 connections) — `server/npc/combat_integration_protocols.py`
 - **._convert_target_id_to_uuid()** (6 connections) — `server/npc/combat_integration_base.py`
 - **._handle_npc_attack_core()** (6 connections) — `server/npc/combat_integration_base.py`
 - **._try_delegate_npc_attack_to_combat_service()** (5 connections) — `server/npc/combat_integration_base.py`
@@ -24,33 +25,31 @@
 - **._publish_attack_event()** (3 connections) — `server/npc/combat_integration_base.py`
 - **._publish_npc_attack_to_nats()** (3 connections) — `server/npc/combat_integration_base.py`
 - **._publish_player_dp_updated_after_npc_damage()** (3 connections) — `server/npc/combat_integration_base.py`
+- **.handle_npc_attack_on_player()** (2 connections) — `server/npc/combat_integration_protocols.py`
 - **ABC** (2 connections)
 - **UUID** (2 connections)
-- **Exception** (1 connections)
-- **ValidationError** (1 connections)
-- **Apply combat effects to a target (player or NPC). Args: target_id: ID of the…** (1 connections) — `server/npc/combat_integration_base.py`
-- *... and 19 more nodes in this community*
+- **Protocol** (2 connections)
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [get_config](get_config.md) (3 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 - [.state](state.md) (3 shared connections)
-- [event_types.py](event_types.py.md) (2 shared connections)
 - [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (2 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
 - [message_handler_factory.py](message_handler_factory.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/npc/combat_integration_base.py`
+- `server/npc/combat_integration_protocols.py`
 
 ## Audit Trail
 
-- EXTRACTED: 74 (92%)
-- INFERRED: 6 (8%)
+- EXTRACTED: 81 (93%)
+- INFERRED: 6 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

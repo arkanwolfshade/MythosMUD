@@ -1,50 +1,55 @@
 # test_corpse_lifecycle_service.py
 
-> 88 nodes
+> 131 nodes
 
 ## Key Concepts
 
 - **test_corpse_lifecycle_service.py** (55 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **CorpseLifecycleService** (27 connections) — `server/services/corpse_lifecycle_service.py`
 - **asyncio** (23 connections)
+- **corpse_lifecycle_service.py** (19 connections) — `server/services/corpse_lifecycle_service.py`
+- **ContainerComponent** (9 connections)
+- **._require_corpse_container()** (8 connections) — `server/services/corpse_lifecycle_service.py`
+- **_get_enum_value()** (8 connections) — `server/services/corpse_lifecycle_service.py`
+- **.cleanup_decayed_corpse()** (7 connections) — `server/services/corpse_lifecycle_service.py`
+- **.create_corpse_on_death()** (7 connections) — `server/services/corpse_lifecycle_service.py`
+- **UUID** (7 connections)
+- **CorpseServiceError** (6 connections) — `server/services/corpse_lifecycle_service.py`
+- **.get_decayed_corpses_in_room()** (6 connections) — `server/services/corpse_lifecycle_service.py`
+- **._persist_corpse()** (6 connections) — `server/services/corpse_lifecycle_service.py`
+- **_filter_container_data()** (6 connections) — `server/services/corpse_lifecycle_service.py`
+- **CorpseNotFoundError** (5 connections) — `server/services/corpse_lifecycle_service.py`
+- **._build_corpse_component()** (5 connections) — `server/services/corpse_lifecycle_service.py`
+- **.can_access_corpse()** (5 connections) — `server/services/corpse_lifecycle_service.py`
+- **.get_all_decayed_corpses()** (5 connections) — `server/services/corpse_lifecycle_service.py`
+- **Any** (5 connections)
+- **.cleanup_all_decayed_corpses()** (4 connections) — `server/services/corpse_lifecycle_service.py`
+- **.cleanup_decayed_corpses_in_room()** (4 connections) — `server/services/corpse_lifecycle_service.py`
+- **.is_corpse_decayed()** (4 connections) — `server/services/corpse_lifecycle_service.py`
 - **corpse_service()** (4 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_can_access_corpse_admin()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_can_access_corpse_grace_period_active()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_can_access_corpse_grace_period_expired()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_can_access_corpse_grace_period_type_error()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_can_access_corpse_invalid_grace_period()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_can_access_corpse_no_grace_period_start()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_can_access_corpse_no_owner()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_can_access_corpse_owner()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_cleanup_all_decayed_corpses()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_cleanup_all_decayed_corpses_handles_errors()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_cleanup_decayed_corpse_delete_error()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_cleanup_decayed_corpse_not_corpse()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_cleanup_decayed_corpse_not_found()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_cleanup_decayed_corpse_success()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_cleanup_decayed_corpses_in_room()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_cleanup_decayed_corpses_in_room_handles_errors()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_corpse_not_found_error()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_corpse_service_error()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_create_corpse_on_death_custom_grace_period()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_create_corpse_on_death_persistence_error()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_create_corpse_on_death_player_no_name()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- *... and 63 more nodes in this community*
+- **._grace_period_allows_others()** (3 connections) — `server/services/corpse_lifecycle_service.py`
+- **.__init__()** (3 connections) — `server/services/corpse_lifecycle_service.py`
+- *... and 106 more nodes in this community*
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (18 shared connections)
-- [CorpseLifecycleService](CorpseLifecycleService.md) (6 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (22 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
+- [log_and_raise](log_and_raise.md) (5 shared connections)
+- [game_tick_processing.py](game_tick_processing.py.md) (4 shared connections)
+- [MythosMUDError](MythosMUDError.md) (2 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 
+- `server/services/corpse_lifecycle_service.py`
 - `server/tests/unit/services/test_corpse_lifecycle_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 139 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 235 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

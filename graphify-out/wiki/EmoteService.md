@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
+- [DatabaseError](DatabaseError.md) (6 shared connections)
 - [SchemaValidator](SchemaValidator.md) (5 shared connections)
 - [command_input.py](command_input.py.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [handle_emote_command](handle_emote_command.md) (2 shared connections)
 - [chat_message_senders.py](chat_message_senders.py.md) (2 shared connections)
 - [log_and_raise](log_and_raise.md) (1 shared connections)
 

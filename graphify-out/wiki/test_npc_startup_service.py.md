@@ -31,8 +31,7 @@
 - [mock_container](mock_container.md) (10 shared connections)
 - [NPCStartupService](NPCStartupService.md) (8 shared connections)
 - [_errors_len](_errors_len.md) (6 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 - [npc_startup_service](npc_startup_service.md) (1 shared connections)
 
 ## Source Files

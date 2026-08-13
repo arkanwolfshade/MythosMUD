@@ -35,7 +35,7 @@
 - models/player.py `EXTRACTED`
 - async_persistence.py `EXTRACTED`
 - server/models/__init__.py `EXTRACTED`
-- players.py `EXTRACTED`
+- [players.py](players.py.md) `EXTRACTED`
 - [maps.py](maps.py.md) `EXTRACTED`
 - [test_users.py](test_users.py.md) `EXTRACTED`
 - [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
@@ -47,9 +47,9 @@
 - api/container_helpers.py `EXTRACTED`
 - test_container_helpers.py `EXTRACTED`
 - [test_async_persistence_core.py](test_async_persistence_core.py.md) `EXTRACTED`
-- test_metrics_endpoints.py `EXTRACTED`
+- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) `EXTRACTED`
 - [rooms.py](rooms.py.md) `EXTRACTED`
-- test_maps.py `EXTRACTED`
+- [test_maps.py](test_maps.py.md) `EXTRACTED`
 - test_container_exception_handlers.py `EXTRACTED`
 - test_containers.py `EXTRACTED`
 
@@ -88,7 +88,7 @@
 - validate_character_stats() `EXTRACTED`
 
 ### uses
-- Player `INFERRED`
+- [Player](Player.md) `INFERRED`
 - Base `INFERRED`
 - [Invite](Invite.md) `INFERRED`
 - PlayerInventory `INFERRED`

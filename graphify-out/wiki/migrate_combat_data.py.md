@@ -1,56 +1,50 @@
 # migrate_combat_data.py
 
-> 69 nodes
+> 23 nodes
 
 ## Key Concepts
 
 - **migrate_combat_data.py** (21 connections) — `server/scripts/migrate_combat_data.py`
-- **test_combat_schema.py** (20 connections) — `server/tests/unit/schemas/test_combat_schema.py`
 - **validate_npc_combat_data()** (13 connections) — `server/schemas/combat/combat_schema.py`
-- **CombatSchemaValidationError** (11 connections) — `server/schemas/combat/combat_schema.py`
-- **validate_base_stats_combat_data()** (11 connections) — `server/schemas/combat/combat_schema.py`
-- **validate_combat_messages()** (11 connections) — `server/schemas/combat/combat_schema.py`
-- **combat/__init__.py** (10 connections) — `server/schemas/combat/__init__.py`
-- **add_default_combat_data_to_stats()** (9 connections) — `server/schemas/combat/combat_schema.py`
-- **validate_behavior_config_combat_data()** (9 connections) — `server/schemas/combat/combat_schema.py`
 - **_migrate_one_npc()** (9 connections) — `server/scripts/migrate_combat_data.py`
 - **Any** (9 connections)
-- **add_default_combat_data_to_config()** (8 connections) — `server/schemas/combat/combat_schema.py`
 - **migrate_npc_combat_data()** (7 connections) — `server/scripts/migrate_combat_data.py`
 - **rollback_migration()** (7 connections) — `server/scripts/migrate_combat_data.py`
-- **get_combat_stats_summary()** (6 connections) — `server/schemas/combat/combat_schema.py`
 - **main()** (6 connections) — `server/scripts/migrate_combat_data.py`
 - **_record_npc_error()** (6 connections) — `server/scripts/migrate_combat_data.py`
 - **_rollback_one_npc()** (6 connections) — `server/scripts/migrate_combat_data.py`
 - **validate_migration_results()** (6 connections) — `server/scripts/migrate_combat_data.py`
-- **.validate_npc_messages()** (6 connections) — `server/services/combat_messaging_service.py`
 - **_validate_one_npc()** (5 connections) — `server/scripts/migrate_combat_data.py`
-- **Any** (5 connections)
 - **AsyncSession** (5 connections)
-- **validate_message_template_variables()** (4 connections) — `server/schemas/combat/combat_schema.py`
-- **Draft7Validator** (4 connections)
-- *... and 44 more nodes in this community*
+- **_npc_has_combat_data()** (3 connections) — `server/scripts/migrate_combat_data.py`
+- **_npc_has_full_combat_data()** (3 connections) — `server/scripts/migrate_combat_data.py`
+- **test_validate_npc_combat_data()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **Exception** (1 connections)
+- **Validate combat data for an NPC definition. Args: npc_definition: NPCDefinition…** (1 connections) — `server/schemas/combat/combat_schema.py`
+- **Combat data migration script. This script adds default combat data to existing…** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Migrate combat data for all NPC definitions. Args: session: Database session…** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Validate that migration was successful. Args: session: Database session…** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Rollback combat data migration by removing combat fields. Args: session:…** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Main migration function.** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Test validate_npc_combat_data() validates NPC definition.** (1 connections) — `server/tests/unit/schemas/test_combat_schema.py`
 
 ## Relationships
 
-- [EventBus](EventBus.md) (16 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
+- [test_combat_schema.py](test_combat_schema.py.md) (14 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (6 shared connections)
 - [npc_database.py](npc_database.py.md) (3 shared connections)
-- [CombatMessagingService](CombatMessagingService.md) (2 shared connections)
-- [PlayerSavePreparer](PlayerSavePreparer.md) (1 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 
-- `server/schemas/combat/__init__.py`
 - `server/schemas/combat/combat_schema.py`
 - `server/scripts/migrate_combat_data.py`
-- `server/services/combat_messaging_service.py`
 - `server/tests/unit/schemas/test_combat_schema.py`
 
 ## Audit Trail
 
-- EXTRACTED: 152 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 71 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

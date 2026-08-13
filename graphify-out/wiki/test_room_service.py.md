@@ -31,10 +31,10 @@
 
 ## Relationships
 
-- [asyncio](asyncio.md) (12 shared connections)
+- [asyncio](asyncio.md) (13 shared connections)
 - [fixture](fixture.md) (4 shared connections)
 - [RoomService](RoomService.md) (1 shared connections)
-- [rooms.py](rooms.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [test_get_room_persistence_not_found](test_get_room_persistence_not_found.md) (1 shared connections)
 - [test_get_room_persistence_returns_dict](test_get_room_persistence_returns_dict.md) (1 shared connections)
 - [test_get_adjacent_rooms_success](test_get_adjacent_rooms_success.md) (1 shared connections)

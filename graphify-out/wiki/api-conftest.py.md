@@ -23,11 +23,8 @@
 
 ## Relationships
 
-- [User](User.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (2 shared connections)
-- [ContainerService](ContainerService.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (4 shared connections)
+- [User](User.md) (3 shared connections)
 
 ## Source Files
 

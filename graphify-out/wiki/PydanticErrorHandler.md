@@ -1,15 +1,19 @@
 # PydanticErrorHandler
 
-> 38 nodes
+> 53 nodes
 
 ## Key Concepts
 
 - **PydanticErrorHandler** (23 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **.handle_validation_error()** (13 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **TestStandardizedResponsesSecurity** (10 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- **test_standardized_responses_security.py** (10 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
 - **_ExtractedErrorInfo** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **ErrorContextInitKwargs** (8 connections) — `server/exceptions.py`
 - **convert_pydantic_error()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **handle_pydantic_error()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **._create_fallback_error_response()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **_SampleModel** (7 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
 - **.convert_to_mythos_error()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **._create_error_details()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **.create_handler()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
@@ -21,30 +25,31 @@
 - **._format_single_field_error_message()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **_ExtractedFieldErrorInfo** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **._get_display_field_name()** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **_response_message()** (4 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- **.test_pydantic_validation_error_does_not_expose_str_error_in_message()** (4 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
 - **._get_field_path()** (3 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **Unpack** (3 connections)
-- **StandardizedErrorResponseDict** (3 connections)
-- **TypedDict** (2 connections)
-- **Handle a Pydantic ValidationError and convert it to a standardized response.…** (1 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **Extract structured information from a Pydantic ValidationError. Args: error:…** (1 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **Convert Pydantic error location to a readable field path. Args: location:…** (1 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **Determine the appropriate ErrorType based on error information. Args:…** (1 connections) — `server/error_handlers/pydantic_error_handler.py`
-- *... and 13 more nodes in this community*
+- **.test_generic_exception_does_not_expose_internal_message()** (3 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [StandardizedErrorResponse](StandardizedErrorResponse.md) (15 shared connections)
-- [get_logger](get_logger.md) (14 shared connections)
-- [test_command_processor.py](test_command_processor.py.md) (2 shared connections)
+- [ErrorType](ErrorType.md) (30 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (3 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
+- [test_command_service.py](test_command_service.py.md) (2 shared connections)
+- [ErrorContext](ErrorContext.md) (1 shared connections)
+- [MythosMUDError](MythosMUDError.md) (1 shared connections)
 
 ## Source Files
 
 - `server/error_handlers/pydantic_error_handler.py`
+- `server/exceptions.py`
+- `server/tests/unit/error_handlers/test_standardized_responses_security.py`
 
 ## Audit Trail
 
-- EXTRACTED: 93 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 123 (95%)
+- INFERRED: 7 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

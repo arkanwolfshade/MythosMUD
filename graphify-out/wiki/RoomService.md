@@ -33,17 +33,17 @@
 
 ## Relationships
 
-- [PlayerService](PlayerService.md) (9 shared connections)
-- [rooms.py](rooms.py.md) (8 shared connections)
-- [maps.py](maps.py.md) (7 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (8 shared connections)
+- [rooms.py](rooms.py.md) (6 shared connections)
 - [map_minimap.py](map_minimap.py.md) (5 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (2 shared connections)
-- [EventBus](EventBus.md) (2 shared connections)
-- [test_health.py](test_health.py.md) (1 shared connections)
+- [test_maps.py](test_maps.py.md) (4 shared connections)
+- [DatabaseError](DatabaseError.md) (3 shared connections)
+- [maps.py](maps.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
+- [HealthService](HealthService.md) (1 shared connections)
 - [fixture](fixture.md) (1 shared connections)
 - [test_room_service.py](test_room_service.py.md) (1 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files
 

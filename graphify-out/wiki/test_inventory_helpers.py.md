@@ -1,59 +1,61 @@
 # test_inventory_helpers.py
 
-> 136 nodes
+> 125 nodes
 
 ## Key Concepts
 
 - **test_inventory_helpers.py** (38 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **equipment_helpers.py** (28 connections) — `server/commands/equipment_helpers.py`
 - **inventory_item_matching.py** (22 connections) — `server/commands/inventory_item_matching.py`
 - **match_room_drop_by_name()** (19 connections) — `server/commands/inventory_item_matching.py`
 - **normalize_slot_name()** (19 connections) — `server/commands/inventory_item_matching.py`
+- **resolve_state()** (18 connections) — `server/commands/inventory_command_helpers.py`
 - **match_equipped_item_by_name()** (18 connections) — `server/commands/inventory_item_matching.py`
 - **match_inventory_item_by_name()** (16 connections) — `server/commands/inventory_item_matching.py`
-- **format_metadata()** (15 connections) — `server/commands/inventory_display_helpers.py`
 - **test_inventory_commands_helpers.py** (13 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
-- **inventory_display_helpers.py** (12 connections) — `server/commands/inventory_display_helpers.py`
-- **render_inventory()** (9 connections) — `server/commands/inventory_display_helpers.py`
-- **resolve_unequip_slot()** (8 connections) — `server/commands/equipment_helpers.py`
-- **resolve_equip_item_index()** (7 connections) — `server/commands/equipment_helpers.py`
-- **Any** (7 connections)
-- **test_inventory_commands_format_helpers.py** (6 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **build_container_metadata()** (5 connections) — `server/commands/inventory_display_helpers.py`
-- **build_equipped_lines()** (5 connections) — `server/commands/inventory_display_helpers.py`
-- **build_inventory_lines()** (5 connections) — `server/commands/inventory_display_helpers.py`
+- **inventory_command_prototype.py** (12 connections) — `server/commands/inventory_command_prototype.py`
+- **infer_equip_slot_from_prototype()** (9 connections) — `server/commands/inventory_command_prototype.py`
+- **test_inventory_commands_state_helpers.py** (6 connections) — `server/tests/unit/commands/test_inventory_commands_state_helpers.py`
 - **build_equipped_candidates()** (5 connections) — `server/commands/inventory_item_matching.py`
-- **_equip_stack_from_inventory_index()** (4 connections) — `server/commands/equipment_helpers.py`
-- **filter_non_equipped_inventory()** (4 connections) — `server/commands/inventory_display_helpers.py`
-- **get_equipped_item_identifiers()** (4 connections) — `server/commands/inventory_display_helpers.py`
+- **prototype_from_registry()** (4 connections) — `server/commands/inventory_command_prototype.py`
+- **prototype_registry_from_request()** (4 connections) — `server/commands/inventory_command_prototype.py`
 - **build_drop_candidates()** (4 connections) — `server/commands/inventory_item_matching.py`
 - **build_inventory_candidates()** (4 connections) — `server/commands/inventory_item_matching.py`
 - **extract_item_identifier()** (4 connections) — `server/commands/inventory_item_matching.py`
-- *... and 111 more nodes in this community*
+- **match_exact_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
+- **match_prefix_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
+- **match_substring_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
+- **_first_normalized_wear_slot()** (3 connections) — `server/commands/inventory_command_prototype.py`
+- **clean_item_value()** (3 connections) — `server/commands/inventory_item_matching.py`
+- **search_exact_match()** (3 connections) — `server/commands/inventory_item_matching.py`
+- **search_prefix_match()** (3 connections) — `server/commands/inventory_item_matching.py`
+- **search_substring_match()** (3 connections) — `server/commands/inventory_item_matching.py`
+- *... and 100 more nodes in this community*
 
 ## Relationships
 
-- [inventory_equip_command.py](inventory_equip_command.py.md) (19 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (7 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (6 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [test_inventory_commands_more_helpers.py](test_inventory_commands_more_helpers.py.md) (4 shared connections)
-- [log_and_raise](log_and_raise.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [inventory_equip_command.py](inventory_equip_command.py.md) (17 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (9 shared connections)
+- [format_metadata](format_metadata.md) (6 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [.state](state.md) (2 shared connections)
+- [PrototypeRegistryError](PrototypeRegistryError.md) (2 shared connections)
+- [inventory_pickup_command.py](inventory_pickup_command.py.md) (1 shared connections)
+- [prototype_registry.py](prototype_registry.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/equipment_helpers.py`
-- `server/commands/inventory_display_helpers.py`
+- `server/commands/inventory_command_helpers.py`
+- `server/commands/inventory_command_prototype.py`
 - `server/commands/inventory_item_matching.py`
-- `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
 - `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
+- `server/tests/unit/commands/test_inventory_commands_state_helpers.py`
 - `server/tests/unit/commands/test_inventory_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 263 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 226 (99%)
+- INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

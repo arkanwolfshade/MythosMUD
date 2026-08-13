@@ -36,16 +36,16 @@
 - [persistence/container_persistence.py](persistence-container_persistence.py.md) `EXTRACTED`
 - container_service.py `EXTRACTED`
 - movement_service.py `EXTRACTED`
-- container_persistence_async.py `EXTRACTED`
+- [container_persistence_async.py](container_persistence_async.py.md) `EXTRACTED`
 - player_repository.py `EXTRACTED`
 - [npc_database.py](npc_database.py.md) `EXTRACTED`
-- persistence/container_helpers.py `EXTRACTED`
+- [persistence/container_helpers.py](persistence-container_helpers.py.md) `EXTRACTED`
 - database_config_helpers.py `EXTRACTED`
 - container_query_helpers_async.py `EXTRACTED`
-- [container_persistence/container_persistence.py](container_persistence-container_persistence.py.md) `EXTRACTED`
+- container_persistence/container_persistence.py `EXTRACTED`
 - container_query_helpers.py `EXTRACTED`
-- player_effect_repository.py `EXTRACTED`
-- [item_instance_persistence.py](item_instance_persistence.py.md) `EXTRACTED`
+- [player_effect_repository.py](player_effect_repository.py.md) `EXTRACTED`
+- item_instance_persistence.py `EXTRACTED`
 - player_spell_repository.py `EXTRACTED`
 - wearable_container_service.py `EXTRACTED`
 - argon2_utils.py `EXTRACTED`
@@ -57,7 +57,7 @@
 - Log and raise; uses legacy behavior (no skip_log for ValidationError).… `EXTRACTED`
 
 ### references
-- MythosMUDError `EXTRACTED`
+- [MythosMUDError](MythosMUDError.md) `EXTRACTED`
 - [Any](Any.md) `EXTRACTED`
 - NoReturn `EXTRACTED`
 

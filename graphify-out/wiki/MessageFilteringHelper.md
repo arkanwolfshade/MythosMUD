@@ -33,13 +33,13 @@
 
 ## Relationships
 
+- [get_logger](get_logger.md) (3 shared connections)
 - [NATSMessageHandler](NATSMessageHandler.md) (3 shared connections)
 - [test_message_filtering.py](test_message_filtering.py.md) (2 shared connections)
-- [build_event](build_event.md) (2 shared connections)
-- [user_manager.py](user_manager.py.md) (2 shared connections)
 - [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
 - [DeadLetterQueue](DeadLetterQueue.md) (1 shared connections)
 - [CircuitBreaker](CircuitBreaker.md) (1 shared connections)
+- [EventHandler](EventHandler.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,13 +1,11 @@
 # test_player_disconnect_handlers.py
 
-> 79 nodes
+> 74 nodes
 
 ## Key Concepts
 
 - **test_player_disconnect_handlers.py** (34 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **disconnect_grace_period.py** (27 connections) — `server/realtime/disconnect_grace_period.py`
 - **player_disconnect_handlers.py** (27 connections) — `server/realtime/player_disconnect_handlers.py`
-- **_collect_disconnect_keys()** (19 connections) — `server/realtime/player_disconnect_handlers.py`
 - **handle_player_disconnect_broadcast()** (17 connections) — `server/realtime/player_disconnect_handlers.py`
 - **age_off_disconnected_sessions()** (11 connections) — `server/realtime/player_disconnect_handlers.py`
 - **_cleanup_player_references()** (11 connections) — `server/realtime/player_disconnect_handlers.py`
@@ -29,32 +27,30 @@
 - **test_age_off_disconnected_sessions_keeps_recent()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
 - **test_age_off_disconnected_sessions_missing_attrs_returns_zero()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
 - **test_age_off_disconnected_sessions_removes_expired()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- *... and 54 more nodes in this community*
+- **test_cleanup_player_references()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
+- **test_cleanup_player_references_marks_session_for_aging()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
+- *... and 49 more nodes in this community*
 
 ## Relationships
 
-- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (13 shared connections)
-- [is_player_in_grace_period](is_player_in_grace_period.md) (9 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
-- [connection_manager.py](connection_manager.py.md) (4 shared connections)
+- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (21 shared connections)
+- [disconnect_grace_period.py](disconnect_grace_period.py.md) (7 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [test_connection_delegates.py](test_connection_delegates.py.md) (3 shared connections)
 - [build_event](build_event.md) (2 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (2 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
-- [test_look_player.py](test_look_player.py.md) (1 shared connections)
-- [test_look_room.py](test_look_room.py.md) (1 shared connections)
-- [test_connection_establishment.py](test_connection_establishment.py.md) (1 shared connections)
-- [player_connection_setup.py](player_connection_setup.py.md) (1 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (1 shared connections)
+- [Room](Room.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/disconnect_grace_period.py`
 - `server/realtime/player_disconnect_handlers.py`
 - `server/tests/unit/realtime/test_player_disconnect_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 178 (98%)
+- EXTRACTED: 149 (98%)
 - INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 

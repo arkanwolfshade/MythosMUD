@@ -1,26 +1,26 @@
 # fixture
 
-> 8 nodes
+> 9 nodes
 
 ## Key Concepts
 
 - **fixture** (4 connections)
-- **mock_container_service()** (3 connections) — `server/tests/unit/api/test_containers.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/api/test_containers.py`
-- **mock_request()** (3 connections) — `server/tests/unit/api/test_containers.py`
-- **mock_user()** (3 connections) — `server/tests/unit/api/test_containers.py`
-- **Create a mock request object.** (1 connections) — `server/tests/unit/api/test_containers.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/api/test_containers.py`
-- **Create a mock container service.** (1 connections) — `server/tests/unit/api/test_containers.py`
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/api/test_container_events.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/api/test_container_events.py`
+- **sample_container_component()** (3 connections) — `server/tests/unit/api/test_container_events.py`
+- **sample_container_data()** (3 connections) — `server/tests/unit/api/test_container_events.py`
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/api/test_container_events.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/api/test_container_events.py`
+- **Create sample container data for testing.** (1 connections) — `server/tests/unit/api/test_container_events.py`
+- **Create a ContainerComponent from sample data.** (1 connections) — `server/tests/unit/api/test_container_events.py`
 
 ## Relationships
 
-- [ContainerServiceError](ContainerServiceError.md) (4 shared connections)
-- [User](User.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/api/test_containers.py`
+- `server/tests/unit/api/test_container_events.py`
 
 ## Audit Trail
 

@@ -35,11 +35,10 @@
 
 - [maps.py](maps.py.md) (10 shared connections)
 - [test_map_helpers.py](test_map_helpers.py.md) (6 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
 - [RoomService](RoomService.md) (5 shared connections)
-- [AsciiMapRenderer](AsciiMapRenderer.md) (3 shared connections)
-- [rooms.py](rooms.py.md) (3 shared connections)
+- [AsciiMapRenderer](AsciiMapRenderer.md) (2 shared connections)
 - [ExplorationService](ExplorationService.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 

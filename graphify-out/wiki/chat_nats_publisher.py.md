@@ -33,10 +33,9 @@
 ## Relationships
 
 - [chat_message_senders.py](chat_message_senders.py.md) (10 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
 - [chat_service.py](chat_service.py.md) (7 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [extract_subzone_from_room_id](extract_subzone_from_room_id.md) (2 shared connections)
-- [event_types.py](event_types.py.md) (2 shared connections)
+- [NATSService](NATSService.md) (1 shared connections)
 - [SubjectValidator](SubjectValidator.md) (1 shared connections)
 
 ## Source Files

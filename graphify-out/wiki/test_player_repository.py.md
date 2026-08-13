@@ -33,8 +33,10 @@
 
 ## Relationships
 
-- [log_and_raise](log_and_raise.md) (8 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [get_session_maker](get_session_maker.md) (6 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 

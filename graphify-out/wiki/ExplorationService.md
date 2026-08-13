@@ -1,6 +1,6 @@
 # ExplorationService
 
-> 103 nodes
+> 98 nodes
 
 ## Key Concepts
 
@@ -29,17 +29,20 @@
 - **test_mark_explored_in_session_new_record()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_mark_room_as_explored_commits_session()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_mark_room_as_explored_no_session()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
-- *... and 78 more nodes in this community*
+- *... and 73 more nodes in this community*
 
 ## Relationships
 
-- [maps.py](maps.py.md) (8 shared connections)
-- [rooms.py](rooms.py.md) (8 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
-- [PlayerService](PlayerService.md) (3 shared connections)
+- [DatabaseError](DatabaseError.md) (9 shared connections)
+- [test_maps.py](test_maps.py.md) (5 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [maps.py](maps.py.md) (3 shared connections)
+- [rooms.py](rooms.py.md) (3 shared connections)
+- [exploration_service](exploration_service.md) (3 shared connections)
 - [map_minimap.py](map_minimap.py.md) (2 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
 - [.get_instance](get_instance.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,7 +51,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 222 (100%)
+- EXTRACTED: 218 (100%)
 - INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 

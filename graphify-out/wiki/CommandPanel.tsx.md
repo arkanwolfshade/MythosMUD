@@ -34,12 +34,13 @@
 ## Relationships
 
 - [EldritchIcon.tsx](EldritchIcon.tsx.md) (10 shared connections)
-- [channels.ts](channels.ts.md) (4 shared connections)
+- [ChatPanelRuntimeViewParts.tsx](ChatPanelRuntimeViewParts.tsx.md) (3 shared connections)
 - [MythosPanel.tsx](MythosPanel.tsx.md) (2 shared connections)
 - [GameTerminal.tsx](GameTerminal.tsx.md) (2 shared connections)
-- [GameTerminalPresentation.tsx](GameTerminalPresentation.tsx.md) (2 shared connections)
+- [GameLogPanel.tsx](GameLogPanel.tsx.md) (2 shared connections)
 - [performance.test.tsx](performance.test.tsx.md) (2 shared connections)
 - [types/mythosTime.ts](types-mythosTime.ts.md) (2 shared connections)
+- [ChatPanelRefactoredView.tsx](ChatPanelRefactoredView.tsx.md) (1 shared connections)
 
 ## Source Files
 

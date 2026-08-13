@@ -1,33 +1,48 @@
 # Any
 
-> 10 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **Any** (7 connections)
-- **.execute()** (4 connections) — `server/postgres_adapter.py`
-- **.cursor()** (3 connections) — `server/postgres_adapter.py`
-- **.keys()** (3 connections) — `server/postgres_adapter.py`
-- **.__getitem__()** (2 connections) — `server/postgres_adapter.py`
-- **.__init__()** (2 connections) — `server/postgres_adapter.py`
-- **.__iter__()** (2 connections) — `server/postgres_adapter.py`
-- **Return the keys of the row dictionary. Returns: dict_keys: The keys of the row…** (1 connections) — `server/postgres_adapter.py`
-- **Execute a query and return a cursor. Args: query: SQL query with PostgreSQL %s…** (1 connections) — `server/postgres_adapter.py`
-- **Get a cursor from the underlying connection. This method provides direct access…** (1 connections) — `server/postgres_adapter.py`
+- **Any** (10 connections)
+- **._setup_task_tracking()** (9 connections) — `server/app/task_registry.py`
+- **Task** (8 connections)
+- **TaskMetadata** (7 connections) — `server/app/task_registry.py`
+- **.register_task()** (7 connections) — `server/app/task_registry.py`
+- **._create_task_completion_callback()** (5 connections) — `server/app/task_registry.py`
+- **.get_task_lifecycle_metrics()** (5 connections) — `server/app/task_registry.py`
+- **unregister_task()** (5 connections) — `server/app/task_registry.py`
+- **register_task()** (4 connections) — `server/app/task_registry.py`
+- **.__init__()** (4 connections) — `server/app/task_registry.py`
+- **.cancel_task()** (4 connections) — `server/app/task_registry.py`
+- **.unregister_task()** (4 connections) — `server/app/task_registry.py`
+- **._ensure_unique_task_name()** (3 connections) — `server/app/task_registry.py`
+- **._extract_service_name()** (3 connections) — `server/app/task_registry.py`
+- **.get_active_task_count()** (3 connections) — `server/app/task_registry.py`
+- **.get_registry_info()** (3 connections) — `server/app/task_registry.py`
+- **.get_task_stats_by_type()** (3 connections) — `server/app/task_registry.py`
+- **.list_active_tasks()** (3 connections) — `server/app/task_registry.py`
+- **._track_task_creation_metrics()** (3 connections) — `server/app/task_registry.py`
+- **.__repr__()** (2 connections) — `server/app/task_registry.py`
+- **Create callback function for task completion cleanup.** (1 connections) — `server/app/task_registry.py`
+- **Set up tracking for a newly created task.** (1 connections) — `server/app/task_registry.py`
+- **Register and create a tracked asyncio.Task. Args: coro: The coroutine to wrap…** (1 connections) — `server/app/task_registry.py`
+- **Unregister task from tracking, optionally force-cancelling. Args: task: Task…** (1 connections) — `server/app/task_registry.py`
+- **Cancel specific task with logical timeout boundaries. Args: task: Task…** (1 connections) — `server/app/task_registry.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [PostgresRow](PostgresRow.md) (4 shared connections)
-- [PostgresConnection](PostgresConnection.md) (3 shared connections)
-- [PostgresCursor](PostgresCursor.md) (1 shared connections)
+- [TaskRegistry](TaskRegistry.md) (14 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 
 ## Source Files
 
-- `server/postgres_adapter.py`
+- `server/app/task_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 65 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

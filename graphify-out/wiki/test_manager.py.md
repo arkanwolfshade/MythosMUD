@@ -34,9 +34,10 @@
 ## Relationships
 
 - [NATSSubjectManager](NATSSubjectManager.md) (10 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 - [PatternNotFoundError](PatternNotFoundError.md) (3 shared connections)
 - [SubjectValidator](SubjectValidator.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [PlayerService](PlayerService.md) (1 shared connections)
 
 ## Source Files
 

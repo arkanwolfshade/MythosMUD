@@ -26,7 +26,7 @@
 
 ## Relationships
 
-- [EventBus](EventBus.md) (9 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (9 shared connections)
 - [npc_database.py](npc_database.py.md) (1 shared connections)
 
 ## Source Files

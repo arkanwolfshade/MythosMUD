@@ -1,10 +1,11 @@
 # test_connection_disconnection.py
 
-> 96 nodes
+> 100 nodes
 
 ## Key Concepts
 
 - **test_connection_disconnection.py** (34 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
+- **connection_disconnection.py** (32 connections) — `server/realtime/connection_disconnection.py`
 - **_DisconnectConnectionManager** (20 connections) — `server/realtime/connection_disconnection.py`
 - **test_connection_disconnection_websockets.py** (19 connections) — `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
 - **disconnect_all_websockets_impl()** (13 connections) — `server/realtime/connection_disconnection.py`
@@ -28,28 +29,31 @@
 - **test_disconnect_all_websockets_none_websocket()** (4 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
 - **test_disconnect_connection_by_id_impl()** (4 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
 - **test_track_disconnect_if_needed_already_processed()** (4 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- **test_track_disconnect_if_needed_force_disconnect()** (4 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- *... and 71 more nodes in this community*
+- *... and 75 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (21 shared connections)
-- [connection_manager.py](connection_manager.py.md) (6 shared connections)
-- [MessageQueue](MessageQueue.md) (3 shared connections)
-- [RateLimiter](RateLimiter.md) (3 shared connections)
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (2 shared connections)
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [test_connection_establishment.py](test_connection_establishment.py.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (9 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
+- [MessageQueue](MessageQueue.md) (4 shared connections)
+- [RateLimiter](RateLimiter.md) (4 shared connections)
+- [ConnectionMetadata](ConnectionMetadata.md) (3 shared connections)
+- [RoomSubscriptionManager](RoomSubscriptionManager.md) (3 shared connections)
+- [connection_initialization.py](connection_initialization.py.md) (2 shared connections)
+- [UUID](UUID.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/connection_disconnection.py`
+- `server/realtime/connection_manager.py`
 - `server/tests/unit/realtime/test_connection_disconnection.py`
 - `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
 
 ## Audit Trail
 
-- EXTRACTED: 200 (98%)
+- EXTRACTED: 218 (98%)
 - INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 

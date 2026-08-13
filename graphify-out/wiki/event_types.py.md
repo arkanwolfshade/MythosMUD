@@ -1,50 +1,50 @@
 # event_types.py
 
-> 361 nodes
+> 274 nodes
 
 ## Key Concepts
 
 - **event_types.py** (74 connections) — `server/events/event_types.py`
 - **BaseEvent** (71 connections) — `server/events/event_types.py`
-- **NATSError** (60 connections) — `server/services/nats_exceptions.py`
-- **NPCLeftRoom** (40 connections) — `server/events/event_types.py`
+- **test_event_handler.py** (41 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **PlayerLeftRoom** (40 connections) — `server/events/event_types.py`
+- **PlayerDPUpdated** (37 connections) — `server/events/event_types.py`
 - **test_combat_event_publisher.py** (37 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
-- **models/room.py** (31 connections) — `server/models/room.py`
-- **NATSPublishError** (30 connections) — `server/services/nats_exceptions.py`
-- **nats_exceptions.py** (30 connections) — `server/services/nats_exceptions.py`
-- **event_reaction_system.py** (27 connections) — `server/npc/event_reaction_system.py`
-- **NATSSubscribeError** (25 connections) — `server/services/nats_exceptions.py`
-- **combat_integration.py** (25 connections) — `server/npc/combat_integration.py`
-- **lifecycle_death.py** (23 connections) — `server/npc/lifecycle_death.py`
-- **nats_service.py** (23 connections) — `server/services/nats_service.py`
-- **NPCDied** (22 connections) — `server/events/event_types.py`
+- **event_handler.py** (35 connections) — `server/realtime/event_handler.py`
+- **PlayerXPAwardEvent** (32 connections) — `server/services/player_combat_service.py`
+- **player_event_handlers_state.py** (23 connections) — `server/realtime/player_event_handlers_state.py`
 - **combat_event_publisher.py** (22 connections) — `server/services/combat_event_publisher.py`
-- **combat_death_handler.py** (21 connections) — `server/services/combat_death_handler.py`
 - **combat_events.py** (20 connections) — `server/events/combat_events.py`
 - **NPCDiedEvent** (18 connections) — `server/events/combat_events.py`
-- **NATSConnectionError** (18 connections) — `server/services/nats_exceptions.py`
 - **CombatEventHandler** (17 connections) — `server/services/combat_event_handler.py`
-- **NATSHealthCheckError** (17 connections) — `server/services/nats_exceptions.py`
-- **combat_event_handler.py** (17 connections) — `server/services/combat_event_handler.py`
-- **NATSEventBusBridge** (16 connections) — `server/events/nats_event_bridge.py`
-- **_LifecycleManagerForDeath** (16 connections) — `server/npc/lifecycle_death.py`
-- **_SpawnTrackedNPC** (16 connections) — `server/npc/lifecycle_manager.py`
-- *... and 336 more nodes in this community*
+- **PlayerDiedEvent** (16 connections) — `server/events/event_types.py`
+- **PlayerRespawnedEvent** (16 connections) — `server/events/event_types.py`
+- **npc_event_handlers.py** (16 connections) — `server/realtime/npc_event_handlers.py`
+- **room_sync_service.py** (16 connections) — `server/services/room_sync_service.py`
+- **CombatStartedEvent** (15 connections) — `server/events/combat_events.py`
+- **NPCTookDamageEvent** (15 connections) — `server/events/combat_events.py`
+- **PlayerAttackedEvent** (15 connections) — `server/events/combat_events.py`
+- **event_serialization.py** (15 connections) — `server/events/event_serialization.py`
+- **test_event_serialization.py** (15 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **asyncio** (15 connections)
+- **deserialize_event()** (14 connections) — `server/events/event_serialization.py`
+- **serialize_event()** (14 connections) — `server/events/event_serialization.py`
+- *... and 249 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (102 shared connections)
-- [CombatService](CombatService.md) (59 shared connections)
-- [get_logger](get_logger.md) (49 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (32 shared connections)
-- [CombatEventPublisher](CombatEventPublisher.md) (21 shared connections)
+- [get_logger](get_logger.md) (94 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (70 shared connections)
+- [RealTimeEventHandler](RealTimeEventHandler.md) (45 shared connections)
+- [NATSService](NATSService.md) (21 shared connections)
 - [PlayerEnteredRoom](PlayerEnteredRoom.md) (19 shared connections)
-- [test_nats_message_handler.py](test_nats_message_handler.py.md) (15 shared connections)
-- [NATSService](NATSService.md) (15 shared connections)
-- [.__post_init__](__post_init__.md) (13 shared connections)
-- [build_event](build_event.md) (12 shared connections)
-- [test_player_death_service.py](test_player_death_service.py.md) (8 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (8 shared connections)
+- [.__post_init__](__post_init__.md) (14 shared connections)
+- [test_player_event_handlers_state.py](test_player_event_handlers_state.py.md) (14 shared connections)
+- [Any](Any.md) (10 shared connections)
+- [test_player_event_handlers.py](test_player_event_handlers.py.md) (10 shared connections)
+- [NATSEventBusBridge](NATSEventBusBridge.md) (9 shared connections)
+- [test_room_sync_service.py](test_room_sync_service.py.md) (8 shared connections)
+- [test_player_event_handlers_room_left.py](test_player_event_handlers_room_left.py.md) (7 shared connections)
 
 ## Source Files
 
@@ -55,24 +55,24 @@
 - `server/events/event_serialization.py`
 - `server/events/event_types.py`
 - `server/events/nats_event_bridge.py`
-- `server/models/room.py`
 - `server/npc/combat_integration.py`
 - `server/npc/combat_integration_protocols.py`
 - `server/npc/communication_integration.py`
-- `server/npc/event_reaction_system.py`
-- `server/npc/lifecycle_death.py`
-- `server/npc/lifecycle_despawn.py`
-- `server/npc/lifecycle_manager.py`
-- `server/npc/lifecycle_types.py`
 - `server/npc/npc_base.py`
-- `server/realtime/message_formatters.py`
-- `server/services/combat_death_handler.py`
+- `server/npc/spawning_service.py`
+- `server/realtime/event_handler.py`
+- `server/realtime/message_builders.py`
+- `server/realtime/npc_event_handlers.py`
+- `server/realtime/player_event_handlers_state.py`
 - `server/services/combat_event_handler.py`
+- `server/services/combat_event_publisher.py`
+- `server/services/combat_service.py`
+- `server/services/combat_service_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1035 (90%)
-- INFERRED: 118 (10%)
+- EXTRACTED: 843 (95%)
+- INFERRED: 42 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

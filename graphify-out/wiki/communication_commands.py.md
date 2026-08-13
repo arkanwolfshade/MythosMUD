@@ -1,6 +1,6 @@
 # communication_commands.py
 
-> 131 nodes
+> 130 nodes
 
 ## Key Concepts
 
@@ -20,7 +20,6 @@
 - **handle_reply_command()** (11 connections) — `server/commands/communication_commands.py`
 - **handle_system_command()** (11 connections) — `server/commands/communication_commands.py`
 - **asyncio** (11 connections)
-- **handle_me_command()** (8 connections) — `server/commands/communication_commands.py`
 - **asyncio** (7 connections)
 - **test_handle_global_command_level_too_low()** (5 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
 - **test_handle_global_command_player_not_found()** (5 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
@@ -29,16 +28,15 @@
 - **test_handle_local_command_success()** (5 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
 - **test_handle_system_command_not_admin()** (5 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
 - **test_handle_system_command_success()** (5 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- *... and 106 more nodes in this community*
+- **test_handle_pose_command_clear_pose()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- *... and 105 more nodes in this community*
 
 ## Relationships
 
 - [AliasStorage](AliasStorage.md) (31 shared connections)
-- [communication_commands_flows.py](communication_commands_flows.py.md) (13 shared connections)
-- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (6 shared connections)
+- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (19 shared connections)
+- [get_username_from_user](get_username_from_user.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 302 (97%)
-- INFERRED: 9 (3%)
+- EXTRACTED: 299 (97%)
+- INFERRED: 8 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

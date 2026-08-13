@@ -33,13 +33,12 @@
 
 ## Relationships
 
-- [RealTimeEventHandler](RealTimeEventHandler.md) (4 shared connections)
-- [event_types.py](event_types.py.md) (4 shared connections)
+- [event_types.py](event_types.py.md) (8 shared connections)
 - [AttributeError](AttributeError.md) (3 shared connections)
 - [RoomDataCache](RoomDataCache.md) (2 shared connections)
 - [TestRoomDataFixer](TestRoomDataFixer.md) (2 shared connections)
 - [RoomDataValidator](RoomDataValidator.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files
 

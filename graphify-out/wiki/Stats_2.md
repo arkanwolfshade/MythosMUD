@@ -1,11 +1,12 @@
 # Stats
 
-> 24 nodes
+> 26 nodes
 
 ## Key Concepts
 
 - **Stats** (11 connections)
 - **.roll_stats_with_profession()** (7 connections) — `server/game/stats_generator.py`
+- **generate_random_stats()** (6 connections) — `server/game/stats_generator.py`
 - **.roll_stats()** (6 connections) — `server/game/stats_generator.py`
 - **.get_available_classes()** (5 connections) — `server/game/stats_generator.py`
 - **._roll_3d6()** (5 connections) — `server/game/stats_generator.py`
@@ -21,19 +22,22 @@
 - **Roll stats using 3d6 method (scaled to 15-90 range).** (1 connections) — `server/game/stats_generator.py`
 - **Roll stats using 4d6 drop lowest method (more generous, scaled to 15-90 range).** (1 connections) — `server/game/stats_generator.py`
 - **Generate stats using a point-buy system (balanced, scaled to 1-100 range).** (1 connections) — `server/game/stats_generator.py`
+- **Generate Stats with random attribute values. Factory function for creating…** (1 connections) — `server/game/stats_generator.py`
 - **Check if stats meet the prerequisites for a given class. Args: stats: The…** (1 connections) — `server/game/stats_generator.py`
 - **Get a list of classes that the character qualifies for. Args: stats: The…** (1 connections) — `server/game/stats_generator.py`
 - **Roll stats and validate against class requirements. Args: method: The rolling…** (1 connections) — `server/game/stats_generator.py`
 - **Roll stats and validate against profession requirements. Args: method: The…** (1 connections) — `server/game/stats_generator.py`
 - **Check if stats meet profession requirements. Args: stats: The character's stats…** (1 connections) — `server/game/stats_generator.py`
 - **Get a summary of the character's stats including modifiers and totals. Args:…** (1 connections) — `server/game/stats_generator.py`
-- **Roll character stats using the specified method. Args: method: Rolling method…** (1 connections) — `server/game/stats_generator.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
 - [api/character_creation.py](api-character_creation.py.md) (11 shared connections)
+- [Stats](Stats.md) (2 shared connections)
+- [Player](Player.md) (1 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [Stats](Stats.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
+- EXTRACTED: 50 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

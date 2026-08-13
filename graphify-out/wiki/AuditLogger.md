@@ -33,13 +33,11 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [get_config](get_config.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
 - [AliasStorage](AliasStorage.md) (1 shared connections)
 - [test_command_validator.py](test_command_validator.py.md) (1 shared connections)
 - [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (1 shared connections)
 
 ## Source Files
 

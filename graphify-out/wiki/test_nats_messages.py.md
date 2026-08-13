@@ -1,6 +1,6 @@
 # test_nats_messages.py
 
-> 48 nodes
+> 55 nodes
 
 ## Key Concepts
 
@@ -13,6 +13,9 @@
 - **nats_messages.py** (9 connections) — `server/schemas/realtime/nats_messages.py`
 - **validate_chat_message()** (7 connections) — `server/schemas/realtime/nats_messages.py`
 - **validate_event_message()** (7 connections) — `server/schemas/realtime/nats_messages.py`
+- **.validate_timestamp()** (3 connections) — `server/schemas/realtime/nats_messages.py`
+- **.validate_channel()** (3 connections) — `server/schemas/realtime/nats_messages.py`
+- **.validate_event_type()** (3 connections) — `server/schemas/realtime/nats_messages.py`
 - **test_base_message_schema()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_base_message_schema_invalid_timestamp()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_base_message_schema_validate_timestamp()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
@@ -26,18 +29,14 @@
 - **test_validate_chat_message()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_validate_event_message()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_validate_message_chat()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **test_validate_message_event()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **Any** (3 connections)
-- **BaseModel** (1 connections)
-- *... and 23 more nodes in this community*
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
 - [realtime/realtime.py](realtime-realtime.py.md) (5 shared connections)
-- [.validate_timestamp](validate_timestamp.md) (3 shared connections)
 - [NATSMessageBroker](NATSMessageBroker.md) (2 shared connections)
 - [NATSMessageHandler](NATSMessageHandler.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
 
 ## Source Files
@@ -48,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 90 (100%)
+- EXTRACTED: 96 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

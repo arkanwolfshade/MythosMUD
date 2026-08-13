@@ -29,10 +29,10 @@
 - apply_corruption() `EXTRACTED`
 
 ### contains
-- server/exceptions.py `EXTRACTED`
+- [server/exceptions.py](server-exceptions.py.md) `EXTRACTED`
 
 ### imports
-- players.py `EXTRACTED`
+- [players.py](players.py.md) `EXTRACTED`
 - [maps.py](maps.py.md) `EXTRACTED`
 - [api/monitoring.py](api-monitoring.py.md) `EXTRACTED`
 - test_monitoring_endpoints.py `EXTRACTED`
@@ -44,10 +44,10 @@
 - test_container_helpers.py `EXTRACTED`
 - test_exceptions.py `EXTRACTED`
 - test_legacy_error_handlers.py `EXTRACTED`
-- test_metrics_endpoints.py `EXTRACTED`
+- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) `EXTRACTED`
 - [rooms.py](rooms.py.md) `EXTRACTED`
 - test_exceptions_comprehensive.py `EXTRACTED`
-- real_time.py `EXTRACTED`
+- [real_time.py](real_time.py.md) `EXTRACTED`
 - standardized_responses.py `EXTRACTED`
 - test_container_exception_handlers.py `EXTRACTED`
 - test_containers.py `EXTRACTED`
@@ -72,7 +72,7 @@
 - [CircuitBreaker](CircuitBreaker.md) `INFERRED`
 - TestErrorMapping `INFERRED`
 - ErrorResponse `INFERRED`
-- TestSanitization `INFERRED`
+- [TestSanitization](TestSanitization.md) `INFERRED`
 - TestErrorHandlers `INFERRED`
 - TestCircuitBreaker `INFERRED`
 - TestTransferAllItemsFromContainer `INFERRED`
