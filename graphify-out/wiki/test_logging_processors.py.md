@@ -33,12 +33,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (9 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (3 shared connections)
-- [test_logging_utilities.py](test_logging_utilities.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (14 shared connections)
 - [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
-- [lifespan.py](lifespan.py.md) (1 shared connections)
-- [threading.py](threading.py.md) (1 shared connections)
+- [test_logging_utilities.py](test_logging_utilities.py.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
 

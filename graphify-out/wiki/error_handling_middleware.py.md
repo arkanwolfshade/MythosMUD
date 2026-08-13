@@ -33,13 +33,11 @@
 
 ## Relationships
 
-- [ErrorType](ErrorType.md) (5 shared connections)
-- [MythosMUDError](MythosMUDError.md) (3 shared connections)
-- [factory.py](factory.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [ScheduleService](ScheduleService.md) (1 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [StandardizedErrorResponse](StandardizedErrorResponse.md) (4 shared connections)
+- [get_config](get_config.md) (3 shared connections)
+- [AppConfig](AppConfig.md) (1 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 

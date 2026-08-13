@@ -1,21 +1,13 @@
 # main
 
-> 12 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **main()** (6 connections) — `scripts/visualize_arkham_rooms.py`
-- **visualize_arkham_rooms.py** (5 connections) — `scripts/visualize_arkham_rooms.py`
-- **create_graph()** (4 connections) — `scripts/visualize_arkham_rooms.py`
-- **visualize_graph()** (4 connections) — `scripts/visualize_arkham_rooms.py`
-- **load_room_data()** (3 connections) — `scripts/visualize_arkham_rooms.py`
-- **print_statistics()** (3 connections) — `scripts/visualize_arkham_rooms.py`
-- **Graph** (2 connections)
-- **Print statistics about the room data.** (1 connections) — `scripts/visualize_arkham_rooms.py`
-- **Main function to generate the visualization.** (1 connections) — `scripts/visualize_arkham_rooms.py`
-- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/visualize_arkham_rooms.py`
-- **Create a NetworkX graph from the room data.** (1 connections) — `scripts/visualize_arkham_rooms.py`
-- **Create a visual representation of the graph.** (1 connections) — `scripts/visualize_arkham_rooms.py`
+- **main()** (3 connections) — `scripts/e2e_reset_daisy_quest.py`
+- **_reset_daisy_quest()** (2 connections) — `scripts/e2e_reset_daisy_quest.py`
+- **e2e_reset_daisy_quest.py** (2 connections) — `scripts/e2e_reset_daisy_quest.py`
+- **Entry point: clear daisy quest instances via anyio.** (1 connections) — `scripts/e2e_reset_daisy_quest.py`
 
 ## Relationships
 
@@ -23,12 +15,12 @@
 
 ## Source Files
 
-- `scripts/visualize_arkham_rooms.py`
+- `scripts/e2e_reset_daisy_quest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

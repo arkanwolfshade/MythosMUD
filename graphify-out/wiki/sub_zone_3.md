@@ -4,18 +4,18 @@
 
 ## Key Concepts
 
-- **sub_zone** (4 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
-- **pattern** (1 connections) — `schemas/room_schema.json`
-- **type** (1 connections) — `schemas/room_schema.json`
+- **sub_zone** (4 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **pattern** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [Schemas Unified Room](Schemas_Unified_Room.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/room_schema.json`
+- `schemas/unified_room_schema.json`
 
 ## Audit Trail
 

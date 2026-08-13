@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [Player](Player.md) (5 shared connections)
-- [handle_channel_command](handle_channel_command.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [log_and_raise](log_and_raise.md) (2 shared connections)
 - [preferences_service](preferences_service.md) (1 shared connections)
 - [test_player_preferences_service.py](test_player_preferences_service.py.md) (1 shared connections)
 

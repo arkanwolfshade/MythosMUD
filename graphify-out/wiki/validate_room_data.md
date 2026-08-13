@@ -1,6 +1,6 @@
 # validate_room_data
 
-> 59 nodes
+> 45 nodes
 
 ## Key Concepts
 
@@ -8,10 +8,7 @@
 - **get_room_environment()** (13 connections) — `server/world_loader.py`
 - **TestGetRoomEnvironment** (12 connections) — `server/tests/unit/test_world_loader.py`
 - **TestValidateRoomData** (11 connections) — `server/tests/unit/test_world_loader.py`
-- **test_world_loader.py** (10 connections) — `server/tests/unit/test_world_loader.py`
-- **generate_room_id()** (9 connections) — `server/world_loader.py`
 - **patch** (8 connections)
-- **TestGenerateRoomId** (7 connections) — `server/tests/unit/test_world_loader.py`
 - **.test_validate_room_data_creates_validator()** (4 connections) — `server/tests/unit/test_world_loader.py`
 - **.test_validate_room_data_strict_validation_raises()** (4 connections) — `server/tests/unit/test_world_loader.py`
 - **.test_validate_room_data_validation_exception()** (4 connections) — `server/tests/unit/test_world_loader.py`
@@ -20,23 +17,24 @@
 - **.test_validate_room_data_validator_creation_fails()** (4 connections) — `server/tests/unit/test_world_loader.py`
 - **.test_validate_room_data_with_errors()** (4 connections) — `server/tests/unit/test_world_loader.py`
 - **.test_validate_room_data_with_validator()** (4 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_generate_room_id_basic()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_generate_room_id_empty_components()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_generate_room_id_special_characters()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_generate_room_id_with_underscores()** (3 connections) — `server/tests/unit/test_world_loader.py`
 - **.test_get_room_environment_default()** (3 connections) — `server/tests/unit/test_world_loader.py`
 - **.test_get_room_environment_empty_string_in_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
 - **.test_get_room_environment_from_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
 - **.test_get_room_environment_from_subzone()** (3 connections) — `server/tests/unit/test_world_loader.py`
 - **.test_get_room_environment_from_zone()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- *... and 34 more nodes in this community*
+- **.test_get_room_environment_room_takes_priority()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_subzone_none()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_subzone_takes_priority_over_zone()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_zone_none()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **Any** (2 connections)
+- **SchemaValidator** (1 connections)
+- **Test get_room_environment() treats empty string as no environment.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (5 shared connections)
-- [Player](Player.md) (5 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
-- [RoomCacheLoader](RoomCacheLoader.md) (1 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
+- [SchemaValidator](SchemaValidator.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 97 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 74 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # character-cleanup.ts
 
-> 37 nodes
+> 42 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,8 @@
 - **revised-character-creation.spec.ts** (19 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
 - **pages/index.ts** (10 connections) — `client/tests/e2e/runtime/pages/index.ts`
 - **LoginPage** (8 connections) — `client/tests/e2e/runtime/pages/LoginPage.ts`
+- **MotdPage** (7 connections) — `client/tests/e2e/runtime/pages/MotdPage.ts`
+- **ensureMultiplayerReadyForCoLocate()** (7 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
 - **.login()** (6 connections) — `client/tests/e2e/runtime/pages/LoginPage.ts`
 - **cleanupE2ECharacters()** (5 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
 - **tryDeleteOneTestCharacter()** (5 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
@@ -17,6 +19,8 @@
 - **isDeletableTestCharacter()** (4 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
 - **loginToCharacterSelection()** (4 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
 - **.navigate()** (4 connections) — `client/tests/e2e/runtime/pages/LoginPage.ts`
+- **.enterRealm()** (4 connections) — `client/tests/e2e/runtime/pages/MotdPage.ts`
+- **.waitForGameReady()** (4 connections) — `client/tests/e2e/runtime/pages/MotdPage.ts`
 - **assertCharacterVisibleOnList()** (3 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
 - **loginAsIthaqua()** (3 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
 - **confirmCharacterDeletion()** (3 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
@@ -25,29 +29,26 @@
 - **deleteRevisedTestCharacterToMakeRoom()** (2 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
 - **needsRecoveryFromWrongCreationScreen()** (2 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
 - **openStatsRollingFromLogin()** (2 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
-- **readSkillsMessageText()** (2 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
-- **getCharacterNameFromCard()** (2 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
-- **isCharacterCreationAvailable()** (2 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
-- **isProtected()** (2 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
-- *... and 12 more nodes in this community*
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [fixtures/auth.ts](fixtures-auth.ts.md) (14 shared connections)
-- [multiplayer.ts](multiplayer.ts.md) (1 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (16 shared connections)
+- [multiplayer.ts](multiplayer.ts.md) (8 shared connections)
 
 ## Source Files
 
 - `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
 - `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- `client/tests/e2e/runtime/fixtures/multiplayer.ts`
 - `client/tests/e2e/runtime/pages/LoginPage.ts`
 - `client/tests/e2e/runtime/pages/MotdPage.ts`
 - `client/tests/e2e/runtime/pages/index.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (91%)
-- INFERRED: 7 (9%)
+- EXTRACTED: 81 (86%)
+- INFERRED: 13 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

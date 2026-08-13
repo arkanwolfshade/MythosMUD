@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [RoomNodeData](RoomNodeData.md) (12 shared connections)
+- [map/types.ts](map-types.ts.md) (16 shared connections)
 - [RoomMapEditorRuntime.hooks.ts](RoomMapEditorRuntime.hooks.ts.md) (4 shared connections)
-- [map/types.ts](map-types.ts.md) (4 shared connections)
 
 ## Source Files
 

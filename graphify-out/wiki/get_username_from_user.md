@@ -1,6 +1,6 @@
 # get_username_from_user
 
-> 69 nodes
+> 75 nodes
 
 ## Key Concepts
 
@@ -29,33 +29,34 @@
 - **_resolve_follow_target()** (4 connections) — `server/commands/follow_commands.py`
 - **test_handle_follow_no_container()** (4 connections) — `server/tests/unit/commands/test_follow_commands.py`
 - **test_handle_following_no_container()** (4 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- *... and 44 more nodes in this community*
+- *... and 50 more nodes in this community*
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (16 shared connections)
-- [TargetMatch](TargetMatch.md) (12 shared connections)
-- [test_command_helpers.py](test_command_helpers.py.md) (10 shared connections)
-- [test_command_helpers_functions.py](test_command_helpers_functions.py.md) (4 shared connections)
-- [Player](Player.md) (3 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (18 shared connections)
+- [test_command_helpers.py](test_command_helpers.py.md) (14 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (9 shared connections)
+- [TargetMatch](TargetMatch.md) (6 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
 - [BaseCommand](BaseCommand.md) (2 shared connections)
-- [logout_commands.py](logout_commands.py.md) (2 shared connections)
+- [test_logout_commands.py](test_logout_commands.py.md) (2 shared connections)
 - [quest_commands.py](quest_commands.py.md) (2 shared connections)
-- [.state](state.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [rescue_commands.py](rescue_commands.py.md) (2 shared connections)
 - [CommandRequest](CommandRequest.md) (1 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
+- [test_rest_command.py](test_rest_command.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/follow_commands.py`
 - `server/tests/unit/commands/test_follow_commands.py`
 - `server/tests/unit/utils/test_command_helpers.py`
+- `server/tests/unit/utils/test_command_helpers_functions.py`
 - `server/utils/command_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 170 (84%)
+- EXTRACTED: 176 (84%)
 - INFERRED: 33 (16%)
 - AMBIGUOUS: 0 (0%)
 

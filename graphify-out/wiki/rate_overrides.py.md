@@ -1,6 +1,6 @@
 # rate_overrides.py
 
-> 24 nodes
+> 22 nodes
 
 ## Key Concepts
 
@@ -9,7 +9,6 @@
 - **_async_load_lucidity_rate_overrides()** (6 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
 - **build_override_key()** (5 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
 - **_LucidityRateLoadResult** (4 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **load_lucidity_rate_overrides()** (4 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
 - **extract_lucidity_rate()** (3 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
 - **_normalize_database_url()** (3 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
 - **_parse_special_rules_from_raw()** (3 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
@@ -21,7 +20,6 @@
 - **Load lucidity rate overrides from PostgreSQL zones/subzones.** (1 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
 - **Process a single zone/subzone row and add override to result_container if valid.** (1 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
 - **Async helper to load lucidity rate overrides from PostgreSQL.** (1 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **Load lucidity rate overrides from PostgreSQL zones/subzones tables.** (1 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
 - **Build override key from plane/zone/subzone hierarchy.** (1 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
 - **Convert lucidity_drain_rate to flux value. Args: rate: Lucidity drain rate…** (1 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
 - **Extract lucidity_drain_rate from special_rules config.** (1 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
@@ -31,12 +29,8 @@
 
 ## Relationships
 
-- [Player](Player.md) (3 shared connections)
-- [HolidayService](HolidayService.md) (2 shared connections)
-- [LucidityFluxService](LucidityFluxService.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [threading.py](threading.py.md) (1 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [LucidityFluxService](LucidityFluxService.md) (4 shared connections)
 
 ## Source Files
 
@@ -44,7 +38,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
+- EXTRACTED: 41 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

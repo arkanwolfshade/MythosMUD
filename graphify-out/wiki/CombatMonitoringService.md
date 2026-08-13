@@ -34,7 +34,7 @@
 ## Relationships
 
 - [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (18 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [get_config](get_config.md) (2 shared connections)
 - [monitoring_service](monitoring_service.md) (1 shared connections)
 - [FeatureFlagService](FeatureFlagService.md) (1 shared connections)
 - [CombatConfiguration](CombatConfiguration.md) (1 shared connections)

@@ -33,13 +33,12 @@
 
 ## Relationships
 
+- [prototype_registry.py](prototype_registry.py.md) (6 shared connections)
 - [PrototypeRegistry](PrototypeRegistry.md) (5 shared connections)
-- [PrototypeRegistryError](PrototypeRegistryError.md) (4 shared connections)
 - [get_logger](get_logger.md) (4 shared connections)
-- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (3 shared connections)
-- [GameBundle](GameBundle.md) (2 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (2 shared connections)
-- [bundles/game.py](bundles-game.py.md) (1 shared connections)
+- [PlayerService](PlayerService.md) (3 shared connections)
+- [admin_summon_command.py](admin_summon_command.py.md) (2 shared connections)
+- [items/models.py](items-models.py.md) (1 shared connections)
 - [ItemPrototypeModel](ItemPrototypeModel.md) (1 shared connections)
 
 ## Source Files

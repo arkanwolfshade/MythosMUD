@@ -16,7 +16,7 @@
 - [server/dependencies.py](server-dependencies.py.md) `EXTRACTED`
 - [websocket_handler.py](websocket_handler.py.md) `EXTRACTED`
 - npc_combat_integration_service.py `EXTRACTED`
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) `EXTRACTED`
+- container_endpoints_basic.py `EXTRACTED`
 - [inventory_command_helpers.py](inventory_command_helpers.py.md) `EXTRACTED`
 - combat_handler.py `EXTRACTED`
 - [websocket_initial_state.py](websocket_initial_state.py.md) `EXTRACTED`
@@ -29,7 +29,7 @@
 - test_envelope.py `EXTRACTED`
 - player_disconnect_handlers.py `EXTRACTED`
 - api/game.py `EXTRACTED`
-- [combat_loader.py](combat_loader.py.md) `EXTRACTED`
+- combat_loader.py `EXTRACTED`
 - websocket_handler_message_loop.py `EXTRACTED`
 - follow_service.py `EXTRACTED`
 - event_handlers.py `EXTRACTED`
@@ -88,13 +88,13 @@
 - PlayerRespawnEventHandler `INFERRED`
 - CombatCommandHandlerExtras `INFERRED`
 - RealtimeBundle `INFERRED`
-- [EventHandler](EventHandler.md) `INFERRED`
+- EventHandler `INFERRED`
 - _NpcWithLife `INFERRED`
 - ConnectionMetadata `INFERRED`
 - PlayerStateEventHandler `INFERRED`
 - RespawnPlayerEventPayload `INFERRED`
-- [Party](Party.md) `INFERRED`
-- [_EventBusPublishPort](_EventBusPublishPort.md) `INFERRED`
+- Party `INFERRED`
+- _EventBusPublishPort `INFERRED`
 - _NpcLifecycleManagerForOccupants `INFERRED`
 - RespawnPlayerStatsPayload `INFERRED`
 - AsyncPersistenceRoomLookup `INFERRED`

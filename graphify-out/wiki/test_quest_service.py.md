@@ -1,6 +1,6 @@
 # test_quest_service.py
 
-> 64 nodes
+> 59 nodes
 
 ## Key Concepts
 
@@ -27,14 +27,15 @@
 - **test_turn_in_no_active_instance_returns_error()** (4 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_turn_in_success()** (4 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_turn_in_wrong_entity_returns_error()** (4 connections) — `server/tests/unit/game/test_quest_service.py`
-- **mock_def_repo()** (3 connections) — `server/tests/unit/game/test_quest_service.py`
-- **mock_instance_repo()** (3 connections) — `server/tests/unit/game/test_quest_service.py`
-- *... and 39 more nodes in this community*
+- **test_abandon_unknown_quest()** (3 connections) — `server/tests/unit/game/test_quest_service.py`
+- **test_get_quest_log_empty()** (3 connections) — `server/tests/unit/game/test_quest_service.py`
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [QuestService](QuestService.md) (3 shared connections)
-- [quest_commands.py](quest_commands.py.md) (2 shared connections)
+- [quest_service](quest_service.md) (3 shared connections)
+- [QuestService](QuestService.md) (2 shared connections)
+- [quest_service.py](quest_service.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 113 (100%)
+- EXTRACTED: 108 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

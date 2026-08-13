@@ -1,6 +1,6 @@
 # StyleGuideSections.tsx
 
-> 59 nodes
+> 57 nodes
 
 ## Key Concepts
 
@@ -11,7 +11,6 @@
 - **StatusPanel.test.tsx** (12 connections) — `client/src/components/ui/__tests__/StatusPanel.test.tsx`
 - **useStatusPanel()** (10 connections) — `client/src/components/ui/StatusPanel.tsx`
 - **ChannelSelector()** (7 connections) — `client/src/components/ui/ChannelSelector.tsx`
-- **ChannelSelectorSection.tsx** (7 connections) — `client/src/components/panels/chat/ChannelSelectorSection.tsx`
 - **Channel** (6 connections) — `client/src/components/ui/ChannelSelector.tsx`
 - **ChannelSelector.test.tsx** (6 connections) — `client/src/components/ui/__tests__/ChannelSelector.test.tsx`
 - **ConnectionStatus()** (5 connections) — `client/src/components/ui/StatusPanel.tsx`
@@ -29,12 +28,13 @@
 - **StatGroup()** (3 connections) — `client/src/components/ui/StatusPanel.tsx`
 - **StatusPanel()** (3 connections) — `client/src/components/ui/StatusPanel.tsx`
 - **StatusPanelProps** (2 connections) — `client/src/components/ui/StatusPanel.tsx`
-- *... and 34 more nodes in this community*
+- **useChannelSelectorState()** (2 connections) — `client/src/components/ui/ChannelSelector.tsx`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
 - [EldritchIcon.tsx](EldritchIcon.tsx.md) (14 shared connections)
-- [channels.ts](channels.ts.md) (6 shared connections)
+- [channels.ts](channels.ts.md) (4 shared connections)
 - [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (2 shared connections)
 - [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (2 shared connections)
 - [designTokens.ts](designTokens.ts.md) (2 shared connections)
@@ -42,7 +42,6 @@
 
 ## Source Files
 
-- `client/src/components/panels/chat/ChannelSelectorSection.tsx`
 - `client/src/components/ui/ChannelSelector.tsx`
 - `client/src/components/ui/StatusPanel.tsx`
 - `client/src/components/ui/StyleGuide.tsx`
@@ -54,7 +53,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 135 (100%)
+- EXTRACTED: 130 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

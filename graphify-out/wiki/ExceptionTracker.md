@@ -1,6 +1,6 @@
 # ExceptionTracker
 
-> 39 nodes
+> 41 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **ExceptionRecord** (12 connections) — `server/monitoring/exception_tracker.py`
 - **.track_exception()** (8 connections) — `server/monitoring/exception_tracker.py`
 - **Exception** (7 connections)
+- **ExceptionTrackInput** (6 connections) — `server/monitoring/exception_tracker.py`
 - **._create_and_store_record()** (6 connections) — `server/monitoring/exception_tracker.py`
 - **._call_handlers()** (5 connections) — `server/monitoring/exception_tracker.py`
 - **._log_tracked_exception()** (5 connections) — `server/monitoring/exception_tracker.py`
@@ -28,15 +29,14 @@
 - **.reset_records()** (3 connections) — `server/monitoring/exception_tracker.py`
 - **Track an exception with full context information. Args: exception: The…** (1 connections) — `server/monitoring/exception_tracker.py`
 - **Get an exception record by ID. Args: exception_id: Unique exception ID Returns:…** (1 connections) — `server/monitoring/exception_tracker.py`
-- **Get all exceptions of a specific type. Args: exception_type: Exception type…** (1 connections) — `server/monitoring/exception_tracker.py`
-- *... and 14 more nodes in this community*
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [fastapi_integration.py](fastapi_integration.py.md) (6 shared connections)
-- [MonitoringDashboard](MonitoringDashboard.md) (4 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (9 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [testing_examples.py](testing_examples.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 72 (97%)
+- EXTRACTED: 76 (97%)
 - INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 

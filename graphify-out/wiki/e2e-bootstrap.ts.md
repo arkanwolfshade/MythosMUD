@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **e2e-bootstrap.ts** (20 connections) — `client/src/test/e2e-bootstrap.ts`
+- **collect-n-daisy-quest.spec.ts** (18 connections) — `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
 - **global-setup.ts** (17 connections) — `client/tests/e2e/runtime/global-setup.ts`
-- **collect-n-daisy-quest.spec.ts** (17 connections) — `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
 - **loadE2eEnv()** (12 connections) — `client/src/test/e2e-bootstrap.ts`
 - **failBootstrap()** (11 connections) — `client/src/test/e2e-bootstrap.ts`
 - **globalSetup()** (7 connections) — `client/tests/e2e/runtime/global-setup.ts`
@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [multiplayer.ts](multiplayer.ts.md) (7 shared connections)
-- [executeCommand](executeCommand.md) (5 shared connections)
+- [multiplayer.ts](multiplayer.ts.md) (11 shared connections)
 - [fixtures/auth.ts](fixtures-auth.ts.md) (4 shared connections)
+- [player.ts](player.ts.md) (2 shared connections)
 
 ## Source Files
 
@@ -47,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 91 (100%)
+- EXTRACTED: 92 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

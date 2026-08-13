@@ -1,17 +1,13 @@
 # _handle_admin_set_stat_command
 
-> 53 nodes
+> 44 nodes
 
 ## Key Concepts
 
 - **_handle_admin_set_stat_command()** (32 connections) — `server/commands/admin_setstat_command.py`
 - **test_admin_setstat_command.py** (21 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
 - **asyncio** (18 connections)
-- **Any** (7 connections)
-- **_parse_set_stat_args()** (5 connections) — `server/commands/admin_setstat_command.py`
 - **test_handle_admin_set_stat_command_logging()** (5 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **_get_app_or_error()** (4 connections) — `server/commands/admin_setstat_command.py`
-- **_resolve_admin_services_and_permissions()** (4 connections) — `server/commands/admin_setstat_command.py`
 - **test_handle_admin_set_stat_command_case_insensitive_stat_names()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
 - **test_handle_admin_set_stat_command_dp_above_maximum()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
 - **test_handle_admin_set_stat_command_invalid_stat_name()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
@@ -29,12 +25,19 @@
 - **test_handle_admin_set_stat_command_success_str()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
 - **test_handle_admin_set_stat_command_target_player_not_found()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
 - **test_handle_admin_set_stat_command_value_out_of_range()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- *... and 28 more nodes in this community*
+- **_validate_set_stat_inputs()** (3 connections) — `server/commands/admin_setstat_command.py`
+- **patch** (1 connections)
+- **Validate stat name and value inputs.** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Handle the admin set command to set a player's statistic. Usage: admin set…** (1 connections) — `server/commands/admin_setstat_command.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (13 shared connections)
-- [AliasStorage](AliasStorage.md) (3 shared connections)
+- [admin_setstat_command.py](admin_setstat_command.py.md) (6 shared connections)
+- [Any](Any.md) (3 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [test_admin_commands.py](test_admin_commands.py.md) (1 shared connections)
+- [_parse_set_stat_args](_parse_set_stat_args.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 106 (100%)
+- EXTRACTED: 91 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -23,9 +23,9 @@
 - [fixture](fixture.md) (6 shared connections)
 - [_occupation_slots_9](_occupation_slots_9.md) (6 shared connections)
 - [_personal_interest_4](_personal_interest_4.md) (6 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
+- [log_and_raise](log_and_raise.md) (2 shared connections)
 - [api/character_creation.py](api-character_creation.py.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

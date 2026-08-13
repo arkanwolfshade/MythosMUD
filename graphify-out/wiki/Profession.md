@@ -1,67 +1,54 @@
 # Profession
 
-> 55 nodes
+> 102 nodes
 
 ## Key Concepts
 
-- **Profession** (27 connections) — `client/src/components/ProfessionCard.tsx`
-- **useProfessions.ts** (21 connections) — `client/src/hooks/useProfessions.ts`
-- **ProfessionCard.tsx** (19 connections) — `client/src/components/ProfessionCard.tsx`
-- **useStatsRollingActions.ts** (19 connections) — `client/src/hooks/useStatsRollingActions.ts`
-- **Stats** (17 connections) — `client/src/hooks/useStatsRolling.ts`
-- **StatsRollingScreen.tsx** (16 connections) — `client/src/components/StatsRollingScreen.tsx`
-- **useStatsRolling.ts** (16 connections) — `client/src/hooks/useStatsRolling.ts`
-- **ProfessionSelectionScreen.tsx** (14 connections) — `client/src/components/ProfessionSelectionScreen.tsx`
-- **StatsRollingScreen.test.tsx** (8 connections) — `client/src/components/StatsRollingScreen.test.tsx`
-- **CreationCompleteActions** (5 connections) — `client/src/mythosApp/creationCompleteActions.ts`
-- **loadProfessions()** (5 connections) — `client/src/hooks/useProfessions.ts`
-- **parseProfessionsErrorResponse()** (5 connections) — `client/src/hooks/useProfessions.ts`
-- **useStatsRolling()** (5 connections) — `client/src/hooks/useStatsRolling.ts`
-- **handleStatsRollResponse()** (5 connections) — `client/src/hooks/useStatsRollingActions.ts`
-- **performStatsRoll()** (5 connections) — `client/src/hooks/useStatsRollingActions.ts`
-- **CreationSlice** (4 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- **CreationSlice** (4 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **useProfessions()** (4 connections) — `client/src/hooks/useProfessions.ts`
-- **parseErrorMessage()** (4 connections) — `client/src/hooks/useStatsRollingActions.ts`
-- **CharacterNameScreenProps** (3 connections) — `client/src/components/CharacterNameScreen.tsx`
-- **StatsRollingScreenProps** (3 connections) — `client/src/components/StatsRollingScreen.tsx`
-- **PerformStatsRollParams** (3 connections) — `client/src/hooks/useStatsRollingActions.ts`
-- **ProfessionCard()** (3 connections) — `client/src/components/ProfessionCard.tsx`
-- **ProfessionSelectionScreen()** (3 connections) — `client/src/components/ProfessionSelectionScreen.tsx`
-- **StatsRollingScreen()** (3 connections) — `client/src/components/StatsRollingScreen.tsx`
-- *... and 30 more nodes in this community*
+- **Profession** (51 connections) — `server/models/profession.py`
+- **test_profession.py** (30 connections) — `server/tests/unit/models/test_profession.py`
+- **ProfessionRepository** (11 connections) — `server/persistence/repositories/profession_repository.py`
+- **_row_to_profession()** (9 connections) — `server/persistence/repositories/profession_repository.py`
+- **Any** (8 connections)
+- **.get_all_professions()** (6 connections) — `server/persistence/repositories/profession_repository.py`
+- **.get_profession_by_id()** (6 connections) — `server/persistence/repositories/profession_repository.py`
+- **.get_stat_requirements()** (5 connections) — `server/models/profession.py`
+- **_bool_or_default()** (4 connections) — `server/persistence/repositories/profession_repository.py`
+- **_text_or_default()** (4 connections) — `server/persistence/repositories/profession_repository.py`
+- **Any** (4 connections)
+- **.get_mechanical_effects()** (3 connections) — `server/models/profession.py`
+- **.get_requirement_display_text()** (3 connections) — `server/models/profession.py`
+- **.get_skill_modifiers()** (3 connections) — `server/models/profession.py`
+- **.get_stat_modifiers()** (3 connections) — `server/models/profession.py`
+- **.meets_stat_requirements()** (3 connections) — `server/models/profession.py`
+- **.set_mechanical_effects()** (3 connections) — `server/models/profession.py`
+- **.set_skill_modifiers()** (3 connections) — `server/models/profession.py`
+- **.set_stat_modifiers()** (3 connections) — `server/models/profession.py`
+- **.set_stat_requirements()** (3 connections) — `server/models/profession.py`
+- **.__init__()** (3 connections) — `server/persistence/repositories/profession_repository.py`
+- **_str_or_default()** (3 connections) — `server/persistence/repositories/profession_repository.py`
+- **test_profession_get_mechanical_effects_empty_string()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_get_mechanical_effects_invalid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_get_mechanical_effects_none()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- *... and 77 more nodes in this community*
 
 ## Relationships
 
-- [deleteCharacterFlow.ts](deleteCharacterFlow.ts.md) (19 shared connections)
-- [appLazyScreens.tsx](appLazyScreens.tsx.md) (15 shared connections)
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (14 shared connections)
-- [apiTypeGuards.ts](apiTypeGuards.ts.md) (8 shared connections)
-- [roomHandlers.ts](roomHandlers.ts.md) (8 shared connections)
-- [SkillAssignmentScreen.tsx](SkillAssignmentScreen.tsx.md) (6 shared connections)
-- [gameStore.ts](gameStore.ts.md) (3 shared connections)
-- [security.ts](security.ts.md) (2 shared connections)
+- [get_logger](get_logger.md) (15 shared connections)
+- [log_and_raise](log_and_raise.md) (5 shared connections)
+- [test_async_persistence_core.py](test_async_persistence_core.py.md) (1 shared connections)
+- [HealthRepository](HealthRepository.md) (1 shared connections)
+- [persistence/container_persistence.py](persistence-container_persistence.py.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/CharacterNameScreen.tsx`
-- `client/src/components/ProfessionCard.test.tsx`
-- `client/src/components/ProfessionCard.tsx`
-- `client/src/components/ProfessionSelectionScreen.tsx`
-- `client/src/components/StatsRollingScreen.test.tsx`
-- `client/src/components/StatsRollingScreen.tsx`
-- `client/src/hooks/useProfessions.ts`
-- `client/src/hooks/useStatsRolling.ts`
-- `client/src/hooks/useStatsRollingActions.ts`
-- `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- `client/src/mythosApp/appLazyScreens.tsx`
-- `client/src/mythosApp/creationCompleteActions.ts`
-- `client/src/mythosApp/useMythosAppState.ts`
+- `server/models/profession.py`
+- `server/persistence/repositories/profession_repository.py`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 172 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 163 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

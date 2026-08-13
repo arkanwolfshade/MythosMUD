@@ -1,60 +1,78 @@
 # RealTimeEventHandler
 
-> 57 nodes
+> 424 nodes
 
 ## Key Concepts
 
 - **RealTimeEventHandler** (44 connections) — `server/realtime/event_handler.py`
-- **.__init__()** (9 connections) — `server/realtime/event_handler.py`
-- **event_handler()** (7 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **._create_player_entered_message()** (4 connections) — `server/realtime/event_handler.py`
-- **._create_player_left_message()** (4 connections) — `server/realtime/event_handler.py`
-- **Any** (4 connections)
-- **fixture** (4 connections)
-- **._get_room_occupants()** (3 connections) — `server/realtime/event_handler.py`
-- **._handle_npc_entered()** (3 connections) — `server/realtime/event_handler.py`
-- **._handle_npc_left()** (3 connections) — `server/realtime/event_handler.py`
-- **._handle_player_delirium_respawned()** (3 connections) — `server/realtime/event_handler.py`
-- **._handle_player_died()** (3 connections) — `server/realtime/event_handler.py`
-- **._handle_player_dp_decay()** (3 connections) — `server/realtime/event_handler.py`
-- **._handle_player_dp_updated()** (3 connections) — `server/realtime/event_handler.py`
-- **._handle_player_entered()** (3 connections) — `server/realtime/event_handler.py`
-- **._handle_player_left()** (3 connections) — `server/realtime/event_handler.py`
-- **._handle_player_respawned()** (3 connections) — `server/realtime/event_handler.py`
-- **._handle_player_xp_awarded()** (3 connections) — `server/realtime/event_handler.py`
-- **._send_occupants_snapshot_to_player()** (3 connections) — `server/realtime/event_handler.py`
-- **.send_room_occupants_update()** (3 connections) — `server/realtime/event_handler.py`
-- **._send_room_occupants_update_internal()** (3 connections) — `server/realtime/event_handler.py`
-- **._subscribe_to_events()** (3 connections) — `server/realtime/event_handler.py`
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **mock_event_bus()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **mock_task_registry()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- *... and 32 more nodes in this community*
+- **PlayerEventHandlerUtils** (42 connections) — `server/realtime/player_event_handlers_utils.py`
+- **test_event_handler.py** (41 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **PlayerLeftRoom** (40 connections) — `server/events/event_types.py`
+- **PlayerDPUpdated** (37 connections) — `server/events/event_types.py`
+- **event_handler.py** (35 connections) — `server/realtime/event_handler.py`
+- **PlayerRespawnEventHandler** (33 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **player_event_handlers_respawn.py** (33 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **test_player_event_handlers_state.py** (33 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **PlayerXPAwardEvent** (32 connections) — `server/services/player_combat_service.py`
+- **PlayerRoomEventHandler** (30 connections) — `server/realtime/player_event_handlers_room.py`
+- **NPCEventHandler** (26 connections) — `server/realtime/npc_event_handlers.py`
+- **PlayerEventHandler** (26 connections) — `server/realtime/player_event_handlers.py`
+- **player_event_handlers.py** (26 connections) — `server/realtime/player_event_handlers.py`
+- **player_event_handlers_state.py** (23 connections) — `server/realtime/player_event_handlers_state.py`
+- **MessageBuilder** (22 connections) — `server/realtime/message_builders.py`
+- **RoomOccupantManager** (22 connections) — `server/realtime/room_occupant_manager.py`
+- **realtime/conftest.py** (22 connections) — `server/tests/unit/realtime/conftest.py`
+- **room_occupant_manager.py** (19 connections) — `server/realtime/room_occupant_manager.py`
+- **asyncio** (19 connections)
+- **player_event_handlers_room.py** (17 connections) — `server/realtime/player_event_handlers_room.py`
+- **PlayerRespawnedEvent** (16 connections) — `server/events/event_types.py`
+- **npc_event_handlers.py** (16 connections) — `server/realtime/npc_event_handlers.py`
+- **player_event_handlers_utils.py** (16 connections) — `server/realtime/player_event_handlers_utils.py`
+- **fixture** (15 connections)
+- *... and 399 more nodes in this community*
 
 ## Relationships
 
-- [get_npc_instance_service](get_npc_instance_service.md) (22 shared connections)
-- [Protocol](Protocol.md) (6 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
-- [ConnectionManager](ConnectionManager.md) (3 shared connections)
-- [websocket_initial_state.py](websocket_initial_state.py.md) (2 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (2 shared connections)
-- [NPCEventHandler](NPCEventHandler.md) (1 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
-- [BaseEvent](BaseEvent.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [chat_logger](chat_logger.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (32 shared connections)
+- [get_logger](get_logger.md) (25 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (16 shared connections)
+- [websocket_initial_state.py](websocket_initial_state.py.md) (15 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (15 shared connections)
+- [.handle_npc_entered](handle_npc_entered.md) (15 shared connections)
+- [EventBus](EventBus.md) (13 shared connections)
+- [Any](Any.md) (13 shared connections)
+- [build_event](build_event.md) (13 shared connections)
+- [test_player_event_handlers.py](test_player_event_handlers.py.md) (12 shared connections)
+- [ConnectionManager](ConnectionManager.md) (12 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (12 shared connections)
 
 ## Source Files
 
+- `server/events/event_types.py`
+- `server/npc/spawning_service.py`
 - `server/realtime/event_handler.py`
+- `server/realtime/message_builders.py`
+- `server/realtime/npc_event_handlers.py`
+- `server/realtime/player_event_handlers.py`
+- `server/realtime/player_event_handlers_respawn.py`
+- `server/realtime/player_event_handlers_room.py`
+- `server/realtime/player_event_handlers_state.py`
+- `server/realtime/player_event_handlers_utils.py`
+- `server/realtime/player_name_utils.py`
+- `server/realtime/room_occupant_manager.py`
+- `server/services/player_combat_service.py`
+- `server/services/room_sync_service.py`
+- `server/tests/unit/npc/test_population_control.py`
+- `server/tests/unit/realtime/conftest.py`
 - `server/tests/unit/realtime/test_event_handler.py`
+- `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
+- `server/tests/unit/services/test_player_combat_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (83%)
-- INFERRED: 18 (17%)
+- EXTRACTED: 971 (94%)
+- INFERRED: 57 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

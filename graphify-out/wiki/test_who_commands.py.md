@@ -1,46 +1,60 @@
 # test_who_commands.py
 
-> 20 nodes
+> 114 nodes
 
 ## Key Concepts
 
 - **test_who_commands.py** (47 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_filter_players_by_name_case_insensitive()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_filter_players_by_name_exact_match()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_filter_players_by_name_no_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_filter_players_by_name_partial_match()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_who_result_no_players()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_who_result_no_players_with_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_who_result_with_players()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_get_players_for_who_no_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_get_players_for_who_with_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Unit tests for who commands.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test filtering players with no filter term.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test format_who_result with no players.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test format_who_result with no players and filter term.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test format_who_result with players.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test get_players_for_who without filter.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test get_players_for_who with filter.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test filtering players with exact match.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test filtering players with partial match.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test filtering players is case-insensitive.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **utility_commands.py** (20 connections) — `server/commands/utility_commands.py`
+- **who_commands.py** (16 connections) — `server/commands/who_commands.py`
+- **filter_players_by_name()** (14 connections) — `server/commands/who_commands.py`
+- **handle_who_command()** (14 connections) — `server/commands/who_commands.py`
+- **parse_last_active_datetime()** (14 connections) — `server/commands/who_commands.py`
+- **format_player_entry()** (13 connections) — `server/commands/who_commands.py`
+- **format_player_location()** (13 connections) — `server/commands/who_commands.py`
+- **test_who_commands_helpers.py** (12 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **filter_online_players()** (10 connections) — `server/commands/who_commands.py`
+- **format_who_result()** (10 connections) — `server/commands/who_commands.py`
+- **asyncio** (9 connections)
+- **get_players_for_who()** (8 connections) — `server/commands/who_commands.py`
+- **Any** (6 connections)
+- **test_filter_online_players_all_online()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_filter_online_players_invalid_last_active()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_filter_online_players_no_last_active()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_filter_online_players_some_offline()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_entry_error_handling()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_handle_who_command_error_handling()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_handle_who_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_handle_who_command_no_players()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_handle_who_command_success()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_handle_who_command_with_filter()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_filter_players_by_name_empty_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- *... and 89 more nodes in this community*
 
 ## Relationships
 
-- [who_commands.py](who_commands.py.md) (16 shared connections)
-- [parse_last_active_datetime](parse_last_active_datetime.md) (10 shared connections)
-- [asyncio](asyncio.md) (9 shared connections)
-- [format_player_location](format_player_location.md) (6 shared connections)
-- [format_player_entry](format_player_entry.md) (5 shared connections)
+- [AliasStorage](AliasStorage.md) (5 shared connections)
+- [test_logout_commands.py](test_logout_commands.py.md) (3 shared connections)
+- [test_status_commands.py](test_status_commands.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [log_and_raise](log_and_raise.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
+- [handle_time_command](handle_time_command.md) (1 shared connections)
+- [MythosChronicle](MythosChronicle.md) (1 shared connections)
+- [TestLogoutCommand](TestLogoutCommand.md) (1 shared connections)
+- [test_utility_commands_whoami.py](test_utility_commands_whoami.py.md) (1 shared connections)
 
 ## Source Files
 
+- `server/commands/utility_commands.py`
+- `server/commands/who_commands.py`
 - `server/tests/unit/commands/test_who_commands.py`
+- `server/tests/unit/commands/test_who_commands_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 210 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

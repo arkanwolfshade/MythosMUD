@@ -1,40 +1,49 @@
 # UUID
 
-> 16 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **UUID** (8 connections)
-- **Any** (7 connections)
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast party message to party members only, with dampening and mute checks.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Send whisper message to specific player with communication dampening.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast system/admin message to all players.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Handle unknown channel type.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast message according to channel strategy. Args: chat_event: WebSocket…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast room-based message with server-side filtering.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast global message to all connected players.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **UUID** (26 connections)
+- **Any** (14 connections)
+- **.get_player_mutes()** (4 connections) — `server/game/chat_service.py`
+- **.send_emote_message()** (4 connections) — `server/game/chat_service.py`
+- **.send_global_message()** (4 connections) — `server/game/chat_service.py`
+- **.send_local_message()** (4 connections) — `server/game/chat_service.py`
+- **.send_party_message()** (4 connections) — `server/game/chat_service.py`
+- **.send_predefined_emote()** (4 connections) — `server/game/chat_service.py`
+- **.send_say_message()** (4 connections) — `server/game/chat_service.py`
+- **.send_system_message()** (4 connections) — `server/game/chat_service.py`
+- **.send_whisper_message()** (4 connections) — `server/game/chat_service.py`
+- **.set_player_pose()** (4 connections) — `server/game/chat_service.py`
+- **.add_admin()** (3 connections) — `server/game/chat_service.py`
+- **.clear_player_pose()** (3 connections) — `server/game/chat_service.py`
+- **.get_mute_status()** (3 connections) — `server/game/chat_service.py`
+- **.get_player_pose()** (3 connections) — `server/game/chat_service.py`
+- **.get_room_messages()** (3 connections) — `server/game/chat_service.py`
+- **.get_user_management_stats()** (3 connections) — `server/game/chat_service.py`
+- **.is_admin()** (3 connections) — `server/game/chat_service.py`
+- **.is_channel_muted()** (3 connections) — `server/game/chat_service.py`
+- **.is_globally_muted()** (3 connections) — `server/game/chat_service.py`
+- **.is_player_muted()** (3 connections) — `server/game/chat_service.py`
+- **.mute_channel()** (3 connections) — `server/game/chat_service.py`
+- **.mute_global()** (3 connections) — `server/game/chat_service.py`
+- **.mute_player()** (3 connections) — `server/game/chat_service.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (5 shared connections)
-- [asyncio](asyncio.md) (1 shared connections)
-- [RoomBasedChannelStrategy](RoomBasedChannelStrategy.md) (1 shared connections)
-- [UnknownChannelStrategy](UnknownChannelStrategy.md) (1 shared connections)
+- [ChatService](ChatService.md) (28 shared connections)
+- [ChatPoseManager](ChatPoseManager.md) (1 shared connections)
+- [chat_service.py](chat_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/channel_broadcasting_strategies.py`
+- `server/game/chat_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
+- EXTRACTED: 96 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

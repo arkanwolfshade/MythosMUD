@@ -17,7 +17,7 @@
 ## Relationships
 
 - [test_player_event_handlers_utils.py](test_player_event_handlers_utils.py.md) (4 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [RealTimeEventHandler](RealTimeEventHandler.md) (1 shared connections)
 
 ## Source Files
 

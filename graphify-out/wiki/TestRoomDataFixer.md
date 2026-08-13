@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
-- [test_room_sync_service.py](test_room_sync_service.py.md) (1 shared connections)
+- [test_room_sync_service.py](test_room_sync_service.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
 

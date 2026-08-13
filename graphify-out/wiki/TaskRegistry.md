@@ -1,10 +1,11 @@
 # TaskRegistry
 
-> 60 nodes
+> 68 nodes
 
 ## Key Concepts
 
 - **TaskRegistry** (33 connections) — `server/app/task_registry.py`
+- **TrackedTaskManager** (14 connections) — `server/app/tracked_task_manager.py`
 - **Any** (10 connections)
 - **._setup_task_tracking()** (9 connections) — `server/app/task_registry.py`
 - **Task** (8 connections)
@@ -28,18 +29,20 @@
 - **.get_active_task_count()** (3 connections) — `server/app/task_registry.py`
 - **.get_registry_info()** (3 connections) — `server/app/task_registry.py`
 - **.get_task_stats_by_type()** (3 connections) — `server/app/task_registry.py`
-- **.list_active_tasks()** (3 connections) — `server/app/task_registry.py`
-- *... and 35 more nodes in this community*
+- *... and 43 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (6 shared connections)
-- [EventBus](EventBus.md) (2 shared connections)
-- [GameBundle](GameBundle.md) (2 shared connections)
-- [time.py](time.py.md) (1 shared connections)
-- [ScheduleService](ScheduleService.md) (1 shared connections)
-- [MetricsCollector](MetricsCollector.md) (1 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
+- [.__post_init__](__post_init__.md) (3 shared connections)
+- [.get_instance](get_instance.md) (2 shared connections)
+- [npc_database.py](npc_database.py.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [.create_supervised_task](create_supervised_task.md) (2 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
+- [MythosChronicle](MythosChronicle.md) (1 shared connections)
+- [NPCMessageQueue](NPCMessageQueue.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,8 +52,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 103 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 116 (96%)
+- INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # lifecycle_periodic.py
 
-> 32 nodes
+> 34 nodes
 
 ## Key Concepts
 
@@ -17,6 +17,7 @@
 - **_should_skip_optional_npc()** (4 connections) — `server/npc/lifecycle_periodic.py`
 - **npc_config.py** (4 connections) — `server/config/npc_config.py`
 - **.get_config_summary()** (3 connections) — `server/config/npc_config.py`
+- **.should_run_maintenance()** (3 connections) — `server/config/npc_config.py`
 - **.cleanup_old_records()** (3 connections) — `server/npc/lifecycle_manager.py`
 - **.periodic_maintenance()** (3 connections) — `server/npc/lifecycle_manager.py`
 - **.get_respawn_delay()** (2 connections) — `server/config/npc_config.py`
@@ -24,20 +25,18 @@
 - **NPC Configuration for MythosMUD. This module defines configuration settings for…** (1 connections) — `server/config/npc_config.py`
 - **Configuration for NPC lifecycle maintenance. This class centralizes all timing…** (1 connections) — `server/config/npc_config.py`
 - **Get the respawn delay for a specific NPC type. Args: npc_type: Type of NPC…** (1 connections) — `server/config/npc_config.py`
+- **Check if NPC maintenance should run on this tick. Args: tick_count: Current…** (1 connections) — `server/config/npc_config.py`
 - **Get a summary of all NPC configuration values. Returns: Dictionary containing…** (1 connections) — `server/config/npc_config.py`
 - **Clean up old lifecycle records (delegates to lifecycle_periodic).** (1 connections) — `server/npc/lifecycle_manager.py`
 - **Perform periodic maintenance (delegates to lifecycle_periodic).** (1 connections) — `server/npc/lifecycle_manager.py`
-- **Periodic maintenance and optional NPC spawn checks for lifecycle. Extracted…** (1 connections) — `server/npc/lifecycle_periodic.py`
-- **Return (should_skip, last_check_time).** (1 connections) — `server/npc/lifecycle_periodic.py`
-- *... and 7 more nodes in this community*
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [get_npc_instance_service](get_npc_instance_service.md) (7 shared connections)
-- [EventBus](EventBus.md) (4 shared connections)
+- [EventBus](EventBus.md) (10 shared connections)
 - [game_tick_processing.py](game_tick_processing.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [time.py](time.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 63 (100%)
+- EXTRACTED: 65 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

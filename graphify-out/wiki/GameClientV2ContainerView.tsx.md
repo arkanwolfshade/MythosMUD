@@ -33,12 +33,12 @@
 
 ## Relationships
 
-- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (7 shared connections)
-- [security.ts](security.ts.md) (3 shared connections)
+- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (5 shared connections)
+- [GameClientV2.tsx](GameClientV2.tsx.md) (4 shared connections)
+- [utils/config.ts](utils-config.ts.md) (3 shared connections)
 - [useAsciiMapState.ts](useAsciiMapState.ts.md) (2 shared connections)
-- [roomHandlers.ts](roomHandlers.ts.md) (2 shared connections)
+- [logger.ts](logger.ts.md) (2 shared connections)
 - [ModalContainer.tsx](ModalContainer.tsx.md) (2 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (2 shared connections)
 - [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
 
 ## Source Files

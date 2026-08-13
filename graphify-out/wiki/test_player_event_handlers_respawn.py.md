@@ -20,9 +20,8 @@
 ## Relationships
 
 - [asyncio](asyncio.md) (8 shared connections)
+- [RealTimeEventHandler](RealTimeEventHandler.md) (4 shared connections)
 - [mock_utils](mock_utils.md) (4 shared connections)
-- [ConnectionManager](ConnectionManager.md) (3 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
 - [test_get_player_data_for_respawn_no_connection_manager](test_get_player_data_for_respawn_no_connection_manager.md) (1 shared connections)
 - [test_get_player_data_for_respawn_no_persistence](test_get_player_data_for_respawn_no_persistence.md) (1 shared connections)
 - [test_send_respawn_event_with_retry_success](test_send_respawn_event_with_retry_success.md) (1 shared connections)
@@ -31,6 +30,7 @@
 - [test_handle_player_respawned_error_handling](test_handle_player_respawned_error_handling.md) (1 shared connections)
 - [test_get_current_lucidity_not_found](test_get_current_lucidity_not_found.md) (1 shared connections)
 - [test_get_player_data_for_delirium_respawn_no_connection_manager](test_get_player_data_for_delirium_respawn_no_connection_manager.md) (1 shared connections)
+- [test_get_player_data_for_delirium_respawn_error_handling](test_get_player_data_for_delirium_respawn_error_handling.md) (1 shared connections)
 
 ## Source Files
 

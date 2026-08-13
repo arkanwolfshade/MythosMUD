@@ -17,7 +17,8 @@
 
 ## Relationships
 
-- [time.py](time.py.md) (2 shared connections)
+- [RoomSubscriptionManager](RoomSubscriptionManager.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [test_adjust_room_drop_invalid_index](test_adjust_room_drop_invalid_index.md) (1 shared connections)
 - [test_list_room_drops_with_drops](test_list_room_drops_with_drops.md) (1 shared connections)
 - [test_add_room_drop_new_room](test_add_room_drop_new_room.md) (1 shared connections)
@@ -28,7 +29,6 @@
 - [test_take_room_drop_full_quantity](test_take_room_drop_full_quantity.md) (1 shared connections)
 - [test_take_room_drop_partial_quantity](test_take_room_drop_partial_quantity.md) (1 shared connections)
 - [subscription_manager](subscription_manager.md) (1 shared connections)
-- [test_take_room_drop_removes_empty_room](test_take_room_drop_removes_empty_room.md) (1 shared connections)
 
 ## Source Files
 

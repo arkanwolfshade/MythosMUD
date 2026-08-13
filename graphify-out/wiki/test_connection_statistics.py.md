@@ -1,6 +1,6 @@
 # test_connection_statistics.py
 
-> 57 nodes
+> 47 nodes
 
 ## Key Concepts
 
@@ -10,12 +10,7 @@
 - **get_player_presence_info_impl()** (9 connections) — `server/realtime/connection_statistics.py`
 - **get_session_stats_impl()** (9 connections) — `server/realtime/connection_statistics.py`
 - **get_presence_statistics_impl()** (8 connections) — `server/realtime/connection_statistics.py`
-- **.get_player_presence_info()** (5 connections) — `server/realtime/connection_manager.py`
-- **.validate_player_presence()** (5 connections) — `server/realtime/connection_manager.py`
 - **Any** (5 connections)
-- **.get_online_player_by_display_name()** (4 connections) — `server/realtime/connection_manager.py`
-- **.get_presence_statistics()** (4 connections) — `server/realtime/connection_manager.py`
-- **.get_session_stats()** (4 connections) — `server/realtime/connection_manager.py`
 - **test_get_online_player_by_display_name_impl_case_insensitive()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
 - **test_get_online_player_by_display_name_impl_found()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
 - **test_get_online_player_by_display_name_impl_no_name()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
@@ -29,24 +24,27 @@
 - **test_get_session_stats_impl_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
 - **test_get_session_stats_impl_empty_sessions()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
 - **test_validate_player_presence_impl_connection_count_mismatch()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- *... and 32 more nodes in this community*
+- **test_validate_player_presence_impl_connections_but_not_online()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_validate_player_presence_impl_consistent()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_validate_player_presence_impl_error()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **test_validate_player_presence_impl_online_but_no_connections()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
+- **Get online player information by display name.** (1 connections) — `server/realtime/connection_statistics.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [UUID](UUID.md) (7 shared connections)
 - [get_logger](get_logger.md) (6 shared connections)
 - [ConnectionManager](ConnectionManager.md) (5 shared connections)
 - [connection_manager.py](connection_manager.py.md) (5 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_manager.py`
 - `server/realtime/connection_statistics.py`
 - `server/tests/unit/realtime/test_connection_statistics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 100 (100%)
+- EXTRACTED: 83 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -26,12 +26,12 @@
 ## Relationships
 
 - [PrototypeRegistry](PrototypeRegistry.md) (5 shared connections)
-- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (4 shared connections)
-- [PrototypeRegistryError](PrototypeRegistryError.md) (2 shared connections)
+- [prototype_registry.py](prototype_registry.py.md) (3 shared connections)
+- [PlayerService](PlayerService.md) (2 shared connections)
+- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (2 shared connections)
 - [registry_with_switchblade](registry_with_switchblade.md) (1 shared connections)
-- [bundles/game.py](bundles-game.py.md) (1 shared connections)
 - [item_factory.py](item_factory.py.md) (1 shared connections)
-- [GameBundle](GameBundle.md) (1 shared connections)
+- [items/models.py](items-models.py.md) (1 shared connections)
 
 ## Source Files
 

@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [test_websocket_helpers.py](test_websocket_helpers.py.md) (10 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [websocket_initial_state.py](websocket_initial_state.py.md) (5 shared connections)
+- [websocket_initial_state.py](websocket_initial_state.py.md) (9 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (6 shared connections)
+- [.state](state.md) (3 shared connections)
 - [websocket_handler.py](websocket_handler.py.md) (3 shared connections)
-- [Room](Room.md) (2 shared connections)
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [validate_occupant_name](validate_occupant_name.md) (2 shared connections)
+- [test_websocket_handler_coverage_gaps.py](test_websocket_handler_coverage_gaps.py.md) (3 shared connections)
+- [UUID](UUID.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [log_and_raise](log_and_raise.md) (2 shared connections)
+- [websocket_handler_connection.py](websocket_handler_connection.py.md) (1 shared connections)
 - [Alias](Alias.md) (1 shared connections)
-- [.state](state.md) (1 shared connections)
 - [coerce_int](coerce_int.md) (1 shared connections)
-- [GameStateProvider](GameStateProvider.md) (1 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (1 shared connections)
 
 ## Source Files
 

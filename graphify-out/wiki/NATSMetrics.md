@@ -35,7 +35,7 @@
 
 - [test_nats_service.py](test_nats_service.py.md) (16 shared connections)
 - [NATSService](NATSService.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
 - [deque](deque.md) (1 shared connections)
 
 ## Source Files

@@ -24,7 +24,7 @@
 - [process_item](process_item.md) (3 shared connections)
 - [risky_operation](risky_operation.md) (3 shared connections)
 - [migration_example_4](migration_example_4.md) (2 shared connections)
-- [fastapi_integration.py](fastapi_integration.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [migration_example_1](migration_example_1.md) (1 shared connections)
 - [migration_example_12](migration_example_12.md) (1 shared connections)
 - [migration_example_15](migration_example_15.md) (1 shared connections)

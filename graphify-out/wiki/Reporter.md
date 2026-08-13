@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [PathValidator](PathValidator.md) (10 shared connections)
-- [TestValidatorComponents](TestValidatorComponents.md) (3 shared connections)
+- [PathValidator](PathValidator.md) (9 shared connections)
+- [TestValidatorComponents](TestValidatorComponents.md) (4 shared connections)
 - [RoomLoader](RoomLoader.md) (1 shared connections)
 
 ## Source Files

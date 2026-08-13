@@ -29,7 +29,7 @@
 - apply_corruption() `EXTRACTED`
 
 ### contains
-- [server/exceptions.py](server-exceptions.py.md) `EXTRACTED`
+- server/exceptions.py `EXTRACTED`
 
 ### imports
 - players.py `EXTRACTED`
@@ -42,12 +42,12 @@
 - api/container_helpers.py `EXTRACTED`
 - legacy_error_handlers.py `EXTRACTED`
 - test_container_helpers.py `EXTRACTED`
-- [test_exceptions.py](test_exceptions.py.md) `EXTRACTED`
+- test_exceptions.py `EXTRACTED`
 - test_legacy_error_handlers.py `EXTRACTED`
-- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) `EXTRACTED`
-- rooms.py `EXTRACTED`
+- test_metrics_endpoints.py `EXTRACTED`
+- [rooms.py](rooms.py.md) `EXTRACTED`
 - test_exceptions_comprehensive.py `EXTRACTED`
-- [real_time.py](real_time.py.md) `EXTRACTED`
+- real_time.py `EXTRACTED`
 - standardized_responses.py `EXTRACTED`
 - test_container_exception_handlers.py `EXTRACTED`
 - test_containers.py `EXTRACTED`

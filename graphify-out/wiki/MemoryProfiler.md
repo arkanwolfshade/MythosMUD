@@ -33,11 +33,12 @@
 
 ## Relationships
 
-- [test_health_service.py](test_health_service.py.md) (4 shared connections)
 - [Alias](Alias.md) (2 shared connections)
+- [test_health.py](test_health.py.md) (2 shared connections)
+- [test_health_service.py](test_health_service.py.md) (2 shared connections)
 - [Stats](Stats.md) (1 shared connections)
-- [server/models/game.py](server-models-game.py.md) (1 shared connections)
-- [spell_effects_status.py](spell_effects_status.py.md) (1 shared connections)
+- [StatusEffect](StatusEffect.md) (1 shared connections)
+- [TargetMatch](TargetMatch.md) (1 shared connections)
 
 ## Source Files
 

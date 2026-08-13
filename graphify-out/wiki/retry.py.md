@@ -1,10 +1,11 @@
 # retry.py
 
-> 35 nodes
+> 38 nodes
 
 ## Key Concepts
 
 - **retry.py** (16 connections) — `server/utils/retry.py`
+- **retry_with_backoff()** (13 connections) — `server/utils/retry.py`
 - **test_retry.py** (10 connections) — `server/tests/unit/utils/test_retry.py`
 - **is_transient_error()** (9 connections) — `server/utils/retry.py`
 - **Exception** (8 connections)
@@ -24,18 +25,16 @@
 - **_log_retry_failure()** (2 connections) — `server/utils/retry.py`
 - **asyncio** (2 connections)
 - **Any** (2 connections)
+- **F** (1 connections)
 - **Unit tests for retry utilities. Tests the retry decorator and retry logic.** (1 connections) — `server/tests/unit/utils/test_retry.py`
 - **Test is_transient_error() identifies transient errors.** (1 connections) — `server/tests/unit/utils/test_retry.py`
 - **Test is_transient_error() returns False for non-transient errors.** (1 connections) — `server/tests/unit/utils/test_retry.py`
-- **Test retry_with_backoff() succeeds on first attempt.** (1 connections) — `server/tests/unit/utils/test_retry.py`
-- **Test retry_with_backoff() retries on failure then succeeds.** (1 connections) — `server/tests/unit/utils/test_retry.py`
-- *... and 10 more nodes in this community*
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [server/exceptions.py](server-exceptions.py.md) (8 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [time.py](time.py.md) (1 shared connections)
+- [log_and_raise](log_and_raise.md) (5 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 
 ## Source Files
 
@@ -44,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 59 (100%)
+- EXTRACTED: 65 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

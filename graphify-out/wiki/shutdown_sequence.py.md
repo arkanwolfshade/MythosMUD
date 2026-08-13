@@ -28,10 +28,8 @@
 
 ## Relationships
 
+- [get_logger](get_logger.md) (6 shared connections)
 - [admin_shutdown_command.py](admin_shutdown_command.py.md) (3 shared connections)
-- [shutdown_process_termination.py](shutdown_process_termination.py.md) (2 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 

@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [mapUtils.ts](mapUtils.ts.md) (13 shared connections)
-- [RoomNodeData](RoomNodeData.md) (6 shared connections)
-- [map/types.ts](map-types.ts.md) (4 shared connections)
+- [gameStore.ts](gameStore.ts.md) (13 shared connections)
+- [map/types.ts](map-types.ts.md) (10 shared connections)
 
 ## Source Files
 

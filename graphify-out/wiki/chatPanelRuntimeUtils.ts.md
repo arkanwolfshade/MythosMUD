@@ -35,9 +35,10 @@
 
 - [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (13 shared connections)
 - [channels.ts](channels.ts.md) (11 shared connections)
-- [ansiToHtml.ts](ansiToHtml.ts.md) (8 shared connections)
 - [EldritchIcon.tsx](EldritchIcon.tsx.md) (8 shared connections)
-- [gameStore.ts](gameStore.ts.md) (5 shared connections)
+- [ansiToHtml.ts](ansiToHtml.ts.md) (6 shared connections)
+- [GameTerminalPresentation.tsx](GameTerminalPresentation.tsx.md) (5 shared connections)
+- [SafeHtml.tsx](SafeHtml.tsx.md) (2 shared connections)
 - [StyleGuideSections.tsx](StyleGuideSections.tsx.md) (2 shared connections)
 
 ## Source Files

@@ -25,10 +25,9 @@
 ## Relationships
 
 - [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
+- [MythosChronicle](MythosChronicle.md) (3 shared connections)
 - [lifespan.py](lifespan.py.md) (3 shared connections)
-- [game_tick_processing.py](game_tick_processing.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [ScheduleService](ScheduleService.md) (1 shared connections)
 
 ## Source Files
 

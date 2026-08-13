@@ -13,7 +13,7 @@
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [TaskRegistry](TaskRegistry.md) (2 shared connections)
 
 ## Source Files
 

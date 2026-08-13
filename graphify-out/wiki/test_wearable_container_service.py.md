@@ -34,7 +34,7 @@
 ## Relationships
 
 - [WearableContainerService](WearableContainerService.md) (5 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [test_handle_unequip_wearable_container_not_found](test_handle_unequip_wearable_container_not_found.md) (2 shared connections)
 - [test_add_items_to_wearable_container_capacity_exceeded](test_add_items_to_wearable_container_capacity_exceeded.md) (2 shared connections)
 - [wearable_service](wearable_service.md) (2 shared connections)

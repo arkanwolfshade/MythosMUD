@@ -1,78 +1,78 @@
 # get_logger
 
-> 837 nodes
+> 965 nodes
 
 ## Key Concepts
 
 - **get_logger()** (509 connections) — `server/structured_logging/enhanced_logging_config.py`
 - **enhanced_logging_config.py** (484 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **build_event()** (117 connections) — `server/realtime/envelope.py`
-- **get_config()** (105 connections) — `server/config/__init__.py`
-- **NATSError** (60 connections) — `server/services/nats_exceptions.py`
-- **nats_message_handler.py** (39 connections) — `server/realtime/nats_message_handler.py`
-- **AttributeError** (38 connections)
-- **admin_teleport_commands.py** (38 connections) — `server/commands/admin_teleport_commands.py`
-- **test_connection_helpers_impl.py** (36 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **websocket_room_updates.py** (32 connections) — `server/realtime/websocket_room_updates.py`
-- **test_websocket_room_updates.py** (32 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **nats_exceptions.py** (30 connections) — `server/services/nats_exceptions.py`
-- **admin_setstat_command.py** (28 connections) — `server/commands/admin_setstat_command.py`
-- **envelope.py** (28 connections) — `server/realtime/envelope.py`
-- **test_envelope.py** (28 connections) — `server/tests/unit/realtime/test_envelope.py`
-- **NATSSubscribeError** (25 connections) — `server/services/nats_exceptions.py`
-- **get_admin_actions_logger()** (25 connections) — `server/structured_logging/admin_actions_logger.py`
-- **processing.py** (25 connections) — `server/command_handler/processing.py`
-- **config/models/__init__.py** (24 connections) — `server/config/models/__init__.py`
-- **broadcast_room_update()** (23 connections) — `server/realtime/websocket_room_updates.py`
-- **teleport_helpers.py** (23 connections) — `server/commands/teleport_helpers.py`
-- **event_handlers.py** (23 connections) — `server/realtime/event_handlers.py`
-- **message_handler_factory.py** (23 connections) — `server/realtime/message_handler_factory.py`
-- **combat_flee_handler.py** (23 connections) — `server/services/combat_flee_handler.py`
-- **nats_service.py** (23 connections) — `server/services/nats_service.py`
-- *... and 812 more nodes in this community*
+- **server/exceptions.py** (196 connections) — `server/exceptions.py`
+- **DatabaseError** (167 connections) — `server/exceptions.py`
+- **ValidationError** (158 connections) — `server/exceptions.py`
+- **log_and_raise_enhanced()** (97 connections) — `server/utils/enhanced_error_logging.py`
+- **time.py** (89 connections) — `server/container/bundles/time.py`
+- **async_persistence.py** (74 connections) — `server/async_persistence.py`
+- **MythosMUDError** (68 connections) — `server/exceptions.py`
+- **models/user.py** (56 connections) — `server/models/user.py`
+- **error_logging.py** (55 connections) — `server/utils/error_logging.py`
+- **test_auth_utils.py** (52 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **users.py** (46 connections) — `server/auth/users.py`
+- **threading.py** (45 connections) — `server/npc/threading.py`
+- **legacy_error_handlers.py** (44 connections) — `server/legacy_error_handlers.py`
+- **test_exceptions.py** (43 connections) — `server/tests/unit/test_exceptions.py`
+- **ErrorType** (41 connections) — `server/error_types.py`
+- **ErrorContext** (41 connections) — `server/exceptions.py`
+- **connection_initialization.py** (41 connections) — `server/realtime/connection_initialization.py`
+- **player_respawn_service.py** (41 connections) — `server/services/player_respawn_service.py`
+- **test_legacy_error_handlers.py** (41 connections) — `server/tests/unit/test_legacy_error_handlers.py`
+- **enhanced_error_logging.py** (38 connections) — `server/utils/enhanced_error_logging.py`
+- **error_types.py** (37 connections) — `server/error_types.py`
+- **CircuitBreaker** (36 connections) — `server/legacy_error_handlers.py`
+- **TestErrorMapping** (35 connections) — `server/tests/unit/test_legacy_error_handlers.py`
+- *... and 940 more nodes in this community*
 
 ## Relationships
 
-- [server/exceptions.py](server-exceptions.py.md) (94 shared connections)
-- [combat_service.py](combat_service.py.md) (73 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (62 shared connections)
-- [AliasStorage](AliasStorage.md) (53 shared connections)
-- [time.py](time.py.md) (52 shared connections)
-- [Player](Player.md) (52 shared connections)
-- [AppConfig](AppConfig.md) (42 shared connections)
-- [EventBus](EventBus.md) (39 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (28 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (26 shared connections)
-- [connection_manager.py](connection_manager.py.md) (24 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (23 shared connections)
+- [log_and_raise](log_and_raise.md) (135 shared connections)
+- [EventBus](EventBus.md) (92 shared connections)
+- [PlayerService](PlayerService.md) (76 shared connections)
+- [ContainerServiceError](ContainerServiceError.md) (73 shared connections)
+- [StandardizedErrorResponse](StandardizedErrorResponse.md) (56 shared connections)
+- [.get_instance](get_instance.md) (56 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (55 shared connections)
+- [event_types.py](event_types.py.md) (49 shared connections)
+- [AliasStorage](AliasStorage.md) (47 shared connections)
+- [persistence/container_persistence.py](persistence-container_persistence.py.md) (44 shared connections)
+- [User](User.md) (44 shared connections)
+- [BaseCommand](BaseCommand.md) (41 shared connections)
 
 ## Source Files
 
 - `monitoring/webhook-receiver.py`
+- `server/api/__init__.py`
+- `server/api/admin/__init__.py`
+- `server/api/admin/npc_spawn_rules_api.py`
+- `server/api/admin/subject_controller.py`
 - `server/api/base.py`
-- `server/app/lifespan_event_subscriptions.py`
+- `server/api/containers.py`
+- `server/api/game.py`
+- `server/api/player_helpers.py`
+- `server/api/player_respawn.py`
+- `server/api/professions.py`
+- `server/api/skills.py`
+- `server/app/memory_cleanup_service.py`
+- `server/app/memory_lifespan_coordinator.py`
 - `server/app/task_registry.py`
-- `server/command_handler/alias_expansion.py`
-- `server/command_handler/command_execution_request.py`
-- `server/command_handler/command_input.py`
-- `server/command_handler/processing.py`
-- `server/commands/admin_permission_utils.py`
-- `server/commands/admin_setstat_command.py`
-- `server/commands/admin_teleport_commands.py`
-- `server/commands/admin_teleport_utils.py`
-- `server/commands/container_helpers_inventory_logging.py`
-- `server/commands/goto_helpers.py`
-- `server/commands/teleport_helpers.py`
-- `server/commands/time_commands.py`
-- `server/config/__init__.py`
-- `server/config/models/__init__.py`
-- `server/config/models/_helpers.py`
-- `server/config/models/app.py`
+- `server/app/tracked_task_manager.py`
+- `server/async_persistence.py`
+- `server/async_persistence_direct_queries.py`
+- `server/async_persistence_room_loader.py`
+- `server/auth/argon2_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3116 (97%)
-- INFERRED: 97 (3%)
+- EXTRACTED: 4406 (94%)
+- INFERRED: 271 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

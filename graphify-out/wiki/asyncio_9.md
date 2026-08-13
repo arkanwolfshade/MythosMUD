@@ -1,45 +1,57 @@
 # asyncio
 
-> 13 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **asyncio** (22 connections)
-- **test_send_respawn_event_with_retry_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_current_lucidity_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_delirium_respawn_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_delirium_respawn_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **Test get_player_data_for_respawn() returns None when player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **Test get_player_data_for_respawn() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **Test send_respawn_event_with_retry() is a no-op when connection manager is…** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **Test get_current_lucidity() returns lucidity from database.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **Test get_player_data_for_delirium_respawn() successfully retrieves player data.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **Test get_player_data_for_delirium_respawn() returns None when player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **asyncio** (37 connections)
+- **test_get_adjacent_rooms_no_exits()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_adjacent_rooms_target_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_exits_room_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_occupants_with_cache_room_object()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_occupants_without_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_with_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_list_rooms_with_plane_zone()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_list_rooms_with_sub_zone()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_validate_player_in_room_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_validate_room_exists_with_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_validate_room_exists_without_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_adjacent_rooms() handles room with no exits.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_adjacent_rooms() handles target room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test validate_room_exists() uses cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test validate_room_exists() falls back to persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_occupants() handles Room object with get_players/get_npcs.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_occupants() falls back to persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test validate_player_in_room() returns False when room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_exits() returns empty dict when room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test list_rooms() filters by plane and zone.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test list_rooms() filters by sub_zone.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room() uses cache when available.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room() returns None when room not in cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [test_player_event_handlers_respawn.py](test_player_event_handlers_respawn.py.md) (8 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
-- [test_get_current_lucidity_not_found](test_get_current_lucidity_not_found.md) (1 shared connections)
-- [test_get_player_data_for_delirium_respawn_error_handling](test_get_player_data_for_delirium_respawn_error_handling.md) (1 shared connections)
-- [test_get_player_data_for_delirium_respawn_no_connection_manager](test_get_player_data_for_delirium_respawn_no_connection_manager.md) (1 shared connections)
-- [test_get_player_data_for_respawn_no_connection_manager](test_get_player_data_for_respawn_no_connection_manager.md) (1 shared connections)
-- [test_get_player_data_for_respawn_no_get_stats](test_get_player_data_for_respawn_no_get_stats.md) (1 shared connections)
-- [test_get_player_data_for_respawn_no_persistence](test_get_player_data_for_respawn_no_persistence.md) (1 shared connections)
-- [test_get_player_data_for_respawn_success](test_get_player_data_for_respawn_success.md) (1 shared connections)
-- [test_handle_player_delirium_respawned_error_handling](test_handle_player_delirium_respawned_error_handling.md) (1 shared connections)
-- [test_handle_player_delirium_respawned_success](test_handle_player_delirium_respawned_success.md) (1 shared connections)
-- [test_handle_player_respawned_error_handling](test_handle_player_respawned_error_handling.md) (1 shared connections)
+- [test_room_service.py](test_room_service.py.md) (12 shared connections)
+- [test_get_adjacent_rooms_null_exit](test_get_adjacent_rooms_null_exit.md) (1 shared connections)
+- [test_get_adjacent_rooms_source_not_found](test_get_adjacent_rooms_source_not_found.md) (1 shared connections)
+- [test_get_adjacent_rooms_success](test_get_adjacent_rooms_success.md) (1 shared connections)
+- [test_get_local_chat_scope](test_get_local_chat_scope.md) (1 shared connections)
+- [test_get_local_chat_scope_source_not_found](test_get_local_chat_scope_source_not_found.md) (1 shared connections)
+- [test_get_room_exits_no_exits](test_get_room_exits_no_exits.md) (1 shared connections)
+- [test_get_room_exits_success](test_get_room_exits_success.md) (1 shared connections)
+- [test_get_room_info_not_found](test_get_room_info_not_found.md) (1 shared connections)
+- [test_get_room_info_success](test_get_room_info_success.md) (1 shared connections)
+- [test_get_room_occupants_cache_not_found](test_get_room_occupants_cache_not_found.md) (1 shared connections)
+- [test_get_room_occupants_with_cache_dict](test_get_room_occupants_with_cache_dict.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
+- EXTRACTED: 61 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

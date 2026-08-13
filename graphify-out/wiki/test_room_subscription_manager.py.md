@@ -18,7 +18,8 @@
 ## Relationships
 
 - [asyncio](asyncio.md) (6 shared connections)
-- [time.py](time.py.md) (2 shared connections)
+- [RoomSubscriptionManager](RoomSubscriptionManager.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [test_add_room_occupant](test_add_room_occupant.md) (1 shared connections)
 - [test_add_room_occupant_multiple](test_add_room_occupant_multiple.md) (1 shared connections)
 - [test_add_room_occupant_new_room](test_add_room_occupant_new_room.md) (1 shared connections)
@@ -28,7 +29,6 @@
 - [subscription_manager](subscription_manager.md) (1 shared connections)
 - [test_room_subscription_manager_init](test_room_subscription_manager_init.md) (1 shared connections)
 - [test_set_async_persistence](test_set_async_persistence.md) (1 shared connections)
-- [test_subscribe_to_room](test_subscribe_to_room.md) (1 shared connections)
 
 ## Source Files
 

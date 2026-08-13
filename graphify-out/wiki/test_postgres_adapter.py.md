@@ -25,11 +25,12 @@
 
 ## Relationships
 
-- [TestPostgresConnectionPool](TestPostgresConnectionPool.md) (6 shared connections)
+- [TestPostgresConnectionPool](TestPostgresConnectionPool.md) (5 shared connections)
 - [PostgresConnection](PostgresConnection.md) (4 shared connections)
 - [PostgresCursor](PostgresCursor.md) (3 shared connections)
 - [PostgresRow](PostgresRow.md) (3 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
+- [is_postgres_url](is_postgres_url.md) (1 shared connections)
 
 ## Source Files
 

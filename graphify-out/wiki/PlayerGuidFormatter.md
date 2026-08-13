@@ -35,7 +35,7 @@
 
 - [test_logging_utilities.py](test_logging_utilities.py.md) (2 shared connections)
 - [logging_file_setup.py](logging_file_setup.py.md) (2 shared connections)
-- [lifespan.py](lifespan.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

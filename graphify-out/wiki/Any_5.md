@@ -1,34 +1,48 @@
 # Any
 
-> 13 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **Any** (6 connections)
-- **._is_newer_data()** (4 connections) — `server/services/room_data_cache.py`
-- **.merge_room_data()** (4 connections) — `server/services/room_data_cache.py`
-- **.get_cache()** (3 connections) — `server/services/room_data_cache.py`
-- **.get_cache_stats()** (3 connections) — `server/services/room_data_cache.py`
-- **.is_room_data_fresh()** (3 connections) — `server/services/room_data_cache.py`
-- **.set_cache()** (3 connections) — `server/services/room_data_cache.py`
-- **Get statistics about the room data cache. Args: is_room_data_fresh_func:…** (1 connections) — `server/services/room_data_cache.py`
-- **Merge room data with proper conflict resolution. Args: old_data: Existing room…** (1 connections) — `server/services/room_data_cache.py`
-- **Check if new data is newer than old data for a specific key. Args: old_data:…** (1 connections) — `server/services/room_data_cache.py`
-- **Check if room data is fresh enough to use. Args: room_data: Room data to check…** (1 connections) — `server/services/room_data_cache.py`
-- **Get room data from cache. Args: room_id: Room ID to retrieve Returns: Dict[str,…** (1 connections) — `server/services/room_data_cache.py`
-- **Store room data in cache. Args: room_id: Room ID to store room_data: Room data…** (1 connections) — `server/services/room_data_cache.py`
+- **Any** (7 connections)
+- **UUID** (6 connections)
+- **.get_player_info()** (5 connections) — `server/realtime/player_event_handlers_utils.py`
+- **.process_dict_occupant()** (5 connections) — `server/realtime/player_event_handlers_utils.py`
+- **.build_occupants_snapshot_data()** (4 connections) — `server/realtime/player_event_handlers_utils.py`
+- **._extract_name_from_occupant()** (4 connections) — `server/realtime/player_event_handlers_utils.py`
+- **.extract_occupant_names()** (4 connections) — `server/realtime/player_event_handlers_utils.py`
+- **.__init__()** (4 connections) — `server/realtime/player_event_handlers_utils.py`
+- **.normalize_player_id()** (4 connections) — `server/realtime/player_event_handlers_utils.py`
+- **.add_valid_name_to_lists()** (3 connections) — `server/realtime/player_event_handlers_utils.py`
+- **.count_occupants_by_type()** (3 connections) — `server/realtime/player_event_handlers_utils.py`
+- **.is_player_disconnecting()** (3 connections) — `server/realtime/player_event_handlers_utils.py`
+- **.is_player_in_grace_period()** (3 connections) — `server/realtime/player_event_handlers_utils.py`
+- **.normalize_event_ids()** (3 connections) — `server/realtime/player_event_handlers_utils.py`
+- **Extract occupant names from occupant information. Args: occupants_info: List of…** (1 connections) — `server/realtime/player_event_handlers_utils.py`
+- **Add a valid name to the appropriate lists. Args: name: The name to validate and…** (1 connections) — `server/realtime/player_event_handlers_utils.py`
+- **Process a dictionary occupant and add to appropriate lists. Args: occ:…** (1 connections) — `server/realtime/player_event_handlers_utils.py`
+- **Build structured occupants data from snapshot. Args: occupants_snapshot: List…** (1 connections) — `server/realtime/player_event_handlers_utils.py`
+- **Initialize utility functions. Args: connection_manager: ConnectionManager…** (1 connections) — `server/realtime/player_event_handlers_utils.py`
+- **Count NPCs and players in occupants snapshot. Args: occupants_snapshot: List of…** (1 connections) — `server/realtime/player_event_handlers_utils.py`
+- **Check if a player is currently disconnecting. Args: player_id: The player's ID…** (1 connections) — `server/realtime/player_event_handlers_utils.py`
+- **Check if a player is currently in grace period after disconnect. Args:…** (1 connections) — `server/realtime/player_event_handlers_utils.py`
+- **Normalize player ID to UUID format. Args: player_id: The player's ID (UUID or…** (1 connections) — `server/realtime/player_event_handlers_utils.py`
+- **Get player information and name (async version). Args: player_id: The player's…** (1 connections) — `server/realtime/player_event_handlers_utils.py`
+- **Normalize event IDs to strings for comparison and logging. Args: player_id: The…** (1 connections) — `server/realtime/player_event_handlers_utils.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [RoomDataCache](RoomDataCache.md) (6 shared connections)
+- [RealTimeEventHandler](RealTimeEventHandler.md) (13 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/room_data_cache.py`
+- `server/realtime/player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 42 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,11 +1,10 @@
 # CorpseLifecycleService
 
-> 39 nodes
+> 37 nodes
 
 ## Key Concepts
 
 - **CorpseLifecycleService** (27 connections) — `server/services/corpse_lifecycle_service.py`
-- **corpse_lifecycle_service.py** (19 connections) — `server/services/corpse_lifecycle_service.py`
 - **ContainerComponent** (9 connections)
 - **._require_corpse_container()** (8 connections) — `server/services/corpse_lifecycle_service.py`
 - **_get_enum_value()** (8 connections) — `server/services/corpse_lifecycle_service.py`
@@ -27,22 +26,19 @@
 - **test_corpse_lifecycle_service_init_no_persistence()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
 - **test_get_enum_value_enum()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
 - **test_get_enum_value_string()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **Corpse lifecycle service for unified container system. As documented in the…** (1 connections) — `server/services/corpse_lifecycle_service.py`
 - **Create a corpse container when a player dies.** (1 connections) — `server/services/corpse_lifecycle_service.py`
-- *... and 14 more nodes in this community*
+- **True if player may access corpse (owner/admin always; others after grace).** (1 connections) — `server/services/corpse_lifecycle_service.py`
+- **Check if a corpse container has decayed. Args: corpse: Corpse container to…** (1 connections) — `server/services/corpse_lifecycle_service.py`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [server/exceptions.py](server-exceptions.py.md) (7 shared connections)
 - [test_corpse_lifecycle_service.py](test_corpse_lifecycle_service.py.md) (6 shared connections)
-- [game_tick_processing.py](game_tick_processing.py.md) (4 shared connections)
-- [combat_service.py](combat_service.py.md) (4 shared connections)
-- [ContainerComponent](ContainerComponent.md) (4 shared connections)
-- [CombatParticipant](CombatParticipant.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [CorpseServiceError](CorpseServiceError.md) (2 shared connections)
-- [corpse_service](corpse_service.md) (1 shared connections)
-- [MythosMUDError](MythosMUDError.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [log_and_raise](log_and_raise.md) (4 shared connections)
+- [game_tick_processing.py](game_tick_processing.py.md) (3 shared connections)
+- [CombatService](CombatService.md) (2 shared connections)
 
 ## Source Files
 
@@ -51,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 99 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 84 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

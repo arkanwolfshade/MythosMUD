@@ -1,13 +1,11 @@
 # test_quest_instance_repository.py
 
-> 67 nodes
+> 63 nodes
 
 ## Key Concepts
 
 - **test_quest_instance_repository.py** (22 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **QuestInstance** (20 connections) — `server/models/quest.py`
 - **QuestInstanceRepository** (20 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **quest_instance_repository.py** (19 connections) — `server/persistence/repositories/quest_instance_repository.py`
 - **_make_session_context()** (13 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
 - **asyncio** (11 connections)
 - **.create()** (10 connections) — `server/persistence/repositories/quest_instance_repository.py`
@@ -29,31 +27,30 @@
 - **._fetch_created_quest_row()** (4 connections) — `server/persistence/repositories/quest_instance_repository.py`
 - **quest_instance_repository()** (4 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
 - **test_create_database_error()** (4 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- *... and 42 more nodes in this community*
+- **test_get_by_player_and_quest_accepts_uuid()** (4 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
+- **test_get_by_player_and_quest_not_found()** (4 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [server/exceptions.py](server-exceptions.py.md) (24 shared connections)
-- [Player](Player.md) (11 shared connections)
+- [get_logger](get_logger.md) (18 shared connections)
+- [log_and_raise](log_and_raise.md) (11 shared connections)
 - [QuestService](QuestService.md) (9 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [GameBundle](GameBundle.md) (2 shared connections)
-- [test_npc_combat_integration_class.py](test_npc_combat_integration_class.py.md) (2 shared connections)
+- [PlayerService](PlayerService.md) (3 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
 - [fixtures/integration/__init__.py](fixtures-integration-__init__.py.md) (2 shared connections)
-- [bundles/game.py](bundles-game.py.md) (1 shared connections)
-- [fixture](fixture.md) (1 shared connections)
+- [test_rescue_service.py](test_rescue_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/quest.py`
 - `server/persistence/repositories/quest_instance_repository.py`
 - `server/tests/integration/test_quest_flow.py`
 - `server/tests/unit/persistence/test_quest_instance_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 170 (96%)
-- INFERRED: 8 (4%)
+- EXTRACTED: 147 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

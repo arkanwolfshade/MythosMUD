@@ -34,9 +34,9 @@
 
 - [chat_message_senders.py](chat_message_senders.py.md) (10 shared connections)
 - [chat_service.py](chat_service.py.md) (7 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [test_room_utils.py](test_room_utils.py.md) (2 shared connections)
-- [combat_service.py](combat_service.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [extract_subzone_from_room_id](extract_subzone_from_room_id.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
 - [SubjectValidator](SubjectValidator.md) (1 shared connections)
 
 ## Source Files

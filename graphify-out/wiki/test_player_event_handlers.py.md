@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [get_npc_instance_service](get_npc_instance_service.md) (10 shared connections)
+- [RealTimeEventHandler](RealTimeEventHandler.md) (12 shared connections)
 - [PlayerEnteredRoom](PlayerEnteredRoom.md) (4 shared connections)
-- [ConnectionManager](ConnectionManager.md) (3 shared connections)
-- [player_combat_service.py](player_combat_service.py.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (1 shared connections)
 
 ## Source Files
 

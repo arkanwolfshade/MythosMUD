@@ -1,58 +1,54 @@
 # IdleMovementHandler
 
-> 109 nodes
+> 34 nodes
 
 ## Key Concepts
 
 - **IdleMovementHandler** (60 connections) — `server/npc/idle_movement.py`
-- **test_idle_movement.py** (35 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **idle_movement.py** (17 connections) — `server/npc/idle_movement.py`
 - **.execute_idle_movement()** (8 connections) — `server/npc/idle_movement.py`
 - **._should_idle_move_inner()** (8 connections) — `server/npc/idle_movement.py`
-- **patch** (8 connections)
 - **_npc_id_str()** (7 connections) — `server/npc/idle_movement.py`
 - **.select_exit()** (6 connections) — `server/npc/idle_movement.py`
 - **._calculate_exit_weights()** (5 connections) — `server/npc/idle_movement.py`
 - **.should_idle_move()** (5 connections) — `server/npc/idle_movement.py`
-- **.is_alive()** (5 connections) — `server/npc/npc_base.py`
 - **._is_npc_in_combat()** (4 connections) — `server/npc/idle_movement.py`
 - **._npc_registered_in_combat()** (4 connections) — `server/npc/idle_movement.py`
 - **._try_idle_room_change()** (4 connections) — `server/npc/idle_movement.py`
-- **_npc_alive_and_active()** (4 connections) — `server/npc/idle_movement.py`
 - **_passes_movement_probability()** (4 connections) — `server/npc/idle_movement.py`
-- **idle_movement_handler()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_is_npc_in_combat_true()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_false_when_registered_in_combat()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_not_active()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_not_alive()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_probability_check()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_probability_fails_when_random_above_threshold()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_probability_passes_when_random_below_threshold()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_true_when_not_in_combat_and_probability_succeeds()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- *... and 84 more nodes in this community*
+- **_cfg_bool()** (3 connections) — `server/npc/idle_movement.py`
+- **._calculate_distance_to_room()** (3 connections) — `server/npc/idle_movement.py`
+- **._calculate_exit_weight()** (3 connections) — `server/npc/idle_movement.py`
+- **._check_npc_combat_via_string_mapping()** (3 connections) — `server/npc/idle_movement.py`
+- **._check_npc_combat_via_uuid()** (3 connections) — `server/npc/idle_movement.py`
+- **.get_valid_exits()** (3 connections) — `server/npc/idle_movement.py`
+- **._log_idle_move_outcome()** (3 connections) — `server/npc/idle_movement.py`
+- **._select_weighted_exit()** (3 connections) — `server/npc/idle_movement.py`
+- **_cfg_float()** (2 connections) — `server/npc/idle_movement.py`
+- **_resolve_spawn_room()** (2 connections) — `server/npc/idle_movement.py`
+- **Core gating for idle movement (interval handled by scheduler).** (1 connections) — `server/npc/idle_movement.py`
+- **Determine if an NPC should attempt idle movement. Checks multiple conditions: -…** (1 connections) — `server/npc/idle_movement.py`
+- **Check if NPC is in combat via UUID lookup. Args: npc_id: NPC ID (string or…** (1 connections) — `server/npc/idle_movement.py`
+- **Check if NPC is in combat via string ID mapping. Args: npc_id: NPC ID as string…** (1 connections) — `server/npc/idle_movement.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [threading.py](threading.py.md) (6 shared connections)
-- [EventBus](EventBus.md) (4 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (3 shared connections)
-- [NPCMovementIntegration](NPCMovementIntegration.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [.is_active](is_active.md) (1 shared connections)
-- [time.py](time.py.md) (1 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
+- [test_idle_movement.py](test_idle_movement.py.md) (22 shared connections)
+- [EventBus](EventBus.md) (16 shared connections)
+- [patch](patch.md) (8 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [idle_movement_handler](idle_movement_handler.md) (1 shared connections)
+- [NPCMessageQueue](NPCMessageQueue.md) (1 shared connections)
+- [.is_alive](is_alive.md) (1 shared connections)
 
 ## Source Files
 
 - `server/npc/idle_movement.py`
-- `server/npc/npc_base.py`
-- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 187 (95%)
-- INFERRED: 9 (5%)
+- EXTRACTED: 96 (93%)
+- INFERRED: 7 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

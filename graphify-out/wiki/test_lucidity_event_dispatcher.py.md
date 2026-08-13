@@ -34,10 +34,10 @@
 ## Relationships
 
 - [LucidityService](LucidityService.md) (15 shared connections)
-- [.state](state.md) (5 shared connections)
+- [rescue_commands.py](rescue_commands.py.md) (5 shared connections)
 - [hallucinations.py](hallucinations.py.md) (3 shared connections)
 - [send_game_event](send_game_event.md) (2 shared connections)
-- [rescue_service.py](rescue_service.py.md) (2 shared connections)
+- [test_rescue_service.py](test_rescue_service.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files

@@ -35,8 +35,9 @@
 
 - [asyncio](asyncio.md) (26 shared connections)
 - [preferences_service](preferences_service.md) (4 shared connections)
-- [Player](Player.md) (3 shared connections)
+- [log_and_raise](log_and_raise.md) (2 shared connections)
 - [PlayerPreferencesService](PlayerPreferencesService.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [test_create_player_preferences_success](test_create_player_preferences_success.md) (1 shared connections)
 - [test_create_player_preferences_integrity_error](test_create_player_preferences_integrity_error.md) (1 shared connections)
 - [test_get_player_preferences_not_found](test_get_player_preferences_not_found.md) (1 shared connections)
@@ -44,7 +45,6 @@
 - [test_mute_channel_already_muted](test_mute_channel_already_muted.md) (1 shared connections)
 - [test_get_muted_channels_success](test_get_muted_channels_success.md) (1 shared connections)
 - [test_is_channel_muted_invalid_channel](test_is_channel_muted_invalid_channel.md) (1 shared connections)
-- [test_delete_player_preferences_success](test_delete_player_preferences_success.md) (1 shared connections)
 
 ## Source Files
 

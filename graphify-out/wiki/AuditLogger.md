@@ -1,10 +1,11 @@
 # AuditLogger
 
-> 44 nodes
+> 46 nodes
 
 ## Key Concepts
 
 - **AuditLogger** (21 connections) — `server/utils/audit_logger.py`
+- **audit_logger.py** (14 connections) — `server/utils/audit_logger.py`
 - **._write_entry()** (10 connections) — `server/utils/audit_logger.py`
 - **test_audit_logger.py** (8 connections) — `server/tests/unit/utils/test_audit_logger.py`
 - **Any** (7 connections)
@@ -28,12 +29,17 @@
 - **.log_player_action()** (3 connections) — `server/utils/audit_logger.py`
 - **datetime** (3 connections)
 - **Path** (3 connections)
-- **TypedDict** (1 connections)
-- *... and 19 more nodes in this community*
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [get_config](get_config.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [test_command_validator.py](test_command_validator.py.md) (1 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 72 (100%)
+- EXTRACTED: 82 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

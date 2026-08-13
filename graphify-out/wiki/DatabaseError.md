@@ -2,7 +2,7 @@
 
 > God node · 167 connections · `server/exceptions.py`
 
-**Community:** [server/exceptions.py](server-exceptions.py.md)
+**Community:** [get_logger](get_logger.md)
 
 ## Connections by Relation
 
@@ -29,7 +29,7 @@
 - test_change_position_database_error() `EXTRACTED`
 
 ### contains
-- [server/exceptions.py](server-exceptions.py.md) `EXTRACTED`
+- server/exceptions.py `EXTRACTED`
 
 ### imports
 - database.py `EXTRACTED`
@@ -37,24 +37,24 @@
 - players.py `EXTRACTED`
 - [maps.py](maps.py.md) `EXTRACTED`
 - [test_container_persistence.py](test_container_persistence.py.md) `EXTRACTED`
-- persistence/container_persistence.py `EXTRACTED`
+- [persistence/container_persistence.py](persistence-container_persistence.py.md) `EXTRACTED`
 - [test_player_service.py](test_player_service.py.md) `EXTRACTED`
 - test_container_persistence_extended_row_helpers.py `EXTRACTED`
 - connection_manager_methods.py `EXTRACTED`
-- [test_connection_delegates.py](test_connection_delegates.py.md) `EXTRACTED`
+- test_connection_delegates.py `EXTRACTED`
 - [test_npc_service.py](test_npc_service.py.md) `EXTRACTED`
-- test_player_respawn_service.py `EXTRACTED`
 - [test_connection_establishment.py](test_connection_establishment.py.md) `EXTRACTED`
+- [test_player_respawn_service.py](test_player_respawn_service.py.md) `EXTRACTED`
 - test_exploration_service.py `EXTRACTED`
 - player_service.py `EXTRACTED`
 - legacy_error_handlers.py `EXTRACTED`
-- [test_exceptions.py](test_exceptions.py.md) `EXTRACTED`
+- test_exceptions.py `EXTRACTED`
 - player_respawn_service.py `EXTRACTED`
 - test_database_error_handling.py `EXTRACTED`
 - test_container_persistence_extended_crud.py `EXTRACTED`
 
 ### inherits
-- [MythosMUDError](MythosMUDError.md) `EXTRACTED`
+- MythosMUDError `EXTRACTED`
 
 ### method
 - .__init__() `EXTRACTED`

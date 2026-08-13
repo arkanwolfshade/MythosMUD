@@ -33,12 +33,11 @@
 
 ## Relationships
 
+- [get_logger](get_logger.md) (5 shared connections)
 - [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (4 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (3 shared connections)
-- [Player](Player.md) (3 shared connections)
 - [User](User.md) (2 shared connections)
+- [log_and_raise](log_and_raise.md) (2 shared connections)
 - [Profession](Profession.md) (1 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
 
 ## Source Files
 

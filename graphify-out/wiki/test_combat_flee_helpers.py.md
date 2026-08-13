@@ -1,6 +1,6 @@
 # test_combat_flee_helpers.py
 
-> 70 nodes
+> 85 nodes
 
 ## Key Concepts
 
@@ -16,8 +16,11 @@
 - **_PlayerPositionServiceLike** (7 connections) — `server/commands/combat_flee.py`
 - **_get_flee_room_id()** (7 connections) — `server/commands/combat_flee.py`
 - **combat_helpers.py** (7 connections) — `server/commands/combat_helpers.py`
+- **format_combat_status()** (6 connections) — `server/commands/combat_helpers.py`
+- **get_combat_target()** (6 connections) — `server/commands/combat_helpers.py`
 - **test_validate_flee_combat_and_room_success()** (6 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
 - **asyncio** (6 connections)
+- **test_combat_helpers.py** (6 connections) — `server/tests/unit/commands/test_combat_helpers.py`
 - **run_handle_flee_command()** (5 connections) — `server/commands/combat_flee.py`
 - **test_validate_flee_combat_and_room_no_movement_service()** (5 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
 - **_participant()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
@@ -26,32 +29,26 @@
 - **test_resolve_flee_preconditions_player_error()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
 - **test_validate_flee_combat_and_room_no_combat_service()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
 - **UUID** (4 connections)
-- **.check_and_interrupt_rest()** (3 connections) — `server/commands/combat_flee.py`
-- **.combat_service()** (3 connections) — `server/commands/combat_flee.py`
-- **.get_player_and_room()** (3 connections) — `server/commands/combat_flee.py`
-- *... and 45 more nodes in this community*
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
-- [CombatParticipant](CombatParticipant.md) (8 shared connections)
-- [TargetMatch](TargetMatch.md) (5 shared connections)
-- [CombatService](CombatService.md) (5 shared connections)
-- [combat_loader.py](combat_loader.py.md) (4 shared connections)
-- [combat_service.py](combat_service.py.md) (4 shared connections)
-- [test_combat_flee_handler.py](test_combat_flee_handler.py.md) (2 shared connections)
-- [server/models/game.py](server-models-game.py.md) (2 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (1 shared connections)
+- [CombatService](CombatService.md) (19 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (11 shared connections)
+- [log_and_raise](log_and_raise.md) (1 shared connections)
+- [server/models/game.py](server-models-game.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/combat_flee.py`
 - `server/commands/combat_helpers.py`
 - `server/tests/unit/commands/test_combat_flee_helpers.py`
+- `server/tests/unit/commands/test_combat_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 141 (94%)
-- INFERRED: 9 (6%)
+- EXTRACTED: 157 (92%)
+- INFERRED: 13 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -34,8 +34,9 @@
 ## Relationships
 
 - [ContainerComponent](ContainerComponent.md) (14 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
 - [game_tick_processing.py](game_tick_processing.py.md) (3 shared connections)
+- [build_event](build_event.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [mock_container](mock_container.md) (2 shared connections)
 
 ## Source Files

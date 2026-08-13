@@ -1,70 +1,62 @@
 # fastapi_integration.py
 
-> 212 nodes
+> 63 nodes
 
 ## Key Concepts
 
 - **fastapi_integration.py** (27 connections) — `docs/examples/logging/fastapi_integration.py`
-- **PerformanceMonitor** (25 connections) — `server/monitoring/performance_monitor.py`
-- **websocket_integration.py** (22 connections) — `docs/examples/logging/websocket_integration.py`
-- **correct_patterns.py** (20 connections) — `docs/examples/logging/correct_patterns.py`
-- **exception_tracker.py** (20 connections) — `server/monitoring/exception_tracker.py`
-- **performance_monitor.py** (20 connections) — `server/monitoring/performance_monitor.py`
 - **measure_performance()** (19 connections) — `server/monitoring/performance_monitor.py`
-- **bind_request_context()** (15 connections) — `server/structured_logging/logging_context.py`
-- **server/main.py** (15 connections) — `server/main.py`
-- **track_exception()** (13 connections) — `server/monitoring/exception_tracker.py`
-- **get_performance_monitor()** (13 connections) — `server/monitoring/performance_monitor.py`
-- **create_enhanced_error_context()** (12 connections) — `server/utils/enhanced_error_logging.py`
 - **clear_request_context()** (11 connections) — `server/structured_logging/logging_context.py`
-- **middleware()** (9 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **correlation_middleware.py** (9 connections) — `server/middleware/correlation_middleware.py`
-- **PerformanceMetric** (8 connections) — `server/monitoring/performance_monitor.py`
-- **.__call__()** (8 connections) — `server/middleware/correlation_middleware.py`
+- **player_service()** (7 connections) — `docs/examples/logging/fastapi_integration.py`
 - **update_player_background_task()** (7 connections) — `docs/examples/logging/fastapi_integration.py`
-- **handle_websocket_message()** (7 connections) — `docs/examples/logging/websocket_integration.py`
-- **create_context_from_request()** (7 connections) — `server/utils/error_logging.py`
-- **CorrelationMiddleware** (6 connections) — `server/middleware/correlation_middleware.py`
-- **ExceptionTrackInput** (6 connections) — `server/monitoring/exception_tracker.py`
 - **add_request_context()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
 - **general_exception_handler()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
 - **http_exception_handler()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
-- *... and 187 more nodes in this community*
+- **upload_avatar()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
+- **websocket_endpoint()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
+- **HTTPException** (6 connections)
+- **WebSocket** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **create_player()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **list_players()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **update_player_background()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **correct_request_context()** (4 connections) — `docs/examples/logging/correct_patterns.py`
+- **get_player()** (4 connections) — `docs/examples/logging/fastapi_integration.py`
+- **log_api_requests()** (4 connections) — `docs/examples/logging/fastapi_integration.py`
+- **Request** (4 connections)
+- **auth_service()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **BackgroundTasks** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **UploadFile** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **get_current_user()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **process_websocket_message()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **post** (3 connections)
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [MonitoringDashboard](MonitoringDashboard.md) (16 shared connections)
-- [get_logger](get_logger.md) (15 shared connections)
-- [Player](Player.md) (10 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (6 shared connections)
-- [testing_examples.py](testing_examples.py.md) (6 shared connections)
-- [factory.py](factory.py.md) (4 shared connections)
-- [lifespan.py](lifespan.py.md) (4 shared connections)
-- [test_security_headers.py](test_security_headers.py.md) (4 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (4 shared connections)
-- [time.py](time.py.md) (4 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
-- [LucidityFluxService](LucidityFluxService.md) (3 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [testing_examples.py](testing_examples.py.md) (5 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (5 shared connections)
+- [correct_patterns.py](correct_patterns.py.md) (4 shared connections)
+- [websocket_integration.py](websocket_integration.py.md) (4 shared connections)
+- [StandardizedErrorResponse](StandardizedErrorResponse.md) (3 shared connections)
+- [test_security_headers.py](test_security_headers.py.md) (2 shared connections)
+- [User](User.md) (1 shared connections)
+- [LucidityFluxService](LucidityFluxService.md) (1 shared connections)
+- [migration_example_4](migration_example_4.md) (1 shared connections)
+- [.__call__](__call__.md) (1 shared connections)
+- [get_config](get_config.md) (1 shared connections)
 
 ## Source Files
 
 - `docs/examples/logging/correct_patterns.py`
 - `docs/examples/logging/fastapi_integration.py`
-- `docs/examples/logging/websocket_integration.py`
-- `server/main.py`
-- `server/middleware/correlation_middleware.py`
-- `server/monitoring/__init__.py`
-- `server/monitoring/exception_tracker.py`
 - `server/monitoring/performance_monitor.py`
 - `server/structured_logging/logging_context.py`
-- `server/tests/unit/middleware/test_security_headers.py`
-- `server/utils/enhanced_error_logging.py`
-- `server/utils/error_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 382 (93%)
-- INFERRED: 29 (7%)
+- EXTRACTED: 105 (88%)
+- INFERRED: 15 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

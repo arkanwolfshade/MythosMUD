@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [MessageBroadcaster](MessageBroadcaster.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [MessageBroadcaster](MessageBroadcaster.md) (3 shared connections)
 
 ## Source Files
 

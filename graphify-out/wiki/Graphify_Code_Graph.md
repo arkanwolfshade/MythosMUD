@@ -1,11 +1,12 @@
 # Graphify Code Graph
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Graphify Code Graph** (2 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
+- **Graphify Code Graph** (3 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
 - **Graphify Code Graph.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
+- **Chaosium pack graphs (external)** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
 - **Relationship to this vault** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
 
 ## Relationships
@@ -18,7 +19,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

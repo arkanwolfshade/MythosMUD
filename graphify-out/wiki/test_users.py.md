@@ -33,10 +33,8 @@
 
 ## Relationships
 
-- [User](User.md) (33 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (9 shared connections)
-- [lifespan.py](lifespan.py.md) (3 shared connections)
-- [test_auth_utils.py](test_auth_utils.py.md) (2 shared connections)
+- [User](User.md) (36 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
 - [UnknownChannelStrategy](UnknownChannelStrategy.md) (2 shared connections)
 
 ## Source Files

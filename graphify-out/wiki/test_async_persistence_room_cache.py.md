@@ -22,7 +22,7 @@
 ## Relationships
 
 - [asyncio](asyncio.md) (6 shared connections)
-- [Player](Player.md) (2 shared connections)
+- [log_and_raise](log_and_raise.md) (2 shared connections)
 - [test_get_user_by_username_case_insensitive_no_session](test_get_user_by_username_case_insensitive_no_session.md) (1 shared connections)
 - [test_get_professions_no_session](test_get_professions_no_session.md) (1 shared connections)
 - [test_get_players_batch_with_players](test_get_players_batch_with_players.md) (1 shared connections)

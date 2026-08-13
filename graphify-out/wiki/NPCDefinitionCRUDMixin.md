@@ -1,6 +1,6 @@
 # NPCDefinitionCRUDMixin
 
-> 44 nodes
+> 42 nodes
 
 ## Key Concepts
 
@@ -11,7 +11,6 @@
 - **._execute_create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
 - **._execute_npc_update()** (8 connections) — `server/services/npc_service/definition_crud.py`
 - **AsyncSession** (8 connections)
-- **NPCQueryMixin** (7 connections) — `server/services/npc_service/queries.py`
 - **._build_npc_update_data()** (7 connections) — `server/services/npc_service/definition_crud.py`
 - **.get_npc_definition()** (7 connections) — `server/services/npc_service/definition_crud.py`
 - **.get_npc_definitions()** (7 connections) — `server/services/npc_service/definition_crud.py`
@@ -29,14 +28,14 @@
 - **AsyncSession** (3 connections)
 - **Any** (1 connections)
 - **Execute create_npc_definition stored procedure and return the created…** (1 connections) — `server/services/npc_service/definition_crud.py`
-- *... and 19 more nodes in this community*
+- **Validate create_npc_definition parameters. Raises ValueError if invalid.** (1 connections) — `server/services/npc_service/definition_crud.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (14 shared connections)
-- [alias_storage.py](alias_storage.py.md) (8 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (4 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (16 shared connections)
+- [EventBus](EventBus.md) (11 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 - [NPCSpawnRuleCRUDMixin](NPCSpawnRuleCRUDMixin.md) (1 shared connections)
 
 ## Source Files
@@ -47,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 97 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 94 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

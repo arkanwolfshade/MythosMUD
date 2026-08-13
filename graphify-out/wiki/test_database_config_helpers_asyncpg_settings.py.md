@@ -23,8 +23,7 @@
 
 ## Relationships
 
-- [HolidayService](HolidayService.md) (6 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
 
 ## Source Files
 

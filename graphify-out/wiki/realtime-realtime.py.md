@@ -31,10 +31,10 @@
 
 ## Relationships
 
-- [real_time.py](real_time.py.md) (8 shared connections)
+- [.state](state.md) (8 shared connections)
 - [test_nats_messages.py](test_nats_messages.py.md) (5 shared connections)
 - [server/schemas/__init__.py](server-schemas-__init__.py.md) (3 shared connections)
-- [time.py](time.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

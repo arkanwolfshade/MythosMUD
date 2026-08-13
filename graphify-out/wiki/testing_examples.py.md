@@ -1,47 +1,54 @@
 # testing_examples.py
 
-> 14 nodes
+> 60 nodes
 
 ## Key Concepts
 
 - **testing_examples.py** (30 connections) — `docs/examples/logging/testing_examples.py`
+- **track_exception()** (13 connections) — `server/monitoring/exception_tracker.py`
+- **WebSocket** (4 connections) — `docs/examples/logging/testing_examples.py`
+- **process_batch()** (4 connections) — `docs/examples/logging/testing_examples.py`
+- **test_async_logging()** (4 connections) — `docs/examples/logging/testing_examples.py`
+- **client** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **LoggingMiddleware** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **async_operation()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **process_item()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **risky_operation()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_batch_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_context_binding()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_exception_tracking()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **test_logging_correlation_ids()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_logging_error_handling()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_logging_performance_metrics()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_middleware_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **test_performance_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_websocket_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **database** (2 connections) — `docs/examples/logging/testing_examples.py`
+- **.get()** (2 connections) — `docs/examples/logging/testing_examples.py`
+- **.post()** (2 connections) — `docs/examples/logging/testing_examples.py`
+- **.execute()** (2 connections) — `docs/examples/logging/testing_examples.py`
+- **.process_request()** (2 connections) — `docs/examples/logging/testing_examples.py`
 - **test_api_request_logging()** (2 connections) — `docs/examples/logging/testing_examples.py`
-- **test_database_logging()** (2 connections) — `docs/examples/logging/testing_examples.py`
-- **test_error_logging()** (2 connections) — `docs/examples/logging/testing_examples.py`
-- **test_logging_security_sanitization()** (2 connections) — `docs/examples/logging/testing_examples.py`
-- **request** (1 connections) — `docs/examples/logging/testing_examples.py`
-- **Test that sensitive data is properly sanitized in logs.** (1 connections) — `docs/examples/logging/testing_examples.py`
-- **Test database operation logging.** (1 connections) — `docs/examples/logging/testing_examples.py`
-- **Test logging correlation IDs.** (1 connections) — `docs/examples/logging/testing_examples.py`
-- **Test error logging functionality.** (1 connections) — `docs/examples/logging/testing_examples.py`
-- **Test performance logging functionality.** (1 connections) — `docs/examples/logging/testing_examples.py`
-- **Test API request logging in integration tests.** (1 connections) — `docs/examples/logging/testing_examples.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [fastapi_integration.py](fastapi_integration.py.md) (6 shared connections)
-- [test_async_logging](test_async_logging.md) (3 shared connections)
-- [process_batch](process_batch.md) (3 shared connections)
-- [WebSocket](WebSocket.md) (2 shared connections)
-- [risky_operation](risky_operation.md) (2 shared connections)
-- [LoggingMiddleware](LoggingMiddleware.md) (2 shared connections)
-- [test_basic_logging](test_basic_logging.md) (1 shared connections)
-- [test_logging_performance_metrics](test_logging_performance_metrics.md) (1 shared connections)
-- [test_fastapi_endpoint_logging](test_fastapi_endpoint_logging.md) (1 shared connections)
-- [database](database.md) (1 shared connections)
-- [client](client.md) (1 shared connections)
-- [test_context_binding](test_context_binding.md) (1 shared connections)
+- [fastapi_integration.py](fastapi_integration.py.md) (5 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (4 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [correct_patterns.py](correct_patterns.py.md) (2 shared connections)
+- [websocket_integration.py](websocket_integration.py.md) (2 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (2 shared connections)
 
 ## Source Files
 
 - `docs/examples/logging/testing_examples.py`
+- `server/monitoring/exception_tracker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 82 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

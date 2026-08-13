@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [command_handler_unified.py](command_handler_unified.py.md) (31 shared connections)
-- [_check_grace_period_block](_check_grace_period_block.md) (5 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (36 shared connections)
 - [AliasStorage](AliasStorage.md) (2 shared connections)
 
 ## Source Files

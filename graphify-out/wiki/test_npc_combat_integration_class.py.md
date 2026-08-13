@@ -1,22 +1,13 @@
 # test_npc_combat_integration_class.py
 
-> 54 nodes
+> 36 nodes
 
 ## Key Concepts
 
 - **test_npc_combat_integration_class.py** (23 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **NPCAttacked** (11 connections) — `server/events/event_types.py`
-- **integration()** (7 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **._attack_target_impl()** (6 connections) — `server/npc/aggressive_mob_npc.py`
-- **.attack_target()** (4 connections) — `server/npc/aggressive_mob_npc.py`
-- **._attack_via_combat_integration()** (4 connections) — `server/npc/aggressive_mob_npc.py`
 - **test_get_combat_stats_for_player()** (4 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
 - **test_get_combat_stats_npc_only_normalized()** (4 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
 - **test_handle_npc_death_with_killer_applies_mechanics()** (4 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- **._get_attack_damage()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **._handle_attack_target()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **._publish_attack_event()** (3 connections) — `server/npc/combat_integration.py`
 - **mock_persistence()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
 - **test_calculate_damage_physical_strength_bonus()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
 - **test_calculate_damage_weapon_type_no_strength_bonus()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
@@ -29,26 +20,29 @@
 - **test_get_npc_stats_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
 - **test_get_npc_stats_preserves_values()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
 - **test_normalize_npc_stats_adds_hp_from_determination_points()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- *... and 29 more nodes in this community*
+- **test_publish_attack_event_emits_npc_attacked()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **asyncio** (3 connections)
+- **fixture** (2 connections)
+- **Unit tests for server.npc.combat_integration.NPCCombatIntegration (helpers and…** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **Invalid UUID with npc_stats returns normalized NPC stats.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **Killer path loads player and calls game mechanics helpers.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **After damage, old_dp reflects pre-hit value.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **Display name resolves from lifecycle_manager.active_npcs when present.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **When lifecycle manager is unavailable, display name lookup returns None.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [get_npc_instance_service](get_npc_instance_service.md) (22 shared connections)
-- [EventBus](EventBus.md) (9 shared connections)
-- [test_quest_instance_repository.py](test_quest_instance_repository.py.md) (2 shared connections)
-- [BaseEvent](BaseEvent.md) (1 shared connections)
-- [.__post_init__](__post_init__.md) (1 shared connections)
+- [EventBus](EventBus.md) (19 shared connections)
+- [event_types.py](event_types.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/events/event_types.py`
-- `server/npc/aggressive_mob_npc.py`
-- `server/npc/combat_integration.py`
 - `server/tests/unit/npc/test_npc_combat_integration_class.py`
 
 ## Audit Trail
 
-- EXTRACTED: 92 (100%)
+- EXTRACTED: 59 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -21,9 +21,9 @@
 ## Relationships
 
 - [test_skill_service.py](test_skill_service.py.md) (6 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
+- [log_and_raise](log_and_raise.md) (1 shared connections)
 - [api/character_creation.py](api-character_creation.py.md) (1 shared connections)
-- [skills_commands.py](skills_commands.py.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
 
 ## Source Files
 

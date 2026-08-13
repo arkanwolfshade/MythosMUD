@@ -1,6 +1,6 @@
 # fixtures/integration/__init__.py
 
-> 46 nodes
+> 45 nodes
 
 ## Key Concepts
 
@@ -8,13 +8,13 @@
 - **fixtures/integration/__init__.py** (18 connections) — `server/tests/fixtures/integration/__init__.py`
 - **db_cleanup()** (11 connections) — `server/tests/fixtures/integration/__init__.py`
 - **test_add_player_effect_generates_id()** (9 connections) — `server/tests/integration/test_procedures_return_shape.py`
-- **test_lucidity_adjustment_round_trip()** (8 connections) — `server/tests/integration/test_lucidity_round_trip.py`
 - **integration_engine()** (7 connections) — `server/tests/fixtures/integration/__init__.py`
 - **_assert_allowed_integration_test_db()** (6 connections) — `server/tests/fixtures/integration/__init__.py`
 - **test_get_npc_system_statistics_return_shape()** (6 connections) — `server/tests/integration/test_procedures_return_shape.py`
 - **test_get_player_by_id_return_shape_and_not_found()** (6 connections) — `server/tests/integration/test_procedures_return_shape.py`
 - **test_get_rooms_with_exits_includes_arena_zone_rooms()** (6 connections) — `server/tests/integration/test_procedures_return_shape.py`
 - **test_get_rooms_with_exits_return_shape()** (6 connections) — `server/tests/integration/test_procedures_return_shape.py`
+- **quest_seed_data()** (6 connections) — `server/tests/integration/test_quest_flow.py`
 - **db.py** (6 connections) — `server/tests/fixtures/integration/db.py`
 - **_delete_mutable_integration_test_rows()** (5 connections) — `server/tests/fixtures/integration/__init__.py`
 - **integration_db_url()** (5 connections) — `server/tests/fixtures/integration/__init__.py`
@@ -29,14 +29,14 @@
 - **AsyncSession** (3 connections)
 - **_IntegrationState** (2 connections) — `server/tests/fixtures/integration/__init__.py`
 - **async_sessionmaker** (2 connections)
-- *... and 21 more nodes in this community*
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [Player](Player.md) (12 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [ValidationError](ValidationError.md) (3 shared connections)
+- [log_and_raise](log_and_raise.md) (10 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
 - [User](User.md) (3 shared connections)
+- [npc_database.py](npc_database.py.md) (2 shared connections)
 - [test_quest_instance_repository.py](test_quest_instance_repository.py.md) (2 shared connections)
 - [LucidityService](LucidityService.md) (1 shared connections)
 
@@ -44,12 +44,12 @@
 
 - `server/tests/fixtures/integration/__init__.py`
 - `server/tests/fixtures/integration/db.py`
-- `server/tests/integration/test_lucidity_round_trip.py`
 - `server/tests/integration/test_procedures_return_shape.py`
+- `server/tests/integration/test_quest_flow.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (89%)
+- EXTRACTED: 88 (89%)
 - INFERRED: 11 (11%)
 - AMBIGUOUS: 0 (0%)
 

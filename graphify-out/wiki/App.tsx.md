@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **App.tsx** (24 connections) — `client/src/App.tsx`
-- **App()** (23 connections) — `client/src/App.tsx`
+- **App.tsx** (22 connections) — `client/src/App.tsx`
+- **App()** (21 connections) — `client/src/App.tsx`
 - **app.test.helpers.ts** (19 connections) — `client/src/__tests__/app.test.helpers.ts`
 - **ProfessionSystemErrorHandling.test.tsx** (14 connections) — `client/src/__tests__/ProfessionSystemErrorHandling.test.tsx`
 - **professionSystemErrorHandling.test.helpers.ts** (13 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [security.ts](security.ts.md) (9 shared connections)
-- [appLazyScreens.tsx](appLazyScreens.tsx.md) (3 shared connections)
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (2 shared connections)
+- [security.ts](security.ts.md) (7 shared connections)
+- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (2 shared connections)
 - [SkillAssignmentScreen.tsx](SkillAssignmentScreen.tsx.md) (2 shared connections)
-- [gameStore.ts](gameStore.ts.md) (1 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (1 shared connections)
+- [GameLogPanel.tsx](GameLogPanel.tsx.md) (1 shared connections)
 
 ## Source Files
 
@@ -64,7 +64,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 146 (100%)
+- EXTRACTED: 142 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

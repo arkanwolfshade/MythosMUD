@@ -1,14 +1,16 @@
 # LogAggregator
 
-> 42 nodes
+> 46 nodes
 
 ## Key Concepts
 
 - **LogAggregator** (25 connections) — `server/structured_logging/log_aggregator.py`
 - **LogEntry** (14 connections) — `server/structured_logging/log_aggregator.py`
+- **log_aggregator.py** (14 connections) — `server/structured_logging/log_aggregator.py`
 - **.get_logs()** (10 connections) — `server/structured_logging/log_aggregator.py`
 - **LogQueryFilter** (9 connections) — `server/structured_logging/log_aggregator.py`
 - **.export_logs()** (8 connections) — `server/structured_logging/log_aggregator.py`
+- **aggregate_log_entry()** (5 connections) — `server/structured_logging/log_aggregator.py`
 - **._export_csv()** (5 connections) — `server/structured_logging/log_aggregator.py`
 - **._export_json()** (5 connections) — `server/structured_logging/log_aggregator.py`
 - **.get_correlation_logs()** (5 connections) — `server/structured_logging/log_aggregator.py`
@@ -27,14 +29,15 @@
 - **._process_logs()** (2 connections) — `server/structured_logging/log_aggregator.py`
 - **.shutdown()** (2 connections) — `server/structured_logging/log_aggregator.py`
 - **Any** (1 connections)
-- **Add a log entry to the aggregation system.** (1 connections) — `server/structured_logging/log_aggregator.py`
-- **Get filtered log entries.** (1 connections) — `server/structured_logging/log_aggregator.py`
-- *... and 17 more nodes in this community*
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [MonitoringDashboard](MonitoringDashboard.md) (8 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (7 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
+- [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
+- [lifespan.py](lifespan.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 81 (99%)
+- EXTRACTED: 94 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

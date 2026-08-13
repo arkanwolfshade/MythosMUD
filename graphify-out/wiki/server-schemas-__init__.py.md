@@ -1,78 +1,64 @@
 # server/schemas/__init__.py
 
-> 333 nodes
+> 86 nodes
 
 ## Key Concepts
 
 - **server/schemas/__init__.py** (70 connections) — `server/schemas/__init__.py`
-- **models/user.py** (56 connections) — `server/models/user.py`
-- **test_admin_auth_service.py** (54 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **users.py** (46 connections) — `server/auth/users.py`
-- **get_admin_auth_service()** (39 connections) — `server/services/admin_auth_service.py`
-- **rooms.py** (35 connections) — `server/api/rooms.py`
-- **validate_admin_permission()** (31 connections) — `server/api/admin/npc_router_core.py`
-- **npc_definitions_api.py** (29 connections) — `server/api/admin/npc_definitions_api.py`
-- **npc_instances_api.py** (26 connections) — `server/api/admin/npc_instances_api.py`
-- **npc_population_api.py** (22 connections) — `server/api/admin/npc_population_api.py`
-- **npc_spawn_rules_api.py** (22 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **npc_schemas.py** (21 connections) — `server/api/admin/npc_schemas.py`
-- **npc_admin_mgmt_api.py** (20 connections) — `server/api/admin/npc_admin_mgmt_api.py`
-- **admin_auth_service.py** (19 connections) — `server/services/admin_auth_service.py`
-- **AdminAuthService** (18 connections) — `server/services/admin_auth_service.py`
-- **skills.py** (18 connections) — `server/api/skills.py`
-- **AdminAction** (15 connections) — `server/services/admin_auth_service.py`
-- **npc_router_core.py** (15 connections) — `server/api/admin/npc_router_core.py`
-- **npc_admin.py** (15 connections) — `server/schemas/admin/npc_admin.py`
-- **AdminSession** (14 connections) — `server/schemas/admin/admin_data.py`
-- **AuditLogEntry** (14 connections) — `server/schemas/admin/admin_data.py`
-- **update_room_position()** (14 connections) — `server/api/rooms.py`
-- **_update_npc_definition_internal()** (13 connections) — `server/api/admin/npc_definitions_api.py`
-- **schemas/admin/__init__.py** (13 connections) — `server/schemas/admin/__init__.py`
-- **create_npc_definition()** (12 connections) — `server/api/admin/npc_definitions_api.py`
-- *... and 308 more nodes in this community*
+- **test_metrics_endpoints.py** (37 connections) — `server/tests/unit/api/test_metrics_endpoints.py`
+- **api/metrics.py** (29 connections) — `server/api/metrics.py`
+- **replay_dlq_message()** (14 connections) — `server/api/metrics.py`
+- **asyncio** (14 connections)
+- **DLQReplayResponse** (13 connections) — `server/schemas/metrics/metrics.py`
+- **StatusMessageResponse** (13 connections) — `server/schemas/metrics/metrics.py`
+- **_admin_user()** (13 connections) — `server/tests/unit/api/test_metrics_endpoints.py`
+- **get_metrics()** (12 connections) — `server/api/metrics.py`
+- **metrics/metrics.py** (12 connections) — `server/schemas/metrics/metrics.py`
+- **DLQMessagesResponse** (11 connections) — `server/schemas/metrics/metrics.py`
+- **MetricsSummaryResponse** (11 connections) — `server/schemas/metrics/metrics.py`
+- **delete_dlq_message()** (11 connections) — `server/api/metrics.py`
+- **reset_circuit_breaker()** (11 connections) — `server/api/metrics.py`
+- **MetricsResponse** (10 connections) — `server/schemas/metrics/metrics.py`
+- **get_dlq_messages()** (10 connections) — `server/api/metrics.py`
+- **get_metrics_summary()** (10 connections) — `server/api/metrics.py`
+- **_load_dlq_message()** (10 connections) — `server/api/metrics.py`
+- **DLQMessage** (9 connections) — `server/schemas/metrics/metrics_data.py`
+- **DLQReplayDetails** (9 connections) — `server/schemas/metrics/metrics_data.py`
+- **MetricsData** (9 connections) — `server/schemas/metrics/metrics_data.py`
+- **MetricsSummary** (9 connections) — `server/schemas/metrics/metrics_data.py`
+- **reset_metrics()** (9 connections) — `server/api/metrics.py`
+- **verify_admin_access()** (9 connections) — `server/api/metrics.py`
+- **Any** (9 connections)
+- *... and 61 more nodes in this community*
 
 ## Relationships
 
-- [User](User.md) (45 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (34 shared connections)
-- [get_logger](get_logger.md) (23 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (18 shared connections)
-- [PlayerService](PlayerService.md) (15 shared connections)
-- [maps.py](maps.py.md) (12 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (12 shared connections)
-- [factory.py](factory.py.md) (10 shared connections)
-- [test_users.py](test_users.py.md) (9 shared connections)
-- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (9 shared connections)
-- [RoomService](RoomService.md) (8 shared connections)
-- [Player](Player.md) (8 shared connections)
+- [User](User.md) (12 shared connections)
+- [npc_admin.py](npc_admin.py.md) (11 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (10 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
+- [test_invite_schemas.py](test_invite_schemas.py.md) (7 shared connections)
+- [test_player_schemas.py](test_player_schemas.py.md) (6 shared connections)
+- [maps.py](maps.py.md) (5 shared connections)
+- [rooms.py](rooms.py.md) (5 shared connections)
+- [test_game.py](test_game.py.md) (4 shared connections)
+- [_convert_container_dict_to_container_data](_convert_container_dict_to_container_data.md) (3 shared connections)
+- [schemas/quest/__init__.py](schemas-quest-__init__.py.md) (3 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/api/admin/npc.py`
-- `server/api/admin/npc_admin_mgmt_api.py`
-- `server/api/admin/npc_definitions_api.py`
-- `server/api/admin/npc_instances_api.py`
-- `server/api/admin/npc_population_api.py`
-- `server/api/admin/npc_router_core.py`
-- `server/api/admin/npc_schemas.py`
-- `server/api/admin/npc_spawn_rules_api.py`
-- `server/api/rooms.py`
-- `server/api/skills.py`
-- `server/auth/email_utils.py`
-- `server/auth/users.py`
-- `server/models/user.py`
+- `server/api/metrics.py`
 - `server/schemas/__init__.py`
-- `server/schemas/admin/__init__.py`
-- `server/schemas/admin/admin_data.py`
-- `server/schemas/admin/npc_admin.py`
-- `server/schemas/players/player_respawn.py`
-- `server/schemas/rooms/__init__.py`
-- `server/schemas/rooms/room.py`
+- `server/schemas/metrics/__init__.py`
+- `server/schemas/metrics/metrics.py`
+- `server/schemas/metrics/metrics_data.py`
+- `server/tests/unit/api/test_metrics_endpoints.py`
 
 ## Audit Trail
 
-- EXTRACTED: 899 (97%)
-- INFERRED: 25 (3%)
+- EXTRACTED: 299 (93%)
+- INFERRED: 21 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

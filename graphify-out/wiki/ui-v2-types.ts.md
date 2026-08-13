@@ -1,6 +1,6 @@
 # ui-v2/types.ts
 
-> 112 nodes
+> 117 nodes
 
 ## Key Concepts
 
@@ -11,7 +11,6 @@
 - **panelReducerHandlers.test.ts** (19 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
 - **GameClientV2MinimapSection.tsx** (17 connections) — `client/src/components/ui-v2/GameClientV2MinimapSection.tsx`
 - **panelMinimizeDock.ts** (17 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
-- **PanelContainerViews.tsx** (15 connections) — `client/src/components/ui-v2/PanelSystem/PanelContainerViews.tsx`
 - **PanelPosition** (13 connections) — `client/src/components/ui-v2/types.ts`
 - **savePanelLayout()** (13 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
 - **PanelContainer.tsx** (13 connections) — `client/src/components/ui-v2/PanelSystem/PanelContainer.tsx`
@@ -29,22 +28,23 @@
 - **resolveInitialPanelLayout()** (9 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
 - **PanelContainerShared.tsx** (9 connections) — `client/src/components/ui-v2/PanelSystem/PanelContainerShared.tsx`
 - **usePanelContainerBody.ts** (9 connections) — `client/src/components/ui-v2/PanelSystem/usePanelContainerBody.ts`
-- *... and 87 more nodes in this community*
+- **panelLayout.ts** (9 connections) — `client/src/components/ui-v2/utils/panelLayout.ts`
+- *... and 92 more nodes in this community*
 
 ## Relationships
 
-- [Room](Room.md) (21 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (20 shared connections)
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (12 shared connections)
-- [projectorRoom.ts](projectorRoom.ts.md) (7 shared connections)
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (5 shared connections)
-- [GameTerminal.tsx](GameTerminal.tsx.md) (3 shared connections)
+- [GameClientV2.tsx](GameClientV2.tsx.md) (47 shared connections)
+- [EldritchIcon.tsx](EldritchIcon.tsx.md) (10 shared connections)
+- [projectorRoom.ts](projectorRoom.ts.md) (5 shared connections)
+- [messageHandlers.ts](messageHandlers.ts.md) (4 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (4 shared connections)
+- [stateUpdateUtils.ts](stateUpdateUtils.ts.md) (4 shared connections)
 - [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (2 shared connections)
 - [useAsciiMapState.ts](useAsciiMapState.ts.md) (2 shared connections)
-- [health.ts](health.ts.md) (2 shared connections)
+- [types/mythosTime.ts](types-mythosTime.ts.md) (2 shared connections)
+- [playerHandlers.ts](playerHandlers.ts.md) (2 shared connections)
 - [roomHandlers.ts](roomHandlers.ts.md) (2 shared connections)
-- [messageHandlers.ts](messageHandlers.ts.md) (2 shared connections)
-- [ansiToHtml.ts](ansiToHtml.ts.md) (2 shared connections)
+- [GameEvent](GameEvent.md) (2 shared connections)
 
 ## Source Files
 
@@ -71,8 +71,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 386 (99%)
-- INFERRED: 3 (1%)
+- EXTRACTED: 392 (99%)
+- INFERRED: 4 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

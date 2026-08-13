@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [time.py](time.py.md) (3 shared connections)
+- [RoomSubscriptionManager](RoomSubscriptionManager.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,35 +1,43 @@
 # DeadLetterQueue
 
-> 14 nodes
+> 82 nodes
 
 ## Key Concepts
 
 - **DeadLetterQueue** (35 connections) — `server/realtime/dead_letter_queue.py`
+- **test_dead_letter_queue.py** (28 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **DeadLetterMessage** (25 connections) — `server/realtime/dead_letter_queue.py`
+- **dead_letter_queue.py** (8 connections) — `server/realtime/dead_letter_queue.py`
+- **Any** (7 connections)
+- **.from_dict()** (6 connections) — `server/realtime/dead_letter_queue.py`
+- **Path** (5 connections)
+- **.enqueue()** (4 connections) — `server/realtime/dead_letter_queue.py`
+- **.enqueue_async()** (4 connections) — `server/realtime/dead_letter_queue.py`
+- **.__init__()** (4 connections) — `server/realtime/dead_letter_queue.py`
+- **.replay_message()** (4 connections) — `server/realtime/dead_letter_queue.py`
+- **test_cleanup_old_messages()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_cleanup_old_messages_no_old_messages()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_delete_message()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_dequeue_removes_file()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_dequeue_returns_oldest_message()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_enqueue_creates_file()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_enqueue_writes_correct_data()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
 - **test_get_statistics_with_messages()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **test_cleanup_old_messages_handles_errors()** (3 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **test_dead_letter_queue_init_without_storage_dir()** (3 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **test_dequeue_handles_read_error()** (3 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **test_list_messages_empty()** (3 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **.cleanup_old_messages()** (2 connections) — `server/realtime/dead_letter_queue.py`
-- **Clean up old DLQ messages. Args: max_age_days: Maximum age of messages to keep…** (1 connections) — `server/realtime/dead_letter_queue.py`
-- **Store messages that fail after all retries. Implements file-based storage for…** (1 connections) — `server/realtime/dead_letter_queue.py`
-- **Test DeadLetterQueue initialization without storage directory.** (1 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **Test dequeue() handles file read errors.** (1 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **Test get_statistics() returns stats with messages.** (1 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **Test list_messages() returns empty list when queue is empty.** (1 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **Test cleanup_old_messages() handles file errors.** (1 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_list_messages_handles_read_error()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_list_messages_respects_limit()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_list_messages_returns_all()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_replay_message()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **.to_dict()** (3 connections) — `server/realtime/dead_letter_queue.py`
+- **.delete_message()** (3 connections) — `server/realtime/dead_letter_queue.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [test_dead_letter_queue.py](test_dead_letter_queue.py.md) (12 shared connections)
-- [DeadLetterMessage](DeadLetterMessage.md) (7 shared connections)
-- [Path](Path.md) (5 shared connections)
-- [Any](Any.md) (4 shared connections)
+- [NATSMessageHandler](NATSMessageHandler.md) (4 shared connections)
+- [build_event](build_event.md) (3 shared connections)
+- [get_config](get_config.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [EventHandler](EventHandler.md) (1 shared connections)
-- [test_dequeue_returns_oldest_message](test_dequeue_returns_oldest_message.md) (1 shared connections)
-- [test_enqueue_writes_correct_data](test_enqueue_writes_correct_data.md) (1 shared connections)
-- [NATSMessageHandler](NATSMessageHandler.md) (1 shared connections)
+- [MessageFilteringHelper](MessageFilteringHelper.md) (1 shared connections)
 
 ## Source Files
 
@@ -38,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 46 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 141 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

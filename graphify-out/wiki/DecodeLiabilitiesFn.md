@@ -17,9 +17,8 @@
 
 ## Relationships
 
-- [Player](Player.md) (2 shared connections)
-- [PlayerRespawnService](PlayerRespawnService.md) (2 shared connections)
-- [LucidityService](LucidityService.md) (2 shared connections)
+- [LucidityService](LucidityService.md) (4 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 

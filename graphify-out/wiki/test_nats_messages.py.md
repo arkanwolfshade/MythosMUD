@@ -37,7 +37,7 @@
 - [.validate_timestamp](validate_timestamp.md) (3 shared connections)
 - [NATSMessageBroker](NATSMessageBroker.md) (2 shared connections)
 - [NATSMessageHandler](NATSMessageHandler.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
 - [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
 
 ## Source Files

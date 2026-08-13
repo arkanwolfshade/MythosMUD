@@ -31,9 +31,9 @@
 
 ## Relationships
 
-- [server/exceptions.py](server-exceptions.py.md) (6 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
 - [connection_manager.py](connection_manager.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (2 shared connections)
 
 ## Source Files
 

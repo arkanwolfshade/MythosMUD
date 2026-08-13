@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [server/exceptions.py](server-exceptions.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
 - [connection_manager.py](connection_manager.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [UUID](UUID.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files
 

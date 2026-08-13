@@ -11,8 +11,8 @@
 - **._is_target_in_login_grace_period()** (7 connections) — `server/npc/combat_integration_base.py`
 - **._convert_target_id_to_uuid()** (6 connections) — `server/npc/combat_integration_base.py`
 - **._handle_npc_attack_core()** (6 connections) — `server/npc/combat_integration_base.py`
-- **.__init__()** (5 connections) — `server/npc/combat_integration_base.py`
 - **._try_delegate_npc_attack_to_combat_service()** (5 connections) — `server/npc/combat_integration_base.py`
+- **_resolve_npc_combat_service_raw()** (5 connections) — `server/npc/combat_integration_base.py`
 - **._handle_attribute_error()** (4 connections) — `server/npc/combat_integration_base.py`
 - **._handle_unexpected_error()** (4 connections) — `server/npc/combat_integration_base.py`
 - **._handle_validation_error()** (4 connections) — `server/npc/combat_integration_base.py`
@@ -33,15 +33,15 @@
 
 ## Relationships
 
-- [server/exceptions.py](server-exceptions.py.md) (4 shared connections)
 - [get_logger](get_logger.md) (4 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
+- [get_config](get_config.md) (3 shared connections)
+- [.state](state.md) (3 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
 - [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (2 shared connections)
-- [.state](state.md) (2 shared connections)
-- [NpcCombatServiceProtocol](NpcCombatServiceProtocol.md) (1 shared connections)
 - [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
 - [EventBus](EventBus.md) (1 shared connections)
-- [MessageHandler](MessageHandler.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
+- [message_handler_factory.py](message_handler_factory.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 76 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 74 (92%)
+- INFERRED: 6 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

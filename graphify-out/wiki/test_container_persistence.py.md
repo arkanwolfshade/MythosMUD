@@ -36,8 +36,7 @@
 - [container_persistence/container_persistence.py](container_persistence-container_persistence.py.md) (31 shared connections)
 - [_fetch_container_items](_fetch_container_items.md) (9 shared connections)
 - [_parse_jsonb_column](_parse_jsonb_column.md) (7 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [test_create_container_invalid_source_type](test_create_container_invalid_source_type.md) (1 shared connections)
 - [test_get_containers_by_room_id_empty](test_get_containers_by_room_id_empty.md) (1 shared connections)
 - [test_update_container_invalid_lock_state](test_update_container_invalid_lock_state.md) (1 shared connections)
@@ -45,6 +44,7 @@
 - [test_create_container_database_error](test_create_container_database_error.md) (1 shared connections)
 - [test_create_container_success](test_create_container_success.md) (1 shared connections)
 - [test_create_container_with_items](test_create_container_with_items.md) (1 shared connections)
+- [test_get_containers_by_entity_id_database_error](test_get_containers_by_entity_id_database_error.md) (1 shared connections)
 
 ## Source Files
 

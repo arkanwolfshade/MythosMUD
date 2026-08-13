@@ -33,11 +33,12 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [test_chat_logger.py](test_chat_logger.py.md) (2 shared connections)
-- [chat_logger](chat_logger.md) (1 shared connections)
+- [test_chat_logger.py](test_chat_logger.py.md) (3 shared connections)
+- [user_manager.py](user_manager.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (1 shared connections)
 - [UserManager](UserManager.md) (1 shared connections)
+- [get_config](get_config.md) (1 shared connections)
 
 ## Source Files
 

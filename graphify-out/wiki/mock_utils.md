@@ -17,7 +17,7 @@
 ## Relationships
 
 - [test_player_event_handlers_respawn.py](test_player_event_handlers_respawn.py.md) (4 shared connections)
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
+- [RealTimeEventHandler](RealTimeEventHandler.md) (2 shared connections)
 
 ## Source Files
 

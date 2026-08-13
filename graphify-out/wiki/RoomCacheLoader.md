@@ -30,10 +30,10 @@
 
 ## Relationships
 
-- [server/exceptions.py](server-exceptions.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [HealthRepository](HealthRepository.md) (1 shared connections)
 - [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
 - [Room](Room.md) (1 shared connections)
-- [validate_room_data](validate_room_data.md) (1 shared connections)
 - [.get_instance](get_instance.md) (1 shared connections)
 
 ## Source Files

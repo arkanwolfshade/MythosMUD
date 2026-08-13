@@ -1,66 +1,61 @@
 # HolidayService
 
-> 159 nodes
+> 76 nodes
 
 ## Key Concepts
 
 - **HolidayService** (41 connections) — `server/services/holiday_service.py`
 - **HolidayCollection** (37 connections) — `server/schemas/calendar/calendar.py`
 - **HolidayEntry** (31 connections) — `server/schemas/calendar/calendar.py`
-- **ScheduleEntry** (28 connections) — `server/schemas/calendar/calendar.py`
 - **holiday_service.py** (24 connections) — `server/services/holiday_service.py`
-- **test_calendar_schemas.py** (21 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
 - **TestHolidayService** (20 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **get_asyncpg_server_settings_for_database_url()** (19 connections) — `server/database_config_helpers.py`
-- **ScheduleCollection** (12 connections) — `server/schemas/calendar/calendar.py`
-- **calendar/__init__.py** (10 connections) — `server/schemas/calendar/__init__.py`
-- **calendar/calendar.py** (9 connections) — `server/schemas/calendar/calendar.py`
-- **extract_observance_ids()** (8 connections) — `server/schemas/calendar/calendar.py`
-- **load_schedule_directory()** (8 connections) — `server/schemas/calendar/calendar.py`
 - **.get_upcoming_holidays()** (8 connections) — `server/services/holiday_service.py`
-- **.__init__()** (8 connections) — `server/services/holiday_service.py`
 - **.refresh_active()** (7 connections) — `server/services/holiday_service.py`
-- **_load_and_validate_holidays()** (6 connections) — `scripts/validate_calendar.py`
-- **_validate_schedule_files()** (6 connections) — `scripts/validate_calendar.py`
-- **slugify_observance()** (6 connections) — `server/schemas/calendar/calendar.py`
-- **_holiday_entry_from_row()** (6 connections) — `server/services/holiday_service.py`
-- **._async_load_from_database()** (6 connections) — `server/services/holiday_service.py`
 - **.test_init_loads_from_database()** (6 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **field_validator** (6 connections)
 - **datetime** (6 connections)
 - **test_holiday_service.py** (6 connections) — `server/tests/unit/services/test_holiday_service.py`
-- *... and 134 more nodes in this community*
+- **.get_active_holidays()** (5 connections) — `server/services/holiday_service.py`
+- **.get_serialized_active_holidays()** (5 connections) — `server/services/holiday_service.py`
+- **_ensure_utc()** (4 connections) — `server/services/holiday_service.py`
+- **.get_serialized_upcoming_holidays()** (4 connections) — `server/services/holiday_service.py`
+- **._load_from_database()** (4 connections) — `server/services/holiday_service.py`
+- **.sample_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_collection_property()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_day_ordinal()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_active_holiday_names()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_active_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_upcoming_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_upcoming_holidays_wraps_around()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_upcoming_summary()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_init_with_collection()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_last_refresh_property()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [bundles/game.py](bundles-game.py.md) (28 shared connections)
-- [ScheduleService](ScheduleService.md) (18 shared connections)
-- [test_database_config_helpers_asyncpg_settings.py](test_database_config_helpers_asyncpg_settings.py.md) (6 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (5 shared connections)
-- [ValidationError](ValidationError.md) (5 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (4 shared connections)
-- [test_game.py](test_game.py.md) (3 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
-- [GameBundle](GameBundle.md) (2 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (2 shared connections)
-- [rate_overrides.py](rate_overrides.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [test_calendar_schemas.py](test_calendar_schemas.py.md) (19 shared connections)
+- [validate_calendar.py](validate_calendar.py.md) (11 shared connections)
+- [ChronicleLike](ChronicleLike.md) (8 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [field_validator](field_validator.md) (3 shared connections)
+- [PlayerService](PlayerService.md) (3 shared connections)
+- [EventBus](EventBus.md) (3 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (2 shared connections)
+- [test_game.py](test_game.py.md) (2 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (2 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
+- [get_mythos_time](get_mythos_time.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/validate_calendar.py`
-- `server/database_config_helpers.py`
-- `server/npc/lifecycle_manager.py`
-- `server/schemas/calendar/__init__.py`
 - `server/schemas/calendar/calendar.py`
 - `server/services/holiday_service.py`
-- `server/tests/unit/schemas/test_calendar_schemas.py`
 - `server/tests/unit/services/test_holiday_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 346 (98%)
-- INFERRED: 7 (2%)
+- EXTRACTED: 192 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

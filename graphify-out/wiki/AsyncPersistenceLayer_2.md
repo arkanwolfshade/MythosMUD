@@ -22,20 +22,20 @@
 - [api/monitoring.py](api-monitoring.py.md) `EXTRACTED`
 - endpoints.py `EXTRACTED`
 - npc_combat_integration_service.py `EXTRACTED`
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) `EXTRACTED`
+- container_endpoints_basic.py `EXTRACTED`
 - lifecycle_manager.py `EXTRACTED`
 - combat_handler.py `EXTRACTED`
 - combat_turn_participant_actions.py `EXTRACTED`
 - population_control.py `EXTRACTED`
 - npc_base.py `EXTRACTED`
 - [test_async_persistence_core.py](test_async_persistence_core.py.md) `EXTRACTED`
-- rooms.py `EXTRACTED`
+- [rooms.py](rooms.py.md) `EXTRACTED`
 - test_async_persistence_delegates.py `EXTRACTED`
 - movement_service.py `EXTRACTED`
 - player_event_handlers_respawn.py `EXTRACTED`
 - service.py `EXTRACTED`
 - player_disconnect_handlers.py `EXTRACTED`
-- [api/player_respawn.py](api-player_respawn.py.md) `EXTRACTED`
+- api/player_respawn.py `EXTRACTED`
 
 ### method
 - .__init__() `EXTRACTED`
@@ -89,7 +89,7 @@
 - CombatCommandHandler `INFERRED`
 - [HolidayService](HolidayService.md) `INFERRED`
 - SkillService `INFERRED`
-- [ScheduleService](ScheduleService.md) `INFERRED`
+- ScheduleService `INFERRED`
 - CombatCommandHandlerExtras `INFERRED`
 - [RoomCacheLoader](RoomCacheLoader.md) `INFERRED`
 - CreateItemInstanceInput `INFERRED`

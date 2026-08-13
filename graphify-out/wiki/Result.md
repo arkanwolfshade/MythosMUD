@@ -16,7 +16,7 @@
 
 ## Relationships
 
-- [fastapi_integration.py](fastapi_integration.py.md) (1 shared connections)
+- [correct_patterns.py](correct_patterns.py.md) (1 shared connections)
 - [safe_run_static](safe_run_static.md) (1 shared connections)
 - [database](database.md) (1 shared connections)
 

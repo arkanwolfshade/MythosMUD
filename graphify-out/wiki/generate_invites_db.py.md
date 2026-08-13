@@ -23,10 +23,10 @@
 
 ## Relationships
 
-- [server/exceptions.py](server-exceptions.py.md) (4 shared connections)
-- [Invite](Invite.md) (3 shared connections)
-- [ValidationError](ValidationError.md) (2 shared connections)
-- [.get_instance](get_instance.md) (2 shared connections)
+- [log_and_raise](log_and_raise.md) (4 shared connections)
+- [.get_instance](get_instance.md) (3 shared connections)
+- [Invite](Invite.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 

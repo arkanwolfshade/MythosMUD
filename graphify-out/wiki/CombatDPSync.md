@@ -29,8 +29,9 @@
 
 ## Relationships
 
-- [EventBus](EventBus.md) (4 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
+- [RealTimeEventHandler](RealTimeEventHandler.md) (2 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files

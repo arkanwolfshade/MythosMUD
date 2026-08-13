@@ -12,29 +12,29 @@
 - combat_service() `EXTRACTED`
 
 ### contains
-- [combat_service.py](combat_service.py.md) `EXTRACTED`
+- combat_service.py `EXTRACTED`
 
 ### imports
 - [server/dependencies.py](server-dependencies.py.md) `EXTRACTED`
 - [game_tick_processing.py](game_tick_processing.py.md) `EXTRACTED`
-- [lifespan_startup.py](lifespan_startup.py.md) `EXTRACTED`
+- lifespan_startup.py `EXTRACTED`
 - npc_combat_integration_service.py `EXTRACTED`
-- [spell_effects.py](spell_effects.py.md) `EXTRACTED`
+- spell_effects.py `EXTRACTED`
 - combat_handler.py `EXTRACTED`
 - combat_turn_participant_actions.py `EXTRACTED`
-- [magic_service.py](magic_service.py.md) `EXTRACTED`
+- magic_service.py `EXTRACTED`
 - spell_effects_heal.py `EXTRACTED`
-- combat_taunt.py `EXTRACTED`
+- [combat_taunt.py](combat_taunt.py.md) `EXTRACTED`
 - combat_service_npc.py `EXTRACTED`
 - combat_service_start.py `EXTRACTED`
 - combat_service_attack.py `EXTRACTED`
-- [combat_loader.py](combat_loader.py.md) `EXTRACTED`
-- [magic_service_completion.py](magic_service_completion.py.md) `EXTRACTED`
+- combat_loader.py `EXTRACTED`
+- magic_service_completion.py `EXTRACTED`
 - combat_flee.py `EXTRACTED`
 - spell_targeting.py `EXTRACTED`
 - combat_turn_processor.py `EXTRACTED`
 - npc_combat_integration_validation_mixin.py `EXTRACTED`
-- [test_combat_service.py](test_combat_service.py.md) `EXTRACTED`
+- test_combat_service.py `EXTRACTED`
 
 ### method
 - .__init__() `EXTRACTED`
@@ -91,10 +91,10 @@
 - CombatCommandHandler `INFERRED`
 - SpellEffects `INFERRED`
 - CombatTurnProcessor `INFERRED`
-- [_MagicServiceCore](_MagicServiceCore.md) `INFERRED`
+- _MagicServiceCore `INFERRED`
 - [PlayerRespawnService](PlayerRespawnService.md) `INFERRED`
 - [CombatParticipantData](CombatParticipantData.md) `INFERRED`
-- CombatEventPublisher `INFERRED`
+- [CombatEventPublisher](CombatEventPublisher.md) `INFERRED`
 - NPCCombatDataProvider `INFERRED`
 - TauntCommandHandler `INFERRED`
 - MagicService `INFERRED`
@@ -103,7 +103,7 @@
 - CombatCommandHandlerExtras `INFERRED`
 - SpellEffectsDeps `INFERRED`
 - CombatBundle `INFERRED`
-- [CombatPersistenceHandler](CombatPersistenceHandler.md) `INFERRED`
+- CombatPersistenceHandler `INFERRED`
 
 ---
 

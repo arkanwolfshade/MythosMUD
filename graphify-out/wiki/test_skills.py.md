@@ -27,12 +27,11 @@
 
 ## Relationships
 
-- [PlayerService](PlayerService.md) (4 shared connections)
+- [players/skill.py](players-skill.py.md) (4 shared connections)
 - [User](User.md) (3 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (3 shared connections)
+- [log_and_raise](log_and_raise.md) (3 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 

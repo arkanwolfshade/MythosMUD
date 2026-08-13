@@ -34,8 +34,7 @@
 ## Relationships
 
 - [EventBus](EventBus.md) (4 shared connections)
-- [BaseEvent](BaseEvent.md) (2 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (3 shared connections)
 
 ## Source Files
 

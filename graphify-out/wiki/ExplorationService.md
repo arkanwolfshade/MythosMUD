@@ -33,15 +33,12 @@
 
 ## Relationships
 
-- [maps.py](maps.py.md) (7 shared connections)
-- [RoomService](RoomService.md) (7 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (7 shared connections)
-- [GameBundle](GameBundle.md) (2 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (2 shared connections)
-- [bundles/game.py](bundles-game.py.md) (1 shared connections)
+- [maps.py](maps.py.md) (8 shared connections)
+- [rooms.py](rooms.py.md) (8 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [PlayerService](PlayerService.md) (3 shared connections)
+- [map_minimap.py](map_minimap.py.md) (2 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [test_maps.py](test_maps.py.md) (1 shared connections)
-- [_apply_exploration_filter_if_needed](_apply_exploration_filter_if_needed.md) (1 shared connections)
 - [.get_instance](get_instance.md) (1 shared connections)
 
 ## Source Files

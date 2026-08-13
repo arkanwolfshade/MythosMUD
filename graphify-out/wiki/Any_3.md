@@ -1,42 +1,49 @@
 # Any
 
-> 17 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **Any** (10 connections)
-- **.handle_player_entered()** (9 connections) — `server/realtime/player_event_handlers_room.py`
-- **.handle_player_left()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **.__init__()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **.log_player_movement()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.broadcast_player_entered_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **.broadcast_player_left_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **._process_player_entered_event()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **.unsubscribe_player_from_room()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **Broadcast player entered message to room occupants. Args: message: The player…** (1 connections) — `server/realtime/player_event_handlers_room.py`
-- **Initialize room event handler. Args: connection_manager: ConnectionManager…** (1 connections) — `server/realtime/player_event_handlers_room.py`
-- **Process player entered event and return player name and normalized IDs. Args:…** (1 connections) — `server/realtime/player_event_handlers_room.py`
-- **Handle player entering a room with enhanced synchronization. Args: event: The…** (1 connections) — `server/realtime/player_event_handlers_room.py`
-- **Unsubscribe a player from a room. Args: player_id: The player's ID (UUID or…** (1 connections) — `server/realtime/player_event_handlers_room.py`
-- **Log player movement for AI processing. Args: player_id: The player's ID…** (1 connections) — `server/realtime/player_event_handlers_room.py`
-- **Broadcast player left message to room occupants. Args: message: The player left…** (1 connections) — `server/realtime/player_event_handlers_room.py`
-- **Handle player leaving a room with enhanced synchronization. Args: event: The…** (1 connections) — `server/realtime/player_event_handlers_room.py`
+- **.set_player_skills()** (9 connections) — `server/game/skill_service.py`
+- **Any** (9 connections)
+- **UUID** (7 connections)
+- **._validate_occupation_slots()** (6 connections) — `server/game/skill_service.py`
+- **._validate_personal_interest()** (6 connections) — `server/game/skill_service.py`
+- **.validate_skills_payload()** (6 connections) — `server/game/skill_service.py`
+- **._build_profession_mod_by_key()** (5 connections) — `server/game/skill_service.py`
+- **._compute_final_skill_values()** (5 connections) — `server/game/skill_service.py`
+- **._validate_no_overlap()** (5 connections) — `server/game/skill_service.py`
+- **.get_player_skills()** (4 connections) — `server/game/skill_service.py`
+- **.get_skills_used_this_level()** (4 connections) — `server/game/skill_service.py`
+- **.record_successful_skill_use()** (4 connections) — `server/game/skill_service.py`
+- **.roll_skill_check()** (4 connections) — `server/game/skill_service.py`
+- **.run_improvement_rolls()** (4 connections) — `server/game/skill_service.py`
+- **.get_skills_catalog()** (3 connections) — `server/game/skill_service.py`
+- **Raise ValueError if any skill_id appears in both occupation and personal…** (1 connections) — `server/game/skill_service.py`
+- **Build skill_key -> total modifier from profession skill_modifiers (supports…** (1 connections) — `server/game/skill_service.py`
+- **Compute final skill_id -> value: base + profession mod, then occupation…** (1 connections) — `server/game/skill_service.py`
+- **Validate skills allocation without persisting. Raises ValueError if invalid.…** (1 connections) — `server/game/skill_service.py`
+- **Set all skills for a character at creation. Validates occupation_slots (9…** (1 connections) — `server/game/skill_service.py`
+- **Return list of {skill_id, skill_key, skill_name, value} for the player. If the…** (1 connections) — `server/game/skill_service.py`
+- **Record one successful use of a skill at the character's current level. Used for…** (1 connections) — `server/game/skill_service.py`
+- **Return distinct skill_ids that the player successfully used at the given level.…** (1 connections) — `server/game/skill_service.py`
+- **For each skill the player used during the previous level, roll d100. If roll >…** (1 connections) — `server/game/skill_service.py`
+- **Roll d100 against the character's skill value; on success record use and return…** (1 connections) — `server/game/skill_service.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [PlayerRoomEventHandler](PlayerRoomEventHandler.md) (17 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (3 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (2 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (13 shared connections)
+- [log_and_raise](log_and_raise.md) (4 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_event_handlers_room.py`
+- `server/game/skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
+- EXTRACTED: 56 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

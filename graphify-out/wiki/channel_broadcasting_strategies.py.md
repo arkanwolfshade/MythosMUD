@@ -23,11 +23,12 @@
 ## Relationships
 
 - [test_channel_broadcasting_strategies.py](test_channel_broadcasting_strategies.py.md) (7 shared connections)
-- [asyncio](asyncio.md) (7 shared connections)
+- [asyncio](asyncio.md) (6 shared connections)
 - [UUID](UUID.md) (5 shared connections)
 - [UnknownChannelStrategy](UnknownChannelStrategy.md) (3 shared connections)
 - [RoomBasedChannelStrategy](RoomBasedChannelStrategy.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [test_whisper_channel_strategy_broadcast](test_whisper_channel_strategy_broadcast.md) (1 shared connections)
 
 ## Source Files
 

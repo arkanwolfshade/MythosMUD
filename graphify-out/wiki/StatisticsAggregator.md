@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [time.py](time.py.md) (7 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
 
 ## Source Files
 

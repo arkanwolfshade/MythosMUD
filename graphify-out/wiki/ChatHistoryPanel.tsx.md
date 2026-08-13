@@ -35,12 +35,12 @@
 
 - [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (13 shared connections)
 - [channels.ts](channels.ts.md) (9 shared connections)
-- [ansiToHtml.ts](ansiToHtml.ts.md) (5 shared connections)
+- [GameClientV2.tsx](GameClientV2.tsx.md) (6 shared connections)
 - [EldritchIcon.tsx](EldritchIcon.tsx.md) (5 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (4 shared connections)
 - [messageHandlers.ts](messageHandlers.ts.md) (4 shared connections)
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (2 shared connections)
+- [ansiToHtml.ts](ansiToHtml.ts.md) (3 shared connections)
 - [projectorRoom.ts](projectorRoom.ts.md) (2 shared connections)
+- [SafeHtml.tsx](SafeHtml.tsx.md) (2 shared connections)
 - [StyleGuideSections.tsx](StyleGuideSections.tsx.md) (2 shared connections)
 - [ui-v2/types.ts](ui-v2-types.ts.md) (1 shared connections)
 

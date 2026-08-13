@@ -36,7 +36,7 @@
 - [SubjectValidator](SubjectValidator.md) (17 shared connections)
 - [NATSSubjectManager](NATSSubjectManager.md) (9 shared connections)
 - [test_manager.py](test_manager.py.md) (3 shared connections)
-- [subject_controller.py](subject_controller.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 

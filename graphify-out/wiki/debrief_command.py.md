@@ -26,16 +26,13 @@
 
 ## Relationships
 
-- [LucidityService](LucidityService.md) (6 shared connections)
-- [AliasStorage](AliasStorage.md) (5 shared connections)
-- [Player](Player.md) (3 shared connections)
-- [.get_instance](get_instance.md) (2 shared connections)
-- [ActiveLucidityService](ActiveLucidityService.md) (2 shared connections)
-- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (2 shared connections)
+- [LucidityService](LucidityService.md) (7 shared connections)
+- [AliasStorage](AliasStorage.md) (6 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (4 shared connections)
+- [.get_instance](get_instance.md) (3 shared connections)
+- [log_and_raise](log_and_raise.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 - [BaseCommand](BaseCommand.md) (1 shared connections)
 
 ## Source Files

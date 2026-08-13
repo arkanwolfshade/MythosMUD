@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [PathValidator](PathValidator.md) (14 shared connections)
-- [TestValidatorComponents](TestValidatorComponents.md) (3 shared connections)
+- [PathValidator](PathValidator.md) (12 shared connections)
+- [TestValidatorComponents](TestValidatorComponents.md) (5 shared connections)
 - [test_logging_utilities.py](test_logging_utilities.py.md) (2 shared connections)
 - [Reporter](Reporter.md) (1 shared connections)
 - [SchemaValidator](SchemaValidator.md) (1 shared connections)

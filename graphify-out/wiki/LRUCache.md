@@ -1,62 +1,57 @@
 # LRUCache
 
-> 59 nodes
+> 36 nodes
 
 ## Key Concepts
 
 - **LRUCache** (27 connections) — `server/caching/lru_cache.py`
-- **get_cache_manager()** (16 connections) — `server/caching/lru_cache.py`
-- **test_lru_cache.py** (16 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **cache_service.py** (13 connections) — `server/caching/cache_service.py`
-- **server/caching/__init__.py** (12 connections) — `server/caching/__init__.py`
-- **lru_cache.py** (12 connections) — `server/caching/lru_cache.py`
-- **CacheService** (8 connections) — `server/caching/cache_service.py`
-- **.__init__()** (7 connections) — `server/caching/cache_service.py`
-- **cached()** (5 connections) — `server/caching/cache_service.py`
+- **.get_or_set()** (7 connections) — `server/caching/lru_cache.py`
+- **K** (7 connections)
+- **.items()** (6 connections) — `server/caching/lru_cache.py`
+- **.put()** (6 connections) — `server/caching/lru_cache.py`
+- **.get()** (5 connections) — `server/caching/lru_cache.py`
+- **V** (5 connections)
+- **.delete()** (4 connections) — `server/caching/lru_cache.py`
+- **.get_stats()** (4 connections) — `server/caching/lru_cache.py`
+- **.__contains__()** (3 connections) — `server/caching/lru_cache.py`
+- **._evict_expired_entries()** (3 connections) — `server/caching/lru_cache.py`
+- **.keys()** (3 connections) — `server/caching/lru_cache.py`
 - **.__len__()** (3 connections) — `server/caching/lru_cache.py`
+- **.__repr__()** (3 connections) — `server/caching/lru_cache.py`
 - **.size()** (3 connections) — `server/caching/lru_cache.py`
-- **reset_cache_manager()** (3 connections) — `server/caching/lru_cache.py`
-- **cache_with_ttl()** (3 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **cache_without_ttl()** (3 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expiration_performance_impact()** (3 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **.preload_frequently_accessed_data()** (2 connections) — `server/caching/cache_service.py`
+- **.values()** (3 connections) — `server/caching/lru_cache.py`
 - **.clear()** (2 connections) — `server/caching/lru_cache.py`
 - **.__init__()** (2 connections) — `server/caching/lru_cache.py`
 - **.is_full()** (2 connections) — `server/caching/lru_cache.py`
-- **test_cache_expiration_check_only_when_ttl_enabled()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expiration_rate_calculated()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expired_count_tracked_in_stats()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expired_entries_not_counted_in_evictions()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expired_entries_removed_efficiently()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_mixed_expired_and_valid_entries()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- *... and 34 more nodes in this community*
+- **Put an item into the cache. Args: key: The key to store value: The value to…** (1 connections) — `server/caching/lru_cache.py`
+- **Delete an item from the cache. Args: key: The key to delete Returns: True if…** (1 connections) — `server/caching/lru_cache.py`
+- **Clear all items from the cache.** (1 connections) — `server/caching/lru_cache.py`
+- **Get the current number of items in the cache.** (1 connections) — `server/caching/lru_cache.py`
+- **Check if the cache is at maximum capacity.** (1 connections) — `server/caching/lru_cache.py`
+- **Get cache statistics. Returns: Dictionary containing cache statistics** (1 connections) — `server/caching/lru_cache.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [NPCCacheService](NPCCacheService.md) (10 shared connections)
-- [K](K.md) (8 shared connections)
-- [CacheManager](CacheManager.md) (7 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [ProfessionCacheService](ProfessionCacheService.md) (4 shared connections)
-- [RoomCacheService](RoomCacheService.md) (4 shared connections)
-- [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
-- [lifespan.py](lifespan.py.md) (2 shared connections)
-- [time.py](time.py.md) (2 shared connections)
-- [LucidityRepository](LucidityRepository.md) (1 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
-- [RoomService](RoomService.md) (1 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [CacheManager](CacheManager.md) (3 shared connections)
+- [NPCCacheService](NPCCacheService.md) (2 shared connections)
+- [test_lru_cache.py](test_lru_cache.py.md) (1 shared connections)
+- [ProfessionCacheService](ProfessionCacheService.md) (1 shared connections)
+- [RoomCacheService](RoomCacheService.md) (1 shared connections)
+- [test_lucidity_models.py](test_lucidity_models.py.md) (1 shared connections)
+- [test_rescue_service.py](test_rescue_service.py.md) (1 shared connections)
+- [container_helpers_inventory_display.py](container_helpers_inventory_display.py.md) (1 shared connections)
+- [ContainerService](ContainerService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/caching/__init__.py`
-- `server/caching/cache_service.py`
 - `server/caching/lru_cache.py`
-- `server/tests/unit/caching/test_lru_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 116 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 57 (88%)
+- INFERRED: 8 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

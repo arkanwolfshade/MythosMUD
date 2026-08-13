@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
+- [admin_teleport_commands.py](admin_teleport_commands.py.md) (4 shared connections)
 - [admin_shutdown_command.py](admin_shutdown_command.py.md) (1 shared connections)
+- [get_config](get_config.md) (1 shared connections)
 
 ## Source Files
 

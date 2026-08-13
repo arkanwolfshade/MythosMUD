@@ -35,7 +35,7 @@
 
 - [EldritchIcon.tsx](EldritchIcon.tsx.md) (4 shared connections)
 - [GameTerminal.tsx](GameTerminal.tsx.md) (2 shared connections)
-- [gameStore.ts](gameStore.ts.md) (2 shared connections)
+- [GameTerminalPresentation.tsx](GameTerminalPresentation.tsx.md) (2 shared connections)
 
 ## Source Files
 

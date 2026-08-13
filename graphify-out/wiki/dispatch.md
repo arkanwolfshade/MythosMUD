@@ -13,7 +13,7 @@
 
 ## Relationships
 
-- [SecurityHeadersMiddleware](SecurityHeadersMiddleware.md) (2 shared connections)
+- [get_config](get_config.md) (2 shared connections)
 
 ## Source Files
 

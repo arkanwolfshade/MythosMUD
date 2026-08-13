@@ -34,8 +34,7 @@
 ## Relationships
 
 - [NATSMessageBroker](NATSMessageBroker.md) (10 shared connections)
-- [nats_broker](nats_broker.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [NATSConfig](NATSConfig.md) (3 shared connections)
 
 ## Source Files
 

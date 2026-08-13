@@ -26,8 +26,7 @@
 
 ## Relationships
 
-- [alias_storage.py](alias_storage.py.md) (6 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (8 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [RealTimeEventHandler](RealTimeEventHandler.md) (1 shared connections)
 - [player_service](player_service.md) (1 shared connections)

@@ -27,7 +27,7 @@
 
 ## Relationships
 
-- [gameStore.ts](gameStore.ts.md) (1 shared connections)
+- [GameLogPanel.tsx](GameLogPanel.tsx.md) (1 shared connections)
 
 ## Source Files
 

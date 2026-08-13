@@ -1,6 +1,6 @@
 # test_level_service.py
 
-> 56 nodes
+> 63 nodes
 
 ## Key Concepts
 
@@ -8,10 +8,13 @@
 - **total_xp_for_level()** (15 connections) — `server/game/level_curve.py`
 - **test_level_curve.py** (15 connections) — `server/tests/unit/game/test_level_curve.py`
 - **level_from_total_xp()** (13 connections) — `server/game/level_curve.py`
+- **level_service.py** (9 connections) — `server/game/level_service.py`
 - **asyncio** (8 connections)
 - **xp_required_for_level()** (6 connections) — `server/game/level_curve.py`
 - **level_curve.py** (6 connections) — `server/game/level_curve.py`
 - **test_grant_xp_level_up_calls_hook()** (5 connections) — `server/tests/unit/game/test_level_service.py`
+- **.check_level_up()** (4 connections) — `server/game/level_service.py`
+- **.grant_xp()** (4 connections) — `server/game/level_service.py`
 - **test_level_from_total_xp_roundtrip()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
 - **test_level_from_total_xp_threshold_level_two()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
 - **test_xp_required_for_level_marginal()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
@@ -26,24 +29,24 @@
 - **test_total_xp_for_level_two_positive()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
 - **test_xp_required_for_level_invalid()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
 - **mock_persistence()** (3 connections) — `server/tests/unit/game/test_level_service.py`
-- **sample_player()** (3 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_check_level_up_player_not_found_raises()** (3 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_grant_xp_increases_xp_and_persists()** (3 connections) — `server/tests/unit/game/test_level_service.py`
-- *... and 31 more nodes in this community*
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [server/dependencies.py](server-dependencies.py.md) (8 shared connections)
+- [PlayerService](PlayerService.md) (6 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/level_curve.py`
+- `server/game/level_service.py`
 - `server/tests/unit/game/test_level_curve.py`
 - `server/tests/unit/game/test_level_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 94 (100%)
+- EXTRACTED: 106 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

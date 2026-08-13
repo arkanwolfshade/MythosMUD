@@ -1,39 +1,36 @@
 # test_combat_validator.py
 
-> 97 nodes
+> 12 nodes
 
 ## Key Concepts
 
 - **test_combat_validator.py** (50 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **combat_validator()** (4 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_can_attack_target_different_party_allows()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_can_attack_target_no_party_service_allows()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_can_attack_target_same_party_blocks()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_combat_validator_init()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
 - **test_contains_suspicious_patterns_clean()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_contains_suspicious_patterns_detected()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_combat_death_message()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
 - **test_get_combat_help_message()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_combat_result_message_failure()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_combat_result_message_success_no_damage()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_combat_result_message_success_with_damage()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_combat_status_message_in_combat()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_combat_status_message_not_in_combat()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_combat_victory_message()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_random_error_message()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
 - **test_get_random_error_message_unknown_type()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_is_rate_limited()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_is_valid_target_name_invalid()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_is_valid_target_name_valid()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_attack_strength_success()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
 - **test_validate_attack_strength_target_significantly_stronger()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_attack_strength_target_too_strong()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_attack_strength_weak_weapon()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- *... and 72 more nodes in this community*
+- **test_validate_combat_command_invalid_command_type()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Unit tests for combat validator. Tests the CombatValidator class for combat…** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_attack_strength when target is significantly stronger.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test _contains_suspicious_patterns with clean target name.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test _get_random_error_message with unknown error type.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test get_combat_help_message returns help message.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_combat_command with invalid command type.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [PlayerCombatService](PlayerCombatService.md) (6 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (2 shared connections)
+- [test_validate_combat_command_target_too_long](test_validate_combat_command_target_too_long.md) (1 shared connections)
+- [test_validate_combat_command_rate_limited](test_validate_combat_command_rate_limited.md) (1 shared connections)
+- [test_validate_combat_command_exception_handling](test_validate_combat_command_exception_handling.md) (1 shared connections)
+- [test_validate_target_exists_exact_match](test_validate_target_exists_exact_match.md) (1 shared connections)
+- [test_validate_target_exists_case_insensitive](test_validate_target_exists_case_insensitive.md) (1 shared connections)
+- [test_validate_target_exists_partial_match](test_validate_target_exists_partial_match.md) (1 shared connections)
+- [test_validate_target_exists_no_match](test_validate_target_exists_no_match.md) (1 shared connections)
+- [combat_validator](combat_validator.md) (1 shared connections)
+- [test_validate_target_exists_no_target_name](test_validate_target_exists_no_target_name.md) (1 shared connections)
+- [test_validate_target_alive_alive](test_validate_target_alive_alive.md) (1 shared connections)
+- [test_validate_target_alive_dead](test_validate_target_alive_dead.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,7 +38,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 102 (100%)
+- EXTRACTED: 55 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

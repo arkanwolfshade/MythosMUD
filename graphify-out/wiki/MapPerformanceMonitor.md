@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- [mapUtils.ts](mapUtils.ts.md) (3 shared connections)
+- [gameStore.ts](gameStore.ts.md) (3 shared connections)
 
 ## Source Files
 
