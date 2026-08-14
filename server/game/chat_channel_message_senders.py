@@ -26,7 +26,7 @@ _NATS_UNAVAILABLE = "Chat system temporarily unavailable. Please try again in a 
 ChatResult = dict[str, object]
 
 
-class ChatPlayerView(Protocol):
+class ChatPlayerView(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Player fields used by channel senders."""
 
     name: str
@@ -34,7 +34,7 @@ class ChatPlayerView(Protocol):
     current_room_id: str | None
 
 
-class ChatPlayerService(Protocol):
+class ChatPlayerService(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Player lookup used by channel senders."""
 
     async def get_player_by_id(self, player_id: object) -> ChatPlayerView | None:
@@ -86,7 +86,7 @@ class ChatLogger(Protocol):
         """Write a global-channel log entry."""
 
 
-class WhisperTracker(Protocol):
+class WhisperTracker(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Stores last whisper sender for reply routing."""
 
     def store_sender(self, target_name: str, sender_name: str) -> None:

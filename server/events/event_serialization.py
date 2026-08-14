@@ -10,7 +10,7 @@ from __future__ import annotations
 from dataclasses import asdict, fields, is_dataclass
 from datetime import datetime
 from types import ModuleType, NoneType  # pylint: disable=unused-import  # Used in generator on line 84
-from typing import TypeVar, cast
+from typing import TypeVar, cast, get_args
 from uuid import UUID
 
 from .event_types import BaseEvent
@@ -103,27 +103,30 @@ def _convert_value_for_json(value: object) -> object:
     return value
 
 
+def _unwrap_optional_type(field_type: object) -> object:
+    args_raw: object = get_args(field_type)
+    if not isinstance(args_raw, tuple) or not args_raw:
+        return field_type
+    real_type = next((a for a in args_raw if a is not NoneType), None)
+    return field_type if real_type is None else real_type
+
+
+def _parse_typed_json_value(value: object, field_type: object) -> object:
+    if field_type is UUID:
+        return UUID(value) if isinstance(value, str) else value
+    if field_type is datetime and isinstance(value, str):
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    return value
+
+
 def _convert_value_from_json(value: object, field_type: object) -> object:
     """Convert a JSON value back to the expected Python type."""
     if value is None:
         return None
-
-    # Resolve Optional/Union to the first non-None type
-    import typing
-
-    args_raw: object = getattr(typing, "get_args", lambda _t: ())(field_type)
-    if isinstance(args_raw, tuple) and args_raw:
-        real_type = next((a for a in args_raw if a is not NoneType), None)
-        if real_type is not None:
-            return _convert_value_from_json(value, real_type)
-
-    if field_type is UUID:
-        return UUID(value) if isinstance(value, str) else value
-    if field_type is datetime:
-        if isinstance(value, str):
-            return datetime.fromisoformat(value.replace("Z", "+00:00"))
-        return value
-    return value
+    unwrapped = _unwrap_optional_type(field_type)
+    if unwrapped is not field_type:
+        return _convert_value_from_json(value, unwrapped)
+    return _parse_typed_json_value(value, field_type)
 
 
 def serialize_event(event: BaseEvent) -> dict[str, object]:
@@ -152,6 +155,29 @@ def serialize_event(event: BaseEvent) -> dict[str, object]:
     return cast(dict[str, object], converted)
 
 
+def _event_class_from_payload(data: dict[str, object]) -> type[BaseEvent]:
+    event_type_name = data.get("_event_type")
+    if not isinstance(event_type_name, str) or not event_type_name:
+        raise ValueError("Missing _event_type in event data")
+    cls = _EVENT_CLASS_REGISTRY.get(event_type_name)
+    if not cls:
+        raise ValueError(f"Unknown event type: {event_type_name}")
+    return cls
+
+
+def _init_kwargs_from_event_data(cls: type[BaseEvent], data: dict[str, object]) -> dict[str, object]:
+    kwargs: dict[str, object] = {}
+    init_fields = {f.name: f for f in fields(cls) if f.init}
+    for key, value in list(data.items()):
+        if key == "_event_type" or key not in init_fields:
+            continue
+        try:
+            kwargs[key] = _convert_value_from_json(value, init_fields[key].type)
+        except (StopIteration, TypeError):
+            kwargs[key] = value
+    return kwargs
+
+
 def deserialize_event(data: dict[str, object]) -> BaseEvent:
     """
     Deserialize a dict back to a BaseEvent instance.
@@ -166,27 +192,5 @@ def deserialize_event(data: dict[str, object]) -> BaseEvent:
         ValueError: If event type unknown or deserialization fails
     """
     _register_event_types()
-
-    event_type_name = data.get("_event_type")
-    if not isinstance(event_type_name, str) or not event_type_name:
-        raise ValueError("Missing _event_type in event data")
-
-    cls = _EVENT_CLASS_REGISTRY.get(event_type_name)
-    if not cls:
-        raise ValueError(f"Unknown event type: {event_type_name}")
-
-    # Build kwargs from data - only include fields that are in __init__ (init=True)
-    kwargs: dict[str, object] = {}
-    init_fields = {f.name: f for f in fields(cls) if f.init}
-
-    for key, value in list(data.items()):
-        if key == "_event_type":
-            continue
-        if key in init_fields:
-            try:
-                field = init_fields[key]
-                kwargs[key] = _convert_value_from_json(value, field.type)
-            except (StopIteration, TypeError):
-                kwargs[key] = value
-
-    return cls(**kwargs)
+    cls = _event_class_from_payload(data)
+    return cls(**_init_kwargs_from_event_data(cls, data))

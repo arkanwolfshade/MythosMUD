@@ -65,7 +65,7 @@ class RollbackResults(TypedDict):
     rollback_errors: list[str]
 
 
-class _MigrationArgs(Protocol):
+class _MigrationArgs(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """argparse namespace for this script."""
 
     dry_run: bool
@@ -128,16 +128,25 @@ def _npc_has_combat_data(stats: dict[str, object], config: dict[str, object]) ->
     return any(key in stats for key in _COMBAT_STATS_KEYS) or any(key in config for key in _COMBAT_CONFIG_KEYS)
 
 
+def _omit_keys(data: dict[str, object], keys: tuple[str, ...]) -> dict[str, object]:
+    return {k: v for k, v in data.items() if k not in keys}
+
+
+def _present_keys(data: dict[str, object], keys: tuple[str, ...]) -> list[str]:
+    return [k for k in keys if k in data]
+
+
 def _strip_combat_data_from_npc(
     npc: NPCDefinition,
 ) -> tuple[dict[str, object], dict[str, object], list[str], list[str]]:
     current_stats = npc.get_base_stats()
     current_config = npc.get_behavior_config()
-    updated_stats = {k: v for k, v in current_stats.items() if k not in _COMBAT_STATS_KEYS}
-    updated_config = {k: v for k, v in current_config.items() if k not in _COMBAT_CONFIG_KEYS}
-    removed_stats = [k for k in _COMBAT_STATS_KEYS if k in current_stats]
-    removed_config = [k for k in _COMBAT_CONFIG_KEYS if k in current_config]
-    return updated_stats, updated_config, removed_stats, removed_config
+    return (
+        _omit_keys(current_stats, _COMBAT_STATS_KEYS),
+        _omit_keys(current_config, _COMBAT_CONFIG_KEYS),
+        _present_keys(current_stats, _COMBAT_STATS_KEYS),
+        _present_keys(current_config, _COMBAT_CONFIG_KEYS),
+    )
 
 
 async def _rollback_one_npc(npc: NPCDefinition, session: AsyncSession, results: RollbackResults) -> None:

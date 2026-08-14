@@ -69,17 +69,13 @@ function shouldPrependParty(command: string, effectiveChannel: string): boolean 
 }
 
 function prepareCommandForSubmit(commandInput: string, currentChannel: string): string {
-  let command = commandInput.trim();
+  const command = commandInput.trim();
   const firstWord = command.split(/\s+/)[0].toLowerCase();
-  const isStandaloneCommand = STANDALONE_COMMANDS.includes(firstWord);
   const effectiveChannel = currentChannel === ALL_MESSAGES_CHANNEL.id ? 'say' : currentChannel;
-  if (shouldPrependChannelShortcut(command, effectiveChannel, isStandaloneCommand)) {
-    command = prependChannelShortcut(command, effectiveChannel);
-  }
-  if (shouldPrependParty(command, effectiveChannel)) {
-    command = prependPartyPrefix(command);
-  }
-  return command;
+  const withChannel = shouldPrependChannelShortcut(command, effectiveChannel, STANDALONE_COMMANDS.includes(firstWord))
+    ? prependChannelShortcut(command, effectiveChannel)
+    : command;
+  return shouldPrependParty(withChannel, effectiveChannel) ? prependPartyPrefix(withChannel) : withChannel;
 }
 
 export interface CommandPanelProps {

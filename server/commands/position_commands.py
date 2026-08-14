@@ -27,13 +27,13 @@ from ..utils.command_parser import get_username_from_user
 logger = get_logger(__name__)
 
 
-class _EventSequence(Protocol):
+class _EventSequence(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Sequence counter surface used by build_event."""
 
     sequence_counter: int
 
 
-class _RoomBroadcaster(Protocol):
+class _RoomBroadcaster(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Connection manager surface used to fan out posture events."""
 
     async def broadcast_to_room(self, room_id: str, event: object, exclude_player: object = None) -> None:

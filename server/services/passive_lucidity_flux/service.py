@@ -40,7 +40,7 @@ except ImportError:  # pragma: no cover - monitoring is optional in some test ha
 logger = get_logger(__name__)
 
 
-class FluxRoom(Protocol):
+class FluxRoom(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Room fields used for lucidity environment lookup."""
 
     id: str
@@ -69,7 +69,7 @@ def _profile_map(raw: object) -> dict[str, dict[str, float]]:
 
 
 @dataclass
-class PlayerFluxCtx:
+class PlayerFluxCtx:  # pylint: disable=too-few-public-methods  # Reason: dataclass bundle for lizard PARAM
     """Bundle for _process_single_player (lizard PARAM)."""
 
     player: Player | None

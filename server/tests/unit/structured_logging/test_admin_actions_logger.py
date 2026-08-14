@@ -21,9 +21,7 @@ def admin_logger(log_dir: Path) -> AdminActionsLogger:
 
 
 def test_log_teleport_action_success(admin_logger: AdminActionsLogger, log_dir: Path) -> None:
-    admin_logger.log_teleport_action(
-        "Admin", "Bob", "teleport", from_room="room-a", to_room="room-b", success=True
-    )
+    admin_logger.log_teleport_action("Admin", "Bob", "teleport", from_room="room-a", to_room="room-b", success=True)
     entries = _read_log_entries(admin_logger.current_log_file)
     assert len(entries) == 1
     assert entries[0]["action_type"] == "teleport"
