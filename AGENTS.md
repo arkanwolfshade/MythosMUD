@@ -350,6 +350,8 @@ Use uv for Python dependency management (required)
 4. **Error Recovery**: If branch or worktree drift is detected, immediately return to
    the approved branch/tree and apologize
 5. **Verification**: After any branch or worktree operation, confirm branch and path
+6. **Push**: Never `git push` (or equivalent remote upload) unless the user explicitly says
+   to push in this conversation. Do not infer from fix CI, open PR, ship, merge, or skills.
 
 ### Stacked PRs (`gh stack`)
 
@@ -672,6 +674,9 @@ jobs:
 - Put Cursor implementation-plan markdown under `C:\Users\arkan\.cursor\plans` when the user asks for that location
 - Never create, remove, or switch Git worktrees without explicit user permission (same bar as branch switches); plans may
   _propose_ a worktree step, but do not execute it unless the user approves; default is stay on the current working tree
+- Never `git push` (or equivalent remote upload) unless the user explicitly says to push in this conversation. Do not
+  infer permission from fix CI, open PR, ship, merge, review-and-ship, or skills that include a push step; skip push
+  and say the commits are local until they say **push**
 - For basedpyright `reportAny` in Python tests without file-level `reportAny` suppression, prefer typed locals (for
   example `svc: AsyncMock = AsyncMock()` or `persistence: MagicMock = MagicMock()`) assigned onto handler-shaped mocks
   instead of only `handler.svc = AsyncMock()`
