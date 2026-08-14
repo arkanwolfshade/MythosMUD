@@ -660,8 +660,8 @@
     "semantic_hash": ""
   },
   "client/src/components/map/RoomEditModal.tsx": {
-    "mtime": 1786571994.8431263,
-    "ast_hash": "ea1594e935751ba725523695c2bbd75c",
+    "mtime": 1786729862.1254601,
+    "ast_hash": "e0f882d8997ea542d4869f83a80895f8",
     "semantic_hash": ""
   },
   "client/src/components/map/RoomMapEditor.tsx": {
@@ -2185,9 +2185,9 @@
     "semantic_hash": "67c373425c39bfab9847f96a7b0e5a5b"
   },
   "client/src/hooks/useGameTerminal.test.ts": {
-    "mtime": 1775192600.4547136,
-    "ast_hash": "3eb1500509debc115f2ab6ea80789a20",
-    "semantic_hash": "3eb1500509debc115f2ab6ea80789a20"
+    "mtime": 1786730448.4950626,
+    "ast_hash": "aa85c8a52695d3ed085b320cdbd86577",
+    "semantic_hash": ""
   },
   "client/src/hooks/useGameTerminal.ts": {
     "mtime": 1786571994.8673902,
@@ -13950,8 +13950,8 @@
     "semantic_hash": ""
   },
   "client/src/components/map/RoomEditModalForm.tsx": {
-    "mtime": 1786729553.9394603,
-    "ast_hash": "5baad937f187ddf24ee385fc0707e290",
+    "mtime": 1786729862.1022289,
+    "ast_hash": "955352ceeff48961d899b389b53b008b",
     "semantic_hash": ""
   },
   "client/src/components/map/RoomMapEditorRuntime.hooks.ts": {
@@ -14790,8 +14790,8 @@
     "semantic_hash": ""
   },
   "client/src/pages/DialogueEditorPage.tsx": {
-    "mtime": 1786659773.638638,
-    "ast_hash": "cbac8bdd9ec0a6530f36cb8f2481e672",
+    "mtime": 1786730447.6371963,
+    "ast_hash": "6d2fc3186fe3a336b34edae37497b549",
     "semantic_hash": ""
   },
   "client/src/utils/__tests__/deathVoidLocation.test.ts": {
@@ -16257,6 +16257,11 @@
   "client/src/components/panels/commandPanelSubmit.ts": {
     "mtime": 1786729458.744478,
     "ast_hash": "974da2e293c3bbbe11954a7bc9e3c2a8",
+    "semantic_hash": ""
+  },
+  "client/src/components/map/RoomEditModalTabs.tsx": {
+    "mtime": 1786729862.1284683,
+    "ast_hash": "915accdb478b3a072bf525c14f5020f6",
     "semantic_hash": ""
   }
 }
