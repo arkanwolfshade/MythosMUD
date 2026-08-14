@@ -107,72 +107,29 @@ class CorpseLifecycleService:
         self.connection_manager = connection_manager
         self.time_service = time_service
 
-    async def create_corpse_on_death(
-        self,
-        player_id: UUID,
-        room_id: str,
-        grace_period_seconds: int = 300,
-        decay_hours: int = 1,
+    def _build_corpse_component(
+        self, player_id: UUID, room_id: str, player: Any, grace_period_seconds: int, decay_hours: int
     ) -> ContainerComponent:
-        """
-        Create a corpse container when a player dies.
-
-        Args:
-            player_id: UUID of the dead player
-            room_id: Room ID where the player died
-            grace_period_seconds: Grace period duration in seconds (default: 300 = 5 minutes)
-            decay_hours: Hours until corpse decays (default: 1)
-
-        Returns:
-            ContainerComponent: The created corpse container
-
-        Raises:
-            CorpseServiceError: If player not found or creation fails
-        """
-        logger.info("Creating corpse container on death", player_id=str(player_id), room_id=room_id)
-
-        # Get player
-        player = await self.persistence.get_player_by_id(player_id)
-        if not player:
-            log_and_raise(
-                CorpseServiceError,
-                f"Player not found: {player_id}",
-                operation="create_corpse_on_death",
-                player_id=str(player_id),
-                room_id=room_id,
-                details={"player_id": str(player_id)},
-                user_friendly="Player not found",
-            )
-
-        # Get player inventory using the proper method that handles JSON string conversion
-        player_inventory = player.get_inventory()
-        player_name = getattr(player, "name", "Unknown")
-
-        # Calculate timestamps
         now = datetime.now(UTC)
-        decay_at = now + timedelta(hours=decay_hours)
-
-        # Create corpse container
-        corpse = ContainerComponent(
+        return ContainerComponent(
             container_id=uuid.uuid4(),
             source_type=ContainerSourceType.CORPSE,
             owner_id=player_id,
             room_id=room_id,
-            capacity_slots=20,  # Corpses have standard capacity
+            capacity_slots=20,
             lock_state=ContainerLockState.UNLOCKED,
-            decay_at=decay_at,
-            items=player_inventory.copy(),  # Copy inventory to corpse
+            decay_at=now + timedelta(hours=decay_hours),
+            items=player.get_inventory().copy(),
             metadata={
                 "grace_period_seconds": grace_period_seconds,
                 "grace_period_start": now.isoformat(),
-                "player_name": player_name,
+                "player_name": getattr(player, "name", "Unknown"),
                 "death_timestamp": now.isoformat(),
             },
         )
 
-        # Persist corpse container
+    async def _persist_corpse(self, corpse: ContainerComponent, player_id: UUID, room_id: str) -> ContainerComponent:
         try:
-            # Convert InventoryStack objects to dicts for persistence
             items_dicts: list[dict[str, Any]] = [
                 cast(dict[str, Any], dict(item) if not isinstance(item, dict) else item) for item in corpse.items
             ]
@@ -186,7 +143,6 @@ class CorpseLifecycleService:
                 metadata_json=corpse.metadata,
             )
             corpse.container_id = UUID(container_data["container_id"])
-
             logger.info(
                 "Corpse container created",
                 container_id=str(corpse.container_id),
@@ -194,10 +150,8 @@ class CorpseLifecycleService:
                 room_id=room_id,
                 items_count=len(corpse.items),
             )
-
             return corpse
-
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Convert to domain exception - corpse creation errors unpredictable, must handle gracefully and convert to domain-specific error
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Convert to domain exception - corpse creation errors unpredictable
             log_and_raise(
                 CorpseServiceError,
                 f"Failed to create corpse container: {str(e)}",
@@ -208,53 +162,37 @@ class CorpseLifecycleService:
                 user_friendly="Failed to create corpse container",
             )
 
-    def can_access_corpse(self, corpse: ContainerComponent, player_id: UUID, is_admin: bool = False) -> bool:
-        """
-        Check if a player can access a corpse container.
+    async def create_corpse_on_death(
+        self,
+        player_id: UUID,
+        room_id: str,
+        grace_period_seconds: int = 300,
+        decay_hours: int = 1,
+    ) -> ContainerComponent:
+        """Create a corpse container when a player dies."""
+        logger.info("Creating corpse container on death", player_id=str(player_id), room_id=room_id)
+        player = await self.persistence.get_player_by_id(player_id)
+        if not player:
+            log_and_raise(
+                CorpseServiceError,
+                f"Player not found: {player_id}",
+                operation="create_corpse_on_death",
+                player_id=str(player_id),
+                room_id=room_id,
+                details={"player_id": str(player_id)},
+                user_friendly="Player not found",
+            )
+        corpse = self._build_corpse_component(player_id, room_id, player, grace_period_seconds, decay_hours)
+        return await self._persist_corpse(corpse, player_id, room_id)
 
-        During grace period, only the owner can access. After grace period,
-        anyone can access.
-
-        Args:
-            corpse: Corpse container to check
-            player_id: UUID of the player attempting access
-            is_admin: Whether the player is an admin (admins can always access)
-
-        Returns:
-            bool: True if player can access, False otherwise
-        """
-        # Admins can always access
-        if is_admin:
-            return True
-
-        # If no owner, anyone can access
-        if not corpse.owner_id:
-            return True
-
-        # Owner can always access
-        if corpse.owner_id == player_id:
-            return True
-
-        # Check grace period
+    def _grace_period_allows_others(self, corpse: ContainerComponent) -> bool:
         grace_period_seconds = corpse.metadata.get("grace_period_seconds", 300)
         grace_period_start_str = corpse.metadata.get("grace_period_start")
-
         if not grace_period_start_str:
-            # No grace period set, anyone can access
             return True
-
         try:
             grace_period_start = datetime.fromisoformat(grace_period_start_str.replace("Z", "+00:00"))
-            grace_period_end = grace_period_start + timedelta(seconds=grace_period_seconds)
-            current_time = datetime.now(UTC)
-
-            # If still in grace period, only owner can access
-            if current_time < grace_period_end:
-                return False
-
-            # Grace period expired, anyone can access
-            return True
-
+            return datetime.now(UTC) >= grace_period_start + timedelta(seconds=grace_period_seconds)
         except (ValueError, TypeError) as e:
             logger.warning(
                 "Error parsing grace period",
@@ -262,8 +200,13 @@ class CorpseLifecycleService:
                 container_id=str(corpse.container_id),
                 grace_period_start=grace_period_start_str,
             )
-            # On error, allow access (fail open)
             return True
+
+    def can_access_corpse(self, corpse: ContainerComponent, player_id: UUID, is_admin: bool = False) -> bool:
+        """True if player may access corpse (owner/admin always; others after grace)."""
+        if is_admin or not corpse.owner_id or corpse.owner_id == player_id:
+            return True
+        return self._grace_period_allows_others(corpse)
 
     def is_corpse_decayed(self, corpse: ContainerComponent) -> bool:
         """
@@ -325,23 +268,22 @@ class CorpseLifecycleService:
 
         return decayed
 
+    def _require_corpse_container(self, container_id: UUID, container_data: dict[str, Any]) -> ContainerComponent:
+        container = ContainerComponent.model_validate(_filter_container_data(container_data))
+        if container.source_type != ContainerSourceType.CORPSE:
+            log_and_raise(
+                CorpseServiceError,
+                f"Container is not a corpse: {container_id}",
+                operation="cleanup_decayed_corpse",
+                container_id=str(container_id),
+                details={"container_id": str(container_id), "source_type": _get_enum_value(container.source_type)},
+                user_friendly="Container is not a corpse",
+            )
+        return container
+
     async def cleanup_decayed_corpse(self, container_id: UUID) -> None:
-        """
-        Clean up a decayed corpse container.
-
-        Deletes the container and emits decay event. Items are not redistributed
-        in this method - they remain in the container until it's deleted.
-
-        Args:
-            container_id: UUID of the corpse container to clean up
-
-        Raises:
-            CorpseNotFoundError: If corpse doesn't exist
-            CorpseServiceError: If cleanup fails
-        """
+        """Delete a decayed corpse container (items discarded with the container)."""
         logger.info("Cleaning up decayed corpse", container_id=str(container_id))
-
-        # Get container
         container_data = await self.persistence.get_container(container_id)
         if not container_data:
             log_and_raise(
@@ -352,36 +294,16 @@ class CorpseLifecycleService:
                 details={"container_id": str(container_id)},
                 user_friendly="Corpse container not found",
             )
-
-        filtered_data = _filter_container_data(container_data)
-        container = ContainerComponent.model_validate(filtered_data)
-
-        # Verify it's a corpse
-        if container.source_type != ContainerSourceType.CORPSE:
-            log_and_raise(
-                CorpseServiceError,
-                f"Container is not a corpse: {container_id}",
-                operation="cleanup_decayed_corpse",
-                container_id=str(container_id),
-                details={"container_id": str(container_id), "source_type": _get_enum_value(container.source_type)},
-                user_friendly="Container is not a corpse",
-            )
-
-        # Note: emit_container_decayed is async, but this method is sync
-        # We'll handle event emission in the async cleanup task in lifespan.py
-
-        # Delete container
+        container = self._require_corpse_container(container_id, container_data)
         try:
             await self.persistence.delete_container(container_id)
-
             logger.info(
                 "Decayed corpse cleaned up",
                 container_id=str(container_id),
                 room_id=container.room_id,
                 items_count=len(container.items),
             )
-
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Convert to domain exception - corpse creation errors unpredictable, must handle gracefully and convert to domain-specific error
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Convert to domain exception
             log_and_raise(
                 CorpseServiceError,
                 f"Failed to delete decayed corpse: {str(e)}",

@@ -12,7 +12,74 @@ import type { useGameClientV2Container } from './hooks/useGameClientV2Container'
 
 export type GameClientV2ContainerViewProps = ReturnType<typeof useGameClientV2Container>;
 
-export const GameClientV2ContainerView: React.FC<GameClientV2ContainerViewProps> = props => {
+function openMapTab(
+  room: NonNullable<GameClientV2ContainerViewProps['gameState']['room']>,
+  authToken: string,
+  addTab: GameClientV2ContainerViewProps['addTab'],
+  closeTab: GameClientV2ContainerViewProps['closeTab']
+) {
+  addTab({
+    id: `map-${room.id}`,
+    label: 'Map',
+    content: (
+      <MapView
+        isOpen={true}
+        onClose={() => closeTab(`map-${room.id}`)}
+        currentRoom={room}
+        authToken={authToken}
+        hideHeader={true}
+      />
+    ),
+    closable: true,
+  });
+}
+
+function InviteModal({
+  title,
+  message,
+  onDecline,
+  onAccept,
+}: {
+  title: string;
+  message: string;
+  onDecline: () => void;
+  onAccept: () => void;
+}) {
+  return (
+    <ModalContainer
+      isOpen={true}
+      onClose={onDecline}
+      title={title}
+      maxWidth="sm"
+      showCloseButton={true}
+      overlayZIndex={10000}
+      position="center-no-backdrop"
+      contentClassName="!bg-black border-2 border-mythos-terminal-primary shadow-2xl"
+    >
+      <div className="p-4 space-y-4">
+        <p className="text-mythos-terminal-text font-medium">{message}</p>
+        <div className="flex gap-3 justify-end">
+          <button
+            type="button"
+            className="px-3 py-1.5 rounded border border-mythos-terminal-border bg-mythos-terminal-surface text-mythos-terminal-text hover:bg-mythos-terminal-border/30 font-medium"
+            onClick={onDecline}
+          >
+            Decline
+          </button>
+          <button
+            type="button"
+            className="px-3 py-1.5 rounded border border-mythos-terminal-border bg-mythos-terminal-surface text-mythos-terminal-text hover:bg-mythos-terminal-border/30 font-medium"
+            onClick={onAccept}
+          >
+            Accept
+          </button>
+        </div>
+      </div>
+    </ModalContainer>
+  );
+}
+
+function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
   const {
     playerName,
     authToken,
@@ -60,71 +127,30 @@ export const GameClientV2ContainerView: React.FC<GameClientV2ContainerViewProps>
 
   const handleMapClickFromGame = () => {
     if (tabs.length > 0 && gameState.room?.id) {
-      const room = gameState.room;
-      addTab({
-        id: `map-${room.id}`,
-        label: 'Map',
-        content: (
-          <MapView
-            isOpen={true}
-            onClose={() => closeTab(`map-${room.id}`)}
-            currentRoom={room}
-            authToken={authToken}
-            hideHeader={true}
-          />
-        ),
-        closable: true,
-      });
-      setActiveTab(`map-${room.id}`);
-    } else {
-      setShowMap(true);
+      openMapTab(gameState.room, authToken, addTab, closeTab);
+      setActiveTab(`map-${gameState.room.id}`);
+      return;
     }
+    setShowMap(true);
   };
 
   const handleMainMenuMapClick = () => {
-    if (gameState.room) {
-      addTab({
-        id: `map-${gameState.room.id}`,
-        label: 'Map',
-        content: (
-          <MapView
-            isOpen={true}
-            onClose={() => closeTab(`map-${gameState.room?.id ?? ''}`)}
-            currentRoom={gameState.room}
-            authToken={authToken}
-            hideHeader={true}
-          />
-        ),
-        closable: true,
-      });
-    }
+    if (gameState.room) openMapTab(gameState.room, authToken, addTab, closeTab);
   };
 
-  const declineFollow = () => {
+  const respondToFollow = (accept: boolean) => {
     const reqId = gameState.pendingFollowRequest!.request_id;
     setClearedFollowRequestId(reqId);
     setGameState(prev => ({ ...prev, pendingFollowRequest: null }));
     clearPendingFollowRequest(reqId);
-    sendMessage('follow_response', { request_id: reqId, accept: false });
+    sendMessage('follow_response', { request_id: reqId, accept });
   };
-  const acceptFollow = () => {
-    const reqId = gameState.pendingFollowRequest!.request_id;
-    setClearedFollowRequestId(reqId);
-    setGameState(prev => ({ ...prev, pendingFollowRequest: null }));
-    clearPendingFollowRequest(reqId);
-    sendMessage('follow_response', { request_id: reqId, accept: true });
-  };
-  const declineParty = () => {
+
+  const respondToParty = (accept: boolean) => {
     const inviteId = gameState.pendingPartyInvite!.invite_id;
     setClearedPartyInviteId(inviteId);
     setGameState(prev => ({ ...prev, pendingPartyInvite: null }));
-    sendMessage('party_invite_response', { invite_id: inviteId, accept: false });
-  };
-  const acceptParty = () => {
-    const inviteId = gameState.pendingPartyInvite!.invite_id;
-    setClearedPartyInviteId(inviteId);
-    setGameState(prev => ({ ...prev, pendingPartyInvite: null }));
-    sendMessage('party_invite_response', { invite_id: inviteId, accept: true });
+    sendMessage('party_invite_response', { invite_id: inviteId, accept });
   };
 
   const showFollowModal = Boolean(
@@ -133,7 +159,6 @@ export const GameClientV2ContainerView: React.FC<GameClientV2ContainerViewProps>
   const showPartyModal = Boolean(
     gameState.pendingPartyInvite && clearedPartyInviteId !== gameState.pendingPartyInvite.invite_id
   );
-
   const containerClass = `game-terminal-container ${isMortallyWounded ? 'mortally-wounded' : ''} ${isDead ? 'dead' : ''}`;
   const currentRoomForMenu =
     gameState.room == null
@@ -190,77 +215,21 @@ export const GameClientV2ContainerView: React.FC<GameClientV2ContainerViewProps>
       />
 
       {showFollowModal && gameState.pendingFollowRequest && (
-        <ModalContainer
-          isOpen={true}
-          onClose={declineFollow}
+        <InviteModal
           title="Follow request"
-          maxWidth="sm"
-          showCloseButton={true}
-          overlayZIndex={10000}
-          position="center-no-backdrop"
-          contentClassName="!bg-black border-2 border-mythos-terminal-primary shadow-2xl"
-        >
-          <div className="p-4 space-y-4">
-            <p className="text-mythos-terminal-text font-medium">
-              {gameState.pendingFollowRequest.requestor_name} wants to follow you.
-            </p>
-            <div className="flex gap-3 justify-end">
-              <button
-                type="button"
-                className="px-3 py-1.5 rounded border border-mythos-terminal-border bg-mythos-terminal-surface
-                  text-mythos-terminal-text hover:bg-mythos-terminal-border/30 font-medium"
-                onClick={declineFollow}
-              >
-                Decline
-              </button>
-              <button
-                type="button"
-                className="px-3 py-1.5 rounded border border-mythos-terminal-border bg-mythos-terminal-surface
-                  text-mythos-terminal-text hover:bg-mythos-terminal-border/30 font-medium"
-                onClick={acceptFollow}
-              >
-                Accept
-              </button>
-            </div>
-          </div>
-        </ModalContainer>
+          message={`${gameState.pendingFollowRequest.requestor_name} wants to follow you.`}
+          onDecline={() => respondToFollow(false)}
+          onAccept={() => respondToFollow(true)}
+        />
       )}
 
       {showPartyModal && gameState.pendingPartyInvite && (
-        <ModalContainer
-          isOpen={true}
-          onClose={declineParty}
+        <InviteModal
           title="Party invite"
-          maxWidth="sm"
-          showCloseButton={true}
-          overlayZIndex={10000}
-          position="center-no-backdrop"
-          contentClassName="!bg-black border-2 border-mythos-terminal-primary shadow-2xl"
-        >
-          <div className="p-4 space-y-4">
-            <p className="text-mythos-terminal-text font-medium">
-              {gameState.pendingPartyInvite.inviter_name} has invited you to join their party.
-            </p>
-            <div className="flex gap-3 justify-end">
-              <button
-                type="button"
-                className="px-3 py-1.5 rounded border border-mythos-terminal-border bg-mythos-terminal-surface
-                    text-mythos-terminal-text hover:bg-mythos-terminal-border/30 font-medium"
-                onClick={declineParty}
-              >
-                Decline
-              </button>
-              <button
-                type="button"
-                className="px-3 py-1.5 rounded border border-mythos-terminal-border bg-mythos-terminal-surface
-                    text-mythos-terminal-text hover:bg-mythos-terminal-border/30 font-medium"
-                onClick={acceptParty}
-              >
-                Accept
-              </button>
-            </div>
-          </div>
-        </ModalContainer>
+          message={`${gameState.pendingPartyInvite.inviter_name} has invited you to join their party.`}
+          onDecline={() => respondToParty(false)}
+          onAccept={() => respondToParty(true)}
+        />
       )}
 
       <MainMenuModal
@@ -283,4 +252,8 @@ export const GameClientV2ContainerView: React.FC<GameClientV2ContainerViewProps>
       />
     </div>
   );
-};
+}
+
+export const GameClientV2ContainerView: React.FC<GameClientV2ContainerViewProps> = props => (
+  <GameClientV2ContainerLayout {...props} />
+);

@@ -116,3 +116,52 @@ async def test_disconnect_connection_by_id_impl_websocket(mock_manager: MagicMoc
     mock_manager.room_manager = MagicMock()
     result = await disconnect_connection_by_id_impl(connection_id, mock_manager)
     assert result is True
+
+
+@pytest.mark.asyncio
+async def test_safe_close_websocket_swallows_websocket_disconnect():
+    """Regression: e2e logout hit WebSocketDisconnect on close and aborted leave cleanup."""
+    from fastapi import WebSocketDisconnect
+
+    from server.realtime.connection_manager_methods import safe_close_websocket_impl
+
+    manager: MagicMock = MagicMock()
+    manager.is_websocket_closed = MagicMock(return_value=False)
+    manager.mark_websocket_closed = MagicMock()
+    websocket = AsyncMock()
+    websocket.close = AsyncMock(side_effect=WebSocketDisconnect(code=1006))
+    with patch("server.realtime.connection_manager_methods.is_websocket_open_impl", return_value=True):
+        await safe_close_websocket_impl(manager, websocket, code=1000, reason="Connection closed")
+    manager.mark_websocket_closed.assert_called()
+
+
+@pytest.mark.asyncio
+async def test_cleanup_websocket_disconnect_continues_after_close_error():
+    """Close failures must not skip intentional leave tracking / room cleanup."""
+    import asyncio
+
+    from server.realtime.connection_disconnection import cleanup_websocket_disconnect
+
+    player_id = uuid.uuid4()
+    manager: MagicMock = MagicMock()
+    manager.disconnect_lock = asyncio.Lock()
+    manager.processed_disconnect_lock = asyncio.Lock()
+    manager.player_websockets = {player_id: ["conn_001"]}
+    manager.intentional_disconnects = {player_id}
+    manager.processed_disconnects = set()
+    manager.has_websocket_connection = MagicMock(return_value=False)
+    manager.room_manager = MagicMock()
+    manager.rate_limiter = MagicMock()
+    manager.message_queue = MagicMock()
+    manager.last_seen = {}
+    manager.last_active_update_times = {}
+
+    with patch(
+        "server.realtime.connection_disconnection.disconnect_all_websockets_impl",
+        new_callable=AsyncMock,
+        side_effect=RuntimeError("close failed"),
+    ):
+        result = await cleanup_websocket_disconnect(player_id, manager, is_force_disconnect=True)
+
+    assert result is True
+    manager.room_manager.remove_player_from_all_rooms.assert_called()

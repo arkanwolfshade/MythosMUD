@@ -1,16 +1,23 @@
 # player_event_handler_utils
 
-> 2 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **player_event_handler_utils()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **player_event_handler_utils()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **fixture** (4 connections)
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **mock_logger()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **mock_name_extractor()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Create a mock name extractor.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Create a mock logger.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 - **Create a PlayerEventHandlerUtils instance.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [profession models rationale](profession_models_rationale.md) (1 shared connections)
-- [player event handlers](player_event_handlers.md) (1 shared connections)
+- [test_player_event_handlers_utils.py](test_player_event_handlers_utils.py.md) (4 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (1 shared connections)
 
 ## Source Files
 
@@ -18,7 +25,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -13,6 +13,7 @@ from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_users.schemas import BaseUserCreate
 
+from ..api import players as _player_api
 from ..api.admin import dialogue_router as admin_dialogue_router
 from ..api.admin import npc_router as admin_npc_router
 from ..api.admin import subject_router as admin_subject_router
@@ -21,7 +22,7 @@ from ..api.game import game_router
 from ..api.maps import map_router
 from ..api.metrics import router as metrics_router
 from ..api.monitoring import monitoring_router
-from ..api.players import player_router
+from ..api.player_router import player_router
 from ..api.professions import profession_router
 from ..api.real_time import realtime_router
 from ..api.rooms import room_router
@@ -42,6 +43,9 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from .lifespan import lifespan
 
 logger = get_logger(__name__)
+
+# Importing players registers endpoints on player_router.
+_ = _player_api
 
 
 # AccessLoggingMiddleware has been replaced by ComprehensiveLoggingMiddleware

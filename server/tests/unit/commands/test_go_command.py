@@ -221,6 +221,25 @@ def test_validate_exit_success():
     assert result == "north_room"
 
 
+def test_validate_exit_foyer_east_to_hallway():
+    """Sanitarium foyer east must resolve to eastern hallway (E2E go-east path)."""
+    foyer_id = "earth_arkhamcity_sanitarium_room_foyer_001"
+    hallway_id = "earth_arkhamcity_sanitarium_room_hallway_001"
+    mock_room = MagicMock()
+    mock_room.id = foyer_id
+    mock_room.exits = {
+        "east": hallway_id,
+        "west": "earth_arkhamcity_sanitarium_room_hallway_002",
+        "south": "earth_arkhamcity_sanitarium_room_foyer_entrance_001",
+    }
+    mock_persistence = MagicMock()
+    mock_persistence.get_room_by_id = MagicMock(return_value=MagicMock())
+
+    result = _validate_exit("east", mock_room, mock_persistence, "ArkanWolfshade", foyer_id)
+
+    assert result == hallway_id
+
+
 @pytest.mark.asyncio
 async def test_execute_movement_success():
     """Test _execute_movement successfully moves player."""

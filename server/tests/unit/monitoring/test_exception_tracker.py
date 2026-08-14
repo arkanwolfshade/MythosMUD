@@ -17,7 +17,7 @@ def _reset_global_tracker() -> None:
 
 def test_track_exception_and_stats() -> None:
     tracker = ExceptionTracker(max_records=10)
-    exc_id = tracker.track_exception(ValueError("bad"), user_id="u1", severity="critical", handled=False)
+    exc_id = tracker.track_exception(ValueError("bad"), {"user_id": "u1", "severity": "critical", "handled": False})
     record = tracker.get_exception_record(exc_id)
     assert record is not None
     stats = tracker.get_stats()
@@ -50,15 +50,15 @@ def test_exception_handlers_global_and_specific() -> None:
 
 def test_get_unhandled_and_critical_filters() -> None:
     tracker = ExceptionTracker()
-    tracker.track_exception(OSError("disk"), handled=False, severity="critical")
-    tracker.track_exception(KeyError("k"), handled=True)
+    tracker.track_exception(OSError("disk"), {"handled": False, "severity": "critical"})
+    tracker.track_exception(KeyError("k"), {"handled": True})
     assert len(tracker.get_unhandled_exceptions()) == 1
     assert len(tracker.get_critical_exceptions()) == 1
 
 
 def test_reset_records_and_module_helper() -> None:
     tracker = ExceptionTracker()
-    track_exception(OSError("disk"), tracker=tracker)
+    track_exception(OSError("disk"), {"tracker": tracker})
     tracker.reset_records()
     assert tracker.get_stats().total_exceptions == 0
 

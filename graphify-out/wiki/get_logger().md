@@ -1,8 +1,8 @@
 # get_logger()
 
-> God node · 522 connections · `server/structured_logging/enhanced_logging_config.py`
+> God node · 525 connections · `server/structured_logging/enhanced_logging_config.py`
 
-**Community:** [logging examples fastapi](logging_examples_fastapi.md)
+**Community:** [get_logger](get_logger.md)
 
 ## Connections by Relation
 
@@ -11,50 +11,50 @@
 - format_metadata() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
-- wrap_third_party_exception_enhanced() `EXTRACTED`
 - handle_new_game_session() `EXTRACTED`
-- configure_enhanced_structlog() `EXTRACTED`
-- log_structured_error() `EXTRACTED`
-- websocket_endpoint() `EXTRACTED`
-- .__init__() `EXTRACTED`
+- wrap_third_party_exception_enhanced() `EXTRACTED`
 - db_cleanup() `EXTRACTED`
+- log_structured_error() `EXTRACTED`
 - get_player_connections() `EXTRACTED`
+- websocket_endpoint() `EXTRACTED`
 - websocket_endpoint_route() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - setup_enhanced_logging() `EXTRACTED`
+- get_connection_statistics() `EXTRACTED`
+- .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - update_logging_with_player_service() `EXTRACTED`
 - _log_http_error() `EXTRACTED`
-- get_connection_statistics() `EXTRACTED`
+- .read_token() `EXTRACTED`
 
 ### contains
 - enhanced_logging_config.py `EXTRACTED`
 
 ### imports
-- exceptions.py `EXTRACTED`
-- connection_manager.py `EXTRACTED`
-- dependencies.py `EXTRACTED`
+- server/exceptions.py `EXTRACTED`
+- [connection_manager.py](connection_manager.py.md) `EXTRACTED`
+- command_service.py `EXTRACTED`
+- [server/dependencies.py](server-dependencies.py.md) `EXTRACTED`
 - combat_service.py `EXTRACTED`
 - time.py `EXTRACTED`
-- command_service.py `EXTRACTED`
-- connection_manager_methods.py `EXTRACTED`
 - async_persistence.py `EXTRACTED`
 - database.py `EXTRACTED`
+- [connection_manager_methods.py](connection_manager_methods.py.md) `EXTRACTED`
+- [game_tick_processing.py](game_tick_processing.py.md) `EXTRACTED`
 - alias_storage.py `EXTRACTED`
-- game_tick_processing.py `EXTRACTED`
 - players.py `EXTRACTED`
-- websocket_handler.py `EXTRACTED`
-- container_endpoints_basic.py `EXTRACTED`
-- monitoring.py `EXTRACTED`
-- endpoints.py `EXTRACTED`
-- lifespan_startup.py `EXTRACTED`
-- combat.py `EXTRACTED`
-- container_persistence.py `EXTRACTED`
+- [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
+- [websocket_handler.py](websocket_handler.py.md) `EXTRACTED`
 - maps.py `EXTRACTED`
+- api/monitoring.py `EXTRACTED`
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) `EXTRACTED`
+- endpoints.py `EXTRACTED`
+- [lifespan_startup.py](lifespan_startup.py.md) `EXTRACTED`
+- [chat_service.py](chat_service.py.md) `EXTRACTED`
 
 ### rationale_for
-- Get a Structlog logger with the specified name.      This ensures all loggers ar `EXTRACTED`
+- Get a Structlog logger with the specified name. This ensures all loggers are… `EXTRACTED`
 
 ### references
 - BoundLogger `EXTRACTED`

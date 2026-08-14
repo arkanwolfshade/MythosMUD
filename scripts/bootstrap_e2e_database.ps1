@@ -53,8 +53,8 @@ Invoke-Step "apply_aggression_level_migration.ps1" { & (Join-Path $PSScriptRoot 
 Invoke-Step "apply_dialogue_migration.ps1" { & (Join-Path $PSScriptRoot "apply_dialogue_migration.ps1") -TargetDbs mythos_e2e }
 
 Write-Host ""
-Write-Host "[INFO] Seeding E2E users (uv run python scripts/seed_e2e_users.py)" -ForegroundColor Yellow
-$seedResult = & uv run python scripts/seed_e2e_users.py 2>&1
+Write-Host "[INFO] Seeding E2E users (uv run --no-sync python scripts/seed_e2e_users.py)" -ForegroundColor Yellow
+$seedResult = & uv run --no-sync python scripts/seed_e2e_users.py 2>&1
 $seedResult | Write-Host
 if (-not $?) {
     Write-Host "[ERROR] seed_e2e_users.py failed" -ForegroundColor Red

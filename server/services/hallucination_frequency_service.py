@@ -39,6 +39,37 @@ class HallucinationFrequencyService:
         """Initialize the hallucination frequency service."""
         logger.info("HallucinationFrequencyService initialized")
 
+    async def _time_based_hallucination_due(
+        self, player_id: uuid.UUID, tier: str, config: dict[str, Any], session: AsyncSession
+    ) -> bool:
+        lucidity_service = LucidityService(session)
+        cooldown = await lucidity_service.get_cooldown(player_id, LucidityActionCode.HALLUCINATION_TIMER)
+
+        now = datetime.now(UTC)
+        if cooldown and cooldown.cooldown_expires_at:
+            expires_at = (
+                cooldown.cooldown_expires_at.replace(tzinfo=UTC)
+                if cooldown.cooldown_expires_at.tzinfo is None
+                else cooldown.cooldown_expires_at
+            )
+            if now < expires_at:
+                return False
+
+        should_trigger: bool = random.random() < cast(float, config["chance"])  # nosec B311
+        if should_trigger:
+            cooldown_expires = now + timedelta(seconds=cast(int, config["cooldown_seconds"]))
+            await lucidity_service.set_cooldown(
+                player_id, LucidityActionCode.HALLUCINATION_TIMER, cooldown_expires.replace(tzinfo=None)
+            )
+            logger.debug(
+                "Hallucination triggered",
+                player_id=player_id,
+                tier=tier,
+                trigger_type="time_based",
+                cooldown_seconds=cast(int, config["cooldown_seconds"]),
+            )
+        return should_trigger
+
     async def should_trigger_hallucination(
         self,
         player_id: uuid.UUID,
@@ -68,7 +99,6 @@ class HallucinationFrequencyService:
         if trigger_type == "room_entry":
             return random.random() < cast(float, config["chance"])  # nosec B311: Game mechanics probability check, not cryptographic
 
-        # For time-based (Fractured, Deranged), check cooldown first
         if trigger_type == "time_based":
             if session is None:
                 logger.warning(
@@ -77,42 +107,8 @@ class HallucinationFrequencyService:
                     tier=tier,
                 )
                 return False
-
             try:
-                lucidity_service = LucidityService(session)
-                cooldown = await lucidity_service.get_cooldown(player_id, LucidityActionCode.HALLUCINATION_TIMER)
-
-                now = datetime.now(UTC)
-                if cooldown and cooldown.cooldown_expires_at:
-                    # Check if cooldown has expired
-                    expires_at = (
-                        cooldown.cooldown_expires_at.replace(tzinfo=UTC)
-                        if cooldown.cooldown_expires_at.tzinfo is None
-                        else cooldown.cooldown_expires_at
-                    )
-                    if now < expires_at:
-                        # Cooldown still active
-                        return False
-
-                # Cooldown expired or doesn't exist - roll chance
-                should_trigger: bool = random.random() < cast(float, config["chance"])  # nosec B311: Game mechanics probability check, not cryptographic
-
-                if should_trigger:
-                    # Set new cooldown
-                    cooldown_expires = now + timedelta(seconds=cast(int, config["cooldown_seconds"]))
-                    cooldown_expires_naive = cooldown_expires.replace(tzinfo=None)
-                    await lucidity_service.set_cooldown(
-                        player_id, LucidityActionCode.HALLUCINATION_TIMER, cooldown_expires_naive
-                    )
-                    logger.debug(
-                        "Hallucination triggered",
-                        player_id=player_id,
-                        tier=tier,
-                        trigger_type=trigger_type,
-                        cooldown_seconds=cast(int, config["cooldown_seconds"]),
-                    )
-                return should_trigger
-
+                return await self._time_based_hallucination_due(player_id, tier, config, session)
             except Exception as e:  # pylint: disable=broad-except  # Reason: Hallucination frequency check errors unpredictable, must catch all exceptions to handle various failure modes during frequency validation
                 logger.warning(
                     "Error checking hallucination frequency",

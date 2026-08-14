@@ -35,5 +35,5 @@ async def check_invite(invite_code: str) -> None:
 if __name__ == "__main__":
     import sys
 
-    invite_code = sys.argv[1] if len(sys.argv) > 1 else "COSMOS202541"
-    run(check_invite, invite_code)  # anyio.run supports *args for async functions
+    code_arg = sys.argv[1] if len(sys.argv) > 1 else "COSMOS202541"
+    run(check_invite, code_arg)  # anyio.run supports *args for async functions

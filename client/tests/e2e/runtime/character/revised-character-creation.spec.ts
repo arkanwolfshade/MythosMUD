@@ -140,10 +140,17 @@ async function openStatsRollingFromLogin(page: Page): Promise<void> {
 
 async function assignAllSkillsAndProceedToName(page: Page): Promise<void> {
   await page.getByTestId('skill-assignment-screen').waitFor({ state: 'visible', timeout: TEST_TIMEOUTS.DEFAULT });
+  // Catalog loads async; only "Select skill..." exists until /skills/ returns allow_at_creation rows.
+  await expect(page.locator('#occupation-slot-0 option').nth(1)).toBeAttached({ timeout: 60_000 });
   const combos = page.getByRole('combobox');
-  await expect(combos).toHaveCount(13, { timeout: 5000 });
+  await expect(combos).toHaveCount(13, { timeout: 10_000 });
   for (let i = 0; i < 13; i++) {
-    await combos.nth(i).selectOption({ index: 1 });
+    const select = combos.nth(i);
+    await expect(select.locator('option')).not.toHaveCount(1, {
+      timeout: 30_000,
+      message: `Skill combobox ${i} still has only the placeholder option (empty catalog?)`,
+    });
+    await select.selectOption({ index: 1 });
   }
   await page.getByRole('button', { name: 'Next: Name character' }).click();
 }

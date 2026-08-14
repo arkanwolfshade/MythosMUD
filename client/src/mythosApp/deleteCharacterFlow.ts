@@ -14,6 +14,56 @@ export type DeleteCharacterFlowResult =
   | { outcome: 'delete_failed'; message: string }
   | { outcome: 'refresh_failed'; message: string; deleteStatus: number; deleteStatusText: string };
 
+async function fetchCharacterList(authToken: string): Promise<Response> {
+  return fetch(`${API_V1_BASE}/api/players/characters`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${authToken}`,
+    },
+  });
+}
+
+function mapCharactersResponse(rawData: unknown): CharacterInfo[] {
+  const charactersList = assertServerCharacterResponseArray(
+    rawData,
+    'Invalid API response: expected ServerCharacterResponse[]'
+  );
+  return charactersList.map((c: ServerCharacterResponse) => toCharacterInfoFromList(c));
+}
+
+async function parseDeleteFailure(response: Response): Promise<string> {
+  const fallback = 'Failed to delete character';
+  try {
+    const rawData: unknown = await response.json();
+    return errorMessageFromApiBody(rawData, fallback);
+  } catch {
+    return fallback;
+  }
+}
+
+async function parseRefreshFailure(charactersResponse: Response): Promise<string> {
+  const errorMessage = 'Character deleted, but failed to refresh character list';
+  try {
+    const rawData: unknown = await charactersResponse.json();
+    if (isErrorResponse(rawData)) {
+      return getErrorMessage(rawData);
+    }
+    if (isObject(rawData)) {
+      const errorData = rawData as Record<string, unknown>;
+      if (typeof errorData.detail === 'object' && errorData.detail !== null && 'message' in errorData.detail) {
+        return String((errorData.detail as Record<string, unknown>).message);
+      }
+      if (typeof errorData.detail === 'string') {
+        return errorData.detail;
+      }
+    }
+  } catch {
+    // default message
+  }
+  return errorMessage;
+}
+
 export async function runDeleteCharacterFlow(
   authToken: string,
   characterId: string
@@ -24,59 +74,23 @@ export async function runDeleteCharacterFlow(
     if (isServerUnavailable(null, response)) {
       return { outcome: 'server_unavailable' };
     }
-    const fallback = 'Failed to delete character';
-    let errorMessage = fallback;
-    try {
-      const rawData: unknown = await response.json();
-      errorMessage = errorMessageFromApiBody(rawData, fallback);
-    } catch {
-      // use default
-    }
-    return { outcome: 'delete_failed', message: errorMessage };
+    return { outcome: 'delete_failed', message: await parseDeleteFailure(response) };
   }
 
-  const charactersResponse = await fetch(`${API_V1_BASE}/api/players/characters`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${authToken}`,
-    },
-  });
+  const charactersResponse = await fetchCharacterList(authToken);
 
   if (charactersResponse.ok) {
     const rawData: unknown = await charactersResponse.json();
-    const charactersList = assertServerCharacterResponseArray(
-      rawData,
-      'Invalid API response: expected ServerCharacterResponse[]'
-    );
-    const mappedCharacters = charactersList.map((c: ServerCharacterResponse) => toCharacterInfoFromList(c));
-    return { outcome: 'ok', characters: mappedCharacters };
+    return { outcome: 'ok', characters: mapCharactersResponse(rawData) };
   }
 
   if (isServerUnavailable(null, charactersResponse)) {
     return { outcome: 'server_unavailable' };
   }
 
-  let errorMessage = 'Character deleted, but failed to refresh character list';
-  try {
-    const rawData: unknown = await charactersResponse.json();
-    if (isErrorResponse(rawData)) {
-      errorMessage = getErrorMessage(rawData);
-    } else if (isObject(rawData)) {
-      const errorData = rawData as Record<string, unknown>;
-      errorMessage =
-        typeof errorData.detail === 'object' && errorData.detail !== null && 'message' in errorData.detail
-          ? String((errorData.detail as Record<string, unknown>).message)
-          : typeof errorData.detail === 'string'
-            ? errorData.detail
-            : errorMessage;
-    }
-  } catch {
-    // default message
-  }
   return {
     outcome: 'refresh_failed',
-    message: errorMessage,
+    message: await parseRefreshFailure(charactersResponse),
     deleteStatus: response.status,
     deleteStatusText: response.statusText,
   };

@@ -10,6 +10,7 @@ allowing administrators to set a target player's LCD (Lucidity Countdown) value.
 from __future__ import annotations
 
 import uuid
+from dataclasses import dataclass
 from typing import Any
 
 from sqlalchemy.exc import SQLAlchemyError
@@ -94,80 +95,83 @@ async def _get_current_lcd(session: Any, target_player_id: uuid.UUID) -> int:
     return lucidity_record.current_lcd if lucidity_record else 100
 
 
-async def _apply_lucidity_change(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Admin command requires many parameters for context and lucidity adjustment
-    session: Any,
-    lucidity_service: LucidityService,
-    target_player_id: uuid.UUID,
-    current_lcd: int,
-    target_lcd: int,
-    player_name: str,
-    current_user_id: str,
-    target_player: str,
-) -> dict[str, str] | None:
-    """Apply lucidity adjustment and return result message or None on error."""
-    delta = target_lcd - current_lcd
+@dataclass
+class LucidityChangeCtx:
+    """Bundle for _apply_lucidity_change (lizard PARAM)."""
 
+    session: Any
+    lucidity_service: LucidityService
+    target_player_id: uuid.UUID
+    current_lcd: int
+    target_lcd: int
+    player_name: str
+    current_user_id: str
+    target_player: str
+
+
+def _log_lucidity_success(ctx: LucidityChangeCtx, adjustment_result: Any) -> dict[str, str]:
     try:
-        adjustment_result = await lucidity_service.apply_lucidity_adjustment(
-            player_id=target_player_id,
+        admin_logger = get_admin_actions_logger()
+        admin_logger.log_admin_command(
+            admin_name=ctx.player_name,
+            command=f"admin setlucidity {ctx.target_player} {ctx.target_lcd}",
+            success=True,
+            additional_data={
+                "target_player": ctx.target_player,
+                "target_player_id": str(ctx.target_player_id),
+                "previous_lcd": ctx.current_lcd,
+                "new_lcd": adjustment_result.new_lcd,
+                "previous_tier": adjustment_result.previous_tier,
+                "new_tier": adjustment_result.new_tier,
+            },
+        )
+    except (OSError, AttributeError, TypeError) as log_exc:
+        logger.warning("Failed to log admin setlucidity command", player_name=ctx.player_name, error=str(log_exc))
+    logger.info(
+        "Admin setlucidity command successful",
+        admin_name=ctx.player_name,
+        target_player=ctx.target_player,
+        previous_lcd=ctx.current_lcd,
+        new_lcd=adjustment_result.new_lcd,
+        previous_tier=adjustment_result.previous_tier,
+        new_tier=adjustment_result.new_tier,
+    )
+    return {
+        "result": (
+            f"Set {ctx.target_player}'s LCD from {ctx.current_lcd} to {adjustment_result.new_lcd} "
+            f"({adjustment_result.previous_tier} -> {adjustment_result.new_tier})."
+        )
+    }
+
+
+async def _apply_lucidity_change(ctx: LucidityChangeCtx) -> dict[str, str] | None:
+    """Apply lucidity adjustment and return result message or None on error."""
+    delta = ctx.target_lcd - ctx.current_lcd
+    try:
+        adjustment_result = await ctx.lucidity_service.apply_lucidity_adjustment(
+            player_id=ctx.target_player_id,
             delta=delta,
             reason_code="admin_set",
             metadata={
-                "admin_name": player_name,
-                "admin_id": current_user_id,
-                "previous_lcd": current_lcd,
-                "target_lcd": target_lcd,
+                "admin_name": ctx.player_name,
+                "admin_id": ctx.current_user_id,
+                "previous_lcd": ctx.current_lcd,
+                "target_lcd": ctx.target_lcd,
                 "command": "admin setlucidity",
             },
         )
-        await session.commit()
-
-        # Log admin action
-        try:
-            admin_logger = get_admin_actions_logger()
-            admin_logger.log_admin_command(
-                admin_name=player_name,
-                command=f"admin setlucidity {target_player} {target_lcd}",
-                success=True,
-                additional_data={
-                    "target_player": target_player,
-                    "target_player_id": str(target_player_id),
-                    "previous_lcd": current_lcd,
-                    "new_lcd": adjustment_result.new_lcd,
-                    "previous_tier": adjustment_result.previous_tier,
-                    "new_tier": adjustment_result.new_tier,
-                },
-            )
-        except (OSError, AttributeError, TypeError) as log_exc:
-            logger.warning("Failed to log admin setlucidity command", player_name=player_name, error=str(log_exc))
-
-        logger.info(
-            "Admin setlucidity command successful",
-            admin_name=player_name,
-            target_player=target_player,
-            previous_lcd=current_lcd,
-            new_lcd=adjustment_result.new_lcd,
-            previous_tier=adjustment_result.previous_tier,
-            new_tier=adjustment_result.new_tier,
-        )
-
-        return {
-            "result": (
-                f"Set {target_player}'s LCD from {current_lcd} to {adjustment_result.new_lcd} "
-                f"({adjustment_result.previous_tier} -> {adjustment_result.new_tier})."
-            )
-        }
-
+        await ctx.session.commit()
+        return _log_lucidity_success(ctx, adjustment_result)
     except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError) as adjust_exc:
-        await session.rollback()
+        await ctx.session.rollback()
         logger.error(
             "Admin setlucidity command failed during adjustment",
-            player_name=player_name,
-            target_player=target_player,
+            player_name=ctx.player_name,
+            target_player=ctx.target_player,
             error=str(adjust_exc),
             error_type=type(adjust_exc).__name__,
         )
-        return {"result": f"Error setting lucidity for {target_player}: {str(adjust_exc)}"}
+        return {"result": f"Error setting lucidity for {ctx.target_player}: {str(adjust_exc)}"}
 
 
 def _get_player_service_from_app(app: Any) -> Any | None:
@@ -217,14 +221,16 @@ async def _execute_lucidity_change(  # pylint: disable=too-many-arguments,too-ma
             current_lcd = await _get_current_lcd(session, target_player_id)
 
             result = await _apply_lucidity_change(
-                session,
-                lucidity_service,
-                target_player_id,
-                current_lcd,
-                lcd_value_int,
-                player_name,
-                current_user_id,
-                target_player,
+                LucidityChangeCtx(
+                    session,
+                    lucidity_service,
+                    target_player_id,
+                    current_lcd,
+                    lcd_value_int,
+                    player_name,
+                    current_user_id,
+                    target_player,
+                )
             )
             if result:
                 return result
@@ -296,22 +302,7 @@ async def _handle_admin_set_lucidity_command(  # pylint: disable=too-many-argume
     alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, str]:
-    """
-    Handle the admin setlucidity command to set a player's LCD value.
-
-    Usage: admin setlucidity <target_player> <lcd_value>
-    LCD value must be between -100 and 100.
-
-    Args:
-        command_data: Command data dictionary containing validated command information
-        current_user: Current user information
-        request: FastAPI request object
-        alias_storage: Alias storage instance (unused)
-        player_name: Player name for logging
-
-    Returns:
-        dict: Command result
-    """
+    """Handle the admin setlucidity command to set a player's LCD value."""
     _ = current_user  # Intentionally unused - part of standard command handler interface
     _ = alias_storage  # Intentionally unused - part of standard command handler interface
 

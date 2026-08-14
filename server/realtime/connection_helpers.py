@@ -10,6 +10,7 @@ for various operations like UUID conversion, sequence numbers, and deprecated me
 from typing import Any, cast
 
 import aiofiles  # pylint: disable=import-error
+from starlette.websockets import WebSocketState
 
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -106,11 +107,14 @@ async def _send_to_websockets(
         if connection_id not in manager.active_websockets:
             continue
 
-        had_connection_attempts = True
         websocket = manager.active_websockets[connection_id]
         # Guard against None websocket (can happen during cleanup)
         if websocket is None:
             continue
+        client_state = getattr(websocket, "client_state", None)
+        if client_state in (WebSocketState.DISCONNECTED, WebSocketState.CONNECTING):
+            continue
+        had_connection_attempts = True
         try:
             await websocket.send_json(serializable_event)
             delivery_status["websocket_delivered"] += 1
@@ -233,6 +237,14 @@ async def handle_new_login_impl(player_id: Any, manager: Any) -> None:
     """
     try:
         logger.info("NEW LOGIN detected for player, terminating existing connections", player_id=player_id)
+
+        # Logout uses /rest (10s countdown). E2E/SPA cleanup can abandon the client while that
+        # task still runs; without cancel, force_disconnect hits the new session mid-suite.
+        # Inline import: rest_command <-> realtime; same pattern as combat_handler.
+        # AI: cancel before force_disconnect; login does not go through go/combat interrupt paths.
+        from ..commands.rest_command import cancel_rest_countdown
+
+        await cancel_rest_countdown(player_id, manager)
 
         import json
         from datetime import datetime

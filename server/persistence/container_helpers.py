@@ -200,10 +200,12 @@ def update_container_items(
                     conn,
                     item_instance_id=str(item_instance_id),
                     prototype_id=str(prototype_id),
-                    owner_type="container",
-                    owner_id=container_id_str,
-                    quantity=qty,
-                    metadata=md,
+                    options={
+                        "owner_type": "container",
+                        "owner_id": container_id_str,
+                        "quantity": qty,
+                        "metadata": md,
+                    },
                 )
             except (DatabaseError, ValidationError) as e:
                 logger.warning(

@@ -30,6 +30,7 @@ Pattern reference:
 - User asks to **lint** / health-check the wiki
 - After code-graph updates: **sync graphify** into the vault
 - User mentions Obsidian vault, permanent memory, or LLM wiki
+- User asks to **ingest Chaosium**, promote a CoC pack, or refresh catalog memory
 
 ## Non-goals
 
@@ -37,7 +38,10 @@ Pattern reference:
   when answering "how does this code work right now?"
 - Do not run `graphify export obsidian` into the curated vault (too many nodes).
   Use `graphify export wiki` + sync script instead.
-- Never edit `raw/` sources (except regenerating `raw/graphify/` via the script).
+- Never edit `raw/` sources (except regenerating `raw/graphify/` via the sync
+  script, or writing `raw/chaosium/` via the Chaosium snapshot script).
+- Do not put durable lore outside the `data/` submodule (`data/MythosMUD-Obsidian/`).
+- Do not commit Chaosium PDFs, OCR dumps, or verbatim book prose.
 
 ## Workflows
 
@@ -72,11 +76,37 @@ From repo root (PowerShell):
 
 Then optionally promote high-signal findings into `wiki/code/` pages.
 
+### Chaosium ingest
+
+Trigger phrases: "ingest Chaosium", "promote Field Guide", "snapshot Chaosium
+graphs", catalog durable memory.
+
+1. Snapshot into `data/MythosMUD-Obsidian/raw/chaosium/` (parent-repo script;
+   content lands only in the `data/` submodule):
+
+```powershell
+./scripts/snapshot_chaosium_graphify.ps1
+# or one pack:
+./scripts/snapshot_chaosium_graphify.ps1 -PackPath "<Chaosium pack folder>"
+```
+
+2. Read `GRAPH_REPORT.md` God Nodes / Surprising Connections / Suggested Questions
+   and `MANIFEST.md` honesty notes.
+3. Follow vault `AGENTS.md` → Operations → Chaosium pack ingest.
+4. Write/update `wiki/sources/`, entities/concepts/world, [[Chaosium CoC Catalog]],
+   `index.md`, `log.md`.
+5. Cap ~5–10 pages per pack; Tier B = source + honesty only.
+6. Commit in the data submodule; bump parent submodule pointer when publishing.
+
+Live pack graphs on Proton Drive remain optional `/graphify query` tools. Durable
+lore is wiki synthesis only—not PDFs or OCR dumps.
+
 ## Division of labor
 
-| Need                   | Where                                           |
-| ---------------------- | ----------------------------------------------- |
-| Permanent memory       | This vault                                      |
-| Live code graph        | `graphify` CLI + `graphify-out/`                |
-| Symbol edit navigation | jCodemunch                                      |
-| Formal ADRs            | `docs/architecture/decisions/` (+ wiki summary) |
+| Need                     | Where                                                 |
+| ------------------------ | ----------------------------------------------------- |
+| Permanent memory         | This vault (`data/MythosMUD-Obsidian/`)               |
+| Live code graph          | `graphify` CLI + `graphify-out/`                      |
+| Live Chaosium pack graph | Proton Drive pack `graphify-out/` + `/graphify query` |
+| Symbol edit navigation   | jCodemunch                                            |
+| Formal ADRs              | `docs/architecture/decisions/` (+ wiki summary)       |

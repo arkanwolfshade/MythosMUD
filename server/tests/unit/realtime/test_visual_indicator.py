@@ -28,7 +28,10 @@ async def test_filter_other_players_adds_linkdead_indicator():
     mock_connection_manager = MagicMock()
     mock_connection_manager.grace_period_players = {player_id: MagicMock()}  # Player in grace period
 
-    with patch("server.commands.look_room.is_player_in_grace_period", return_value=True):
+    with (
+        patch("server.realtime.occupant_display.is_player_in_grace_period", return_value=True),
+        patch("server.realtime.occupant_display.is_player_in_login_grace_period", return_value=False),
+    ):
         result = await _filter_other_players(players_in_room, player_name, mock_connection_manager)
 
         assert len(result) == 1
@@ -49,7 +52,10 @@ async def test_filter_other_players_no_linkdead_when_not_in_grace_period():
     mock_connection_manager = MagicMock()
     mock_connection_manager.grace_period_players = {}  # Player not in grace period
 
-    with patch("server.commands.look_room.is_player_in_grace_period", return_value=False):
+    with (
+        patch("server.realtime.occupant_display.is_player_in_grace_period", return_value=False),
+        patch("server.realtime.occupant_display.is_player_in_login_grace_period", return_value=False),
+    ):
         result = await _filter_other_players(players_in_room, player_name, mock_connection_manager)
 
         assert len(result) == 1

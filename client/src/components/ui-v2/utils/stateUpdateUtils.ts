@@ -52,22 +52,29 @@ function hasOccupantData(room: Room): boolean {
   return hasPlayers || hasNpcs;
 }
 
+function asOccupantList<T>(value: T[] | undefined | null): T[] {
+  return Array.isArray(value) ? value : [];
+}
+
+function pickOccupantList<T>(useNew: boolean, newer: T[] | undefined, older: T[] | undefined): T[] {
+  if (useNew) {
+    return asOccupantList(newer ?? older);
+  }
+  return asOccupantList(older);
+}
+
 // Helper function to merge occupant data from two room updates
 export const mergeOccupantData = (newRoom: Room, existingRoom: Room) => {
   const useNewOccupants = hasOccupantData(newRoom);
-  const players = useNewOccupants ? (newRoom.players ?? existingRoom.players ?? []) : (existingRoom.players ?? []);
-  const npcs = useNewOccupants ? (newRoom.npcs ?? existingRoom.npcs ?? []) : (existingRoom.npcs ?? []);
-  const playersArr = Array.isArray(players) ? players : [];
-  const npcsArr = Array.isArray(npcs) ? npcs : [];
+  const playersArr = pickOccupantList(useNewOccupants, newRoom.players, existingRoom.players);
+  const npcsArr = pickOccupantList(useNewOccupants, newRoom.npcs, existingRoom.npcs);
   const occupants = [...playersArr, ...npcsArr];
-  const occupantCount = useNewOccupants
-    ? (newRoom.occupant_count ?? occupants.length)
-    : (existingRoom.occupant_count ?? occupants.length);
+  const source = useNewOccupants ? newRoom : existingRoom;
   return {
     players: playersArr,
     npcs: npcsArr,
     occupants,
-    occupant_count: occupantCount,
+    occupant_count: source.occupant_count ?? occupants.length,
   };
 };
 

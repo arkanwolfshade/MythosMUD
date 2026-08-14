@@ -412,6 +412,63 @@ class NPCThreadManager:
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Message processing errors unpredictable, must handle gracefully
             logger.error("Error processing NPC message", npc_id=npc_id, error=str(e))
 
+    def _resolve_wander_npc(self, npc_id: str) -> tuple[Any, Any] | None:
+        """Resolve active NPC instance and definition for a WANDER action."""
+        from ..services.npc_instance_service import get_npc_instance_service
+
+        npc_instance_service = get_npc_instance_service()
+        if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
+            logger.warning("NPC instance service not available for WANDER action", npc_id=npc_id)
+            return None
+
+        lifecycle_manager = npc_instance_service.lifecycle_manager
+        if not lifecycle_manager or npc_id not in lifecycle_manager.active_npcs:
+            logger.warning("NPC instance not found for WANDER action", npc_id=npc_id)
+            return None
+
+        npc_definition = self.npc_definitions.get(npc_id)
+        if not npc_definition:
+            logger.warning("NPC definition not found for WANDER action", npc_id=npc_id)
+            return None
+
+        return lifecycle_manager.active_npcs[npc_id], npc_definition
+
+    @staticmethod
+    def _parse_behavior_config(npc_instance: Any) -> dict[str, Any]:
+        """Parse NPC behavior config from instance attribute (dict or JSON string)."""
+        behavior_config = getattr(npc_instance, "_behavior_config", {})
+        if not isinstance(behavior_config, str):
+            return behavior_config if isinstance(behavior_config, dict) else {}
+        try:
+            parsed = json.loads(behavior_config)
+        except json.JSONDecodeError:
+            return {}
+        return parsed if isinstance(parsed, dict) else {}
+
+    def _execute_wander_movement(self, npc_id: str, npc_instance: Any, npc_definition: Any) -> None:
+        """Run idle movement for a resolved wander NPC."""
+        from ..container import ApplicationContainer
+        from .idle_movement import IdleMovementHandler
+
+        container = ApplicationContainer.get_instance()
+        async_persistence = getattr(container, "async_persistence", None) if container else None
+        if async_persistence is None:
+            logger.error("async_persistence not available for idle movement", npc_id=npc_id)
+            return
+
+        behavior_config = self._parse_behavior_config(npc_instance)
+        movement_handler = IdleMovementHandler(
+            event_bus=getattr(npc_instance, "event_bus", None),
+            persistence=async_persistence,
+        )
+        success = movement_handler.execute_idle_movement(npc_instance, npc_definition, behavior_config)
+        if success:
+            if hasattr(npc_instance, "_last_idle_movement_time"):
+                npc_instance._last_idle_movement_time = time.time()  # pylint: disable=protected-access  # Reason: Internal state tracking required
+            logger.debug("WANDER action executed successfully", npc_id=npc_id)
+        else:
+            logger.debug("WANDER action did not result in movement", npc_id=npc_id)
+
     async def _process_wander_action(self, npc_id: str, _message: dict[str, Any]) -> None:  # pylint: disable=unused-argument  # Reason: Parameter required for action signature, message content not used
         """
         Process a WANDER action for idle movement.
@@ -421,64 +478,11 @@ class NPCThreadManager:
             message: Message containing action data
         """
         try:
-            # Get NPC instance from lifecycle manager
-            from ..services.npc_instance_service import get_npc_instance_service
-
-            npc_instance_service = get_npc_instance_service()
-            if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
-                logger.warning("NPC instance service not available for WANDER action", npc_id=npc_id)
+            resolved = self._resolve_wander_npc(npc_id)
+            if resolved is None:
                 return
-
-            lifecycle_manager = npc_instance_service.lifecycle_manager
-            if not lifecycle_manager or npc_id not in lifecycle_manager.active_npcs:
-                logger.warning("NPC instance not found for WANDER action", npc_id=npc_id)
-                return
-
-            npc_instance = lifecycle_manager.active_npcs[npc_id]
-            npc_definition = self.npc_definitions.get(npc_id)
-
-            if not npc_definition:
-                logger.warning("NPC definition not found for WANDER action", npc_id=npc_id)
-                return
-
-            # Get behavior config
-            behavior_config = getattr(npc_instance, "_behavior_config", {})
-            if isinstance(behavior_config, str):
-                # json already imported at module level
-
-                try:
-                    behavior_config = json.loads(behavior_config)
-                except json.JSONDecodeError:
-                    behavior_config = {}
-
-            # Execute idle movement using the handler
-            from ..container import ApplicationContainer
-            from .idle_movement import IdleMovementHandler
-
-            # Get async_persistence from container
-            container = ApplicationContainer.get_instance()
-            async_persistence = getattr(container, "async_persistence", None) if container else None
-
-            if async_persistence is None:
-                logger.error("async_persistence not available for idle movement", npc_id=npc_id)
-                return
-
-            movement_handler = IdleMovementHandler(
-                event_bus=getattr(npc_instance, "event_bus", None),
-                persistence=async_persistence,
-            )
-
-            # execute_idle_movement takes npc_instance, npc_definition, and behavior_config
-            success = movement_handler.execute_idle_movement(npc_instance, npc_definition, behavior_config)
-
-            if success:
-                # Update last idle movement time on NPC instance to prevent immediate re-scheduling
-                if hasattr(npc_instance, "_last_idle_movement_time"):
-                    npc_instance._last_idle_movement_time = time.time()  # pylint: disable=protected-access  # Reason: Internal state tracking required
-                logger.debug("WANDER action executed successfully", npc_id=npc_id)
-            else:
-                logger.debug("WANDER action did not result in movement", npc_id=npc_id)
-
+            npc_instance, npc_definition = resolved
+            self._execute_wander_movement(npc_id, npc_instance, npc_definition)
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: WANDER action processing errors unpredictable, must handle gracefully
             logger.error("Error processing WANDER action", npc_id=npc_id, error=str(e))
 

@@ -1,117 +1,67 @@
 # LoggedHTTPException
 
-> God node · 474 connections · `server/exceptions.py`
+> 132 nodes
 
-**Community:** [services inventory mutation](services_inventory_mutation.md)
+## Key Concepts
 
-## Connections by Relation
+- **LoggedHTTPException** (283 connections) — `server/exceptions.py`
+- **players.py** (70 connections) — `server/api/players.py`
+- **test_players_api_coverage.py** (54 connections) — `server/tests/unit/api/test_players_api_coverage.py`
+- **_user()** (27 connections) — `server/tests/unit/api/test_players_api_coverage.py`
+- **asyncio** (25 connections)
+- **get_player_quests()** (18 connections) — `server/api/players.py`
+- **_start_login_grace_period_body()** (16 connections) — `server/api/players.py`
+- **FastAPIRequest** (16 connections)
+- **select_character()** (15 connections) — `server/api/players.py`
+- **test_skills.py** (14 connections) — `server/tests/unit/api/test_skills.py`
+- **delete_player()** (13 connections) — `server/api/players.py`
+- **get_player_skills()** (13 connections) — `server/api/players.py`
+- **_validate_character_access()** (13 connections) — `server/api/players.py`
+- **UUID** (13 connections)
+- **delete_character()** (12 connections) — `server/api/players.py`
+- **get_player()** (12 connections) — `server/api/players.py`
+- **get_skills_catalog()** (12 connections) — `server/api/skills.py`
+- **create_player()** (11 connections) — `server/api/players.py`
+- **_disconnect_other_characters()** (11 connections) — `server/api/players.py`
+- **list_players()** (11 connections) — `server/api/players.py`
+- **_validate_player_for_grace_period()** (11 connections) — `server/api/players.py`
+- **get_available_classes()** (10 connections) — `server/api/players.py`
+- **get_player_by_name()** (10 connections) — `server/api/players.py`
+- **get_user_characters()** (10 connections) — `server/api/players.py`
+- **start_login_grace_period_endpoint()** (10 connections) — `server/api/players.py`
+- *... and 107 more nodes in this community*
 
-### calls
-- handle_transfer_items_exceptions() `EXTRACTED`
-- handle_open_container_exceptions() `EXTRACTED`
-- handle_loot_all_exceptions() `EXTRACTED`
-- roll_character_stats() `EXTRACTED`
-- handle_close_container_exceptions() `EXTRACTED`
-- get_player_id_from_user() `EXTRACTED`
-- handle_container_service_error() `EXTRACTED`
-- create_character_with_stats() `EXTRACTED`
-- get_container_and_player_for_loot_all() `EXTRACTED`
-- get_player_quests() `EXTRACTED`
-- _update_npc_definition_internal() `EXTRACTED`
-- get_ascii_minimap() `EXTRACTED`
-- start_login_grace_period_endpoint() `EXTRACTED`
-- update_room_position() `EXTRACTED`
-- respawn_player() `EXTRACTED`
-- get_npc_definitions() `EXTRACTED`
-- get_npc_spawn_rules() `EXTRACTED`
-- create_npc_spawn_rule() `EXTRACTED`
-- _roll_stats_with_profession_preview() `EXTRACTED`
-- set_map_origin() `EXTRACTED`
+## Relationships
 
-### contains
-- exceptions.py `EXTRACTED`
+- [api/character_creation.py](api-character_creation.py.md) (37 shared connections)
+- [LootAllRequest](LootAllRequest.md) (36 shared connections)
+- [get_logger](get_logger.md) (33 shared connections)
+- [User](User.md) (32 shared connections)
+- [MythosMUDError](MythosMUDError.md) (20 shared connections)
+- [get_admin_auth_service](get_admin_auth_service.md) (16 shared connections)
+- [test_monitoring_endpoints.py](test_monitoring_endpoints.py.md) (16 shared connections)
+- [PlayerService](PlayerService.md) (16 shared connections)
+- [handle_transfer_items_exceptions](handle_transfer_items_exceptions.md) (14 shared connections)
+- [api/player_effects.py](api-player_effects.py.md) (14 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (13 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (10 shared connections)
 
-### imports
-- players.py `EXTRACTED`
-- monitoring.py `EXTRACTED`
-- endpoints.py `EXTRACTED`
-- test_monitoring_endpoints.py `EXTRACTED`
-- test_players_api_coverage.py `EXTRACTED`
-- maps.py `EXTRACTED`
-- test_maps.py `EXTRACTED`
-- legacy_error_handlers.py `EXTRACTED`
-- character_creation.py `EXTRACTED`
-- test_exceptions.py `EXTRACTED`
-- container_helpers.py `EXTRACTED`
-- test_container_helpers.py `EXTRACTED`
-- test_legacy_error_handlers.py `EXTRACTED`
-- test_metrics_endpoints.py `EXTRACTED`
-- container_endpoints_loot.py `EXTRACTED`
-- real_time.py `EXTRACTED`
-- rooms.py `EXTRACTED`
-- test_exceptions_comprehensive.py `EXTRACTED`
-- standardized_responses.py `EXTRACTED`
-- test_npc_definitions_api.py `EXTRACTED`
+## Source Files
 
-### indirect_call
-- loot_all_items() `INFERRED`
-- .handle_exception() `INFERRED`
-- register_error_handlers() `INFERRED`
-- register_error_handlers() `INFERRED`
-- _authenticate_user_credentials() `INFERRED`
-- test_login_user_authenticate_raises_exception() `INFERRED`
-- test_login_user_authenticate_returns_none() `INFERRED`
-- test_login_user_generic_exception() `INFERRED`
-- test_login_user_id_mismatch() `INFERRED`
-- test_login_user_invalid_credentials() `INFERRED`
-- test_login_user_no_email() `INFERRED`
-- test_register_user_duplicate_username() `INFERRED`
-- test_register_user_email_constraint_violation() `INFERRED`
-- test_register_user_generic_constraint_violation() `INFERRED`
-- test_register_user_integrity_error() `INFERRED`
-- test_register_user_username_constraint_violation() `INFERRED`
-- test_register_pattern_invalid() `INFERRED`
-- .test_create_character_rate_limit() `INFERRED`
-- .test_roll_character_stats_profession_not_found() `INFERRED`
-- .test_roll_character_stats_rate_limit() `INFERRED`
+- `server/api/players.py`
+- `server/api/skills.py`
+- `server/exceptions.py`
+- `server/schemas/players/skill.py`
+- `server/schemas/quest/__init__.py`
+- `server/schemas/quest/quest.py`
+- `server/tests/unit/api/test_players_api_coverage.py`
+- `server/tests/unit/api/test_skills.py`
 
-### inherits
-- LoggedException `EXTRACTED`
-- HTTPException `EXTRACTED`
+## Audit Trail
 
-### method
-- .__init__() `EXTRACTED`
-
-### rationale_for
-- HTTPException with automatic logging.      This class extends FastAPI's HTTPExce `EXTRACTED`
-
-### references
-- logged_http_exception_handler() `EXTRACTED`
-- ._handle_logged_http_exception() `EXTRACTED`
-- ._get_logged_http_user_friendly_message() `EXTRACTED`
-- _invalid_credentials_exc() `EXTRACTED`
-
-### uses
-- CircuitBreaker `INFERRED`
-- ErrorResponse `INFERRED`
-- TestErrorMapping `INFERRED`
-- TestSanitization `INFERRED`
-- TestErrorHandlers `INFERRED`
-- TestCircuitBreaker `INFERRED`
-- Request `INFERRED`
-- _AppWithLegacyConfigState `INFERRED`
-- TestErrorResponse `INFERRED`
-- _AppStateWithLegacyConfig `INFERRED`
-- TestCreateErrorResponse `INFERRED`
-- TestLegacyHandlerSecurity `INFERRED`
-- ErrorResponseDetailsInput `INFERRED`
-- FastAPI `INFERRED`
-- TestTransferAllItemsFromContainer `INFERRED`
-- TestGracefulDegradation `INFERRED`
-- _CircuitBreakerResult `INFERRED`
-- Exception `INFERRED`
-- HTTPException `INFERRED`
-- TestLootAllItems `INFERRED`
+- EXTRACTED: 655 (92%)
+- INFERRED: 55 (8%)
+- AMBIGUOUS: 0 (0%)
 
 ---
 

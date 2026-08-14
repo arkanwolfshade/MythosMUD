@@ -86,14 +86,23 @@ engines:
     exclude_paths:
       - "server/services/user_manager.py"
       - "scripts/ci/quality_fragmentation_guard.py"
-      # Lockfiles are not product source (file-nloc noise).
+      # Lockfiles are not source; Lizard file-nloc is noise.
       - "uv.lock"
       - "**/uv.lock"
+      - "**/package-lock.json"
       # Generated graphify trees (CLI local scans; root exclude_paths covers Cloud).
       - "graphify-out/**"
       - "**/graphify-out/**"
       - "**/graphify/**"
       - "**/*graphify*"
+      # Client unit tests: large fixtures inflate file-nloc; product gate is client/src app code.
+      - "client/src/**/__tests__/**"
+      - "client/src/**/*.test.ts"
+      - "client/src/**/*.test.tsx"
+      # Visual playground only. Lizard 1.17.31 TSX reader mis-attributes first function / *global*
+      # NLOC across the demo shell (false positives; see EldritchEffectsDemo.tsx header comment).
+      - "client/src/components/EldritchEffectsDemo.tsx"
+      - "client/src/components/eldritchEffectsDemoData.ts"
   bandit:
     exclude_paths:
       # Bandit should only scan Python files; exclude lock/docs/tooling artifacts that trigger AST parse failures.
@@ -122,6 +131,13 @@ engines:
     exclude_paths:
       - "openapi.json"
     # Skip GHSA-qwww-vcr4-c8h2 via root .trivyignore (RSC-only; SPA uses RR 7.x).
+  # TSQLLint is SQL Server-oriented; MythosMUD SQL is PostgreSQL. Exclude rather than
+  # adding invalid T-SQL SET directives to Postgres migrations/verification scripts.
+  tsqllint:
+    exclude_paths:
+      - "db/**"
+      - "server/scripts/**/*.sql"
+      - "**/*.sql"
 
 # Ignore assert and hardcoded secrets in test files (Bandit/Prospector B101/B106)
 # Assert and test passwords are standard in pytest; bandit.yml skips them but Codacy
@@ -328,12 +344,9 @@ ignore_patterns:
     file_paths:
       - "server/game/**/*.py"
       - "server/npc/**/*.py"
-  # Lizard CCN: Ignore cyclomatic complexity warnings for complexity <= 10
-  # We want to only report complexity > 10, but Codacy Cloud historically used limit 8 for
-  # medium. Project policy (AGENTS.md / Ruff max-complexity=11) is CCN > 10 only.
-  # engines.lizard.config.CCN=11 must match; this ignore is defense if Cloud keeps default 8.
-  - pattern_id: "Lizard_ccn-medium"
-    reason: "Cyclomatic complexity threshold set to 11 (only report > 10). Medium severity reports > 8, which we want to ignore."
+  # Lizard CCN: do NOT ignore Lizard_ccn-medium globally. Codacy CLI/cloud thresholds are set to
+  # CCN 11 in engines.lizard.config and .codacy/tools-configs/lizard.yaml so CCN 9-10 are not
+  # reported; CCN > 10 must be fixed in code (project CI gate).
   # Pylint R0903: too-few-public-methods on Pydantic models / typed containers (by design).
   - pattern_id: "Pylint_R0903"
     file_paths:
@@ -348,6 +361,57 @@ ignore_patterns:
   - pattern_id: "Lizard_file-nloc-medium"
     file_paths:
       - "scripts/ci/quality_fragmentation_guard.py"
+      - "**/package-lock.json"
+      - "package-lock.json"
+      - "**/uv.lock"
+      - "client/src/**/__tests__/**"
+      - "client/src/**/*.test.ts"
+      - "client/src/**/*.test.tsx"
+      - "client/src/__tests__/**"
+  # Trivy: GHSA-qwww-vcr4-c8h2 (react-router RSC CSRF). SPA does not use RSC APIs;
+  # same rationale as Dependabot #162 and root .trivyignore.
+  - pattern_id: "Trivy_vulnerability_high"
+    file_paths:
+      - "client/package-lock.json"
+      - "client/package.json"
+    reason: "GHSA-qwww-vcr4-c8h2 is RSC-mode CSRF only; MythosMUD SPA uses react-router-dom 7.x without RSC."
+  # TSQLLint: SQL Server rules on Postgres DDL/verification (noise; engines.tsqllint also excluded).
+  - pattern_id: "TSQLLint_set-ansi"
+    file_paths:
+      - "db/**"
+      - "server/scripts/**/*.sql"
+  - pattern_id: "TSQLLint_set-nocount"
+    file_paths:
+      - "db/**"
+      - "server/scripts/**/*.sql"
+  - pattern_id: "TSQLLint_set-quoted-identifier"
+    file_paths:
+      - "db/**"
+      - "server/scripts/**/*.sql"
+  - pattern_id: "TSQLLint_set-transaction-isolation-level"
+    file_paths:
+      - "db/**"
+      - "server/scripts/**/*.sql"
+  - pattern_id: "TSQLLint_schema-qualify"
+    file_paths:
+      - "db/**"
+      - "server/scripts/**/*.sql"
+  # SQLFluff PG01: one-shot DDL scripts; CONCURRENTLY not required offline.
+  - pattern_id: "SQLFluff_PG01_postgres.excessive_locks"
+    file_paths:
+      - "server/scripts/create_professions_table.sql"
+    reason: "One-shot DDL; CREATE INDEX CONCURRENTLY not used for offline apply scripts."
+  # Pylint R0801 duplicate-code: thin shared patterns across cohesive modules; extraction
+  # would create speculative single-use helpers (ponytail / fragmentation rules).
+  - pattern_id: "PyLintPython3_R0801"
+    file_paths:
+      - "server/api/admin/dialogue_definitions_api.py"
+      - "server/auth/token_epoch.py"
+      - "server/game/dialogue/__init__.py"
+      - "server/game/room_service.py"
+      - "server/infrastructure/message_broker.py"
+      - "server/infrastructure/nats_broker.py"
+      - "server/persistence/container_query_helpers_async.py"
 
 # Cyclomatic complexity configuration
 # Set cyclomatic complexity threshold to 11 (only report > 10)
@@ -368,10 +432,10 @@ ignore_patterns:
 # Pylint (line-too-long), ESLint (max-len), Ruff (E501), and markdownlint (MD013) are configured
 # in the project to not enforce line length. Codacy uses those configs; no line-length ignore here.
 
-# Package.json "variant versions" (npm: aliases / OR ranges / bare ">=" floors):
-# pin exact overrides in client/package.json (no ">=x" floors) so Codacy SRM does
-# not flag dependency confusion. Caret ranges on direct deps + lockfile remain OK.
-# PR #409 r2842724151: no duplicate dependency keys in client/package.json.
+# Package.json "variant versions" (npm: aliases / OR ranges): prefer removing
+# npm: overrides (e.g. use magic-string ^0.30 instead of sourcemap-codec npm: remap).
+# Caret ranges + committed lockfiles remain best practice; JSON cannot host inline
+# suppressions. PR #409 r2842724151: no duplicate dependency keys in client/package.json.
 #
 # Trivy SCA: GHSA-qwww-vcr4-c8h2 (react-router RSC CSRF) ignored in .trivyignore -
 # SPA does not use RSC APIs; same rationale as Dependabot #162 and dependency-review

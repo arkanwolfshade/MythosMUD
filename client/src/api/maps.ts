@@ -55,6 +55,20 @@ function buildHeaders(authToken?: string): HeadersInit {
   return headers;
 }
 
+function formatDetailMessage(detail: unknown): string | null {
+  if (typeof detail === 'string') {
+    return detail;
+  }
+  if (!Array.isArray(detail) || detail.length === 0) {
+    return null;
+  }
+  const first = detail[0];
+  if (typeof first === 'object' && first !== null && 'msg' in first) {
+    return String((first as { msg?: unknown }).msg);
+  }
+  return String(first);
+}
+
 /**
  * Build an error message from a failed map/minimap response.
  * For 5xx responses, attempts to include server detail from JSON body.
@@ -63,23 +77,14 @@ async function formatMapErrorResponse(response: Response, target: 'map' | 'minim
   const status = response.status;
   const statusText = response.statusText || `HTTP ${status}`;
   const prefix = `Failed to fetch ${target}: ${statusText}`;
-  const is5xx = status >= 500 && status < 600;
-  if (!is5xx) {
+  if (status < 500 || status >= 600) {
     return prefix;
   }
   try {
     const body: unknown = await response.json();
     if (body !== null && typeof body === 'object' && 'detail' in body) {
-      const detail = (body as { detail?: unknown }).detail;
-      if (typeof detail === 'string') {
-        return `${prefix}: ${detail}`;
-      }
-      if (Array.isArray(detail) && detail.length > 0) {
-        const first = detail[0];
-        const msg =
-          typeof first === 'object' && first !== null && 'msg' in first
-            ? String((first as { msg?: unknown }).msg)
-            : String(first);
+      const msg = formatDetailMessage((body as { detail?: unknown }).detail);
+      if (msg !== null) {
         return `${prefix}: ${msg}`;
       }
     }

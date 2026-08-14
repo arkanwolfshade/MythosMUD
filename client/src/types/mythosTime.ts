@@ -41,26 +41,39 @@ export interface MythosTimePayload {
  * Type guard for MythosTimePayload (API response from /game/time).
  * Validates required fields so payload can be safely passed to buildMythosTimeState.
  */
+const MYTHOS_TIME_STRING_KEYS = [
+  'mythos_datetime',
+  'mythos_clock',
+  'month_name',
+  'day_name',
+  'season',
+  'daypart',
+  'server_timestamp',
+] as const;
+
+function hasStringFields(o: Record<string, unknown>, keys: readonly string[]): boolean {
+  return keys.every(key => typeof o[key] === 'string');
+}
+
+function hasMythosTimeScalars(o: Record<string, unknown>): boolean {
+  return (
+    typeof o.day_of_month === 'number' &&
+    typeof o.week_of_month === 'number' &&
+    typeof o.is_daytime === 'boolean' &&
+    typeof o.is_witching_hour === 'boolean'
+  );
+}
+
+function hasMythosTimeHolidayArrays(o: Record<string, unknown>): boolean {
+  return Array.isArray(o.active_holidays) && Array.isArray(o.upcoming_holidays);
+}
+
 export function isMythosTimePayload(value: unknown): value is MythosTimePayload {
   if (typeof value !== 'object' || value === null) {
     return false;
   }
   const o = value as Record<string, unknown>;
-  return (
-    typeof o.mythos_datetime === 'string' &&
-    typeof o.mythos_clock === 'string' &&
-    typeof o.month_name === 'string' &&
-    typeof o.day_of_month === 'number' &&
-    typeof o.day_name === 'string' &&
-    typeof o.week_of_month === 'number' &&
-    typeof o.season === 'string' &&
-    typeof o.daypart === 'string' &&
-    typeof o.is_daytime === 'boolean' &&
-    typeof o.is_witching_hour === 'boolean' &&
-    typeof o.server_timestamp === 'string' &&
-    Array.isArray(o.active_holidays) &&
-    Array.isArray(o.upcoming_holidays)
-  );
+  return hasStringFields(o, MYTHOS_TIME_STRING_KEYS) && hasMythosTimeScalars(o) && hasMythosTimeHolidayArrays(o);
 }
 
 export interface MythosTimeState extends MythosTimePayload {

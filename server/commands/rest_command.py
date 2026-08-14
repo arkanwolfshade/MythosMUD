@@ -136,11 +136,37 @@ async def _start_rest_countdown(
     connection_manager.resting_players[player_id] = task
 
 
+async def _stand_after_cancelled_rest(player_id: uuid.UUID, connection_manager: Any) -> None:
+    """/rest sits the player; interrupting rest must restore standing so sessions are not stuck Sitting."""
+    persistence = getattr(connection_manager, "async_persistence", None)
+    if persistence is None:
+        return
+
+    player = None
+    get_player = getattr(connection_manager, "get_player", None)
+    if callable(get_player):
+        try:
+            player = await get_player(player_id)
+        except (AttributeError, RuntimeError, TypeError, ValueError) as e:
+            logger.warning("Could not load player to stand after rest cancel", player_id=player_id, error=str(e))
+
+    player_name = getattr(player, "name", None) if player is not None else None
+    if not player_name:
+        return
+
+    try:
+        position_service = PlayerPositionService(persistence, connection_manager, None)
+        await position_service.change_position(player_name, "standing")
+    except (AttributeError, RuntimeError, TypeError, ValueError) as e:
+        logger.warning("Failed to stand player after rest cancel", player_id=player_id, error=str(e))
+
+
 async def cancel_rest_countdown(player_id: uuid.UUID, connection_manager: Any) -> None:
     """
     Cancel the rest countdown for a player.
 
     Called from combat, movement, and spell paths when rest must be interrupted.
+    Also restores standing posture (/rest had sat the player).
 
     Args:
         player_id: The player's ID
@@ -163,6 +189,7 @@ async def cancel_rest_countdown(player_id: uuid.UUID, connection_manager: Any) -
     finally:
         if player_id in connection_manager.resting_players:
             del connection_manager.resting_players[player_id]
+        await _stand_after_cancelled_rest(player_id, connection_manager)
 
 
 def is_player_resting(player_id: uuid.UUID, connection_manager: Any) -> bool:

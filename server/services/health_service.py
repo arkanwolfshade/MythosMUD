@@ -106,75 +106,54 @@ class HealthService:
             "last_query_time_ms": query_time_ms,
         }
 
-    async def check_database_health_async(self) -> dict[str, Any]:  # pylint: disable=too-many-return-statements  # Reason: Health check function requires multiple return paths for different failure scenarios (no container, no persistence, no pool, timeout, fallback, exception). Extracting all returns would reduce readability.
-        """
-        Check database connectivity and health with actual query validation.
+    def _status_from_query_ms(self, query_time_ms: float, *, pool_ok: bool = True) -> HealthStatus:
+        if pool_ok and query_time_ms < 100:
+            return HealthStatus.HEALTHY
+        if pool_ok and query_time_ms < self.database_timeout_ms:
+            return HealthStatus.DEGRADED
+        return HealthStatus.UNHEALTHY
 
-        This method performs an actual database query to validate connectivity,
-        not just service existence. Should be called from async context.
+    async def _ping_database(self, query_start: float) -> dict[str, Any]:
+        from sqlalchemy import text
 
-        Returns:
-            dict: Database health status with connection count and query time
-        """
+        from ..database import get_async_session
+
+        async def _run_ping() -> None:
+            async for session in get_async_session():
+                await session.execute(text("SELECT 1"))
+                break
+
+        await asyncio.wait_for(_run_ping(), timeout=self.database_timeout_ms / 1000.0)
+        query_time_ms = (time.time() - query_start) * 1000
+        return self._create_health_response(self._status_from_query_ms(query_time_ms), 1, query_time_ms)
+
+    def _health_from_pool(self, pool: Any, query_start: float) -> dict[str, Any]:
+        pool_size = getattr(pool, "_size", 0)
+        query_time_ms = (time.time() - query_start) * 1000
+        status = self._status_from_query_ms(query_time_ms, pool_ok=pool_size > 0)
+        return self._create_health_response(status, pool_size, query_time_ms)
+
+    async def check_database_health_async(self) -> dict[str, Any]:
+        """Async database health check."""
         try:
             from ..container import ApplicationContainer
 
             start_time = time.time()
             container = ApplicationContainer.get_instance()
-
             if not container:
                 return self._create_health_response(HealthStatus.UNHEALTHY, 0, None)
-
-            # Get async persistence layer for actual database connectivity check
             async_persistence = getattr(container, "async_persistence", None)
             if async_persistence:
-                # Perform actual database query with timeout
                 try:
                     query_start = time.time()
-                    # SQLAlchemy path: AsyncPersistenceLayer uses get_async_session(), no _pool.
-                    # Run a simple SELECT 1 to validate connectivity.
                     pool = getattr(async_persistence, "_pool", None)
                     if pool:
-                        # asyncpg-style pool (legacy path)
-                        pool_size = getattr(pool, "_size", 0)
-                        query_time_ms = (time.time() - query_start) * 1000
-                        if pool_size > 0 and query_time_ms < 100:
-                            status = HealthStatus.HEALTHY
-                        elif pool_size > 0 and query_time_ms < self.database_timeout_ms:
-                            status = HealthStatus.DEGRADED
-                        else:
-                            status = HealthStatus.UNHEALTHY
-                        return self._create_health_response(status, pool_size, query_time_ms)
-
-                    # SQLAlchemy path: validate with a real query via get_async_session
-                    from sqlalchemy import text
-
-                    from ..database import get_async_session
-
-                    async def _run_ping() -> None:
-                        async for session in get_async_session():
-                            await session.execute(text("SELECT 1"))
-                            break
-
-                    await asyncio.wait_for(
-                        _run_ping(),
-                        timeout=self.database_timeout_ms / 1000.0,
-                    )
-                    query_time_ms = (time.time() - query_start) * 1000
-                    status = (
-                        HealthStatus.HEALTHY
-                        if query_time_ms < 100
-                        else HealthStatus.DEGRADED
-                        if query_time_ms < self.database_timeout_ms
-                        else HealthStatus.UNHEALTHY
-                    )
-                    return self._create_health_response(status, 1, query_time_ms)
+                        return self._health_from_pool(pool, query_start)
+                    return await self._ping_database(query_start)
                 except TimeoutError:
                     logger.warning("Database health check timed out")
                     return self._create_health_response(HealthStatus.UNHEALTHY, 0, self.database_timeout_ms)
-            # Fallback: check if room service exists (legacy check)
-            room_service = getattr(container, "room_service", None)
-            if room_service:
+            if getattr(container, "room_service", None):
                 return self._create_health_response(HealthStatus.DEGRADED, 0, (time.time() - start_time) * 1000)
             return self._create_health_response(HealthStatus.UNHEALTHY, 0, None)
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Database health check errors unpredictable, must return fallback
@@ -182,47 +161,35 @@ class HealthService:
             return self._create_health_response(HealthStatus.UNHEALTHY, 0, None)
 
     def check_database_health(self) -> dict[str, Any]:
-        """
-        Check database connectivity and health (sync wrapper).
-
-        For async contexts, use check_database_health_async() instead.
-        This method provides backward compatibility for sync callers.
-        """
+        """check_database_health."""
         try:
             from ..container import ApplicationContainer
 
             start_time = time.time()
             container = ApplicationContainer.get_instance()
-
             if not container:
                 return {
                     "status": HealthStatus.UNHEALTHY,
                     "connection_count": 0,
                     "last_query_time_ms": None,
                 }
-
-            # Check if async persistence exists
             async_persistence = getattr(container, "async_persistence", None)
             if async_persistence:
                 pool = getattr(async_persistence, "_pool", None)
                 if pool:
                     pool_size = getattr(pool, "_size", 0)
                     query_time_ms = (time.time() - start_time) * 1000
-
                     if pool_size > 0 and query_time_ms < 100:
                         status = HealthStatus.HEALTHY
                     elif pool_size > 0 and query_time_ms < self.database_timeout_ms:
                         status = HealthStatus.DEGRADED
                     else:
                         status = HealthStatus.UNHEALTHY
-
                     return {
                         "status": status,
                         "connection_count": pool_size,
                         "last_query_time_ms": query_time_ms,
                     }
-
-            # Fallback: service existence check
             room_service = getattr(container, "room_service", None)
             if room_service:
                 return {

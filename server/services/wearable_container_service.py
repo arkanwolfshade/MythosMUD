@@ -88,6 +88,76 @@ class WearableContainerService:
             raise ValueError("persistence (async_persistence) is required for WearableContainerService")
         self.persistence = persistence
 
+    def _validate_inner_container_capacity(
+        self, player_id: UUID, item_stack: dict[str, Any], inner_container: dict[str, Any]
+    ) -> tuple[int, list[Any]]:
+        """Validate inner container item count against capacity."""
+        capacity_slots = inner_container.get("capacity_slots", 20)
+        items = inner_container.get("items", [])
+        if len(items) <= capacity_slots:
+            return capacity_slots, items
+
+        log_and_raise(
+            WearableContainerServiceError,
+            f"Container capacity exceeded: {len(items)} items > {capacity_slots} capacity",
+            operation="handle_equip_wearable_container",
+            player_id=str(player_id),
+            item_id=item_stack.get("item_id", "unknown"),
+            details={"capacity_slots": capacity_slots, "items_count": len(items)},
+            user_friendly="Container capacity exceeded",
+        )
+
+    async def _find_existing_equipment_container(self, player_id: UUID, item_instance_id: Any) -> dict[str, Any] | None:
+        """Return existing equipment container ID for item instance if present."""
+        existing_containers = await self.persistence.get_containers_by_entity_id(player_id)
+        for existing in existing_containers:
+            if existing.get("source_type") != "equipment":
+                continue
+            existing_metadata = existing.get("metadata", {})
+            if existing_metadata.get("item_instance_id") != item_instance_id:
+                continue
+            existing_id = existing.get("container_id")
+            logger.debug(
+                "Container already exists for item",
+                player_id=str(player_id),
+                item_instance_id=item_instance_id,
+                container_id=existing_id,
+            )
+            return {"container_id": UUID(existing_id) if isinstance(existing_id, str) else existing_id}
+        return None
+
+    def _create_equipment_container_record(
+        self,
+        player_id: UUID,
+        item_stack: dict[str, Any],
+        inner_container: dict[str, Any],
+        capacity_slots: int,
+        items: list[Any],
+    ) -> dict[str, Any]:
+        """Create wearable container in persistence and return container_id payload."""
+        item_instance_id = item_stack.get("item_instance_id")
+        container_data = self.persistence.create_container(
+            source_type="equipment",
+            entity_id=player_id,
+            capacity_slots=capacity_slots,
+            lock_state=inner_container.get("lock_state", "unlocked"),
+            allowed_roles=inner_container.get("allowed_roles", []),
+            items_json=items,
+            metadata_json={
+                "item_instance_id": item_instance_id,
+                "item_id": item_stack.get("item_id"),
+                "item_name": item_stack.get("item_name"),
+            },
+        )
+        container_id = UUID(container_data["container_id"])
+        logger.info(
+            "Wearable container created on equip",
+            player_id=str(player_id),
+            container_id=str(container_id),
+            item_instance_id=item_instance_id,
+        )
+        return {"container_id": container_id}
+
     async def handle_equip_wearable_container(
         self, player_id: UUID, item_stack: dict[str, Any]
     ) -> dict[str, Any] | None:
@@ -108,7 +178,6 @@ class WearableContainerService:
         """
         inner_container = item_stack.get("inner_container")
         if not inner_container:
-            # Not a container item, nothing to do
             return None
 
         logger.info(
@@ -117,70 +186,16 @@ class WearableContainerService:
             item_id=item_stack.get("item_id"),
         )
 
-        # Validate inner container capacity
-        capacity_slots = inner_container.get("capacity_slots", 20)
-        items = inner_container.get("items", [])
-
-        if len(items) > capacity_slots:
-            log_and_raise(
-                WearableContainerServiceError,
-                f"Container capacity exceeded: {len(items)} items > {capacity_slots} capacity",
-                operation="handle_equip_wearable_container",
-                player_id=str(player_id),
-                item_id=item_stack.get("item_id", "unknown"),
-                details={
-                    "capacity_slots": capacity_slots,
-                    "items_count": len(items),
-                },
-                user_friendly="Container capacity exceeded",
-            )
-
-        # Check if container already exists for this item
-        existing_containers = await self.persistence.get_containers_by_entity_id(player_id)
+        capacity_slots, items = self._validate_inner_container_capacity(player_id, item_stack, inner_container)
         item_instance_id = item_stack.get("item_instance_id")
+        existing = await self._find_existing_equipment_container(player_id, item_instance_id)
+        if existing:
+            return existing
 
-        for existing in existing_containers:
-            if existing.get("source_type") == "equipment":
-                # Check if this is the same item instance
-                existing_metadata = existing.get("metadata", {})
-                if existing_metadata.get("item_instance_id") == item_instance_id:
-                    # Container already exists, return its ID
-                    existing_id = existing.get("container_id")
-                    logger.debug(
-                        "Container already exists for item",
-                        player_id=str(player_id),
-                        item_instance_id=item_instance_id,
-                        container_id=existing_id,
-                    )
-                    return {"container_id": UUID(existing_id) if isinstance(existing_id, str) else existing_id}
-
-        # Create new container in PostgreSQL
         try:
-            container_data = self.persistence.create_container(
-                source_type="equipment",
-                entity_id=player_id,
-                capacity_slots=capacity_slots,
-                lock_state=inner_container.get("lock_state", "unlocked"),
-                allowed_roles=inner_container.get("allowed_roles", []),
-                items_json=items,
-                metadata_json={
-                    "item_instance_id": item_instance_id,
-                    "item_id": item_stack.get("item_id"),
-                    "item_name": item_stack.get("item_name"),
-                },
+            return self._create_equipment_container_record(
+                player_id, item_stack, inner_container, capacity_slots, items
             )
-
-            container_id = UUID(container_data["container_id"])
-
-            logger.info(
-                "Wearable container created on equip",
-                player_id=str(player_id),
-                container_id=str(container_id),
-                item_instance_id=item_instance_id,
-            )
-
-            return {"container_id": container_id}
-
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Container creation errors unpredictable, must log and re-raise as specific error
             log_and_raise(
                 WearableContainerServiceError,
@@ -277,6 +292,63 @@ class WearableContainerService:
 
         return containers
 
+    async def _load_player_wearable_container(
+        self, player_id: UUID, container_id: UUID, operation: str
+    ) -> ContainerComponent:
+        """Load container and verify it belongs to the player's equipment."""
+        container_data = await self.persistence.get_container(container_id)
+        if not container_data:
+            log_and_raise(
+                WearableContainerServiceError,
+                f"Container not found: {container_id}",
+                operation=operation,
+                player_id=str(player_id),
+                container_id=str(container_id),
+                details={"container_id": str(container_id)},
+                user_friendly="Container not found",
+            )
+
+        container = ContainerComponent.model_validate(_filter_container_data(container_data))
+        if container.source_type != ContainerSourceType.EQUIPMENT or container.entity_id != player_id:
+            log_and_raise(
+                WearableContainerServiceError,
+                "Container is not a wearable container for this player",
+                operation=operation,
+                player_id=str(player_id),
+                container_id=str(container_id),
+                details={
+                    "container_id": str(container_id),
+                    "source_type": _get_enum_value(container.source_type),
+                    "entity_id": str(container.entity_id),
+                },
+                user_friendly="Invalid container",
+            )
+        return container
+
+    def _update_container_items_or_raise(
+        self,
+        player_id: UUID,
+        container_id: UUID,
+        items_json: list[Any],
+        operation: str,
+        log_event: str,
+        **log_fields: Any,
+    ) -> dict[str, Any]:
+        """Update container items and raise when persistence returns None."""
+        updated_data = self.persistence.update_container(container_id=container_id, items_json=items_json)
+        logger.info(log_event, player_id=str(player_id), container_id=str(container_id), **log_fields)
+        if updated_data is None:
+            log_and_raise(
+                WearableContainerServiceError,
+                f"Failed to update container: {container_id}",
+                operation=operation,
+                player_id=str(player_id),
+                container_id=str(container_id),
+                details={"container_id": str(container_id)},
+                user_friendly="Failed to update container",
+            )
+        return cast(dict[str, Any], updated_data)
+
     async def add_items_to_wearable_container(
         self, player_id: UUID, container_id: UUID, items: list[dict[str, Any]]
     ) -> dict[str, Any]:
@@ -294,38 +366,10 @@ class WearableContainerService:
         Raises:
             WearableContainerServiceError: If capacity would be exceeded
         """
-        # Get current container
-        container_data = await self.persistence.get_container(container_id)
-        if not container_data:
-            log_and_raise(
-                WearableContainerServiceError,
-                f"Container not found: {container_id}",
-                operation="add_items_to_wearable_container",
-                player_id=str(player_id),
-                container_id=str(container_id),
-                details={"container_id": str(container_id)},
-                user_friendly="Container not found",
-            )
+        container = await self._load_player_wearable_container(
+            player_id, container_id, "add_items_to_wearable_container"
+        )
 
-        container = ContainerComponent.model_validate(_filter_container_data(container_data))
-
-        # Verify it's a wearable container for this player
-        if container.source_type != ContainerSourceType.EQUIPMENT or container.entity_id != player_id:
-            log_and_raise(
-                WearableContainerServiceError,
-                "Container is not a wearable container for this player",
-                operation="add_items_to_wearable_container",
-                player_id=str(player_id),
-                container_id=str(container_id),
-                details={
-                    "container_id": str(container_id),
-                    "source_type": _get_enum_value(container.source_type),
-                    "entity_id": str(container.entity_id),
-                },
-                user_friendly="Invalid container",
-            )
-
-        # Check capacity using domain model
         if container.would_exceed_capacity(items):
             log_and_raise(
                 WearableContainerServiceError,
@@ -341,38 +385,20 @@ class WearableContainerService:
                 user_friendly="Container capacity exceeded",
             )
 
-        # Add items - convert InventoryStack objects to dicts
         current_items = container.items
         new_items: list[dict[str, Any]] = [
             cast(dict[str, Any], dict(item) if not isinstance(item, dict) else item) for item in current_items + items
         ]
 
-        # Update container
-        updated_data = self.persistence.update_container(
-            container_id=container_id,
-            items_json=new_items,
-        )
-
-        logger.info(
+        return self._update_container_items_or_raise(
+            player_id,
+            container_id,
+            new_items,
+            "add_items_to_wearable_container",
             "Items added to wearable container",
-            player_id=str(player_id),
-            container_id=str(container_id),
             items_added=len(items),
             total_items=len(new_items),
         )
-
-        if updated_data is None:
-            log_and_raise(
-                WearableContainerServiceError,
-                f"Failed to update container: {container_id}",
-                operation="add_items_to_wearable_container",
-                player_id=str(player_id),
-                container_id=str(container_id),
-                details={"container_id": str(container_id)},
-                user_friendly="Failed to update container",
-            )
-
-        return cast(dict[str, Any], updated_data)
 
     async def update_wearable_container_items(
         self, player_id: UUID, container_id: UUID, items: list[dict[str, Any]]
@@ -391,38 +417,10 @@ class WearableContainerService:
         Raises:
             WearableContainerServiceError: If capacity would be exceeded
         """
-        # Get current container
-        container_data = await self.persistence.get_container(container_id)
-        if not container_data:
-            log_and_raise(
-                WearableContainerServiceError,
-                f"Container not found: {container_id}",
-                operation="update_wearable_container_items",
-                player_id=str(player_id),
-                container_id=str(container_id),
-                details={"container_id": str(container_id)},
-                user_friendly="Container not found",
-            )
+        container = await self._load_player_wearable_container(
+            player_id, container_id, "update_wearable_container_items"
+        )
 
-        container = ContainerComponent.model_validate(_filter_container_data(container_data))
-
-        # Verify it's a wearable container for this player
-        if container.source_type != ContainerSourceType.EQUIPMENT or container.entity_id != player_id:
-            log_and_raise(
-                WearableContainerServiceError,
-                "Container is not a wearable container for this player",
-                operation="update_wearable_container_items",
-                player_id=str(player_id),
-                container_id=str(container_id),
-                details={
-                    "container_id": str(container_id),
-                    "source_type": _get_enum_value(container.source_type),
-                    "entity_id": str(container.entity_id),
-                },
-                user_friendly="Invalid container",
-            )
-
-        # Check capacity using domain model
         if not container.can_hold(len(items)):
             log_and_raise(
                 WearableContainerServiceError,
@@ -430,38 +428,78 @@ class WearableContainerService:
                 operation="update_wearable_container_items",
                 player_id=str(player_id),
                 container_id=str(container_id),
-                details={
-                    "items_count": len(items),
-                    "capacity_slots": container.capacity_slots,
-                },
+                details={"items_count": len(items), "capacity_slots": container.capacity_slots},
                 user_friendly="Container capacity exceeded",
             )
 
-        # Update container
-        updated_data = self.persistence.update_container(
-            container_id=container_id,
-            items_json=items,
-        )
-
-        logger.info(
+        return self._update_container_items_or_raise(
+            player_id,
+            container_id,
+            items,
+            "update_wearable_container_items",
             "Wearable container items updated",
-            player_id=str(player_id),
-            container_id=str(container_id),
             items_count=len(items),
         )
 
-        if updated_data is None:
-            log_and_raise(
-                WearableContainerServiceError,
-                f"Failed to update container: {container_id}",
-                operation="update_wearable_container_items",
+    def _split_overflow_items(
+        self, player_inventory: list[Any], overflow_items: list[dict[str, Any]], max_inventory_slots: int
+    ) -> tuple[list[Any], list[Any]]:
+        """Split overflow into inventory spill vs ground drop."""
+        spilled_items: list[Any] = []
+        ground_items: list[Any] = []
+        for item in overflow_items:
+            if len(player_inventory) < max_inventory_slots:
+                player_inventory.append(item)
+                spilled_items.append(item)
+            else:
+                ground_items.append(item)
+        return spilled_items, ground_items
+
+    async def _save_overflow_inventory(self, player: Any, player_id: UUID, spilled_items: list[Any]) -> None:
+        """Persist inventory after absorbing overflow items."""
+        if not spilled_items:
+            return
+        player_inventory = getattr(player, "inventory", [])
+        player.set_inventory(player_inventory)
+        try:
+            await self.persistence.save_player(player)
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Save errors unpredictable, must log but continue
+            logger.error(
+                "Error saving player after container overflow",
                 player_id=str(player_id),
-                container_id=str(container_id),
-                details={"container_id": str(container_id)},
-                user_friendly="Failed to update container",
+                error=str(e),
             )
 
-        return cast(dict[str, Any], updated_data)
+    def _drop_overflow_to_ground(
+        self, player: Any, player_id: UUID, container_id: UUID, ground_items: list[Any]
+    ) -> None:
+        """Create ground container for items that did not fit in inventory."""
+        if not ground_items:
+            return
+        room_id = getattr(player, "current_room_id", None)
+        if not room_id:
+            return
+        try:
+            self.persistence.create_container(
+                source_type="environment",
+                room_id=room_id,
+                capacity_slots=20,
+                items_json=ground_items,
+                metadata_json={"overflow_source": str(container_id), "player_id": str(player_id)},
+            )
+            logger.info(
+                "Overflow items dropped to ground",
+                player_id=str(player_id),
+                room_id=room_id,
+                items_count=len(ground_items),
+            )
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Ground container creation errors unpredictable, must log but continue
+            logger.error(
+                "Failed to create ground container for overflow items",
+                error=str(e),
+                player_id=str(player_id),
+                room_id=room_id,
+            )
 
     async def handle_container_overflow(
         self, player_id: UUID, container_id: UUID, overflow_items: list[dict[str, Any]]
@@ -484,7 +522,6 @@ class WearableContainerService:
             overflow_count=len(overflow_items),
         )
 
-        # Get player
         player = await self.persistence.get_player_by_id(player_id)
         if not player:
             log_and_raise(
@@ -497,62 +534,11 @@ class WearableContainerService:
                 user_friendly="Player not found",
             )
 
-        # Try to add items to player inventory
-        spilled_items = []
-        ground_items = []
-
         player_inventory = getattr(player, "inventory", [])
-        max_inventory_slots = 20  # Standard inventory capacity
+        spilled_items, ground_items = self._split_overflow_items(player_inventory, overflow_items, 20)
 
-        for item in overflow_items:
-            if len(player_inventory) < max_inventory_slots:
-                # Add to inventory
-                player_inventory.append(item)
-                spilled_items.append(item)
-            else:
-                # Inventory full, drop to ground
-                ground_items.append(item)
-
-        # Update player inventory if items were added
-        if spilled_items:
-            player.set_inventory(player_inventory)
-            try:
-                await self.persistence.save_player(player)
-            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Save errors unpredictable, must log but continue
-                logger.error(
-                    "Error saving player after container overflow",
-                    player_id=str(player_id),
-                    error=str(e),
-                )
-
-        # Create ground container for dropped items if any
-        if ground_items:
-            room_id = getattr(player, "current_room_id", None)
-            if room_id:
-                try:
-                    self.persistence.create_container(
-                        source_type="environment",
-                        room_id=room_id,
-                        capacity_slots=20,
-                        items_json=ground_items,
-                        metadata_json={
-                            "overflow_source": str(container_id),
-                            "player_id": str(player_id),
-                        },
-                    )
-                    logger.info(
-                        "Overflow items dropped to ground",
-                        player_id=str(player_id),
-                        room_id=room_id,
-                        items_count=len(ground_items),
-                    )
-                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Ground container creation errors unpredictable, must log but continue
-                    logger.error(
-                        "Failed to create ground container for overflow items",
-                        error=str(e),
-                        player_id=str(player_id),
-                        room_id=room_id,
-                    )
+        await self._save_overflow_inventory(player, player_id, spilled_items)
+        self._drop_overflow_to_ground(player, player_id, container_id, ground_items)
 
         logger.info(
             "Container overflow handled",
@@ -562,7 +548,4 @@ class WearableContainerService:
             ground_count=len(ground_items),
         )
 
-        return {
-            "spilled_items": spilled_items,
-            "ground_items": ground_items,
-        }
+        return {"spilled_items": spilled_items, "ground_items": ground_items}

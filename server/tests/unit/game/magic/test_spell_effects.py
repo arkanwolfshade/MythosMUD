@@ -9,7 +9,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from server.game.magic.spell_effects import SpellEffects
+from server.game.magic.spell_effects import SpellEffects, SpellEffectsDeps
 from server.models.spell import SpellEffectType
 from server.schemas.shared import TargetMatch, TargetType
 
@@ -56,7 +56,7 @@ def test_spell_effects_init_with_repository(mock_player_service):
     from server.persistence.repositories.player_spell_repository import PlayerSpellRepository
 
     mock_repo = PlayerSpellRepository()
-    spell_effects = SpellEffects(mock_player_service, mock_repo)
+    spell_effects = SpellEffects(mock_player_service, SpellEffectsDeps(player_spell_repository=mock_repo))
     assert spell_effects.player_spell_repository == mock_repo
 
 
@@ -149,9 +149,11 @@ async def test_process_effect_flee_not_in_combat(mock_player_service, mock_spell
     mock_combat.get_combat_by_participant = AsyncMock(return_value=None)
     spell_effects = SpellEffects(
         mock_player_service,
-        combat_service=mock_combat,
-        movement_service=MagicMock(),
-        get_room_by_id=MagicMock(return_value=MagicMock(exits={"north": "room_2"})),
+        SpellEffectsDeps(
+            combat_service=mock_combat,
+            movement_service=MagicMock(),
+            get_room_by_id=MagicMock(return_value=MagicMock(exits={"north": "room_2"})),
+        ),
     )
     mock_spell.effect_type = SpellEffectType.FLEE
     result = await spell_effects.process_effect(mock_spell, mock_target_match, uuid.uuid4(), mastery=50)
@@ -389,10 +391,12 @@ async def test_spell_effects_property_accessors(mock_player_service):
     conn = MagicMock()
     effects = SpellEffects(
         mock_player_service,
-        combat_service=combat,
-        movement_service=movement,
-        get_room_by_id=get_room,
-        connection_manager=conn,
+        SpellEffectsDeps(
+            combat_service=combat,
+            movement_service=movement,
+            get_room_by_id=get_room,
+            connection_manager=conn,
+        ),
     )
     assert effects.combat_service is combat
     assert effects.movement_service is movement
@@ -482,7 +486,7 @@ async def test_process_damage_to_npc_success(mock_player_service):
     combat.publish_npc_damage_event = AsyncMock()
     combat.publish_npc_died_event = AsyncMock()
     combat.get_combat_id_for_participant = MagicMock(return_value=None)
-    effects = SpellEffects(mock_player_service, combat_service=combat)
+    effects = SpellEffects(mock_player_service, SpellEffectsDeps(combat_service=combat))
 
     npc = MagicMock()
     npc.is_alive = True
@@ -506,7 +510,7 @@ async def test_process_damage_to_npc_success(mock_player_service):
 
 @pytest.mark.asyncio
 async def test_process_damage_to_npc_unavailable(mock_player_service):
-    effects = SpellEffects(mock_player_service, combat_service=MagicMock())
+    effects = SpellEffects(mock_player_service, SpellEffectsDeps(combat_service=MagicMock()))
     target = TargetMatch(
         target_id=str(uuid.uuid4()),
         target_type=TargetType.NPC,
@@ -519,7 +523,7 @@ async def test_process_damage_to_npc_unavailable(mock_player_service):
 
 
 def test_add_spell_damage_threat_noops_without_combat(mock_player_service):
-    effects = SpellEffects(mock_player_service, combat_service=None)
+    effects = SpellEffects(mock_player_service)
     target = TargetMatch(
         target_id=str(uuid.uuid4()),
         target_type=TargetType.NPC,
@@ -530,7 +534,7 @@ def test_add_spell_damage_threat_noops_without_combat(mock_player_service):
 
 
 def test_resolve_room_for_npc_spell_publish(mock_player_service):
-    effects = SpellEffects(mock_player_service, combat_service=None)
+    effects = SpellEffects(mock_player_service)
     npc = MagicMock()
     npc.current_room = "room_a"
     assert effects._resolve_room_for_npc_spell_publish(npc, "npc-1") == "room_a"
@@ -568,7 +572,7 @@ async def test_publish_npc_spell_damage_syncs_participant_when_npc_room_missing(
         room_id=combat.room_id,
     )
     caster_id = uuid.uuid4()
-    spell_fx = SpellEffects(mock_player_service, combat_service=svc)
+    spell_fx = SpellEffects(mock_player_service, SpellEffectsDeps(combat_service=svc))
 
     with patch("server.game.magic.spell_effects.get_combat_id_for_npc", return_value=combat_uuid):
         await spell_fx._publish_npc_damage_and_death_events(npc_inst, target, 25, caster_id)

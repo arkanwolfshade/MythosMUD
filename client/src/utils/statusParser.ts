@@ -48,11 +48,89 @@ export interface PlayerWithProfession {
   xp?: number;
 }
 
+function parseSlashPair(line: string, prefix: string): { current: number; max: number } | null {
+  const pairStr = line.replace(prefix, '').trim();
+  const [current, max] = pairStr.split('/').map(v => parseInt(v.trim(), 10));
+  if (isNaN(current) || isNaN(max)) {
+    return null;
+  }
+  return { current, max };
+}
+
+function parseIntField(line: string, prefix: string): number | null {
+  const value = parseInt(line.replace(prefix, '').trim(), 10);
+  return isNaN(value) ? null : value;
+}
+
+function ensureProfession(data: ParsedPlayerData): NonNullable<ParsedPlayerData['profession']> {
+  data.profession = data.profession ?? { name: '', description: '', flavor_text: '' };
+  return data.profession;
+}
+
+type StatusLineHandler = (line: string, data: ParsedPlayerData) => void;
+
+const STATUS_LINE_HANDLERS: StatusLineHandler[] = [
+  (line, data) => {
+    if (line.startsWith('Name:')) data.name = line.replace('Name:', '').trim();
+  },
+  (line, data) => {
+    if (line.startsWith('Location:')) data.location = line.replace('Location:', '').trim();
+  },
+  (line, data) => {
+    if (!line.startsWith('Health:')) return;
+    const health = parseSlashPair(line, 'Health:');
+    if (health) data.health = health;
+  },
+  (line, data) => {
+    if (!line.startsWith('lucidity:')) return;
+    const lucidity = parseSlashPair(line, 'lucidity:');
+    if (lucidity) data.lucidity = lucidity;
+  },
+  (line, data) => {
+    if (line.startsWith('Profession:')) ensureProfession(data).name = line.replace('Profession:', '').trim();
+  },
+  (line, data) => {
+    if (line.startsWith('Description:') && data.profession) {
+      data.profession.description = line.replace('Description:', '').trim();
+    }
+  },
+  (line, data) => {
+    if (line.startsWith('Background:') && data.profession) {
+      data.profession.flavor_text = line.replace('Background:', '').trim();
+    }
+  },
+  (line, data) => {
+    if (!line.startsWith('Fear:')) return;
+    const fear = parseIntField(line, 'Fear:');
+    if (fear !== null) data.fear = fear;
+  },
+  (line, data) => {
+    if (!line.startsWith('Corruption:')) return;
+    const corruption = parseIntField(line, 'Corruption:');
+    if (corruption !== null) data.corruption = corruption;
+  },
+  (line, data) => {
+    if (!line.startsWith('Occult Knowledge:')) return;
+    const occult = parseIntField(line, 'Occult Knowledge:');
+    if (occult !== null) data.occult_knowledge = occult;
+  },
+  (line, data) => {
+    if (line.startsWith('Position:')) data.position = line.replace('Position:', '').trim().toLowerCase();
+  },
+  (line, data) => {
+    if (line.startsWith('In Combat:')) {
+      data.in_combat = line.replace('In Combat:', '').trim() === 'Yes';
+    }
+  },
+  (line, data) => {
+    if (!line.startsWith('XP:')) return;
+    const xp = parseIntField(line, 'XP:');
+    if (xp !== null) data.xp = xp;
+  },
+];
+
 /**
  * Parses a status command response string to extract player data
- *
- * @param statusResponse - The raw status command response string
- * @returns ParsedPlayerData object with extracted information
  */
 export function parseStatusResponse(statusResponse: string): ParsedPlayerData {
   const lines = statusResponse
@@ -62,59 +140,8 @@ export function parseStatusResponse(statusResponse: string): ParsedPlayerData {
   const playerData: ParsedPlayerData = {};
 
   for (const line of lines) {
-    // Parse basic info
-    if (line.startsWith('Name:')) {
-      playerData.name = line.replace('Name:', '').trim();
-    } else if (line.startsWith('Location:')) {
-      playerData.location = line.replace('Location:', '').trim();
-    } else if (line.startsWith('Health:')) {
-      const healthStr = line.replace('Health:', '').trim();
-      const [current, max] = healthStr.split('/').map(h => parseInt(h.trim(), 10));
-      if (!isNaN(current) && !isNaN(max)) {
-        playerData.health = { current, max };
-      }
-    } else if (line.startsWith('lucidity:')) {
-      const LucidityStr = line.replace('lucidity:', '').trim();
-      const [current, max] = LucidityStr.split('/').map(s => parseInt(s.trim(), 10));
-      if (!isNaN(current) && !isNaN(max)) {
-        playerData.lucidity = { current, max };
-      }
-    } else if (line.startsWith('Profession:')) {
-      playerData.profession = playerData.profession || { name: '', description: '', flavor_text: '' };
-      playerData.profession.name = line.replace('Profession:', '').trim();
-    } else if (line.startsWith('Description:')) {
-      if (playerData.profession) {
-        playerData.profession.description = line.replace('Description:', '').trim();
-      }
-    } else if (line.startsWith('Background:')) {
-      if (playerData.profession) {
-        playerData.profession.flavor_text = line.replace('Background:', '').trim();
-      }
-    } else if (line.startsWith('Fear:')) {
-      const fear = parseInt(line.replace('Fear:', '').trim(), 10);
-      if (!isNaN(fear)) {
-        playerData.fear = fear;
-      }
-    } else if (line.startsWith('Corruption:')) {
-      const corruption = parseInt(line.replace('Corruption:', '').trim(), 10);
-      if (!isNaN(corruption)) {
-        playerData.corruption = corruption;
-      }
-    } else if (line.startsWith('Occult Knowledge:')) {
-      const occult = parseInt(line.replace('Occult Knowledge:', '').trim(), 10);
-      if (!isNaN(occult)) {
-        playerData.occult_knowledge = occult;
-      }
-    } else if (line.startsWith('Position:')) {
-      playerData.position = line.replace('Position:', '').trim().toLowerCase();
-    } else if (line.startsWith('In Combat:')) {
-      const combatStatus = line.replace('In Combat:', '').trim();
-      playerData.in_combat = combatStatus === 'Yes';
-    } else if (line.startsWith('XP:')) {
-      const xp = parseInt(line.replace('XP:', '').trim(), 10);
-      if (!isNaN(xp)) {
-        playerData.xp = xp;
-      }
+    for (const handler of STATUS_LINE_HANDLERS) {
+      handler(line, playerData);
     }
   }
 
@@ -123,9 +150,6 @@ export function parseStatusResponse(statusResponse: string): ParsedPlayerData {
 
 /**
  * Converts parsed player data to the format expected by the Player interface
- *
- * @param parsedData - Parsed player data from status response
- * @returns Player object compatible with the client interfaces
  */
 export function convertToPlayerInterface(parsedData: ParsedPlayerData): PlayerWithProfession {
   const player: PlayerWithProfession = {
@@ -146,12 +170,10 @@ export function convertToPlayerInterface(parsedData: ParsedPlayerData): PlayerWi
     position: parsedData.position,
   };
 
-  // Add combat status if present
   if (parsedData.in_combat !== undefined) {
     player.in_combat = parsedData.in_combat;
   }
 
-  // Add XP if present
   if (parsedData.xp !== undefined) {
     player.xp = parsedData.xp;
   }

@@ -5,15 +5,19 @@ This module provides REST API endpoints for the MythosMUD server,
 including game operations, player management, monitoring, and admin functions.
 """
 
+from . import players as _players
 from .admin import npc_router as admin_npc_router
 from .base import api_router as base_router
 from .containers import container_router
 from .game import game_router
 from .monitoring import monitoring_router
-from .players import player_router
+from .player_router import player_router
 from .real_time import realtime_router
 from .rooms import room_router
 from .system_monitoring import system_monitoring_router
+
+# Importing players registers endpoints on player_router.
+_ = _players
 
 __all__ = [
     "admin_npc_router",

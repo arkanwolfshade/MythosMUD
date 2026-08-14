@@ -16,6 +16,7 @@ from starlette.datastructures import QueryParams
 from server.api.map_helpers import MapZoneContext
 from server.api.maps import (
     _apply_exploration_filter_if_needed,
+    _CoordGenCtx,
     _ensure_coordinates_generated,
     _filter_explored_rooms,
     _get_current_room_id,
@@ -59,17 +60,9 @@ def _two_rooms() -> _MapRooms:
     ]
 
 
-async def _ensure_coords_stub(
-    _session: AsyncSession,
-    _zone_ctx: MapZoneContext,
-    rooms: _MapRooms,
-    _player: object,
-    _player_id: uuid.UUID | None,
-    _exploration_service: ExplorationService,
-    _current_user: User | None,
-    _room_service: RoomService,
-) -> _MapRooms:
-    return rooms
+async def _ensure_coords_stub(ctx: object) -> _MapRooms:
+    rooms = getattr(ctx, "rooms", None)
+    return cast(_MapRooms, rooms if rooms is not None else [])
 
 
 @pytest.mark.asyncio
@@ -284,15 +277,20 @@ async def test_ensure_coordinates_generated_when_missing(
         patch("server.api.maps.load_rooms_with_coordinates", new_callable=AsyncMock, return_value=reloaded),
         patch("server.api.maps._apply_exploration_filter_if_needed", new_callable=AsyncMock, return_value=reloaded),
     ):
+        session = AsyncMock(spec=AsyncSession)
+        exploration = MagicMock(spec=ExplorationService)
+        room_service = MagicMock(spec=RoomService)
         out = await _ensure_coordinates_generated(
-            AsyncMock(spec=AsyncSession),
-            zone_ctx,
-            rooms,
-            player,
-            player_id,
-            MagicMock(spec=ExplorationService),
-            user,
-            MagicMock(spec=RoomService),
+            _CoordGenCtx(
+                session=session,
+                zone_ctx=zone_ctx,
+                rooms=rooms,
+                player=player,
+                player_id=player_id,
+                exploration_service=exploration,
+                current_user=user,
+                room_service=room_service,
+            )
         )
     assert out == reloaded
     generator.generate_coordinates_for_zone.assert_awaited_once()

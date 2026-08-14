@@ -10,7 +10,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from server.game.magic.spell_effects import SpellEffects
+from server.game.magic.spell_effects import SpellEffects, SpellEffectsDeps
 from server.models.combat import CombatParticipant, CombatParticipantType
 from server.models.game import StatusEffectType
 from server.npc.combat_integration import NPCCombatIntegration
@@ -172,7 +172,7 @@ async def test_negative_status_effect_blocked_during_grace_period(mock_connectio
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     mock_player_service.persistence = mock_persistence
 
-    processor = SpellEffects(mock_player_service, connection_manager=mock_connection_manager)
+    processor = SpellEffects(mock_player_service, SpellEffectsDeps(connection_manager=mock_connection_manager))
 
     # Create a spell with negative effect
     mock_spell = MagicMock()
@@ -197,7 +197,9 @@ async def test_negative_status_effect_blocked_during_grace_period(mock_connectio
     # Effect should be blocked
     assert result["success"] is False
     assert result["effect_applied"] is False
-    assert "protected" in result["message"].lower() or "immune" in result["message"].lower()
+    message = result["message"]
+    assert isinstance(message, str)
+    assert "protected" in message.lower() or "immune" in message.lower()
 
 
 @pytest.mark.asyncio
@@ -215,7 +217,7 @@ async def test_positive_status_effect_allowed_during_grace_period(mock_connectio
     mock_persistence.save_player = AsyncMock()
     mock_player_service.persistence = mock_persistence
 
-    processor = SpellEffects(mock_player_service, connection_manager=mock_connection_manager)
+    processor = SpellEffects(mock_player_service, SpellEffectsDeps(connection_manager=mock_connection_manager))
 
     # Create a spell with positive effect (buff)
     mock_spell = MagicMock()

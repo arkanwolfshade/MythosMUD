@@ -300,6 +300,8 @@ class TestCreateCharacterWithStats:
                         request=mock_request,
                         current_user=mock_user,
                         player_service=mock_player_service,
+                        profession_service=AsyncMock(),
+                        skill_service=AsyncMock(),
                     )
                 assert exc_info.value.status_code == 503
 
@@ -332,6 +334,8 @@ class TestCreateCharacterWithStats:
                     # Reason: Intentionally passing None to test unauthenticated scenario
                     current_user=None,  # type: ignore[arg-type]
                     player_service=mock_player_service,
+                    profession_service=AsyncMock(),
+                    skill_service=AsyncMock(),
                 )
                 assert exc_info.value.status_code == 401
 
@@ -365,6 +369,8 @@ class TestCreateCharacterWithStats:
                         request=mock_request,
                         current_user=mock_user,
                         player_service=mock_player_service,
+                        profession_service=AsyncMock(),
+                        skill_service=AsyncMock(),
                     )
                 assert exc_info.value.status_code == 429
 
@@ -411,6 +417,7 @@ class TestCreateCharacterWithStats:
         )
         mock_player_service = MagicMock()
         mock_player_service.create_player_with_stats = AsyncMock(return_value=mock_player)
+        mock_player_service.get_default_starting_room.return_value = "earth_arkhamcity_room"
 
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
             with patch("server.api.character_creation.character_creation_limiter") as mock_limiter:
@@ -425,6 +432,8 @@ class TestCreateCharacterWithStats:
                         request=mock_request,
                         current_user=mock_user,
                         player_service=mock_player_service,
+                        profession_service=AsyncMock(),
+                        skill_service=AsyncMock(),
                     )
 
                     assert result.player is not None

@@ -8,8 +8,9 @@ future combat command flows.
 from __future__ import annotations
 
 import random
-from typing import Any, NamedTuple
+from typing import NamedTuple
 
+from server.game.items.models import ItemPrototypeModel
 from server.game.items.prototype_registry import PrototypeRegistry, PrototypeRegistryError
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -27,54 +28,62 @@ class WeaponAttackInfo(NamedTuple):
     damage_type: str
 
 
-def resolve_weapon_attack_from_equipped(  # pylint: disable=too-many-nested-blocks  # Reason: Weapon metadata validation and roll logic is sequential; flattening would obscure intent
-    main_hand_stack: dict[str, Any] | None,
+def _weapon_damage_bounds(weapon: dict[str, object]) -> tuple[int, int] | None:
+    min_damage = weapon.get("min_damage")
+    max_damage = weapon.get("max_damage")
+    if min_damage is None or max_damage is None:
+        return None
+    if isinstance(min_damage, int | float) and isinstance(max_damage, int | float):
+        return int(min_damage), int(max_damage)
+    return None
+
+
+def _roll_weapon_attack(weapon: dict[str, object], min_d: int, max_d: int) -> WeaponAttackInfo:
+    mod_raw = weapon.get("modifier", 0)
+    try:
+        mod = int(mod_raw) if isinstance(mod_raw, int | float | str) else 0
+    except (TypeError, ValueError):
+        mod = 0
+    base_damage = random.randint(min_d, max_d) + mod  # nosec B311  # game damage roll, not crypto
+    damage_types = weapon.get("damage_types")
+    if isinstance(damage_types, list) and damage_types and isinstance(damage_types[0], str):
+        damage_type = damage_types[0]
+    else:
+        damage_type = "physical"
+    return WeaponAttackInfo(base_damage=base_damage, damage_type=damage_type)
+
+
+def _prototype_from_equipped_stack(
+    main_hand_stack: dict[str, object],
+    registry: PrototypeRegistry,
+) -> ItemPrototypeModel | None:
+    prototype_id_raw = main_hand_stack.get("prototype_id") or main_hand_stack.get("item_id")
+    if not isinstance(prototype_id_raw, str) or not prototype_id_raw:
+        return None
+    try:
+        prototype = registry.get(prototype_id_raw)
+    except PrototypeRegistryError:
+        return None
+    if not prototype or not prototype.metadata:
+        return None
+    return prototype
+
+
+def resolve_weapon_attack_from_equipped(
+    main_hand_stack: dict[str, object] | None,
     registry: PrototypeRegistry | None,
 ) -> WeaponAttackInfo | None:
-    """Resolve equipped main-hand stack to weapon attack info, or indicate non-weapon.
-
-    If the equipped item has metadata.weapon with min_damage and max_damage,
-    rolls base damage and returns WeaponAttackInfo. Otherwise returns None
-    (caller should use basic_unarmed_damage).
-
-    Args:
-        main_hand_stack: Equipped stack for main_hand slot (e.g. from get_equipped_items()).
-        registry: Item prototype registry to look up the item prototype.
-
-    Returns:
-        WeaponAttackInfo with rolled base_damage and damage_type, or None if not a weapon.
-    """
-    result: WeaponAttackInfo | None = None
-    if main_hand_stack and registry and isinstance(main_hand_stack, dict):
-        prototype_id = main_hand_stack.get("prototype_id") or main_hand_stack.get("item_id")
-        if prototype_id:
-            try:
-                prototype = registry.get(prototype_id)
-            except PrototypeRegistryError:
-                prototype = None
-            if prototype and prototype.metadata:
-                weapon = prototype.metadata.get("weapon")
-                if isinstance(weapon, dict):
-                    min_damage = weapon.get("min_damage")
-                    max_damage = weapon.get("max_damage")
-                    if min_damage is not None and max_damage is not None:
-                        min_d: int | None = None
-                        max_d: int | None = None
-                        try:
-                            min_d = int(min_damage)
-                            max_d = int(max_damage)
-                        except (TypeError, ValueError):
-                            min_d = max_d = None
-                        if min_d is not None and max_d is not None:
-                            try:
-                                mod = int(weapon.get("modifier", 0))
-                            except (TypeError, ValueError):
-                                mod = 0
-                            base_damage = random.randint(min_d, max_d) + mod
-                            damage_types = weapon.get("damage_types")
-                            if isinstance(damage_types, list) and damage_types and isinstance(damage_types[0], str):
-                                damage_type = damage_types[0]
-                            else:
-                                damage_type = "physical"
-                            result = WeaponAttackInfo(base_damage=base_damage, damage_type=damage_type)
-    return result
+    """Resolve equipped main-hand stack to weapon attack info, or None if unarmed."""
+    if not main_hand_stack or not registry or not isinstance(main_hand_stack, dict):
+        return None
+    prototype = _prototype_from_equipped_stack(main_hand_stack, registry)
+    if prototype is None:
+        return None
+    weapon_raw: object = prototype.metadata.get("weapon")
+    if not isinstance(weapon_raw, dict):
+        return None
+    weapon: dict[str, object] = dict(weapon_raw)
+    bounds = _weapon_damage_bounds(weapon)
+    if bounds is None:
+        return None
+    return _roll_weapon_attack(weapon, bounds[0], bounds[1])

@@ -53,7 +53,7 @@ def test_get_item_instance_not_found() -> None:
 def test_ensure_item_instance_calls_create() -> None:
     conn = MagicMock()
     with patch("server.persistence.item_instance_persistence.create_item_instance") as mock_create:
-        ensure_item_instance(conn, "inst-1", "proto-1", owner_type="player", owner_id="p1", quantity=3)
+        ensure_item_instance(conn, "inst-1", "proto-1", {"owner_type": "player", "owner_id": "p1", "quantity": 3})
     mock_create.assert_called_once()
     assert mock_create.call_args.kwargs["item_instance_id"] == "inst-1"
 
@@ -65,7 +65,7 @@ def test_create_item_instance_success() -> None:
     cursor = MagicMock()
     conn.cursor.return_value = cursor
 
-    create_item_instance(conn, "inst-1", "proto-1", quantity=2, metadata={"color": "red"})
+    create_item_instance(conn, "inst-1", "proto-1", {"quantity": 2, "metadata": {"color": "red"}})
     cursor.execute.assert_called_once()
     conn.commit.assert_called_once()
     cursor.close.assert_called_once()

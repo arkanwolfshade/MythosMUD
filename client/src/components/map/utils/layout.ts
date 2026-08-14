@@ -82,6 +82,66 @@ export const defaultForceLayoutConfig: ForceLayoutConfig = {
   minimizeCrossings: true,
 };
 
+interface Point2D {
+  x: number;
+  y: number;
+}
+
+interface Segment2D {
+  start: Point2D;
+  end: Point2D;
+}
+
+function getStoredMapPosition(node: Node<RoomNodeData>): Point2D | null {
+  if (!node.data || !('map_x' in node.data) || !('map_y' in node.data)) {
+    return null;
+  }
+  const mapX = node.data.map_x;
+  const mapY = node.data.map_y;
+  if (mapX == null || mapY == null) {
+    return null;
+  }
+  return { x: mapX, y: mapY };
+}
+
+function gridPositionForIndex(
+  index: number,
+  count: number,
+  cellWidth: number,
+  cellHeight: number,
+  horizontalSpacing: number,
+  verticalSpacing: number
+): Point2D {
+  const colsPerRow = Math.ceil(Math.sqrt(count));
+  const row = Math.floor(index / colsPerRow);
+  const col = index % colsPerRow;
+  return {
+    x: col * (cellWidth + horizontalSpacing),
+    y: row * (cellHeight + verticalSpacing),
+  };
+}
+
+function groupedGridPosition(
+  node: Node<RoomNodeData>,
+  nodes: Node<RoomNodeData>[],
+  groupKey: 'subZone' | 'zone',
+  config: GridLayoutConfig
+): Point2D | null {
+  const groupValue = groupKey === 'subZone' ? node.data?.subZone : node.data?.zone;
+  if (!groupValue) return null;
+
+  const groupNodes = nodes.filter(n => (groupKey === 'subZone' ? n.data?.subZone : n.data?.zone) === groupValue);
+  const groupIndex = groupNodes.findIndex(n => n.id === node.id);
+  return gridPositionForIndex(
+    groupIndex,
+    groupNodes.length,
+    config.cellWidth,
+    config.cellHeight,
+    config.horizontalSpacing,
+    config.verticalSpacing
+  );
+}
+
 /**
  * Calculate grid position for a node based on zone/subzone grouping.
  */
@@ -90,61 +150,28 @@ export const calculateGridPosition = (
   index: number,
   nodes: Node<RoomNodeData>[],
   config: GridLayoutConfig = defaultGridLayoutConfig
-): { x: number; y: number } => {
-  // If node has stored position, use it (RoomNodeData includes optional map_x/map_y)
-  if (node.data && 'map_x' in node.data && 'map_y' in node.data) {
-    const mapX = node.data.map_x;
-    const mapY = node.data.map_y;
-    if (mapX !== null && mapY !== null && mapX !== undefined && mapY !== undefined) {
-      return { x: mapX, y: mapY };
-    }
+): Point2D => {
+  const stored = getStoredMapPosition(node);
+  if (stored) return stored;
+
+  if (config.groupBySubZone && node.data?.subZone) {
+    const grouped = groupedGridPosition(node, nodes, 'subZone', config);
+    if (grouped) return grouped;
   }
 
-  // Otherwise, calculate grid position
-  const { cellWidth, cellHeight, horizontalSpacing, verticalSpacing, groupByZone, groupBySubZone } = config;
-
-  if (groupBySubZone && node.data?.subZone) {
-    // Group by subzone
-    const subZoneNodes = nodes.filter(n => n.data?.subZone === node.data?.subZone);
-    const subZoneIndex = subZoneNodes.findIndex(n => n.id === node.id);
-    const subZoneCount = subZoneNodes.length;
-
-    // Arrange in rows
-    const colsPerRow = Math.ceil(Math.sqrt(subZoneCount));
-    const row = Math.floor(subZoneIndex / colsPerRow);
-    const col = subZoneIndex % colsPerRow;
-
-    return {
-      x: col * (cellWidth + horizontalSpacing),
-      y: row * (cellHeight + verticalSpacing),
-    };
-  } else if (groupByZone && node.data?.zone) {
-    // Group by zone
-    const zoneNodes = nodes.filter(n => n.data?.zone === node.data?.zone);
-    const zoneIndex = zoneNodes.findIndex(n => n.id === node.id);
-    const zoneCount = zoneNodes.length;
-
-    // Arrange in rows
-    const colsPerRow = Math.ceil(Math.sqrt(zoneCount));
-    const row = Math.floor(zoneIndex / colsPerRow);
-    const col = zoneIndex % colsPerRow;
-
-    return {
-      x: col * (cellWidth + horizontalSpacing),
-      y: row * (cellHeight + verticalSpacing),
-    };
-  } else {
-    // Simple grid layout
-    const colsPerRow = Math.ceil(Math.sqrt(nodes.length));
-    const row = Math.floor(index / colsPerRow);
-    const col = index % colsPerRow;
-
-    const position = {
-      x: col * (cellWidth + horizontalSpacing),
-      y: row * (cellHeight + verticalSpacing),
-    };
-    return position;
+  if (config.groupByZone && node.data?.zone) {
+    const grouped = groupedGridPosition(node, nodes, 'zone', config);
+    if (grouped) return grouped;
   }
+
+  return gridPositionForIndex(
+    index,
+    nodes.length,
+    config.cellWidth,
+    config.cellHeight,
+    config.horizontalSpacing,
+    config.verticalSpacing
+  );
 };
 
 /**
@@ -184,15 +211,72 @@ const initializeNodePositions = (nodes: Node<RoomNodeData>[], minDistance: numbe
   });
 };
 
-/**
- * Apply link forces with directional constraints based on exit directions.
- *
- * Positioning rules based on canvas orientation (top=north, bottom=south, right=east, left=west):
- * - If source has a southern exit to target, source should be NORTH of target (source.y < target.y)
- * - If source has a northern exit to target, source should be SOUTH of target (source.y > target.y)
- * - If source has an eastern exit to target, source should be WEST of target (source.x < target.x)
- * - If source has a western exit to target, source should be EAST of target (source.x > target.x)
- */
+const CARDINAL_DESIRED_OFFSET: Record<string, { dx: number; dy: number }> = {
+  north: { dx: 0, dy: -1 },
+  south: { dx: 0, dy: 1 },
+  east: { dx: 1, dy: 0 },
+  west: { dx: -1, dy: 0 },
+};
+
+// Arrow consts (not function decls): Lizard merges consecutive `function` bodies into one function.
+const linkForceReduction = (distance: number, minDistanceForLink: number): number =>
+  distance < minDistanceForLink ? Math.max(0.1, distance / minDistanceForLink) : 1.0;
+
+const applyMutualForce = (
+  source: NodeState,
+  target: NodeState,
+  fx: number,
+  fy: number,
+  sourceScale = 1,
+  targetScale = 1
+): void => {
+  source.vx += fx * sourceScale;
+  source.vy += fy * sourceScale;
+  target.vx -= fx * targetScale;
+  target.vy -= fy * targetScale;
+};
+
+const applyStandardLinkAttraction = (
+  edge: { source: NodeState; target: NodeState },
+  dx: number,
+  dy: number,
+  distance: number,
+  linkDistance: number
+): void => {
+  const minDistanceForLink = 120;
+  const baseForce = (distance - linkDistance) * 0.1;
+  const force = baseForce * linkForceReduction(distance, minDistanceForLink);
+  applyMutualForce(edge.source, edge.target, (dx / distance) * force, (dy / distance) * force);
+};
+
+const applyCardinalLinkForce = (
+  edge: { source: NodeState; target: NodeState },
+  direction: string,
+  dx: number,
+  dy: number,
+  distance: number,
+  linkDistance: number
+): void => {
+  const offset = CARDINAL_DESIRED_OFFSET[direction.toLowerCase()];
+  if (!offset) {
+    applyStandardLinkAttraction(edge, dx, dy, distance, linkDistance);
+    return;
+  }
+
+  const desiredDx = offset.dx * linkDistance;
+  const desiredDy = offset.dy * linkDistance;
+  const desiredLength = Math.sqrt(desiredDx * desiredDx + desiredDy * desiredDy);
+  const directionalStrength = 0.02;
+  let fx = (desiredDx / desiredLength) * linkDistance * directionalStrength;
+  let fy = (desiredDy / desiredLength) * linkDistance * directionalStrength;
+
+  const minDistanceForLink = 120;
+  const distanceForce = (distance - linkDistance) * 0.05 * linkForceReduction(distance, minDistanceForLink);
+  fx += (dx / distance) * distanceForce;
+  fy += (dy / distance) * distanceForce;
+  applyMutualForce(edge.source, edge.target, fx, fy);
+};
+
 const applyLinkForces = (
   edgeList: Array<{ source: NodeState; target: NodeState; direction?: string }>,
   linkDistance: number
@@ -202,94 +286,13 @@ const applyLinkForces = (
     const dy = edge.target.y - edge.source.y;
     const distance = Math.sqrt(dx * dx + dy * dy) || 1;
 
-    let fx: number;
-    let fy: number;
-
-    // Apply directional forces based on exit direction if available
-    if (edge.direction) {
-      const direction = edge.direction.toLowerCase();
-      let desiredDx = 0;
-      let desiredDy = 0;
-
-      // Calculate desired relative position based on direction
-      // Canvas orientation: top=north, bottom=south, right=east, left=west
-      switch (direction) {
-        case 'north':
-          // Source exits NORTH to target, so source should be SOUTH of target
-          // source.y > target.y (south = larger y), so dy < 0, desiredDy = -linkDistance
-          desiredDy = -linkDistance;
-          break;
-        case 'south':
-          // Source exits SOUTH to target, so source should be NORTH of target
-          // source.y < target.y (north = smaller y), so dy > 0, desiredDy = linkDistance
-          desiredDy = linkDistance;
-          break;
-        case 'east':
-          // Source exits EAST to target, so source should be WEST of target
-          // source.x < target.x (west = smaller x), so dx > 0, desiredDx = linkDistance
-          desiredDx = linkDistance;
-          break;
-        case 'west':
-          // Source exits WEST to target, so source should be EAST of target
-          // source.x > target.x (east = larger x), so dx < 0, desiredDx = -linkDistance
-          desiredDx = -linkDistance;
-          break;
-        default: {
-          // For other directions (up, down, diagonals), use standard attraction
-          const force = (distance - linkDistance) * 0.1;
-          fx = (dx / distance) * force;
-          fy = (dy / distance) * force;
-          edge.source.vx += fx;
-          edge.source.vy += fy;
-          edge.target.vx -= fx;
-          edge.target.vy -= fy;
-          continue;
-        }
-      }
-
-      // Apply gentle directional nudge instead of strong error-based force
-      // This prevents force explosion when nodes are far apart
-      // Normalize desired direction to unit vector
-      const desiredLength = Math.sqrt(desiredDx * desiredDx + desiredDy * desiredDy);
-      if (desiredLength > 0) {
-        const desiredUnitX = desiredDx / desiredLength;
-        const desiredUnitY = desiredDy / desiredLength;
-
-        // Apply a gentle force in the desired direction, scaled by linkDistance
-        // This gives a gentle nudge without exploding when nodes are far apart
-        const directionalStrength = 0.02; // Much weaker to prevent instability
-        fx = desiredUnitX * linkDistance * directionalStrength;
-        fy = desiredUnitY * linkDistance * directionalStrength;
-      } else {
-        fx = 0;
-        fy = 0;
-      }
-
-      // Also apply standard distance maintenance force (this is stable)
-      // But reduce link force strength when nodes are too close to prevent overlap
-      const distanceError = distance - linkDistance;
-      const baseDistanceForce = distanceError * 0.05;
-      // Reduce link force when nodes are closer than minDistance to allow collision forces to work
-      const minDistanceForLink = 120; // Match minDistance from config
-      const linkForceReduction = distance < minDistanceForLink ? Math.max(0.1, distance / minDistanceForLink) : 1.0;
-      const distanceForce = baseDistanceForce * linkForceReduction;
-      fx += (dx / distance) * distanceForce;
-      fy += (dy / distance) * distanceForce;
+    if (edge.direction && CARDINAL_DESIRED_OFFSET[edge.direction.toLowerCase()]) {
+      applyCardinalLinkForce(edge, edge.direction, dx, dy, distance, linkDistance);
+    } else if (edge.direction) {
+      applyStandardLinkAttraction(edge, dx, dy, distance, linkDistance);
     } else {
-      // No direction specified - use standard attraction
-      // But reduce link force when nodes are too close to prevent overlap
-      const baseForce = (distance - linkDistance) * 0.1;
-      const minDistanceForLink = 120; // Match minDistance from config
-      const linkForceReduction = distance < minDistanceForLink ? Math.max(0.1, distance / minDistanceForLink) : 1.0;
-      const force = baseForce * linkForceReduction;
-      fx = (dx / distance) * force;
-      fy = (dy / distance) * force;
+      applyStandardLinkAttraction(edge, dx, dy, distance, linkDistance);
     }
-
-    edge.source.vx += fx;
-    edge.source.vy += fy;
-    edge.target.vx -= fx;
-    edge.target.vy -= fy;
   }
 };
 
@@ -374,39 +377,28 @@ const applyChargeForces = (nodesArray: NodeState[], config: ForceLayoutConfig): 
 
 /**
  * Check if two line segments intersect.
- * Uses parametric line intersection formula.
  */
-const doLineSegmentsIntersect = (
-  p1x: number,
-  p1y: number,
-  p2x: number,
-  p2y: number,
-  p3x: number,
-  p3y: number,
-  p4x: number,
-  p4y: number
-): boolean => {
-  // Calculate direction vectors
-  const d1x = p2x - p1x;
-  const d1y = p2y - p1y;
-  const d2x = p4x - p3x;
-  const d2y = p4y - p3y;
-
-  // Calculate denominator
+const doLineSegmentsIntersect = (segmentA: Segment2D, segmentB: Segment2D): boolean => {
+  const { start: p1, end: p2 } = segmentA;
+  const { start: p3, end: p4 } = segmentB;
+  const d1x = p2.x - p1.x;
+  const d1y = p2.y - p1.y;
+  const d2x = p4.x - p3.x;
+  const d2y = p4.y - p3.y;
   const denom = d1x * d2y - d1y * d2x;
 
-  // Lines are parallel
   if (Math.abs(denom) < 1e-10) {
     return false;
   }
 
-  // Calculate parameters
-  const t1 = ((p3x - p1x) * d2y - (p3y - p1y) * d2x) / denom;
-  const t2 = ((p3x - p1x) * d1y - (p3y - p1y) * d1x) / denom;
-
-  // Check if intersection is within both segments
+  const t1 = ((p3.x - p1.x) * d2y - (p3.y - p1.y) * d2x) / denom;
+  const t2 = ((p3.x - p1.x) * d1y - (p3.y - p1.y) * d1x) / denom;
   return t1 >= 0 && t1 <= 1 && t2 >= 0 && t2 <= 1;
 };
+
+/** Axis-aligned bounds check for a point vs node rectangle. */
+const isPointInNodeBounds = (x: number, y: number, left: number, right: number, top: number, bottom: number): boolean =>
+  x >= left && x <= right && y >= top && y <= bottom;
 
 /**
  * Check if a line segment passes through a node (rectangle).
@@ -421,34 +413,33 @@ const doesEdgeCrossNode = (
   nodeY: number,
   nodeSize: number = 80
 ): boolean => {
-  // Node bounding box
   const nodeLeft = nodeX - nodeSize / 2;
   const nodeRight = nodeX + nodeSize / 2;
   const nodeTop = nodeY - nodeSize / 2;
   const nodeBottom = nodeY + nodeSize / 2;
 
-  // Check if edge endpoints are both outside the node (if both inside, it's not crossing)
-  const startInside =
-    edgeStartX >= nodeLeft && edgeStartX <= nodeRight && edgeStartY >= nodeTop && edgeStartY <= nodeBottom;
-  const endInside = edgeEndX >= nodeLeft && edgeEndX <= nodeRight && edgeEndY >= nodeTop && edgeEndY <= nodeBottom;
-
-  // If both endpoints are inside, it's not crossing (it's connected)
-  if (startInside && endInside) {
+  // Endpoints both inside means the edge is a room-to-self stub; not a crossing.
+  if (
+    isPointInNodeBounds(edgeStartX, edgeStartY, nodeLeft, nodeRight, nodeTop, nodeBottom) &&
+    isPointInNodeBounds(edgeEndX, edgeEndY, nodeLeft, nodeRight, nodeTop, nodeBottom)
+  ) {
     return false;
   }
 
-  // Check if line segment intersects any of the four sides of the node rectangle
-  const corners = [
-    [nodeLeft, nodeTop],
-    [nodeRight, nodeTop],
-    [nodeRight, nodeBottom],
-    [nodeLeft, nodeBottom],
+  const edgeSegment: Segment2D = {
+    start: { x: edgeStartX, y: edgeStartY },
+    end: { x: edgeEndX, y: edgeEndY },
+  };
+  const corners: Point2D[] = [
+    { x: nodeLeft, y: nodeTop },
+    { x: nodeRight, y: nodeTop },
+    { x: nodeRight, y: nodeBottom },
+    { x: nodeLeft, y: nodeBottom },
   ];
 
   for (let i = 0; i < 4; i++) {
-    const [x1, y1] = corners[i];
-    const [x2, y2] = corners[(i + 1) % 4];
-    if (doLineSegmentsIntersect(edgeStartX, edgeStartY, edgeEndX, edgeEndY, x1, y1, x2, y2)) {
+    const side: Segment2D = { start: corners[i], end: corners[(i + 1) % 4] };
+    if (doLineSegmentsIntersect(edgeSegment, side)) {
       return true;
     }
   }
@@ -456,103 +447,112 @@ const doesEdgeCrossNode = (
   return false;
 };
 
-/**
- * Apply forces to minimize edge crossings.
- * This detects edge-to-edge and edge-to-node crossings and applies repulsive forces.
- */
+const edgesShareNode = (
+  edge1: { source: NodeState; target: NodeState },
+  edge2: { source: NodeState; target: NodeState }
+): boolean =>
+  edge1.source === edge2.source ||
+  edge1.source === edge2.target ||
+  edge1.target === edge2.source ||
+  edge1.target === edge2.target;
+
+function edgeEndpointsSegment(edge: { source: NodeState; target: NodeState }): Segment2D {
+  return {
+    start: { x: edge.source.x, y: edge.source.y },
+    end: { x: edge.target.x, y: edge.target.y },
+  };
+}
+
+/** Midpoint-to-midpoint repulsion when two edge segments cross. */
+function crossingEdgeForce(
+  edge1: { source: NodeState; target: NodeState },
+  edge2: { source: NodeState; target: NodeState },
+  crossingStrength: number
+): Point2D | null {
+  if (!doLineSegmentsIntersect(edgeEndpointsSegment(edge1), edgeEndpointsSegment(edge2))) {
+    return null;
+  }
+  const mid1x = (edge1.source.x + edge1.target.x) / 2;
+  const mid1y = (edge1.source.y + edge1.target.y) / 2;
+  const mid2x = (edge2.source.x + edge2.target.x) / 2;
+  const mid2y = (edge2.source.y + edge2.target.y) / 2;
+  const dx = mid2x - mid1x;
+  const dy = mid2y - mid1y;
+  const distance = Math.sqrt(dx * dx + dy * dy) || 1;
+  const force = (crossingStrength / distance) * 0.25;
+  return { x: (dx / distance) * force, y: (dy / distance) * force };
+}
+
+function nudgeEdgeVelocity(edge: { source: NodeState; target: NodeState }, fx: number, fy: number): void {
+  edge.source.vx += fx;
+  edge.source.vy += fy;
+  edge.target.vx += fx;
+  edge.target.vy += fy;
+}
+
+function repelCrossingEdgePair(
+  edge1: { source: NodeState; target: NodeState },
+  edge2: { source: NodeState; target: NodeState },
+  crossingStrength: number
+): void {
+  const f = crossingEdgeForce(edge1, edge2, crossingStrength);
+  if (!f) return;
+  nudgeEdgeVelocity(edge1, -f.x, -f.y);
+  nudgeEdgeVelocity(edge2, f.x, f.y);
+}
+
+function repelEdgeFromBlockingNode(
+  edge1: { source: NodeState; target: NodeState },
+  node: NodeState,
+  crossingStrength: number
+): void {
+  const x1 = edge1.source.x;
+  const y1 = edge1.source.y;
+  const x2 = edge1.target.x;
+  const y2 = edge1.target.y;
+
+  if (!doesEdgeCrossNode(x1, y1, x2, y2, node.x, node.y)) {
+    return;
+  }
+
+  const edgeDx = x2 - x1;
+  const edgeDy = y2 - y1;
+  const edgeLengthSq = edgeDx * edgeDx + edgeDy * edgeDy;
+  if (edgeLengthSq < 1e-10) return;
+
+  const t = Math.max(0, Math.min(1, ((node.x - x1) * edgeDx + (node.y - y1) * edgeDy) / edgeLengthSq));
+  const closestX = x1 + t * edgeDx;
+  const closestY = y1 + t * edgeDy;
+  const dx = node.x - closestX;
+  const dy = node.y - closestY;
+  const distance = Math.sqrt(dx * dx + dy * dy) || 1;
+  const force = (crossingStrength * 2) / distance;
+  node.vx += (dx / distance) * force;
+  node.vy += (dy / distance) * force;
+
+  const edgeForce = force * 0.1;
+  edge1.source.vx -= (dx / distance) * edgeForce;
+  edge1.source.vy -= (dy / distance) * edgeForce;
+  edge1.target.vx -= (dx / distance) * edgeForce;
+  edge1.target.vy -= (dy / distance) * edgeForce;
+}
+
 const applyCrossingMinimizationForces = (
   edgeList: Array<{ source: NodeState; target: NodeState }>,
   nodesArray: NodeState[],
   crossingStrength: number = 50
 ): void => {
-  // Check all pairs of edges for crossings
   for (let i = 0; i < edgeList.length; i++) {
     const edge1 = edgeList[i];
-    const x1 = edge1.source.x;
-    const y1 = edge1.source.y;
-    const x2 = edge1.target.x;
-    const y2 = edge1.target.y;
-
-    // Check against all other edges
     for (let j = i + 1; j < edgeList.length; j++) {
       const edge2 = edgeList[j];
-      const x3 = edge2.source.x;
-      const y3 = edge2.source.y;
-      const x4 = edge2.target.x;
-      const y4 = edge2.target.y;
-
-      // Skip if edges share a node (they're allowed to meet at nodes)
-      if (
-        edge1.source === edge2.source ||
-        edge1.source === edge2.target ||
-        edge1.target === edge2.source ||
-        edge1.target === edge2.target
-      ) {
-        continue;
-      }
-
-      // Check if edges cross
-      if (doLineSegmentsIntersect(x1, y1, x2, y2, x3, y3, x4, y4)) {
-        // Calculate midpoint of each edge
-        const mid1x = (x1 + x2) / 2;
-        const mid1y = (y1 + y2) / 2;
-        const mid2x = (x3 + x4) / 2;
-        const mid2y = (y3 + y4) / 2;
-
-        // Calculate direction to push edges apart
-        const dx = mid2x - mid1x;
-        const dy = mid2y - mid1y;
-        const distance = Math.sqrt(dx * dx + dy * dy) || 1;
-
-        // Apply repulsive force to push edges apart
-        const force = crossingStrength / distance;
-        const fx = (dx / distance) * force;
-        const fy = (dy / distance) * force;
-
-        // Apply forces to all four nodes
-        edge1.source.vx -= fx * 0.25;
-        edge1.source.vy -= fy * 0.25;
-        edge1.target.vx -= fx * 0.25;
-        edge1.target.vy -= fy * 0.25;
-        edge2.source.vx += fx * 0.25;
-        edge2.source.vy += fy * 0.25;
-        edge2.target.vx += fx * 0.25;
-        edge2.target.vy += fy * 0.25;
-      }
+      if (edgesShareNode(edge1, edge2)) continue;
+      repelCrossingEdgePair(edge1, edge2, crossingStrength);
     }
 
-    // Check if edge passes through any node (excluding its own endpoints)
     for (const node of nodesArray) {
-      if (node === edge1.source || node === edge1.target) {
-        continue;
-      }
-
-      if (doesEdgeCrossNode(x1, y1, x2, y2, node.x, node.y)) {
-        // Calculate closest point on edge to node center
-        const edgeDx = x2 - x1;
-        const edgeDy = y2 - y1;
-        const edgeLengthSq = edgeDx * edgeDx + edgeDy * edgeDy;
-        if (edgeLengthSq < 1e-10) continue;
-
-        const t = Math.max(0, Math.min(1, ((node.x - x1) * edgeDx + (node.y - y1) * edgeDy) / edgeLengthSq));
-        const closestX = x1 + t * edgeDx;
-        const closestY = y1 + t * edgeDy;
-
-        // Push node away from edge
-        const dx = node.x - closestX;
-        const dy = node.y - closestY;
-        const distance = Math.sqrt(dx * dx + dy * dy) || 1;
-        const force = (crossingStrength * 2) / distance; // Stronger force for node-edge crossings
-        node.vx += (dx / distance) * force;
-        node.vy += (dy / distance) * force;
-
-        // Also push edge endpoints slightly
-        const edgeForce = force * 0.1;
-        edge1.source.vx -= (dx / distance) * edgeForce;
-        edge1.source.vy -= (dy / distance) * edgeForce;
-        edge1.target.vx -= (dx / distance) * edgeForce;
-        edge1.target.vy -= (dy / distance) * edgeForce;
-      }
+      if (node === edge1.source || node === edge1.target) continue;
+      repelEdgeFromBlockingNode(edge1, node, crossingStrength);
     }
   }
 };
@@ -579,9 +579,43 @@ const updateNodePositions = (nodeMap: Map<string, NodeState>, damping: number): 
   }
 };
 
+function buildSimulationEdgeList(
+  edges: Edge[],
+  nodeMap: Map<string, NodeState>
+): Array<{ source: NodeState; target: NodeState; direction?: string }> {
+  return edges
+    .filter(edge => nodeMap.has(edge.source) && nodeMap.has(edge.target))
+    .map(edge => ({
+      source: nodeMap.get(edge.source)!,
+      target: nodeMap.get(edge.target)!,
+      direction: (edge.data as ExitEdgeData | undefined)?.direction,
+    }));
+}
+
+function runForceSimulationStep(
+  nodeMap: Map<string, NodeState>,
+  edgeList: Array<{ source: NodeState; target: NodeState; direction?: string }>,
+  config: ForceLayoutConfig
+): void {
+  for (const node of nodeMap.values()) {
+    node.vx = 0;
+    node.vy = 0;
+  }
+
+  applyLinkForces(edgeList, config.linkDistance);
+  const nodesArray = Array.from(nodeMap.values());
+  applyChargeForces(nodesArray, config);
+
+  if (config.minimizeCrossings) {
+    applyCrossingMinimizationForces(edgeList, nodesArray, 50);
+  }
+
+  applyCenterForce(nodeMap, config.centerStrength);
+  updateNodePositions(nodeMap, config.damping);
+}
+
 /**
  * Apply force-directed layout to minimize edge crossings.
- * This uses a physics simulation to position nodes optimally.
  */
 export const applyForceLayout = (
   nodes: Node<RoomNodeData>[],
@@ -592,80 +626,21 @@ export const applyForceLayout = (
     return nodes;
   }
 
-  // Initialize positions if not set - spread nodes in a wider pattern to avoid initial overlaps
   const positionedNodes = initializeNodePositions(nodes, config.minDistance);
-
-  // Create node map for quick lookup
   const nodeMap = new Map<string, NodeState>(
-    positionedNodes.map(n => [
-      n.id,
-      {
-        id: n.id,
-        x: n.position.x,
-        y: n.position.y,
-        vx: 0,
-        vy: 0,
-      },
-    ])
+    positionedNodes.map(n => [n.id, { id: n.id, x: n.position.x, y: n.position.y, vx: 0, vy: 0 }])
   );
+  const edgeList = buildSimulationEdgeList(edges, nodeMap);
 
-  // Create edge list with node references and direction data, filtering out edges with missing nodes
-  const edgeList = edges
-    .filter(edge => {
-      const source = nodeMap.get(edge.source);
-      const target = nodeMap.get(edge.target);
-      return source && target;
-    })
-    .map(edge => {
-      const source = nodeMap.get(edge.source)!;
-      const target = nodeMap.get(edge.target)!;
-      const direction = (edge.data as ExitEdgeData | undefined)?.direction;
-      return { source, target, direction };
-    });
-
-  // Run force simulation
   for (let iteration = 0; iteration < config.iterations; iteration++) {
-    // Reset forces
-    for (const node of nodeMap.values()) {
-      node.vx = 0;
-      node.vy = 0;
-    }
-
-    // Apply link forces (attraction between connected nodes)
-    applyLinkForces(edgeList, config.linkDistance);
-
-    // Apply charge forces and collision avoidance (repulsion between all nodes)
-    const nodesArray = Array.from(nodeMap.values());
-    applyChargeForces(nodesArray, config);
-
-    // Apply edge crossing minimization if enabled
-    if (config.minimizeCrossings) {
-      applyCrossingMinimizationForces(edgeList, nodesArray, 50);
-    }
-
-    // Apply center force
-    applyCenterForce(nodeMap, config.centerStrength);
-
-    // Update positions with damping
-    updateNodePositions(nodeMap, config.damping);
+    runForceSimulationStep(nodeMap, edgeList, config);
   }
 
-  // Convert back to React Flow nodes
-  const result = positionedNodes.map(node => {
+  return positionedNodes.map(node => {
     const positioned = nodeMap.get(node.id);
-    if (positioned) {
-      return {
-        ...node,
-        position: {
-          x: positioned.x,
-          y: positioned.y,
-        },
-      };
-    }
-    return node;
+    if (!positioned) return node;
+    return { ...node, position: { x: positioned.x, y: positioned.y } };
   });
-
-  return result;
 };
 
 /**

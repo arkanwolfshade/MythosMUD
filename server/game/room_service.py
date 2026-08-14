@@ -243,6 +243,15 @@ class RoomService:
         )
         return False
 
+    def _extract_occupants_from_room(self, room: Any) -> list[str]:
+        if hasattr(room, "get_players"):
+            players = room.get_players()
+            npcs = room.get_npcs() if hasattr(room, "get_npcs") else []
+            return cast(list[str], players + npcs)
+        if isinstance(room, dict):
+            return cast(list[str], room.get("occupants", []))
+        return []
+
     async def get_room_occupants(self, room_id: str) -> list[str]:
         """
         Get all occupants (players and NPCs) currently in a room using cached data.
@@ -260,52 +269,22 @@ class RoomService:
             if not room:
                 logger.debug("Room not found for occupant lookup", room_id=room_id)
                 return []
+            occupants = self._extract_occupants_from_room(room)
+            logger.debug("Room occupants retrieved", room_id=room_id, occupant_count=len(occupants))
+            return occupants
 
-            # If it's a Room object, use its methods
-            # AI Agent: Fixed bug where NPCs were not included in room occupants
-            #           Previously only returned players, now returns both players and NPCs
-            if hasattr(room, "get_players"):
-                players = room.get_players()
-                npcs = room.get_npcs() if hasattr(room, "get_npcs") else []
-                occupants = players + npcs
-            else:
-                # If it's a dictionary, check for occupants field
-                occupants = room.get("occupants", [])
-
-            logger.debug(
-                "Room occupants retrieved",
-                room_id=room_id,
-                occupant_count=len(occupants),
-                player_count=len(players) if hasattr(room, "get_players") else 0,
-                npc_count=len(npcs) if hasattr(room, "get_npcs") else 0,
-            )
-            result: list[str] = cast(list[str], occupants)
-            return result
-
-        # If room_cache is not available, fall back to persistence
         logger.debug("Room cache not available, falling back to persistence", room_id=room_id)
         room_obj = self.persistence.get_room_by_id(room_id)
         if not room_obj:
             logger.debug("Room not found for occupant lookup", room_id=room_id)
             return []
-
-        # Extract occupants from room object
-        # Note: get_room_by_id returns Room | None, so after None check, room_obj is always a Room object
-        if hasattr(room_obj, "get_players"):
-            players = room_obj.get_players()
-            npcs = room_obj.get_npcs() if hasattr(room_obj, "get_npcs") else []
-            occupants = players + npcs
-        else:
-            # If it's a dictionary, check for occupants field (defensive check, unreachable in practice)
-            occupants = room_obj.get("occupants", []) if isinstance(room_obj, dict) else []
-
+        occupants = self._extract_occupants_from_room(room_obj)
         logger.debug(
             "Room occupants retrieved from persistence",
             room_id=room_id,
             occupant_count=len(occupants),
         )
-        result2: list[str] = cast(list[str], occupants)
-        return result2
+        return occupants
 
     async def validate_player_in_room(self, player_id: str, room_id: str) -> bool:
         """
@@ -380,6 +359,21 @@ class RoomService:
         result: dict[str, str] = cast(dict[str, str], exits)
         return result
 
+    def _room_matches_zone_filters(
+        self, room_dict: dict[str, Any], plane: str, zone: str, sub_zone: str | None
+    ) -> bool:
+        if room_dict.get("plane") != plane or room_dict.get("zone") != zone:
+            return False
+        if sub_zone is not None and room_dict.get("sub_zone") != sub_zone:
+            return False
+        return True
+
+    def _prepare_room_for_list(self, room: Any, include_exits: bool) -> dict[str, Any]:
+        room_dict: dict[str, Any] = cast(dict[str, Any], room.to_dict() if hasattr(room, "to_dict") else room)
+        if not include_exits and "exits" in room_dict:
+            return {key: value for key, value in room_dict.items() if key != "exits"}
+        return room_dict
+
     async def list_rooms(
         self,
         plane: str,
@@ -407,32 +401,17 @@ class RoomService:
             include_exits=include_exits,
         )
 
-        # Get all rooms from persistence
         rooms = await self.persistence.async_list_rooms()
-
-        # Filter rooms by plane, zone, and optionally sub_zone
-        filtered_rooms: list[dict[str, Any]] = []
-        for room in rooms:
-            # Convert Room object to dict if needed
-            room_dict: dict[str, Any] = cast(dict[str, Any], room.to_dict() if hasattr(room, "to_dict") else room)
-
-            # Check plane match
-            if room_dict.get("plane") != plane:
-                continue
-
-            # Check zone match
-            if room_dict.get("zone") != zone:
-                continue
-
-            # Check sub_zone match if provided
-            if sub_zone is not None and room_dict.get("sub_zone") != sub_zone:
-                continue
-
-            # Remove exits if not requested
-            if not include_exits and "exits" in room_dict:
-                room_dict = {k: v for k, v in room_dict.items() if k != "exits"}
-
-            filtered_rooms.append(room_dict)
+        filtered_rooms = [
+            self._prepare_room_for_list(room, include_exits)
+            for room in rooms
+            if self._room_matches_zone_filters(
+                cast(dict[str, Any], room.to_dict() if hasattr(room, "to_dict") else room),
+                plane,
+                zone,
+                sub_zone,
+            )
+        ]
 
         logger.debug(
             "Rooms filtered",
@@ -442,6 +421,14 @@ class RoomService:
             count=len(filtered_rooms),
         )
         return filtered_rooms
+
+    async def _lookup_explored_stable_ids(self, explored_room_ids: list[str], session: AsyncSession) -> set[str]:
+        room_uuid_list = [uuid.UUID(rid) for rid in explored_room_ids]
+        lookup_query = text("SELECT stable_id FROM rooms WHERE id IN :room_ids").bindparams(
+            bindparam("room_ids", expanding=True)
+        )
+        result = await session.execute(lookup_query, {"room_ids": room_uuid_list})
+        return {row[0] for row in result.fetchall()}
 
     async def filter_rooms_by_exploration(
         self,
@@ -465,27 +452,12 @@ class RoomService:
         logger.debug("Filtering rooms by exploration", player_id=str(player_id), total_rooms=len(rooms))
 
         try:
-            # Get explored room UUIDs from ExplorationService
             explored_room_ids = await exploration_service.get_explored_rooms(player_id, session)
-
             if not explored_room_ids:
                 logger.debug("Player has explored no rooms, returning empty list", player_id=str(player_id))
                 return []
 
-            # Convert explored room UUIDs to stable_ids for filtering
-            # We need to look up stable_ids from room UUIDs
-            # Convert string UUIDs to UUID objects for proper PostgreSQL type handling
-            room_uuid_list = [uuid.UUID(rid) for rid in explored_room_ids]
-
-            # Use IN clause with expanding parameters for proper array handling
-            # This avoids mixing parameter syntax with casting syntax that causes asyncpg errors
-            lookup_query = text("SELECT stable_id FROM rooms WHERE id IN :room_ids").bindparams(
-                bindparam("room_ids", expanding=True)
-            )
-            result = await session.execute(lookup_query, {"room_ids": room_uuid_list})
-            explored_stable_ids = {row[0] for row in result.fetchall()}
-
-            # Filter rooms to only include explored ones
+            explored_stable_ids = await self._lookup_explored_stable_ids(explored_room_ids, session)
             filtered_rooms = [room for room in rooms if room.get("id") in explored_stable_ids]
 
             logger.debug(

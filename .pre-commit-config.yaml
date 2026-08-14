@@ -60,6 +60,9 @@ repos:
       - id: check-merge-conflict
       - id: check-executables-have-shebangs
       - id: check-case-conflict
+        # Generated wiki paths differ by case across graphify rebuilds; merging trees
+        # would fail this hook on Windows even when the resolved tree is consistent.
+        exclude: '(\.codacy/|(^|/)graphify-out/|(^|/)graphify/)'
       - id: check-symlinks
       - id: check-ast
         exclude: ^(graphify-out/|(.*/)?graphify-out/|(.*/)?graphify/)

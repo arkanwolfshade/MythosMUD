@@ -54,23 +54,7 @@ def set_global_player_service(player_service: object) -> None:
 
 
 def sanitize_sensitive_data(_logger: object, _name: str, event_dict: EventDict) -> EventDict:
-    """
-    Remove sensitive data from log entries.
-
-    This processor automatically redacts sensitive information like passwords,
-    tokens, and credentials from log entries to prevent information leakage.
-
-    Args:
-        _logger: Logger instance (unused)
-        _name: Logger name (unused)
-        event_dict: Event dictionary to sanitize
-
-    Returns:
-        Sanitized event dictionary
-    """
-    # Sensitive patterns that should be redacted
-    # These patterns match whole words or specific suffixes/prefixes
-    # Expanded to include additional sensitive data types per structlog.mdc best practices
+    """sanitize_sensitive_data."""
     sensitive_patterns = [
         r"\bpassword\b",
         r"\btoken\b",
@@ -98,8 +82,6 @@ def sanitize_sensitive_data(_logger: object, _name: str, event_dict: EventDict) 
         r"\bcookie\b",
         r"\bcsrf\b",  # CSRF token
     ]
-
-    # Safe field names that should never be redacted even if they match patterns
     safe_fields = {
         "subzone_key",
         "zone_key",
@@ -117,10 +99,8 @@ def sanitize_sensitive_data(_logger: object, _name: str, event_dict: EventDict) 
                 sanitized[key] = sanitize_dict(cast(dict[str, object], value))
             else:
                 key_lower = key.lower()
-                # Check if field is in safe list
                 if key_lower in safe_fields:
                     sanitized[key] = value
-                # Check if field matches any sensitive pattern
                 elif any(re.search(pattern, key_lower) for pattern in sensitive_patterns):
                     sanitized[key] = "[REDACTED]"
                 else:
@@ -181,67 +161,41 @@ def add_request_context(_logger: object, _name: str, event_dict: EventDict) -> E
     return event_dict
 
 
+def _database_error_type() -> type[BaseException]:
+    try:
+        from server.exceptions import DatabaseError as imported
+
+        return imported
+    except ImportError:
+        return Exception
+
+
+def _enhance_one_player_id(event_dict: EventDict, key: str, value: str, get_player: object) -> None:
+    if len(value) != 36 or value.count("-") != 4:
+        return
+    err_t = _database_error_type()
+    try:
+        player = get_player(uuid.UUID(value))  # type: ignore[operator]
+        player_name = getattr(player, "name", None) if player is not None else None
+        if player_name is not None:
+            event_dict[key] = f"<{player_name}>: {value}"
+    except (AttributeError, KeyError, TypeError, ValueError, err_t, RecursionError):
+        pass
+
+
 def enhance_player_ids(_logger: object, _name: str, event_dict: EventDict) -> EventDict:
-    """
-    Enhance player_id fields with player names for better log readability.
-
-    This processor automatically converts player_id fields to include both
-    player name and ID in the format "<name>: <ID>" for better debugging.
-
-    Args:
-        _logger: Logger instance (unused)
-        _name: Logger name (unused)
-        event_dict: Event dictionary to enhance
-
-    Returns:
-        Enhanced event dictionary with player names
-    """
-    # Access player service from module-level holder
+    """Enhance player_id fields with display names when available."""
     player_service = _player_service_holder.player_service
-
-    # Prevent recursion: if we're already enhancing player IDs, skip immediately
-    # Check this FIRST before any other operations
     if _enhancing_player_ids.active:
         return event_dict
-
-    # Set recursion guard IMMEDIATELY before any operations that might trigger logging
     _enhancing_player_ids.active = True
-    try:  # pylint: disable=too-many-nested-blocks  # Reason: Logging processor requires complex nested logic for player ID enhancement, UUID validation, and event dictionary processing
+    try:
         persistence = cast(object | None, getattr(player_service, "persistence", None)) if player_service else None
         get_player = cast(object | None, getattr(persistence, "get_player", None)) if persistence is not None else None
         if callable(get_player):
-            # Process any player_id fields in the event dictionary
-            event_items = cast(dict[str, object], event_dict).items()
-            for key, value in event_items:
+            for key, value in cast(dict[str, object], event_dict).items():
                 if key == "player_id" and isinstance(value, str):
-                    # Check if this looks like a UUID
-                    if len(value) == 36 and value.count("-") == 4:
-                        # Import here to avoid circular import with server.exceptions -> enhanced_logging_config
-                        # Define a local exception type alias for optional dependency
-                        try:
-                            from server.exceptions import (
-                                DatabaseError as _ImportedDatabaseError,  # noqa: F401  # pylint: disable=unused-import  # Reason: Imported for type alias assignment, unused but required for type annotation
-                            )
-
-                            _DatabaseErrorType: type[BaseException] = _ImportedDatabaseError
-                        except ImportError:  # fallback if exceptions not yet available
-                            _DatabaseErrorType = Exception
-
-                        try:
-                            # Try to get the player name
-                            # Convert string to UUID if needed
-                            player_id_uuid = uuid.UUID(value)
-                            player = get_player(player_id_uuid)
-                            player_name = getattr(player, "name", None) if player is not None else None
-                            if player_name is not None:
-                                # Enhance the player_id field with the player name
-                                event_dict[key] = f"<{player_name}>: {value}"
-                        except (AttributeError, KeyError, TypeError, ValueError, _DatabaseErrorType, RecursionError):
-                            # Silently skip on recursion or other errors - don't log to avoid infinite loop
-                            # If lookup fails, leave the original value
-                            pass
+                    _enhance_one_player_id(event_dict, key, value, get_player)
     finally:
-        # Clear recursion guard - ALWAYS clear it, even if an exception occurs
         _enhancing_player_ids.active = False
-
     return event_dict

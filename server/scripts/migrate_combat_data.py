@@ -5,7 +5,7 @@ This script adds default combat data to existing NPC definitions,
 including base stats and behavior configuration.
 """
 
-from typing import Any
+from typing import Protocol, TypedDict, cast
 
 from anyio import run
 from sqlalchemy import select
@@ -24,8 +24,154 @@ from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
+_COMBAT_STATS_KEYS = ("xp_value", "dexterity", "strength", "constitution")
+_COMBAT_CONFIG_KEYS = ("combat_messages", "combat_behavior")
+_REQUIRED_VALIDATION_STATS = ("xp_value", "dexterity")
+_MIGRATION_ERRORS = (
+    CombatSchemaValidationError,
+    SQLAlchemyError,
+    ValueError,
+    TypeError,
+    KeyError,
+    AttributeError,
+)
 
-async def migrate_npc_combat_data(session: AsyncSession, dry_run: bool = False) -> dict[str, Any]:
+
+class MigrationResults(TypedDict):
+    """Counts and error strings from combat data migration."""
+
+    total_npcs: int
+    updated_npcs: int
+    skipped_npcs: int
+    error_npcs: int
+    errors: list[str]
+
+
+class ValidationResults(TypedDict):
+    """Counts and error strings from combat data validation."""
+
+    total_npcs: int
+    valid_npcs: int
+    invalid_npcs: int
+    validation_errors: list[str]
+
+
+class RollbackResults(TypedDict):
+    """Counts and error strings from combat data rollback."""
+
+    total_npcs: int
+    rolled_back_npcs: int
+    skipped_npcs: int
+    rollback_errors: list[str]
+
+
+class _MigrationArgs(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    """argparse namespace for this script."""
+
+    dry_run: bool
+    validate: bool
+    rollback: bool
+
+
+def _npc_has_full_combat_data(stats: dict[str, object], config: dict[str, object]) -> bool:
+    has_stats = any(key in stats for key in _COMBAT_STATS_KEYS)
+    return has_stats and "combat_messages" in config and "combat_behavior" in config
+
+
+def _record_npc_error(errors: list[str], npc: NPCDefinition, exc: Exception) -> None:
+    error_msg = f"Failed for NPC {npc.name} (ID: {npc.id}): {exc}"
+    logger.error("NPC operation error", npc_name=npc.name, npc_id=npc.id, error=str(exc))
+    errors.append(error_msg)
+
+
+async def _migrate_one_npc(npc: NPCDefinition, session: AsyncSession, dry_run: bool, results: MigrationResults) -> None:
+    current_stats = npc.get_base_stats()
+    current_config = npc.get_behavior_config()
+    if _npc_has_full_combat_data(current_stats, current_config):
+        logger.debug("NPC already has combat data, skipping", npc_name=npc.name, npc_id=npc.id)
+        results["skipped_npcs"] += 1
+        return
+
+    updated_stats = add_default_combat_data_to_stats(current_stats)
+    updated_config = add_default_combat_data_to_config(current_config)
+    if not dry_run:
+        npc.set_base_stats(updated_stats)
+        npc.set_behavior_config(updated_config)
+        validate_npc_combat_data(npc)
+        await session.commit()
+        logger.info(
+            "Updated NPC with combat data",
+            npc_name=npc.name,
+            npc_id=npc.id,
+            added_stats=list(set(updated_stats.keys()) - set(current_stats.keys())),
+            added_config=list(set(updated_config.keys()) - set(current_config.keys())),
+        )
+    results["updated_npcs"] += 1
+
+
+def _validate_one_npc(npc: NPCDefinition, results: ValidationResults) -> None:
+    validate_npc_combat_data(npc)
+    stats = npc.get_base_stats()
+    config = npc.get_behavior_config()
+    has_required = all(key in stats for key in _REQUIRED_VALIDATION_STATS) and "combat_messages" in config
+    if has_required:
+        results["valid_npcs"] += 1
+        logger.debug("NPC combat data validation passed", npc_name=npc.name, npc_id=npc.id)
+        return
+    error_msg = f"NPC {npc.name} missing required combat data"
+    results["validation_errors"].append(error_msg)
+    results["invalid_npcs"] += 1
+    logger.warning("NPC missing required combat data", npc_name=npc.name, npc_id=npc.id)
+
+
+def _npc_has_combat_data(stats: dict[str, object], config: dict[str, object]) -> bool:
+    return any(key in stats for key in _COMBAT_STATS_KEYS) or any(key in config for key in _COMBAT_CONFIG_KEYS)
+
+
+def _omit_keys(data: dict[str, object], keys: tuple[str, ...]) -> dict[str, object]:
+    return {k: v for k, v in data.items() if k not in keys}
+
+
+def _present_keys(data: dict[str, object], keys: tuple[str, ...]) -> list[str]:
+    return [k for k in keys if k in data]
+
+
+def _strip_combat_data_from_npc(
+    npc: NPCDefinition,
+) -> tuple[dict[str, object], dict[str, object], list[str], list[str]]:
+    current_stats = npc.get_base_stats()
+    current_config = npc.get_behavior_config()
+    return (
+        _omit_keys(current_stats, _COMBAT_STATS_KEYS),
+        _omit_keys(current_config, _COMBAT_CONFIG_KEYS),
+        _present_keys(current_stats, _COMBAT_STATS_KEYS),
+        _present_keys(current_config, _COMBAT_CONFIG_KEYS),
+    )
+
+
+async def _rollback_one_npc(npc: NPCDefinition, session: AsyncSession, results: RollbackResults) -> None:
+    current_stats = npc.get_base_stats()
+    current_config = npc.get_behavior_config()
+    if not _npc_has_combat_data(current_stats, current_config):
+        logger.debug("NPC has no combat data to rollback", npc_name=npc.name, npc_id=npc.id)
+        results["skipped_npcs"] += 1
+        return
+
+    updated_stats, updated_config, removed_stats, removed_config = _strip_combat_data_from_npc(npc)
+    npc.set_base_stats(updated_stats)
+    npc.set_behavior_config(updated_config)
+    await session.commit()
+    logger.info(
+        "Rolled back NPC combat data",
+        npc_name=npc.name,
+        npc_id=npc.id,
+        removed_stats=removed_stats,
+        removed_config=removed_config,
+    )
+    results["rolled_back_npcs"] += 1
+
+
+async def migrate_npc_combat_data(session: AsyncSession, dry_run: bool = False) -> MigrationResults:
     """
     Migrate combat data for all NPC definitions.
 
@@ -43,7 +189,7 @@ async def migrate_npc_combat_data(session: AsyncSession, dry_run: bool = False) 
     npcs = result.scalars().all()
 
     # AI Agent: Explicit type annotation to help mypy understand dict structure
-    migration_results: dict[str, Any] = {
+    migration_results: MigrationResults = {
         "total_npcs": len(npcs),
         "updated_npcs": 0,
         "skipped_npcs": 0,
@@ -53,79 +199,16 @@ async def migrate_npc_combat_data(session: AsyncSession, dry_run: bool = False) 
 
     for npc in npcs:
         try:
-            # Get current data
-            current_stats = npc.get_base_stats()
-            current_config = npc.get_behavior_config()
-
-            # Check if combat data already exists
-            has_combat_stats = any(
-                key in current_stats
-                for key in [
-                    "xp_value",
-                    "dexterity",
-                    "strength",
-                    "constitution",
-                ]
-            )
-            has_combat_messages = "combat_messages" in current_config
-            has_combat_behavior = "combat_behavior" in current_config
-
-            if has_combat_stats and has_combat_messages and has_combat_behavior:
-                logger.debug(
-                    "NPC already has combat data, skipping",
-                    npc_name=npc.name,
-                    npc_id=npc.id,
-                )
-                migration_results["skipped_npcs"] += 1
-                continue
-
-            # Add default combat data
-            updated_stats = add_default_combat_data_to_stats(current_stats)
-            updated_config = add_default_combat_data_to_config(current_config)
-
-            if not dry_run:
-                # Update the NPC definition
-                npc.set_base_stats(updated_stats)
-                npc.set_behavior_config(updated_config)
-
-                # Validate the updated data
-                validate_npc_combat_data(npc)
-
-                await session.commit()
-
-                logger.info(
-                    "Updated NPC with combat data",
-                    npc_name=npc.name,
-                    npc_id=npc.id,
-                    added_stats=list(set(updated_stats.keys()) - set(current_stats.keys())),
-                    added_config=list(set(updated_config.keys()) - set(current_config.keys())),
-                )
-
-            migration_results["updated_npcs"] += 1
-
-        except (
-            CombatSchemaValidationError,
-            SQLAlchemyError,
-            ValueError,
-            TypeError,
-            KeyError,
-            AttributeError,
-        ) as e:
-            error_msg = f"Failed to migrate NPC {npc.name} (ID: {npc.id}): {str(e)}"
-            logger.error(
-                "NPC migration error",
-                npc_name=npc.name,
-                npc_id=npc.id,
-                error=str(e),
-            )
-            migration_results["errors"].append(error_msg)
+            await _migrate_one_npc(npc, session, dry_run, migration_results)
+        except _MIGRATION_ERRORS as exc:
+            _record_npc_error(migration_results["errors"], npc, exc)
             migration_results["error_npcs"] += 1
 
     logger.info("Combat data migration completed", **migration_results)
     return migration_results
 
 
-async def validate_migration_results(session: AsyncSession) -> dict[str, Any]:
+async def validate_migration_results(session: AsyncSession) -> ValidationResults:
     """
     Validate that migration was successful.
 
@@ -142,7 +225,7 @@ async def validate_migration_results(session: AsyncSession) -> dict[str, Any]:
     npcs = result.scalars().all()
 
     # AI Agent: Explicit type annotation to help mypy understand dict structure
-    validation_results: dict[str, Any] = {
+    validation_results: ValidationResults = {
         "total_npcs": len(npcs),
         "valid_npcs": 0,
         "invalid_npcs": 0,
@@ -151,56 +234,17 @@ async def validate_migration_results(session: AsyncSession) -> dict[str, Any]:
 
     for npc in npcs:
         try:
-            # Validate combat data
-            validate_npc_combat_data(npc)
-
-            # Check that required combat data is present
-            stats = npc.get_base_stats()
-            config = npc.get_behavior_config()
-
-            has_required_stats = all(key in stats for key in ["xp_value", "dexterity"])
-            has_required_messages = "combat_messages" in config
-
-            if has_required_stats and has_required_messages:
-                validation_results["valid_npcs"] += 1
-                logger.debug(
-                    "NPC combat data validation passed",
-                    npc_name=npc.name,
-                    npc_id=npc.id,
-                )
-            else:
-                error_msg = f"NPC {npc.name} missing required combat data"
-                validation_results["validation_errors"].append(error_msg)
-                validation_results["invalid_npcs"] += 1
-                logger.warning(
-                    "NPC missing required combat data",
-                    npc_name=npc.name,
-                    npc_id=npc.id,
-                )
-
-        except (
-            CombatSchemaValidationError,
-            SQLAlchemyError,
-            ValueError,
-            TypeError,
-            KeyError,
-            AttributeError,
-        ) as e:
-            error_msg = f"NPC {npc.name} validation failed: {str(e)}"
-            validation_results["validation_errors"].append(error_msg)
+            _validate_one_npc(npc, validation_results)
+        except _MIGRATION_ERRORS as exc:
+            validation_results["validation_errors"].append(f"NPC {npc.name} validation failed: {exc}")
             validation_results["invalid_npcs"] += 1
-            logger.error(
-                "NPC validation error",
-                npc_name=npc.name,
-                npc_id=npc.id,
-                error=str(e),
-            )
+            logger.error("NPC validation error", npc_name=npc.name, npc_id=npc.id, error=str(exc))
 
     logger.info("Combat data migration validation completed", **validation_results)
     return validation_results
 
 
-async def rollback_migration(session: AsyncSession) -> dict[str, Any]:
+async def rollback_migration(session: AsyncSession) -> RollbackResults:
     """
     Rollback combat data migration by removing combat fields.
 
@@ -217,71 +261,18 @@ async def rollback_migration(session: AsyncSession) -> dict[str, Any]:
     npcs = result.scalars().all()
 
     # AI Agent: Explicit type annotation to help mypy understand dict structure
-    rollback_results: dict[str, Any] = {
+    rollback_results: RollbackResults = {
         "total_npcs": len(npcs),
         "rolled_back_npcs": 0,
         "skipped_npcs": 0,
         "rollback_errors": [],
     }
 
-    combat_stats_keys = ["xp_value", "dexterity", "strength", "constitution"]
-    combat_config_keys = ["combat_messages", "combat_behavior"]
-
     for npc in npcs:
         try:
-            # Get current data
-            current_stats = npc.get_base_stats()
-            current_config = npc.get_behavior_config()
-
-            # Check if combat data exists
-            has_combat_stats = any(key in current_stats for key in combat_stats_keys)
-            has_combat_config = any(key in current_config for key in combat_config_keys)
-
-            if not has_combat_stats and not has_combat_config:
-                logger.debug(
-                    "NPC has no combat data to rollback",
-                    npc_name=npc.name,
-                    npc_id=npc.id,
-                )
-                rollback_results["skipped_npcs"] += 1
-                continue
-
-            # Remove combat data
-            updated_stats = {k: v for k, v in current_stats.items() if k not in combat_stats_keys}
-            updated_config = {k: v for k, v in current_config.items() if k not in combat_config_keys}
-
-            # Update the NPC definition
-            npc.set_base_stats(updated_stats)
-            npc.set_behavior_config(updated_config)
-
-            await session.commit()
-
-            logger.info(
-                "Rolled back NPC combat data",
-                npc_name=npc.name,
-                npc_id=npc.id,
-                removed_stats=[k for k in combat_stats_keys if k in current_stats],
-                removed_config=[k for k in combat_config_keys if k in current_config],
-            )
-
-            rollback_results["rolled_back_npcs"] += 1
-
-        except (
-            CombatSchemaValidationError,
-            SQLAlchemyError,
-            ValueError,
-            TypeError,
-            KeyError,
-            AttributeError,
-        ) as e:
-            error_msg = f"Failed to rollback NPC {npc.name} (ID: {npc.id}): {str(e)}"
-            logger.error(
-                "NPC rollback error",
-                npc_name=npc.name,
-                npc_id=npc.id,
-                error=str(e),
-            )
-            rollback_results["rollback_errors"].append(error_msg)
+            await _rollback_one_npc(npc, session, rollback_results)
+        except _MIGRATION_ERRORS as exc:
+            _record_npc_error(rollback_results["rollback_errors"], npc, exc)
 
     logger.info("Combat data migration rollback completed", **rollback_results)
     return rollback_results
@@ -299,15 +290,13 @@ async def main() -> None:
     )
     parser.add_argument("--validate", action="store_true", help="Validate migration results")
     parser.add_argument("--rollback", action="store_true", help="Rollback migration")
-    args = parser.parse_args()
+    args = cast(_MigrationArgs, cast(object, parser.parse_args()))
 
     async for session in get_npc_session():
         if args.rollback:
-            results = await rollback_migration(session)
-            print(f"Rollback completed: {results}")
+            print(f"Rollback completed: {await rollback_migration(session)}")
         elif args.validate:
-            results = await validate_migration_results(session)
-            print(f"Validation completed: {results}")
+            print(f"Validation completed: {await validate_migration_results(session)}")
         else:
             results = await migrate_npc_combat_data(session, dry_run=args.dry_run)
             print(f"Migration completed: {results}")

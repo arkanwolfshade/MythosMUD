@@ -118,6 +118,42 @@ class CombatAttackHandler:
         combat.update_activity(0)
         return old_dp, target_died, target_mortally_wounded
 
+    def _find_combat_target(self, combat: CombatInstance, target_id: UUID) -> CombatParticipant:
+        target = combat.participants.get(target_id)
+        if target:
+            return target
+        target_id_str = str(target_id)
+        target = next(
+            (p for p in combat.participants.values() if str(p.participant_id) == target_id_str),
+            None,
+        )
+        if target:
+            return target
+        participant_ids = [str(pid) for pid in combat.participants.keys()]
+        participant_names = {str(pid): getattr(p, "name", "?") for pid, p in combat.participants.items()}
+        logger.error(
+            "Target not found in combat participants (stale target or wrong combat)",
+            combat_id=str(combat.combat_id),
+            target_id=str(target_id),
+            participant_ids=participant_ids,
+            participant_names=participant_names,
+        )
+        raise ValueError("Target is not in this combat")
+
+    def _validate_target_can_be_attacked(self, target: CombatParticipant) -> None:
+        if target.is_alive():
+            return
+        if target.participant_type == CombatParticipantType.PLAYER and -10 < target.current_dp <= 0:
+            logger.debug(
+                "Allowing attack on mortally wounded player",
+                target_id=target.participant_id,
+                target_name=target.name,
+                current_dp=target.current_dp,
+                is_active=target.is_active,
+            )
+            return
+        raise ValueError("Target is already dead")
+
     async def validate_and_get_combat_participants(
         self, attacker_id: UUID, target_id: UUID, is_initial_attack: bool
     ) -> tuple[CombatInstance, CombatParticipant, CombatParticipant]:
@@ -141,47 +177,8 @@ class CombatAttackHandler:
 
         self._validate_attack(combat, is_initial_attack)
 
-        target = combat.participants.get(target_id)
-        if not target:
-            # Fallback: lookup by string comparison in case of UUID representation mismatch
-            target_id_str = str(target_id)
-            target = next(
-                (p for p in combat.participants.values() if str(p.participant_id) == target_id_str),
-                None,
-            )
-        if not target:
-            participant_ids = [str(pid) for pid in combat.participants.keys()]
-            participant_names = {str(pid): getattr(p, "name", "?") for pid, p in combat.participants.items()}
-            logger.error(
-                "Target not found in combat participants (stale target or wrong combat)",
-                combat_id=str(combat.combat_id),
-                attacker_id=str(attacker_id),
-                target_id=str(target_id),
-                participant_ids=participant_ids,
-                participant_names=participant_names,
-            )
-            raise ValueError("Target is not in this combat")
-
-        # Allow attacking incapacitated players (0 DP) - they're not dead until -10 DP
-        # For players: is_alive() returns True if current_dp > -10 AND is_active
-        # For NPCs: is_alive() returns True if current_dp > 0 AND is_active
-        # CRITICAL: Players at 0 DP are mortally wounded but still attackable until -10 DP
-        # The is_alive() check should pass for players at 0 DP (current_dp > -10 is True)
-        # But if is_active is False, we need to allow attacks anyway for mortally wounded players
-        if not target.is_alive():
-            # Special case: allow attacking players at 0 DP (mortally wounded but not dead)
-            # They should still be attackable until they reach -10 DP, even if is_active is False
-            if target.participant_type == CombatParticipantType.PLAYER and -10 < target.current_dp <= 0:
-                # Player is mortally wounded (0 DP to -9 DP) - allow attack to continue until -10 DP
-                logger.debug(
-                    "Allowing attack on mortally wounded player",
-                    target_id=target.participant_id,
-                    target_name=target.name,
-                    current_dp=target.current_dp,
-                    is_active=target.is_active,
-                )
-            else:
-                raise ValueError("Target is already dead")
+        target = self._find_combat_target(combat, target_id)
+        self._validate_target_can_be_attacked(target)
 
         current_participant = combat.participants.get(attacker_id)
         if not current_participant:

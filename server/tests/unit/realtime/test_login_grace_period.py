@@ -249,7 +249,12 @@ async def test_start_login_grace_period_effect_based_adds_effect_and_sets_in_mem
     assert call_kw.get("effect_type") == "login_warded"
     assert call_kw.get("category") == "entry_ward"
     assert call_kw.get("applied_at_tick") == 100
-    assert call_kw.get("source") == "game_entry"
+    assert call_kw.get("options") == {
+        "intensity": 1,
+        "source": "game_entry",
+        "visibility_level": "visible",
+    }
+    assert "intensity" not in call_kw
     assert player_id in mock_connection_manager.login_grace_period_players
     assert mock_connection_manager.login_grace_period_players[player_id] is True
     assert player_id in mock_connection_manager.login_grace_period_start_times

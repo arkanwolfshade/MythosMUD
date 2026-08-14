@@ -110,46 +110,31 @@ class MovementMonitor:  # pylint: disable=too-many-instance-attributes  # Reason
                 self._integrity_violations += 1
             self._last_validation_time = datetime.now(UTC)
 
-    def validate_room_integrity(self, rooms: dict[str, Any]) -> dict[str, Any]:
-        """
-        Validate room data integrity.
-
-        Returns a dictionary with validation results and any violations found.
-        """
-        violations = []
+    def _collect_room_player_map(self, rooms: dict[str, Any]) -> tuple[list[str], int]:
+        violations: list[str] = []
         total_players = 0
-
-        # Check for players in multiple rooms
         player_rooms: dict[str, str] = {}
         for room_id, room in rooms.items():
-            if hasattr(room, "get_players"):
-                players = room.get_players()
-                total_players += len(players)
+            if not hasattr(room, "get_players"):
+                continue
+            players = room.get_players()
+            total_players += len(players)
+            for player_id in players:
+                if player_id in player_rooms:
+                    violations.append(
+                        f"Player {player_id} found in multiple rooms: {player_rooms[player_id]} and {room_id}"
+                    )
+                else:
+                    player_rooms[player_id] = room_id
+        return violations, total_players
 
-                for player_id in players:
-                    if player_id in player_rooms:
-                        violations.append(
-                            f"Player {player_id} found in multiple rooms: {player_rooms[player_id]} and {room_id}"
-                        )
-                    else:
-                        player_rooms[player_id] = room_id
-
-        # Check for orphaned players (players not in any room)
-        orphaned_players = set()
-        for _room_id, room in rooms.items():
-            if hasattr(room, "get_players"):
-                for player_id in room.get_players():
-                    orphaned_players.discard(player_id)
-
-        if orphaned_players:
-            violations.append(f"Orphaned players found: {orphaned_players}")
-
-        # Calculate metrics
+    def validate_room_integrity(self, rooms: dict[str, Any]) -> dict[str, Any]:
+        """Validate players are not in multiple rooms."""
+        violations, total_players = self._collect_room_player_map(rooms)
         avg_occupancy = total_players / len(rooms) if rooms else 0
         max_occupancy = max(
             (len(room.get_players()) for room in rooms.values() if hasattr(room, "get_players")), default=0
         )
-
         result = {
             "valid": not violations,
             "violations": violations,
@@ -159,14 +144,11 @@ class MovementMonitor:  # pylint: disable=too-many-instance-attributes  # Reason
             "max_occupancy": max_occupancy,
             "timestamp": datetime.now(UTC),
         }
-
         self.record_integrity_check(len(violations) > 0)
-
         if violations:
             self._logger.warning("Room integrity violations found", violations=violations)
         else:
             self._logger.debug("Room integrity check passed")
-
         return result
 
     def get_metrics(self) -> dict[str, Any]:

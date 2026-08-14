@@ -65,7 +65,7 @@ logic that prevented all whisper messages from being delivered.
 5. [Test Results Summary](#test-results-summary)
 6. [Comprehensive Remediation Plan](#comprehensive-remediation-plan)
 7. [Secondary Issues Discovered](#secondary-issues-discovered)
-8. [Lessons Learned & Recommendations](#lessons-learned-recommendations)
+8. [Lessons Learned and Recommendations](#lessons-learned-and-recommendations)
 9. [References](#references)
 10. [Remaining Work Summary](#remaining-work-summary)
 
@@ -1018,7 +1018,7 @@ Minor format discrepancy
 
 ---
 
-## Lessons Learned & Recommendations
+## Lessons Learned and Recommendations
 
 ### Technical Lessons
 

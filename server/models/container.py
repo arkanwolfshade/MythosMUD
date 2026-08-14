@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import StrEnum
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, TypedDict
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator
@@ -37,6 +37,17 @@ class ContainerLockState(StrEnum):
     UNLOCKED = "unlocked"
     LOCKED = "locked"
     SEALED = "sealed"
+
+
+class ContainerFactoryOptions(TypedDict, total=False):
+    """Shared optional fields for container factory methods."""
+
+    capacity_slots: int
+    lock_state: ContainerLockState
+    weight_limit: int | None
+    allowed_roles: list[str] | None
+    items: list[InventoryStack] | None
+    metadata: dict[str, Any] | None
 
 
 class ContainerComponent(BaseModel):
@@ -267,129 +278,70 @@ class ContainerComponent(BaseModel):
         return current_time >= self.decay_at
 
     @classmethod
-    def create_environment(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Container creation requires many parameters to capture complete container state
+    def create_environment(
         cls,
         container_id: UUID,
         room_id: str,
-        capacity_slots: int = 8,
-        lock_state: ContainerLockState = ContainerLockState.UNLOCKED,
-        weight_limit: int | None = None,
-        allowed_roles: list[str] | None = None,
-        items: list[InventoryStack] | None = None,
-        metadata: dict[str, Any] | None = None,
+        options: ContainerFactoryOptions | None = None,
     ) -> ContainerComponent:
-        """
-        Factory method to create an environmental container.
-
-        Args:
-            container_id: Unique container identifier
-            room_id: Room identifier where container is located
-            capacity_slots: Maximum number of inventory slots (default: 8)
-            lock_state: Lock state (default: unlocked)
-            weight_limit: Optional maximum weight capacity
-            allowed_roles: List of role names allowed to access container
-            items: Initial items in container
-            metadata: Optional metadata dictionary
-
-        Returns:
-            ContainerComponent: New environmental container instance
-        """
+        """Factory method to create an environmental container."""
+        opts = options or {}
         return cls(
             container_id=container_id,
             source_type=ContainerSourceType.ENVIRONMENT,
             room_id=room_id,
-            capacity_slots=capacity_slots,
-            lock_state=lock_state,
-            weight_limit=weight_limit,
-            allowed_roles=allowed_roles or [],
-            items=items or [],
-            metadata=metadata or {},
+            capacity_slots=opts.get("capacity_slots", 8),
+            lock_state=opts.get("lock_state", ContainerLockState.UNLOCKED),
+            weight_limit=opts.get("weight_limit"),
+            allowed_roles=opts.get("allowed_roles") or [],
+            items=opts.get("items") or [],
+            metadata=opts.get("metadata") or {},
         )
 
     @classmethod
-    def create_equipment(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Container creation requires many parameters to capture complete container state
+    def create_equipment(
         cls,
         container_id: UUID,
         entity_id: UUID,
-        capacity_slots: int = 10,
-        lock_state: ContainerLockState = ContainerLockState.UNLOCKED,
-        weight_limit: int | None = None,
-        allowed_roles: list[str] | None = None,
-        items: list[InventoryStack] | None = None,
-        metadata: dict[str, Any] | None = None,
+        options: ContainerFactoryOptions | None = None,
     ) -> ContainerComponent:
-        """
-        Factory method to create a wearable equipment container.
-
-        Args:
-            container_id: Unique container identifier
-            entity_id: Player/NPC UUID who owns the equipment
-            capacity_slots: Maximum number of inventory slots (default: 10)
-            lock_state: Lock state (default: unlocked)
-            weight_limit: Optional maximum weight capacity
-            allowed_roles: List of role names allowed to access container
-            items: Initial items in container
-            metadata: Optional metadata dictionary
-
-        Returns:
-            ContainerComponent: New equipment container instance
-        """
+        """Factory method to create a wearable equipment container."""
+        opts = options or {}
         return cls(
             container_id=container_id,
             source_type=ContainerSourceType.EQUIPMENT,
             entity_id=entity_id,
-            capacity_slots=capacity_slots,
-            lock_state=lock_state,
-            weight_limit=weight_limit,
-            allowed_roles=allowed_roles or [],
-            items=items or [],
-            metadata=metadata or {},
+            capacity_slots=opts.get("capacity_slots", 10),
+            lock_state=opts.get("lock_state", ContainerLockState.UNLOCKED),
+            weight_limit=opts.get("weight_limit"),
+            allowed_roles=opts.get("allowed_roles") or [],
+            items=opts.get("items") or [],
+            metadata=opts.get("metadata") or {},
         )
 
     @classmethod
-    def create_corpse(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Container creation requires many parameters to capture complete container state
+    def create_corpse(
         cls,
         container_id: UUID,
         owner_id: UUID,
         room_id: str,
         decay_at: datetime,
-        capacity_slots: int = 20,
-        lock_state: ContainerLockState = ContainerLockState.UNLOCKED,
-        weight_limit: int | None = None,
-        allowed_roles: list[str] | None = None,
-        items: list[InventoryStack] | None = None,
-        metadata: dict[str, Any] | None = None,
+        options: ContainerFactoryOptions | None = None,
     ) -> ContainerComponent:
-        """
-        Factory method to create a corpse container.
-
-        Args:
-            container_id: Unique container identifier
-            owner_id: UUID of player/NPC who owned the corpse
-            room_id: Room identifier where corpse is located
-            decay_at: Timestamp when corpse should decay
-            capacity_slots: Maximum number of inventory slots (default: 20)
-            lock_state: Lock state (default: unlocked)
-            weight_limit: Optional maximum weight capacity
-            allowed_roles: List of role names allowed to access container
-            items: Initial items in container (loot from corpse)
-            metadata: Optional metadata dictionary
-
-        Returns:
-            ContainerComponent: New corpse container instance
-        """
+        """Factory method to create a corpse container."""
+        opts = options or {}
         return cls(
             container_id=container_id,
             source_type=ContainerSourceType.CORPSE,
             owner_id=owner_id,
             room_id=room_id,
             decay_at=decay_at,
-            capacity_slots=capacity_slots,
-            lock_state=lock_state,
-            weight_limit=weight_limit,
-            allowed_roles=allowed_roles or [],
-            items=items or [],
-            metadata=metadata or {},
+            capacity_slots=opts.get("capacity_slots", 20),
+            lock_state=opts.get("lock_state", ContainerLockState.UNLOCKED),
+            weight_limit=opts.get("weight_limit"),
+            allowed_roles=opts.get("allowed_roles") or [],
+            items=opts.get("items") or [],
+            metadata=opts.get("metadata") or {},
         )
 
     def to_dict(self) -> dict[str, Any]:

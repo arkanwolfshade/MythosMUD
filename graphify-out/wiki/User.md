@@ -1,135 +1,69 @@
 # User
 
-> God node · 325 connections · `server/models/user.py`
+> 187 nodes
 
-**Community:** [player requests schemas](player_requests_schemas.md)
+## Key Concepts
 
-## Connections by Relation
+- **User** (314 connections) — `server/models/user.py`
+- **endpoints.py** (61 connections) — `server/auth/endpoints.py`
+- **login_user()** (34 connections) — `server/auth/endpoints.py`
+- **register_user()** (32 connections) — `server/auth/endpoints.py`
+- **UserCreate** (26 connections) — `server/auth/endpoints.py`
+- **LoginRequest** (23 connections) — `server/auth/endpoints.py`
+- **test_endpoints_register.py** (22 connections) — `server/tests/unit/auth/test_endpoints_register.py`
+- **test_endpoints_login.py** (19 connections) — `server/tests/unit/auth/test_endpoints_login.py`
+- **list_invites()** (14 connections) — `server/auth/endpoints.py`
+- **test_endpoints_invites.py** (14 connections) — `server/tests/unit/auth/test_endpoints_invites.py`
+- **asyncio** (14 connections)
+- **InviteRead** (12 connections) — `server/schemas/auth/invite.py`
+- **create_invite()** (12 connections) — `server/auth/endpoints.py`
+- **asyncio** (11 connections)
+- **test_user.py** (11 connections) — `server/tests/unit/models/test_user.py`
+- **test_endpoints_login_profession.py** (10 connections) — `server/tests/unit/auth/test_endpoints_login_profession.py`
+- **get_current_user_info()** (9 connections) — `server/auth/endpoints.py`
+- **_check_shutdown_status()** (8 connections) — `server/auth/endpoints.py`
+- **_generate_jwt_token()** (8 connections) — `server/auth/endpoints.py`
+- **Request** (8 connections)
+- **LoginResponse** (7 connections) — `server/auth/endpoints.py`
+- **_authenticate_user_credentials()** (7 connections) — `server/auth/endpoints.py`
+- **_find_user_by_username()** (7 connections) — `server/auth/endpoints.py`
+- **_get_user_characters()** (7 connections) — `server/auth/endpoints.py`
+- **_handle_integrity_error()** (7 connections) — `server/auth/endpoints.py`
+- *... and 162 more nodes in this community*
 
-### calls
-- test_lucidity_adjustment_round_trip() `EXTRACTED`
-- test_add_player_effect_generates_id() `EXTRACTED`
-- test_login_user_authenticate_raises_exception() `EXTRACTED`
-- test_login_user_authenticate_returns_none() `EXTRACTED`
-- test_login_user_generic_exception() `EXTRACTED`
-- test_login_user_id_mismatch() `EXTRACTED`
-- test_login_user_invalid_credentials() `EXTRACTED`
-- test_login_user_no_email() `EXTRACTED`
-- test_register_user_duplicate_username() `EXTRACTED`
-- test_login_user_player_no_profession_id() `EXTRACTED`
-- test_login_user_profession_lookup_error() `EXTRACTED`
-- test_login_user_profession_lookup_none() `EXTRACTED`
-- test_login_user_profession_lookup_success() `EXTRACTED`
-- test_login_user_http_exception_re_raised() `EXTRACTED`
-- test_login_user_success() `EXTRACTED`
-- test_login_user_with_characters() `EXTRACTED`
-- test_register_user_success() `EXTRACTED`
-- quest_seed_data() `EXTRACTED`
-- test_get_current_superuser_failure() `EXTRACTED`
-- test_get_current_superuser_with_none_user() `EXTRACTED`
+## Relationships
 
-### contains
-- user.py `EXTRACTED`
+- [get_logger](get_logger.md) (39 shared connections)
+- [Invite](Invite.md) (36 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (32 shared connections)
+- [test_users.py](test_users.py.md) (26 shared connections)
+- [LootAllRequest](LootAllRequest.md) (24 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (22 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (18 shared connections)
+- [handle_transfer_items_exceptions](handle_transfer_items_exceptions.md) (18 shared connections)
+- [get_admin_auth_service](get_admin_auth_service.md) (17 shared connections)
+- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (12 shared connections)
+- [test_maps.py](test_maps.py.md) (11 shared connections)
+- [Player](Player.md) (8 shared connections)
 
-### imports
-- player.py `EXTRACTED`
-- async_persistence.py `EXTRACTED`
-- __init__.py `EXTRACTED`
-- players.py `EXTRACTED`
-- container_endpoints_basic.py `EXTRACTED`
-- endpoints.py `EXTRACTED`
-- test_admin_auth_service.py `EXTRACTED`
-- maps.py `EXTRACTED`
-- test_users.py `EXTRACTED`
-- test_maps.py `EXTRACTED`
-- users.py `EXTRACTED`
-- character_creation.py `EXTRACTED`
-- container_helpers.py `EXTRACTED`
-- test_container_helpers.py `EXTRACTED`
-- test_async_persistence_core.py `EXTRACTED`
-- test_metrics_endpoints.py `EXTRACTED`
-- container_endpoints_loot.py `EXTRACTED`
-- rooms.py `EXTRACTED`
-- test_npc_definitions_api.py `EXTRACTED`
-- npc_definitions_api.py `EXTRACTED`
+## Source Files
 
-### indirect_call
-- _admin_user() `INFERRED`
-- generate_unique_bogus_email() `INFERRED`
-- _check_username_exists() `INFERRED`
-- test_apply_exploration_filter_if_needed_calls_for_normal_user() `INFERRED`
-- test_apply_exploration_filter_if_needed_skips_for_superuser() `INFERRED`
-- test_get_ascii_minimap_success() `INFERRED`
-- test_db_connectivity_create_and_read_user() `INFERRED`
-- test_get_current_room_id_none_when_persistence_errors() `INFERRED`
-- test_get_player_and_exploration_returns_none_when_no_player() `INFERRED`
-- test_set_map_origin_success() `INFERRED`
-- test_get_all_professions_requires_auth() `INFERRED`
-- mock_user_and_player() `INFERRED`
-- test_get_current_room_id_from_player() `INFERRED`
-- test_get_current_room_id_from_query_param() `INFERRED`
-- test_get_minimap_player_and_room_id_success() `INFERRED`
-- test_recalculate_coordinates_admin() `INFERRED`
-- _plain_user() `INFERRED`
-- mock_user() `INFERRED`
-- mock_user() `INFERRED`
-- mock_user() `INFERRED`
+- `server/auth/endpoints.py`
+- `server/auth/users.py`
+- `server/models/user.py`
+- `server/schemas/auth/invite.py`
+- `server/tests/integration/test_db_connectivity.py`
+- `server/tests/unit/auth/test_endpoints_invites.py`
+- `server/tests/unit/auth/test_endpoints_login.py`
+- `server/tests/unit/auth/test_endpoints_login_profession.py`
+- `server/tests/unit/auth/test_endpoints_register.py`
+- `server/tests/unit/models/test_user.py`
 
-### inherits
-- Base `EXTRACTED`
-- SQLAlchemyBaseUserTableUUID `EXTRACTED`
+## Audit Trail
 
-### method
-- .get_display_name() `EXTRACTED`
-- .is_authenticated() `EXTRACTED`
-- .__repr__() `EXTRACTED`
-
-### rationale_for
-- User model for FastAPI Users v14+ with SQLAlchemy 2.0 typing.      Extends SQLAl `EXTRACTED`
-
-### references
-- loot_all_items() `EXTRACTED`
-- validate_admin_permission() `EXTRACTED`
-- handle_transfer_items_exceptions() `EXTRACTED`
-- transfer_items() `EXTRACTED`
-- open_container() `EXTRACTED`
-- handle_open_container_exceptions() `EXTRACTED`
-- handle_loot_all_exceptions() `EXTRACTED`
-- roll_character_stats() `EXTRACTED`
-- close_container() `EXTRACTED`
-- handle_close_container_exceptions() `EXTRACTED`
-- get_player_id_from_user() `EXTRACTED`
-- handle_container_service_error() `EXTRACTED`
-- create_character_with_stats() `EXTRACTED`
-- create_error_context() `EXTRACTED`
-- get_container_and_player_for_loot_all() `EXTRACTED`
-- _prepare_ascii_map_context() `EXTRACTED`
-- get_player_quests() `EXTRACTED`
-- _update_npc_definition_internal() `EXTRACTED`
-- _ensure_coordinates_generated() `EXTRACTED`
-- get_ascii_minimap() `EXTRACTED`
-
-### uses
-- [Player](Player.md) `INFERRED`
-- Base `INFERRED`
-- Invite `INFERRED`
-- PlayerChannelPreferences `INFERRED`
-- PlayerInventory `INFERRED`
-- PlayerExploration `INFERRED`
-- TestTransferAllItemsFromContainer `INFERRED`
-- TestHelperFunctions `INFERRED`
-- TestOpenContainer `INFERRED`
-- TestTransferItems `INFERRED`
-- TestRollCharacterStats `INFERRED`
-- TestHandleTransferItemsExceptions `INFERRED`
-- TestHandleContainerServiceErrorEdgeCases `INFERRED`
-- TestGetContainerAndPlayerForLootAll `INFERRED`
-- TestHandleContainerServiceError `INFERRED`
-- TestCloseContainer `INFERRED`
-- TestGetMythosTime `INFERRED`
-- TestHandleLootAllExceptions `INFERRED`
-- TestHandleOpenContainerExceptions `INFERRED`
-- TestCreateErrorContext `INFERRED`
+- EXTRACTED: 671 (91%)
+- INFERRED: 64 (9%)
+- AMBIGUOUS: 0 (0%)
 
 ---
 

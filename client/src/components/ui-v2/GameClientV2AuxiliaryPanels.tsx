@@ -2,7 +2,7 @@ import React from 'react';
 
 import type { HealthStatus } from '../../types/health';
 import type { LucidityStatus } from '../../types/lucidity';
-import { MinimapPanelSection } from './GameClientV2Minimap';
+import { MinimapPanelSection } from './GameClientV2MinimapSection';
 import { PanelContainer } from './PanelSystem/PanelContainer';
 import type { PanelManagerContextValue } from './PanelSystem/PanelManagerContext';
 import { CharacterInfoPanel } from './panels/CharacterInfoPanel';

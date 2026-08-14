@@ -189,26 +189,7 @@ async def validate_subject(
     current_user: "User" = Depends(require_admin_user),
     subject_manager: NATSSubjectManager = Depends(get_subject_manager_dependency),
 ) -> ValidateSubjectResponse:
-    """
-    Validate a NATS subject against registered patterns.
-
-    This endpoint allows administrators to test subject validation
-    and verify subject formatting before use.
-
-    Args:
-        request: Subject validation request
-        current_user: Current authenticated admin user
-        subject_manager: Subject manager dependency
-
-    Returns:
-        Validation result with timing information
-
-    Raises:
-        LoggedHTTPException: If validation fails or errors occur
-
-    AI: Admin-only endpoint for subject validation testing.
-    AI: Records validation time for performance monitoring.
-    """
+    """Validate a NATS subject against registered patterns."""
     try:
         start_time = time.perf_counter()
 
@@ -295,52 +276,38 @@ async def get_patterns(
 
 
 @router.post("/patterns", response_model=RegisterPatternResponse)
+async def _register_pattern_try(
+    request: RegisterPatternRequest,
+    current_user: "User" = Depends(require_admin_user),
+    subject_manager: NATSSubjectManager = Depends(get_subject_manager_dependency),
+) -> RegisterPatternResponse:
+    """Register a new subject pattern."""
+    subject_manager.register_pattern(
+        name=request.name,
+        pattern=request.pattern,
+        required_params=request.required_params,
+        description=request.description,
+    )
+
+    logger.info(
+        "Pattern registered",
+        pattern_name=request.name,
+        pattern=request.pattern,
+        required_params=request.required_params,
+        user_id=current_user.id,
+    )
+
+    return RegisterPatternResponse(success=True, pattern_name=request.name, message="Pattern registered successfully")
+
+
 async def register_pattern(
     request: RegisterPatternRequest,
     current_user: "User" = Depends(require_admin_user),
     subject_manager: NATSSubjectManager = Depends(get_subject_manager_dependency),
 ) -> RegisterPatternResponse:
-    """
-    Register a new subject pattern.
-
-    This endpoint allows administrators to dynamically register
-    new subject patterns without code changes.
-
-    Args:
-        request: Pattern registration request
-        current_user: Current authenticated admin user
-        subject_manager: Subject manager dependency
-
-    Returns:
-        Registration success confirmation
-
-    Raises:
-        LoggedHTTPException: If registration fails or pattern is invalid
-
-    AI: Admin-only endpoint for dynamic pattern registration.
-    AI: Validates pattern format before registration.
-    """
+    """Register a new subject pattern."""
     try:
-        # Register the pattern
-        subject_manager.register_pattern(
-            name=request.name,
-            pattern=request.pattern,
-            required_params=request.required_params,
-            description=request.description,
-        )
-
-        logger.info(
-            "Pattern registered",
-            pattern_name=request.name,
-            pattern=request.pattern,
-            required_params=request.required_params,
-            user_id=current_user.id,
-        )
-
-        return RegisterPatternResponse(
-            success=True, pattern_name=request.name, message="Pattern registered successfully"
-        )
-
+        return await _register_pattern_try(request, current_user, subject_manager)
     except (InvalidPatternError, PatternNotFoundError) as e:
         logger.warning(
             "Pattern registration rejected",

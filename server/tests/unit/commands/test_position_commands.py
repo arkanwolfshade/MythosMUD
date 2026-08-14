@@ -64,6 +64,38 @@ async def test_handle_stand_command():
 
 
 @pytest.mark.asyncio
+async def test_handle_stand_already_standing_still_sends_player_update():
+    """Already-standing must still sync posture so UI Sitting after cancelled /rest can clear."""
+    mock_request = MagicMock()
+    mock_request.app = MagicMock()
+    mock_request.app.state = MagicMock()
+    mock_request.app.state.container = None
+    mock_request.app.state.persistence = MagicMock()
+    mock_request.app.state.connection_manager = MagicMock()
+
+    with patch("server.commands.position_commands.PlayerPositionService") as mock_svc_cls:
+        mock_svc = MagicMock()
+        mock_svc.change_position = AsyncMock(
+            return_value={
+                "success": False,
+                "position": "standing",
+                "previous_position": "standing",
+                "message": "You are already standing.",
+                "player_id": uuid.uuid4(),
+                "room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
+                "player_display_name": "TestPlayer",
+            }
+        )
+        mock_svc_cls.return_value = mock_svc
+
+        result = await handle_stand_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
+
+    assert result["player_update"] == {"position": "standing", "previous_position": "standing"}
+    assert result["changed"] is False
+    assert "already standing" in result["result"].lower()
+
+
+@pytest.mark.asyncio
 async def test_handle_lie_command():
     """Test handle_lie_command() changes player position to lying."""
     mock_request = MagicMock()

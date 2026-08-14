@@ -164,9 +164,11 @@ async def start_login_grace_period(
                 category="entry_ward",
                 duration=duration_ticks,
                 applied_at_tick=current_tick,
-                intensity=1,
-                source="game_entry",
-                visibility_level="visible",
+                options={
+                    "intensity": 1,
+                    "source": "game_entry",
+                    "visibility_level": "visible",
+                },
             )
             # In-memory state so is_player_in_login_grace_period / get_login_grace_period_remaining work
             manager.login_grace_period_players[player_id] = True  # Sentinel: effect-based, no asyncio task

@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { ChatMessage } from '../stores/gameStore.js';
 import { useGameTerminal } from './useGameTerminal.js';
 
 // Mock store state
@@ -78,11 +79,11 @@ let mockGameState = {
       text: 'Welcome to the test room',
       timestamp: '2024-01-01T12:00:00Z',
       isHtml: false,
-      type: 'system' as 'say' | 'tell' | 'shout' | 'whisper' | 'system' | 'combat' | 'emote',
-      channel: 'game' as 'local' | 'global' | 'party' | 'tell' | 'system' | 'game',
+      type: 'system',
+      channel: 'game',
       sender: 'System',
     },
-  ],
+  ] as ChatMessage[],
   gameLog: [] as Array<{
     text: string;
     timestamp: string;
@@ -711,6 +712,29 @@ describe('useGameTerminal', () => {
           text: 'Hello everyone',
           channel: 'local',
           sender: 'TestCharacter',
+        })
+      );
+    });
+
+    it('should map unknown chat channels to say', () => {
+      const mockAddChatMessage = vi.fn();
+      mockGameState = {
+        ...mockGameState,
+        player: null,
+        room: null,
+        chatMessages: [],
+        gameLog: [],
+        addChatMessage: mockAddChatMessage,
+      };
+
+      const { result } = renderHook(() => useGameTerminal());
+
+      result.current.onSendChatMessage('Unmapped', 'not-a-channel');
+
+      expect(mockAddChatMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'say',
+          channel: 'not-a-channel',
         })
       );
     });

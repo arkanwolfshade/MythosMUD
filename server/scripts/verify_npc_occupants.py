@@ -194,7 +194,7 @@ async def verify_npcs_in_lifecycle_manager() -> None:
 
         _print_summary(npc_count, test_room_id, found_npcs, npcs_by_room)
 
-    except Exception as e:
+    except (AttributeError, KeyError, TypeError, RuntimeError, OSError) as e:
         print(f"\n❌ ERROR during verification: {e}")
         import traceback
 

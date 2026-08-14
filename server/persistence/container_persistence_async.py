@@ -95,10 +95,12 @@ async def _populate_container_items_async(
                 session=session,
                 item_instance_id=str(item_instance_id),
                 prototype_id=str(prototype_id),
-                owner_type="container",
-                owner_id=str(container_id),
-                quantity=item.get("quantity", 1),
-                metadata_payload=item.get("metadata", {}),
+                options={
+                    "owner_type": "container",
+                    "owner_id": str(container_id),
+                    "quantity": item.get("quantity", 1),
+                    "metadata_payload": item.get("metadata", {}),
+                },
             )
         except (DatabaseError, ValidationError) as e:
             logger.warning(
@@ -303,6 +305,30 @@ async def create_container_async(
         )
 
 
+async def _container_data_from_row(session: AsyncSession, row: Any, container_id: UUID) -> ContainerData:
+    items_json = await fetch_container_items_async(session, container_id)
+    return ContainerData(
+        ContainerDataCore(
+            container_instance_id=row[0],
+            source_type=row[1],
+            owner_id=row[2],
+            room_id=row[3],
+            entity_id=row[4],
+            lock_state=row[5],
+            capacity_slots=row[6],
+        ),
+        ContainerDataExtras(
+            weight_limit=row[7],
+            decay_at=row[8],
+            allowed_roles=_parse_jsonb(row[9], []),
+            items_json=items_json,
+            metadata_json=_parse_jsonb(row[10], {}),
+            created_at=row[11],
+            updated_at=row[12],
+        ),
+    )
+
+
 async def get_container_async(session: AsyncSession, container_id: UUID) -> ContainerData | None:
     """Get a container by ID (async) via get_container procedure."""
     container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
@@ -333,27 +359,7 @@ async def get_container_async(session: AsyncSession, container_id: UUID) -> Cont
         row = result.fetchone()
         if not row:
             return None
-        items_json = await fetch_container_items_async(session, container_id)
-        return ContainerData(
-            ContainerDataCore(
-                container_instance_id=row[0],
-                source_type=row[1],
-                owner_id=row[2],
-                room_id=row[3],
-                entity_id=row[4],
-                lock_state=row[5],
-                capacity_slots=row[6],
-            ),
-            ContainerDataExtras(
-                weight_limit=row[7],
-                decay_at=row[8],
-                allowed_roles=_parse_jsonb(row[9], []),
-                items_json=items_json,
-                metadata_json=_parse_jsonb(row[10], {}),
-                created_at=row[11],
-                updated_at=row[12],
-            ),
-        )
+        return await _container_data_from_row(session, row, container_id)
     except SQLAlchemyError as e:
         log_and_raise(
             DatabaseError,

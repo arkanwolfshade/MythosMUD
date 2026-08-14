@@ -32,18 +32,69 @@ class PrototypeRegistry:
         self._invalid_entries = invalid_entries
 
     @classmethod
+    def _record_validation_failure(
+        cls,
+        json_file: Path,
+        dashboard: Any,
+        payload: dict[str, Any],
+        exc: ValidationError,
+        invalid_entries: list[dict[str, Any]],
+    ) -> None:
+        proto_id = payload.get("prototype_id") or json_file.stem
+        logger.warning(
+            "invalid prototype payload",
+            prototype_id=proto_id,
+            file_path=str(json_file),
+            errors=exc.errors(),
+        )
+        invalid_entries.append({"prototype_id": proto_id, "file_path": str(json_file), "errors": exc.errors()})
+        dashboard.record_registry_failure(
+            source="prototype_registry",
+            error="validation_error",
+            metadata={"prototype_id": proto_id, "file_path": str(json_file)},
+        )
+
+    @classmethod
+    def _load_one_prototype(
+        cls,
+        json_file: Path,
+        dashboard: Any,
+        prototypes: dict[str, ItemPrototypeModel],
+        invalid_entries: list[dict[str, Any]],
+    ) -> None:
+        try:
+            payload = json.loads(json_file.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            logger.warning(
+                "invalid prototype payload",
+                prototype_id=json_file.stem,
+                file_path=str(json_file),
+                error=str(exc),
+            )
+            dashboard.record_registry_failure(
+                source="prototype_registry",
+                error="json_decode_error",
+                metadata={"file_path": str(json_file), "error": str(exc)},
+            )
+            return
+        try:
+            prototype = ItemPrototypeModel.model_validate(payload)
+        except ValidationError as exc:
+            cls._record_validation_failure(json_file, dashboard, payload, exc, invalid_entries)
+            return
+        effect_components = list(getattr(prototype, "effect_components", []))
+        if "component.durability" in effect_components and getattr(prototype, "durability", None) is None:
+            dashboard.record_durability_anomaly(
+                prototype_id=prototype.prototype_id,
+                durability=None,
+                reason="missing_durability_value",
+                metadata={"file_path": str(json_file)},
+            )
+        prototypes[prototype.prototype_id] = prototype
+
+    @classmethod
     def load_from_path(cls, directory: Path | str) -> PrototypeRegistry:
-        """Load item prototypes from JSON files in a directory.
-
-        Args:
-            directory: Path to the directory containing prototype JSON files
-
-        Returns:
-            PrototypeRegistry: A registry containing loaded prototypes
-
-        Raises:
-            PrototypeRegistryError: If the directory does not exist
-        """
+        """Load prototypes from a directory of JSON files."""
         directory_path = Path(directory)
         dashboard = get_monitoring_dashboard()
         if not directory_path.exists():
@@ -53,64 +104,10 @@ class PrototypeRegistry:
                 metadata={"path": str(directory_path)},
             )
             raise PrototypeRegistryError(f"Prototype directory not found: {directory_path}")
-
         prototypes: dict[str, ItemPrototypeModel] = {}
         invalid_entries: list[dict[str, Any]] = []
-
         for json_file in sorted(directory_path.glob("*.json")):
-            try:
-                payload = json.loads(json_file.read_text(encoding="utf-8"))
-            except json.JSONDecodeError as exc:
-                logger.warning(
-                    "invalid prototype payload",
-                    prototype_id=json_file.stem,
-                    file_path=str(json_file),
-                    error=str(exc),
-                )
-                dashboard.record_registry_failure(
-                    source="prototype_registry",
-                    error="json_decode_error",
-                    metadata={"file_path": str(json_file), "error": str(exc)},
-                )
-                continue
-
-            try:
-                prototype = ItemPrototypeModel.model_validate(payload)
-            except ValidationError as exc:
-                logger.warning(
-                    "invalid prototype payload",
-                    prototype_id=payload.get("prototype_id") or json_file.stem,
-                    file_path=str(json_file),
-                    errors=exc.errors(),
-                )
-                invalid_entries.append(
-                    {
-                        "prototype_id": payload.get("prototype_id") or json_file.stem,
-                        "file_path": str(json_file),
-                        "errors": exc.errors(),
-                    }
-                )
-                dashboard.record_registry_failure(
-                    source="prototype_registry",
-                    error="validation_error",
-                    metadata={
-                        "prototype_id": payload.get("prototype_id") or json_file.stem,
-                        "file_path": str(json_file),
-                    },
-                )
-                continue
-
-            effect_components = list(getattr(prototype, "effect_components", []))
-            if "component.durability" in effect_components and getattr(prototype, "durability", None) is None:
-                dashboard.record_durability_anomaly(
-                    prototype_id=prototype.prototype_id,
-                    durability=None,
-                    reason="missing_durability_value",
-                    metadata={"file_path": str(json_file)},
-                )
-
-            prototypes[prototype.prototype_id] = prototype
-
+            cls._load_one_prototype(json_file, dashboard, prototypes, invalid_entries)
         return cls(prototypes, invalid_entries)
 
     def get(self, prototype_id: str) -> ItemPrototypeModel:

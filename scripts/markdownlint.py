@@ -75,6 +75,8 @@ cmd_args = [
     "--ignore",
     "**/docs/archive/**",
     "--ignore",
+    "**/data/MythosMUD-Obsidian/**",
+    "--ignore",
     "**/test-results/**",
     "--ignore",
     "**/playwright-report/**",

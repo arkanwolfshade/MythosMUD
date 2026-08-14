@@ -190,7 +190,7 @@ class CombatBundle:
         """Initialize NATS-dependent combat service and start NATS message handler."""
         self._validate_nats_combat_prerequisites(container)
         logger.debug("Initializing NATS and combat service...")
-        is_testing = container.config.logging.environment in ("unit_test", "e2e_test")
+        is_testing = container.config.logging.environment == "unit_test"
 
         if container.nats_service is not None and container.nats_service.is_connected():
             logger.info("NATS service available from container")

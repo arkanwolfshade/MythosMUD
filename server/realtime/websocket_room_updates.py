@@ -10,9 +10,8 @@ from typing import TYPE_CHECKING, Any
 from ..services.npc_instance_service import get_npc_instance_service
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.room_renderer import build_room_drop_summary, clone_room_drops
-from .disconnect_grace_period import is_player_in_grace_period
 from .envelope import build_event
-from .login_grace_period import is_player_in_login_grace_period
+from .occupant_display import format_occupant_display_name
 from .websocket_helpers import convert_uuids_to_strings, get_npc_name_from_instance
 
 if TYPE_CHECKING:
@@ -20,32 +19,6 @@ if TYPE_CHECKING:
     from .connection_manager import ConnectionManager
 
 logger = get_logger(__name__)
-
-
-def _parse_occupant_player_id(player_id_raw: object) -> uuid.UUID:
-    """Parse occupant player_id; raises TypeError/ValueError on bad input."""
-    if isinstance(player_id_raw, uuid.UUID):
-        return player_id_raw
-    if isinstance(player_id_raw, str):
-        return uuid.UUID(player_id_raw)
-    raise TypeError("player_id must be UUID or str")
-
-
-def _decorate_occupant_name(
-    name: str, player_id: uuid.UUID, connection_manager: "ConnectionManager | Any"
-) -> str | None:
-    """
-    Apply grace-period labels, or None if the player should be hidden from the room list.
-    """
-    if not connection_manager.has_websocket_connection(player_id) and not is_player_in_grace_period(
-        player_id, connection_manager
-    ):
-        return None
-    if is_player_in_grace_period(player_id, connection_manager) and "(linkdead)" not in name:
-        name = f"{name} (linkdead)"
-    if is_player_in_login_grace_period(player_id, connection_manager) and "(warded)" not in name:
-        name = f"{name} (warded)"
-    return name
 
 
 async def get_player_occupants(connection_manager: "ConnectionManager | Any", room_id: str) -> list[str]:
@@ -67,15 +40,11 @@ async def get_player_occupants(connection_manager: "ConnectionManager | Any", ro
             name = name_obj
             player_id_raw = occ.get("player_id")
             if player_id_raw is not None and connection_manager:
-                try:
-                    player_id = _parse_occupant_player_id(player_id_raw)
-                    decorated = _decorate_occupant_name(name, player_id, connection_manager)
-                    if decorated is None:
-                        continue
-                    name = decorated
-                except (ValueError, AttributeError, ImportError, TypeError):
-                    # If we can't check grace period, use name as-is
-                    pass
+                name = format_occupant_display_name(
+                    name,
+                    player_id_raw if isinstance(player_id_raw, (uuid.UUID, str)) else None,
+                    connection_manager,
+                )
             occupant_names.append(name)
     except (AttributeError, KeyError, TypeError, ValueError) as e:
         logger.error("Error transforming room occupants", room_id=room_id, error=str(e))

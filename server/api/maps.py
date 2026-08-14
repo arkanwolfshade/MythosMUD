@@ -7,6 +7,7 @@ This module handles ASCII map rendering and coordinate management endpoints.
 # pylint: disable=too-many-lines  # Reason: Map API requires extensive endpoint handlers for coordinate management, map rendering, and room visualization
 
 import uuid
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, NoReturn
 
 from fastapi import APIRouter, Depends, Query, Request
@@ -38,6 +39,21 @@ from .map_minimap import generate_minimap_html
 
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
+
+
+@dataclass(frozen=True)
+class _CoordGenCtx:
+    """Same-module params for coordinate generation + exploration filter."""
+
+    session: AsyncSession
+    zone_ctx: MapZoneContext
+    rooms: list[dict[str, Any]]
+    player: Any
+    player_id: uuid.UUID | None
+    exploration_service: ExplorationService
+    current_user: User | None
+    room_service: RoomService
+
 
 logger = get_logger(__name__)
 
@@ -135,45 +151,19 @@ async def _apply_exploration_filter_if_needed(  # pylint: disable=too-many-argum
     return rooms
 
 
-async def _ensure_coordinates_generated(
-    session: AsyncSession,
-    zone_ctx: MapZoneContext,
-    rooms: list[dict[str, Any]],
-    player: Any,
-    player_id: uuid.UUID | None,
-    exploration_service: ExplorationService,
-    current_user: User | None,
-    room_service: RoomService,
-) -> list[dict[str, Any]]:
-    """
-    Generate coordinates if missing and reload rooms.
-
-    Returns updated rooms list with coordinates and exploration filtering applied.
-
-    Args:
-        session: Database session
-        zone_ctx: Plane, zone, and sub_zone for the map area
-        rooms: List of room dictionaries
-        player: Player object
-        player_id: Player UUID
-        exploration_service: Exploration service instance
-        current_user: Current user object
-        room_service: Room service instance
-
-    Returns:
-        Updated list of room dictionaries with coordinates
-    """
+async def _ensure_coordinates_generated(ctx: _CoordGenCtx) -> list[dict[str, Any]]:
+    """Generate coordinates if missing, reload rooms, apply exploration filter."""
+    rooms = ctx.rooms
+    zone_ctx = ctx.zone_ctx
     if _needs_coordinate_generation(rooms):
         logger.debug("Generating missing coordinates", room_count=len(rooms))
-        generator = CoordinateGenerator(session)
+        generator = CoordinateGenerator(ctx.session)
         await generator.generate_coordinates_for_zone(zone_ctx.plane, zone_ctx.zone, zone_ctx.sub_zone)
-        rooms = await load_rooms_with_coordinates(session, zone_ctx.plane, zone_ctx.zone, zone_ctx.sub_zone)
+        rooms = await load_rooms_with_coordinates(ctx.session, zone_ctx.plane, zone_ctx.zone, zone_ctx.sub_zone)
 
-    rooms = await _apply_exploration_filter_if_needed(
-        rooms, current_user, player, player_id, exploration_service, session, room_service
+    return await _apply_exploration_filter_if_needed(
+        rooms, ctx.current_user, ctx.player, ctx.player_id, ctx.exploration_service, ctx.session, ctx.room_service
     )
-
-    return rooms
 
 
 async def _prepare_ascii_map_context(
@@ -185,29 +175,17 @@ async def _prepare_ascii_map_context(
     exploration_service: ExplorationService,
     room_service: RoomService,
 ) -> tuple[list[dict[str, Any]], str | None]:
-    """
-    Prepare rooms and current_room_id for ASCII map rendering.
-    """
+    """Prepare rooms and current_room_id for ASCII map rendering."""
     current_room_id = await _get_current_room_id(request, current_user, persistence)
-
     rooms = await load_rooms_with_coordinates(session, zone_context.plane, zone_context.zone, zone_context.sub_zone)
-
     player, player_id, _ = await _get_player_and_exploration_service(current_user, persistence, exploration_service)
 
     if player and exploration_service and player_id:
         rooms = await _filter_explored_rooms(rooms, player_id, exploration_service, session, room_service)
 
     rooms = await _ensure_coordinates_generated(
-        session,
-        zone_context,
-        rooms,
-        player,
-        player_id,
-        exploration_service,
-        current_user,
-        room_service,
+        _CoordGenCtx(session, zone_context, rooms, player, player_id, exploration_service, current_user, room_service)
     )
-
     return rooms, current_room_id
 
 
@@ -247,6 +225,66 @@ async def _get_minimap_player_and_room_id(
     return player, current_room_id
 
 
+@dataclass(frozen=True)
+class _AsciiMapViewport:
+    x: int
+    y: int
+    width: int
+    height: int
+
+
+@dataclass(frozen=True)
+class _MapEndpointDeps:
+    """Shared DI bundle for ASCII map endpoints."""
+
+    request: Request
+    current_user: User | None
+    session: AsyncSession
+    persistence: "AsyncPersistenceLayer"
+    exploration_service: ExplorationService
+    room_service: RoomService
+
+
+async def _build_ascii_map_response(
+    deps: _MapEndpointDeps,
+    zone_context: MapZoneContext,
+    viewport: _AsciiMapViewport,
+) -> AsciiMapResponse:
+    """Render full ASCII map for zone context."""
+    logger.debug(
+        "ASCII map requested",
+        plane=zone_context.plane,
+        zone=zone_context.zone,
+        sub_zone=zone_context.sub_zone,
+        viewport_x=viewport.x,
+        viewport_y=viewport.y,
+    )
+    rooms, current_room_id = await _prepare_ascii_map_context(
+        deps.request,
+        zone_context,
+        deps.current_user,
+        deps.session,
+        deps.persistence,
+        deps.exploration_service,
+        deps.room_service,
+    )
+    html_map = AsciiMapRenderer().render_map(
+        rooms=rooms,
+        current_room_id=current_room_id,
+        viewport_width=viewport.width,
+        viewport_height=viewport.height,
+        viewport_x=viewport.x,
+        viewport_y=viewport.y,
+    )
+    return AsciiMapResponse(
+        map_html=html_map,
+        plane=zone_context.plane,
+        zone=zone_context.zone,
+        sub_zone=zone_context.sub_zone,
+        viewport={"x": viewport.x, "y": viewport.y, "width": viewport.width, "height": viewport.height},
+    )
+
+
 @map_router.get("/ascii", response_model=AsciiMapResponse)
 async def get_ascii_map(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: API endpoint requires many query parameters and intermediate variables for map generation
     request: Request,
@@ -263,52 +301,57 @@ async def get_ascii_map(  # pylint: disable=too-many-arguments,too-many-position
     exploration_service: ExplorationService = ExplorationServiceDep,
     room_service: RoomService = RoomServiceDep,
 ) -> AsciiMapResponse:
-    """
-    Get ASCII map for a zone/subzone.
-
-    Returns HTML string with ASCII map rendered. For authenticated players,
-    only shows explored rooms. Admins see all rooms.
-    """
+    """Get ASCII map for a zone/subzone (explored rooms for players; all for admins)."""
     try:
-        logger.debug(
-            "ASCII map requested",
-            plane=plane,
-            zone=zone,
-            sub_zone=sub_zone,
-            viewport_x=viewport_x,
-            viewport_y=viewport_y,
+        deps = _MapEndpointDeps(request, current_user, session, persistence, exploration_service, room_service)
+        return await _build_ascii_map_response(
+            deps,
+            MapZoneContext(plane, zone, sub_zone),
+            _AsciiMapViewport(viewport_x, viewport_y, viewport_width, viewport_height),
         )
-        zone_context = MapZoneContext(plane, zone, sub_zone)
-        rooms, current_room_id = await _prepare_ascii_map_context(
-            request=request,
-            zone_context=zone_context,
-            current_user=current_user,
-            session=session,
-            persistence=persistence,
-            exploration_service=exploration_service,
-            room_service=room_service,
-        )
-
-        renderer = AsciiMapRenderer()
-        html_map = renderer.render_map(
-            rooms=rooms,
-            current_room_id=current_room_id,
-            viewport_width=viewport_width,
-            viewport_height=viewport_height,
-            viewport_x=viewport_x,
-            viewport_y=viewport_y,
-        )
-
-        return AsciiMapResponse(
-            map_html=html_map,
-            plane=plane,
-            zone=zone,
-            sub_zone=sub_zone,
-            viewport={"x": viewport_x, "y": viewport_y, "width": viewport_width, "height": viewport_height},
-        )
-
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Map generation errors unpredictable, must handle gracefully
         _handle_ascii_map_error(e, plane, zone, sub_zone)
+
+
+async def _build_ascii_minimap_response(
+    deps: _MapEndpointDeps,
+    zone_context: MapZoneContext,
+    size: int,
+) -> AsciiMinimapResponse:
+    """Build HTML minimap centered on the current player."""
+    player, current_room_id = await _get_minimap_player_and_room_id(deps.request, deps.current_user, deps.persistence)
+    if deps.current_user is None:
+        raise LoggedHTTPException(status_code=401, detail="Authentication required")
+    player_id = uuid.UUID(str(player.player_id)) if player else None
+    html_map = await generate_minimap_html(
+        session=deps.session,
+        zone_context=zone_context,
+        size=size,
+        current_room_id=current_room_id,
+        is_admin=deps.current_user.is_admin or deps.current_user.is_superuser,
+        player_id=player_id,
+        exploration_service=deps.exploration_service,
+        room_service=deps.room_service,
+    )
+    return AsciiMinimapResponse(
+        map_html=html_map,
+        plane=zone_context.plane,
+        zone=zone_context.zone,
+        sub_zone=zone_context.sub_zone,
+        size=size,
+    )
+
+
+def _raise_minimap_error(e: Exception, plane: str, zone: str, sub_zone: str | None) -> NoReturn:
+    logger.error(
+        "Error generating ASCII minimap",
+        error=str(e),
+        plane=plane,
+        zone=zone,
+        sub_zone=sub_zone,
+        exc_info=True,
+    )
+    raise LoggedHTTPException(status_code=500, detail="Failed to generate ASCII minimap") from e
 
 
 @map_router.get("/ascii/minimap", response_model=AsciiMinimapResponse)
@@ -324,54 +367,59 @@ async def get_ascii_minimap(  # pylint: disable=too-many-arguments,too-many-posi
     exploration_service: ExplorationService = ExplorationServiceDep,
     room_service: RoomService = RoomServiceDep,
 ) -> AsciiMinimapResponse:
-    """
-    Get ASCII minimap centered on player.
-
-    Returns a small ASCII map showing area around the player's current room.
-    """
+    """Get ASCII minimap centered on player."""
     try:
-        player, current_room_id = await _get_minimap_player_and_room_id(request, current_user, persistence)
-        # Type narrowing and runtime guard; _get_minimap_player_and_room_id raises if unauthenticated
-        if current_user is None:
-            raise LoggedHTTPException(status_code=401, detail="Authentication required")
-
-        player_id = uuid.UUID(str(player.player_id)) if player else None
-        is_admin = current_user.is_admin or current_user.is_superuser
-        zone_context = MapZoneContext(plane=plane, zone=zone, sub_zone=sub_zone)
-        html_map = await generate_minimap_html(
-            session=session,
-            zone_context=zone_context,
-            size=size,
-            current_room_id=current_room_id,
-            is_admin=is_admin,
-            player_id=player_id,
-            exploration_service=exploration_service,
-            room_service=room_service,
+        deps = _MapEndpointDeps(request, current_user, session, persistence, exploration_service, room_service)
+        return await _build_ascii_minimap_response(
+            deps, MapZoneContext(plane=plane, zone=zone, sub_zone=sub_zone), size
         )
-
-        return AsciiMinimapResponse(
-            map_html=html_map,
-            plane=plane,
-            zone=zone,
-            sub_zone=sub_zone,
-            size=size,
-        )
-
     except LoggedHTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Minimap generation errors unpredictable, must handle gracefully
-        logger.error(
-            "Error generating ASCII minimap",
-            error=str(e),
-            plane=plane,
-            zone=zone,
-            sub_zone=sub_zone,
-            exc_info=True,
-        )
-        raise LoggedHTTPException(
-            status_code=500,
-            detail="Failed to generate ASCII minimap",
-        ) from e
+        _raise_minimap_error(e, plane, zone, sub_zone)
+
+
+async def _run_coordinate_recalculation(
+    request: Request,
+    plane: str,
+    zone: str,
+    sub_zone: str | None,
+    current_user: User | None,
+    session: AsyncSession,
+) -> CoordinateRecalculationResponse:
+    """Admin-only coordinate regenerate + validate for a zone."""
+    if not current_user:
+        raise LoggedHTTPException(status_code=401, detail="Authentication required")
+    auth_service = get_admin_auth_service()
+    auth_service.validate_permission(current_user, AdminAction.UPDATE_ROOM_POSITION, request)
+    logger.info(
+        "Coordinate recalculation requested",
+        user=auth_service.get_username(current_user),
+        plane=plane,
+        zone=zone,
+        sub_zone=sub_zone,
+    )
+    result = await CoordinateGenerator(session).generate_coordinates_for_zone(plane, zone, sub_zone)
+    validation_result = await CoordinateValidator(session).validate_coordinates(plane, zone, sub_zone)
+    return CoordinateRecalculationResponse(
+        message="Coordinates recalculated",
+        coordinates_generated=len(result["coordinates"]),
+        conflicts=validation_result["conflicts"],
+        conflict_count=validation_result["conflict_count"],
+        valid=validation_result["valid"],
+    )
+
+
+def _raise_recalc_error(e: Exception, plane: str, zone: str, sub_zone: str | None) -> NoReturn:
+    logger.error(
+        "Error recalculating coordinates",
+        error=str(e),
+        plane=plane,
+        zone=zone,
+        sub_zone=sub_zone,
+        exc_info=True,
+    )
+    raise LoggedHTTPException(status_code=500, detail="Failed to recalculate coordinates") from e
 
 
 @map_router.post("/coordinates/recalculate", response_model=CoordinateRecalculationResponse)
@@ -383,58 +431,13 @@ async def recalculate_coordinates(  # pylint: disable=too-many-arguments,too-man
     current_user: User | None = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
 ) -> CoordinateRecalculationResponse:
-    """
-    Trigger coordinate recalculation for a zone/subzone (admin only).
-
-    Returns list of conflicts if any.
-    """
+    """Trigger coordinate recalculation for a zone/subzone (admin only)."""
     try:
-        # Validate admin permissions
-        if not current_user:
-            raise LoggedHTTPException(status_code=401, detail="Authentication required")
-
-        auth_service = get_admin_auth_service()
-        auth_service.validate_permission(current_user, AdminAction.UPDATE_ROOM_POSITION, request)
-
-        logger.info(
-            "Coordinate recalculation requested",
-            user=auth_service.get_username(current_user),
-            plane=plane,
-            zone=zone,
-            sub_zone=sub_zone,
-        )
-
-        # Generate coordinates
-        generator = CoordinateGenerator(session)
-        result = await generator.generate_coordinates_for_zone(plane, zone, sub_zone)
-
-        # Validate for conflicts
-        validator = CoordinateValidator(session)
-        validation_result = await validator.validate_coordinates(plane, zone, sub_zone)
-
-        return CoordinateRecalculationResponse(
-            message="Coordinates recalculated",
-            coordinates_generated=len(result["coordinates"]),
-            conflicts=validation_result["conflicts"],
-            conflict_count=validation_result["conflict_count"],
-            valid=validation_result["valid"],
-        )
-
+        return await _run_coordinate_recalculation(request, plane, zone, sub_zone, current_user, session)
     except LoggedHTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Coordinate recalculation errors unpredictable, must handle gracefully
-        logger.error(
-            "Error recalculating coordinates",
-            error=str(e),
-            plane=plane,
-            zone=zone,
-            sub_zone=sub_zone,
-            exc_info=True,
-        )
-        raise LoggedHTTPException(
-            status_code=500,
-            detail="Failed to recalculate coordinates",
-        ) from e
+        _raise_recalc_error(e, plane, zone, sub_zone)
 
 
 class SetOriginRequest(BaseModel):
@@ -445,99 +448,75 @@ class SetOriginRequest(BaseModel):
     sub_zone: str | None = Field(None, description="Sub-zone name")
 
 
+async def _persist_map_origin(session: AsyncSession, room_id: str, origin_data: SetOriginRequest) -> None:
+    """Clear prior origin for zone pattern and set room as origin."""
+    zone_pattern = f"{origin_data.plane}_{origin_data.zone}"
+    if origin_data.sub_zone:
+        zone_pattern = f"{zone_pattern}_{origin_data.sub_zone}"
+    await session.execute(text("SELECT clear_room_map_origins(:pattern)"), {"pattern": zone_pattern})
+    result = await session.execute(text("SELECT set_room_map_origin(:room_id)"), {"room_id": room_id})
+    await session.commit()
+    if not bool(result.scalar()):
+        raise LoggedHTTPException(status_code=404, detail="Room not found", requested_room_id=room_id)
+
+
+async def _run_set_map_origin(
+    room_id: str,
+    origin_data: SetOriginRequest,
+    request: Request,
+    current_user: User | None,
+    session: AsyncSession,
+) -> MapOriginSetResponse:
+    """Admin set origin, recalculate coordinates, return conflicts."""
+    if not current_user:
+        raise LoggedHTTPException(status_code=401, detail="Authentication required", requested_room_id=room_id)
+    auth_service = get_admin_auth_service()
+    auth_service.validate_permission(current_user, AdminAction.UPDATE_ROOM_POSITION, request)
+    logger.info(
+        "Map origin set requested",
+        user=auth_service.get_username(current_user),
+        room_id=room_id,
+        plane=origin_data.plane,
+        zone=origin_data.zone,
+        sub_zone=origin_data.sub_zone,
+    )
+    await _persist_map_origin(session, room_id, origin_data)
+    coordinate_result = await CoordinateGenerator(session).generate_coordinates_for_zone(
+        origin_data.plane, origin_data.zone, origin_data.sub_zone
+    )
+    validation_result = await CoordinateValidator(session).validate_coordinates(
+        origin_data.plane, origin_data.zone, origin_data.sub_zone
+    )
+    logger.info(
+        "Map origin set successfully",
+        room_id=room_id,
+        coordinates_generated=len(coordinate_result["coordinates"]),
+        conflicts=validation_result["conflict_count"],
+    )
+    return MapOriginSetResponse(
+        room_id=room_id,
+        message="Map origin set and coordinates recalculated",
+        coordinates_generated=len(coordinate_result["coordinates"]),
+        conflicts=validation_result["conflicts"],
+        conflict_count=validation_result["conflict_count"],
+        valid=validation_result["valid"],
+    )
+
+
 @map_router.post("/rooms/{room_id}/origin", response_model=MapOriginSetResponse)
-async def set_map_origin(  # pylint: disable=too-many-locals  # Reason: Map origin setting requires many intermediate variables for validation and processing
+async def set_map_origin(
     room_id: str,
     origin_data: SetOriginRequest,
     request: Request,
     current_user: User | None = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
 ) -> MapOriginSetResponse:
-    """
-    Set a room as the map origin for its zone/subzone (admin only).
-
-    Triggers coordinate recalculation.
-    """
+    """Set a room as the map origin for its zone/subzone (admin only)."""
     try:
-        # Validate admin permissions
-        if not current_user:
-            raise LoggedHTTPException(
-                status_code=401,
-                detail="Authentication required",
-                requested_room_id=room_id,
-            )
-
-        auth_service = get_admin_auth_service()
-        auth_service.validate_permission(current_user, AdminAction.UPDATE_ROOM_POSITION, request)
-
-        logger.info(
-            "Map origin set requested",
-            user=auth_service.get_username(current_user),
-            room_id=room_id,
-            plane=origin_data.plane,
-            zone=origin_data.zone,
-            sub_zone=origin_data.sub_zone,
-        )
-
-        # Clear existing origin for this zone/subzone using procedure
-        zone_pattern = f"{origin_data.plane}_{origin_data.zone}"
-        if origin_data.sub_zone:
-            zone_pattern = f"{zone_pattern}_{origin_data.sub_zone}"
-
-        await session.execute(text("SELECT clear_room_map_origins(:pattern)"), {"pattern": zone_pattern})
-
-        # Set new origin using procedure
-        result = await session.execute(text("SELECT set_room_map_origin(:room_id)"), {"room_id": room_id})
-        is_updated = bool(result.scalar())
-        await session.commit()
-
-        if not is_updated:
-            raise LoggedHTTPException(
-                status_code=404,
-                detail="Room not found",
-                requested_room_id=room_id,
-            )
-
-        # Trigger coordinate recalculation
-        generator = CoordinateGenerator(session)
-        coordinate_result = await generator.generate_coordinates_for_zone(
-            origin_data.plane, origin_data.zone, origin_data.sub_zone
-        )
-
-        # Validate for conflicts
-        validator = CoordinateValidator(session)
-        validation_result = await validator.validate_coordinates(
-            origin_data.plane, origin_data.zone, origin_data.sub_zone
-        )
-
-        logger.info(
-            "Map origin set successfully",
-            room_id=room_id,
-            coordinates_generated=len(coordinate_result["coordinates"]),
-            conflicts=validation_result["conflict_count"],
-        )
-
-        return MapOriginSetResponse(
-            room_id=room_id,
-            message="Map origin set and coordinates recalculated",
-            coordinates_generated=len(coordinate_result["coordinates"]),
-            conflicts=validation_result["conflicts"],
-            conflict_count=validation_result["conflict_count"],
-            valid=validation_result["valid"],
-        )
-
+        return await _run_set_map_origin(room_id, origin_data, request, current_user, session)
     except LoggedHTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Map operation errors unpredictable, must rollback and handle
         await session.rollback()
-        logger.error(
-            "Error setting map origin",
-            error=str(e),
-            room_id=room_id,
-            exc_info=True,
-        )
-        raise LoggedHTTPException(
-            status_code=500,
-            detail="Failed to set map origin",
-            requested_room_id=room_id,
-        ) from e
+        logger.error("Error setting map origin", error=str(e), room_id=room_id, exc_info=True)
+        raise LoggedHTTPException(status_code=500, detail="Failed to set map origin", requested_room_id=room_id) from e

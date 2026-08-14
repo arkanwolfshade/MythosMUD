@@ -332,16 +332,16 @@ async def test_handle_container_look_success(sample_container, mock_prototype_re
     command_data: dict[str, Any] = {}
 
     result = await _handle_container_look(
-        "backpack",
-        "backpack",
-        None,
-        room,
-        player,
-        mock_persistence,
-        mock_prototype_registry,
-        command_data,
-        mock_request,
-        "TestPlayer",
+        target="backpack",
+        target_lower="backpack",
+        instance_number=None,
+        room=room,
+        player=player,
+        persistence=mock_persistence,
+        prototype_registry=mock_prototype_registry,
+        command_data=command_data,
+        request=mock_request,
+        player_name="TestPlayer",
     )
     assert result is not None
     assert "result" in result
@@ -360,16 +360,16 @@ async def test_handle_container_look_not_found(mock_prototype_registry):
     command_data: dict[str, Any] = {}
 
     result = await _handle_container_look(
-        "chest",
-        "chest",
-        None,
-        room,
-        player,
-        mock_persistence,
-        mock_prototype_registry,
-        command_data,
-        mock_request,
-        "TestPlayer",
+        target="chest",
+        target_lower="chest",
+        instance_number=None,
+        room=room,
+        player=player,
+        persistence=mock_persistence,
+        prototype_registry=mock_prototype_registry,
+        command_data=command_data,
+        request=mock_request,
+        player_name="TestPlayer",
     )
     assert result is not None
     assert "don't see" in result["result"].lower()

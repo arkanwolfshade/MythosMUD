@@ -368,11 +368,34 @@ async def test_cancel_rest_countdown_cancels_task(mock_connection_manager):  # p
     player_id = uuid.uuid4()
     task = asyncio.create_task(asyncio.sleep(100))  # Long-running task
     mock_connection_manager.resting_players[player_id] = task
+    mock_connection_manager.async_persistence = None  # Skip stand restore in this unit test
 
     await cancel_rest_countdown(player_id, mock_connection_manager)
 
     # Verify task was cancelled
     assert task.cancelled()
+    assert player_id not in mock_connection_manager.resting_players
+
+
+@pytest.mark.asyncio
+async def test_cancel_rest_countdown_restores_standing(mock_connection_manager):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+    """Interrupted /rest must stand the player so Sitting does not poison the next session."""
+    player_id = uuid.uuid4()
+    task = asyncio.create_task(asyncio.sleep(100))
+    mock_connection_manager.resting_players[player_id] = task
+    mock_player = MagicMock()
+    mock_player.name = "ArkanWolfshade"
+    mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
+    mock_connection_manager.async_persistence = MagicMock()
+
+    with patch("server.commands.rest_command.PlayerPositionService") as mock_svc_cls:
+        mock_svc = MagicMock()
+        mock_svc.change_position = AsyncMock(return_value={"success": True, "position": "standing"})
+        mock_svc_cls.return_value = mock_svc
+
+        await cancel_rest_countdown(player_id, mock_connection_manager)
+
+        mock_svc.change_position.assert_awaited_once_with("ArkanWolfshade", "standing")
     assert player_id not in mock_connection_manager.resting_players
 
 

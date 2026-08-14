@@ -4,6 +4,7 @@ Unit tests for look_room helper functions.
 Tests the helper functions in look_room.py module.
 """
 
+import uuid
 from unittest.mock import MagicMock
 
 import pytest
@@ -57,6 +58,26 @@ async def test_filter_other_players():
 
     assert "Player2" in result
     assert "Player1" not in result
+
+
+@pytest.mark.asyncio
+async def test_filter_other_players_includes_player_without_websocket():
+    """Look lists in-room others even when they have no live WebSocket (Occupants must match)."""
+    other = MagicMock()
+    other.name = "Ithaqua"
+    other.player_id = uuid.uuid4()
+    viewer = MagicMock()
+    viewer.name = "ArkanWolfshade"
+    viewer.player_id = uuid.uuid4()
+    manager = MagicMock()
+    manager.has_websocket_connection.return_value = False
+    manager.grace_period_players = {}
+    manager.login_grace_period_players = {}
+
+    result = await _filter_other_players([viewer, other], "ArkanWolfshade", manager)
+
+    assert "Ithaqua" in result
+    assert "ArkanWolfshade" not in result
 
 
 @pytest.mark.asyncio

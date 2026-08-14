@@ -15,6 +15,7 @@ import importlib.util
 import threading
 from collections.abc import AsyncIterator
 from pathlib import Path
+from typing import Any
 
 from anyio import sleep
 from sqlalchemy import select
@@ -72,6 +73,109 @@ def _reset_database_url_state() -> None:
     # Note: _database_url is for backward compatibility and can be patched directly by tests
 
 
+def _sync_test_url_state() -> None:
+    """Sync module-level and config test database URL overrides."""
+    test_url = _database_url_state["url"] or _database_url
+    if test_url is not None:
+        set_test_database_url(test_url)
+        _database_url_state["url"] = test_url
+        return
+    _database_url_state["url"] = get_test_database_url()
+
+
+def _normalize_connect_args_search_path(database_url: str, connect_args: dict[str, Any]) -> dict[str, Any]:
+    """Ensure PostgreSQL search_path matches the target database schema name."""
+    db_name = database_url.split("/")[-1].split("?")[0] if database_url else ""
+    if db_name not in ("mythos_dev", "mythos_unit", "mythos_e2e"):
+        return connect_args
+    current = (connect_args.get("server_settings") or {}).get("search_path", "").strip()
+    if current == db_name:
+        return connect_args
+    logger.info(
+        "PostgreSQL search_path set to database name",
+        database=db_name,
+        previous_search_path=current or None,
+    )
+    return {"server_settings": {"search_path": db_name}}
+
+
+def _create_engine_or_raise(
+    database_url: str, connect_args: dict[str, Any], pool_kwargs: dict[str, Any]
+) -> AsyncEngine:
+    """Create async engine or raise a typed configuration/connection error."""
+    try:
+        engine = create_async_engine(
+            database_url,
+            echo=False,
+            pool_pre_ping=True,
+            connect_args=connect_args,
+            **pool_kwargs,
+        )
+        pool_type = "NullPool" if "test" in database_url else "AsyncAdaptedQueuePool"
+        logger.info("Database engine created", pool_type=pool_type)
+        return engine
+    except (ValueError, TypeError) as e:
+        log_and_raise(
+            ValidationError,
+            f"Invalid database configuration: {e}",
+            operation="create_async_engine",
+            database_url_prefix=database_url[:30],
+            details={
+                "error": str(e),
+                "error_type": type(e).__name__,
+                "pool_config": {k: v for k, v in pool_kwargs.items() if k not in ["pool_recycle"]},
+            },
+            user_friendly="Database configuration error. Please check DATABASE_URL environment variable.",
+        )
+    except (ConnectionError, OSError) as e:
+        log_and_raise(
+            DatabaseError,
+            f"Failed to connect to database: {e}",
+            operation="create_async_engine",
+            details={
+                "error": str(e),
+                "error_type": type(e).__name__,
+                "database_url_prefix": database_url[:30],
+            },
+            user_friendly="Cannot connect to database. Please check database server is running.",
+        )
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: create_async_engine can raise a wide variety of exceptions depending on the driver (asyncpg), network state, and provided credentials, we catch Exception here to provide a unified, context-rich DatabaseError for any failure during this critical infrastructure setup
+        log_and_raise(
+            DatabaseError,
+            f"Failed to create database engine: {e}",
+            operation="create_async_engine",
+            details={
+                "error": str(e),
+                "error_type": type(e).__name__,
+                "database_url_prefix": database_url[:30],
+            },
+            user_friendly="Database connection failed. Please check database configuration and credentials.",
+        )
+
+
+async def _dispose_engine_safely(engine: AsyncEngine) -> None:
+    """Dispose database engine with Windows/asyncpg-safe cleanup."""
+    await sleep(0.3)
+
+    async def dispose_with_cleanup() -> None:
+        await engine.dispose()
+        await sleep(0.2)
+
+    try:
+        await asyncio.wait_for(asyncio.shield(dispose_with_cleanup()), timeout=3.0)
+        logger.info("Database connections closed")
+    except TimeoutError:
+        logger.warning("Engine disposal timed out, attempting force close")
+        try:
+            if hasattr(engine, "sync_engine") and hasattr(engine.sync_engine, "pool"):
+                pool = engine.sync_engine.pool
+                if pool:
+                    pool.dispose()
+        except (RuntimeError, AttributeError, TypeError):
+            pass
+        logger.info("Database connections force closed")
+
+
 class DatabaseManager:
     """
     Thread-safe singleton for database management.
@@ -118,11 +222,9 @@ class DatabaseManager:
         Raises:
             ValidationError: If configuration is missing or invalid
         """
-        # Avoid re-initialization
         if self._initialized:
             return
 
-        # Check if config module is available
         config_spec = importlib.util.find_spec(".config", package=__package__)
         if config_spec is None:
             log_and_raise(
@@ -133,18 +235,7 @@ class DatabaseManager:
                 user_friendly="Critical system error: configuration system not available",
             )
 
-        # Handle test override for backward compatibility
-        # Check both dict-based storage and direct variable (for backward compatibility)
-        # Tests can patch either _database_url_state["url"] or _database_url directly
-        test_url = _database_url_state["url"] or _database_url
-        if test_url is not None:
-            set_test_database_url(test_url)
-            # Sync dict storage (no global needed)
-            _database_url_state["url"] = test_url
-        else:
-            # Sync from config helpers if module-level is None
-            test_url_from_config = get_test_database_url()
-            _database_url_state["url"] = test_url_from_config
+        _sync_test_url_state()
 
         database_url = load_database_url()
         validate_database_url(database_url)
@@ -152,77 +243,9 @@ class DatabaseManager:
         logger.info("Using PostgreSQL database URL from environment", database_url=self.database_url)
 
         pool_kwargs = configure_pool_settings(self.database_url)
-        connect_args = get_postgres_connect_args()
+        connect_args = _normalize_connect_args_search_path(self.database_url, get_postgres_connect_args())
+        self.engine = _create_engine_or_raise(self.database_url, connect_args, pool_kwargs)
 
-        # Normalize search_path to database name for known env DBs (runtime evidence: search_path "mythos"
-        # was used while tables live in mythos_dev, causing UndefinedTableError)
-        _db_name = self.database_url.split("/")[-1].split("?")[0] if self.database_url else ""
-        if _db_name in ("mythos_dev", "mythos_unit", "mythos_e2e"):
-            _current = (connect_args.get("server_settings") or {}).get("search_path", "").strip()
-            if _current != _db_name:
-                connect_args = {"server_settings": {"search_path": _db_name}}
-                logger.info(
-                    "PostgreSQL search_path set to database name",
-                    database=_db_name,
-                    previous_search_path=_current or None,
-                )
-
-        # Create async engine with PostgreSQL configuration
-        # CRITICAL FIX: Add proper exception handling for engine creation
-        # Handles connection failures, authentication errors, and configuration issues
-        try:
-            self.engine = create_async_engine(
-                self.database_url,
-                echo=False,
-                pool_pre_ping=True,
-                connect_args=connect_args,
-                **pool_kwargs,
-            )
-
-            pool_type = "NullPool" if "test" in self.database_url else "AsyncAdaptedQueuePool"
-            logger.info("Database engine created", pool_type=pool_type)
-
-        except (ValueError, TypeError) as e:
-            # Configuration error (invalid URL format, invalid pool parameters)
-            log_and_raise(
-                ValidationError,
-                f"Invalid database configuration: {e}",
-                operation="create_async_engine",
-                database_url_prefix=self.database_url[:30],  # Truncate for security
-                details={
-                    "error": str(e),
-                    "error_type": type(e).__name__,
-                    "pool_config": {k: v for k, v in pool_kwargs.items() if k not in ["pool_recycle"]},
-                },
-                user_friendly="Database configuration error. Please check DATABASE_URL environment variable.",
-            )
-        except (ConnectionError, OSError) as e:
-            # Network/connection error (database server unreachable, DNS failure)
-            log_and_raise(
-                DatabaseError,
-                f"Failed to connect to database: {e}",
-                operation="create_async_engine",
-                details={
-                    "error": str(e),
-                    "error_type": type(e).__name__,
-                    "database_url_prefix": self.database_url[:30],
-                },
-                user_friendly="Cannot connect to database. Please check database server is running.",
-            )
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: create_async_engine can raise a wide variety of exceptions depending on the driver (asyncpg), network state, and provided credentials, we catch Exception here to provide a unified, context-rich DatabaseError for any failure during this critical infrastructure setup
-            log_and_raise(
-                DatabaseError,
-                f"Failed to create database engine: {e}",
-                operation="create_async_engine",
-                details={
-                    "error": str(e),
-                    "error_type": type(e).__name__,
-                    "database_url_prefix": self.database_url[:30],
-                },
-                user_friendly="Database connection failed. Please check database configuration and credentials.",
-            )
-
-        # Create async session maker
         self.session_maker = async_sessionmaker(
             self.engine,
             class_=AsyncSession,
@@ -233,12 +256,10 @@ class DatabaseManager:
 
         logger.info("Database session maker created")
         self._initialized = True
-        # Track the event loop that created this engine
         try:
             loop = asyncio.get_running_loop()
             self._creation_loop_id = id(loop)
         except RuntimeError:
-            # No running loop - that's okay, we'll track it as None
             self._creation_loop_id = None
 
     def get_engine(self) -> AsyncEngine:
@@ -355,71 +376,28 @@ class DatabaseManager:
 
     async def close(self) -> None:
         """Close database connections."""
-        if self.engine is not None:
-            # Store engine in local variable for type narrowing
-            engine = self.engine
+        if self.engine is None:
+            self._initialized = False
+            self._creation_loop_id = None
+            return
+
+        engine = self.engine
+        try:
             try:
-                # Check if event loop is still running before disposing
-                try:
-                    loop = asyncio.get_running_loop()
-                    if loop.is_closed():
-                        logger.warning("Event loop is closed, skipping engine disposal")
-                        self.engine = None
-                        self._initialized = False
-                        self._creation_loop_id = None
-                        return
-                except RuntimeError:
-                    # No running loop - that's okay, we can still try to dispose
-                    pass
+                loop = asyncio.get_running_loop()
+                if loop.is_closed():
+                    logger.warning("Event loop is closed, skipping engine disposal")
+                    return
+            except RuntimeError:
+                pass
 
-                # For Windows/asyncpg: Close connections gracefully before disposal
-                # CRITICAL: asyncpg connections must be closed in the same event loop they were created in
-                # We need to ensure all connections are properly closed before disposal to prevent
-                # RuntimeWarning about unawaited Connection._cancel coroutines during GC
-                try:
-                    # Step 1: Wait for any pending operations to complete
-                    # This gives time for any in-flight queries to finish
-                    await sleep(0.3)
-
-                    # Step 2: Shield disposal from cancellation to ensure cleanup completes
-                    # This prevents Connection._cancel coroutines from being interrupted during cleanup
-                    async def _dispose_engine() -> None:
-                        await engine.dispose()
-                        # Wait a bit more to ensure all asyncpg cleanup coroutines complete
-                        # This helps prevent Connection._cancel coroutines from being garbage collected
-                        # before they're awaited
-                        await sleep(0.2)
-
-                    # Shield the disposal to prevent cancellation from interrupting cleanup
-                    await asyncio.wait_for(asyncio.shield(_dispose_engine()), timeout=3.0)
-
-                    logger.info("Database connections closed")
-                except TimeoutError:
-                    # If disposal times out, try to force close connections
-                    logger.warning("Engine disposal timed out, attempting force close")
-                    try:
-                        # Force close by disposing the pool directly
-                        if hasattr(engine, "sync_engine") and hasattr(engine.sync_engine, "pool"):
-                            pool = engine.sync_engine.pool
-                            if pool:
-                                pool.dispose()
-                    except (RuntimeError, AttributeError, TypeError):
-                        pass  # Ignore errors during force close
-                    logger.info("Database connections force closed")
-            except (RuntimeError, AttributeError) as e:
-                # Event loop is closed or proactor is None - this is expected during cleanup
-                # Don't log as error, just as debug since this is normal during test teardown
-                logger.debug("Event loop closed during engine disposal (expected during cleanup)", error=str(e))
-            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: This is a best-effort cleanup of database connections during engine disposal, we log any unexpected failures but must not raise them, ensuring the application shutdown process can continue for other components even if database cleanup fails
-                # Any other error - log but don't raise
-                logger.warning("Error disposing database engine", error=str(e), error_type=type(e).__name__)
-            finally:
-                # Always reset state, even if disposal failed
-                self.engine = None
-                self._initialized = False
-                self._creation_loop_id = None
-        else:
-            # Engine already None, but reset flag if it was initialized
+            await _dispose_engine_safely(engine)
+        except (RuntimeError, AttributeError) as e:
+            logger.debug("Event loop closed during engine disposal (expected during cleanup)", error=str(e))
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: This is a best-effort cleanup of database connections during engine disposal, we log any unexpected failures but must not raise them, ensuring the application shutdown process can continue for other components even if database cleanup fails
+            logger.warning("Error disposing database engine", error=str(e), error_type=type(e).__name__)
+        finally:
+            self.engine = None
             self._initialized = False
             self._creation_loop_id = None
 

@@ -2,8 +2,8 @@
  * Tests for CommandInputPanel component.
  */
 
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CommandInputPanel } from '../CommandInputPanel';
 
 describe('CommandInputPanel', () => {
@@ -16,6 +16,7 @@ describe('CommandInputPanel', () => {
   it('should render command input panel', () => {
     render(<CommandInputPanel onSendCommand={mockOnSendCommand} isConnected={true} />);
     expect(screen.getByPlaceholderText(/Enter game command/i)).toBeInTheDocument();
+    expect(within(screen.getByTestId('command-input-panel')).getByTestId('command-input')).toBeInTheDocument();
   });
 
   it('should call onSendCommand when form is submitted', async () => {
@@ -27,6 +28,23 @@ describe('CommandInputPanel', () => {
 
     await waitFor(() => {
       expect(mockOnSendCommand).toHaveBeenCalledWith('look');
+    });
+  });
+
+  it('sends stand and local as typed commands, not chat prefixes', async () => {
+    render(<CommandInputPanel onSendCommand={mockOnSendCommand} isConnected={true} />);
+
+    const input = screen.getByPlaceholderText(/Enter game command/i);
+    fireEvent.change(input, { target: { value: 'stand' } });
+    fireEvent.submit(input.closest('form')!);
+    await waitFor(() => {
+      expect(mockOnSendCommand).toHaveBeenCalledWith('stand');
+    });
+
+    fireEvent.change(input, { target: { value: 'local hello' } });
+    fireEvent.submit(input.closest('form')!);
+    await waitFor(() => {
+      expect(mockOnSendCommand).toHaveBeenCalledWith('local hello');
     });
   });
 
@@ -59,7 +77,6 @@ describe('CommandInputPanel', () => {
     fireEvent.change(input, { target: { value: 'look' } });
     fireEvent.submit(input.closest('form')!);
 
-    // Input is disabled, so command should not be sent
     expect(mockOnSendCommand).not.toHaveBeenCalled();
   });
 

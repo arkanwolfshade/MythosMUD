@@ -48,6 +48,34 @@ class QuestInstanceRepository:
     def __init__(self) -> None:
         self._logger = get_logger(__name__)
 
+    async def _fetch_created_quest_row(
+        self, session: Any, pid: str, quest_id: str, state: str, progress: dict[str, Any]
+    ) -> Any:
+        result = await session.execute(
+            text(
+                """
+                SELECT id, player_id, quest_id, state, progress, accepted_at, completed_at
+                FROM create_quest_instance(:player_id, :quest_id, :state, :progress)
+                """
+            ),
+            {
+                "player_id": pid,
+                "quest_id": quest_id,
+                "state": state,
+                "progress": json.dumps(progress),
+            },
+        )
+        row = result.mappings().first()
+        if not row:
+            log_and_raise(
+                DatabaseError,
+                "create_quest_instance returned no row",
+                operation="create",
+                details={"player_id": pid, "quest_id": quest_id},
+                user_friendly="Failed to start quest",
+            )
+        return row
+
     async def create(
         self,
         player_id: UUID | str,
@@ -61,36 +89,7 @@ class QuestInstanceRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                result = await session.execute(
-                    text(
-                        """
-                        SELECT
-                            id,
-                            player_id,
-                            quest_id,
-                            state,
-                            progress,
-                            accepted_at,
-                            completed_at
-                        FROM create_quest_instance(:player_id, :quest_id, :state, :progress)
-                        """
-                    ),
-                    {
-                        "player_id": pid,
-                        "quest_id": quest_id,
-                        "state": state,
-                        "progress": json.dumps(progress),
-                    },
-                )
-                row = result.mappings().first()
-                if not row:
-                    log_and_raise(
-                        DatabaseError,
-                        "create_quest_instance returned no row",
-                        operation="create",
-                        details={"player_id": pid, "quest_id": quest_id},
-                        user_friendly="Failed to start quest",
-                    )
+                row = await self._fetch_created_quest_row(session, pid, quest_id, state, progress)
                 await session.commit()
                 instance = _row_to_quest_instance(row)
                 self._logger.debug(

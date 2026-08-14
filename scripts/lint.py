@@ -9,7 +9,9 @@ success = True
 # Same invocation and args as CI ("Lint with ruff": python -m ruff check --line-length=120 server/)
 # so we find the same findings locally. --fix so local auto-fixes when possible.
 print("Running ruff linting (python -m ruff, matches CI, with --fix)...")
-result = safe_run_static("uv", "run", "python", "-m", "ruff", "check", "--fix", "--line-length=120", "server/", cwd=".")
+result = safe_run_static(
+    "uv", "run", "--no-sync", "python", "-m", "ruff", "check", "--fix", "--line-length=120", "server/", cwd="."
+)
 if result.returncode != 0:
     print(f"Ruff linting failed with exit code: {result.returncode}")
     success = False

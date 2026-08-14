@@ -44,49 +44,72 @@ const formatSource = (data: Record<string, unknown>): string | undefined => {
   return undefined;
 };
 
+const inferReasonFromDelta = (
+  reasonFromData: string | undefined,
+  damageTaken: number,
+  delta: number
+): string | undefined => {
+  if (reasonFromData) {
+    return reasonFromData;
+  }
+  if (damageTaken > 0 || delta < 0) {
+    return 'damage';
+  }
+  if (damageTaken < 0 || delta > 0) {
+    return 'healing';
+  }
+  return undefined;
+};
+
+const resolveInCombat = (data: Record<string, unknown>, previous: HealthStatus | null): boolean | undefined => {
+  if (typeof data.in_combat === 'boolean') {
+    return data.in_combat;
+  }
+  return typeof previous?.inCombat === 'boolean' ? previous.inCombat : undefined;
+};
+
+function readDpField(data: Record<string, unknown>, keys: string[], fallback: number): number {
+  for (const key of keys) {
+    if (data[key] !== undefined && data[key] !== null) {
+      return parseNumber(data[key], fallback);
+    }
+  }
+  return fallback;
+}
+
+function parseHealthEventNumbers(
+  previous: HealthStatus | null,
+  data: Record<string, unknown>
+): { oldDp: number; newDp: number; delta: number; effectiveMax: number; damageTaken: number } {
+  const oldDp = readDpField(data, ['old_dp', 'oldDp'], previous?.current ?? 0);
+  const newDp = readDpField(data, ['new_dp', 'newDp'], oldDp);
+  const maxDp = readDpField(data, ['max_dp', 'maxDp'], previous?.max ?? DEFAULT_MAX_DP);
+  const effectiveMax = maxDp > 0 ? maxDp : DEFAULT_MAX_DP;
+  return {
+    oldDp,
+    newDp,
+    delta: newDp - oldDp,
+    effectiveMax,
+    damageTaken: readDpField(data, ['damage_taken', 'damageTaken'], 0),
+  };
+}
+
 export const buildHealthStatusFromEvent = (
   previous: HealthStatus | null,
   data: Record<string, unknown>,
   timestamp: string
 ): { status: HealthStatus; delta: number } => {
-  const oldDp = parseNumber(data.old_dp ?? data.oldDp ?? previous?.current ?? 0, previous?.current ?? 0);
-  const newDp = parseNumber(data.new_dp ?? data.newDp ?? oldDp, oldDp);
-  const delta = newDp - oldDp;
-  const maxDp = parseNumber(
-    data.max_dp ?? data.maxDp ?? previous?.max ?? DEFAULT_MAX_DP,
-    previous?.max ?? DEFAULT_MAX_DP
-  );
-  const reasonFromData = toReasonString(data.reason);
-  const damageTaken = parseNumber(data.damage_taken ?? data.damageTaken ?? 0, 0);
-
-  let computedReason = reasonFromData;
-  if (!computedReason) {
-    if (damageTaken > 0 || delta < 0) {
-      computedReason = 'damage';
-    } else if (damageTaken < 0 || delta > 0) {
-      computedReason = 'healing';
-    }
-  }
-
+  const { newDp, delta, effectiveMax, damageTaken } = parseHealthEventNumbers(previous, data);
+  const computedReason = inferReasonFromDelta(toReasonString(data.reason), damageTaken, delta);
   const posture = typeof data.posture === 'string' ? data.posture : previous?.posture;
-  const inCombat =
-    typeof data.in_combat === 'boolean'
-      ? data.in_combat
-      : typeof previous?.inCombat === 'boolean'
-        ? previous.inCombat
-        : undefined;
 
   const status: HealthStatus = {
     current: newDp,
-    max: maxDp > 0 ? maxDp : DEFAULT_MAX_DP,
-    tier: determineDpTier(newDp, maxDp > 0 ? maxDp : DEFAULT_MAX_DP),
+    max: effectiveMax,
+    tier: determineDpTier(newDp, effectiveMax),
     posture,
-    inCombat,
-    lastChange: {
-      delta,
-      reason: computedReason,
-      timestamp,
-    },
+    inCombat: resolveInCombat(data, previous),
+    lastChange: { delta, reason: computedReason, timestamp },
   };
 
   return { status, delta };
