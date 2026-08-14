@@ -218,22 +218,35 @@ function RoomEditPropertiesTab(props: RoomEditModalFormProps): React.ReactElemen
 export function RoomEditModalForm(props: RoomEditModalFormProps): React.ReactElement {
   return (
     <form onSubmit={props.onSubmit} className="space-y-6">
-      {props.activeTab === 'basic' && (
+      <RoomEditTabBody {...props} />
+    </form>
+  );
+}
+
+function RoomEditTabBody(props: RoomEditModalFormProps): React.ReactElement {
+  switch (props.activeTab) {
+    case 'basic':
+      return (
         <div className="space-y-6">
           <RoomEditNameField {...props} />
           <RoomEditDescriptionField {...props} />
         </div>
-      )}
-      {props.activeTab === 'location' && (
+      );
+    case 'location':
+      return (
         <div className="space-y-6">
           <RoomEditPlaneField formData={props.formData} />
           <RoomEditZoneField {...props} />
           <RoomEditSubZoneField {...props} />
         </div>
-      )}
-      {props.activeTab === 'properties' && <RoomEditPropertiesTab {...props} />}
-    </form>
-  );
+      );
+    case 'properties':
+      return <RoomEditPropertiesTab {...props} />;
+    default: {
+      const _exhaustive: never = props.activeTab;
+      return _exhaustive;
+    }
+  }
 }
 
 export function RoomEditModalTabs(props: {
