@@ -193,78 +193,113 @@ function renderSplitPaneItem(
   );
 }
 
-function splitPaneItemCtx(props: ContainerSplitPaneViewProps): SplitPaneItemCtx {
-  const { container, hasTransfer, vm } = props;
-  return {
-    containerItems: container.items,
-    playerInventory: vm.playerInventory,
-    hasTransfer,
-    draggedItem: vm.draggedItem,
-    handleDragStart: vm.handleDragStart,
-    handleDragEnd: vm.handleDragEnd,
-    handleTransferFromContainer: vm.handleTransferFromContainer,
-    handleTransferToContainer: vm.handleTransferToContainer,
-    firstButtonRef: vm.firstButtonRef,
-    mutationToken: vm.mutationToken,
-  };
-}
-
-function ContainerSplitPaneGrid(props: ContainerSplitPaneViewProps): React.ReactElement {
-  const { container, modal, vm } = props;
-  const renderItem = (item: InventoryStack, isContainerItem: boolean) =>
-    renderSplitPaneItem(item, isContainerItem, splitPaneItemCtx(props));
+function ContainerSplitPanePanes(props: {
+  container: ContainerSplitPaneViewProps['container'];
+  playerInventory: InventoryStack[];
+  dragOverTarget: ContainerSplitPaneViewModel['dragOverTarget'];
+  onDragOver: ContainerSplitPaneViewModel['handleDragOver'];
+  onDragLeave: ContainerSplitPaneViewModel['handleDragLeave'];
+  onDrop: ContainerSplitPaneViewModel['handleDrop'];
+  renderItem: (item: InventoryStack, isContainerItem: boolean) => React.ReactElement;
+}): React.ReactElement {
+  const { container, playerInventory, dragOverTarget, onDragOver, onDragLeave, onDrop, renderItem } = props;
   return (
-    // role=dialog is the keyboard focus root for transfer shortcuts
-    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- dialog key routing
-    <div
-      ref={vm.containerRef}
-      className="flex-1 grid grid-cols-2 gap-4 p-4"
-      onKeyDown={vm.handleKeyDown}
-      role="dialog"
-      aria-modal={modal}
-      aria-label={`Container: ${container.metadata?.item_name || container.source_type}`}
-      tabIndex={-1}
-    >
+    <>
       <ContainerInventoryPane
         side="container"
         title={`Container (${container.items.length}/${container.capacity_slots})`}
         items={container.items}
         isContainerSide
-        dragOverTarget={vm.dragOverTarget}
-        onDragOver={vm.handleDragOver}
-        onDragLeave={vm.handleDragLeave}
-        onDrop={vm.handleDrop}
+        dragOverTarget={dragOverTarget}
+        onDragOver={onDragOver}
+        onDragLeave={onDragLeave}
+        onDrop={onDrop}
         renderItem={renderItem}
         emptyMessage="Container is empty"
       />
       <ContainerInventoryPane
         side="player"
-        title={`Inventory (${vm.playerInventory.length}/20)`}
-        items={vm.playerInventory}
+        title={`Inventory (${playerInventory.length}/20)`}
+        items={playerInventory}
         isContainerSide={false}
-        dragOverTarget={vm.dragOverTarget}
-        onDragOver={vm.handleDragOver}
-        onDragLeave={vm.handleDragLeave}
-        onDrop={vm.handleDrop}
+        dragOverTarget={dragOverTarget}
+        onDragOver={onDragOver}
+        onDragLeave={onDragLeave}
+        onDrop={onDrop}
         renderItem={renderItem}
         emptyMessage="Inventory is empty"
       />
+    </>
+  );
+}
+
+function ContainerCloseBar({ onClose }: { onClose?: () => void }): React.ReactElement | null {
+  if (!onClose) return null;
+  return (
+    <div className="p-4 border-t border-mythos-terminal-border">
+      <TerminalButton onClick={onClose} className="w-full" aria-label="Close container">
+        Close
+      </TerminalButton>
     </div>
   );
 }
 
 export function ContainerSplitPaneView(props: ContainerSplitPaneViewProps): React.ReactElement {
-  const { className, onClose } = props;
+  const { container, modal, className, onClose, hasTransfer } = props;
+  const {
+    containerRef,
+    firstButtonRef,
+    draggedItem,
+    playerInventory,
+    dragOverTarget,
+    mutationToken,
+    handleDragStart,
+    handleDragEnd,
+    handleTransferFromContainer,
+    handleTransferToContainer,
+    handleKeyDown,
+    handleDragOver,
+    handleDragLeave,
+    handleDrop,
+  } = props.vm;
+  const itemCtx: SplitPaneItemCtx = {
+    containerItems: container.items,
+    playerInventory,
+    hasTransfer,
+    draggedItem,
+    handleDragStart,
+    handleDragEnd,
+    handleTransferFromContainer,
+    handleTransferToContainer,
+    firstButtonRef,
+    mutationToken,
+  };
+  const renderItem = (item: InventoryStack, isContainerItem: boolean) =>
+    renderSplitPaneItem(item, isContainerItem, itemCtx);
   return (
     <MythosPanel className={`flex flex-col ${className}`}>
-      <ContainerSplitPaneGrid {...props} />
-      {onClose && (
-        <div className="p-4 border-t border-mythos-terminal-border">
-          <TerminalButton onClick={onClose} className="w-full" aria-label="Close container">
-            Close
-          </TerminalButton>
-        </div>
-      )}
+      {/* role=dialog is the keyboard focus root for transfer shortcuts */}
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- dialog key routing */}
+      <div
+        ref={containerRef}
+        className="flex-1 grid grid-cols-2 gap-4 p-4"
+        onKeyDown={handleKeyDown}
+        role="dialog"
+        aria-modal={modal}
+        aria-label={`Container: ${container.metadata?.item_name || container.source_type}`}
+        tabIndex={-1}
+      >
+        <ContainerSplitPanePanes
+          container={container}
+          playerInventory={playerInventory}
+          dragOverTarget={dragOverTarget}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          renderItem={renderItem}
+        />
+      </div>
+      <ContainerCloseBar onClose={onClose} />
     </MythosPanel>
   );
 }

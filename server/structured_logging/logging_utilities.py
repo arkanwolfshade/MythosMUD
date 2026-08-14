@@ -147,17 +147,22 @@ def _collect_rotatable_logs(env_log_dir: Path, timestamp: str) -> list[Path]:
     return [path for path in unique_files if not path.name.endswith(f".{timestamp}")]
 
 
+def _running_on_windows() -> bool:
+    """Indirection so mypy does not treat sys.platform as a dead-code constant."""
+    return sys.platform == "win32"
+
+
 def _rename_or_copy_log_file(log_file: Path, rotated_path: Path) -> None:
     """Rename a log file, using copy-then-truncate on Windows when needed."""
-    if sys.platform != "win32":
-        _ = log_file.rename(rotated_path)
-        return
-    try:
-        from server.structured_logging.windows_safe_rotation import copy_then_truncate
+    if _running_on_windows():
+        try:
+            from server.structured_logging.windows_safe_rotation import copy_then_truncate
 
-        copy_then_truncate(str(log_file), str(rotated_path))
-    except OSError:
-        _ = log_file.rename(rotated_path)
+            copy_then_truncate(str(log_file), str(rotated_path))
+            return
+        except OSError:
+            pass
+    _ = log_file.rename(rotated_path)
 
 
 def _rotate_single_log_file(log_file: Path, timestamp: str) -> None:

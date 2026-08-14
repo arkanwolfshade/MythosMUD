@@ -1,82 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ALL_MESSAGES_CHANNEL, CHAT_CHANNEL_OPTIONS, DEFAULT_CHANNEL } from '../../config/channels';
+import { DEFAULT_CHANNEL } from '../../config/channels';
 import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
 import { LogoutButton } from '../ui/LogoutButton';
 import { TerminalButton } from '../ui/TerminalButton';
 import { TerminalInput } from '../ui/TerminalInput';
-
-const STANDALONE_COMMANDS = [
-  'admin',
-  'alias',
-  'aliases',
-  'attack',
-  'emote',
-  'go',
-  'goto',
-  'help',
-  'hit',
-  'inventory',
-  'kick',
-  'look',
-  'logout',
-  'me',
-  'mute',
-  'party',
-  'pose',
-  'punch',
-  'quit',
-  'smack',
-  'status',
-  'strike',
-  'teleport',
-  'thump',
-  'unalias',
-  'unmute',
-  'w',
-  'whisper',
-  'who',
-];
-
-function prependChannelShortcut(command: string, effectiveChannel: string): string {
-  const channel = CHAT_CHANNEL_OPTIONS.find(c => c.id === effectiveChannel);
-  if (!channel?.shortcut) {
-    return command;
-  }
-  const commandLower = command.toLowerCase();
-  const channelName = channel.id;
-  const alreadyHasChannelPrefix = commandLower.startsWith(`${channelName} `) || commandLower === channelName;
-  if (alreadyHasChannelPrefix) {
-    return command;
-  }
-  return `/${channel.shortcut} ${command}`;
-}
-
-function prependPartyPrefix(command: string): string {
-  const commandLower = command.toLowerCase();
-  if (commandLower.startsWith('party ')) {
-    return command;
-  }
-  return `party ${command}`;
-}
-
-function shouldPrependChannelShortcut(command: string, effectiveChannel: string, isStandalone: boolean): boolean {
-  if (command.startsWith('/') || isStandalone) return false;
-  return effectiveChannel !== 'say' && effectiveChannel !== 'local' && effectiveChannel !== 'party';
-}
-
-function shouldPrependParty(command: string, effectiveChannel: string): boolean {
-  return !command.startsWith('/') && effectiveChannel === 'party' && Boolean(command.trim());
-}
-
-function prepareCommandForSubmit(commandInput: string, currentChannel: string): string {
-  const command = commandInput.trim();
-  const firstWord = command.split(/\s+/)[0].toLowerCase();
-  const effectiveChannel = currentChannel === ALL_MESSAGES_CHANNEL.id ? 'say' : currentChannel;
-  const withChannel = shouldPrependChannelShortcut(command, effectiveChannel, STANDALONE_COMMANDS.includes(firstWord))
-    ? prependChannelShortcut(command, effectiveChannel)
-    : command;
-  return shouldPrependParty(withChannel, effectiveChannel) ? prependPartyPrefix(withChannel) : withChannel;
-}
+import { prepareCommandForSubmit } from './commandPanelSubmit';
 
 export interface CommandPanelProps {
   commandHistory: string[];

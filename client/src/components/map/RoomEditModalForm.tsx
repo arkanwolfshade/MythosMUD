@@ -105,15 +105,6 @@ function RoomEditDescriptionField(props: RoomEditModalFormProps): React.ReactEle
   );
 }
 
-function RoomEditBasicFields(props: RoomEditModalFormProps): React.ReactElement {
-  return (
-    <div className="space-y-6">
-      <RoomEditNameField {...props} />
-      <RoomEditDescriptionField {...props} />
-    </div>
-  );
-}
-
 function RoomEditPlaneField({ formData }: { formData: RoomEditFormData }): React.ReactElement {
   return (
     <div>
@@ -237,7 +228,12 @@ function RoomEditPropertiesTab(props: RoomEditModalFormProps): React.ReactElemen
 export function RoomEditModalForm(props: RoomEditModalFormProps): React.ReactElement {
   return (
     <form onSubmit={props.onSubmit} className="space-y-6">
-      {props.activeTab === 'basic' && <RoomEditBasicFields {...props} />}
+      {props.activeTab === 'basic' && (
+        <div className="space-y-6">
+          <RoomEditNameField {...props} />
+          <RoomEditDescriptionField {...props} />
+        </div>
+      )}
       {props.activeTab === 'location' && <RoomEditLocationTab {...props} />}
       {props.activeTab === 'properties' && <RoomEditPropertiesTab {...props} />}
     </form>
