@@ -14,74 +14,14 @@ from typing import Any
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
+from ..async_persistence_constants import CreateItemInstanceInput, EnsureItemInstanceInput
 from ..exceptions import DatabaseError, ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
-
-def create_item_instance(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Item creation requires many parameters and intermediate variables for complex item instantiation logic
-    conn: Any,
-    item_instance_id: str,
-    prototype_id: str,
-    owner_type: str = "room",
-    owner_id: str | None = None,
-    location_context: str | None = None,
-    quantity: int = 1,
-    condition: int | None = None,
-    flags_override: list[str] | None = None,
-    binding_state: str | None = None,
-    attunement_state: dict[str, Any] | None = None,
-    custom_name: str | None = None,
-    metadata: dict[str, Any] | None = None,
-    origin_source: str | None = None,
-    origin_metadata: dict[str, Any] | None = None,
-) -> None:
-    """
-    Create a new item instance in the database.
-
-    Args:
-        conn: Database connection
-        item_instance_id: Unique identifier for the item instance
-        prototype_id: Reference to item_prototypes.prototype_id
-        owner_type: Type of owner (e.g., "room", "player", "container")
-        owner_id: ID of the owner (optional)
-        location_context: Additional location context (optional)
-        quantity: Quantity of items in this instance
-        condition: Item condition (optional)
-        flags_override: Override flags for this instance (optional)
-        binding_state: Binding state (optional)
-        attunement_state: Attunement state dictionary (optional)
-        custom_name: Custom name for this instance (optional)
-        metadata: Additional metadata dictionary (optional)
-        origin_source: Origin source string (optional)
-        origin_metadata: Origin metadata dictionary (optional)
-
-    Raises:
-        DatabaseError: If the insert fails
-        ValidationError: If required parameters are invalid
-    """
-    if not item_instance_id:
-        log_and_raise(
-            ValidationError,
-            "item_instance_id is required",
-            operation="create_item_instance",
-            user_friendly="Invalid item instance data",
-        )
-
-    if not prototype_id:
-        log_and_raise(
-            ValidationError,
-            "prototype_id is required",
-            operation="create_item_instance",
-            user_friendly="Invalid item instance data",
-        )
-
-    cursor = conn.cursor()
-    try:
-        cursor.execute(
-            """
+_UPSERT_ITEM_INSTANCE_SQL = """
             INSERT INTO item_instances (
                 item_instance_id,
                 prototype_id,
@@ -117,68 +57,101 @@ def create_item_instance(  # pylint: disable=too-many-arguments,too-many-positio
                 origin_source = EXCLUDED.origin_source,
                 origin_metadata = EXCLUDED.origin_metadata,
                 updated_at = NOW()
-            """,
-            (
-                item_instance_id,
-                prototype_id,
-                owner_type,
-                owner_id,
-                location_context,
-                quantity,
-                condition,
-                json.dumps(flags_override or []),
-                binding_state,
-                json.dumps(attunement_state or {}),
-                custom_name,
-                json.dumps(metadata or {}),
-                origin_source,
-                json.dumps(origin_metadata or {}),
-            ),
-        )
+            """
+
+
+def _item_instance_row_values(
+    item_instance_id: str, prototype_id: str, options: CreateItemInstanceInput
+) -> tuple[Any, ...]:
+    return (
+        item_instance_id,
+        prototype_id,
+        options.get("owner_type", "room"),
+        options.get("owner_id"),
+        options.get("location_context"),
+        options.get("quantity", 1),
+        options.get("condition"),
+        json.dumps(options.get("flags_override") or []),
+        options.get("binding_state"),
+        json.dumps(options.get("attunement_state") or {}),
+        options.get("custom_name"),
+        json.dumps(options.get("metadata") or {}),
+        options.get("origin_source"),
+        json.dumps(options.get("origin_metadata") or {}),
+    )
+
+
+def _handle_item_instance_db_error(
+    conn: Any,
+    exc: Exception,
+    *,
+    item_instance_id: str,
+    prototype_id: str | None = None,
+) -> None:
+    conn.rollback()
+    log_and_raise(
+        DatabaseError,
+        f"Database error creating item instance: {exc}",
+        operation="create_item_instance",
+        item_instance_id=item_instance_id,
+        prototype_id=prototype_id,
+        details={"error": str(exc), "item_instance_id": item_instance_id, "prototype_id": prototype_id},
+        user_friendly="Failed to create item instance",
+    )
+
+
+def _execute_item_instance_upsert(
+    conn: Any,
+    item_instance_id: str,
+    prototype_id: str,
+    options: CreateItemInstanceInput,
+) -> None:
+    cursor = conn.cursor()
+    try:
+        cursor.execute(_UPSERT_ITEM_INSTANCE_SQL, _item_instance_row_values(item_instance_id, prototype_id, options))
         conn.commit()
         logger.debug(
             "Item instance created",
             item_instance_id=item_instance_id,
             prototype_id=prototype_id,
-            owner_type=owner_type,
-            owner_id=owner_id,
+            owner_type=options.get("owner_type", "room"),
+            owner_id=options.get("owner_id"),
         )
     except psycopg2.IntegrityError as e:
-        conn.rollback()
-        log_and_raise(
-            DatabaseError,
-            f"Database error creating item instance: {str(e)}",
-            operation="create_item_instance",
-            item_instance_id=item_instance_id,
-            prototype_id=prototype_id,
-            details={"error": str(e), "item_instance_id": item_instance_id, "prototype_id": prototype_id},
-            user_friendly="Failed to create item instance",
-        )
+        _handle_item_instance_db_error(conn, e, item_instance_id=item_instance_id, prototype_id=prototype_id)
     except psycopg2.Error as e:
-        conn.rollback()
-        log_and_raise(
-            DatabaseError,
-            f"Database error creating item instance: {str(e)}",
-            operation="create_item_instance",
-            item_instance_id=item_instance_id,
-            details={"error": str(e), "item_instance_id": item_instance_id},
-            user_friendly="Failed to create item instance",
-        )
+        _handle_item_instance_db_error(conn, e, item_instance_id=item_instance_id)
     finally:
         cursor.close()
 
 
+def create_item_instance(
+    conn: Any,
+    item_instance_id: str,
+    prototype_id: str,
+    options: CreateItemInstanceInput | None = None,
+) -> None:
+    """Create a new item instance in the database."""
+    opts = options or {}
+    if not item_instance_id:
+        log_and_raise(
+            ValidationError,
+            "item_instance_id is required",
+            operation="create_item_instance",
+            user_friendly="Invalid item instance data",
+        )
+    if not prototype_id:
+        log_and_raise(
+            ValidationError,
+            "prototype_id is required",
+            operation="create_item_instance",
+            user_friendly="Invalid item instance data",
+        )
+    _execute_item_instance_upsert(conn, item_instance_id, prototype_id, opts)
+
+
 def get_item_instance(conn: Any, item_instance_id: str) -> dict[str, Any] | None:
-    """
-    Retrieve an item instance by ID.
-
-    Args:
-        conn: Database connection
-        item_instance_id: Unique identifier for the item instance
-
-    Returns:
-        Dictionary with item instance data, or None if not found
-    """
+    """Retrieve an item instance by ID."""
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     try:
         cursor.execute(
@@ -214,16 +187,7 @@ def get_item_instance(conn: Any, item_instance_id: str) -> dict[str, Any] | None
 
 
 def item_instance_exists(conn: Any, item_instance_id: str) -> bool:
-    """
-    Check if an item instance exists in the database.
-
-    Args:
-        conn: Database connection
-        item_instance_id: Unique identifier for the item instance
-
-    Returns:
-        True if the item instance exists, False otherwise
-    """
+    """Check if an item instance exists in the database."""
     cursor = conn.cursor()
     try:
         cursor.execute(
@@ -235,50 +199,30 @@ def item_instance_exists(conn: Any, item_instance_id: str) -> bool:
         cursor.close()
 
 
-def ensure_item_instance(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Item instance persistence requires many parameters for context and validation
+def ensure_item_instance(
     conn: Any,
     item_instance_id: str,
     prototype_id: str,
-    owner_type: str = "room",
-    owner_id: str | None = None,
-    quantity: int = 1,
-    metadata: dict[str, Any] | None = None,
-    origin_source: str | None = None,
-    origin_metadata: dict[str, Any] | None = None,
+    options: EnsureItemInstanceInput | None = None,
 ) -> None:
-    """
-    Ensure an item instance exists in the database, creating it if necessary.
-
-    This is a convenience function that checks if the item instance exists
-    and creates it if it doesn't. Useful for ensuring referential integrity.
-
-    Args:
-        conn: Database connection
-        item_instance_id: Unique identifier for the item instance
-        prototype_id: Reference to item_prototypes.prototype_id
-        owner_type: Type of owner (default: "room")
-        owner_id: ID of the owner (optional)
-        quantity: Quantity of items in this instance (default: 1)
-        metadata: Additional metadata dictionary (optional)
-        origin_source: Origin source string (optional)
-        origin_metadata: Origin metadata dictionary (optional)
-    """
-    # Always call create_item_instance - it uses ON CONFLICT DO UPDATE
-    # which will update the quantity and other fields if the item instance already exists
+    """Ensure an item instance exists in the database, creating it if necessary."""
+    opts = options or {}
     create_item_instance(
         conn=conn,
         item_instance_id=item_instance_id,
         prototype_id=prototype_id,
-        owner_type=owner_type,
-        owner_id=owner_id,
-        quantity=quantity,
-        metadata=metadata,
-        origin_source=origin_source,
-        origin_metadata=origin_metadata,
+        options={
+            "owner_type": opts.get("owner_type", "room"),
+            "owner_id": opts.get("owner_id"),
+            "quantity": opts.get("quantity", 1),
+            "metadata": opts.get("metadata"),
+            "origin_source": opts.get("origin_source"),
+            "origin_metadata": opts.get("origin_metadata"),
+        },
     )
     logger.debug(
         "Item instance ensured",
         item_instance_id=item_instance_id,
         prototype_id=prototype_id,
-        quantity=quantity,
+        quantity=opts.get("quantity", 1),
     )

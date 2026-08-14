@@ -34,15 +34,16 @@ async def get_player_occupants(connection_manager: "ConnectionManager | Any", ro
             # Only include actual players: skip NPCs even if dict has player_name (e.g. merged format with is_npc).
             if occ.get("is_npc") or "npc_name" in occ:
                 continue
-            name = occ.get("player_name") or occ.get("name")
-            if name:
-                player_id_raw = occ.get("player_id")
-                player_id: uuid.UUID | str | None
-                if isinstance(player_id_raw, (uuid.UUID, str)) or player_id_raw is None:
-                    player_id = player_id_raw
-                else:
-                    player_id = str(player_id_raw)
-                occupant_names.append(format_occupant_display_name(str(name), player_id, connection_manager))
+            name_obj = occ.get("player_name") or occ.get("name")
+            if not isinstance(name_obj, str):
+                continue
+            player_id_raw = occ.get("player_id")
+            player_id: uuid.UUID | str | None
+            if isinstance(player_id_raw, uuid.UUID | str) or player_id_raw is None:
+                player_id = player_id_raw
+            else:
+                player_id = str(player_id_raw)
+            occupant_names.append(format_occupant_display_name(name_obj, player_id, connection_manager))
     except (AttributeError, KeyError, TypeError, ValueError) as e:
         logger.error("Error transforming room occupants", room_id=room_id, error=str(e))
     return occupant_names

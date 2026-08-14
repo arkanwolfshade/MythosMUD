@@ -319,13 +319,13 @@ class SkillService:
             current = value_by_skill.get(skill_id)
             if current is None:
                 continue
-            roll = random.randint(1, 100)
+            roll = random.randint(1, 100)  # nosec B311  # game skill check, not crypto
             if roll <= current:
                 continue
             if current >= 90:
                 gain = 1
             else:
-                gain = random.randint(1, 10)
+                gain = random.randint(1, 10)  # nosec B311  # game skill gain, not crypto
             new_value = min(MAX_SKILL_VALUE, current + gain)
             await self._player_skill_repo.update_value(player_id, skill_id, new_value)
             self._logger.info(
@@ -356,7 +356,7 @@ class SkillService:
         skill_value = value_by_skill.get(skill_id)
         if skill_value is None:
             return False
-        roll = random.randint(1, 100)
+        roll = random.randint(1, 100)  # nosec B311  # game skill check, not crypto
         success = roll <= skill_value
         if success:
             await self.record_successful_skill_use(

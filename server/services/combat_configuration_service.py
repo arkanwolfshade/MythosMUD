@@ -67,34 +67,29 @@ class CombatConfiguration:  # pylint: disable=too-many-instance-attributes  # Re
 
     def validate(self) -> list[str]:
         """Validate configuration and return list of errors."""
-        errors = []
-
-        if self.combat_tick_interval < 1 or self.combat_tick_interval > 60:
-            errors.append("Combat tick interval must be between 1 and 60 seconds")
-
-        if self.combat_timeout_seconds < 60 or self.combat_timeout_seconds > 1800:
-            errors.append("Combat timeout must be between 60 and 1800 seconds")
+        errors: list[str] = []
+        int_checks = (
+            ("combat_tick_interval", 1, 60, "Combat tick interval must be between 1 and 60 seconds"),
+            ("combat_timeout_seconds", 60, 1800, "Combat timeout must be between 60 and 1800 seconds"),
+            ("combat_alert_threshold", 1, 100, "Alert threshold must be between 1 and 100"),
+            (
+                "combat_performance_threshold",
+                100,
+                5000,
+                "Performance threshold must be between 100 and 5000 milliseconds",
+            ),
+            ("combat_error_threshold", 1, 50, "Error threshold must be between 1 and 50"),
+            ("combat_max_participants", 2, 50, "Max participants must be between 2 and 50"),
+            ("combat_auto_cleanup_interval", 60, 3600, "Auto cleanup interval must be between 60 and 3600 seconds"),
+            ("combat_event_retention_hours", 1, 168, "Event retention must be between 1 and 168 hours"),
+        )
+        for field_name, minimum, maximum, message in int_checks:
+            value = getattr(self, field_name)
+            if value < minimum or value > maximum:
+                errors.append(message)
 
         if self.combat_xp_multiplier < 1.0 or self.combat_xp_multiplier > 5.0:
             errors.append("XP multiplier must be between 1.0 and 5.0")
-
-        if self.combat_alert_threshold < 1 or self.combat_alert_threshold > 100:
-            errors.append("Alert threshold must be between 1 and 100")
-
-        if self.combat_performance_threshold < 100 or self.combat_performance_threshold > 5000:
-            errors.append("Performance threshold must be between 100 and 5000 milliseconds")
-
-        if self.combat_error_threshold < 1 or self.combat_error_threshold > 50:
-            errors.append("Error threshold must be between 1 and 50")
-
-        if self.combat_max_participants < 2 or self.combat_max_participants > 50:
-            errors.append("Max participants must be between 2 and 50")
-
-        if self.combat_auto_cleanup_interval < 60 or self.combat_auto_cleanup_interval > 3600:
-            errors.append("Auto cleanup interval must be between 60 and 3600 seconds")
-
-        if self.combat_event_retention_hours < 1 or self.combat_event_retention_hours > 168:
-            errors.append("Event retention must be between 1 and 168 hours")
 
         return errors
 

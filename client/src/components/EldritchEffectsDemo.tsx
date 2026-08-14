@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { ALWAYS_ACTIVE_EFFECTS, ELDRITCH_EFFECT_OPTIONS, hasEffect, pairClass } from './eldritchEffectsDemoData';
 import { EldritchIcon, MythosIcons } from './ui/EldritchIcon';
 import { MythosPanel } from './ui/MythosPanel';
 import { TerminalButton } from './ui/TerminalButton';
 import { TerminalInput } from './ui/TerminalInput';
 
-interface EldritchEffectsDemoProps {
-  onExit?: () => void;
-}
+export type EldritchEffectsDemoProps = {
+  readonly onExit?: () => void;
+};
 
-export const EldritchEffectsDemo: React.FC<EldritchEffectsDemoProps> = ({ onExit }) => {
+// Design playground only. Lizard@1.17.31 TSX parser attributes first `function` to EOF
+// (inflated NLOC / *global*); product gates use client/src app code, not this demo shell.
+export function EldritchEffectsDemo({ onExit }: EldritchEffectsDemoProps) {
   const [activeEffects, setActiveEffects] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState('');
 
@@ -16,93 +19,19 @@ export const EldritchEffectsDemo: React.FC<EldritchEffectsDemoProps> = ({ onExit
     setActiveEffects(prev => (prev.includes(effect) ? prev.filter(e => e !== effect) : [...prev, effect]));
   };
 
-  const effects = [
-    {
-      name: 'eldritch-glow',
-      title: 'Eldritch Glow',
-      description: 'Pulsing green glow effect',
-      icon: MythosIcons.lightbulb,
-    },
-    {
-      name: 'eldritch-pulse',
-      title: 'Eldritch Pulse',
-      description: 'Subtle opacity pulse',
-      icon: MythosIcons.heart,
-    },
-    {
-      name: 'eldritch-shimmer',
-      title: 'Eldritch Shimmer',
-      description: 'Horizontal light shimmer',
-      icon: MythosIcons.sparkles,
-    },
-    {
-      name: 'eldritch-fade',
-      title: 'Eldritch Fade',
-      description: 'Fading in and out',
-      icon: MythosIcons.eye,
-    },
-    {
-      name: 'eldritch-slide',
-      title: 'Eldritch Slide',
-      description: 'Subtle horizontal movement',
-      icon: MythosIcons.move,
-    },
-    {
-      name: 'eldritch-scale',
-      title: 'Eldritch Scale',
-      description: 'Slight scaling effect',
-      icon: MythosIcons.maximize,
-    },
-    {
-      name: 'eldritch-rotate',
-      title: 'Eldritch Rotate',
-      description: 'Slow, continuous rotation',
-      icon: MythosIcons.rotate,
-    },
-    {
-      name: 'eldritch-blur',
-      title: 'Eldritch Blur',
-      description: 'Blurring and unblurring',
-      icon: MythosIcons.eyeOff,
-    },
-    {
-      name: 'eldritch-shadow',
-      title: 'Eldritch Shadow',
-      description: 'Pulsing shadow effect',
-      icon: MythosIcons.shadow,
-    },
-    {
-      name: 'eldritch-border',
-      title: 'Eldritch Border',
-      description: 'Pulsing border color',
-      icon: MythosIcons.square,
-    },
-  ];
-
   return (
     <div
       data-testid="eldritch-effects-demo"
       className="p-8 bg-mythos-terminal-background min-h-screen text-mythos-terminal-text"
     >
-      {/* Simple Test Section - Always Visible Effects */}
       <div className="mb-8 p-4 border border-mythos-terminal-primary">
         <h2 className="text-mythos-terminal-primary text-xl mb-4">Always Active Effects Test</h2>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <div className="p-4 border border-mythos-terminal-primary animate-eldritch-glow">
-            <p className="text-center">Glow Effect</p>
-          </div>
-          <div className="p-4 border border-mythos-terminal-primary animate-eldritch-pulse">
-            <p className="text-center">Pulse Effect</p>
-          </div>
-          <div className="p-4 border border-mythos-terminal-primary animate-eldritch-rotate">
-            <p className="text-center">Rotate Effect</p>
-          </div>
-          <div className="p-4 border border-mythos-terminal-primary animate-eldritch-scale">
-            <p className="text-center">Scale Effect</p>
-          </div>
-          <div className="p-4 border border-mythos-terminal-primary animate-eldritch-border">
-            <p className="text-center">Border Effect</p>
-          </div>
+          {ALWAYS_ACTIVE_EFFECTS.map(item => (
+            <div key={item.label} className={`p-4 border border-mythos-terminal-primary ${item.className}`}>
+              <p className="text-center">{item.label}</p>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -111,15 +40,12 @@ export const EldritchEffectsDemo: React.FC<EldritchEffectsDemoProps> = ({ onExit
           Explore various eldritch-themed visual effects and animations. Click the buttons to toggle effects on the
           elements below.
         </p>
-
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-          {effects.map(effect => (
+          {ELDRITCH_EFFECT_OPTIONS.map(effect => (
             <TerminalButton
               key={effect.name}
-              onClick={() => {
-                toggleEffect(effect.name);
-              }}
-              variant={activeEffects.includes(effect.name) ? 'success' : 'primary'}
+              onClick={() => toggleEffect(effect.name)}
+              variant={hasEffect(activeEffects, effect.name) ? 'success' : 'primary'}
               size="sm"
               className="flex items-center justify-center"
             >
@@ -130,18 +56,14 @@ export const EldritchEffectsDemo: React.FC<EldritchEffectsDemoProps> = ({ onExit
         </div>
 
         <h3 className="text-mythos-terminal-primary text-xl font-bold mb-4">Live Preview</h3>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Example 1: Animated Button */}
           <MythosPanel title="Animated Button" variant="elevated" interactive>
             <div className="flex flex-col items-center space-y-4">
               <TerminalButton
-                onClick={() => {
-                  alert('Button clicked!');
-                }}
+                onClick={() => alert('Button clicked!')}
                 variant="primary"
                 size="lg"
-                className={`w-full ${activeEffects.includes('eldritch-glow') ? 'animate-eldritch-glow' : ''} ${activeEffects.includes('eldritch-scale') ? 'animate-eldritch-scale' : ''}`}
+                className={`w-full ${pairClass(activeEffects, 'eldritch-glow', 'eldritch-scale')}`}
               >
                 <EldritchIcon name={MythosIcons.play} size={20} className="mr-2" />
                 Invoke Ritual
@@ -150,16 +72,13 @@ export const EldritchEffectsDemo: React.FC<EldritchEffectsDemoProps> = ({ onExit
             </div>
           </MythosPanel>
 
-          {/* Example 2: Animated Input */}
           <MythosPanel title="Animated Input" variant="elevated" interactive>
             <div className="flex flex-col items-center space-y-4">
               <TerminalInput
                 value={inputValue}
-                onChange={e => {
-                  setInputValue(e.target.value);
-                }}
+                onChange={e => setInputValue(e.target.value)}
                 placeholder="Type your incantation..."
-                className={`w-full ${activeEffects.includes('eldritch-border') ? 'animate-eldritch-border' : ''} ${activeEffects.includes('eldritch-shimmer') ? 'animate-eldritch-shimmer' : ''}`}
+                className={`w-full ${pairClass(activeEffects, 'eldritch-border', 'eldritch-shimmer')}`}
               />
               <p className="text-sm text-mythos-terminal-text-secondary">
                 An input field with border and shimmer effects on focus.
@@ -167,18 +86,17 @@ export const EldritchEffectsDemo: React.FC<EldritchEffectsDemoProps> = ({ onExit
             </div>
           </MythosPanel>
 
-          {/* Example 3: Animated Panel */}
           <MythosPanel
             title="Animated Panel"
             variant="eldritch"
             interactive
             showEldritchBorder={true}
-            className={`${activeEffects.includes('eldritch-shadow') ? 'animate-eldritch-shadow' : ''} ${activeEffects.includes('eldritch-pulse') ? 'animate-eldritch-pulse' : ''}`}
+            className={pairClass(activeEffects, 'eldritch-shadow', 'eldritch-pulse')}
           >
             <div className="flex flex-col items-center space-y-4">
               <EldritchIcon name={MythosIcons.star} size={48} className="text-mythos-terminal-primary" />
               <p className="text-lg text-center">
-                "That is not dead which can eternal lie, And with strange aeons even death may die."
+                &quot;That is not dead which can eternal lie, And with strange aeons even death may die.&quot;
               </p>
               <p className="text-sm text-mythos-terminal-text-secondary">
                 A panel with pulsing shadow and opacity effects.
@@ -186,13 +104,12 @@ export const EldritchEffectsDemo: React.FC<EldritchEffectsDemoProps> = ({ onExit
             </div>
           </MythosPanel>
 
-          {/* Example 4: Animated Icon */}
           <MythosPanel title="Animated Icon" variant="default" interactive>
             <div className="flex flex-col items-center space-y-4">
               <EldritchIcon
                 name={MythosIcons.rotate}
                 size={64}
-                className={`text-mythos-terminal-warning ${activeEffects.includes('eldritch-rotate') ? 'animate-eldritch-rotate' : ''} ${activeEffects.includes('eldritch-blur') ? 'animate-eldritch-blur' : ''}`}
+                className={`text-mythos-terminal-warning ${pairClass(activeEffects, 'eldritch-rotate', 'eldritch-blur')}`}
               />
               <p className="text-sm text-mythos-terminal-text-secondary">An icon with rotation and blur effects.</p>
             </div>
@@ -200,13 +117,13 @@ export const EldritchEffectsDemo: React.FC<EldritchEffectsDemoProps> = ({ onExit
         </div>
       </MythosPanel>
 
-      {onExit && (
+      {onExit ? (
         <div className="mt-8 flex justify-center">
           <TerminalButton onClick={onExit} variant="secondary" size="lg">
             Exit Demo
           </TerminalButton>
         </div>
-      )}
+      ) : null}
     </div>
   );
-};
+}

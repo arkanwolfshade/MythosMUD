@@ -44,6 +44,11 @@ def is_client_disconnected_exception(exc: BaseException) -> bool:
     """True if the exception indicates the client disconnected (tab close, navigate away, E2E)."""
     if isinstance(exc, WebSocketDisconnect):
         return True
+    # uvicorn raises ClientDisconnected when the peer already dropped the socket.
+    if type(exc).__name__ in ("ClientDisconnected", "ConnectionClosed", "ConnectionClosedError"):
+        return True
+    if isinstance(exc, (ConnectionError, OSError, TimeoutError)):
+        return True
     if isinstance(exc, RuntimeError):
         return is_websocket_disconnect_message(str(exc))
     return False

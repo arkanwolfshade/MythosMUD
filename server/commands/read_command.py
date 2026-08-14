@@ -128,6 +128,33 @@ def _list_spells_in_book(spell_registry: Any, spells_in_book: list[str], item_na
     }
 
 
+async def _process_spellbook_read(
+    app: Any,
+    spell_learning_service: Any,
+    player: Any,
+    item_name: str,
+    spell_name: str | None,
+) -> dict[str, str]:
+    item_found = _find_item_in_inventory(player, item_name)
+    spells_in_book, error = _validate_spellbook(item_found, item_name)
+    if error:
+        return error
+
+    if item_found is None or spells_in_book is None:
+        return {"result": f"'{item_name}' not found or invalid."}
+
+    spell_registry = getattr(app.state, "spell_registry", None)
+    if spell_name:
+        return await _learn_specific_spell(
+            spell_learning_service, spell_registry, player, item_found, spell_name, spells_in_book
+        )
+
+    if len(spells_in_book) == 1:
+        return await _learn_single_spell(spell_learning_service, spell_registry, player, item_found, spells_in_book[0])
+
+    return _list_spells_in_book(spell_registry, spells_in_book, item_name)
+
+
 async def handle_read_command(  # pylint: disable=too-many-arguments,too-many-locals  # Reason: Read command requires many parameters and intermediate variables for complex item reading logic
     command_data: dict[str, Any],
     current_user: dict[str, Any],
@@ -178,28 +205,7 @@ async def handle_read_command(  # pylint: disable=too-many-arguments,too-many-lo
     spell_name = args[1] if len(args) > 1 else None
 
     try:
-        item_found = _find_item_in_inventory(player, item_name)
-        spells_in_book, error = _validate_spellbook(item_found, item_name)
-        if error:
-            return error
-
-        if item_found is None or spells_in_book is None:
-            return {"result": f"'{item_name}' not found or invalid."}
-
-        spell_registry = getattr(app.state, "spell_registry", None)
-
-        if spell_name:
-            return await _learn_specific_spell(
-                spell_learning_service, spell_registry, player, item_found, spell_name, spells_in_book
-            )
-
-        if len(spells_in_book) == 1:
-            return await _learn_single_spell(
-                spell_learning_service, spell_registry, player, item_found, spells_in_book[0]
-            )
-
-        return _list_spells_in_book(spell_registry, spells_in_book, item_name)
-
+        return await _process_spellbook_read(app, spell_learning_service, player, item_name, spell_name)
     except (ValueError, KeyError, TypeError) as e:
         logger.error("Error reading spellbook", player_name=player_name, item_name=item_name, error=str(e))
         return {"result": f"An error occurred while reading '{item_name}': {str(e)}"}

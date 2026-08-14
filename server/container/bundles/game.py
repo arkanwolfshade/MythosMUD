@@ -130,29 +130,18 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             self.room_cache_service = None
             self.profession_cache_service = None
 
-    async def initialize(self, container: ApplicationContainer) -> None:  # pylint: disable=too-many-locals,too-many-statements  # lizard: allow NLOC=130 (DI wiring bundle; split when a second domain appears)
-        """Initialize game services. Requires Core and Realtime."""
-        self._require_core_services(container)
-        config = container.config
-        persistence = container.persistence
+    def _init_movement_layer(self, container: ApplicationContainer) -> None:
+        """Wire exploration, movement, follow, and party services."""
         async_persistence = container.async_persistence
-        database_manager = container.database_manager
         event_bus = container.event_bus
-        task_registry = container.task_registry
-        nats_message_handler = container.nats_message_handler
-
-        normalized_environment = normalize_environment(config.logging.environment)
-
-        # Movement and exploration
-        logger.debug("Initializing gameplay services...")
         from server.game.movement_service import MovementService
         from server.services.exploration_service import ExplorationService
 
-        self.exploration_service = ExplorationService(database_manager=database_manager)
+        self.exploration_service = ExplorationService(database_manager=container.database_manager)
         from server.game.instance_manager import InstanceManager
 
         instance_manager = InstanceManager(
-            room_cache=async_persistence._room_cache,  # pylint: disable=protected-access  # Reason: InstanceManager needs shared room cache reference for template lookup
+            room_cache=async_persistence._room_cache,  # pylint: disable=protected-access  # Reason: shared room cache for templates
             event_bus=event_bus,
         )
         async_persistence.set_instance_manager(instance_manager)
@@ -168,15 +157,11 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
 
         connection_manager = getattr(container, "connection_manager", None)
         alias_storage = getattr(container, "alias_storage", None)
-        self.player_position_service = PlayerPositionService(
-            async_persistence,
-            connection_manager,
-            alias_storage,
-        )
+        self.player_position_service = PlayerPositionService(async_persistence, connection_manager, alias_storage)
         self.follow_service = FollowService(
             event_bus=event_bus,
             movement_service=self.movement_service,
-            user_manager=None,  # Set below after user_manager is created
+            user_manager=None,
             connection_manager=connection_manager,
             async_persistence=async_persistence,
             player_position_service=self.player_position_service,
@@ -190,8 +175,9 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         )
         logger.info("Exploration, movement, follow and party services initialized")
 
-        # Temporal services
-        logger.debug("Initializing temporal services...")
+    def _init_temporal_layer(self, container: ApplicationContainer, normalized_environment: str) -> None:
+        """Wire holiday/schedule services and Mythos tick scheduler."""
+        async_persistence = container.async_persistence
         from server.services.holiday_service import HolidayService
         from server.services.schedule_service import ScheduleService
         from server.time.time_service import get_mythos_chronicle
@@ -213,33 +199,46 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             holiday_count=len(self.holiday_service.collection.holidays),
             schedule_entries=self.schedule_service.entry_count if self.schedule_service else 0,
         )
-
         from server.time.tick_scheduler import MythosTickScheduler
 
         self.mythos_tick_scheduler = MythosTickScheduler(
             chronicle=get_mythos_chronicle(),
-            event_bus=event_bus,
-            task_registry=task_registry,
+            event_bus=container.event_bus,
+            task_registry=container.task_registry,
             holiday_resolver=self._resolve_hourly_holidays,
         )
         logger.info("Mythos tick scheduler prepared")
 
-        # Game services
-        logger.debug("Initializing game services...")
+    def _init_quest_service(self, container: ApplicationContainer) -> None:
+        from server.game.quest import QuestService
+        from server.persistence.repositories.quest_definition_repository import QuestDefinitionRepository
+        from server.persistence.repositories.quest_instance_repository import QuestInstanceRepository
+
+        self.quest_definition_repository = QuestDefinitionRepository()
+        self.quest_instance_repository = QuestInstanceRepository()
+        self.quest_service = QuestService(
+            quest_definition_repository=self.quest_definition_repository,
+            quest_instance_repository=self.quest_instance_repository,
+            level_service=self.level_service,
+            spell_learning_service=None,
+            inventory_service=self.container_service,
+            event_bus=getattr(container, "event_bus", None),
+            async_persistence=container.async_persistence,
+        )
+
+    def _init_player_quest_layer(self, container: ApplicationContainer, normalized_environment: str) -> None:
+        """Wire player/room/user, container, skill, level, and quest services."""
+        persistence = container.persistence
+        async_persistence = container.async_persistence
         from server.game.player_service import PlayerService
         from server.game.room_service import RoomService
         from server.services.user_manager import UserManager
 
-        self.player_service = PlayerService(
-            persistence=persistence,
-            instance_manager=self.instance_manager,
-        )
+        self.player_service = PlayerService(persistence=persistence, instance_manager=self.instance_manager)
         self.room_service = RoomService(persistence=persistence)
-
         user_management_dir = get_environment_data_dir(normalized_environment) / "user_management"
         self.user_manager = UserManager(data_dir=user_management_dir)
-        self._wire_user_manager_after_init(self.follow_service, nats_message_handler, self.user_manager)
-
+        self._wire_user_manager_after_init(self.follow_service, container.nats_message_handler, self.user_manager)
         from server.services.container_service import ContainerService
 
         self.container_service = ContainerService(persistence=persistence)
@@ -264,33 +263,24 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             async_persistence=async_persistence,
             level_up_hook=_skill_improvement_on_level_up,
         )
-
-        from server.game.quest import QuestService
-        from server.persistence.repositories.quest_definition_repository import QuestDefinitionRepository
-        from server.persistence.repositories.quest_instance_repository import QuestInstanceRepository
-
-        self.quest_definition_repository = QuestDefinitionRepository()
-        self.quest_instance_repository = QuestInstanceRepository()
-        self.quest_service = QuestService(
-            quest_definition_repository=self.quest_definition_repository,
-            quest_instance_repository=self.quest_instance_repository,
-            level_service=self.level_service,
-            spell_learning_service=None,  # Wired in container main after Magic bundle
-            inventory_service=self.container_service,
-            event_bus=getattr(container, "event_bus", None),
-            async_persistence=async_persistence,
-        )
-
+        self._init_quest_service(container)
         logger.info("Container, level, skill and quest services initialized")
-        logger.info("Game services initialized")
 
-        # Item services
+    async def initialize(self, container: ApplicationContainer) -> None:
+        """Initialize game services. Requires Core and Realtime."""
+        self._require_core_services(container)
+        normalized_environment = normalize_environment(container.config.logging.environment)
+        logger.debug("Initializing gameplay services...")
+        self._init_movement_layer(container)
+        logger.debug("Initializing temporal services...")
+        self._init_temporal_layer(container, normalized_environment)
+        logger.debug("Initializing game services...")
+        self._init_player_quest_layer(container, normalized_environment)
+        logger.info("Game services initialized")
         await self._initialize_item_services(container)
         self._wire_item_registry_to_player_service()
-
-        # Caching
         logger.debug("Initializing caching services...")
-        self._initialize_caching_services(persistence)
+        self._initialize_caching_services(container.persistence)
 
     def _handle_item_prototypes_db_error(self, exc: Exception) -> None:
         """On SQLAlchemyError: log, optionally warn about schema/DDL, and clear item registry/factory."""

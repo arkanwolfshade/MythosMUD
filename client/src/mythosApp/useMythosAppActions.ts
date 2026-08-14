@@ -13,10 +13,8 @@ import type { useMythosAppState } from './useMythosAppState.ts';
 
 type AppState = ReturnType<typeof useMythosAppState>;
 
-export function useMythosAppActions(state: AppState) {
-  const { disconnectCallbackRef } = state;
-
-  const returnToLogin = useCallback(() => {
+function useReturnToLogin(state: AppState) {
+  return useCallback(() => {
     state.setIsAuthenticated(false);
     state.setCharacters([]);
     state.setSelectedCharacterName('');
@@ -28,27 +26,30 @@ export function useMythosAppActions(state: AppState) {
     secureTokenStorage.clearAllTokens();
     state.setError('Server is unavailable. Please try again later.');
   }, [state]);
+}
 
-  const focusUsernameInput = useCallback(() => {
-    setTimeout(() => {
-      if (state.usernameInputRef.current) {
-        state.usernameInputRef.current.focus();
-      }
-    }, 0);
+function useFocusUsername(state: AppState) {
+  return useCallback(() => {
+    setTimeout(() => state.usernameInputRef.current?.focus(), 0);
   }, [state.usernameInputRef]);
+}
 
-  const deleteCharacterDeps = useMemo(
-    () => ({
-      returnToLogin,
-      setCharacters: state.setCharacters,
-      setShowCharacterSelection: state.setShowCharacterSelection,
-      setCreationStep: state.setCreationStep,
-      setSelectedProfession: state.setSelectedProfession,
-      setError: state.setError,
-    }),
+function useServerErrorHandler(state: AppState, returnToLogin: () => void) {
+  return useCallback(
+    (err: string, onRecoverable?: () => void) => {
+      if (stringIndicatesServerUnavailable(err)) {
+        returnToLogin();
+        return;
+      }
+      state.setError(err);
+      onRecoverable?.();
+    },
     [returnToLogin, state]
   );
+}
 
+function useCreationHandlers(state: AppState, returnToLogin: () => void) {
+  const handleServerError = useServerErrorHandler(state, returnToLogin);
   const creationCompleteActions = useMemo(
     () => ({
       returnToLogin,
@@ -70,22 +71,8 @@ export function useMythosAppActions(state: AppState) {
     },
     [state]
   );
-
-  const handleProfessionSelectionBack = useCallback(() => {
-    state.setCreationStep('stats');
-  }, [state]);
-
-  const handleProfessionSelectionError = useCallback(
-    (err: string) => {
-      if (stringIndicatesServerUnavailable(err)) {
-        returnToLogin();
-        return;
-      }
-      state.setError(err);
-    },
-    [returnToLogin, state]
-  );
-
+  const handleProfessionSelectionBack = useCallback(() => state.setCreationStep('stats'), [state]);
+  const handleProfessionSelectionError = useCallback((err: string) => handleServerError(err), [handleServerError]);
   const handleStatsAccepted = useCallback(
     (stats: Stats) => {
       state.setPendingStats(stats);
@@ -93,32 +80,49 @@ export function useMythosAppActions(state: AppState) {
     },
     [state]
   );
-
   const handleCreationComplete = useCallback(async () => {
     await runAfterCharacterCreatedFlow(state.authToken, creationCompleteActions);
   }, [state.authToken, creationCompleteActions]);
-
   const handleStatsError = useCallback(
-    (err: string) => {
-      if (stringIndicatesServerUnavailable(err)) {
-        returnToLogin();
-        return;
-      }
-      state.setError(err);
-      state.setSelectedProfession(undefined);
-      state.setCreationStep(null);
-    },
-    [returnToLogin, state]
+    (err: string) =>
+      handleServerError(err, () => {
+        state.setSelectedProfession(undefined);
+        state.setCreationStep(null);
+      }),
+    [handleServerError, state]
   );
-
   const handleStatsRollingBack = useCallback(() => {
     state.setCreationStep(null);
     if (state.characters.length > 0) {
       state.setShowCharacterSelection(true);
-    } else {
-      returnToLogin();
+      return;
     }
+    returnToLogin();
   }, [returnToLogin, state]);
+
+  return {
+    handleProfessionSelected,
+    handleProfessionSelectionBack,
+    handleProfessionSelectionError,
+    handleStatsAccepted,
+    handleCreationComplete,
+    handleStatsError,
+    handleStatsRollingBack,
+  };
+}
+
+function useCharacterHandlers(state: AppState, returnToLogin: () => void) {
+  const deleteCharacterDeps = useMemo(
+    () => ({
+      returnToLogin,
+      setCharacters: state.setCharacters,
+      setShowCharacterSelection: state.setShowCharacterSelection,
+      setCreationStep: state.setCreationStep,
+      setSelectedProfession: state.setSelectedProfession,
+      setError: state.setError,
+    }),
+    [returnToLogin, state]
+  );
 
   const handleCharacterSelected = useCallback(
     async (characterId: string) => {
@@ -164,18 +168,16 @@ export function useMythosAppActions(state: AppState) {
     state.setSelectedCharacterId('');
   }, [state]);
 
+  return { handleCharacterSelected, handleDeleteCharacter, handleCreateCharacter };
+}
+
+function useMotdAndLogoutHandlers(state: AppState, returnToLogin: () => void, focusUsernameInput: () => void) {
   const handleMotdContinue = useCallback(async () => {
     if (!state.authToken) {
+      returnToLogin();
       state.setError('Authentication token is missing. Please log in again.');
-      state.setIsAuthenticated(false);
-      state.setCharacters([]);
-      state.setSelectedCharacterName('');
-      state.setSelectedCharacterId('');
-      state.setShowMotd(false);
-      state.setShowCharacterSelection(false);
       return;
     }
-
     if (state.selectedCharacterId) {
       try {
         await tryStartLoginGracePeriod(state.authToken, state.selectedCharacterId);
@@ -187,7 +189,6 @@ export function useMythosAppActions(state: AppState) {
         console.warn('Error starting login grace period:', error);
       }
     }
-
     state.setShowMotd(false);
   }, [returnToLogin, state]);
 
@@ -206,17 +207,8 @@ export function useMythosAppActions(state: AppState) {
     focusUsernameInput();
   }, [focusUsernameInput, state]);
 
-  const handleDisconnectCallback = useCallback(
-    (disconnectFn: () => void) => {
-      disconnectCallbackRef.current = disconnectFn;
-    },
-    [disconnectCallbackRef]
-  );
-
   const handleLogout = useCallback(async () => {
-    if (state.isLoggingOut) {
-      return;
-    }
+    if (state.isLoggingOut) return;
     state.setIsLoggingOut(true);
     state.setError(null);
 
@@ -252,6 +244,10 @@ export function useMythosAppActions(state: AppState) {
     }
   }, [focusUsernameInput, state]);
 
+  return { handleMotdContinue, handleMotdReturnToLogin, handleLogout };
+}
+
+function useAuthUiHandlers(state: AppState) {
   const toggleMode = useCallback(() => {
     state.setIsRegistering(v => !v);
     state.setError(null);
@@ -262,37 +258,37 @@ export function useMythosAppActions(state: AppState) {
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      if (event.key !== 'Enter' || !state.playerName.trim() || !state.password.trim()) {
-        return;
-      }
-      if (state.isRegistering && !state.inviteCode.trim()) {
-        return;
-      }
-      if (state.isRegistering) {
-        void state.handleRegisterClick();
-      } else {
-        void state.handleLoginClick();
-      }
+      if (event.key !== 'Enter' || !state.playerName.trim() || !state.password.trim()) return;
+      if (state.isRegistering && !state.inviteCode.trim()) return;
+      if (state.isRegistering) void state.handleRegisterClick();
+      else void state.handleLoginClick();
     },
     [state]
   );
 
+  const disconnectCallbackRef = state.disconnectCallbackRef;
+  const handleDisconnectCallback = useCallback(
+    (disconnectFn: () => void) => {
+      disconnectCallbackRef.current = disconnectFn;
+    },
+    [disconnectCallbackRef]
+  );
+
+  return { toggleMode, handleKeyDown, handleDisconnectCallback };
+}
+
+export function useMythosAppActions(state: AppState) {
+  const returnToLogin = useReturnToLogin(state);
+  const focusUsernameInput = useFocusUsername(state);
+  const creationHandlers = useCreationHandlers(state, returnToLogin);
+  const characterHandlers = useCharacterHandlers(state, returnToLogin);
+  const motdHandlers = useMotdAndLogoutHandlers(state, returnToLogin, focusUsernameInput);
+  const authUiHandlers = useAuthUiHandlers(state);
+
   return {
-    handleProfessionSelected,
-    handleProfessionSelectionBack,
-    handleProfessionSelectionError,
-    handleStatsAccepted,
-    handleCreationComplete,
-    handleStatsError,
-    handleStatsRollingBack,
-    handleCharacterSelected,
-    handleDeleteCharacter,
-    handleCreateCharacter,
-    handleMotdContinue,
-    handleMotdReturnToLogin,
-    handleDisconnectCallback,
-    handleLogout,
-    toggleMode,
-    handleKeyDown,
+    ...creationHandlers,
+    ...characterHandlers,
+    ...motdHandlers,
+    ...authUiHandlers,
   };
 }

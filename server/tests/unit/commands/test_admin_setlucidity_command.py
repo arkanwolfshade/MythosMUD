@@ -197,14 +197,16 @@ async def test_apply_lucidity_change_success() -> None:
     with patch("server.commands.admin_setlucidity_command.get_admin_actions_logger") as log_cls:
         log_cls.return_value.log_admin_command = MagicMock()
         result = await cmd._apply_lucidity_change(
-            session,
-            lucidity_service,
-            target_id,
-            50,
-            75,
-            "Admin",
-            "admin-id",
-            "Alice",
+            cmd.LucidityChangeCtx(
+                session=session,
+                lucidity_service=lucidity_service,
+                target_player_id=target_id,
+                current_lcd=50,
+                target_lcd=75,
+                player_name="Admin",
+                current_user_id="admin-id",
+                target_player="Alice",
+            )
         )
     assert result is not None
     assert "75" in result["result"]
@@ -217,14 +219,16 @@ async def test_apply_lucidity_change_adjustment_error() -> None:
     lucidity_service = AsyncMock()
     lucidity_service.apply_lucidity_adjustment = AsyncMock(side_effect=DatabaseError("boom"))
     result = await cmd._apply_lucidity_change(
-        session,
-        lucidity_service,
-        uuid.uuid4(),
-        50,
-        75,
-        "Admin",
-        "admin-id",
-        "Alice",
+        cmd.LucidityChangeCtx(
+            session=session,
+            lucidity_service=lucidity_service,
+            target_player_id=uuid.uuid4(),
+            current_lcd=50,
+            target_lcd=75,
+            player_name="Admin",
+            current_user_id="admin-id",
+            target_player="Alice",
+        )
     )
     assert result is not None
     assert "Error setting lucidity" in result["result"]
@@ -423,7 +427,16 @@ async def test_apply_lucidity_change_admin_logger_failure() -> None:
     with patch("server.commands.admin_setlucidity_command.get_admin_actions_logger") as log_cls:
         log_cls.return_value.log_admin_command = MagicMock(side_effect=OSError("log disk full"))
         result = await cmd._apply_lucidity_change(
-            session, lucidity_service, target_id, 50, 60, "Admin", "admin-id", "Alice"
+            cmd.LucidityChangeCtx(
+                session=session,
+                lucidity_service=lucidity_service,
+                target_player_id=target_id,
+                current_lcd=50,
+                target_lcd=60,
+                player_name="Admin",
+                current_user_id="admin-id",
+                target_player="Alice",
+            )
         )
     assert result is not None
     assert "60" in result["result"]

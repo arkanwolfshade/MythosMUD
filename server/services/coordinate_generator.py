@@ -101,21 +101,9 @@ class CoordinateGenerator:
             "origin_room": None,  # Could return per-subzone origins if needed
         }
 
-    async def _load_rooms_data(self, plane: str, zone: str, sub_zone: str | None) -> list[dict[str, Any]]:  # pylint: disable=too-many-locals  # Reason: Room data loading requires many intermediate variables for complex data processing
-        """
-        Load rooms and their exits from database.
-
-        Args:
-            plane: Plane name
-            zone: Zone name
-            sub_zone: Optional sub-zone name
-
-        Returns:
-            List of room dictionaries with exits
-        """
-        # Build query to get rooms with their exits
-        # Use stable_id matching pattern: rooms have stable_id like "plane_zone_subzone_roomname"
+    def _rooms_query_and_pattern(self, plane: str, zone: str, sub_zone: str | None) -> tuple[Any, dict[str, str]]:
         zone_pattern = f"{plane}_{zone}"
+        pattern = f"{zone_pattern}_{sub_zone}" if sub_zone else zone_pattern
         query = text("""
             SELECT
                 r.id,
@@ -134,83 +122,65 @@ class CoordinateGenerator:
             JOIN zones z ON sz.zone_id = z.id
             WHERE r.stable_id LIKE :pattern || '%'
         """)
+        return query, {"pattern": pattern}
 
-        params = {"pattern": zone_pattern}
-        if sub_zone:
-            subzone_pattern = f"{zone_pattern}_{sub_zone}"
-            query = text("""
-                SELECT
-                    r.id,
-                    r.stable_id,
-                    r.name,
-                    r.attributes,
-                    r.map_x,
-                    r.map_y,
-                    r.map_origin_zone,
-                    r.map_symbol,
-                    r.map_style,
-                    z.stable_id as zone_stable_id,
-                    sz.stable_id as subzone_stable_id
-                FROM rooms r
-                JOIN subzones sz ON r.subzone_id = sz.id
-                JOIN zones z ON sz.zone_id = z.id
-                WHERE r.stable_id LIKE :pattern || '%'
-            """)
-            params["pattern"] = subzone_pattern
+    def _room_dict_from_row(self, row: Any) -> dict[str, Any]:
+        stable_id = row[1]
+        room_dict = {
+            "id": stable_id,
+            "uuid": str(row[0]),
+            "stable_id": stable_id,
+            "name": row[2],
+            "attributes": row[3] if row[3] else {},
+            "map_x": float(row[4]) if row[4] is not None else None,
+            "map_y": float(row[5]) if row[5] is not None else None,
+            "map_origin_zone": bool(row[6]) if row[6] is not None else False,
+            "map_symbol": row[7],
+            "map_style": row[8],
+            "zone": row[9].split("_", 1)[1] if "_" in str(row[9]) else str(row[9]),
+            "sub_zone": row[10] if row[10] else None,
+        }
+        attrs = room_dict.get("attributes", {})
+        room_dict["environment"] = attrs.get("environment") or "outdoors"
+        return room_dict
 
+    async def _attach_room_exits(self, rooms: list[dict[str, Any]]) -> None:
+        if not rooms:
+            return
+        room_uuids = [room["uuid"] for room in rooms]
+        exits_query = text("""
+            SELECT r1.stable_id as from_stable_id, r2.stable_id as to_stable_id, rl.direction
+            FROM room_links rl
+            JOIN rooms r1 ON rl.from_room_id = r1.id
+            JOIN rooms r2 ON rl.to_room_id = r2.id
+            WHERE rl.from_room_id = ANY(:room_uuids)
+        """)
+        exits_result = await self._session.execute(exits_query, {"room_uuids": room_uuids})
+        exits_by_room: dict[str, dict[str, str]] = {}
+        for row in exits_result:
+            from_stable = row[0]
+            if from_stable not in exits_by_room:
+                exits_by_room[from_stable] = {}
+            exits_by_room[from_stable][row[2]] = row[1]
+        for room in rooms:
+            room["exits"] = exits_by_room.get(room["stable_id"], {})
+
+    async def _load_rooms_data(self, plane: str, zone: str, sub_zone: str | None) -> list[dict[str, Any]]:
+        """
+        Load rooms and their exits from database.
+
+        Args:
+            plane: Plane name
+            zone: Zone name
+            sub_zone: Optional sub-zone name
+
+        Returns:
+            List of room dictionaries with exits
+        """
+        query, params = self._rooms_query_and_pattern(plane, zone, sub_zone)
         result = await self._session.execute(query, params)
-        rooms = []
-        for row in result:
-            # Use stable_id as the room identifier (not UUID)
-            stable_id = row[1]
-            room_dict = {
-                "id": stable_id,  # Use stable_id as id for coordinate generation
-                "uuid": str(row[0]),  # Keep UUID for database operations
-                "stable_id": stable_id,
-                "name": row[2],
-                "attributes": row[3] if row[3] else {},
-                "map_x": float(row[4]) if row[4] is not None else None,
-                "map_y": float(row[5]) if row[5] is not None else None,
-                "map_origin_zone": bool(row[6]) if row[6] is not None else False,
-                "map_symbol": row[7],
-                "map_style": row[8],
-                "zone": row[9].split("_", 1)[1] if "_" in str(row[9]) else str(row[9]),
-                "sub_zone": row[10] if row[10] else None,
-            }
-            # Extract environment from attributes
-            attrs = room_dict.get("attributes", {})
-            room_dict["environment"] = attrs.get("environment") or "outdoors"
-            rooms.append(room_dict)
-
-        # Load exits for these rooms
-        if rooms:
-            # Map stable_ids to UUIDs for query
-            stable_to_uuid: dict[str, str] = {r["stable_id"]: r["uuid"] for r in rooms}
-            room_uuids = list(stable_to_uuid.values())
-
-            exits_query = text("""
-                SELECT r1.stable_id as from_stable_id, r2.stable_id as to_stable_id, rl.direction
-                FROM room_links rl
-                JOIN rooms r1 ON rl.from_room_id = r1.id
-                JOIN rooms r2 ON rl.to_room_id = r2.id
-                WHERE rl.from_room_id = ANY(:room_uuids)
-            """)
-            exits_result = await self._session.execute(exits_query, {"room_uuids": room_uuids})
-
-            # Build exits dict using stable_ids
-            exits_by_room: dict[str, dict[str, str]] = {}
-            for row in exits_result:
-                from_stable = row[0]
-                to_stable = row[1]
-                direction = row[2]
-                if from_stable not in exits_by_room:
-                    exits_by_room[from_stable] = {}
-                exits_by_room[from_stable][direction] = to_stable
-
-            # Add exits to rooms
-            for room in rooms:
-                room["exits"] = exits_by_room.get(room["stable_id"], {})
-
+        rooms = [self._room_dict_from_row(row) for row in result]
+        await self._attach_room_exits(rooms)
         return rooms
 
     def _find_origin_room(self, rooms: list[dict[str, Any]]) -> dict[str, Any] | None:

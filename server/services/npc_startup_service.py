@@ -33,6 +33,31 @@ logger = get_logger(__name__)
 ARENA_ROOM_IDS: tuple[str, ...] = tuple(f"limbo_arena_arena_arena_{r}_{c}" for r in range(11) for c in range(11))
 
 
+def _new_spawn_results() -> dict[str, Any]:
+    return {"attempted": 0, "spawned": 0, "failed": 0, "errors": [], "spawned_npcs": []}
+
+
+def _record_spawned_npc(results: dict[str, Any], spawn_result: dict[str, Any], definition_id: int) -> None:
+    results["spawned"] += 1
+    results["spawned_npcs"].append(
+        {
+            "npc_id": spawn_result["npc_id"],
+            "name": spawn_result["definition_name"],
+            "room_id": spawn_result["room_id"],
+            "definition_id": definition_id,
+        }
+    )
+
+
+def _merge_phase_into_startup(startup_results: dict[str, Any], phase: dict[str, Any], phase_key: str) -> None:
+    startup_results[phase_key] = phase["spawned"]
+    startup_results["total_attempted"] += phase["attempted"]
+    startup_results["total_spawned"] += phase["spawned"]
+    startup_results["failed_spawns"] += phase["failed"]
+    startup_results["errors"].extend(phase["errors"])
+    startup_results["spawned_npcs"].extend(phase["spawned_npcs"])
+
+
 class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: Startup service class with focused responsibility, minimal public interface
     """
     Service for automatic NPC spawning during server startup.
@@ -65,7 +90,6 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
         """
         logger.info("Starting NPC startup spawning process")
 
-        # AI Agent: Explicit type annotation to help mypy understand dict structure
         startup_results: dict[str, Any] = {
             "total_attempted": 0,
             "total_spawned": 0,
@@ -78,58 +102,10 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
         }
 
         try:
-            # Get NPC instance service
             npc_instance_service = get_npc_instance_service()
-
-            # Load NPC definitions from database
             async for npc_session in get_npc_session():
                 try:
-                    # Get all NPC definitions
-                    definitions = await npc_service.get_npc_definitions(npc_session)
-                    logger.info("Found NPC definitions for startup spawning", count=len(definitions))
-
-                    # Separate required and optional NPCs
-                    required_npcs = [d for d in definitions if d.required_npc]
-                    optional_npcs = [d for d in definitions if not d.required_npc]
-
-                    logger.info(
-                        "NPCs categorized for spawning",
-                        required_count=len(required_npcs),
-                        optional_count=len(optional_npcs),
-                    )
-
-                    # Spawn required NPCs first
-                    required_results = await self._spawn_required_npcs(required_npcs, npc_instance_service)
-                    startup_results["required_spawned"] = required_results["spawned"]
-                    startup_results["total_attempted"] += required_results["attempted"]
-                    startup_results["total_spawned"] += required_results["spawned"]
-                    startup_results["failed_spawns"] += required_results["failed"]
-                    startup_results["errors"].extend(required_results["errors"])
-                    startup_results["spawned_npcs"].extend(required_results["spawned_npcs"])
-
-                    # Spawn optional NPCs based on probability
-                    optional_results = await self._spawn_optional_npcs(optional_npcs, npc_instance_service)
-                    startup_results["optional_spawned"] = optional_results["spawned"]
-                    startup_results["total_attempted"] += optional_results["attempted"]
-                    startup_results["total_spawned"] += optional_results["spawned"]
-                    startup_results["failed_spawns"] += optional_results["failed"]
-                    startup_results["errors"].extend(optional_results["errors"])
-                    startup_results["spawned_npcs"].extend(optional_results["spawned_npcs"])
-
-                    # Second pass: spawn one instance per definition that was spawned into a random arena room
-                    arena_results = await self._spawn_arena_npcs(
-                        definitions=definitions,
-                        required_results=required_results,
-                        optional_results=optional_results,
-                        npc_instance_service=npc_instance_service,
-                    )
-                    startup_results["arena_spawned"] = arena_results["spawned"]
-                    startup_results["total_attempted"] += arena_results["attempted"]
-                    startup_results["total_spawned"] += arena_results["spawned"]
-                    startup_results["failed_spawns"] += arena_results["failed"]
-                    startup_results["errors"].extend(arena_results["errors"])
-                    startup_results["spawned_npcs"].extend(arena_results["spawned_npcs"])
-
+                    await self._run_startup_pass(npc_session, npc_instance_service, startup_results)
                 except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC spawning errors unpredictable, must log and continue
                     error_msg = f"Error during startup spawning: {str(e)}"
                     logger.error(error_msg)
@@ -146,7 +122,6 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
                 failed_spawns=startup_results["failed_spawns"],
                 errors=len(startup_results["errors"]),
             )
-
             return startup_results
 
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Startup spawning errors unpredictable, must return results
@@ -154,6 +129,37 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
             logger.error(error_msg)
             startup_results["errors"].append(error_msg)
             return startup_results
+
+    async def _run_startup_pass(
+        self,
+        npc_session: Any,
+        npc_instance_service: "NPCInstanceService",
+        startup_results: dict[str, Any],
+    ) -> None:
+        definitions = await npc_service.get_npc_definitions(npc_session)
+        logger.info("Found NPC definitions for startup spawning", count=len(definitions))
+
+        required_npcs = [d for d in definitions if d.required_npc]
+        optional_npcs = [d for d in definitions if not d.required_npc]
+        logger.info(
+            "NPCs categorized for spawning",
+            required_count=len(required_npcs),
+            optional_count=len(optional_npcs),
+        )
+
+        required_results = await self._spawn_required_npcs(required_npcs, npc_instance_service)
+        _merge_phase_into_startup(startup_results, required_results, "required_spawned")
+
+        optional_results = await self._spawn_optional_npcs(optional_npcs, npc_instance_service)
+        _merge_phase_into_startup(startup_results, optional_results, "optional_spawned")
+
+        arena_results = await self._spawn_arena_npcs(
+            definitions=definitions,
+            required_results=required_results,
+            optional_results=optional_results,
+            npc_instance_service=npc_instance_service,
+        )
+        _merge_phase_into_startup(startup_results, arena_results, "arena_spawned")
 
     async def _spawn_required_npcs(
         self, required_npcs: list["NPCDefinition"], npc_instance_service: "NPCInstanceService"
@@ -168,66 +174,21 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
         Returns:
             Dictionary with spawning results
         """
-        # AI Agent: Explicit type annotation to help mypy understand dict structure
-        results: dict[str, Any] = {"attempted": 0, "spawned": 0, "failed": 0, "errors": [], "spawned_npcs": []}
-
+        results = _new_spawn_results()
         logger.info("Spawning required NPCs", count=len(required_npcs))
 
         empty_cache_error_added = False
         for npc_def in required_npcs:
             results["attempted"] += 1
-
             try:
-                # Determine spawn room
                 spawn_room = await self._determine_spawn_room(npc_def)
                 if not spawn_room:
-                    # When room cache is empty (e.g. no world data loaded), log once and at debug per NPC
-                    from ..container import ApplicationContainer
-
-                    container = ApplicationContainer.get_instance()
-                    async_persistence = getattr(container, "async_persistence", None) if container else None
-                    cache_size = len(async_persistence._room_cache) if async_persistence else -1  # pylint: disable=protected-access  # Reason: Check if empty cache to avoid per-NPC error spam
-                    if not cache_size:
-                        if not empty_cache_error_added:
-                            results["errors"].append(
-                                "Room cache empty; required NPC spawns skipped (world data not loaded)"
-                            )
-                            empty_cache_error_added = True
-                        logger.debug(
-                            "No valid spawn room for required NPC (cache empty)",
-                            npc_name=npc_def.name,
-                        )
-                    else:
-                        error_msg = f"No valid spawn room found for required NPC {npc_def.name}"
-                        logger.warning(error_msg)
-                        results["errors"].append(error_msg)
-                    results["failed"] += 1
+                    empty_cache_error_added = self._handle_required_no_room(results, npc_def, empty_cache_error_added)
                     continue
 
-                # Spawn the NPC
-                spawn_result = await npc_instance_service.spawn_npc_instance(
-                    definition_id=npc_def.id, room_id=spawn_room, reason="startup_required"
+                await self._try_spawn_npc(
+                    npc_def, spawn_room, "startup_required", npc_instance_service, results, log_level="info"
                 )
-
-                if spawn_result["success"]:
-                    results["spawned"] += 1
-                    results["spawned_npcs"].append(
-                        {
-                            "npc_id": spawn_result["npc_id"],
-                            "name": spawn_result["definition_name"],
-                            "room_id": spawn_result["room_id"],
-                            "definition_id": npc_def.id,
-                        }
-                    )
-                    logger.info("Spawned required NPC", npc_name=npc_def.name, spawn_room=spawn_room)
-                else:
-                    error_msg = (
-                        f"Failed to spawn required NPC {npc_def.name}: {spawn_result.get('message', 'Unknown error')}"
-                    )
-                    logger.error(error_msg)
-                    results["errors"].append(error_msg)
-                    results["failed"] += 1
-
             except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Required NPC spawning errors unpredictable, must log but continue
                 error_msg = f"Error spawning required NPC {npc_def.name}: {str(e)}"
                 logger.error(error_msg)
@@ -236,6 +197,55 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
 
         logger.info("Required NPC spawning completed", spawned=results["spawned"], attempted=results["attempted"])
         return results
+
+    def _handle_required_no_room(
+        self, results: dict[str, Any], npc_def: "NPCDefinition", empty_cache_error_added: bool
+    ) -> bool:
+        from ..container import ApplicationContainer
+
+        container = ApplicationContainer.get_instance()
+        async_persistence = getattr(container, "async_persistence", None) if container else None
+        cache_size = len(async_persistence._room_cache) if async_persistence else -1  # pylint: disable=protected-access  # Reason: Check if empty cache to avoid per-NPC error spam
+        if not cache_size:
+            if not empty_cache_error_added:
+                results["errors"].append("Room cache empty; required NPC spawns skipped (world data not loaded)")
+                empty_cache_error_added = True
+            logger.debug("No valid spawn room for required NPC (cache empty)", npc_name=npc_def.name)
+        else:
+            error_msg = f"No valid spawn room found for required NPC {npc_def.name}"
+            logger.warning(error_msg)
+            results["errors"].append(error_msg)
+        results["failed"] += 1
+        return empty_cache_error_added
+
+    async def _try_spawn_npc(
+        self,
+        npc_def: "NPCDefinition",
+        spawn_room: str,
+        reason: str,
+        npc_instance_service: "NPCInstanceService",
+        results: dict[str, Any],
+        log_level: str = "info",
+    ) -> None:
+        spawn_result = await npc_instance_service.spawn_npc_instance(
+            definition_id=npc_def.id, room_id=spawn_room, reason=reason
+        )
+        if spawn_result["success"]:
+            _record_spawned_npc(results, spawn_result, npc_def.id)
+            if log_level == "info":
+                logger.info("Spawned required NPC", npc_name=npc_def.name, spawn_room=spawn_room)
+            else:
+                logger.info("Spawned optional NPC", npc_name=npc_def.name, spawn_room=spawn_room)
+            return
+
+        message = spawn_result.get("message", "Unknown error")
+        if log_level == "info":
+            error_msg = f"Failed to spawn required NPC {npc_def.name}: {message}"
+            logger.error(error_msg)
+            results["errors"].append(error_msg)
+        else:
+            logger.warning("Failed to spawn optional NPC", npc_name=npc_def.name, error_message=message)
+        results["failed"] += 1
 
     async def _spawn_optional_npcs(
         self, optional_npcs: list["NPCDefinition"], npc_instance_service: "NPCInstanceService"
@@ -250,57 +260,28 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
         Returns:
             Dictionary with spawning results
         """
-        # AI Agent: Explicit type annotation to help mypy understand dict structure
-        results: dict[str, Any] = {"attempted": 0, "spawned": 0, "failed": 0, "errors": [], "spawned_npcs": []}
-
+        results = _new_spawn_results()
         logger.info("Evaluating optional NPCs for spawning", count=len(optional_npcs))
 
         for npc_def in optional_npcs:
-            # Check spawn probability
             spawn_probability = getattr(npc_def, "spawn_probability", 1.0)
             if random.random() > spawn_probability:  # nosec B311 - Game mechanics, not security-critical
                 logger.debug("Skipping optional NPC", npc_name=npc_def.name, probability=spawn_probability)
                 continue
 
             results["attempted"] += 1
-
             try:
-                # Determine spawn room
                 spawn_room = await self._determine_spawn_room(npc_def)
                 if not spawn_room:
                     logger.debug("No valid spawn room found for optional NPC", npc_name=npc_def.name)
                     continue
 
-                # Check population limits (this would need to be implemented in the population controller)
-                # For now, we'll skip this check and let the spawning service handle it
-
-                # Spawn the NPC
-                spawn_result = await npc_instance_service.spawn_npc_instance(
-                    definition_id=npc_def.id, room_id=spawn_room, reason="startup_optional"
+                await self._try_spawn_npc(
+                    npc_def, spawn_room, "startup_optional", npc_instance_service, results, log_level="warning"
                 )
-
-                if spawn_result["success"]:
-                    results["spawned"] += 1
-                    results["spawned_npcs"].append(
-                        {
-                            "npc_id": spawn_result["npc_id"],
-                            "name": spawn_result["definition_name"],
-                            "room_id": spawn_result["room_id"],
-                            "definition_id": npc_def.id,
-                        }
-                    )
-                    logger.info("Spawned optional NPC", npc_name=npc_def.name, spawn_room=spawn_room)
-                else:
-                    logger.warning(
-                        "Failed to spawn optional NPC",
-                        npc_name=npc_def.name,
-                        error_message=spawn_result.get("message", "Unknown error"),
-                    )
-                    results["failed"] += 1
-
             except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Optional NPC spawning errors unpredictable, must log but continue
                 error_msg = f"Error spawning optional NPC {npc_def.name}: {str(e)}"
-                logger.warning(error_msg)  # Use warning for optional NPCs
+                logger.warning(error_msg)
                 results["errors"].append(error_msg)
                 results["failed"] += 1
 
@@ -320,8 +301,7 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
         Room cache is warmed before this pass so arena rooms are available. Population caps may
         prevent a second instance for some definitions; failures are logged and counted.
         """
-        results: dict[str, Any] = {"attempted": 0, "spawned": 0, "failed": 0, "errors": [], "spawned_npcs": []}
-
+        results = _new_spawn_results()
         spawned_definition_ids = {
             s["definition_id"]
             for s in required_results.get("spawned_npcs", []) + optional_results.get("spawned_npcs", [])
@@ -330,6 +310,21 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
             logger.info("No definitions were spawned in required/optional pass; skipping arena pass")
             return results
 
+        await self._warmup_room_cache_for_arena(results)
+        definitions_by_id = {int(d.id): d for d in definitions}
+        for definition_id in spawned_definition_ids:
+            npc_def = definitions_by_id.get(definition_id)
+            if npc_def:
+                await self._spawn_one_arena_npc(npc_def, npc_instance_service, results)
+
+        logger.info(
+            "Arena NPC spawning completed",
+            spawned=results["spawned"],
+            attempted=results["attempted"],
+        )
+        return results
+
+    async def _warmup_room_cache_for_arena(self, results: dict[str, Any]) -> None:
         try:
             from ..container import ApplicationContainer
 
@@ -341,53 +336,36 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
             logger.warning("Room cache warmup before arena pass failed", error=str(e))
             results["errors"].append(f"Room cache warmup before arena pass failed: {e}")
 
-        definitions_by_id = {int(d.id): d for d in definitions}
-        for definition_id in spawned_definition_ids:
-            npc_def = definitions_by_id.get(definition_id)
-            if not npc_def:
-                continue
-            results["attempted"] += 1
-            arena_room = random.choice(ARENA_ROOM_IDS)  # nosec B311 - Game mechanics, not security-critical
-            try:
-                spawn_result = await npc_instance_service.spawn_npc_instance(
-                    definition_id=int(npc_def.id), room_id=arena_room, reason="startup_arena"
-                )
-                if spawn_result["success"]:
-                    results["spawned"] += 1
-                    results["spawned_npcs"].append(
-                        {
-                            "npc_id": spawn_result["npc_id"],
-                            "name": spawn_result["definition_name"],
-                            "room_id": spawn_result["room_id"],
-                            "definition_id": npc_def.id,
-                        }
-                    )
-                    logger.info(
-                        "Spawned NPC in arena",
-                        npc_name=npc_def.name,
-                        arena_room=arena_room,
-                    )
-                else:
-                    results["failed"] += 1
-                    msg = spawn_result.get("message", "Unknown error")
-                    results["errors"].append(f"Arena spawn failed for {npc_def.name}: {msg}")
-                    logger.debug(
-                        "Arena spawn skipped or failed (e.g. population cap)",
-                        npc_name=npc_def.name,
-                        message=msg,
-                    )
-            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Per-definition errors must not abort arena pass
-                results["failed"] += 1
-                error_msg = f"Error spawning NPC {npc_def.name} in arena: {str(e)}"
-                logger.warning(error_msg)
-                results["errors"].append(error_msg)
+    async def _spawn_one_arena_npc(
+        self,
+        npc_def: "NPCDefinition",
+        npc_instance_service: "NPCInstanceService",
+        results: dict[str, Any],
+    ) -> None:
+        results["attempted"] += 1
+        arena_room = random.choice(ARENA_ROOM_IDS)  # nosec B311 - Game mechanics, not security-critical
+        try:
+            spawn_result = await npc_instance_service.spawn_npc_instance(
+                definition_id=int(npc_def.id), room_id=arena_room, reason="startup_arena"
+            )
+            if spawn_result["success"]:
+                _record_spawned_npc(results, spawn_result, npc_def.id)
+                logger.info("Spawned NPC in arena", npc_name=npc_def.name, arena_room=arena_room)
+                return
 
-        logger.info(
-            "Arena NPC spawning completed",
-            spawned=results["spawned"],
-            attempted=results["attempted"],
-        )
-        return results
+            results["failed"] += 1
+            msg = spawn_result.get("message", "Unknown error")
+            results["errors"].append(f"Arena spawn failed for {npc_def.name}: {msg}")
+            logger.debug(
+                "Arena spawn skipped or failed (e.g. population cap)",
+                npc_name=npc_def.name,
+                message=msg,
+            )
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Per-definition errors must not abort arena pass
+            results["failed"] += 1
+            error_msg = f"Error spawning NPC {npc_def.name} in arena: {str(e)}"
+            logger.warning(error_msg)
+            results["errors"].append(error_msg)
 
     async def _determine_spawn_room(self, npc_def: "NPCDefinition") -> str | None:
         """
@@ -400,92 +378,103 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
             Room ID where the NPC should spawn, or None if no valid room found
         """
         try:
-            from ..container import ApplicationContainer
-
-            container = ApplicationContainer.get_instance()
-            async_persistence = getattr(container, "async_persistence", None) if container else None
-
-            if not async_persistence:
-                logger.error("Persistence layer not available for room validation")
+            persistence = await self._get_persistence_for_spawn()
+            if not persistence:
                 return None
 
-            # Ensure room cache is loaded before accessing rooms (lazy loading after commit a9fd435)
-            # Room cache may not be loaded if warmup_room_cache failed or hasn't completed yet
-            # warmup_room_cache is idempotent - safe to call multiple times
-            await async_persistence.warmup_room_cache()
+            room_id = self._try_specific_room(npc_def, persistence)
+            if room_id:
+                return room_id
 
-            # Verify cache was loaded - if empty, log warning but continue (may be intentional in some environments)
-            cache_size = len(async_persistence._room_cache)  # pylint: disable=protected-access  # Reason: Need to verify cache was loaded for room validation
-            if not cache_size:
-                logger.warning(
-                    "Room cache is empty - room validation will fail",
-                    npc_name=npc_def.name,
-                    cache_size=cache_size,
-                )
+            room_id = await self._try_sub_zone_room(npc_def, persistence)
+            if room_id:
+                return room_id
 
-            persistence = async_persistence
-
-            # If NPC has a specific room_id, verify it exists
-            if hasattr(npc_def, "room_id") and npc_def.room_id:
-                room_id = npc_def.room_id
-                # Use sync cache method (get_room_by_id uses cache)
-                room = persistence.get_room_by_id(room_id)
-                if room:
-                    logger.debug("Using specific room for NPC", npc_name=npc_def.name, room_id=room_id)
-                    return cast(str | None, room_id)
-                logger.warning(
-                    "NPC room_id not found in database",
-                    npc_name=npc_def.name,
-                    room_id=room_id,
-                    definition_id=npc_def.id,
-                )
-                # Try fallback to sub-zone default
-
-            # If NPC has a sub_zone_id, try to find a valid room in that sub-zone
-            if hasattr(npc_def, "sub_zone_id") and npc_def.sub_zone_id:
-                default_room = self._get_default_room_for_sub_zone(npc_def.sub_zone_id)
-                if default_room:
-                    room = await asyncio.to_thread(persistence.get_room_by_id, default_room)
-                    if room:
-                        logger.debug(
-                            "Using default room for NPC in sub-zone",
-                            npc_name=npc_def.name,
-                            sub_zone_id=npc_def.sub_zone_id,
-                            room_id=default_room,
-                        )
-                        return default_room
-                    logger.warning(
-                        "Default room for sub-zone not found in database",
-                        npc_name=npc_def.name,
-                        sub_zone_id=npc_def.sub_zone_id,
-                        room_id=default_room,
-                    )
-
-            # Fallback to a default starting room
-            fallback_room_id = "earth_arkhamcity_northside_intersection_derby_high"
-            room = await asyncio.to_thread(persistence.get_room_by_id, fallback_room_id)
-            if room:
-                logger.debug("Using fallback room for NPC", npc_name=npc_def.name, room_id=fallback_room_id)
-                return fallback_room_id
-            # Empty cache: expected when DB has no world data (e.g. local dev) -> debug only
-            cache_size = len(async_persistence._room_cache)  # pylint: disable=protected-access  # Reason: Distinguish empty-DB vs missing fallback room
-            if not cache_size:
-                logger.debug(
-                    "Fallback room not found (room cache empty; world data may not be loaded)",
-                    npc_name=npc_def.name,
-                    room_id=fallback_room_id,
-                )
-            else:
-                logger.warning(
-                    "Fallback room not found in database",
-                    npc_name=npc_def.name,
-                    room_id=fallback_room_id,
-                )
-            return None
-
+            return await self._try_fallback_room(npc_def, persistence)
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Room determination errors unpredictable, must return None
             logger.error("Error determining spawn room for NPC", npc_name=npc_def.name, error=str(e))
             return None
+
+    async def _get_persistence_for_spawn(self) -> Any | None:
+        from ..container import ApplicationContainer
+
+        container = ApplicationContainer.get_instance()
+        async_persistence = getattr(container, "async_persistence", None) if container else None
+        if not async_persistence:
+            logger.error("Persistence layer not available for room validation")
+            return None
+
+        await async_persistence.warmup_room_cache()
+        cache_size = len(async_persistence._room_cache)  # pylint: disable=protected-access  # Reason: Need to verify cache was loaded for room validation
+        if not cache_size:
+            logger.warning("Room cache is empty - room validation will fail", cache_size=cache_size)
+        return async_persistence
+
+    def _try_specific_room(self, npc_def: "NPCDefinition", persistence: Any) -> str | None:
+        if not (hasattr(npc_def, "room_id") and npc_def.room_id):
+            return None
+
+        room_id = npc_def.room_id
+        room = persistence.get_room_by_id(room_id)
+        if room:
+            logger.debug("Using specific room for NPC", npc_name=npc_def.name, room_id=room_id)
+            return cast(str | None, room_id)
+
+        logger.warning(
+            "NPC room_id not found in database",
+            npc_name=npc_def.name,
+            room_id=room_id,
+            definition_id=npc_def.id,
+        )
+        return None
+
+    async def _try_sub_zone_room(self, npc_def: "NPCDefinition", persistence: Any) -> str | None:
+        if not (hasattr(npc_def, "sub_zone_id") and npc_def.sub_zone_id):
+            return None
+
+        default_room = self._get_default_room_for_sub_zone(npc_def.sub_zone_id)
+        if not default_room:
+            return None
+
+        room = await asyncio.to_thread(persistence.get_room_by_id, default_room)
+        if room:
+            logger.debug(
+                "Using default room for NPC in sub-zone",
+                npc_name=npc_def.name,
+                sub_zone_id=npc_def.sub_zone_id,
+                room_id=default_room,
+            )
+            return default_room
+
+        logger.warning(
+            "Default room for sub-zone not found in database",
+            npc_name=npc_def.name,
+            sub_zone_id=npc_def.sub_zone_id,
+            room_id=default_room,
+        )
+        return None
+
+    async def _try_fallback_room(self, npc_def: "NPCDefinition", persistence: Any) -> str | None:
+        fallback_room_id = "earth_arkhamcity_northside_intersection_derby_high"
+        room = await asyncio.to_thread(persistence.get_room_by_id, fallback_room_id)
+        if room:
+            logger.debug("Using fallback room for NPC", npc_name=npc_def.name, room_id=fallback_room_id)
+            return fallback_room_id
+
+        cache_size = len(persistence._room_cache)  # pylint: disable=protected-access  # Reason: Distinguish empty-DB vs missing fallback room
+        if not cache_size:
+            logger.debug(
+                "Fallback room not found (room cache empty; world data may not be loaded)",
+                npc_name=npc_def.name,
+                room_id=fallback_room_id,
+            )
+        else:
+            logger.warning(
+                "Fallback room not found in database",
+                npc_name=npc_def.name,
+                room_id=fallback_room_id,
+            )
+        return None
 
     def _get_default_room_for_sub_zone(self, sub_zone_id: str) -> str | None:
         """
@@ -497,17 +486,12 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
         Returns:
             Default room ID for the sub-zone, or None if not found
         """
-        # This is a simplified implementation
-        # In a full implementation, this would query the room database or use configuration
-
         default_rooms = {
             "sanitarium": "earth_arkhamcity_sanitarium_room_foyer_001",
             "downtown": "earth_arkhamcity_downtown_intersection_derby_garrison",
             "northside": "earth_arkhamcity_northside_intersection_derby_high",
             "southside": "earth_arkhamcity_southside_intersection_derby_garrison",
-            # Add more sub-zone mappings as needed
         }
-
         return default_rooms.get(sub_zone_id.lower())
 
 

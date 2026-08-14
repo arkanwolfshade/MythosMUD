@@ -423,11 +423,10 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
         category: str,
         duration: int,
         applied_at_tick: int,
-        intensity: int = 1,
-        source: str | None = None,
-        visibility_level: str = "visible",
+        options: dict[str, Any] | None = None,
     ) -> str:
         """Add a player effect. Returns effect id."""
+        effect_options = options or {}
         return await self._player_effect_repo.add_effect(
             player_id,
             {
@@ -435,9 +434,9 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
                 "category": category,
                 "duration": duration,
                 "applied_at_tick": applied_at_tick,
-                "intensity": intensity,
-                "source": source,
-                "visibility_level": visibility_level,
+                "intensity": effect_options.get("intensity", 1),
+                "source": effect_options.get("source"),
+                "visibility_level": effect_options.get("visibility_level", "visible"),
             },
         )
 
@@ -543,18 +542,7 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
         return await self._item_repo.create_item_instance(
             item_instance_id,
             prototype_id,
-            d.get("owner_type", "room"),
-            d.get("owner_id"),
-            d.get("location_context"),
-            d.get("quantity", 1),
-            d.get("condition"),
-            d.get("flags_override"),
-            d.get("binding_state"),
-            d.get("attunement_state"),
-            d.get("custom_name"),
-            d.get("metadata"),
-            d.get("origin_source"),
-            d.get("origin_metadata"),
+            d,
         )
 
     async def ensure_item_instance(
@@ -580,12 +568,14 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
         return await self._item_repo.ensure_item_instance(
             item_instance_id,
             prototype_id,
-            owner_type,
-            owner_id,
-            quantity,
-            metadata,
-            origin_source,
-            origin_metadata,
+            {
+                "owner_type": owner_type,
+                "owner_id": owner_id,
+                "quantity": quantity,
+                "metadata": metadata,
+                "origin_source": origin_source,
+                "origin_metadata": origin_metadata,
+            },
         )
 
     async def item_instance_exists(self, item_instance_id: str) -> bool:

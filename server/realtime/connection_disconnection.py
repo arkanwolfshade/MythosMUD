@@ -9,6 +9,7 @@ from typing import Protocol
 
 from anyio import Lock
 from fastapi import WebSocket
+from starlette.websockets import WebSocketDisconnect
 
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -218,7 +219,14 @@ async def cleanup_websocket_disconnect(
             )
 
             # Disconnect all WebSocket connections
-            await disconnect_all_websockets_impl(connection_ids, player_id, manager)
+            try:
+                await disconnect_all_websockets_impl(connection_ids, player_id, manager)
+            except (RuntimeError, OSError, WebSocketDisconnect) as close_err:
+                logger.warning(
+                    "Error closing websockets during disconnect; continuing cleanup",
+                    player_id=player_id,
+                    error=str(close_err),
+                )
 
             # Remove from tracking (on-close handler may have already cleared this entry)
             _ = manager.player_websockets.pop(player_id, None)

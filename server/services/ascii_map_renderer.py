@@ -11,11 +11,23 @@ is essential for navigating the eldritch architecture of our world.
 
 # pylint: disable=too-few-public-methods,too-many-locals,too-many-arguments,too-many-positional-arguments  # Reason: Renderer class with focused responsibility, minimal public interface, and complex rendering logic requiring many parameters
 
-from typing import Any, cast
+from typing import Any, NamedTuple, cast
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
+
+
+class _ExitRowContext(NamedTuple):
+    """Viewport and style context for vertical exit row rendering."""
+
+    grid: dict[tuple[int, int], dict[str, Any] | str]
+    exit_from: dict[tuple[int, int], dict[str, dict[str, Any]]]
+    map_style: str
+    viewport_x: int
+    viewport_width: int
+    viewport_y: int
+    viewport_height: int
 
 
 class AsciiMapRenderer:
@@ -200,28 +212,20 @@ class AsciiMapRenderer:
                 line.append("  ")
         return "".join(line)
 
-    def _render_exit_row(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Exit row rendering requires many parameters for context and rendering logic
-        self,
-        y: int,
-        grid: dict[tuple[int, int], dict[str, Any] | str],
-        exit_from: dict[tuple[int, int], dict[str, dict[str, Any]]],
-        map_style: str,
-        viewport_x: int,
-        viewport_width: int,
-        viewport_y: int,
-        viewport_height: int,
-    ) -> str:
+    def _render_exit_row(self, y: int, ctx: _ExitRowContext) -> str:
         """Render a single row of vertical exits between room rows."""
-        if y >= viewport_y + viewport_height - 1:
+        if y >= ctx.viewport_y + ctx.viewport_height - 1:
             return ""
         exit_line = []
-        for x in range(viewport_x, viewport_x + viewport_width):
-            cell = grid.get((x, y), " ")
-            next_cell = grid.get((x, y + 1), " ")
+        for x in range(ctx.viewport_x, ctx.viewport_x + ctx.viewport_width):
+            cell = ctx.grid.get((x, y), " ")
+            next_cell = ctx.grid.get((x, y + 1), " ")
             if isinstance(cell, dict) and isinstance(next_cell, dict):
-                exit_char = self._get_vertical_exit_char(x, y, exit_from, grid, viewport_y, viewport_height)
+                exit_char = self._get_vertical_exit_char(
+                    x, y, ctx.exit_from, ctx.grid, ctx.viewport_y, ctx.viewport_height
+                )
                 if exit_char:
-                    exit_line.append(f'<span class="ascii-map-exit ascii-map-exit-{map_style}">{exit_char}</span>')
+                    exit_line.append(f'<span class="ascii-map-exit ascii-map-exit-{ctx.map_style}">{exit_char}</span>')
                     exit_line.append(" ")
                 else:
                     exit_line.append("  ")
@@ -268,7 +272,8 @@ class AsciiMapRenderer:
         for y in range(viewport_y, viewport_y + viewport_height):
             html_lines.append(self._render_room_row(y, grid, exit_from, map_style, viewport_x, viewport_width))
             exit_row = self._render_exit_row(
-                y, grid, exit_from, map_style, viewport_x, viewport_width, viewport_y, viewport_height
+                y,
+                _ExitRowContext(grid, exit_from, map_style, viewport_x, viewport_width, viewport_y, viewport_height),
             )
             if exit_row:
                 html_lines.append(exit_row)

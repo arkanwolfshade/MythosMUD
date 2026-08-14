@@ -227,69 +227,52 @@ class NATSMessageBroker:  # pylint: disable=too-many-instance-attributes  # Reas
 
         return True
 
+    def _validate_publish_subject(self, subject: str, message: dict[str, Any]) -> None:
+        if not (self.subject_manager and self.config.enable_subject_validation):
+            return
+        try:
+            if not self.subject_manager.validate_subject(subject):
+                self._logger.error(
+                    "Subject validation failed",
+                    subject=subject,
+                    message_id=message.get("message_id"),
+                )
+                raise PublishError(f"Subject validation failed: {subject}")
+        except SubjectValidationError as validation_error:
+            self._logger.error(
+                "Subject validation error",
+                error=str(validation_error),
+                subject=subject,
+                message_id=message.get("message_id"),
+            )
+            raise PublishError(f"Subject validation error: {str(validation_error)}") from validation_error
+
+    def _validate_publish_message(self, subject: str, message: dict[str, Any]) -> None:
+        if not self._enable_validation:
+            return
+        try:
+            message_type = "event" if ("event_type" in message or "event_data" in message) else "chat"
+            validate_message(message, message_type=message_type)
+            self._logger.debug("Message validated", subject=subject, message_type=message_type)
+        except ValueError as validation_error:
+            self._logger.error(
+                "Message validation failed",
+                subject=subject,
+                error=str(validation_error),
+                message_keys=list(message.keys()) if isinstance(message, dict) else None,
+            )
+            raise PublishError(f"Message validation failed: {str(validation_error)}") from validation_error
+
     async def publish(self, subject: str, message: dict[str, Any]) -> None:
-        """
-        Publish message to NATS subject.
-
-        Args:
-            subject: NATS subject to publish to
-            message: Message data (must be JSON-serializable)
-
-        Raises:
-            PublishError: If publishing fails or message validation fails
-
-        AI: Validates message schema if validation is enabled to prevent malformed messages.
-        """
+        """Publish message to NATS subject."""
         if not self.is_connected():
             raise PublishError("Not connected to NATS")
-
         try:
-            # Validate subject if subject manager is available and validation is enabled
-            if self.subject_manager and self.config.enable_subject_validation:
-                try:
-                    if not self.subject_manager.validate_subject(subject):
-                        error_msg = f"Subject validation failed: {subject}"
-                        self._logger.error(
-                            "Subject validation failed",
-                            subject=subject,
-                            message_id=message.get("message_id"),
-                        )
-                        raise PublishError(error_msg)
-                except SubjectValidationError as validation_error:
-                    error_msg = f"Subject validation error: {str(validation_error)}"
-                    self._logger.error(
-                        "Subject validation error",
-                        error=str(validation_error),
-                        subject=subject,
-                        message_id=message.get("message_id"),
-                    )
-                    raise PublishError(error_msg) from validation_error
-
-            # Validate message schema if validation is enabled
-            if self._enable_validation:
-                try:
-                    # Auto-detect message type based on structure
-                    message_type = "event" if ("event_type" in message or "event_data" in message) else "chat"
-                    validate_message(message, message_type=message_type)
-                    self._logger.debug("Message validated", subject=subject, message_type=message_type)
-                except ValueError as validation_error:
-                    error_msg = f"Message validation failed: {str(validation_error)}"
-                    self._logger.error(
-                        "Message validation failed",
-                        subject=subject,
-                        error=str(validation_error),
-                        message_keys=list(message.keys()) if isinstance(message, dict) else None,
-                    )
-                    raise PublishError(error_msg) from validation_error
-
-            # Serialize message to JSON bytes
+            self._validate_publish_subject(subject, message)
+            self._validate_publish_message(subject, message)
             message_bytes = json.dumps(message).encode("utf-8")
-
-            # Publish to NATS
             await self._client.publish(subject, message_bytes)
-
             self._logger.debug("Published message", subject=subject, message_size=len(message_bytes))
-
         except PublishError:
             raise
         except Exception as e:
@@ -297,20 +280,7 @@ class NATSMessageBroker:  # pylint: disable=too-many-instance-attributes  # Reas
             raise PublishError(f"Failed to publish to {subject}: {e}") from e
 
     async def subscribe(self, subject: str, handler: MessageHandler, queue_group: str | None = None) -> str:
-        """
-        Subscribe to NATS subject with message handler.
-
-        Args:
-            subject: NATS subject to subscribe to (supports wildcards)
-            handler: Async callable that processes messages
-            queue_group: Optional queue group for load balancing
-
-        Returns:
-            str: Subscription ID for later unsubscribe
-
-        Raises:
-            SubscribeError: If subscription fails
-        """
+        """Subscribe to NATS subject with message handler."""
         if not self.is_connected():
             raise SubscribeError("Not connected to NATS")
 

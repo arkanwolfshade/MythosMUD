@@ -7,7 +7,18 @@ Tests the combat_audit module classes and functions.
 from datetime import UTC, datetime
 from unittest.mock import patch
 
-from server.structured_logging.combat_audit import CombatAuditLogger, combat_audit_logger
+from server.structured_logging.combat_audit import (
+    CombatAttackDetails,
+    CombatAuditLogger,
+    CombatMonitoringAlert,
+    CombatParties,
+    CombatSecurityEvent,
+    combat_audit_logger,
+)
+
+
+def _parties() -> CombatParties:
+    return CombatParties("player_123", "TestPlayer", "target_123", "TestTarget")
 
 
 def test_combat_audit_logger_init():
@@ -20,21 +31,16 @@ def test_combat_audit_logger_init():
 def test_combat_audit_logger_log_combat_start():
     """Test CombatAuditLogger.log_combat_start() logs combat start."""
     logger = CombatAuditLogger()
-    player_id = "player_123"
-    player_name = "TestPlayer"
-    target_id = "target_123"
-    target_name = "TestTarget"
-    room_id = "room_123"
-    action_type = "attack"
+    parties = _parties()
 
     with patch.object(logger.logger, "info") as mock_info:
-        logger.log_combat_start(player_id, player_name, target_id, target_name, room_id, action_type)
+        logger.log_combat_start(parties, "room_123", "attack")
 
         mock_info.assert_called_once()
         call_kwargs = mock_info.call_args[1]
         assert call_kwargs["event_type"] == "combat_start"
-        assert call_kwargs["player_id"] == player_id
-        assert call_kwargs["target_id"] == target_id
+        assert call_kwargs["player_id"] == parties.player_id
+        assert call_kwargs["target_id"] == parties.target_id
 
 
 def test_combat_audit_logger_log_combat_start_with_timestamp():
@@ -43,7 +49,7 @@ def test_combat_audit_logger_log_combat_start_with_timestamp():
     timestamp = datetime.now(UTC)
 
     with patch.object(logger.logger, "info") as mock_info:
-        logger.log_combat_start("player_123", "TestPlayer", "target_123", "TestTarget", "room_123", "attack", timestamp)
+        logger.log_combat_start(_parties(), "room_123", "attack", timestamp)
 
         call_kwargs = mock_info.call_args[1]
         assert call_kwargs["timestamp"] == timestamp.isoformat()
@@ -52,93 +58,64 @@ def test_combat_audit_logger_log_combat_start_with_timestamp():
 def test_combat_audit_logger_log_combat_attack():
     """Test CombatAuditLogger.log_combat_attack() logs combat attack."""
     logger = CombatAuditLogger()
-    player_id = "player_123"
-    player_name = "TestPlayer"
-    target_id = "target_123"
-    target_name = "TestTarget"
-    action_type = "attack"
-    damage_dealt = 10
-    target_dp_before = 50
-    target_dp_after = 40
-    success = True
+    details = CombatAttackDetails("attack", 10, 50, 40, True)
 
     with patch.object(logger.logger, "info") as mock_info:
-        logger.log_combat_attack(
-            player_id,
-            player_name,
-            target_id,
-            target_name,
-            action_type,
-            damage_dealt,
-            target_dp_before,
-            target_dp_after,
-            success,
-        )
+        logger.log_combat_attack(_parties(), details)
 
         mock_info.assert_called_once()
         call_kwargs = mock_info.call_args[1]
         assert call_kwargs["event_type"] == "combat_attack"
-        assert call_kwargs["damage_dealt"] == damage_dealt
+        assert call_kwargs["damage_dealt"] == 10
         assert call_kwargs["success"] is True
 
 
 def test_combat_audit_logger_log_combat_death():
     """Test CombatAuditLogger.log_combat_death() logs combat death."""
     logger = CombatAuditLogger()
-    player_id = "player_123"
-    player_name = "TestPlayer"
-    target_id = "target_123"
-    target_name = "TestTarget"
-    xp_gained = 100
 
     with patch.object(logger.logger, "info") as mock_info:
-        logger.log_combat_death(player_id, player_name, target_id, target_name, xp_gained)
+        logger.log_combat_death(_parties(), 100)
 
         mock_info.assert_called_once()
         call_kwargs = mock_info.call_args[1]
         assert call_kwargs["event_type"] == "combat_death"
-        assert call_kwargs["xp_gained"] == xp_gained
+        assert call_kwargs["xp_gained"] == 100
 
 
 def test_combat_audit_logger_log_combat_end():
     """Test CombatAuditLogger.log_combat_end() logs combat end."""
     logger = CombatAuditLogger()
-    player_id = "player_123"
-    player_name = "TestPlayer"
-    target_id = "target_123"
-    target_name = "TestTarget"
-    reason = "death"
-    duration_seconds = 30
 
     with patch.object(logger.logger, "info") as mock_info:
-        logger.log_combat_end(player_id, player_name, target_id, target_name, reason, duration_seconds)
+        logger.log_combat_end(_parties(), "death", 30)
 
         mock_info.assert_called_once()
         call_kwargs = mock_info.call_args[1]
         assert call_kwargs["event_type"] == "combat_end"
-        assert call_kwargs["reason"] == reason
-        assert call_kwargs["duration_seconds"] == duration_seconds
+        assert call_kwargs["reason"] == "death"
+        assert call_kwargs["duration_seconds"] == 30
 
 
 def test_combat_audit_logger_log_combat_security_event():
     """Test CombatAuditLogger.log_combat_security_event() logs security event."""
     logger = CombatAuditLogger()
-    event_type = "suspicious_activity"
-    player_id = "player_123"
-    player_name = "TestPlayer"
-    security_level = "high"
-    description = "Multiple rapid attacks"
-    additional_data = {"attack_count": 10}
+    event = CombatSecurityEvent(
+        "suspicious_activity",
+        "player_123",
+        "TestPlayer",
+        "high",
+        "Multiple rapid attacks",
+        {"attack_count": 10},
+    )
 
     with patch.object(logger.logger, "warning") as mock_warning:
-        logger.log_combat_security_event(
-            event_type, player_id, player_name, security_level, description, additional_data
-        )
+        logger.log_combat_security_event(event)
 
         mock_warning.assert_called_once()
         call_kwargs = mock_warning.call_args[1]
         assert call_kwargs["event_type"] == "combat_security_suspicious_activity"
-        assert call_kwargs["security_level"] == security_level
+        assert call_kwargs["security_level"] == "high"
         assert call_kwargs["attack_count"] == 10
 
 
@@ -147,7 +124,9 @@ def test_combat_audit_logger_log_combat_security_event_no_additional_data():
     logger = CombatAuditLogger()
 
     with patch.object(logger.logger, "warning") as mock_warning:
-        logger.log_combat_security_event("event", "player_123", "TestPlayer", "medium", "Description", None)
+        logger.log_combat_security_event(
+            CombatSecurityEvent("event", "player_123", "TestPlayer", "medium", "Description")
+        )
 
         mock_warning.assert_called_once()
 
@@ -155,66 +134,53 @@ def test_combat_audit_logger_log_combat_security_event_no_additional_data():
 def test_combat_audit_logger_log_combat_validation_failure():
     """Test CombatAuditLogger.log_combat_validation_failure() logs validation failure."""
     logger = CombatAuditLogger()
-    player_id = "player_123"
-    player_name = "TestPlayer"
-    validation_type = "target_validation"
-    failure_reason = "Target not found"
     command_data = {"command": "attack", "target": "invalid"}
 
     with patch.object(logger.logger, "warning") as mock_warning:
-        logger.log_combat_validation_failure(player_id, player_name, validation_type, failure_reason, command_data)
+        logger.log_combat_validation_failure(
+            "player_123", "TestPlayer", "target_validation", "Target not found", command_data
+        )
 
         mock_warning.assert_called_once()
         call_kwargs = mock_warning.call_args[1]
         assert call_kwargs["event_type"] == "combat_validation_failure"
-        assert call_kwargs["validation_type"] == validation_type
+        assert call_kwargs["validation_type"] == "target_validation"
         assert call_kwargs["command_data"] == command_data
 
 
 def test_combat_audit_logger_log_combat_rate_limit():
     """Test CombatAuditLogger.log_combat_rate_limit() logs rate limit."""
     logger = CombatAuditLogger()
-    player_id = "player_123"
-    player_name = "TestPlayer"
-    rate_limit_type = "attack_rate"
-    attempts = 20
-    time_window = 60
 
     with patch.object(logger.logger, "warning") as mock_warning:
-        logger.log_combat_rate_limit(player_id, player_name, rate_limit_type, attempts, time_window)
+        logger.log_combat_rate_limit("player_123", "TestPlayer", "attack_rate", 20, 60)
 
         mock_warning.assert_called_once()
         call_kwargs = mock_warning.call_args[1]
         assert call_kwargs["event_type"] == "combat_rate_limit"
-        assert call_kwargs["attempts"] == attempts
-        assert call_kwargs["time_window"] == time_window
+        assert call_kwargs["attempts"] == 20
+        assert call_kwargs["time_window"] == 60
 
 
 def test_combat_audit_logger_log_combat_monitoring_alert_high():
     """Test CombatAuditLogger.log_combat_monitoring_alert() logs high severity alert."""
     logger = CombatAuditLogger()
-    alert_type = "anomaly"
-    severity = "high"
-    description = "Unusual combat pattern"
 
     with patch.object(logger.logger, "error") as mock_error:
-        logger.log_combat_monitoring_alert(alert_type, severity, description)
+        logger.log_combat_monitoring_alert(CombatMonitoringAlert("anomaly", "high", "Unusual combat pattern"))
 
         mock_error.assert_called_once()
         call_kwargs = mock_error.call_args[1]
         assert call_kwargs["event_type"] == "combat_monitoring_anomaly"
-        assert call_kwargs["severity"] == severity
+        assert call_kwargs["severity"] == "high"
 
 
 def test_combat_audit_logger_log_combat_monitoring_alert_low():
     """Test CombatAuditLogger.log_combat_monitoring_alert() logs low severity alert."""
     logger = CombatAuditLogger()
-    alert_type = "anomaly"
-    severity = "low"
-    description = "Minor issue"
 
     with patch.object(logger.logger, "warning") as mock_warning:
-        logger.log_combat_monitoring_alert(alert_type, severity, description)
+        logger.log_combat_monitoring_alert(CombatMonitoringAlert("anomaly", "low", "Minor issue"))
 
         mock_warning.assert_called_once()
 
@@ -222,16 +188,15 @@ def test_combat_audit_logger_log_combat_monitoring_alert_low():
 def test_combat_audit_logger_log_combat_monitoring_alert_with_player():
     """Test CombatAuditLogger.log_combat_monitoring_alert() includes player info."""
     logger = CombatAuditLogger()
-    player_id = "player_123"
-    player_name = "TestPlayer"
-    additional_data = {"key": "value"}
 
     with patch.object(logger.logger, "error") as mock_error:
-        logger.log_combat_monitoring_alert("anomaly", "high", "Description", player_id, player_name, additional_data)
+        logger.log_combat_monitoring_alert(
+            CombatMonitoringAlert("anomaly", "high", "Description", "player_123", "TestPlayer", {"key": "value"})
+        )
 
         call_kwargs = mock_error.call_args[1]
-        assert call_kwargs["player_id"] == player_id
-        assert call_kwargs["player_name"] == player_name
+        assert call_kwargs["player_id"] == "player_123"
+        assert call_kwargs["player_name"] == "TestPlayer"
         assert call_kwargs["key"] == "value"
 
 

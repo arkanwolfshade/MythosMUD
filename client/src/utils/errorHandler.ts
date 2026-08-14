@@ -66,34 +66,33 @@ export function isErrorResponse(response: unknown): response is ErrorResponse {
 /**
  * Extract user-friendly error message from any error response format.
  */
+function getStandardizedErrorMessage(response: ErrorResponse): string {
+  if ('error' in response && response.error) {
+    return response.error.user_friendly || response.error.message;
+  }
+  if ('type' in response && response.type === 'error') {
+    return response.user_friendly || response.message;
+  }
+  return 'An unknown error occurred';
+}
+
+function getObjectErrorMessage(obj: Record<string, unknown>): string {
+  const message = typeof obj.message === 'string' ? obj.message : '';
+  const detail = typeof obj.detail === 'string' ? obj.detail : '';
+  const error = typeof obj.error === 'string' ? obj.error : '';
+  return message || detail || error || 'An unknown error occurred';
+}
+
 export function getErrorMessage(response: unknown): string {
   if (isErrorResponse(response)) {
-    // API error format
-    if ('error' in response && response.error) {
-      return response.error.user_friendly || response.error.message;
-    }
-
-    // WebSocket/SSE error format
-    if ('type' in response && response.type === 'error') {
-      return response.user_friendly || response.message;
-    }
+    return getStandardizedErrorMessage(response);
   }
-
-  // Fallback for non-standardized errors
   if (typeof response === 'string') {
     return response;
   }
-
   if (response && typeof response === 'object') {
-    const obj = response as Record<string, unknown>;
-    return (
-      (typeof obj.message === 'string' ? obj.message : '') ||
-      (typeof obj.detail === 'string' ? obj.detail : '') ||
-      (typeof obj.error === 'string' ? obj.error : '') ||
-      'An unknown error occurred'
-    );
+    return getObjectErrorMessage(response as Record<string, unknown>);
   }
-
   return 'An unknown error occurred';
 }
 

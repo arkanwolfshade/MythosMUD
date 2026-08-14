@@ -21,7 +21,7 @@ def admin_logger(log_dir: Path) -> AdminActionsLogger:
 
 
 def test_log_teleport_action_success(admin_logger: AdminActionsLogger, log_dir: Path) -> None:
-    admin_logger.log_teleport_action("Admin", "Bob", "teleport", "room-a", "room-b", True)
+    admin_logger.log_teleport_action("Admin", "Bob", "teleport", from_room="room-a", to_room="room-b", success=True)
     entries = _read_log_entries(admin_logger.current_log_file)
     assert len(entries) == 1
     assert entries[0]["action_type"] == "teleport"
@@ -29,7 +29,9 @@ def test_log_teleport_action_success(admin_logger: AdminActionsLogger, log_dir: 
 
 
 def test_log_teleport_action_failure(admin_logger: AdminActionsLogger) -> None:
-    admin_logger.log_teleport_action("Admin", "Bob", "goto", "room-a", "room-b", False, error_message="denied")
+    admin_logger.log_teleport_action(
+        "Admin", "Bob", "goto", from_room="room-a", to_room="room-b", success=False, error_message="denied"
+    )
     entries = _read_log_entries(admin_logger.current_log_file)
     assert entries[0]["success"] is False
     assert entries[0]["error_message"] == "denied"
@@ -55,7 +57,7 @@ def test_log_permission_check_denied(admin_logger: AdminActionsLogger) -> None:
 
 
 def test_get_recent_actions_filters(admin_logger: AdminActionsLogger) -> None:
-    admin_logger.log_teleport_action("Admin1", "Bob", "teleport", "a", "b", True)
+    admin_logger.log_teleport_action("Admin1", "Bob", "teleport", from_room="a", to_room="b", success=True)
     admin_logger.log_admin_command("Admin2", "kick", success=True)
     recent = admin_logger.get_recent_actions(hours=24, action_type="teleport", admin_name="Admin1")
     assert len(recent) == 1
@@ -67,7 +69,7 @@ def test_get_recent_actions_skips_old_entries(admin_logger: AdminActionsLogger) 
     admin_logger._ensure_log_file_exists()
     with open(admin_logger.current_log_file, "a", encoding="utf-8") as f:
         f.write(json.dumps({"timestamp": old_time, "action_type": "teleport", "admin_name": "Old"}) + "\n")
-    admin_logger.log_teleport_action("Admin", "Bob", "teleport", "a", "b", True)
+    admin_logger.log_teleport_action("Admin", "Bob", "teleport", from_room="a", to_room="b", success=True)
     recent = admin_logger.get_recent_actions(hours=24)
     assert all(entry.get("admin_name") != "Old" for entry in recent)
 
@@ -80,8 +82,8 @@ def test_get_recent_actions_skips_malformed_lines(admin_logger: AdminActionsLogg
 
 
 def test_get_teleport_statistics(admin_logger: AdminActionsLogger) -> None:
-    admin_logger.log_teleport_action("Admin", "Bob", "teleport", "a", "b", True)
-    admin_logger.log_teleport_action("Admin", "Carol", "goto", "a", "c", False)
+    admin_logger.log_teleport_action("Admin", "Bob", "teleport", from_room="a", to_room="b", success=True)
+    admin_logger.log_teleport_action("Admin", "Carol", "goto", from_room="a", to_room="c", success=False)
     stats = admin_logger.get_teleport_statistics(hours=24)
     assert stats["total_teleports"] == 2
     assert stats["successful_teleports"] == 1

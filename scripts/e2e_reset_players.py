@@ -48,14 +48,19 @@ async def _reset_e2e_players() -> None:
     conn = await asyncpg.connect(url, server_settings=server_settings)
     try:
         room_id: str = _load_default_respawn_room()
-        # Reset room and current_dp for E2E test players (by character name).
+        # Reset room, DP, and posture. Exit→/rest leaves sitting; cancel does not stand;
+        # co-locate DB resets without posture left movement/chat E2E poisoned.
         # Omit is_deleted filter: E2E DB may use an older schema without that column (migration 016).
         _ = await conn.execute(
             """
             UPDATE players
             SET
                 current_room_id = $1,
-                stats = jsonb_set(COALESCE(stats, '{}'::jsonb), '{current_dp}', '50'::jsonb)
+                stats = jsonb_set(
+                    jsonb_set(COALESCE(stats, '{}'::jsonb), '{current_dp}', '50'::jsonb),
+                    '{position}',
+                    '"standing"'::jsonb
+                )
             WHERE name IN ('ArkanWolfshade', 'Ithaqua')
             """,
             room_id,

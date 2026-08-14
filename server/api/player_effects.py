@@ -26,7 +26,7 @@ from ..schemas.players import (
     OccultKnowledgeRequest,
 )
 from ..structured_logging.enhanced_logging_config import get_logger
-from .players import player_router
+from .player_router import player_router
 
 logger = get_logger(__name__)
 

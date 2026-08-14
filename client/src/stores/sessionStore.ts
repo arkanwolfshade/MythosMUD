@@ -141,160 +141,89 @@ const createInitialState = (): SessionState => ({
   sessionTimeout: DEFAULT_SESSION_TIMEOUT,
 });
 
+function touchActivity<T extends Partial<SessionState>>(patch: T): T & { lastActivity: number } {
+  return { ...patch, lastActivity: Date.now() };
+}
+
+function createSessionActions(
+  set: (partial: Partial<SessionStore>, replace?: false, action?: string) => void,
+  get: () => SessionStore
+): SessionActions & SessionSelectors {
+  return {
+    setAuthenticated: authenticated =>
+      set(touchActivity({ isAuthenticated: authenticated }), false, 'setAuthenticated'),
+    setHasCharacter: hasCharacter => set(touchActivity({ hasCharacter }), false, 'setHasCharacter'),
+    setCharacterName: name => set(touchActivity({ characterName: name }), false, 'setCharacterName'),
+    setPlayerName: name => set(touchActivity({ playerName: name }), false, 'setPlayerName'),
+    setAuthToken: token => set(touchActivity({ authToken: token }), false, 'setAuthToken'),
+    clearAuthToken: () => set({ authToken: '' }, false, 'clearAuthToken'),
+    setInviteCode: code => set({ inviteCode: code }, false, 'setInviteCode'),
+    clearInviteCode: () => set({ inviteCode: '' }, false, 'clearInviteCode'),
+    setSubmitting: submitting => set({ isSubmitting: submitting }, false, 'setSubmitting'),
+    setError: error => set({ error }, false, 'setError'),
+    clearError: () => set({ error: null }, false, 'clearError'),
+    updateLastActivity: timestamp => set({ lastActivity: timestamp }, false, 'updateLastActivity'),
+    setSessionTimeout: timeout => set({ sessionTimeout: timeout }, false, 'setSessionTimeout'),
+    logout: () =>
+      set(
+        {
+          isAuthenticated: false,
+          hasCharacter: false,
+          characterName: '',
+          playerName: '',
+          authToken: '',
+          inviteCode: '',
+          error: null,
+          lastActivity: null,
+        },
+        false,
+        'logout'
+      ),
+    reset: () => set(createInitialState(), false, 'reset'),
+    isValidToken: () => get().authToken.length > 0,
+    isValidInviteCode: () => /^[A-Z0-9]{6,}$/.test(get().inviteCode),
+    isSessionExpired: () => {
+      const state = get();
+      if (!state.lastActivity) return false;
+      return Date.now() - state.lastActivity > state.sessionTimeout;
+    },
+    getLoginFormData: () => {
+      const state = get();
+      return { playerName: state.playerName, inviteCode: state.inviteCode };
+    },
+    getSessionStatus: () => {
+      const state = get();
+      return {
+        isAuthenticated: state.isAuthenticated,
+        hasCharacter: state.hasCharacter,
+        isSubmitting: state.isSubmitting,
+        hasError: state.error !== null,
+      };
+    },
+    getUserInfo: () => {
+      const state = get();
+      return {
+        playerName: state.playerName,
+        characterName: state.characterName,
+        hasValidToken: state.authToken.length > 0,
+      };
+    },
+    getSessionTimeoutInfo: () => {
+      const state = get();
+      const now = Date.now();
+      const timeRemaining = state.lastActivity
+        ? Math.max(0, state.sessionTimeout - (now - state.lastActivity))
+        : state.sessionTimeout;
+      return { isExpired: state.isSessionExpired(), timeRemaining, timeoutDuration: state.sessionTimeout };
+    },
+  };
+}
+
 export const useSessionStore = create<SessionStore>()(
   devtools(
     (set, get) => ({
       ...createInitialState(),
-
-      // Authentication actions
-      setAuthenticated: (authenticated: boolean) =>
-        set(
-          {
-            isAuthenticated: authenticated,
-            lastActivity: Date.now(),
-          },
-          false,
-          'setAuthenticated'
-        ),
-
-      setHasCharacter: (hasCharacter: boolean) =>
-        set(
-          {
-            hasCharacter,
-            lastActivity: Date.now(),
-          },
-          false,
-          'setHasCharacter'
-        ),
-
-      setCharacterName: (name: string) =>
-        set(
-          {
-            characterName: name,
-            lastActivity: Date.now(),
-          },
-          false,
-          'setCharacterName'
-        ),
-
-      setPlayerName: (name: string) =>
-        set(
-          {
-            playerName: name,
-            lastActivity: Date.now(),
-          },
-          false,
-          'setPlayerName'
-        ),
-
-      // Token management actions
-      setAuthToken: (token: string) =>
-        set(
-          {
-            authToken: token,
-            lastActivity: Date.now(),
-          },
-          false,
-          'setAuthToken'
-        ),
-
-      clearAuthToken: () => set({ authToken: '' }, false, 'clearAuthToken'),
-
-      // Invite code management actions
-      setInviteCode: (code: string) => set({ inviteCode: code }, false, 'setInviteCode'),
-
-      clearInviteCode: () => set({ inviteCode: '' }, false, 'clearInviteCode'),
-
-      // Form state actions
-      setSubmitting: (submitting: boolean) => set({ isSubmitting: submitting }, false, 'setSubmitting'),
-
-      setError: (error: string | null) => set({ error }, false, 'setError'),
-
-      clearError: () => set({ error: null }, false, 'clearError'),
-
-      // Session management actions
-      updateLastActivity: (timestamp: number) => set({ lastActivity: timestamp }, false, 'updateLastActivity'),
-
-      setSessionTimeout: (timeout: number) => set({ sessionTimeout: timeout }, false, 'setSessionTimeout'),
-
-      // High-level actions
-      logout: () =>
-        set(
-          {
-            isAuthenticated: false,
-            hasCharacter: false,
-            characterName: '',
-            playerName: '',
-            authToken: '',
-            inviteCode: '',
-            error: null,
-            lastActivity: null,
-          },
-          false,
-          'logout'
-        ),
-
-      // State management actions
-      reset: () => set(createInitialState(), false, 'reset'),
-
-      // Selectors
-      isValidToken: () => {
-        const state = get();
-        return state.authToken.length > 0;
-      },
-
-      isValidInviteCode: () => {
-        const state = get();
-        // Basic validation - invite codes should be alphanumeric and at least 6 characters
-        return /^[A-Z0-9]{6,}$/.test(state.inviteCode);
-      },
-
-      isSessionExpired: () => {
-        const state = get();
-        if (!state.lastActivity) return false;
-        return Date.now() - state.lastActivity > state.sessionTimeout;
-      },
-
-      getLoginFormData: () => {
-        const state = get();
-        return {
-          playerName: state.playerName,
-          inviteCode: state.inviteCode,
-        };
-      },
-
-      getSessionStatus: () => {
-        const state = get();
-        return {
-          isAuthenticated: state.isAuthenticated,
-          hasCharacter: state.hasCharacter,
-          isSubmitting: state.isSubmitting,
-          hasError: state.error !== null,
-        };
-      },
-
-      getUserInfo: () => {
-        const state = get();
-        return {
-          playerName: state.playerName,
-          characterName: state.characterName,
-          hasValidToken: state.authToken.length > 0,
-        };
-      },
-
-      getSessionTimeoutInfo: () => {
-        const state = get();
-        const now = Date.now();
-        const timeRemaining = state.lastActivity
-          ? Math.max(0, state.sessionTimeout - (now - state.lastActivity))
-          : state.sessionTimeout;
-
-        return {
-          isExpired: state.isSessionExpired(),
-          timeRemaining,
-          timeoutDuration: state.sessionTimeout,
-        };
-      },
+      ...createSessionActions(set, get),
     }),
     {
       name: 'session-store',

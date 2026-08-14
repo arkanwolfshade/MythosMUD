@@ -165,7 +165,7 @@ try {
             Set-Item -Path "env:$($matches[1].Trim())" -Value $matches[2].Trim() -Force
         }
     }
-    $seedResult = & uv run python scripts/seed_e2e_users.py 2>&1
+    $seedResult = & uv run --no-sync python scripts/seed_e2e_users.py 2>&1
     $seedResult | Write-Host
     if (-not $?) {
         Write-Host "[ERROR] seed_e2e_users.py failed" -ForegroundColor Red

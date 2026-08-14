@@ -9,6 +9,12 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.game.movement_helpers import (
+    check_combat_state,
+    check_player_posture,
+    validate_exit,
+    validate_player_room_membership,
+)
 from server.game.movement_service import MovementService
 
 
@@ -228,10 +234,10 @@ async def test_validate_movement_allows_ghost_in_destination(movement_service, m
     )
 
     with (
-        patch.object(movement_service, "_check_combat_state", return_value=True),
-        patch.object(movement_service, "_check_player_posture", return_value=True),
-        patch.object(movement_service, "_validate_player_room_membership", new_callable=AsyncMock, return_value=True),
-        patch.object(movement_service, "_validate_exit", return_value=True),
+        patch("server.game.movement_service.check_combat_state", return_value=True),
+        patch("server.game.movement_service.check_player_posture", return_value=True),
+        patch("server.game.movement_service.validate_player_room_membership", new_callable=AsyncMock, return_value=True),
+        patch("server.game.movement_service.validate_exit", return_value=True),
     ):
         result = await movement_service._validate_movement(
             player,
@@ -273,7 +279,7 @@ async def test_move_player_success(movement_service, mock_persistence):
 
     with (
         patch.object(movement_service, "_validate_movement", new=AsyncMock(return_value=True)),
-        patch.object(movement_service, "_validate_exit", return_value=True),
+        patch("server.game.movement_service.validate_exit", return_value=True),
         patch("server.game.movement_service.get_movement_monitor") as monitor_mock,
     ):
         monitor_mock.return_value.record_movement = MagicMock()
@@ -307,43 +313,42 @@ def test_remove_player_invalid_params(movement_service):
 
 
 def test_check_combat_state_blocks_when_in_combat(movement_service):
-    """Test _check_combat_state returns False when player is in combat."""
+    """Test check_combat_state returns False when player is in combat."""
     combat_svc = MagicMock()
     combat_svc.is_player_in_combat_sync.return_value = True
     movement_service.set_player_combat_service(combat_svc)
     player_id = uuid.uuid4()
-    assert movement_service._check_combat_state(player_id, "room_a", "room_b") is False
+    assert check_combat_state(movement_service._logger, combat_svc, player_id, "room_a", "room_b") is False
 
 
 def test_check_combat_state_allows_without_service(movement_service):
-    """Test _check_combat_state allows movement when no combat service."""
-    movement_service._player_combat_service = None
-    assert movement_service._check_combat_state(uuid.uuid4(), "room_a", "room_b") is True
+    """Test check_combat_state allows movement when no combat service."""
+    assert check_combat_state(movement_service._logger, None, uuid.uuid4(), "room_a", "room_b") is True
 
 
 def test_check_player_posture_blocks_sitting(movement_service):
-    """Test _check_player_posture blocks non-standing posture."""
+    """Test check_player_posture blocks non-standing posture."""
     player = MagicMock()
     player.get_stats.return_value = {"position": "sitting"}
-    assert movement_service._check_player_posture(player, uuid.uuid4(), "room_a", "room_b") is False
+    assert check_player_posture(movement_service._logger, player, uuid.uuid4(), "room_a", "room_b") is False
 
 
-def test_validate_exit_no_exits(movement_service):
-    """Test _validate_exit returns False when room has no exits."""
+def test_validate_exit_no_exits(movement_service, mock_persistence):
+    """Test validate_exit returns False when room has no exits."""
     room = MagicMock()
     room.id = "room_a"
     room.name = "Room A"
     room.exits = {}
-    assert movement_service._validate_exit(room, "room_b") is False
+    assert validate_exit(movement_service._logger, mock_persistence, room, "room_b") is False
 
 
-def test_validate_exit_found(movement_service):
-    """Test _validate_exit returns True when exit matches target."""
+def test_validate_exit_found(movement_service, mock_persistence):
+    """Test validate_exit returns True when exit matches target."""
     room = MagicMock()
     room.id = "room_a"
     room.name = "Room A"
     room.exits = {"north": "room_b"}
-    assert movement_service._validate_exit(room, "room_b") is True
+    assert validate_exit(movement_service._logger, mock_persistence, room, "room_b") is True
 
 
 @pytest.mark.asyncio
@@ -370,7 +375,7 @@ async def test_validate_movement_success(movement_service, mock_persistence):
     mock_persistence.get_room_by_id = MagicMock(side_effect=lambda rid: from_room if rid == "room_a" else to_room)
     mock_persistence.get_player_by_id = AsyncMock(return_value=player)
 
-    with patch.object(movement_service, "_validate_player_room_membership", new=AsyncMock(return_value=True)):
+    with patch("server.game.movement_service.validate_player_room_membership", new=AsyncMock(return_value=True)):
         result = await movement_service._validate_movement(player, "room_a", "room_b")
     assert result is True
 
@@ -425,18 +430,18 @@ async def test_move_player_validation_fails(movement_service, mock_persistence):
 
 
 def test_validate_exit_target_missing_in_persistence(movement_service, mock_persistence):
-    """Test _validate_exit logs when target room missing from persistence."""
+    """Test validate_exit logs when target room missing from persistence."""
     room = MagicMock()
     room.id = "room_a"
     room.name = "Room A"
     room.exits = {"north": "other_room"}
     mock_persistence.get_room_by_id = MagicMock(return_value=None)
-    assert movement_service._validate_exit(room, "room_missing") is False
+    assert validate_exit(movement_service._logger, mock_persistence, room, "room_missing") is False
 
 
 @pytest.mark.asyncio
 async def test_validate_movement_player_already_in_target(movement_service, mock_persistence):
-    """Test _validate_movement returns False when player already in destination."""
+    """Ghost dest occupancy must not abort movement (co-locate leftover)."""
     player_id = uuid.uuid4()
     player = MagicMock()
     player.player_id = str(player_id)
@@ -449,17 +454,23 @@ async def test_validate_movement_player_already_in_target(movement_service, mock
     mock_persistence.get_room_by_id = MagicMock(side_effect=lambda rid: from_room if rid == "room_a" else to_room)
     mock_persistence.get_player_by_id = AsyncMock(return_value=player)
 
-    with patch.object(movement_service, "_validate_player_room_membership", new=AsyncMock(return_value=True)):
+    with patch("server.game.movement_service.validate_player_room_membership", new=AsyncMock(return_value=True)):
         result = await movement_service._validate_movement(player, "room_a", "room_b")
-    assert result is False
-    """Test _validate_player_room_membership fails when DB room differs."""
+    assert result is True
+
+
+@pytest.mark.asyncio
+async def test_validate_player_room_membership_db_mismatch(movement_service, mock_persistence):
+    """Test validate_player_room_membership fails when DB room differs."""
     player_id = uuid.uuid4()
     room = MagicMock()
     room.has_player.return_value = False
     db_player = MagicMock()
     db_player.current_room_id = "other_room"
     mock_persistence.get_player_by_id = AsyncMock(return_value=db_player)
-    result = await movement_service._validate_player_room_membership(player_id, room, "room_001")
+    result = await validate_player_room_membership(
+        movement_service._logger, mock_persistence, player_id, room, "room_001"
+    )
     assert result is False
 
 
@@ -473,6 +484,8 @@ async def test_validate_player_room_membership_auto_add(movement_service, mock_p
     db_player = MagicMock()
     db_player.current_room_id = "room_001"
     mock_persistence.get_player_by_id = AsyncMock(return_value=db_player)
-    result = await movement_service._validate_player_room_membership(player_id, room, "room_001")
+    result = await validate_player_room_membership(
+        movement_service._logger, mock_persistence, player_id, room, "room_001"
+    )
     assert result is True
     room.add_player_silently.assert_called_once_with(player_id)

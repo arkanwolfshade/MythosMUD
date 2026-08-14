@@ -6,8 +6,8 @@
     "organization": null,
     "repositoryId": null,
     "repositoryName": null,
-    "createdAt": "2026-08-06T22:56:49.959Z",
-    "updatedAt": "2026-08-06T22:56:49.959Z",
+    "createdAt": "2026-08-14T18:09:20.752Z",
+    "updatedAt": "2026-08-14T18:09:20.752Z",
     "languages": [
       "CSS",
       "HTML",
@@ -6112,10 +6112,16 @@
         "scripts/ci/quality_fragmentation_guard.py",
         "uv.lock",
         "**/uv.lock",
+        "**/package-lock.json",
         "graphify-out/**",
         "**/graphify-out/**",
         "**/graphify/**",
-        "**/*graphify*"
+        "**/*graphify*",
+        "client/src/**/__tests__/**",
+        "client/src/**/*.test.ts",
+        "client/src/**/*.test.tsx",
+        "client/src/components/EldritchEffectsDemo.tsx",
+        "client/src/components/eldritchEffectsDemoData.ts"
       ]
     },
     {

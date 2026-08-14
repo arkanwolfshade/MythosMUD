@@ -81,3 +81,65 @@ export function renderSkillInstructions() {
     </div>
   );
 }
+
+export function renderOccupationSlots(
+  selectableSkills: SkillCatalogEntry[],
+  occupationSlots: (number | null)[],
+  usedForOccupationDropdown: (excludeOccIndex: number) => Set<number>,
+  setOccupationSlot: (index: number, skillId: number | null) => void
+) {
+  return OCCUPATION_VALUES.map((value, i) => {
+    const used = usedForOccupationDropdown(i);
+    const options = selectableSkills.filter(s => occupationSlots[i] === s.id || !used.has(s.id));
+    return (
+      <div key={i} className="slot-row">
+        <label htmlFor={`occupation-slot-${i}`}>{`Occupation ${i + 1} (${value}%)`}</label>
+        <select
+          id={`occupation-slot-${i}`}
+          aria-label={`Occupation skill ${i + 1} value ${value} percent`}
+          value={occupationSlots[i] ?? ''}
+          style={MIN_TOUCH_TARGET_STYLE}
+          onChange={e => setOccupationSlot(i, e.target.value ? Number(e.target.value) : null)}
+        >
+          <option value="">Select skill...</option>
+          {options.map(s => (
+            <option key={s.id} value={s.id}>
+              {s.name} (base {s.base_value}%)
+            </option>
+          ))}
+        </select>
+      </div>
+    );
+  });
+}
+
+export function renderPersonalInterestSlots(
+  selectableSkills: SkillCatalogEntry[],
+  personalInterest: (number | null)[],
+  usedForPersonalDropdown: (excludePersIndex: number) => Set<number>,
+  setPersonalSlot: (index: number, skillId: number | null) => void
+) {
+  return [0, 1, 2, 3].map(i => {
+    const used = usedForPersonalDropdown(i);
+    const options = selectableSkills.filter(s => personalInterest[i] === s.id || !used.has(s.id));
+    return (
+      <div key={i} className="slot-row">
+        <label htmlFor={`personal-slot-${i}`}>{`Personal ${i + 1}`}</label>
+        <select
+          id={`personal-slot-${i}`}
+          aria-label={`Personal interest slot ${i + 1}`}
+          value={personalInterest[i] ?? ''}
+          style={MIN_TOUCH_TARGET_STYLE}
+          onChange={e => setPersonalSlot(i, e.target.value ? Number(e.target.value) : null)}
+        >
+          <option value="">Select skill...</option>
+          {options.map(s => (
+            <option key={s.id} value={s.id}>
+              {s.name} (base+20)
+            </option>
+          ))}
+        </select>
+      </div>
+    );
+  });
+}

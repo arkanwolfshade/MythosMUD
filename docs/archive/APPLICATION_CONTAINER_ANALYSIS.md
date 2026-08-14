@@ -5,7 +5,7 @@
 **Status:** Implemented (Phase 1 and Phase 2 complete)
 **Purpose:** Analyze the ApplicationContainer and document the domain-specific container split per the Architecture Review Plan.
 
-### Current state (architecture-cleanup)
+## Current state (architecture-cleanup)
 
 The container is implemented as a **package**: `server/container/`. The orchestrator lives in `server/container/main.py` (ApplicationContainer class); helpers in `server/container/utils.py`; domain bundles in `server/container/bundles/` (core, chat, combat, game, magic, monitoring, npc, realtime, time). Imports remain backward-compatible: `from server.container import ApplicationContainer`, `get_container`, `reset_container`. See ADR-002 and this document for details.
 

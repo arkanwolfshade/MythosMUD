@@ -4,8 +4,8 @@
 
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ChatHistoryPanel } from '../ChatHistoryPanel';
 import type { ChatMessage } from '../../types';
+import { ChatHistoryPanel } from '../ChatHistoryPanel';
 
 describe('ChatHistoryPanel', () => {
   const mockOnSendChatMessage = vi.fn();
@@ -155,5 +155,13 @@ describe('ChatHistoryPanel', () => {
     render(<ChatHistoryPanel messages={[]} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />);
     // Should render without errors
     expect(screen.queryByText('Hello world')).not.toBeInTheDocument();
+  });
+
+  it('does not render a compose input; chat is typed in the Commands panel', () => {
+    render(<ChatHistoryPanel messages={mockMessages} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />);
+    expect(screen.getByTestId('chat-history-panel')).toBeInTheDocument();
+    expect(screen.queryByTestId('command-input')).not.toBeInTheDocument();
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+    expect(mockOnSendChatMessage).not.toHaveBeenCalled();
   });
 });

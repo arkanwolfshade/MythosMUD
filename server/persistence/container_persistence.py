@@ -340,10 +340,12 @@ def _seed_new_container_items(conn: PsycopgConnection, container_id: UUID, items
                     conn,
                     item_instance_id=item_instance_id,
                     prototype_id=prototype_id,
-                    owner_type="container",
-                    owner_id=str(container_id),
-                    quantity=_coerce_item_quantity(item.get("quantity", 1)),
-                    metadata=item_metadata,
+                    options={
+                        "owner_type": "container",
+                        "owner_id": str(container_id),
+                        "quantity": _coerce_item_quantity(item.get("quantity", 1)),
+                        "metadata": item_metadata,
+                    },
                 )
             except (DatabaseError, ValidationError) as e:
                 logger.warning(

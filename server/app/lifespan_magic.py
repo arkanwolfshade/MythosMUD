@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from ..container import ApplicationContainer
 from ..game.magic.magic_service import MagicService
 from ..game.magic.mp_regeneration_service import MPRegenerationService
-from ..game.magic.spell_effects import SpellEffects
+from ..game.magic.spell_effects import SpellEffects, SpellEffectsDeps
 from ..game.magic.spell_learning_service import SpellLearningService
 from ..game.magic.spell_registry import SpellRegistry
 from ..game.magic.spell_targeting import SpellTargetingService
@@ -65,11 +65,13 @@ def _initialize_spell_effects(app: FastAPI, container: ApplicationContainer) -> 
     """Initialize SpellEffects and attach to app.state."""
     get_room = container.async_persistence.get_room_by_id if container.async_persistence else None
     spell_effects = SpellEffects(
-        player_service=container.player_service,
-        combat_service=getattr(app.state, "combat_service", None),
-        movement_service=getattr(container, "movement_service", None),
-        get_room_by_id=get_room,
-        connection_manager=getattr(container, "connection_manager", None),
+        container.player_service,
+        SpellEffectsDeps(
+            combat_service=getattr(app.state, "combat_service", None),
+            movement_service=getattr(container, "movement_service", None),
+            get_room_by_id=get_room,
+            connection_manager=getattr(container, "connection_manager", None),
+        ),
     )
     app.state.spell_effects = spell_effects
     logger.info("SpellEffects initialized")

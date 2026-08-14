@@ -44,80 +44,38 @@ class SpellLearningService:
         self.player_spell_repository = player_spell_repository or PlayerSpellRepository()
         logger.info("SpellLearningService initialized")
 
-    async def learn_spell(
-        self,
-        player_id: uuid.UUID,
-        spell_id: str,
-        source: str = "unknown",
-        initial_mastery: int = 0,
-    ) -> dict[str, Any]:
-        """
-        Learn a spell for a player.
-
-        Args:
-            player_id: Player ID
-            spell_id: Spell ID to learn
-            source: Source of learning (e.g., "spellbook", "npc_teacher", "quest_reward")
-            initial_mastery: Initial mastery level (default 0)
-
-        Returns:
-            dict: Result with success, message, and details
-        """
-        logger.info("Learning spell", player_id=player_id, spell_id=spell_id, source=source)
-
-        # Get spell from registry
+    def _resolve_spell(self, spell_id: str) -> Spell | None:
         spell = self.spell_registry.get_spell(spell_id)
-        if not spell:
-            # Try by name
-            spell = self.spell_registry.get_spell_by_name(spell_id)
-            if not spell:
-                return {"success": False, "message": f"Spell '{spell_id}' not found."}
+        if spell:
+            return spell
+        return self.spell_registry.get_spell_by_name(spell_id)
 
-        # Get player
-        player = await self.player_service.persistence.get_player_by_id(player_id)
-        if not player:
-            return {"success": False, "message": "You are not recognized by the cosmic forces."}
+    async def _apply_mythos_corruption_on_learn(self, player: Any, spell: Spell) -> int:
+        if not spell.is_mythos() or spell.corruption_on_learn <= 0:
+            return 0
+        stats = player.get_stats()
+        current_corruption = stats.get("corruption", 0)
+        stats["corruption"] = current_corruption + spell.corruption_on_learn
+        await self.player_service.persistence.save_player(player)
+        logger.info(
+            "Applied corruption on spell learning",
+            player_id=player.player_id,
+            spell_id=spell.spell_id,
+            corruption=spell.corruption_on_learn,
+        )
+        return spell.corruption_on_learn
 
-        # Check if already learned
-        existing = await self.player_spell_repository.get_player_spell(player_id, spell.spell_id)
-        if existing:
-            return {
-                "success": False,
-                "message": f"You already know {spell.name}.",
-                "already_known": True,
-            }
-
-        # Validate prerequisites
-        validation_result = await self._validate_prerequisites(player_id, spell)
-        if not validation_result["valid"]:
-            return {
-                "success": False,
-                "message": validation_result["error_message"],
-                "prerequisite_failed": True,
-            }
-
-        # Learn the spell
+    async def _persist_spell_learning(
+        self, player_id: uuid.UUID, spell: Spell, initial_mastery: int
+    ) -> dict[str, Any] | None:
         try:
             await self.player_spell_repository.learn_spell(player_id, spell.spell_id, initial_mastery)
         except OSError as e:
             logger.error("Error learning spell", player_id=player_id, spell_id=spell.spell_id, error=str(e))
             return {"success": False, "message": f"Failed to learn spell: {str(e)}"}
+        return None
 
-        # Apply corruption for Mythos spells
-        corruption_applied = 0
-        if spell.is_mythos() and spell.corruption_on_learn > 0:
-            stats = player.get_stats()
-            current_corruption = stats.get("corruption", 0)
-            stats["corruption"] = current_corruption + spell.corruption_on_learn
-            corruption_applied = spell.corruption_on_learn
-            await self.player_service.persistence.save_player(player)
-            logger.info(
-                "Applied corruption on spell learning",
-                player_id=player_id,
-                spell_id=spell.spell_id,
-                corruption=corruption_applied,
-            )
-
+    def _spell_learn_success_response(self, spell: Spell, corruption_applied: int, source: str) -> dict[str, Any]:
         return {
             "success": True,
             "message": f"You have learned {spell.name}!",
@@ -127,7 +85,107 @@ class SpellLearningService:
             "source": source,
         }
 
-    async def _validate_prerequisites(self, player_id: uuid.UUID, spell: Spell) -> dict[str, Any]:  # pylint: disable=too-many-locals  # Reason: Prerequisite validation requires many intermediate variables for complex validation logic
+    async def _load_spell_learn_context(
+        self, player_id: uuid.UUID, spell_id: str
+    ) -> tuple[Spell, Any] | dict[str, Any]:
+        spell = self._resolve_spell(spell_id)
+        if not spell:
+            return {"success": False, "message": f"Spell '{spell_id}' not found."}
+
+        player = await self.player_service.persistence.get_player_by_id(player_id)
+        if not player:
+            return {"success": False, "message": "You are not recognized by the cosmic forces."}
+
+        existing = await self.player_spell_repository.get_player_spell(player_id, spell.spell_id)
+        if existing:
+            return {
+                "success": False,
+                "message": f"You already know {spell.name}.",
+                "already_known": True,
+            }
+
+        return spell, player
+
+    async def learn_spell(
+        self,
+        player_id: uuid.UUID,
+        spell_id: str,
+        source: str = "unknown",
+        initial_mastery: int = 0,
+    ) -> dict[str, Any]:
+        """Learn a spell for a player."""
+        logger.info("Learning spell", player_id=player_id, spell_id=spell_id, source=source)
+
+        context = await self._load_spell_learn_context(player_id, spell_id)
+        if isinstance(context, dict):
+            return context
+        spell, player = context
+
+        validation_result = await self._validate_prerequisites(player_id, spell)
+        if not validation_result["valid"]:
+            return {
+                "success": False,
+                "message": validation_result["error_message"],
+                "prerequisite_failed": True,
+            }
+
+        learn_error = await self._persist_spell_learning(player_id, spell, initial_mastery)
+        if learn_error:
+            return learn_error
+
+        corruption_applied = await self._apply_mythos_corruption_on_learn(player, spell)
+        return self._spell_learn_success_response(spell, corruption_applied, source)
+
+    def _check_power_requirement(self, stats: dict[str, Any], spell: Spell) -> dict[str, Any] | None:
+        required_power = spell.effect_data.get("required_power", 0)
+        if required_power <= 0:
+            return None
+        current_power = stats.get("power", 50)
+        if current_power >= required_power:
+            return None
+        return {
+            "valid": False,
+            "error_message": (f"{spell.name} requires Power {required_power}, but you only have {current_power}."),
+        }
+
+    def _check_intelligence_requirement(self, stats: dict[str, Any], spell: Spell) -> dict[str, Any] | None:
+        required_intelligence = spell.effect_data.get("required_intelligence", 0)
+        if required_intelligence <= 0:
+            return None
+        current_intelligence = stats.get("intelligence", 50)
+        if current_intelligence >= required_intelligence:
+            return None
+        return {
+            "valid": False,
+            "error_message": (
+                f"{spell.name} requires Intelligence {required_intelligence}, but you only have {current_intelligence}."
+            ),
+        }
+
+    async def _check_required_spell_prerequisites(self, player_id: uuid.UUID, spell: Spell) -> dict[str, Any] | None:
+        required_spells = spell.effect_data.get("required_spells", [])
+        if not required_spells:
+            return None
+
+        player_spells = await self.player_spell_repository.get_player_spells(player_id)
+        known_spell_ids = {player_spell.spell_id for player_spell in player_spells}
+        missing_spells = [spell_id for spell_id in required_spells if spell_id not in known_spell_ids]
+        if not missing_spells:
+            return None
+
+        missing_names = []
+        for missing_spell_id in missing_spells:
+            required_spell = self.spell_registry.get_spell(missing_spell_id)
+            missing_names.append(required_spell.name if required_spell else missing_spell_id)
+
+        return {
+            "valid": False,
+            "error_message": (
+                f"{spell.name} requires knowledge of: {', '.join(missing_names)}. You must learn these spells first."
+            ),
+        }
+
+    async def _validate_prerequisites(self, player_id: uuid.UUID, spell: Spell) -> dict[str, Any]:
         """
         Validate prerequisites for learning a spell.
 
@@ -143,51 +201,16 @@ class SpellLearningService:
             return {"valid": False, "error_message": "Player not found"}
 
         stats = player.get_stats()
+        for check in (
+            self._check_power_requirement(stats, spell),
+            self._check_intelligence_requirement(stats, spell),
+        ):
+            if check:
+                return check
 
-        # Check minimum stats (if defined in effect_data)
-        # For now, we'll use a simple check - can be extended
-        required_power = spell.effect_data.get("required_power", 0)
-        if required_power > 0:
-            current_power = stats.get("power", 50)
-            if current_power < required_power:
-                return {
-                    "valid": False,
-                    "error_message": f"{spell.name} requires Power {required_power}, but you only have {current_power}.",
-                }
-
-        required_intelligence = spell.effect_data.get("required_intelligence", 0)
-        if required_intelligence > 0:
-            current_intelligence = stats.get("intelligence", 50)
-            if current_intelligence < required_intelligence:
-                return {
-                    "valid": False,
-                    "error_message": (
-                        f"{spell.name} requires Intelligence {required_intelligence}, "
-                        f"but you only have {current_intelligence}."
-                    ),
-                }
-
-        # Check required spells (if defined in effect_data)
-        required_spells = spell.effect_data.get("required_spells", [])
-        if required_spells:
-            player_spells = await self.player_spell_repository.get_player_spells(player_id)
-            known_spell_ids = {ps.spell_id for ps in player_spells}
-            missing_spells = [s for s in required_spells if s not in known_spell_ids]
-            if missing_spells:
-                missing_names = []
-                for s in missing_spells:
-                    required_spell = self.spell_registry.get_spell(s)
-                    if required_spell:
-                        missing_names.append(required_spell.name)
-                    else:
-                        missing_names.append(s)
-                return {
-                    "valid": False,
-                    "error_message": (
-                        f"{spell.name} requires knowledge of: {', '.join(missing_names)}. "
-                        "You must learn these spells first."
-                    ),
-                }
+        spell_check = await self._check_required_spell_prerequisites(player_id, spell)
+        if spell_check:
+            return spell_check
 
         return {"valid": True}
 

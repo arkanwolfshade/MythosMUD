@@ -24,6 +24,33 @@ from .player_presence_utils import extract_player_name, get_player_position
 logger = get_logger(__name__)
 
 
+async def _disconnect_during_rest_is_intentional(player_id: uuid.UUID, manager: Any) -> bool:
+    """
+    Exit-/rest starts a countdown before intentional_disconnects is marked.
+
+    If the client drops the WebSocket mid-countdown (SPA navigate, tab close, E2E
+    spaFallback), treat it as intentional logout: cancel the countdown and skip
+    linkdead grace. Otherwise Occupants show Sitting+(linkdead) for 30s.
+    """
+    # Inline import: rest_command <-> realtime cycle (same pattern as combat_handler).
+    from ..commands.rest_command import cancel_rest_countdown, is_player_resting
+
+    resting = getattr(manager, "resting_players", None)
+    if not isinstance(resting, dict) or not is_player_resting(player_id, manager):
+        return False
+
+    logger.info("WS closed during /rest countdown; treating as intentional logout", player_id=player_id)
+    await cancel_rest_countdown(player_id, manager)
+    return True
+
+
+async def _resolve_intentional_disconnect(player_id: uuid.UUID, manager: Any) -> bool:
+    """True if disconnect was intentional logout or mid-/rest Exit countdown."""
+    if player_id in getattr(manager, "intentional_disconnects", set()):
+        return True
+    return await _disconnect_during_rest_is_intentional(player_id, manager)
+
+
 def _build_player_info(
     player_id: Any,
     player: Any,
@@ -318,8 +345,8 @@ async def track_player_disconnected_impl(
         if not await _acquire_disconnect_lock(player_id, manager):
             return
 
-        # Check if this is an intentional disconnect (no grace period)
-        is_intentional = player_id in getattr(manager, "intentional_disconnects", set())
+        # Intentional logout (or mid-/rest Exit) skips linkdead grace
+        is_intentional = await _resolve_intentional_disconnect(player_id, manager)
 
         if is_intentional:
             # Intentional disconnect - perform immediate cleanup (no grace period)

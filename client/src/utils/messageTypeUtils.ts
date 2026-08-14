@@ -168,49 +168,54 @@ const SYSTEM_PATTERNS: MessagePattern[] = [
  * @param message - The message text to analyze
  * @returns MessageTypeResult with type and optional channel
  */
+function resolveChatChannel(trimmedMessage: string, pattern: (typeof CHAT_PATTERNS)[number]): string | undefined {
+  if (/^You say locally:/i.test(trimmedMessage)) {
+    return 'local';
+  }
+  if (/^You say:(?! locally)/i.test(trimmedMessage)) {
+    return 'say';
+  }
+  if (/^(?:You whisper to \w+|\w+ whispers to you):/i.test(trimmedMessage)) {
+    return 'whisper';
+  }
+  return pattern.channelExtractor ? extractChannelFromMessage(trimmedMessage) : undefined;
+}
+
+function matchPatternList(
+  trimmedMessage: string,
+  patterns: Array<{ pattern: RegExp; type: MessageTypeResult['type'] }>
+): MessageTypeResult | null {
+  for (const pattern of patterns) {
+    if (pattern.pattern.test(trimmedMessage)) {
+      return { type: pattern.type };
+    }
+  }
+  return null;
+}
+
 export function determineMessageType(message: string): MessageTypeResult {
-  // Handle empty or whitespace-only messages
   if (!message || !message.trim()) {
     return { type: 'command' };
   }
 
   const trimmedMessage = message.trim();
 
-  // Check chat patterns first (highest priority)
   for (const pattern of CHAT_PATTERNS) {
     if (pattern.pattern.test(trimmedMessage)) {
-      let channel: string | undefined;
-
-      // Special handling for specific patterns
-      if (/^You say locally:/i.test(trimmedMessage)) {
-        channel = 'local';
-      } else if (/^You say:(?! locally)/i.test(trimmedMessage)) {
-        channel = 'say'; // "You say:" without "locally" goes to say channel
-      } else if (/^(?:You whisper to \w+|\w+ whispers to you):/i.test(trimmedMessage)) {
-        channel = 'whisper';
-      } else {
-        channel = pattern.channelExtractor ? extractChannelFromMessage(trimmedMessage) : undefined;
-      }
-
-      return { type: pattern.type, channel };
+      return { type: pattern.type, channel: resolveChatChannel(trimmedMessage, pattern) };
     }
   }
 
-  // Check error patterns (second priority)
-  for (const pattern of ERROR_PATTERNS) {
-    if (pattern.pattern.test(trimmedMessage)) {
-      return { type: pattern.type };
-    }
+  const errorMatch = matchPatternList(trimmedMessage, ERROR_PATTERNS);
+  if (errorMatch) {
+    return errorMatch;
   }
 
-  // Check system patterns
-  for (const pattern of SYSTEM_PATTERNS) {
-    if (pattern.pattern.test(trimmedMessage)) {
-      return { type: pattern.type };
-    }
+  const systemMatch = matchPatternList(trimmedMessage, SYSTEM_PATTERNS);
+  if (systemMatch) {
+    return systemMatch;
   }
 
-  // Default to command response
   return { type: 'command' };
 }
 

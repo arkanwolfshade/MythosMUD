@@ -507,42 +507,7 @@ def _resolve_memory_leak_collector() -> Any:
 
 @monitoring_router.get("/memory-leaks", response_model=MemoryLeakMetricsResponse)
 async def get_memory_leak_metrics(_request: Request) -> MemoryLeakMetricsResponse:
-    """
-    Get comprehensive memory leak metrics from all sources.
-
-    Returns aggregated metrics from all monitoring sources for comprehensive
-    memory leak detection. Includes connection, event, cache, task, and NATS metrics
-    along with growth rate calculations and automated alerts.
-
-    This endpoint provides:
-    - Connection metrics (websockets, metadata, orphaned connections)
-    - Event system metrics (subscribers, tasks, churn rates)
-    - Cache metrics (sizes, expiration, utilization)
-    - Task metrics (counts, lifecycle, orphaned tasks)
-    - NATS metrics (subscriptions, cleanup status)
-    - Growth rates (calculated from historical data)
-    - Automated alerts (based on configured thresholds)
-
-    Thresholds (configured in MemoryLeakMetricsCollector):
-    - closed_websockets_max: 5000 (warning), 10000 (critical)
-    - subscriber_growth_rate: 0.1 (10% per period)
-    - cache_size_limit_factor: 1.1 (110% of max_size)
-    - task_growth_rate: 0.2 (20% per period)
-
-    Example normal values:
-    - closed_websockets_count: < 1000
-    - active_to_player_ratio: 0.8-1.2
-    - subscription_churn_rate: < 0.1
-    - capacity_utilization: < 1.0
-
-    Example abnormal values (indicate potential leaks):
-    - closed_websockets_count: > 5000
-    - active_to_player_ratio: > 2.0
-    - subscription_churn_rate: > 0.2
-    - capacity_utilization: > 1.1
-    - orphaned_connections: > 10
-    - orphaned_task_count: > 5
-    """
+    """Get comprehensive memory leak metrics from all sources."""
     try:
         collector = _resolve_memory_leak_collector()
         metrics = collector.collect_all_metrics()
@@ -567,86 +532,53 @@ async def get_memory_leak_metrics(_request: Request) -> MemoryLeakMetricsRespons
         ) from e
 
 
-@monitoring_router.get("/health", response_model=HealthResponse)
-async def get_health_status(request: Request) -> HealthResponse | JSONResponse:  # pylint: disable=too-many-locals  # Reason: Health check endpoint requires 17 local variables for component health validation, response construction, and error handling; extracting logic would reduce clarity and increase complexity
-    """
-    Get comprehensive system health status with timeout protection.
-
-    This endpoint validates all critical components:
-    - Server metrics (CPU, memory, uptime)
-    - Database connectivity (actual query validation)
-    - Connection manager health
-    - Event loop health
-
-    Returns appropriate HTTP status codes:
-    - 200 OK: System healthy or degraded (status in response body)
-    - 503 Service Unavailable: System unhealthy
-    - 500 Internal Server Error: Health check itself failed
-    """
+async def _assemble_health_response(health_service: Any) -> HealthResponse:
     import asyncio
+    import importlib.metadata
 
+    from ..models.health import HealthComponents
+
+    server_health = health_service.get_server_component_health()
+    database_health = await asyncio.wait_for(
+        health_service.get_database_component_health_async(),
+        timeout=health_service.health_check_timeout_seconds,
+    )
+    connections_health = health_service.get_connections_component_health()
+    components = HealthComponents(
+        server=server_health,
+        database=database_health,
+        connections=connections_health,
+    )
+    overall_status = health_service.determine_overall_status(components)
+    alerts = health_service.generate_alerts(components)
+    health_service.health_check_count += 1
+    health_service.last_health_check = datetime.now(UTC)
+    try:
+        version = importlib.metadata.version("mythosmud")
+    except importlib.metadata.PackageNotFoundError:
+        version = "0.1.0"
+    return HealthResponse(
+        status=overall_status,
+        timestamp=datetime.now(UTC).isoformat(),
+        uptime_seconds=health_service.get_server_uptime(),
+        version=version,
+        components=components,
+        alerts=alerts,
+    )
+
+
+@monitoring_router.get("/health", response_model=HealthResponse)
+async def get_health_status(request: Request) -> HealthResponse | JSONResponse:
+    """Return aggregated health status for monitoring."""
     try:
         connection_manager = _resolve_connection_manager_from_request(request)
         health_service = get_health_service(connection_manager=connection_manager)
-
-        # Use async health check with timeout protection
         try:
-            # Get component health with async validation
-            server_health = health_service.get_server_component_health()
-            database_health = await asyncio.wait_for(
-                health_service.get_database_component_health_async(),
-                timeout=health_service.health_check_timeout_seconds,
-            )
-            connections_health = health_service.get_connections_component_health()
-
-            # Create components object
-            from ..models.health import HealthComponents
-
-            components = HealthComponents(
-                server=server_health,
-                database=database_health,
-                connections=connections_health,
-            )
-
-            # Determine overall status
-            overall_status = health_service.determine_overall_status(components)
-
-            # Generate alerts
-            alerts = health_service.generate_alerts(components)
-
-            # Update health check statistics
-            health_service.health_check_count += 1
-            health_service.last_health_check = datetime.now(UTC)
-
-            # Get version from project configuration
-            import importlib.metadata
-
-            try:
-                version = importlib.metadata.version("mythosmud")
-            except importlib.metadata.PackageNotFoundError:
-                version = "0.1.0"  # Fallback version
-
-            health_response = HealthResponse(
-                status=overall_status,
-                timestamp=datetime.now(UTC).isoformat(),
-                uptime_seconds=health_service.get_server_uptime(),
-                version=version,
-                components=components,
-                alerts=alerts,
-            )
-
-            # Return appropriate HTTP status code based on health status
-            if health_response.status == HealthStatus.HEALTHY:
+            health_response = await _assemble_health_response(health_service)
+            if health_response.status in (HealthStatus.HEALTHY, HealthStatus.DEGRADED):
                 return health_response
-            if health_response.status == HealthStatus.DEGRADED:
-                # Return 200 with degraded status in response body
-                return health_response
-            # UNHEALTHY
-            # Return 503 Service Unavailable for unhealthy status
             return JSONResponse(status_code=503, content=health_response.model_dump())
-
         except TimeoutError:
-            # Health check timed out - return unhealthy
             logger.warning("Health check timed out", timeout=health_service.health_check_timeout_seconds)
             error_response = HealthErrorResponse(
                 error="Health check timeout",
@@ -659,9 +591,7 @@ async def get_health_status(request: Request) -> HealthResponse | JSONResponse: 
                 operation="get_health_status",
                 timeout=health_service.health_check_timeout_seconds,
             ) from None
-
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Health check errors unpredictable, must return error response
-        # Return 500 Internal Server Error if health check itself fails
         error_response = HealthErrorResponse(
             error="Health check failed", detail=str(e), timestamp=datetime.now(UTC).isoformat()
         )

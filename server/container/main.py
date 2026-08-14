@@ -36,79 +36,141 @@ class ApplicationContainer:
     _instance: "ApplicationContainer | None" = None
     _lock: threading.Lock = threading.Lock()
 
+    # Class annotations keep pyright from freezing attrs as forever-None (self.x = None
+    # without a declaration). Real service types land at runtime via bundles; DI surface
+    # is wide, so Any|None is intentional (narrow/cast at call sites when needed).
+    config: Any
+    database_manager: Any
+    task_registry: Any
+    tracked_task_manager: Any
+    event_bus: Any
+    persistence: Any
+    async_persistence: Any
+    connection_manager: Any
+    real_time_event_handler: Any
+    nats_service: Any
+    nats_message_handler: Any
+    event_publisher: Any
+    player_service: Any
+    room_service: Any
+    movement_service: Any
+    player_position_service: Any
+    follow_service: Any
+    party_service: Any
+    exploration_service: Any
+    user_manager: Any
+    container_service: Any
+    level_service: Any
+    skill_service: Any
+    room_cache_service: Any
+    profession_cache_service: Any
+    performance_monitor: Any
+    exception_tracker: Any
+    monitoring_dashboard: Any
+    log_aggregator: Any
+    holiday_service: Any
+    schedule_service: Any
+    mythos_tick_scheduler: Any
+    item_prototype_registry: Any
+    item_factory: Any
+    player_combat_service: Any
+    player_death_service: Any
+    player_respawn_service: Any
+    combat_service: Any
+    magic_service: Any
+    spell_registry: Any
+    spell_targeting_service: Any
+    spell_effects: Any
+    spell_learning_service: Any
+    mp_regeneration_service: Any
+    quest_definition_repository: Any
+    quest_instance_repository: Any
+    quest_service: Any
+    npc_lifecycle_manager: Any
+    npc_spawning_service: Any
+    npc_population_controller: Any
+    catatonia_registry: Any
+    passive_lucidity_flux_service: Any
+    mythos_time_consumer: Any
+    chat_service: Any
+    server_shutdown_pending: bool
+    shutdown_data: Any
+    tick_task: Any
+
+    def _init_core_attributes(self) -> None:
+        self.config = None
+        self.database_manager = None
+        self.task_registry = None
+        self.tracked_task_manager = None
+        self.event_bus = None
+        self.persistence = None
+        self.async_persistence = None
+
+    def _init_realtime_attributes(self) -> None:
+        self.connection_manager = None
+        self.real_time_event_handler = None
+        self.nats_service = None
+        self.nats_message_handler = None
+        self.event_publisher = None
+
+    def _init_game_attributes(self) -> None:
+        self.player_service = None
+        self.room_service = None
+        self.movement_service = None
+        self.player_position_service = None
+        self.follow_service = None
+        self.party_service = None
+        self.exploration_service = None
+        self.user_manager = None
+        self.container_service = None
+        self.level_service = None
+        self.skill_service = None
+        self.room_cache_service = None
+        self.profession_cache_service = None
+
+    def _init_extended_attributes(self) -> None:
+        self.performance_monitor = None
+        self.exception_tracker = None
+        self.monitoring_dashboard = None
+        self.log_aggregator = None
+        self.holiday_service = None
+        self.schedule_service = None
+        self.mythos_tick_scheduler = None
+        self.item_prototype_registry = None
+        self.item_factory = None
+        self.player_combat_service = None
+        self.player_death_service = None
+        self.player_respawn_service = None
+        self.combat_service = None
+        self.magic_service = None
+        self.spell_registry = None
+        self.spell_targeting_service = None
+        self.spell_effects = None
+        self.spell_learning_service = None
+        self.mp_regeneration_service = None
+        self.quest_definition_repository = None
+        self.quest_instance_repository = None
+        self.quest_service = None
+        self.npc_lifecycle_manager = None
+        self.npc_spawning_service = None
+        self.npc_population_controller = None
+        self.catatonia_registry = None
+        self.passive_lucidity_flux_service = None
+        self.mythos_time_consumer = None
+        self.chat_service = None
+        self.server_shutdown_pending = False
+        self.shutdown_data = None
+        self.tick_task = None
+
     def __init__(self) -> None:
         """Initialize the container. Services are NOT initialized here - use initialize()."""
         if ApplicationContainer._instance is not None:
             logger.warning("Multiple ApplicationContainer instances created - this may indicate a problem")
 
-        self.config: Any = None
-        self.database_manager: Any = None
-        self.task_registry: Any = None
-        self.tracked_task_manager: Any = None
-        self.event_bus: Any = None
-        self.persistence: Any = None
-        self.async_persistence: Any = None
-
-        self.connection_manager: Any = None
-        self.real_time_event_handler: Any = None
-        self.nats_service: Any = None
-        self.nats_message_handler: Any = None
-        self.event_publisher: Any = None
-
-        self.player_service: Any = None
-        self.room_service: Any = None
-        self.movement_service: Any = None
-        self.player_position_service: Any = None
-        self.follow_service: Any = None
-        self.party_service: Any = None
-        self.exploration_service: Any = None
-        self.user_manager: Any = None
-        self.container_service: Any = None
-        self.level_service: Any = None
-        self.skill_service: Any = None
-
-        self.room_cache_service: Any = None
-        self.profession_cache_service: Any = None
-
-        self.performance_monitor: Any = None
-        self.exception_tracker: Any = None
-        self.monitoring_dashboard: Any = None
-        self.log_aggregator: Any = None
-
-        self.holiday_service: Any = None
-        self.schedule_service: Any = None
-        self.mythos_tick_scheduler: Any = None
-
-        self.item_prototype_registry: Any = None
-        self.item_factory: Any = None
-
-        self.player_combat_service: Any = None
-        self.player_death_service: Any = None
-        self.player_respawn_service: Any = None
-        self.combat_service: Any = None
-
-        self.magic_service: Any = None
-        self.spell_registry: Any = None
-        self.spell_targeting_service: Any = None
-        self.spell_effects: Any = None
-        self.spell_learning_service: Any = None
-        self.mp_regeneration_service: Any = None
-        self.quest_definition_repository: Any = None
-        self.quest_instance_repository: Any = None
-        self.quest_service: Any = None
-
-        self.npc_lifecycle_manager: Any = None
-        self.npc_spawning_service: Any = None
-        self.npc_population_controller: Any = None
-
-        self.catatonia_registry: Any = None
-        self.passive_lucidity_flux_service: Any = None
-        self.mythos_time_consumer: Any = None
-        self.chat_service: Any = None
-
-        self.server_shutdown_pending: bool = False
-        self.shutdown_data: dict[str, Any] | None = None
-        self.tick_task: Any = None
+        self._init_core_attributes()
+        self._init_realtime_attributes()
+        self._init_game_attributes()
+        self._init_extended_attributes()
 
         self._initialized: bool = False
         self._initialization_lock = Lock()
@@ -140,10 +202,8 @@ class ApplicationContainer:
             cls._instance = instance
         logger.debug("ApplicationContainer instance set via set_instance()")
 
-    async def initialize(self) -> None:  # pylint: disable=too-many-locals
-        """Initialize all services via domain bundles in dependency order."""
+    async def _initialize_primary_bundles(self) -> None:
         from server.container.bundles import (
-            ChatBundle,
             CombatBundle,
             CoreBundle,
             GameBundle,
@@ -151,9 +211,7 @@ class ApplicationContainer:
             MonitoringBundle,
             NPCBundle,
             RealtimeBundle,
-            TimeBundle,
         )
-        from server.container.bundles.chat import CHAT_ATTRS
         from server.container.bundles.combat import COMBAT_ATTRS
         from server.container.bundles.core import CORE_ATTRS
         from server.container.bundles.game import GAME_ATTRS
@@ -161,8 +219,50 @@ class ApplicationContainer:
         from server.container.bundles.monitoring import MONITORING_ATTRS
         from server.container.bundles.npc import NPC_ATTRS
         from server.container.bundles.realtime import REALTIME_ATTRS
+
+        combat = CombatBundle()
+        for bundle, attrs in (
+            (CoreBundle(), CORE_ATTRS),
+            (RealtimeBundle(), REALTIME_ATTRS),
+            (GameBundle(), GAME_ATTRS),
+            (MonitoringBundle(), MONITORING_ATTRS),
+            (combat, COMBAT_ATTRS),
+            (NPCBundle(), NPC_ATTRS),
+        ):
+            await bundle.initialize(self)
+            _flatten_bundle(self, bundle, attrs)
+
+        # Same instance as above: a fresh CombatBundle() has no services and fails NATS prerequisites.
+        await combat.initialize_nats_combat(self)
+        _flatten_bundle(self, combat, COMBAT_ATTRS)
+
+        magic = MagicBundle()
+        await magic.initialize(self)
+        _flatten_bundle(self, magic, MAGIC_ATTRS)
+
+    async def _initialize_secondary_bundles(self) -> None:
+        from server.container.bundles import ChatBundle, TimeBundle
+        from server.container.bundles.chat import CHAT_ATTRS
         from server.container.bundles.time import TIME_ATTRS
 
+        chat = ChatBundle()
+        await chat.initialize(self)
+        _flatten_bundle(self, chat, CHAT_ATTRS)
+
+        time_bundle = TimeBundle()
+        await time_bundle.initialize(self)
+        _flatten_bundle(self, time_bundle, TIME_ATTRS)
+
+    def _link_cross_bundle_services(self) -> None:
+        if self.combat_service and self.magic_service:
+            self.combat_service.magic_service = self.magic_service
+            logger.info("MagicService linked to CombatService")
+        if self.quest_service and self.spell_learning_service:
+            self.quest_service.set_spell_learning_service(self.spell_learning_service)
+            logger.info("SpellLearningService linked to QuestService")
+
+    async def initialize(self) -> None:  # pylint: disable=too-many-locals
+        """Initialize all services via domain bundles in dependency order."""
         async with self._initialization_lock:
             if self._initialized:
                 logger.warning("Container already initialized - skipping re-initialization")
@@ -171,52 +271,9 @@ class ApplicationContainer:
             logger.info("Initializing ApplicationContainer...")
 
             try:
-                core = CoreBundle()
-                await core.initialize(self)
-                _flatten_bundle(self, core, CORE_ATTRS)
-
-                realtime = RealtimeBundle()
-                await realtime.initialize(self)
-                _flatten_bundle(self, realtime, REALTIME_ATTRS)
-
-                game = GameBundle()
-                await game.initialize(self)
-                _flatten_bundle(self, game, GAME_ATTRS)
-
-                monitoring = MonitoringBundle()
-                await monitoring.initialize(self)
-                _flatten_bundle(self, monitoring, MONITORING_ATTRS)
-
-                combat = CombatBundle()
-                await combat.initialize(self)
-                _flatten_bundle(self, combat, COMBAT_ATTRS)
-
-                npc_bundle = NPCBundle()
-                await npc_bundle.initialize(self)
-                _flatten_bundle(self, npc_bundle, NPC_ATTRS)
-
-                await combat.initialize_nats_combat(self)
-                _flatten_bundle(self, combat, COMBAT_ATTRS)
-
-                magic = MagicBundle()
-                await magic.initialize(self)
-                _flatten_bundle(self, magic, MAGIC_ATTRS)
-
-                if self.combat_service and self.magic_service:
-                    self.combat_service.magic_service = self.magic_service
-                    logger.info("MagicService linked to CombatService")
-                if self.quest_service and self.spell_learning_service:
-                    self.quest_service.set_spell_learning_service(self.spell_learning_service)
-                    logger.info("SpellLearningService linked to QuestService")
-
-                chat = ChatBundle()
-                await chat.initialize(self)
-                _flatten_bundle(self, chat, CHAT_ATTRS)
-
-                time_bundle = TimeBundle()
-                await time_bundle.initialize(self)
-                _flatten_bundle(self, time_bundle, TIME_ATTRS)
-
+                await self._initialize_primary_bundles()
+                self._link_cross_bundle_services()
+                await self._initialize_secondary_bundles()
                 self._initialized = True
                 logger.info("ApplicationContainer initialization complete")
 

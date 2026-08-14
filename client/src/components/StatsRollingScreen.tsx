@@ -16,15 +16,93 @@ interface StatsRollingScreenProps {
   profession?: Profession;
 }
 
-export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
-  onStatsAccepted,
-  onError,
+const STAT_ROWS: Array<{ key: keyof Stats; label: string }> = [
+  { key: 'strength', label: 'Strength' },
+  { key: 'dexterity', label: 'Dexterity' },
+  { key: 'constitution', label: 'Constitution' },
+  { key: 'size', label: 'Size' },
+  { key: 'intelligence', label: 'Intelligence' },
+  { key: 'power', label: 'Power' },
+  { key: 'education', label: 'Education' },
+  { key: 'charisma', label: 'Charisma' },
+  { key: 'luck', label: 'Luck' },
+];
+
+function StatsGrid({ stats }: { stats: Stats }) {
+  return (
+    <div className="stats-display">
+      <h3>Your Character's Stats</h3>
+      <div className="stats-grid">
+        {STAT_ROWS.map(row => (
+          <div key={row.key} className="stat-item">
+            <span className="stat-name">{row.label}:</span>
+            <span className="stat-value">{stats[row.key]}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function StatsActions({
   onBack,
-  baseUrl,
-  authToken,
-  professionId,
-  profession,
-}) => {
+  onReroll,
+  onAccept,
+  rerollCooldown,
+  isRerolling,
+  isLoading,
+}: {
+  onBack?: () => void;
+  onReroll: () => void;
+  onAccept: () => void;
+  rerollCooldown: number;
+  isRerolling: boolean;
+  isLoading: boolean;
+}) {
+  const rerollLabel = isRerolling
+    ? 'Rerolling...'
+    : rerollCooldown > 0
+      ? `Reroll (${rerollCooldown}s)`
+      : 'Reroll Stats';
+  return (
+    <div className="stats-actions">
+      {onBack && (
+        <button onClick={onBack} className="back-button" type="button">
+          Back
+        </button>
+      )}
+      <button
+        onClick={onReroll}
+        disabled={rerollCooldown > 0 || isRerolling || isLoading}
+        className="reroll-button"
+        type="button"
+      >
+        {rerollLabel}
+      </button>
+      <button onClick={onAccept} className="accept-button" type="button">
+        Accept Stats
+      </button>
+    </div>
+  );
+}
+
+function StatsInfo() {
+  return (
+    <div className="stats-info">
+      <p>Stats generated using methods:</p>
+      <ul className="stats-info-list">
+        <li>Most stats: Rolled 15-90 (scaled percentile)</li>
+        <li>Size: Rolled using CoC formula: (2D6+6)*5 (range 40-90)</li>
+        <li>Determination Points max = (CON + SIZ) / 5</li>
+        <li>Magic Points max = 20% of Power (ceiling rounded)</li>
+      </ul>
+      <p>You can reroll as many times as you like, with a 1-second cooldown between rolls.</p>
+    </div>
+  );
+}
+
+export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = props => {
+  const { onStatsAccepted, onError, onBack, baseUrl, authToken, professionId, profession } = props;
   const {
     currentStats,
     isLoading,
@@ -49,7 +127,6 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
       setError('No stats to accept');
       return;
     }
-
     setError('');
     logger.info('StatsRollingScreen', 'Stats accepted', { hasStats: true });
     onStatsAccepted(currentStats);
@@ -94,93 +171,27 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
             <p className="profession-description">{profession.description}</p>
           </div>
         )}
-
         {timeoutMessage && (
           <div className="timeout-message">
             <p className="timeout-text">{timeoutMessage}</p>
           </div>
         )}
       </div>
-
-      <div className="stats-display">
-        <h3>Your Character's Stats</h3>
-        <div className="stats-grid">
-          <div className="stat-item">
-            <span className="stat-name">Strength:</span>
-            <span className="stat-value">{currentStats.strength}</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-name">Dexterity:</span>
-            <span className="stat-value">{currentStats.dexterity}</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-name">Constitution:</span>
-            <span className="stat-value">{currentStats.constitution}</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-name">Size:</span>
-            <span className="stat-value">{currentStats.size}</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-name">Intelligence:</span>
-            <span className="stat-value">{currentStats.intelligence}</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-name">Power:</span>
-            <span className="stat-value">{currentStats.power}</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-name">Education:</span>
-            <span className="stat-value">{currentStats.education}</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-name">Charisma:</span>
-            <span className="stat-value">{currentStats.charisma}</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-name">Luck:</span>
-            <span className="stat-value">{currentStats.luck}</span>
-          </div>
-        </div>
-      </div>
-
+      <StatsGrid stats={currentStats} />
       {error && (
         <div className="error-message" role="alert" aria-live="assertive">
           {error}
         </div>
       )}
-
-      <div className="stats-actions">
-        {onBack && (
-          <button onClick={onBack} className="back-button" type="button">
-            Back
-          </button>
-        )}
-
-        <button
-          onClick={rerollStats}
-          disabled={rerollCooldown > 0 || isRerolling || isLoading}
-          className="reroll-button"
-          type="button"
-        >
-          {isRerolling ? 'Rerolling...' : rerollCooldown > 0 ? `Reroll (${rerollCooldown}s)` : 'Reroll Stats'}
-        </button>
-
-        <button onClick={handleAcceptStats} className="accept-button" type="button">
-          Accept Stats
-        </button>
-      </div>
-
-      <div className="stats-info">
-        <p>Stats generated using methods:</p>
-        <ul className="stats-info-list">
-          <li>Most stats: Rolled 15-90 (scaled percentile)</li>
-          <li>Size: Rolled using CoC formula: (2D6+6)*5 (range 40-90)</li>
-          <li>Determination Points max = (CON + SIZ) / 5</li>
-          <li>Magic Points max = 20% of Power (ceiling rounded)</li>
-        </ul>
-        <p>You can reroll as many times as you like, with a 1-second cooldown between rolls.</p>
-      </div>
+      <StatsActions
+        onBack={onBack}
+        onReroll={rerollStats}
+        onAccept={handleAcceptStats}
+        rerollCooldown={rerollCooldown}
+        isRerolling={isRerolling}
+        isLoading={isLoading}
+      />
+      <StatsInfo />
     </div>
   );
 };

@@ -10,6 +10,27 @@ export const TailwindTest: React.FC = () => {
   const [passwordValue, setPasswordValue] = useState('');
 
   return (
+    <TailwindTestView
+      inputValue={inputValue}
+      passwordValue={passwordValue}
+      onInputChange={setInputValue}
+      onPasswordChange={setPasswordValue}
+    />
+  );
+};
+
+function TailwindTestView({
+  inputValue,
+  passwordValue,
+  onInputChange,
+  onPasswordChange,
+}: {
+  inputValue: string;
+  passwordValue: string;
+  onInputChange: (value: string) => void;
+  onPasswordChange: (value: string) => void;
+}) {
+  return (
     <div className="min-h-screen bg-mythos-terminal-background text-mythos-terminal-text font-mono p-8">
       <div className="max-w-6xl mx-auto space-y-8">
         <div className="text-center mb-12">
@@ -47,7 +68,7 @@ export const TailwindTest: React.FC = () => {
                   <TerminalInput
                     value={inputValue}
                     onChange={e => {
-                      setInputValue(e.target.value);
+                      onInputChange(e.target.value);
                     }}
                     placeholder="Enter command..."
                     size="md"
@@ -55,7 +76,7 @@ export const TailwindTest: React.FC = () => {
                   <TerminalInput
                     value={passwordValue}
                     onChange={e => {
-                      setPasswordValue(e.target.value);
+                      onPasswordChange(e.target.value);
                     }}
                     placeholder="Password"
                     type="password"
@@ -238,4 +259,4 @@ export const TailwindTest: React.FC = () => {
       </div>
     </div>
   );
-};
+}

@@ -19,7 +19,7 @@ from server.persistence.item_instance_persistence_async import (
 async def test_create_item_instance_async_success():
     session = AsyncMock()
     session.commit = AsyncMock()
-    await create_item_instance_async(session, "inst-1", "proto-1", owner_type="player", owner_id="p1")
+    await create_item_instance_async(session, "inst-1", "proto-1", {"owner_type": "player", "owner_id": "p1"})
     session.execute.assert_awaited_once()
     session.commit.assert_awaited_once()
 

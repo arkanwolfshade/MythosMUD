@@ -12,6 +12,7 @@ print("Running ruff formatting in server...")
 result = safe_run_static(
     "uv",
     "run",
+    "--no-sync",
     "--active",
     "ruff",
     "format",

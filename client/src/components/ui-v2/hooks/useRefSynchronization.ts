@@ -22,20 +22,22 @@ interface UseRefSynchronizationParams {
   rescueTimeoutRef: React.MutableRefObject<number | null>;
 }
 
-export const useRefSynchronization = ({
-  gameState,
-  healthStatus,
-  lucidityStatus,
-  rescueState,
-  setRescueState,
-  currentMessagesRef,
-  currentRoomRef,
-  currentPlayerRef,
-  healthStatusRef,
-  lucidityStatusRef,
-  rescueStateRef,
-  rescueTimeoutRef,
-}: UseRefSynchronizationParams) => {
+export const useRefSynchronization = (params: UseRefSynchronizationParams) => {
+  const {
+    gameState,
+    healthStatus,
+    lucidityStatus,
+    rescueState,
+    setRescueState,
+    currentMessagesRef,
+    currentRoomRef,
+    currentPlayerRef,
+    healthStatusRef,
+    lucidityStatusRef,
+    rescueStateRef,
+    rescueTimeoutRef,
+  } = params;
+
   // Keep refs in sync with state
   useEffect(() => {
     currentMessagesRef.current = gameState.messages;

@@ -49,6 +49,55 @@ export interface UseRoomMapDataResult {
  * @param options - Configuration options for data fetching
  * @returns Room data, loading state, error state, and refetch function
  */
+interface FetchRoomListConfig {
+  plane: string;
+  zone: string;
+  subZone?: string;
+  includeExits: boolean;
+  filterExplored: boolean;
+  effectiveBaseUrl: string;
+  authToken?: string;
+}
+
+function buildRoomListRequest(config: FetchRoomListConfig): { url: string; headers: HeadersInit } {
+  const params = new URLSearchParams({
+    plane: config.plane,
+    zone: config.zone,
+    include_exits: config.includeExits.toString(),
+    filter_explored: config.filterExplored.toString(),
+  });
+  if (config.subZone) {
+    params.append('sub_zone', config.subZone);
+  }
+  const headers: HeadersInit = { 'Content-Type': 'application/json' };
+  if (config.authToken) {
+    headers['Authorization'] = `Bearer ${config.authToken}`;
+  }
+  return { url: `${config.effectiveBaseUrl}/api/rooms/list?${params.toString()}`, headers };
+}
+
+async function parseRoomListResponse(response: Response): Promise<{ rooms: Room[]; total: number } | null> {
+  if (!response.ok) {
+    const rawErr: unknown = await response.json().catch(() => ({ detail: 'Failed to fetch rooms' }));
+    const message =
+      isApiErrorWithDetail(rawErr) && rawErr.detail ? rawErr.detail : `Failed to fetch rooms: ${response.status}`;
+    throw new Error(message);
+  }
+  const raw: unknown = await response.json();
+  if (!isRoomsListApiResponse(raw)) {
+    return null;
+  }
+  return {
+    rooms: Array.isArray(raw.rooms) ? (raw.rooms as Room[]) : [],
+    total: typeof raw.total === 'number' ? raw.total : 0,
+  };
+}
+
+async function fetchRoomListData(config: FetchRoomListConfig): Promise<{ rooms: Room[]; total: number } | null> {
+  const { url, headers } = buildRoomListRequest(config);
+  return parseRoomListResponse(await fetch(url, { method: 'GET', headers }));
+}
+
 export function useRoomMapData(options: UseRoomMapDataOptions): UseRoomMapDataResult {
   const { plane, zone, subZone, includeExits = true, filterExplored = false, baseUrl = '', authToken } = options;
   const effectiveBaseUrl = baseUrl || getVersionedApiBaseUrl();
@@ -64,56 +113,22 @@ export function useRoomMapData(options: UseRoomMapDataOptions): UseRoomMapDataRe
       setIsLoading(false);
       return;
     }
-
+    setIsLoading(true);
+    setError(null);
     try {
-      setIsLoading(true);
-      setError(null);
-
-      // Build query parameters
-      const params = new URLSearchParams({
+      const result = await fetchRoomListData({
         plane,
         zone,
-        include_exits: includeExits.toString(),
-        filter_explored: filterExplored.toString(),
+        subZone,
+        includeExits,
+        filterExplored,
+        effectiveBaseUrl,
+        authToken,
       });
-
-      if (subZone) {
-        params.append('sub_zone', subZone);
-      }
-
-      // Build headers
-      const headers: HeadersInit = {
-        'Content-Type': 'application/json',
-      };
-
-      if (authToken) {
-        headers['Authorization'] = `Bearer ${authToken}`;
-      }
-
-      // Fetch room data
-      const response = await fetch(`${effectiveBaseUrl}/api/rooms/list?${params.toString()}`, {
-        method: 'GET',
-        headers,
-      });
-
-      if (!response.ok) {
-        const rawErr: unknown = await response.json().catch(() => ({ detail: 'Failed to fetch rooms' }));
-        const message =
-          isApiErrorWithDetail(rawErr) && rawErr.detail ? rawErr.detail : `Failed to fetch rooms: ${response.status}`;
-        throw new Error(message);
-      }
-
-      const raw: unknown = await response.json();
-      if (!isRoomsListApiResponse(raw)) {
-        setRooms([]);
-        setTotal(0);
-        return;
-      }
-      setRooms(Array.isArray(raw.rooms) ? (raw.rooms as Room[]) : []);
-      setTotal(typeof raw.total === 'number' ? raw.total : 0);
+      setRooms(result?.rooms ?? []);
+      setTotal(result?.total ?? 0);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch room data';
-      setError(errorMessage);
+      setError(err instanceof Error ? err.message : 'Failed to fetch room data');
       setRooms([]);
       setTotal(0);
     } finally {

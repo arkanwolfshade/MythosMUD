@@ -1,1 +1,1 @@
-c:\projects\MythosMUD\client\vitest.config.tsts
+c:\projects\MythosMUD\client\src\pages\DialogueEditorPage.tsx

@@ -1,24 +1,13 @@
 /**
  * Custom Exit Edge component for React Flow.
- *
- * This component renders an exit connection between rooms, with icon/badge
- * indicators for exit flags (hidden, locked, one-way, self-reference).
- *
- * As documented in the Pnakotic Manuscripts, proper visualization of
- * dimensional gateways is essential for understanding the flow of
- * entities through our eldritch architecture.
  */
 
 import React from 'react';
 import { BaseEdge, EdgeLabelRenderer, getStraightPath, type EdgeProps } from 'reactflow';
 import type { ExitEdgeData } from '../types';
 
-// Type alias for ExitEdge props - extends EdgeProps for type safety
 export type ExitEdgeProps = EdgeProps<ExitEdgeData>;
 
-/**
- * Get icon/badge for exit flags.
- */
 const getFlagIcon = (flag: string): { icon: string; color: string; label: string } => {
   switch (flag) {
     case 'hidden':
@@ -34,77 +23,67 @@ const getFlagIcon = (flag: string): { icon: string; color: string; label: string
   }
 };
 
-/**
- * Exit Edge component with flag indicators.
- *
- * Memoized to prevent unnecessary re-renders when props haven't changed.
- */
-export const ExitEdge: React.FC<ExitEdgeProps> = React.memo(
-  ({ id, sourceX, sourceY, targetX, targetY, style = {}, markerEnd, data }) => {
-    const [edgePath, labelX, labelY] = getStraightPath({
-      sourceX,
-      sourceY,
-      targetX,
-      targetY,
-    });
+function exitFlags(data: ExitEdgeData | undefined): string[] {
+  return data?.flags ?? [];
+}
 
-    const flags = data?.flags || [];
-    const direction = data?.direction || '';
+function getEdgeStrokeStyle(data: ExitEdgeData | undefined, style: React.CSSProperties): React.CSSProperties {
+  const flags = exitFlags(data);
+  return {
+    ...style,
+    stroke: flags.includes('hidden') ? '#6b7280' : '#10b981',
+    strokeWidth: flags.includes('locked') ? 3 : 2,
+    strokeDasharray: flags.includes('one_way') ? '5,5' : undefined,
+  };
+}
 
-    return (
-      <>
-        <BaseEdge
-          id={id}
-          path={edgePath}
-          markerEnd={markerEnd}
-          style={{
-            ...style,
-            stroke: data?.flags?.includes('hidden') ? '#6b7280' : '#10b981',
-            strokeWidth: data?.flags?.includes('locked') ? 3 : 2,
-            strokeDasharray: data?.flags?.includes('one_way') ? '5,5' : undefined,
-          }}
-        />
-        {flags.length > 0 && (
-          <EdgeLabelRenderer>
-            <div
-              style={{
-                position: 'absolute',
-                transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
-                pointerEvents: 'all',
-              }}
-              className="flex gap-1 bg-mythos-terminal-background border border-mythos-terminal-border rounded px-1 py-0.5"
-            >
-              {flags.map((flag, index) => {
-                const flagInfo = getFlagIcon(flag);
-                if (!flagInfo.icon) return null;
-
-                return (
-                  <span key={index} className={`${flagInfo.color} text-xs`} title={`${flagInfo.label} exit`}>
-                    {flagInfo.icon}
-                  </span>
-                );
-              })}
-              {direction && (
-                <span className="text-xs text-mythos-terminal-text ml-1" title="Direction">
-                  {direction}
-                </span>
-              )}
-            </div>
-          </EdgeLabelRenderer>
+function ExitEdgeLabels(props: {
+  flags: string[];
+  direction: string;
+  labelX: number;
+  labelY: number;
+}): React.ReactElement {
+  return (
+    <EdgeLabelRenderer>
+      <div
+        style={{
+          position: 'absolute',
+          transform: `translate(-50%, -50%) translate(${props.labelX}px,${props.labelY}px)`,
+          pointerEvents: 'all',
+        }}
+        className="flex gap-1 bg-mythos-terminal-background border border-mythos-terminal-border rounded px-1 py-0.5"
+      >
+        {props.flags.map((flag, index) => {
+          const flagInfo = getFlagIcon(flag);
+          if (!flagInfo.icon) return null;
+          return (
+            <span key={index} className={`${flagInfo.color} text-xs`} title={`${flagInfo.label} exit`}>
+              {flagInfo.icon}
+            </span>
+          );
+        })}
+        {props.direction && (
+          <span className="text-xs text-mythos-terminal-text ml-1" title="Direction">
+            {props.direction}
+          </span>
         )}
-      </>
-    );
-  },
-  (prevProps, nextProps) => {
-    // Only re-render if relevant props have changed
-    return (
-      prevProps.id === nextProps.id &&
-      prevProps.sourceX === nextProps.sourceX &&
-      prevProps.sourceY === nextProps.sourceY &&
-      prevProps.targetX === nextProps.targetX &&
-      prevProps.targetY === nextProps.targetY &&
-      JSON.stringify(prevProps.data?.flags) === JSON.stringify(nextProps.data?.flags) &&
-      prevProps.data?.direction === nextProps.data?.direction
-    );
-  }
-);
+      </div>
+    </EdgeLabelRenderer>
+  );
+}
+
+const ExitEdgeBody = (props: ExitEdgeProps) => {
+  const { id, sourceX, sourceY, targetX, targetY, style = {}, markerEnd, data } = props;
+  const [edgePath, labelX, labelY] = getStraightPath({ sourceX, sourceY, targetX, targetY });
+  const flags = data?.flags || [];
+  const direction = data?.direction || '';
+
+  return (
+    <>
+      <BaseEdge id={id} path={edgePath} markerEnd={markerEnd} style={getEdgeStrokeStyle(data, style)} />
+      {flags.length > 0 && <ExitEdgeLabels flags={flags} direction={direction} labelX={labelX} labelY={labelY} />}
+    </>
+  );
+};
+
+export const ExitEdge: React.FC<ExitEdgeProps> = React.memo(ExitEdgeBody);

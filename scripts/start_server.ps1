@@ -286,12 +286,14 @@ function Start-MythosMUDServer {
         # This provides better reload control and faster iteration than programmatic reload
         # Explicitly watch server directory to ensure command handler changes are detected
         # Note: --reload-dir ensures uvicorn watches the entire server directory tree
-        $serverCommand = "uv run uvicorn server.main:app --host $ServerHost --port $Port --reload --reload-dir server"
+        # --no-sync: Cursor's ruff server locks .venv\Scripts\ruff.exe; uv sync then fails with
+        # Access denied (os error 5). Run `uv sync` when deps change, not on every server start.
+        $serverCommand = "uv run --no-sync uvicorn server.main:app --host $ServerHost --port $Port --reload --reload-dir server"
         Write-Host "Using uvicorn with auto-reload enabled (watching server directory)" -ForegroundColor Cyan
     }
     else {
-        # Build command arguments for non-reload mode
-        $commandArgs = @("uv", "run", "uvicorn", "server.main:app", "--host", $ServerHost, "--port", $Port.ToString())
+        # Build command arguments for non-reload mode (--no-sync: do not replace locked venv tools on start)
+        $commandArgs = @("uv", "run", "--no-sync", "uvicorn", "server.main:app", "--host", $ServerHost, "--port", $Port.ToString())
         $serverCommand = ($commandArgs | ForEach-Object { if ($_ -contains ' ') { "`"$_`"" } else { $_ } }) -join ' '
     }
 

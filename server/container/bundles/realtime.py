@@ -46,8 +46,42 @@ class RealtimeBundle:
         if container.async_persistence is None:
             raise RuntimeError("Core services must be initialized before RealtimeBundle")
 
+    def _raise_if_e2e_nats_required(
+        self, logging_env: str, *, error: str, url: str, error_type: str | None = None
+    ) -> None:
+        """Raise RuntimeError when e2e requires live NATS; no-op for other environments."""
+        if logging_env != "e2e_test":
+            return
+        kwargs: dict[str, Any] = {"error": error, "url": url}
+        if error_type is not None:
+            kwargs["error_type"] = error_type
+        logger.error("NATS connection failed - NATS is mandatory for e2e_test", **kwargs)
+        raise RuntimeError("NATS connection failed - NATS is mandatory for chat system")
+
+    def _handle_nats_connect_error(self, logging_env: str, exc: BaseException, nats_url: str) -> None:
+        """Convert connect failures into hard error (e2e) or soft log (other envs)."""
+        err_msg = str(exc).strip() or type(exc).__name__
+        try:
+            self._raise_if_e2e_nats_required(logging_env, error=err_msg, url=nats_url, error_type=type(exc).__name__)
+        except RuntimeError as mandatory:
+            raise mandatory from exc
+        logger.warning(
+            "NATS connect failed or timed out; continuing without NATS",
+            error=err_msg,
+            error_type=type(exc).__name__,
+            url=nats_url,
+        )
+
+    def _handle_nats_connect_false(self, logging_env: str, nats_url: str) -> None:
+        """Handle connect() returning False; raise for e2e, soft-warn otherwise."""
+        self._raise_if_e2e_nats_required(logging_env, error="connect returned False", url=nats_url)
+        logger.warning("NATS connect returned False; continuing without NATS", url=nats_url)
+
     async def _connect_nats(self, config: Any, event_bus: Any) -> Any:
-        """Connect to NATS if enabled and not unit_test. Returns NATSService or None."""
+        """Connect to NATS if enabled and not unit_test. Returns NATSService or None.
+
+        e2e_test with NATS enabled: hard-fail on connect errors (no silent mock chat).
+        """
         from server.services.nats_service import NATSService
 
         logging_env = getattr(config.logging, "environment", "") if config.logging else ""
@@ -60,25 +94,22 @@ class RealtimeBundle:
 
         nats_service = NATSService(config=config.nats)
         connect_timeout = getattr(config.nats, "connect_timeout", 5) + 5
+        nats_url = getattr(config.nats, "url", "nats://localhost:4222")
         try:
             connected = await asyncio.wait_for(nats_service.connect(), timeout=float(connect_timeout))
-            if not connected:
-                logger.warning("NATS connect returned False; continuing without NATS")
-                return None
-            logger.info("NATS service connected")
-            if hasattr(event_bus, "set_nats_service"):
-                event_bus.set_nats_service(nats_service)
-                logger.info("NATS EventBus bridge enabled for distributed domain events")
-            return nats_service
-        except (TimeoutError, OSError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Startup must not block on NATS; log and continue without NATS
-            err_msg = str(e).strip() or type(e).__name__
-            logger.warning(
-                "NATS connect failed or timed out; continuing without NATS",
-                error=err_msg,
-                error_type=type(e).__name__,
-                url=getattr(config.nats, "url", "nats://localhost:4222"),
-            )
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: local/dev may continue without NATS; e2e re-raises via helper
+            self._handle_nats_connect_error(logging_env, e, nats_url)
             return None
+
+        if not connected:
+            self._handle_nats_connect_false(logging_env, nats_url)
+            return None
+
+        logger.info("NATS service connected")
+        if hasattr(event_bus, "set_nats_service"):
+            event_bus.set_nats_service(nats_service)
+            logger.info("NATS EventBus bridge enabled for distributed domain events")
+        return nats_service
 
     def _setup_nats_dependent_services(self) -> None:
         """Attach event publisher and message handler when NATS is available."""

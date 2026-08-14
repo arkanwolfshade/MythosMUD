@@ -342,5 +342,3 @@ export function DialogueEditorPage() {
   }
   return <DialogueEditorView {...viewProps} />;
 }
-
-export default DialogueEditorPage;

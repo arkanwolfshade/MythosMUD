@@ -10,9 +10,7 @@ interface Room {
   sub_zone?: string;
   environment?: string;
   exits?: Record<string, string | null>;
-  // Legacy: flat list of occupant names (for backward compatibility)
   occupants?: string[];
-  // New: structured occupant data with separate players and NPCs
   players?: string[];
   npcs?: string[];
   occupant_count?: number;
@@ -28,88 +26,91 @@ interface RoomInfoPanelProps {
   };
 }
 
-/**
- * Validates room data consistency and applies fixes for common issues.
- * Based on findings from "Data Consistency in Non-Euclidean Spaces" - Dr. Armitage, 1928
- */
+const KNOWN_LOCATION_PATTERNS: Record<string, string> = {
+  arkhamcity: 'Arkham City',
+  universitylibrary: 'University Library',
+  cityhall: 'City Hall',
+  policeheadquarters: 'Police Headquarters',
+  hospital: 'Hospital',
+  library: 'Library',
+  university: 'University',
+  arkham: 'Arkham',
+};
+
+const ROOM_DEFAULT_FIELD_FIXES: Array<{
+  needsFix: (room: Room) => boolean;
+  apply: (room: Room) => void;
+}> = [
+  {
+    needsFix: room => !room.description || room.description.trim() === '',
+    apply: room => {
+      room.description = 'No description available';
+    },
+  },
+  {
+    needsFix: room => !room.zone,
+    apply: room => {
+      room.zone = 'Unknown';
+    },
+  },
+  {
+    needsFix: room => !room.sub_zone,
+    apply: room => {
+      room.sub_zone = 'Unknown';
+    },
+  },
+  {
+    needsFix: room => !room.exits,
+    apply: room => {
+      room.exits = {};
+    },
+  },
+  {
+    needsFix: room => !room.occupants,
+    apply: room => {
+      room.occupants = [];
+    },
+  },
+];
+
+function applyRoomDefaultFields(validatedRoom: Room): number {
+  let fixesApplied = 0;
+  for (const fix of ROOM_DEFAULT_FIELD_FIXES) {
+    if (fix.needsFix(validatedRoom)) {
+      fix.apply(validatedRoom);
+      fixesApplied++;
+    }
+  }
+  return fixesApplied;
+}
+
+function fixOccupantCountMismatch(validatedRoom: Room): boolean {
+  if (!validatedRoom.occupants || validatedRoom.occupant_count === undefined) {
+    return false;
+  }
+  const actualCount = validatedRoom.occupants.length;
+  if (actualCount === validatedRoom.occupant_count) {
+    return false;
+  }
+  logger.warn('RoomInfoPanel', 'Occupant count mismatch detected', {
+    expected: validatedRoom.occupant_count,
+    actual: actualCount,
+    roomId: validatedRoom.id,
+    roomName: validatedRoom.name,
+  });
+  validatedRoom.occupant_count = actualCount;
+  return true;
+}
+
 function validateAndFixRoomData(room: Room | null): Room | null {
   if (!room) {
     logger.debug('RoomInfoPanel', 'No room data to validate');
     return null;
   }
 
-  logger.debug('RoomInfoPanel', 'Validating room data', {
-    roomId: room.id,
-    roomName: room.name,
-    hasDescription: !!room.description,
-    hasZone: !!room.zone,
-    hasSubZone: !!room.sub_zone,
-    hasExits: !!room.exits,
-    hasOccupants: !!room.occupants,
-    hasPlayers: !!room.players,
-    hasNpcs: !!room.npcs,
-    playerCount: room.players?.length ?? 0,
-    npcCount: room.npcs?.length ?? 0,
-    occupantCount: room.occupant_count,
-  });
-
   const validatedRoom: Room = { ...room };
-  let fixesApplied = 0;
+  const fixesApplied = applyRoomDefaultFields(validatedRoom) + (fixOccupantCountMismatch(validatedRoom) ? 1 : 0);
 
-  // Fix missing or invalid description
-  if (!validatedRoom.description || validatedRoom.description.trim() === '') {
-    validatedRoom.description = 'No description available';
-    fixesApplied++;
-    logger.debug('RoomInfoPanel', 'Applied fix - added default description');
-  }
-
-  // Fix missing zone
-  if (!validatedRoom.zone) {
-    validatedRoom.zone = 'Unknown';
-    fixesApplied++;
-    logger.debug('RoomInfoPanel', 'Applied fix - added default zone');
-  }
-
-  // Fix missing sub_zone
-  if (!validatedRoom.sub_zone) {
-    validatedRoom.sub_zone = 'Unknown';
-    fixesApplied++;
-    logger.debug('RoomInfoPanel', 'Applied fix - added default sub_zone');
-  }
-
-  // Fix missing exits
-  if (!validatedRoom.exits) {
-    validatedRoom.exits = {};
-    fixesApplied++;
-    logger.debug('RoomInfoPanel', 'Applied fix - added empty exits object');
-  }
-
-  // Fix missing occupants array
-  if (!validatedRoom.occupants) {
-    validatedRoom.occupants = [];
-    fixesApplied++;
-    logger.debug('RoomInfoPanel', 'Applied fix - added empty occupants array');
-  }
-
-  // Validate occupant count consistency
-  if (validatedRoom.occupants && validatedRoom.occupant_count !== undefined) {
-    const actualCount = validatedRoom.occupants.length;
-    if (actualCount !== validatedRoom.occupant_count) {
-      logger.warn('RoomInfoPanel', 'Occupant count mismatch detected', {
-        expected: validatedRoom.occupant_count,
-        actual: actualCount,
-        roomId: validatedRoom.id,
-        roomName: validatedRoom.name,
-      });
-
-      // Fix the count to match the actual occupants array
-      validatedRoom.occupant_count = actualCount;
-      fixesApplied++;
-      logger.debug('RoomInfoPanel', 'Applied fix - corrected occupant count to match occupants array');
-    }
-  }
-
-  // Validate room data structure
   if (!validatedRoom.id || !validatedRoom.name) {
     logger.error('RoomInfoPanel', 'Critical room data missing', {
       hasId: !!validatedRoom.id,
@@ -118,20 +119,151 @@ function validateAndFixRoomData(room: Room | null): Room | null {
     return null;
   }
 
-  if (fixesApplied > 0) {
-    logger.debug('RoomInfoPanel', 'Room data validation completed', {
-      roomId: validatedRoom.id,
-      roomName: validatedRoom.name,
-      fixesApplied,
-    });
-  } else {
-    logger.debug('RoomInfoPanel', 'Room data is valid, no fixes needed', {
-      roomId: validatedRoom.id,
-      roomName: validatedRoom.name,
-    });
-  }
-
+  logger.debug('RoomInfoPanel', fixesApplied > 0 ? 'Room data validation completed' : 'Room data is valid', {
+    roomId: validatedRoom.id,
+    fixesApplied,
+  });
   return validatedRoom;
+}
+
+function formatLocationName(location: string): string {
+  if (!location || location === 'Unknown') return 'Unknown';
+  if (location.includes('_')) {
+    return location
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  }
+  if (/[a-z][A-Z]/.test(location)) {
+    return location
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  }
+  const known = KNOWN_LOCATION_PATTERNS[location.toLowerCase()];
+  if (known) return known;
+  return location.charAt(0).toUpperCase() + location.slice(1).toLowerCase();
+}
+
+function formatDescription(description: string): string {
+  if (!description) return 'No description available';
+  return description.trim().replace(/\s+/g, ' ');
+}
+
+function formatExitDirections(exits: Record<string, string | null> | undefined): string {
+  if (!exits) return 'None';
+  const directions = Object.entries(exits)
+    .filter(([, destination]) => destination !== null)
+    .map(([direction]) => direction.charAt(0).toUpperCase() + direction.slice(1));
+  return directions.length > 0 ? directions.join(', ') : 'None';
+}
+
+function OccupantList({ names, testId }: { names: string[]; testId: string }) {
+  return (
+    <div className="occupants-list">
+      {names.map((name, index) => (
+        <div key={`${testId}-${index}`} className="occupant-item">
+          <span className="occupant-indicator">●</span>
+          <span className="occupant-name" data-testid={testId}>
+            {name}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function RoomOccupantsSection({ room }: { room: Room }) {
+  const hasStructured = room.players !== undefined || room.npcs !== undefined;
+  const hasPlayers = (room.players?.length ?? 0) > 0;
+  const hasNpcs = (room.npcs?.length ?? 0) > 0;
+
+  return (
+    <div className="room-occupants">
+      <div className="occupants-header">
+        <span className="occupants-label">
+          Occupants
+          {typeof room.occupant_count === 'number' && (
+            <span className="occupant-count-badge" data-testid="occupant-count">
+              ({room.occupant_count})
+            </span>
+          )}
+        </span>
+      </div>
+      <div className="occupants-content">
+        {hasStructured ? (
+          <>
+            {hasPlayers && (
+              <div className="occupants-section">
+                <div className="occupants-section-header">Players</div>
+                <OccupantList names={room.players ?? []} testId="occupant-name-player" />
+              </div>
+            )}
+            {hasNpcs && (
+              <div className="occupants-section">
+                <div className="occupants-section-header">NPCs</div>
+                <OccupantList names={room.npcs ?? []} testId="occupant-name-npc" />
+              </div>
+            )}
+            {!hasPlayers && !hasNpcs && (
+              <div className="no-occupants">
+                <span className="no-occupants-text">No other players present</span>
+              </div>
+            )}
+          </>
+        ) : room.occupants && room.occupants.length > 0 ? (
+          <OccupantList names={room.occupants} testId="occupant-name" />
+        ) : (
+          <div className="no-occupants">
+            <span className="no-occupants-text">No other players present</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const DEV_FALLBACK_ROOM: Room = {
+  id: 'dev-room-1',
+  name: 'Miskatonic University Library',
+  description:
+    'A vast repository of forbidden knowledge. Ancient tomes line the shelves, their leather bindings cracked with age. The air is thick with the scent of old parchment and something else... something that makes your skin crawl. Strange symbols are carved into the wooden shelves, and the shadows seem to move independently of any light source.',
+  zone: 'arkham',
+  sub_zone: 'university',
+  plane: 'material',
+  environment: 'indoor',
+  exits: {
+    north: 'university_hallway',
+    south: 'university_entrance',
+    east: 'restricted_section',
+    west: 'reading_room',
+  },
+  occupants: ['Dr. Armitage', 'Librarian'],
+  occupant_count: 2,
+};
+
+function logRoomInfoRenderDebug(room: Room | null, displayRoom: Room): void {
+  if (!room) return;
+  logger.debug('RoomInfoPanel', 'Rendering room data', {
+    name: displayRoom.name,
+    description: displayRoom.description,
+    zone: displayRoom.zone,
+    sub_zone: displayRoom.sub_zone,
+    occupant_count: displayRoom.occupant_count,
+    occupants_length: displayRoom.occupants?.length ?? 0,
+  });
+}
+
+function RoomInfoEmptyState() {
+  logger.debug('RoomInfoPanel', 'No room data, showing no-room message');
+  return (
+    <div className="room-info-panel">
+      <div className="room-info-content">
+        <p className="no-room">No room information available</p>
+      </div>
+    </div>
+  );
 }
 
 export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
@@ -141,114 +273,21 @@ export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
     roomKeys: room ? Object.keys(room) : [],
   });
 
-  // Validate room data consistency and apply fixes
   const validatedRoom = validateAndFixRoomData(room);
-
-  // For development mode, show mock room data if no real room data is available
-  const displayRoom = validatedRoom || {
-    id: 'dev-room-1',
-    name: 'Miskatonic University Library',
-    description:
-      'A vast repository of forbidden knowledge. Ancient tomes line the shelves, their leather bindings cracked with age. The air is thick with the scent of old parchment and something else... something that makes your skin crawl. Strange symbols are carved into the wooden shelves, and the shadows seem to move independently of any light source.',
-    zone: 'arkham',
-    sub_zone: 'university',
-    plane: 'material',
-    environment: 'indoor',
-    exits: {
-      north: 'university_hallway',
-      south: 'university_entrance',
-      east: 'restricted_section',
-      west: 'reading_room',
-    },
-    occupants: ['Dr. Armitage', 'Librarian'],
-    occupant_count: 2,
-  };
+  const displayRoom = validatedRoom || DEV_FALLBACK_ROOM;
+  logRoomInfoRenderDebug(room, displayRoom);
 
   if (!room && !debugInfo) {
-    logger.debug('RoomInfoPanel', 'No room data, showing no-room message');
-    return (
-      <div className="room-info-panel">
-        <div className="room-info-content">
-          <p className="no-room">No room information available</p>
-        </div>
-      </div>
-    );
+    return <RoomInfoEmptyState />;
   }
-
-  logger.debug('RoomInfoPanel', 'Rendering room data', {
-    name: displayRoom.name,
-    description: displayRoom.description,
-    zone: displayRoom.zone,
-    sub_zone: displayRoom.sub_zone,
-    exits: displayRoom.exits,
-    occupants: displayRoom.occupants,
-    occupant_count: displayRoom.occupant_count,
-    occupant_count_type: typeof displayRoom.occupant_count,
-    occupants_length: displayRoom.occupants?.length,
-  });
-
-  const formatLocationName = (location: string): string => {
-    if (!location || location === 'Unknown') return 'Unknown';
-
-    // Handle underscore-separated words
-    if (location.includes('_')) {
-      return location
-        .split('_')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-        .join(' ');
-    }
-
-    // Handle camelCase words (like 'arkhamCity' -> 'Arkham City')
-    if (/[a-z][A-Z]/.test(location)) {
-      return location
-        .replace(/([a-z])([A-Z])/g, '$1 $2') // Insert space before capital letters
-        .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-        .join(' ');
-    }
-
-    // Handle specific known patterns for concatenated lowercase words
-    // This is a pragmatic approach for common MUD location patterns
-    const knownPatterns: Record<string, string> = {
-      arkhamcity: 'Arkham City',
-      universitylibrary: 'University Library',
-      cityhall: 'City Hall',
-      policeheadquarters: 'Police Headquarters',
-      hospital: 'Hospital',
-      library: 'Library',
-      university: 'University',
-      arkham: 'Arkham',
-    };
-
-    const lowerLocation = location.toLowerCase();
-    if (knownPatterns[lowerLocation]) {
-      return knownPatterns[lowerLocation];
-    }
-
-    // Fallback: capitalize first letter
-    return location.charAt(0).toUpperCase() + location.slice(1).toLowerCase();
-  };
-
-  const formatDescription = (description: string): string => {
-    if (!description) return 'No description available';
-    return description.trim().replace(/\s+/g, ' ');
-  };
-
-  const formatOccupantName = (name: string): string => {
-    // Preserve the original casing as set by the server - no modification needed
-    // to honor the academic integrity of proper names like "Dr. Francis Morgan"
-    return name;
-  };
 
   return (
     <div className="room-info-panel" data-testid="room-info-panel">
       <div className="room-info-content">
-        {/* Room Name */}
         <div className="room-name" data-testid="room-name">
           <h4>{displayRoom.name}</h4>
         </div>
 
-        {/* Zone and Subzone */}
         <div className="room-location">
           <span className="location-label">Location:</span>
           <span className="location-value" data-testid="location-value">
@@ -257,100 +296,17 @@ export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
           </span>
         </div>
 
-        {/* Description */}
         <div className="room-description" data-testid="room-description">
           <span className="description-label">Description:</span>
           <p className="description-text">{formatDescription(displayRoom.description)}</p>
         </div>
 
-        {/* Available Exits */}
         <div className="room-exits">
           <span className="exits-label">Exits:</span>
-          <p className="exits-text">
-            {displayRoom.exits
-              ? Object.entries(displayRoom.exits)
-                  .filter(([_, destination]) => destination !== null)
-                  .map(([direction, _]) => direction.charAt(0).toUpperCase() + direction.slice(1))
-                  .join(', ') || 'None'
-              : 'None'}
-          </p>
+          <p className="exits-text">{formatExitDirections(displayRoom.exits)}</p>
         </div>
 
-        {/* Enhanced Room Occupants with separate Players and NPCs sections */}
-        <div className="room-occupants">
-          <div className="occupants-header">
-            <span className="occupants-label">
-              Occupants
-              {typeof displayRoom.occupant_count === 'number' && (
-                <span className="occupant-count-badge" data-testid="occupant-count">
-                  ({displayRoom.occupant_count})
-                </span>
-              )}
-            </span>
-          </div>
-          <div className="occupants-content">
-            {/* Use structured data (players/npcs) if available, otherwise fall back to flat occupants array */}
-            {displayRoom.players !== undefined || displayRoom.npcs !== undefined ? (
-              <>
-                {/* Players Section */}
-                {displayRoom.players && displayRoom.players.length > 0 && (
-                  <div className="occupants-section">
-                    <div className="occupants-section-header">Players</div>
-                    <div className="occupants-list">
-                      {displayRoom.players.map((player, index) => (
-                        <div key={`player-${index}`} className="occupant-item">
-                          <span className="occupant-indicator">●</span>
-                          <span className="occupant-name" data-testid="occupant-name-player">
-                            {formatOccupantName(player)}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {/* NPCs Section */}
-                {displayRoom.npcs && displayRoom.npcs.length > 0 && (
-                  <div className="occupants-section">
-                    <div className="occupants-section-header">NPCs</div>
-                    <div className="occupants-list">
-                      {displayRoom.npcs.map((npc, index) => (
-                        <div key={`npc-${index}`} className="occupant-item">
-                          <span className="occupant-indicator">●</span>
-                          <span className="occupant-name" data-testid="occupant-name-npc">
-                            {formatOccupantName(npc)}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {/* Show message if no players or NPCs */}
-                {(!displayRoom.players || displayRoom.players.length === 0) &&
-                  (!displayRoom.npcs || displayRoom.npcs.length === 0) && (
-                    <div className="no-occupants">
-                      <span className="no-occupants-text">No other players present</span>
-                    </div>
-                  )}
-              </>
-            ) : displayRoom.occupants && displayRoom.occupants.length > 0 ? (
-              /* Legacy format: flat list of occupants */
-              <div className="occupants-list">
-                {displayRoom.occupants.map((occupant, index) => (
-                  <div key={index} className="occupant-item">
-                    <span className="occupant-indicator">●</span>
-                    <span className="occupant-name" data-testid="occupant-name">
-                      {formatOccupantName(occupant)}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="no-occupants">
-                <span className="no-occupants-text">No other players present</span>
-              </div>
-            )}
-          </div>
-        </div>
+        <RoomOccupantsSection room={displayRoom} />
       </div>
     </div>
   );

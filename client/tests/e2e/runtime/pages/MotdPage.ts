@@ -26,7 +26,10 @@ export class MotdPage {
     await Promise.race([
       this.page.getByText('Game Info', { exact: false }).waitFor({ state: 'visible', timeout: timeoutMs }),
       this.page.locator('[data-message-text]').first().waitFor({ state: 'visible', timeout: timeoutMs }),
-      this.page.getByTestId('command-input').waitFor({ state: 'visible', timeout: timeoutMs }),
+      this.page.getByTestId('command-input-panel').getByTestId('command-input').waitFor({
+        state: 'visible',
+        timeout: timeoutMs,
+      }),
     ]).catch(() => {});
   }
 }

@@ -7,23 +7,17 @@ import {
   loadSkillsCatalog,
   renderErrorState,
   renderLoadingState,
+  renderOccupationSlots,
+  renderPersonalInterestSlots,
   renderSkillInstructions,
   type SkillAssignmentScreenProps,
   type SkillCatalogEntry,
 } from './SkillAssignmentScreen.helpers.tsx';
 
-export function SkillAssignmentScreen({
-  baseUrl,
-  authToken,
-  onSkillsConfirmed,
-  onBack,
-  onError,
-}: SkillAssignmentScreenProps) {
+function useSkillCatalog(baseUrl: string, authToken: string, onError: (error: string) => void) {
   const [skills, setSkills] = useState<SkillCatalogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [occupationSlots, setOccupationSlots] = useState<(number | null)[]>(OCCUPATION_VALUES.map(() => null));
-  const [personalInterest, setPersonalInterest] = useState<(number | null)[]>([]);
 
   const loadCatalog = useCallback(async () => {
     setLoading(true);
@@ -31,26 +25,20 @@ export function SkillAssignmentScreen({
     const result = await loadSkillsCatalog(baseUrl, authToken);
     if (result.ok) {
       setSkills(result.skills);
-      setPersonalInterest([null, null, null, null]);
-      return;
+      return result.skills;
     }
-
     setError(result.error);
-    if (result.notify) {
-      onError(result.error);
-    }
+    if (result.notify) onError(result.error);
+    return null;
   }, [authToken, baseUrl, onError]);
 
   useEffect(() => {
     let cancelled = false;
     void (async () => {
       const result = await loadSkillsCatalog(baseUrl, authToken);
-
       if (!cancelled) {
-        if (result.ok) {
-          setSkills(result.skills);
-          setPersonalInterest([null, null, null, null]);
-        } else {
+        if (result.ok) setSkills(result.skills);
+        else {
           setError(result.error);
           if (result.notify) onError(result.error);
         }
@@ -62,9 +50,13 @@ export function SkillAssignmentScreen({
     };
   }, [baseUrl, authToken, onError]);
 
-  const selectableSkills = useMemo(() => skills.filter(s => s.allow_at_creation), [skills]);
+  return { skills, loading, error, loadCatalog };
+}
 
-  /** Skill IDs already used in other occupation slots or any personal interest (for occupation dropdown at excludeOccIndex). */
+function useSkillSlotPickers() {
+  const [occupationSlots, setOccupationSlots] = useState<(number | null)[]>(OCCUPATION_VALUES.map(() => null));
+  const [personalInterest, setPersonalInterest] = useState<(number | null)[]>([null, null, null, null]);
+
   const usedForOccupationDropdown = useCallback(
     (excludeOccIndex: number) => {
       const used = new Set<number>();
@@ -78,8 +70,6 @@ export function SkillAssignmentScreen({
     },
     [occupationSlots, personalInterest]
   );
-
-  /** Skill IDs already used in any occupation slot or other personal slots (for personal dropdown at excludePersIndex). */
   const usedForPersonalDropdown = useCallback(
     (excludePersIndex: number) => {
       const used = new Set<number>();
@@ -93,7 +83,6 @@ export function SkillAssignmentScreen({
     },
     [occupationSlots, personalInterest]
   );
-
   const setOccupationSlot = useCallback((index: number, skillId: number | null) => {
     setOccupationSlots(prev => {
       const next = [...prev];
@@ -101,7 +90,6 @@ export function SkillAssignmentScreen({
       return next;
     });
   }, []);
-
   const setPersonalSlot = useCallback((index: number, skillId: number | null) => {
     setPersonalInterest(prev => {
       const next = [...prev];
@@ -109,6 +97,55 @@ export function SkillAssignmentScreen({
       return next;
     });
   }, []);
+
+  return {
+    occupationSlots,
+    personalInterest,
+    usedForOccupationDropdown,
+    usedForPersonalDropdown,
+    setOccupationSlot,
+    setPersonalSlot,
+    resetPersonalInterest: () => setPersonalInterest([null, null, null, null]),
+  };
+}
+
+function useSkillAssignmentForm({
+  baseUrl,
+  authToken,
+  onError,
+}: Pick<SkillAssignmentScreenProps, 'baseUrl' | 'authToken' | 'onError'>) {
+  const catalog = useSkillCatalog(baseUrl, authToken, onError);
+  const slots = useSkillSlotPickers();
+  const selectableSkills = useMemo(() => catalog.skills.filter(s => s.allow_at_creation), [catalog.skills]);
+
+  const loadCatalog = useCallback(async () => {
+    const loaded = await catalog.loadCatalog();
+    if (loaded) slots.resetPersonalInterest();
+  }, [catalog, slots]);
+
+  return { ...catalog, ...slots, selectableSkills, loadCatalog };
+}
+
+export function SkillAssignmentScreen({
+  baseUrl,
+  authToken,
+  onSkillsConfirmed,
+  onBack,
+  onError,
+}: SkillAssignmentScreenProps) {
+  const form = useSkillAssignmentForm({ baseUrl, authToken, onError });
+  const {
+    loading,
+    error,
+    loadCatalog,
+    selectableSkills,
+    occupationSlots,
+    personalInterest,
+    usedForOccupationDropdown,
+    usedForPersonalDropdown,
+    setOccupationSlot,
+    setPersonalSlot,
+  } = form;
 
   const handleConfirm = () => {
     const occ: OccupationSlotPayload[] = occupationSlots.map((skillId, i) => {
@@ -123,17 +160,54 @@ export function SkillAssignmentScreen({
     onSkillsConfirmed({ occupation_slots: occ, personal_interest: pers });
   };
 
-  const occupationComplete = occupationSlots.every(s => s != null);
-  const personalComplete = personalInterest.length === 4 && personalInterest.every(s => s != null);
-  const canConfirm = occupationComplete && personalComplete;
+  if (loading) return renderLoadingState();
+  if (error) return renderErrorState(error, onBack, () => void loadCatalog());
 
-  if (loading) {
-    return renderLoadingState();
-  }
+  return (
+    <SkillAssignmentForm
+      selectableSkills={selectableSkills}
+      occupationSlots={occupationSlots}
+      personalInterest={personalInterest}
+      usedForOccupationDropdown={usedForOccupationDropdown}
+      usedForPersonalDropdown={usedForPersonalDropdown}
+      setOccupationSlot={setOccupationSlot}
+      setPersonalSlot={setPersonalSlot}
+      onBack={onBack}
+      onConfirm={handleConfirm}
+      canConfirm={
+        occupationSlots.every(s => s != null) && personalInterest.length === 4 && personalInterest.every(s => s != null)
+      }
+    />
+  );
+}
 
-  if (error) {
-    return renderErrorState(error, onBack, () => void loadCatalog());
-  }
+type SkillAssignmentFormProps = {
+  selectableSkills: SkillCatalogEntry[];
+  occupationSlots: (number | null)[];
+  personalInterest: (number | null)[];
+  usedForOccupationDropdown: (excludeOccIndex: number) => Set<number>;
+  usedForPersonalDropdown: (excludePersIndex: number) => Set<number>;
+  setOccupationSlot: (index: number, skillId: number | null) => void;
+  setPersonalSlot: (index: number, skillId: number | null) => void;
+  onBack: () => void;
+  onConfirm: () => void;
+  canConfirm: boolean;
+};
+
+// Single props arg keeps lizard parameter-count under the limit of 8.
+function SkillAssignmentForm(props: SkillAssignmentFormProps) {
+  const {
+    selectableSkills,
+    occupationSlots,
+    personalInterest,
+    usedForOccupationDropdown,
+    usedForPersonalDropdown,
+    setOccupationSlot,
+    setPersonalSlot,
+    onBack,
+    onConfirm,
+    canConfirm,
+  } = props;
 
   return (
     <div className="skill-assignment-screen" data-testid="skill-assignment-screen">
@@ -142,60 +216,12 @@ export function SkillAssignmentScreen({
 
       <section className="occupation-slots">
         <h3>Occupation skills</h3>
-        {OCCUPATION_VALUES.map((value, i) => {
-          const used = usedForOccupationDropdown(i);
-          const options = selectableSkills.filter(s => occupationSlots[i] === s.id || !used.has(s.id));
-          return (
-            <div key={i} className="slot-row">
-              <label htmlFor={`occupation-slot-${i}`}>{`Occupation ${i + 1} (${value}%)`}</label>
-              <select
-                id={`occupation-slot-${i}`}
-                aria-label={`Occupation skill ${i + 1} value ${value} percent`}
-                value={occupationSlots[i] ?? ''}
-                style={MIN_TOUCH_TARGET_STYLE}
-                onChange={e => {
-                  setOccupationSlot(i, e.target.value ? Number(e.target.value) : null);
-                }}
-              >
-                <option value="">Select skill...</option>
-                {options.map(s => (
-                  <option key={s.id} value={s.id}>
-                    {s.name} (base {s.base_value}%)
-                  </option>
-                ))}
-              </select>
-            </div>
-          );
-        })}
+        {renderOccupationSlots(selectableSkills, occupationSlots, usedForOccupationDropdown, setOccupationSlot)}
       </section>
 
       <section className="personal-interest-slots">
         <h3>Personal interest (4 skills)</h3>
-        {[0, 1, 2, 3].map(i => {
-          const used = usedForPersonalDropdown(i);
-          const options = selectableSkills.filter(s => personalInterest[i] === s.id || !used.has(s.id));
-          return (
-            <div key={i} className="slot-row">
-              <label htmlFor={`personal-slot-${i}`}>{`Personal ${i + 1}`}</label>
-              <select
-                id={`personal-slot-${i}`}
-                aria-label={`Personal interest slot ${i + 1}`}
-                value={personalInterest[i] ?? ''}
-                style={MIN_TOUCH_TARGET_STYLE}
-                onChange={e => {
-                  setPersonalSlot(i, e.target.value ? Number(e.target.value) : null);
-                }}
-              >
-                <option value="">Select skill...</option>
-                {options.map(s => (
-                  <option key={s.id} value={s.id}>
-                    {s.name} (base+20)
-                  </option>
-                ))}
-              </select>
-            </div>
-          );
-        })}
+        {renderPersonalInterestSlots(selectableSkills, personalInterest, usedForPersonalDropdown, setPersonalSlot)}
       </section>
 
       <div className="skill-actions">
@@ -204,7 +230,7 @@ export function SkillAssignmentScreen({
         </button>
         <button
           type="button"
-          onClick={handleConfirm}
+          onClick={onConfirm}
           disabled={!canConfirm}
           className="confirm-button"
           style={MIN_TOUCH_TARGET_STYLE}
