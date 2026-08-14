@@ -181,16 +181,6 @@ function RoomEditSubZoneField(props: RoomEditModalFormProps): React.ReactElement
   );
 }
 
-function RoomEditLocationTab(props: RoomEditModalFormProps): React.ReactElement {
-  return (
-    <div className="space-y-6">
-      <RoomEditPlaneField formData={props.formData} />
-      <RoomEditZoneField {...props} />
-      <RoomEditSubZoneField {...props} />
-    </div>
-  );
-}
-
 function RoomEditPropertiesTab(props: RoomEditModalFormProps): React.ReactElement {
   const { formData, environmentOptions, selectedEnvironment, onFieldChange } = props;
   return (
@@ -234,7 +224,13 @@ export function RoomEditModalForm(props: RoomEditModalFormProps): React.ReactEle
           <RoomEditDescriptionField {...props} />
         </div>
       )}
-      {props.activeTab === 'location' && <RoomEditLocationTab {...props} />}
+      {props.activeTab === 'location' && (
+        <div className="space-y-6">
+          <RoomEditPlaneField formData={props.formData} />
+          <RoomEditZoneField {...props} />
+          <RoomEditSubZoneField {...props} />
+        </div>
+      )}
       {props.activeTab === 'properties' && <RoomEditPropertiesTab {...props} />}
     </form>
   );

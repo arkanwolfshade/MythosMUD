@@ -102,43 +102,6 @@ interface ContainerInventoryPaneProps {
   emptyMessage: string;
 }
 
-export function ContainerInventoryPane(props: ContainerInventoryPaneProps): React.ReactElement {
-  const {
-    side,
-    title,
-    items,
-    isContainerSide,
-    dragOverTarget,
-    onDragOver,
-    onDragLeave,
-    onDrop,
-    renderItem,
-    emptyMessage,
-  } = props;
-  const sideClass = side === 'container' ? 'border-r border-mythos-terminal-border pr-4' : 'pl-4';
-
-  return (
-    <div
-      className={`flex flex-col ${sideClass} ${
-        dragOverTarget === side ? 'bg-mythos-terminal-primary/10 border-mythos-terminal-primary' : ''
-      }`}
-      aria-label={side === 'container' ? 'Container inventory' : 'Player inventory'}
-      onDragOver={event => onDragOver(event, side)}
-      onDragLeave={onDragLeave}
-      onDrop={event => onDrop(event, side)}
-    >
-      <h3 className="text-lg font-bold text-mythos-terminal-text mb-2">{title}</h3>
-      <div className="flex-1 overflow-y-auto" role="list">
-        {items.length === 0 ? (
-          <div className="text-center text-mythos-terminal-text-secondary py-8">{emptyMessage}</div>
-        ) : (
-          items.map(item => renderItem(item, isContainerSide))
-        )}
-      </div>
-    </div>
-  );
-}
-
 interface ContainerSplitPaneViewProps {
   vm: ContainerSplitPaneViewModel;
   container: NonNullable<ContainerSplitPaneViewModel['container']>;
@@ -160,6 +123,41 @@ type SplitPaneItemCtx = {
   firstButtonRef: React.RefObject<HTMLButtonElement | null>;
   mutationToken: string | null;
 };
+
+export function ContainerInventoryPane(props: ContainerInventoryPaneProps): React.ReactElement {
+  const {
+    side,
+    title,
+    items,
+    isContainerSide,
+    dragOverTarget,
+    onDragOver,
+    onDragLeave,
+    onDrop,
+    renderItem,
+    emptyMessage,
+  } = props;
+  const highlight = dragOverTarget === side ? 'bg-mythos-terminal-primary/10 border-mythos-terminal-primary' : '';
+  const sideClass = side === 'container' ? 'border-r border-mythos-terminal-border pr-4' : 'pl-4';
+  return (
+    <div
+      className={`flex flex-col ${sideClass} ${highlight}`}
+      aria-label={side === 'container' ? 'Container inventory' : 'Player inventory'}
+      onDragOver={event => onDragOver(event, side)}
+      onDragLeave={onDragLeave}
+      onDrop={event => onDrop(event, side)}
+    >
+      <h3 className="text-lg font-bold text-mythos-terminal-text mb-2">{title}</h3>
+      <div className="flex-1 overflow-y-auto" role="list">
+        {items.length === 0 ? (
+          <div className="text-center text-mythos-terminal-text-secondary py-8">{emptyMessage}</div>
+        ) : (
+          items.map(item => renderItem(item, isContainerSide))
+        )}
+      </div>
+    </div>
+  );
+}
 
 function isFirstPaneItem(
   item: InventoryStack,
@@ -274,11 +272,8 @@ export function ContainerSplitPaneView(props: ContainerSplitPaneViewProps): Reac
     firstButtonRef,
     mutationToken,
   };
-  const renderItem = (item: InventoryStack, isContainerItem: boolean) =>
-    renderSplitPaneItem(item, isContainerItem, itemCtx);
   return (
     <MythosPanel className={`flex flex-col ${className}`}>
-      {/* role=dialog is the keyboard focus root for transfer shortcuts */}
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- dialog key routing */}
       <div
         ref={containerRef}
@@ -296,7 +291,7 @@ export function ContainerSplitPaneView(props: ContainerSplitPaneViewProps): Reac
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          renderItem={renderItem}
+          renderItem={(item, isContainerItem) => renderSplitPaneItem(item, isContainerItem, itemCtx)}
         />
       </div>
       <ContainerCloseBar onClose={onClose} />
