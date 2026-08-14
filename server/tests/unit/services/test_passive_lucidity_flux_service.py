@@ -9,7 +9,7 @@ import pytest
 from server.services.lucidity_service import LucidityUpdateResult
 from server.services.passive_lucidity_flux.config import FluxServiceConfig
 from server.services.passive_lucidity_flux.models import PassiveFluxContext
-from server.services.passive_lucidity_flux.service import PassiveLucidityFluxService
+from server.services.passive_lucidity_flux.service import PassiveLucidityFluxService, PlayerFluxCtx
 
 
 def _make_service(**kwargs: object) -> PassiveLucidityFluxService:
@@ -295,7 +295,16 @@ async def test_process_single_player_no_delta() -> None:
     svc = _make_service(context_resolver=lambda _p, _t: PassiveFluxContext(base_flux=0.0, source="test"))
     player = MagicMock(player_id=str(uuid.uuid4()), current_room_id="room-a")
     player_id_str, result = await svc._process_single_player(
-        player, [player], {}, {}, datetime.now(UTC), 2, AsyncMock(), AsyncMock()
+        PlayerFluxCtx(
+            player=player,
+            players=[player],
+            lucidity_records={},
+            room_cache={},
+            timestamp=datetime.now(UTC),
+            tick_count=2,
+            lucidity_service=AsyncMock(),
+            session=AsyncMock(),
+        )
     )
     assert result is None
     assert player_id_str

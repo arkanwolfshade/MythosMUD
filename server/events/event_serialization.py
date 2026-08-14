@@ -9,8 +9,8 @@ from __future__ import annotations
 
 from dataclasses import asdict, fields, is_dataclass
 from datetime import datetime
-from types import NoneType  # pylint: disable=unused-import  # Used in generator on line 84
-from typing import Any, TypeVar, cast
+from types import ModuleType, NoneType  # pylint: disable=unused-import  # Used in generator on line 84
+from typing import TypeVar, cast
 from uuid import UUID
 
 from .event_types import BaseEvent
@@ -22,7 +22,7 @@ T = TypeVar("T", bound=BaseEvent)
 _EVENT_CLASS_REGISTRY: dict[str, type[BaseEvent]] = {}
 
 
-def _register_event_class(registry: dict[str, type[BaseEvent]], obj: type[BaseEvent]) -> None:
+def _register_event_class(registry: dict[str, type[BaseEvent]], obj: object) -> None:
     if not (isinstance(obj, type) and issubclass(obj, BaseEvent) and obj is not BaseEvent):
         return
     try:
@@ -35,9 +35,9 @@ def _register_event_class(registry: dict[str, type[BaseEvent]], obj: type[BaseEv
         registry[obj.__name__] = obj
 
 
-def _register_module_events(module: Any, registry: dict[str, type[BaseEvent]], *, include_base: bool) -> None:
+def _register_module_events(module: ModuleType, registry: dict[str, type[BaseEvent]], *, include_base: bool) -> None:
     for name in dir(module):
-        obj = getattr(module, name)
+        obj = cast(object, getattr(module, name))  # getattr is typed Any
         if include_base:
             if isinstance(obj, type) and issubclass(obj, BaseEvent):
                 registry[obj.__name__] = obj
@@ -67,25 +67,30 @@ def _register_event_types() -> None:
     _register_module_events(combat_events, _EVENT_CLASS_REGISTRY, include_base=True)
 
 
-def _extract_event_fields(event: BaseEvent) -> dict[str, Any]:
-    if is_dataclass(event) and not isinstance(event, type):
-        return asdict(event)
-    data: dict[str, Any] = {}
+def _copy_public_event_attrs(event: BaseEvent) -> dict[str, object]:
+    data: dict[str, object] = {}
     for field_name in dir(event):
         if field_name.startswith("_") or field_name in ("event_type",):
             continue
         try:
-            value = getattr(event, field_name)
+            value = cast(object, getattr(event, field_name))  # getattr is typed Any
             if not callable(value) and not isinstance(value, type):
                 data[field_name] = value
         except (AttributeError, TypeError):
             pass
+    return data
+
+
+def _extract_event_fields(event: BaseEvent) -> dict[str, object]:
+    if is_dataclass(event) and not isinstance(event, type):
+        return asdict(event)
+    data = _copy_public_event_attrs(event)
     if hasattr(event, "event_type"):
         data["event_type"] = getattr(event, "event_type", type(event).__name__)
     return data
 
 
-def _convert_value_for_json(value: Any) -> Any:
+def _convert_value_for_json(value: object) -> object:
     """Convert a value to JSON-serializable form."""
     if isinstance(value, UUID):
         return str(value)
@@ -98,7 +103,7 @@ def _convert_value_for_json(value: Any) -> Any:
     return value
 
 
-def _convert_value_from_json(value: Any, field_type: Any) -> Any:
+def _convert_value_from_json(value: object, field_type: object) -> object:
     """Convert a JSON value back to the expected Python type."""
     if value is None:
         return None
@@ -106,9 +111,9 @@ def _convert_value_from_json(value: Any, field_type: Any) -> Any:
     # Resolve Optional/Union to the first non-None type
     import typing
 
-    args = getattr(typing, "get_args", lambda t: ())(field_type)
-    if args:
-        real_type = next((a for a in args if a is not NoneType), None)
+    args_raw: object = getattr(typing, "get_args", lambda _t: ())(field_type)
+    if isinstance(args_raw, tuple) and args_raw:
+        real_type = next((a for a in args_raw if a is not NoneType), None)
         if real_type is not None:
             return _convert_value_from_json(value, real_type)
 
@@ -121,7 +126,7 @@ def _convert_value_from_json(value: Any, field_type: Any) -> Any:
     return value
 
 
-def serialize_event(event: BaseEvent) -> dict[str, Any]:
+def serialize_event(event: BaseEvent) -> dict[str, object]:
     """
     Serialize a BaseEvent to a JSON-compatible dict.
 
@@ -142,11 +147,12 @@ def serialize_event(event: BaseEvent) -> dict[str, Any]:
         data = {"event_type": type(event).__name__}
 
     data["_event_type"] = getattr(event, "event_type", type(event).__name__)
-    # cast: _convert_value_for_json returns Any; for dict input we always get dict[str, Any]
-    return cast(dict[str, Any], _convert_value_for_json(data))
+    converted = _convert_value_for_json(data)
+    # Cast: converter returns object; dict input always yields a dict of JSON-safe values.
+    return cast(dict[str, object], converted)
 
 
-def deserialize_event(data: dict[str, Any]) -> BaseEvent:
+def deserialize_event(data: dict[str, object]) -> BaseEvent:
     """
     Deserialize a dict back to a BaseEvent instance.
 
@@ -162,7 +168,7 @@ def deserialize_event(data: dict[str, Any]) -> BaseEvent:
     _register_event_types()
 
     event_type_name = data.get("_event_type")
-    if not event_type_name:
+    if not isinstance(event_type_name, str) or not event_type_name:
         raise ValueError("Missing _event_type in event data")
 
     cls = _EVENT_CLASS_REGISTRY.get(event_type_name)
@@ -170,7 +176,7 @@ def deserialize_event(data: dict[str, Any]) -> BaseEvent:
         raise ValueError(f"Unknown event type: {event_type_name}")
 
     # Build kwargs from data - only include fields that are in __init__ (init=True)
-    kwargs: dict[str, Any] = {}
+    kwargs: dict[str, object] = {}
     init_fields = {f.name: f for f in fields(cls) if f.init}
 
     for key, value in list(data.items()):

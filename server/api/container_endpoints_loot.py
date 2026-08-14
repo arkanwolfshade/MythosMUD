@@ -40,12 +40,10 @@ async def _audit_loot_all(
             player_name=str(player.name),
             container_id=str(request_data.container_id),
             event_type="container_loot_all",
-            details={
-                "source_type": final_container.source_type.value,
-                "room_id": final_container.room_id,
-                "items_count": items_looted,
-                "success": True,
-            },
+            source_type=str(final_container.source_type.value),
+            room_id=str(final_container.room_id),
+            items_count=items_looted,
+            success=True,
         )
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Audit log errors unpredictable, must not fail request
         logger.warning("Failed to log container loot_all to audit log", error=str(e))

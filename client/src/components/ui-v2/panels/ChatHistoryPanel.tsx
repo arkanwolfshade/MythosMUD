@@ -41,26 +41,20 @@ function isExcludedFromChatPanel(message: ChatMessage): boolean {
   );
 }
 
+function isWhisperOrParty(channel: string): boolean {
+  return channel === 'whisper' || channel === 'party';
+}
+
 function matchesSelectedChannel(
   message: ChatMessage,
   normalizedSelectedChannel: string,
   isAllChannelSelected: boolean
 ): boolean {
   if (isAllChannelSelected) return true;
-
   const messageChannel = message.channel || extractChannelFromMessage(message.text) || 'local';
-
-  if (message.messageType === 'error') {
-    return messageChannel === normalizedSelectedChannel;
-  }
-
-  const isChatMessage = message.messageType === 'chat' || isChatContent(message.text);
-  if (!isChatMessage) return false;
-
-  if (messageChannel === 'whisper' || messageChannel === 'party') {
-    return normalizedSelectedChannel === messageChannel;
-  }
-
+  if (message.messageType === 'error') return messageChannel === normalizedSelectedChannel;
+  if (message.messageType !== 'chat' && !isChatContent(message.text)) return false;
+  if (isWhisperOrParty(messageChannel)) return normalizedSelectedChannel === messageChannel;
   return messageChannel === normalizedSelectedChannel;
 }
 
@@ -76,12 +70,16 @@ function filterChatHistoryMessages(
   );
 }
 
-function getMessageClass(message: ChatMessage): string {
-  for (const tag of message.tags ?? []) {
+function classFromTags(tags: string[] | undefined): string | undefined {
+  for (const tag of tags ?? []) {
     const tagClass = TAG_MESSAGE_CLASSES[tag];
     if (tagClass) return tagClass;
   }
-  return TYPE_MESSAGE_CLASSES[message.messageType ?? ''] ?? 'text-mythos-terminal-text';
+  return undefined;
+}
+
+function getMessageClass(message: ChatMessage): string {
+  return classFromTags(message.tags) ?? TYPE_MESSAGE_CLASSES[message.messageType ?? ''] ?? 'text-mythos-terminal-text';
 }
 
 function formatTimestamp(timestamp: string): string {
@@ -228,45 +226,50 @@ export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = props => {
   );
 };
 
+function AliasChainBlock({ chain }: { chain: NonNullable<ChatMessage['aliasChain']> }): React.ReactElement {
+  return (
+    <div className="mb-3 p-2 bg-mythos-terminal-background border border-mythos-terminal-primary/50 rounded text-xs">
+      <div className="flex items-center gap-2 mb-2">
+        <EldritchIcon name={MythosIcons.move} size={12} variant="warning" />
+        <span className="text-mythos-terminal-warning font-bold">Alias Expansion:</span>
+      </div>
+      <div className="space-y-1">
+        {chain.map((alias, chainIndex) => (
+          <div key={chainIndex} className="flex items-center gap-2">
+            <span className="text-mythos-terminal-warning font-bold">{alias.original}</span>
+            <EldritchIcon name={MythosIcons.exit} size={10} variant="primary" />
+            <span className="text-mythos-terminal-success italic">{alias.expanded}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ChatHistoryMessageBody({ message }: { message: ChatMessage }): React.ReactElement {
+  const html = message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text);
+  if (message.isHtml) return <SafeHtml html={html} />;
+  return <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{message.rawText ?? message.text}</span>;
+}
+
 function ChatHistoryMessageRow({ message, index }: { message: ChatMessage; index: number }) {
+  const chain = message.aliasChain;
   return (
     <div
       key={index}
       className="message p-3 bg-mythos-terminal-surface border border-gray-700 rounded transition-all duration-300 hover:border-mythos-terminal-primary/30"
     >
-      {message.aliasChain && message.aliasChain.length > 0 && (
-        <div className="mb-3 p-2 bg-mythos-terminal-background border border-mythos-terminal-primary/50 rounded text-xs">
-          <div className="flex items-center gap-2 mb-2">
-            <EldritchIcon name={MythosIcons.move} size={12} variant="warning" />
-            <span className="text-mythos-terminal-warning font-bold">Alias Expansion:</span>
-          </div>
-          <div className="space-y-1">
-            {message.aliasChain.map((alias, chainIndex) => (
-              <div key={chainIndex} className="flex items-center gap-2">
-                <span className="text-mythos-terminal-warning font-bold">{alias.original}</span>
-                <EldritchIcon name={MythosIcons.exit} size={10} variant="primary" />
-                <span className="text-mythos-terminal-success italic">{alias.expanded}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
+      {chain && chain.length > 0 ? <AliasChainBlock chain={chain} /> : null}
       <div className="mb-2">
         <span className="text-xs text-mythos-terminal-text-secondary font-mono">
           {formatTimestamp(message.timestamp)}
         </span>
       </div>
-
       <div
         className={`text-sm leading-relaxed ${getMessageClass(message)}`}
         data-message-text={message.rawText ?? message.text}
       >
-        {message.isHtml ? (
-          <SafeHtml html={message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text)} />
-        ) : (
-          <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{message.rawText ?? message.text}</span>
-        )}
+        <ChatHistoryMessageBody message={message} />
       </div>
     </div>
   );

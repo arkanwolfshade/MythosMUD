@@ -74,19 +74,20 @@ const handleDragStartEvent = (
   }
 };
 
-const handleDropEvent = (
-  e: React.DragEvent,
-  target: 'container' | 'player',
-  draggedItem: InventoryStack | null,
-  dragSource: 'container' | 'player' | null,
-  mutationToken: string | null,
-  onTransfer: ContainerSplitPaneHookProps['onTransfer'],
-  setDraggedItem: DraggedItemSetter,
-  setDragSource: DragSourceSetter,
-  setDragOverTarget: DragTargetSetter
-): void => {
+type DropEventBag = {
+  draggedItem: InventoryStack | null;
+  dragSource: 'container' | 'player' | null;
+  mutationToken: string | null;
+  onTransfer: ContainerSplitPaneHookProps['onTransfer'];
+  setDraggedItem: DraggedItemSetter;
+  setDragSource: DragSourceSetter;
+  setDragOverTarget: DragTargetSetter;
+};
+
+const handleDropEvent = (e: React.DragEvent, target: 'container' | 'player', bag: DropEventBag): void => {
   e.preventDefault();
   e.stopPropagation();
+  const { draggedItem, dragSource, mutationToken, onTransfer, setDraggedItem, setDragSource, setDragOverTarget } = bag;
   if (!draggedItem || !dragSource || !mutationToken || !onTransfer || dragSource === target) {
     setDragOverTarget(null);
     return;
@@ -156,17 +157,15 @@ const useContainerDragHandlers = (
 
   const handleDrop = useCallback(
     (e: React.DragEvent, target: 'container' | 'player') =>
-      handleDropEvent(
-        e,
-        target,
+      handleDropEvent(e, target, {
         draggedItem,
         dragSource,
         mutationToken,
         onTransfer,
         setDraggedItem,
         setDragSource,
-        setDragOverTarget
-      ),
+        setDragOverTarget,
+      }),
     [draggedItem, dragSource, mutationToken, onTransfer, setDragOverTarget, setDragSource, setDraggedItem]
   );
 

@@ -91,6 +91,26 @@ export function StyleGuideButtonsSection() {
   );
 }
 
+function BoundTerminalInput(props: {
+  state: StyleGuideInputState;
+  placeholder: string;
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  className?: string;
+}): React.ReactElement {
+  const { state, placeholder, size, disabled, className } = props;
+  return (
+    <TerminalInput
+      size={size}
+      placeholder={placeholder}
+      value={state.value}
+      disabled={disabled}
+      className={className}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) => state.setValue(e.target.value)}
+    />
+  );
+}
+
 export function StyleGuideInputsSection({ inputs }: { inputs: StyleGuideInputsProps }) {
   const { basic, disabled, error, sizeSm, sizeMd, sizeLg } = inputs;
   return (
@@ -100,27 +120,11 @@ export function StyleGuideInputsSection({ inputs }: { inputs: StyleGuideInputsPr
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Basic Inputs</h3>
           <div className="space-y-3">
-            <TerminalInput
-              placeholder="Enter text..."
-              value={basic.value}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                basic.setValue(e.target.value);
-              }}
-            />
-            <TerminalInput
-              placeholder="Disabled input"
-              value={disabled.value}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                disabled.setValue(e.target.value);
-              }}
-              disabled
-            />
-            <TerminalInput
+            <BoundTerminalInput state={basic} placeholder="Enter text..." />
+            <BoundTerminalInput state={disabled} placeholder="Disabled input" disabled />
+            <BoundTerminalInput
+              state={error}
               placeholder="Error state"
-              value={error.value}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                error.setValue(e.target.value);
-              }}
               className="border-red-500 focus:border-red-500 focus:ring-red-500"
             />
           </div>
@@ -128,30 +132,9 @@ export function StyleGuideInputsSection({ inputs }: { inputs: StyleGuideInputsPr
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Sizes</h3>
           <div className="space-y-3">
-            <TerminalInput
-              size="sm"
-              placeholder="Small input"
-              value={sizeSm.value}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                sizeSm.setValue(e.target.value);
-              }}
-            />
-            <TerminalInput
-              size="md"
-              placeholder="Medium input"
-              value={sizeMd.value}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                sizeMd.setValue(e.target.value);
-              }}
-            />
-            <TerminalInput
-              size="lg"
-              placeholder="Large input"
-              value={sizeLg.value}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                sizeLg.setValue(e.target.value);
-              }}
-            />
+            <BoundTerminalInput state={sizeSm} placeholder="Small input" size="sm" />
+            <BoundTerminalInput state={sizeMd} placeholder="Medium input" size="md" />
+            <BoundTerminalInput state={sizeLg} placeholder="Large input" size="lg" />
           </div>
         </div>
         <div className="space-y-4">

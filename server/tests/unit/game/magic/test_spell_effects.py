@@ -391,10 +391,12 @@ async def test_spell_effects_property_accessors(mock_player_service):
     conn = MagicMock()
     effects = SpellEffects(
         mock_player_service,
-        combat_service=combat,
-        movement_service=movement,
-        get_room_by_id=get_room,
-        connection_manager=conn,
+        SpellEffectsDeps(
+            combat_service=combat,
+            movement_service=movement,
+            get_room_by_id=get_room,
+            connection_manager=conn,
+        ),
     )
     assert effects.combat_service is combat
     assert effects.movement_service is movement
@@ -484,7 +486,7 @@ async def test_process_damage_to_npc_success(mock_player_service):
     combat.publish_npc_damage_event = AsyncMock()
     combat.publish_npc_died_event = AsyncMock()
     combat.get_combat_id_for_participant = MagicMock(return_value=None)
-    effects = SpellEffects(mock_player_service, combat_service=combat)
+    effects = SpellEffects(mock_player_service, SpellEffectsDeps(combat_service=combat))
 
     npc = MagicMock()
     npc.is_alive = True
@@ -508,7 +510,7 @@ async def test_process_damage_to_npc_success(mock_player_service):
 
 @pytest.mark.asyncio
 async def test_process_damage_to_npc_unavailable(mock_player_service):
-    effects = SpellEffects(mock_player_service, combat_service=MagicMock())
+    effects = SpellEffects(mock_player_service, SpellEffectsDeps(combat_service=MagicMock()))
     target = TargetMatch(
         target_id=str(uuid.uuid4()),
         target_type=TargetType.NPC,
@@ -521,7 +523,7 @@ async def test_process_damage_to_npc_unavailable(mock_player_service):
 
 
 def test_add_spell_damage_threat_noops_without_combat(mock_player_service):
-    effects = SpellEffects(mock_player_service, combat_service=None)
+    effects = SpellEffects(mock_player_service)
     target = TargetMatch(
         target_id=str(uuid.uuid4()),
         target_type=TargetType.NPC,
@@ -532,7 +534,7 @@ def test_add_spell_damage_threat_noops_without_combat(mock_player_service):
 
 
 def test_resolve_room_for_npc_spell_publish(mock_player_service):
-    effects = SpellEffects(mock_player_service, combat_service=None)
+    effects = SpellEffects(mock_player_service)
     npc = MagicMock()
     npc.current_room = "room_a"
     assert effects._resolve_room_for_npc_spell_publish(npc, "npc-1") == "room_a"

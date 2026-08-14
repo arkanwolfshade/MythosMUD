@@ -133,17 +133,40 @@ function resolvePayloadNpcs(payloadRoom: Room | undefined, existingRoom: Room): 
   return Array.isArray(payloadRoom.npcs) ? payloadRoom.npcs : [];
 }
 
+function playersForRoomUpdate(existingRoom: Room, payloadRoom: Room | undefined, usePayload: boolean): string[] {
+  if (!usePayload) return existingRoom.players ?? [];
+  return payloadRoom?.players ?? [];
+}
+
+function npcsForRoomUpdate(
+  existingRoom: Room,
+  payloadRoom: Room | undefined,
+  usePayload: boolean
+): string[] | undefined {
+  if (!usePayload) return existingRoom.npcs;
+  return resolvePayloadNpcs(payloadRoom, existingRoom);
+}
+
+function occupantCountForRoomUpdate(payloadRoom: Room | undefined, occupants: string[], usePayload: boolean): number {
+  if (!usePayload) return occupants.length;
+  return payloadRoom?.occupant_count ?? occupants.length;
+}
+
 function resolveOccupantsForRoomUpdate(
   existingRoom: Room,
   payloadRoom: Room | undefined,
   usePayloadOccupants: boolean
 ): { players: string[]; npcs: string[] | undefined; occupants: string[]; occupant_count: number } {
-  const players = usePayloadOccupants ? (payloadRoom?.players ?? []) : (existingRoom.players ?? []);
-  const npcs = usePayloadOccupants ? resolvePayloadNpcs(payloadRoom, existingRoom) : existingRoom.npcs;
+  const players = playersForRoomUpdate(existingRoom, payloadRoom, usePayloadOccupants);
+  const npcs = npcsForRoomUpdate(existingRoom, payloadRoom, usePayloadOccupants);
   const npcsArr = Array.isArray(npcs) ? npcs : [];
   const occupants = [...players, ...npcsArr];
-  const occupant_count = usePayloadOccupants ? (payloadRoom?.occupant_count ?? occupants.length) : occupants.length;
-  return { players, npcs, occupants, occupant_count };
+  return {
+    players,
+    npcs,
+    occupants,
+    occupant_count: occupantCountForRoomUpdate(payloadRoom, occupants, usePayloadOccupants),
+  };
 }
 
 function createRoomUpdateWithPreservedOccupants(
@@ -198,19 +221,23 @@ function createInitialRoomState(
   };
 }
 
+function occupantCountFromEvent(event: { data: Record<string, unknown> }, fallback: number): number {
+  const topCount = event.data.occupant_count as number | undefined;
+  const count = event.data.count as number | undefined;
+  return topCount ?? count ?? fallback;
+}
+
 function mergeTopLevelOccupants(raw: Room, event: { data: Record<string, unknown> }): Room {
   const topPlayers = event.data.players as string[] | undefined;
   const topNpcs = event.data.npcs as string[] | undefined;
   const { playersArr, npcsArr } = normalizeOccupantArrays(topPlayers ?? raw.players, topNpcs ?? raw.npcs);
   const occupants = [...playersArr, ...npcsArr];
-  const topCount = event.data.occupant_count as number | undefined;
-  const count = event.data.count as number | undefined;
   return {
     ...(raw as Room),
     players: playersArr,
     npcs: npcsArr,
     occupants,
-    occupant_count: topCount ?? count ?? occupants.length,
+    occupant_count: occupantCountFromEvent(event, occupants.length),
   } as Room;
 }
 

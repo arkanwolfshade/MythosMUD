@@ -17,6 +17,7 @@ from typing import Any, cast
 from uuid import UUID
 
 from fastapi import WebSocket
+from starlette.websockets import WebSocketDisconnect
 
 from ..exceptions import DatabaseError
 from ..models import Player
@@ -577,7 +578,7 @@ async def safe_close_websocket_impl(
         return
     try:
         await asyncio.wait_for(websocket.close(code=code, reason=reason), timeout=2.0)
-    except (AttributeError, ValueError, TypeError, RuntimeError):
+    except (AttributeError, ValueError, TypeError, RuntimeError, WebSocketDisconnect):
         pass
     finally:
         manager.mark_websocket_closed(ws_id)

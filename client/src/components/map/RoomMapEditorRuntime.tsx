@@ -184,13 +184,29 @@ function RoomMapEditorDetailPanels({
   );
 }
 
-function RoomMapEditorChrome({
-  data,
-  editing,
-}: {
-  data: ReturnType<typeof useRoomMapEditorData>;
-  editing: ReturnType<typeof useRoomMapEditorEditing>;
-}) {
+type MapEditorData = ReturnType<typeof useRoomMapEditorData>;
+type MapEditorEditing = ReturnType<typeof useRoomMapEditorEditing>;
+type MapEditorSelection = ReturnType<typeof useRoomMapEditorSelection>;
+type MapEditorModals = ReturnType<typeof useRoomMapEditorModals>;
+
+interface RoomMapEditorChromeProps {
+  data: MapEditorData;
+  editing: MapEditorEditing;
+}
+
+interface RoomMapEditorLoadedViewProps {
+  data: MapEditorData;
+  editing: MapEditorEditing;
+  selection: MapEditorSelection;
+  modals: MapEditorModals;
+}
+
+function uniqueSubZones(rooms: MapEditorData['rooms']): string[] {
+  const values = rooms.map(r => r.sub_zone).filter((sub): sub is string => typeof sub === 'string' && sub.length > 0);
+  return Array.from(new Set(values));
+}
+
+function RoomMapEditorChrome({ data, editing }: RoomMapEditorChromeProps) {
   const {
     plane,
     zone,
@@ -206,14 +222,15 @@ function RoomMapEditorChrome({
     setSelectedSubZone,
   } = data;
   const { hasUnsavedChanges, canUndo, canRedo, undo, redo, save, reset } = editing;
+  const availableSubZones = uniqueSubZones(rooms);
 
   return (
     <>
-      {error && (
+      {error ? (
         <div className="absolute top-0 left-0 right-0 bg-mythos-terminal-error text-white p-2 text-center z-50">
           {error}
         </div>
-      )}
+      ) : null}
       <div className="absolute top-4 right-4 z-10">
         <MapEditToolbar
           hasUnsavedChanges={hasUnsavedChanges}
@@ -237,28 +254,14 @@ function RoomMapEditorChrome({
           onSubZoneChange={setSelectedSubZone}
           availablePlanes={[plane]}
           availableZones={[zone]}
-          availableSubZones={Array.from(
-            new Set(
-              rooms.map(r => r.sub_zone).filter((sub): sub is string => typeof sub === 'string' && sub.length > 0)
-            )
-          )}
+          availableSubZones={availableSubZones}
         />
       </div>
     </>
   );
 }
 
-function RoomMapEditorLoadedView({
-  data,
-  editing,
-  selection,
-  modals,
-}: {
-  data: ReturnType<typeof useRoomMapEditorData>;
-  editing: ReturnType<typeof useRoomMapEditorEditing>;
-  selection: ReturnType<typeof useRoomMapEditorSelection>;
-  modals: ReturnType<typeof useRoomMapEditorModals>;
-}) {
+function RoomMapEditorLoadedView({ data, editing, selection, modals }: RoomMapEditorLoadedViewProps) {
   const { nodes: editedNodes, edges: editedEdges, onNodesChange, onEdgesChange, validateEdgeCreation } = editing;
   const { handleNodeClick, handleEdgeClick } = selection;
 

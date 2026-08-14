@@ -41,56 +41,106 @@ export interface DraggablePanelViewProps {
   handleHeaderMouseDown: (e: React.MouseEvent) => void;
 }
 
+function panelLayoutStyle(props: DraggablePanelViewProps): React.CSSProperties {
+  const { isGridPositioned, zIndex, position, size, isMinimized } = props;
+  if (isGridPositioned) {
+    return {
+      position: 'relative',
+      width: '100%',
+      height: '100%',
+      zIndex,
+      left: 'auto',
+      top: 'auto',
+      right: 'auto',
+      bottom: 'auto',
+    };
+  }
+  return {
+    position: 'absolute',
+    left: position.x,
+    top: position.y,
+    width: size.width,
+    height: isMinimized ? 'auto' : size.height,
+    zIndex,
+  };
+}
+
+function DraggablePanelHeaderButtons(props: {
+  onClose?: () => void;
+  onMinimize?: () => void;
+  onMaximize?: () => void;
+  handleMinimize: () => void;
+}): React.ReactElement {
+  const { onClose, onMinimize, onMaximize, handleMinimize } = props;
+  return (
+    <div className="flex items-center space-x-1">
+      {onMinimize ? (
+        <TerminalButton
+          variant="secondary"
+          size="sm"
+          onClick={handleMinimize}
+          className="w-9 h-9 p-0 flex items-center justify-center hover:animate-eldritch-pulse"
+        >
+          <EldritchIcon name={MythosIcons.minimize} size={12} />
+        </TerminalButton>
+      ) : null}
+      {onMaximize ? (
+        <TerminalButton
+          variant="secondary"
+          size="sm"
+          onClick={onMaximize}
+          className="w-9 h-9 p-0 flex items-center justify-center hover:animate-eldritch-pulse"
+        >
+          <EldritchIcon name={MythosIcons.maximize} size={12} />
+        </TerminalButton>
+      ) : null}
+      {onClose ? (
+        <TerminalButton
+          variant="danger"
+          size="sm"
+          onClick={onClose}
+          className="w-9 h-9 p-0 flex items-center justify-center hover:animate-eldritch-glow"
+        >
+          <EldritchIcon name={MythosIcons.close} size={12} />
+        </TerminalButton>
+      ) : null}
+    </div>
+  );
+}
+
+function panelShellClass(
+  isGridPositioned: boolean,
+  variant: DraggablePanelViewProps['variant'],
+  className: string
+): string {
+  const base = isGridPositioned
+    ? 'font-mono bg-mythos-terminal-surface border border-mythos-terminal-border rounded shadow-lg overflow-hidden transition-eldritch duration-eldritch ease-eldritch'
+    : 'font-mono bg-mythos-terminal-surface border border-mythos-terminal-border rounded shadow-lg absolute overflow-hidden transition-eldritch duration-eldritch ease-eldritch relative';
+  return `draggable-panel ${base} ${variantClasses[variant]} ${className}`;
+}
+
 export function DraggablePanelView(props: DraggablePanelViewProps): React.ReactElement {
   const {
     children,
     title,
     className,
     variant,
-    zIndex,
-    onClose,
-    onMinimize,
-    onMaximize,
     isGridPositioned,
-    position,
-    size,
     isMinimized,
     headerHeight,
     panelRef,
     headerRef,
     contentRef,
-    handleMinimize,
     handleMouseDown,
     handleResizeHandleKeyDown,
     handleHeaderMouseDown,
   } = props;
-
-  const baseClasses = isGridPositioned
-    ? 'font-mono bg-mythos-terminal-surface border border-mythos-terminal-border rounded shadow-lg overflow-hidden transition-eldritch duration-eldritch ease-eldritch'
-    : 'font-mono bg-mythos-terminal-surface border border-mythos-terminal-border rounded shadow-lg absolute overflow-hidden transition-eldritch duration-eldritch ease-eldritch relative';
-  const classes = `draggable-panel ${baseClasses} ${variantClasses[variant]} ${className}`;
-  const panelStyle: React.CSSProperties = isGridPositioned
-    ? {
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-        zIndex,
-        left: 'auto',
-        top: 'auto',
-        right: 'auto',
-        bottom: 'auto',
-      }
-    : {
-        position: 'absolute',
-        left: position.x,
-        top: position.y,
-        width: size.width,
-        height: isMinimized ? 'auto' : size.height,
-        zIndex,
-      };
-
   return (
-    <div ref={panelRef} className={classes} style={panelStyle}>
+    <div
+      ref={panelRef}
+      className={panelShellClass(isGridPositioned, variant, className)}
+      style={panelLayoutStyle(props)}
+    >
       <div
         ref={headerRef}
         role="button"
@@ -98,49 +148,21 @@ export function DraggablePanelView(props: DraggablePanelViewProps): React.ReactE
         className={`flex items-center justify-between px-3 py-2 ${headerClasses[variant]}`}
         onMouseDown={handleHeaderMouseDown}
         onKeyDown={e => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-          }
+          if (e.key === 'Enter' || e.key === ' ') e.preventDefault();
         }}
       >
         <div className="flex items-center space-x-2">
           <EldritchIcon name={MythosIcons.panel} size={16} className="text-mythos-terminal-primary" />
           <span className="text-sm font-bold text-mythos-terminal-primary">{title}</span>
         </div>
-        <div className="flex items-center space-x-1">
-          {onMinimize && (
-            <TerminalButton
-              variant="secondary"
-              size="sm"
-              onClick={handleMinimize}
-              className="w-9 h-9 p-0 flex items-center justify-center hover:animate-eldritch-pulse"
-            >
-              <EldritchIcon name={MythosIcons.minimize} size={12} />
-            </TerminalButton>
-          )}
-          {onMaximize && (
-            <TerminalButton
-              variant="secondary"
-              size="sm"
-              onClick={onMaximize}
-              className="w-9 h-9 p-0 flex items-center justify-center hover:animate-eldritch-pulse"
-            >
-              <EldritchIcon name={MythosIcons.maximize} size={12} />
-            </TerminalButton>
-          )}
-          {onClose && (
-            <TerminalButton
-              variant="danger"
-              size="sm"
-              onClick={onClose}
-              className="w-9 h-9 p-0 flex items-center justify-center hover:animate-eldritch-glow"
-            >
-              <EldritchIcon name={MythosIcons.close} size={12} />
-            </TerminalButton>
-          )}
-        </div>
+        <DraggablePanelHeaderButtons
+          onClose={props.onClose}
+          onMinimize={props.onMinimize}
+          onMaximize={props.onMaximize}
+          handleMinimize={props.handleMinimize}
+        />
       </div>
-      {!isMinimized && (
+      {!isMinimized ? (
         <div
           ref={contentRef}
           className="p-3 h-full overflow-auto relative bg-mythos-terminal-surface"
@@ -148,10 +170,10 @@ export function DraggablePanelView(props: DraggablePanelViewProps): React.ReactE
         >
           {children}
         </div>
-      )}
-      {!isMinimized && (
+      ) : null}
+      {!isMinimized ? (
         <DraggablePanelResizeHandles onMouseDown={handleMouseDown} onResizeHandleKeyDown={handleResizeHandleKeyDown} />
-      )}
+      ) : null}
     </div>
   );
 }

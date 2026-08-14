@@ -25,7 +25,7 @@ async def test_create_item_instance_delegates(repository: ItemRepository) -> Non
             new=AsyncMock(),
         ) as create_async,
     ):
-        await repository.create_item_instance("inst-1", "proto-1", owner_id="room-1")
+        await repository.create_item_instance("inst-1", "proto-1", {"owner_id": "room-1"})
     create_async.assert_awaited_once()
 
 

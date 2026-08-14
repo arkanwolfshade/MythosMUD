@@ -36,6 +36,24 @@ function getCurrentLucidity(player: Player | null, lucidityStatus: LucidityStatu
   return 100;
 }
 
+function currentDpOf(player: Player): number {
+  return typeof player.stats?.current_dp === 'number' ? player.stats.current_dp : 0;
+}
+
+function skipDeadInRespawnRoom(roomId: string | undefined, isDead: boolean, hasRespawned: boolean): boolean {
+  return roomId === RESPAWN_ROOM_ID && !isDead && hasRespawned;
+}
+
+function markPlayerDead(setters: PlayerStatusSetters, currentDpNum: number, roomId: string | undefined): void {
+  setters.setIsDead(true);
+  setters.setHasRespawned(false);
+  logger.info('GameClientV2Container', 'Player detected as dead', {
+    currentDp: currentDpNum,
+    roomId,
+    isInLimbo: roomId === LIMBO_ROOM_ID,
+  });
+}
+
 function syncDeathState(
   player: Player,
   room: Room | null,
@@ -43,22 +61,13 @@ function syncDeathState(
   hasRespawned: boolean,
   setters: PlayerStatusSetters
 ): void {
-  const currentDpNum = typeof player.stats?.current_dp === 'number' ? player.stats.current_dp : 0;
+  const currentDpNum = currentDpOf(player);
   const roomId = room?.id;
-  const isInLimbo = roomId === LIMBO_ROOM_ID;
-  const skipDeadInRespawnRoom = roomId === RESPAWN_ROOM_ID && !isDead && hasRespawned;
-  const isActuallyDead = currentDpNum <= -10;
-
-  if (isActuallyDead && !skipDeadInRespawnRoom) {
-    if (!isDead) {
-      setters.setIsDead(true);
-      setters.setHasRespawned(false);
-      logger.info('GameClientV2Container', 'Player detected as dead', { currentDp: currentDpNum, roomId, isInLimbo });
-    }
+  if (currentDpNum <= -10 && !skipDeadInRespawnRoom(roomId, isDead, hasRespawned)) {
+    if (!isDead) markPlayerDead(setters, currentDpNum, roomId);
     return;
   }
-
-  if (isDead && (currentDpNum > -10 || !isInLimbo)) {
+  if (isDead && (currentDpNum > -10 || roomId !== LIMBO_ROOM_ID)) {
     setters.setIsDead(false);
     logger.info('GameClientV2Container', 'Player detected as alive', { currentDp: currentDpNum, roomId });
   }

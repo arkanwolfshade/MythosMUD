@@ -7,7 +7,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from server.game.magic.casting_state_manager import CastingStateManager
+from server.game.magic.casting_state_manager import CastingStateManager, StartCastingTarget
 
 
 def _spell(casting_time: int = 3) -> SimpleNamespace:
@@ -50,7 +50,7 @@ def test_interrupt_casting() -> None:
 def test_update_casting_progress_waits_for_initiative() -> None:
     mgr = CastingStateManager()
     player_id = uuid.uuid4()
-    mgr.start_casting(player_id, _spell(3), start_tick=0, next_initiative_tick=50)
+    mgr.start_casting(player_id, _spell(3), start_tick=0, target=StartCastingTarget(next_initiative_tick=50))
     assert mgr.update_casting_progress(player_id, current_tick=10) is False
     assert mgr.update_casting_progress(player_id, current_tick=50) is False
 

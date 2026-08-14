@@ -183,9 +183,9 @@ _COMMAND_HANDLERS: dict[str, CommandHandler] = {
     "equip": cast(CommandHandler, handle_equip_command),
     "unequip": cast(CommandHandler, handle_unequip_command),
     # Position commands
-    "sit": handle_sit_command,
-    "stand": handle_stand_command,
-    "lie": handle_lie_command,
+    "sit": cast(CommandHandler, handle_sit_command),
+    "stand": cast(CommandHandler, handle_stand_command),
+    "lie": cast(CommandHandler, handle_lie_command),
     "rest": handle_rest_command,
     # NPC Admin commands
     "npc": handle_npc_command,

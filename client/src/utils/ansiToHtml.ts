@@ -84,14 +84,34 @@ function applyStyleCode(state: AnsiState, num: number): void {
   }
 }
 
+const ANSI_FG_CODES = new Set([
+  '30',
+  '31',
+  '32',
+  '33',
+  '34',
+  '35',
+  '36',
+  '37',
+  '90',
+  '91',
+  '92',
+  '93',
+  '94',
+  '95',
+  '96',
+  '97',
+]);
+
 function applyColorCode(state: AnsiState, num: number): void {
-  if ((num >= 30 && num <= 37) || (num >= 90 && num <= 97)) {
-    state.fgColor = ANSI_COLORS[String(num)] || null;
+  const key = String(num);
+  const color = ANSI_COLORS[key];
+  if (!color) return;
+  if (ANSI_FG_CODES.has(key)) {
+    state.fgColor = color;
     return;
   }
-  if ((num >= 40 && num <= 47) || (num >= 100 && num <= 107)) {
-    state.bgColor = ANSI_COLORS[String(num)] || null;
-  }
+  state.bgColor = color;
 }
 
 function updateState(state: AnsiState, code: string): void {

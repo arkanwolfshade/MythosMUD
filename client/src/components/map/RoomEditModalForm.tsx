@@ -30,146 +30,172 @@ export interface RoomEditModalFormProps {
   onSubmit: (e: React.FormEvent) => void;
 }
 
+function fieldBorderClass(hasError: boolean): string {
+  return hasError ? 'border-mythos-terminal-error' : 'border-mythos-terminal-border';
+}
+
+function FieldError({ id, message }: { id: string; message: string }): React.ReactElement {
+  return (
+    <p id={id} className="text-xs text-mythos-terminal-error mt-1" role="alert">
+      {message}
+    </p>
+  );
+}
+
+function RoomEditNameField(props: RoomEditModalFormProps): React.ReactElement {
+  const { formData, errors, touched, baseInputClasses, onFieldChange, onFieldBlur } = props;
+  const showError = Boolean(errors.name && touched.name);
+  return (
+    <div>
+      <label htmlFor="room-name" className="block text-sm font-medium text-mythos-terminal-text mb-2">
+        Room Name <span className="text-mythos-terminal-error">*</span>
+      </label>
+      <input
+        id="room-name"
+        type="text"
+        value={formData.name}
+        onChange={e => onFieldChange('name', e.target.value)}
+        onBlur={() => onFieldBlur('name')}
+        required
+        maxLength={200}
+        className={`${baseInputClasses} ${fieldBorderClass(showError)}`}
+        aria-invalid={showError ? 'true' : 'false'}
+        aria-describedby={showError ? 'name-error' : 'name-help'}
+      />
+      {showError ? <FieldError id="name-error" message={errors.name} /> : null}
+      <p id="name-help" className="text-xs text-mythos-terminal-text/50 mt-1">
+        {formData.name.length}/200 characters
+      </p>
+    </div>
+  );
+}
+
+function RoomEditDescriptionHint({ description }: { description: string }): React.ReactElement {
+  const tooShort = description.trim().length > 0 && description.trim().length < 10;
+  return (
+    <p id="description-help" className="text-xs text-mythos-terminal-text/50 mt-1">
+      {description.length}/2000 characters
+      {tooShort ? <span className="text-mythos-terminal-warning ml-2">(minimum 10 characters recommended)</span> : null}
+    </p>
+  );
+}
+
+function RoomEditDescriptionField(props: RoomEditModalFormProps): React.ReactElement {
+  const { formData, errors, touched, baseTextAreaClasses, onFieldChange, onFieldBlur } = props;
+  const showError = Boolean(errors.description && touched.description);
+  return (
+    <div>
+      <label htmlFor="room-description" className="block text-sm font-medium text-mythos-terminal-text mb-2">
+        Description
+      </label>
+      <textarea
+        id="room-description"
+        value={formData.description}
+        onChange={e => onFieldChange('description', e.target.value)}
+        onBlur={() => onFieldBlur('description')}
+        rows={8}
+        maxLength={2000}
+        className={`${baseTextAreaClasses} ${fieldBorderClass(showError)}`}
+        aria-invalid={showError ? 'true' : 'false'}
+        aria-describedby={showError ? 'description-error' : 'description-help'}
+      />
+      {showError ? <FieldError id="description-error" message={errors.description} /> : null}
+      <RoomEditDescriptionHint description={formData.description} />
+    </div>
+  );
+}
+
 function RoomEditBasicTab(props: RoomEditModalFormProps): React.ReactElement {
-  const { formData, errors, touched, baseInputClasses, baseTextAreaClasses, onFieldChange, onFieldBlur } = props;
   return (
     <div className="space-y-6">
-      <div>
-        <label htmlFor="room-name" className="block text-sm font-medium text-mythos-terminal-text mb-2">
-          Room Name <span className="text-mythos-terminal-error">*</span>
-        </label>
-        <input
-          id="room-name"
-          type="text"
-          value={formData.name}
-          onChange={e => onFieldChange('name', e.target.value)}
-          onBlur={() => onFieldBlur('name')}
-          required
-          maxLength={200}
-          className={`${baseInputClasses} ${
-            errors.name && touched.name ? 'border-mythos-terminal-error' : 'border-mythos-terminal-border'
-          }`}
-          aria-invalid={errors.name && touched.name ? 'true' : 'false'}
-          aria-describedby={errors.name && touched.name ? 'name-error' : 'name-help'}
-        />
-        {errors.name && touched.name && (
-          <p id="name-error" className="text-xs text-mythos-terminal-error mt-1" role="alert">
-            {errors.name}
-          </p>
-        )}
-        <p id="name-help" className="text-xs text-mythos-terminal-text/50 mt-1">
-          {formData.name.length}/200 characters
-        </p>
-      </div>
+      <RoomEditNameField {...props} />
+      <RoomEditDescriptionField {...props} />
+    </div>
+  );
+}
 
-      <div>
-        <label htmlFor="room-description" className="block text-sm font-medium text-mythos-terminal-text mb-2">
-          Description
-        </label>
-        <textarea
-          id="room-description"
-          value={formData.description}
-          onChange={e => onFieldChange('description', e.target.value)}
-          onBlur={() => onFieldBlur('description')}
-          rows={8}
-          maxLength={2000}
-          className={`${baseTextAreaClasses} ${
-            errors.description && touched.description ? 'border-mythos-terminal-error' : 'border-mythos-terminal-border'
-          }`}
-          aria-invalid={errors.description && touched.description ? 'true' : 'false'}
-          aria-describedby={errors.description && touched.description ? 'description-error' : 'description-help'}
-        />
-        {errors.description && touched.description && (
-          <p id="description-error" className="text-xs text-mythos-terminal-error mt-1" role="alert">
-            {errors.description}
-          </p>
-        )}
-        <p id="description-help" className="text-xs text-mythos-terminal-text/50 mt-1">
-          {formData.description.length}/2000 characters
-          {formData.description.trim().length > 0 && formData.description.trim().length < 10 && (
-            <span className="text-mythos-terminal-warning ml-2">(minimum 10 characters recommended)</span>
-          )}
-        </p>
-      </div>
+function RoomEditPlaneField({ formData }: { formData: RoomEditFormData }): React.ReactElement {
+  return (
+    <div>
+      <label htmlFor="room-plane" className="block text-sm font-medium text-mythos-terminal-text mb-2">
+        Plane <span className="text-mythos-terminal-error">*</span>
+      </label>
+      <input
+        id="room-plane"
+        type="text"
+        value={formData.plane}
+        disabled
+        className="w-full px-3 py-2 bg-mythos-terminal-surface border border-mythos-terminal-border rounded text-mythos-terminal-text/50 font-mono text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+        aria-label="Plane identifier (read-only)"
+      />
+      <p className="text-xs text-mythos-terminal-text/50 mt-1">
+        Plane cannot be changed. Delete and recreate the room to change the plane.
+      </p>
+    </div>
+  );
+}
+
+function RoomEditZoneField(props: RoomEditModalFormProps): React.ReactElement {
+  const { formData, errors, touched, baseMonoInputClasses, onFieldChange, onFieldBlur } = props;
+  const showError = Boolean(errors.zone && touched.zone);
+  return (
+    <div>
+      <label htmlFor="room-zone" className="block text-sm font-medium text-mythos-terminal-text mb-2">
+        Zone <span className="text-mythos-terminal-error">*</span>
+      </label>
+      <input
+        id="room-zone"
+        type="text"
+        value={formData.zone}
+        onChange={e => onFieldChange('zone', e.target.value.toLowerCase())}
+        onBlur={() => onFieldBlur('zone')}
+        required
+        pattern="^[a-z0-9_]+$"
+        className={`${baseMonoInputClasses} ${fieldBorderClass(showError)}`}
+        aria-invalid={showError ? 'true' : 'false'}
+        aria-describedby={showError ? 'zone-error' : 'zone-help'}
+      />
+      {showError ? <FieldError id="zone-error" message={errors.zone} /> : null}
+      <p id="zone-help" className="text-xs text-mythos-terminal-text/50 mt-1">
+        Lowercase letters, numbers, and underscores only (e.g., arkham_square)
+      </p>
+    </div>
+  );
+}
+
+function RoomEditSubZoneField(props: RoomEditModalFormProps): React.ReactElement {
+  const { formData, errors, touched, baseMonoInputClasses, onFieldChange, onFieldBlur } = props;
+  const showError = Boolean(errors.sub_zone && touched.sub_zone);
+  return (
+    <div>
+      <label htmlFor="room-subzone" className="block text-sm font-medium text-mythos-terminal-text mb-2">
+        Sub-zone <span className="text-mythos-terminal-text/50 text-xs">(optional)</span>
+      </label>
+      <input
+        id="room-subzone"
+        type="text"
+        value={formData.sub_zone}
+        onChange={e => onFieldChange('sub_zone', e.target.value.toLowerCase())}
+        onBlur={() => onFieldBlur('sub_zone')}
+        pattern="^[a-z0-9_]*$"
+        className={`${baseMonoInputClasses} ${fieldBorderClass(showError)}`}
+        aria-invalid={showError ? 'true' : 'false'}
+        aria-describedby={showError ? 'subzone-error' : 'subzone-help'}
+      />
+      {showError ? <FieldError id="subzone-error" message={errors.sub_zone} /> : null}
+      <p id="subzone-help" className="text-xs text-mythos-terminal-text/50 mt-1">
+        Lowercase letters, numbers, and underscores only (e.g., main_street)
+      </p>
     </div>
   );
 }
 
 function RoomEditLocationTab(props: RoomEditModalFormProps): React.ReactElement {
-  const { formData, errors, touched, baseMonoInputClasses, onFieldChange, onFieldBlur } = props;
   return (
     <div className="space-y-6">
-      <div>
-        <label htmlFor="room-plane" className="block text-sm font-medium text-mythos-terminal-text mb-2">
-          Plane <span className="text-mythos-terminal-error">*</span>
-        </label>
-        <input
-          id="room-plane"
-          type="text"
-          value={formData.plane}
-          disabled
-          className="w-full px-3 py-2 bg-mythos-terminal-surface border border-mythos-terminal-border rounded text-mythos-terminal-text/50 font-mono text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-          aria-label="Plane identifier (read-only)"
-        />
-        <p className="text-xs text-mythos-terminal-text/50 mt-1">
-          Plane cannot be changed. Delete and recreate the room to change the plane.
-        </p>
-      </div>
-
-      <div>
-        <label htmlFor="room-zone" className="block text-sm font-medium text-mythos-terminal-text mb-2">
-          Zone <span className="text-mythos-terminal-error">*</span>
-        </label>
-        <input
-          id="room-zone"
-          type="text"
-          value={formData.zone}
-          onChange={e => onFieldChange('zone', e.target.value.toLowerCase())}
-          onBlur={() => onFieldBlur('zone')}
-          required
-          pattern="^[a-z0-9_]+$"
-          className={`${baseMonoInputClasses} ${
-            errors.zone && touched.zone ? 'border-mythos-terminal-error' : 'border-mythos-terminal-border'
-          }`}
-          aria-invalid={errors.zone && touched.zone ? 'true' : 'false'}
-          aria-describedby={errors.zone && touched.zone ? 'zone-error' : 'zone-help'}
-        />
-        {errors.zone && touched.zone && (
-          <p id="zone-error" className="text-xs text-mythos-terminal-error mt-1" role="alert">
-            {errors.zone}
-          </p>
-        )}
-        <p id="zone-help" className="text-xs text-mythos-terminal-text/50 mt-1">
-          Lowercase letters, numbers, and underscores only (e.g., arkham_square)
-        </p>
-      </div>
-
-      <div>
-        <label htmlFor="room-subzone" className="block text-sm font-medium text-mythos-terminal-text mb-2">
-          Sub-zone <span className="text-mythos-terminal-text/50 text-xs">(optional)</span>
-        </label>
-        <input
-          id="room-subzone"
-          type="text"
-          value={formData.sub_zone}
-          onChange={e => onFieldChange('sub_zone', e.target.value.toLowerCase())}
-          onBlur={() => onFieldBlur('sub_zone')}
-          pattern="^[a-z0-9_]*$"
-          className={`${baseMonoInputClasses} ${
-            errors.sub_zone && touched.sub_zone ? 'border-mythos-terminal-error' : 'border-mythos-terminal-border'
-          }`}
-          aria-invalid={errors.sub_zone && touched.sub_zone ? 'true' : 'false'}
-          aria-describedby={errors.sub_zone && touched.sub_zone ? 'subzone-error' : 'subzone-help'}
-        />
-        {errors.sub_zone && touched.sub_zone && (
-          <p id="subzone-error" className="text-xs text-mythos-terminal-error mt-1" role="alert">
-            {errors.sub_zone}
-          </p>
-        )}
-        <p id="subzone-help" className="text-xs text-mythos-terminal-text/50 mt-1">
-          Lowercase letters, numbers, and underscores only (e.g., main_street)
-        </p>
-      </div>
+      <RoomEditPlaneField formData={props.formData} />
+      <RoomEditZoneField {...props} />
+      <RoomEditSubZoneField {...props} />
     </div>
   );
 }

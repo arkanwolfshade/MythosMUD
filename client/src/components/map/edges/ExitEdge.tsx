@@ -23,12 +23,17 @@ const getFlagIcon = (flag: string): { icon: string; color: string; label: string
   }
 };
 
+function exitFlags(data: ExitEdgeData | undefined): string[] {
+  return data?.flags ?? [];
+}
+
 function getEdgeStrokeStyle(data: ExitEdgeData | undefined, style: React.CSSProperties): React.CSSProperties {
+  const flags = exitFlags(data);
   return {
     ...style,
-    stroke: data?.flags?.includes('hidden') ? '#6b7280' : '#10b981',
-    strokeWidth: data?.flags?.includes('locked') ? 3 : 2,
-    strokeDasharray: data?.flags?.includes('one_way') ? '5,5' : undefined,
+    stroke: flags.includes('hidden') ? '#6b7280' : '#10b981',
+    strokeWidth: flags.includes('locked') ? 3 : 2,
+    strokeDasharray: flags.includes('one_way') ? '5,5' : undefined,
   };
 }
 

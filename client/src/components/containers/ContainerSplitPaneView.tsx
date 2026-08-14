@@ -148,9 +148,53 @@ interface ContainerSplitPaneViewProps {
   hasTransfer: boolean;
 }
 
+type SplitPaneItemCtx = {
+  containerItems: InventoryStack[];
+  playerInventory: InventoryStack[];
+  hasTransfer: boolean;
+  draggedItem: InventoryStack | null;
+  handleDragStart: ContainerSplitPaneViewModel['handleDragStart'];
+  handleDragEnd: ContainerSplitPaneViewModel['handleDragEnd'];
+  handleTransferFromContainer: ContainerSplitPaneViewModel['handleTransferFromContainer'];
+  handleTransferToContainer: ContainerSplitPaneViewModel['handleTransferToContainer'];
+  firstButtonRef: React.RefObject<HTMLButtonElement | null>;
+  mutationToken: string | null;
+};
+
+function isFirstPaneItem(
+  item: InventoryStack,
+  isContainerItem: boolean,
+  containerItems: InventoryStack[],
+  playerInventory: InventoryStack[]
+): boolean {
+  if (isContainerItem) return containerItems.indexOf(item) === 0;
+  return containerItems.length === 0 && playerInventory.indexOf(item) === 0;
+}
+
+function renderSplitPaneItem(
+  item: InventoryStack,
+  isContainerItem: boolean,
+  ctx: SplitPaneItemCtx
+): React.ReactElement {
+  return (
+    <ContainerItemRow
+      key={item.item_instance_id}
+      item={item}
+      isContainerItem={isContainerItem}
+      canTransfer={ctx.hasTransfer}
+      isDragging={ctx.draggedItem?.item_instance_id === item.item_instance_id}
+      useFirstButtonRef={isFirstPaneItem(item, isContainerItem, ctx.containerItems, ctx.playerInventory)}
+      onDragStart={ctx.handleDragStart}
+      onDragEnd={ctx.handleDragEnd}
+      onTransfer={isContainerItem ? ctx.handleTransferFromContainer : ctx.handleTransferToContainer}
+      firstButtonRef={ctx.firstButtonRef}
+      mutationToken={ctx.mutationToken}
+    />
+  );
+}
+
 export function ContainerSplitPaneView(props: ContainerSplitPaneViewProps): React.ReactElement {
   const { container, modal, className, onClose, hasTransfer } = props;
-  // Destructure refs out of the vm bag so render does not touch a ref-tainted object.
   const {
     containerRef,
     firstButtonRef,
@@ -167,25 +211,20 @@ export function ContainerSplitPaneView(props: ContainerSplitPaneViewProps): Reac
     handleDragLeave,
     handleDrop,
   } = props.vm;
-  const renderItem = (item: InventoryStack, isContainerItem: boolean) => (
-    <ContainerItemRow
-      key={item.item_instance_id}
-      item={item}
-      isContainerItem={isContainerItem}
-      canTransfer={hasTransfer}
-      isDragging={draggedItem?.item_instance_id === item.item_instance_id}
-      useFirstButtonRef={
-        isContainerItem
-          ? container.items.indexOf(item) === 0
-          : container.items.length === 0 && playerInventory.indexOf(item) === 0
-      }
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-      onTransfer={isContainerItem ? handleTransferFromContainer : handleTransferToContainer}
-      firstButtonRef={firstButtonRef}
-      mutationToken={mutationToken}
-    />
-  );
+  const itemCtx = {
+    containerItems: container.items,
+    playerInventory,
+    hasTransfer,
+    draggedItem,
+    handleDragStart,
+    handleDragEnd,
+    handleTransferFromContainer,
+    handleTransferToContainer,
+    firstButtonRef,
+    mutationToken,
+  };
+  const renderItem = (item: InventoryStack, isContainerItem: boolean) =>
+    renderSplitPaneItem(item, isContainerItem, itemCtx);
 
   return (
     <MythosPanel className={`flex flex-col ${className}`}>

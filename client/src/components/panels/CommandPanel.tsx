@@ -59,26 +59,26 @@ function prependPartyPrefix(command: string): string {
   return `party ${command}`;
 }
 
+function shouldPrependChannelShortcut(command: string, effectiveChannel: string, isStandalone: boolean): boolean {
+  if (command.startsWith('/') || isStandalone) return false;
+  return effectiveChannel !== 'say' && effectiveChannel !== 'local' && effectiveChannel !== 'party';
+}
+
+function shouldPrependParty(command: string, effectiveChannel: string): boolean {
+  return !command.startsWith('/') && effectiveChannel === 'party' && Boolean(command.trim());
+}
+
 function prepareCommandForSubmit(commandInput: string, currentChannel: string): string {
   let command = commandInput.trim();
   const firstWord = command.split(/\s+/)[0].toLowerCase();
   const isStandaloneCommand = STANDALONE_COMMANDS.includes(firstWord);
   const effectiveChannel = currentChannel === ALL_MESSAGES_CHANNEL.id ? 'say' : currentChannel;
-
-  if (
-    !command.startsWith('/') &&
-    effectiveChannel !== 'say' &&
-    effectiveChannel !== 'local' &&
-    effectiveChannel !== 'party' &&
-    !isStandaloneCommand
-  ) {
+  if (shouldPrependChannelShortcut(command, effectiveChannel, isStandaloneCommand)) {
     command = prependChannelShortcut(command, effectiveChannel);
   }
-
-  if (!command.startsWith('/') && effectiveChannel === 'party' && command.trim()) {
+  if (shouldPrependParty(command, effectiveChannel)) {
     command = prependPartyPrefix(command);
   }
-
   return command;
 }
 

@@ -15,7 +15,7 @@ from ..game.player_service import PlayerService
 from ..models.user import User
 from ..schemas.players import RespawnResponse
 from ..structured_logging.enhanced_logging_config import get_logger
-from .players import player_router
+from .player_router import player_router
 
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer

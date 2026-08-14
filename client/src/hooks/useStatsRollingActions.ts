@@ -39,23 +39,20 @@ function parseRetryAfter(rawData: unknown): number {
   return retryAfter;
 }
 
+function messageFromDetail(detail: unknown): string | null {
+  if (typeof detail === 'string') return detail;
+  if (typeof detail !== 'object' || detail === null || !('message' in detail)) return null;
+  return String((detail as Record<string, unknown>).message);
+}
+
 function parseErrorMessage(rawData: unknown, defaultMessage: string): string {
-  let errorMessage = defaultMessage;
   try {
-    if (isErrorResponse(rawData)) {
-      errorMessage = getErrorMessage(rawData);
-    } else if (typeof rawData === 'object' && rawData !== null) {
-      const errorData = rawData as Record<string, unknown>;
-      if (typeof errorData.detail === 'object' && errorData.detail !== null && 'message' in errorData.detail) {
-        errorMessage = String((errorData.detail as Record<string, unknown>).message);
-      } else if (typeof errorData.detail === 'string') {
-        errorMessage = errorData.detail;
-      }
-    }
+    if (isErrorResponse(rawData)) return getErrorMessage(rawData);
+    if (typeof rawData !== 'object' || rawData === null) return defaultMessage;
+    return messageFromDetail((rawData as Record<string, unknown>).detail) ?? defaultMessage;
   } catch {
-    // use default
+    return defaultMessage;
   }
-  return errorMessage;
 }
 
 function handleNetworkError(
@@ -93,25 +90,23 @@ interface PerformStatsRollParams {
   setTimeoutMessage: (message: string) => void;
 }
 
-async function handleStatsRollResponse(response: Response, params: PerformStatsRollParams): Promise<void> {
-  const { isReroll, profession, onError, setCurrentStats, setRerollCooldown, setErrorState, setTimeoutMessage } =
-    params;
+async function applyOkStatsRoll(response: Response, params: PerformStatsRollParams): Promise<void> {
+  const { isReroll, profession, setCurrentStats, setTimeoutMessage } = params;
+  const data = assertStatsRollResponse(
+    await response.json(),
+    isReroll ? 'Invalid stats reroll response from server' : 'Invalid stats roll response from server'
+  );
+  setCurrentStats(data.stats);
+  const showTimeout = !isReroll && data.meets_requirements === false && Boolean(profession);
+  setTimeoutMessage(showTimeout ? PROFESSION_TIMEOUT_MESSAGE : '');
+  logger.info('useStatsRolling', isReroll ? 'Stats rerolled successfully' : 'Stats rolled successfully', {
+    stats: data.stats,
+    meets_requirements: data.meets_requirements,
+  });
+}
 
-  if (response.ok) {
-    const rawData: unknown = await response.json();
-    const data = assertStatsRollResponse(
-      rawData,
-      isReroll ? 'Invalid stats reroll response from server' : 'Invalid stats roll response from server'
-    );
-    setCurrentStats(data.stats);
-    setTimeoutMessage(!isReroll && data.meets_requirements === false && profession ? PROFESSION_TIMEOUT_MESSAGE : '');
-    logger.info('useStatsRolling', isReroll ? 'Stats rerolled successfully' : 'Stats rolled successfully', {
-      stats: data.stats,
-      meets_requirements: data.meets_requirements,
-    });
-    return;
-  }
-
+async function applyFailedStatsRoll(response: Response, params: PerformStatsRollParams): Promise<void> {
+  const { isReroll, onError, setRerollCooldown, setErrorState } = params;
   if (response.status >= 500 && response.status < 600) {
     const msg = 'Server is unavailable. Please try again later.';
     setErrorState(msg);
@@ -119,21 +114,26 @@ async function handleStatsRollResponse(response: Response, params: PerformStatsR
     logger.error('useStatsRolling', 'Server unavailable when rolling stats', { status: response.status });
     return;
   }
-
+  const rawData: unknown = await response.json();
   if (response.status === 429) {
-    const rawData: unknown = await response.json();
     const retryAfter = parseRetryAfter(rawData);
     setErrorState(`Rate limit exceeded. Please wait ${retryAfter} seconds before trying again.`);
     setRerollCooldown(retryAfter);
     return;
   }
-
-  const rawData: unknown = await response.json();
   const errorMessage = parseErrorMessage(rawData, isReroll ? 'Failed to reroll stats' : 'Failed to roll stats');
   setErrorState(errorMessage);
   logger.error('useStatsRolling', isReroll ? 'Failed to reroll stats' : 'Failed to roll stats', {
     error: errorMessage,
   });
+}
+
+async function handleStatsRollResponse(response: Response, params: PerformStatsRollParams): Promise<void> {
+  if (response.ok) {
+    await applyOkStatsRoll(response, params);
+    return;
+  }
+  await applyFailedStatsRoll(response, params);
 }
 
 export async function performStatsRoll(params: PerformStatsRollParams): Promise<void> {

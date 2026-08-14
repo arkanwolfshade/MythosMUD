@@ -649,32 +649,15 @@
         "summary": "Roll Character Stats",
         "description": "Roll random stats for character creation.\n\nThis endpoint generates random character statistics using the specified method\nand validates them against class prerequisites if a required class is specified.\n\nRate limited to 10 requests per minute per user.",
         "operationId": "roll_character_stats_v1_api_players_roll_stats_post",
-        "security": [
-          {
-            "OAuth2PasswordBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "max_attempts",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "default": 50,
-              "title": "Max Attempts"
-            }
-          }
-        ],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/RollStatsRequest"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -697,7 +680,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
       }
     },
     "/v1/api/players/create-character": {

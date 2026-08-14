@@ -29,6 +29,33 @@ export interface PanelRndViewProps {
   onClose?: () => void;
 }
 
+function MinimizedPanelHeader(props: PanelRndViewProps): React.ReactElement {
+  return (
+    <div
+      className="panel-drag-handle flex items-center justify-between h-full px-3 bg-mythos-terminal-background cursor-move"
+      style={{ position: 'relative', zIndex: 1 }}
+    >
+      <span className="text-sm font-bold text-mythos-terminal-primary">{props.title}</span>
+      <div className="flex items-center gap-2">
+        <TerminalButton
+          variant="secondary"
+          size="sm"
+          onClick={props.onMinimize}
+          className="p-1 h-9 w-9"
+          data-testid={`game-panel-${props.id}-restore`}
+        >
+          <EldritchIcon name={MythosIcons.restore} size={12} variant="primary" />
+        </TerminalButton>
+        {props.onClose ? (
+          <TerminalButton variant="secondary" size="sm" onClick={props.onClose} className="p-1 h-9 w-9">
+            <EldritchIcon name={MythosIcons.close} size={12} variant="error" />
+          </TerminalButton>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 export function MinimizedPanelRnd(props: PanelRndViewProps): React.ReactElement {
   return (
     <Rnd
@@ -53,29 +80,43 @@ export function MinimizedPanelRnd(props: PanelRndViewProps): React.ReactElement 
       {...(props.opaque ? { 'data-panel-opaque': 'true' } : {})}
     >
       <PanelSolidUnderlay />
-      <div
-        className="panel-drag-handle flex items-center justify-between h-full px-3 bg-mythos-terminal-background cursor-move"
-        style={{ position: 'relative', zIndex: 1 }}
-      >
-        <span className="text-sm font-bold text-mythos-terminal-primary">{props.title}</span>
-        <div className="flex items-center gap-2">
-          <TerminalButton
-            variant="secondary"
-            size="sm"
-            onClick={props.onMinimize}
-            className="p-1 h-9 w-9"
-            data-testid={`game-panel-${props.id}-restore`}
-          >
-            <EldritchIcon name={MythosIcons.restore} size={12} variant="primary" />
-          </TerminalButton>
-          {props.onClose && (
-            <TerminalButton variant="secondary" size="sm" onClick={props.onClose} className="p-1 h-9 w-9">
-              <EldritchIcon name={MythosIcons.close} size={12} variant="error" />
-            </TerminalButton>
-          )}
-        </div>
-      </div>
+      <MinimizedPanelHeader {...props} />
     </Rnd>
+  );
+}
+
+function ExpandedPanelHeader(props: PanelRndViewProps): React.ReactElement {
+  return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions -- drag handle uses mousedown; panel controls are separate buttons
+    <div
+      className="panel-drag-handle flex items-center justify-between p-2 border-b border-gray-700 bg-mythos-terminal-surface cursor-move"
+      onMouseDown={() => props.onFocus(props.id)}
+    >
+      <span className="text-sm font-bold text-mythos-terminal-primary">{props.title}</span>
+      <div className="flex items-center gap-2">
+        <TerminalButton
+          variant="secondary"
+          size="sm"
+          onClick={props.onMinimize}
+          className="p-1 h-9 w-9"
+          data-testid={`game-panel-${props.id}-minimize`}
+        >
+          <EldritchIcon name={MythosIcons.minimize} size={12} variant="primary" />
+        </TerminalButton>
+        <TerminalButton variant="secondary" size="sm" onClick={props.onMaximize} className="p-1 h-9 w-9">
+          <EldritchIcon
+            name={props.isMaximized ? MythosIcons.restore : MythosIcons.maximize}
+            size={12}
+            variant="primary"
+          />
+        </TerminalButton>
+        {props.onClose ? (
+          <TerminalButton variant="secondary" size="sm" onClick={props.onClose} className="p-1 h-9 w-9">
+            <EldritchIcon name={MythosIcons.close} size={12} variant="error" />
+          </TerminalButton>
+        ) : null}
+      </div>
+    </div>
   );
 }
 
@@ -123,36 +164,7 @@ export function ExpandedPanelRnd(props: PanelRndViewProps): React.ReactElement {
           opacity: 1,
         }}
       >
-        {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions -- drag handle uses mousedown; panel controls are separate buttons */}
-        <div
-          className="panel-drag-handle flex items-center justify-between p-2 border-b border-gray-700 bg-mythos-terminal-surface cursor-move"
-          onMouseDown={() => props.onFocus(props.id)}
-        >
-          <span className="text-sm font-bold text-mythos-terminal-primary">{props.title}</span>
-          <div className="flex items-center gap-2">
-            <TerminalButton
-              variant="secondary"
-              size="sm"
-              onClick={props.onMinimize}
-              className="p-1 h-9 w-9"
-              data-testid={`game-panel-${props.id}-minimize`}
-            >
-              <EldritchIcon name={MythosIcons.minimize} size={12} variant="primary" />
-            </TerminalButton>
-            <TerminalButton variant="secondary" size="sm" onClick={props.onMaximize} className="p-1 h-9 w-9">
-              <EldritchIcon
-                name={props.isMaximized ? MythosIcons.restore : MythosIcons.maximize}
-                size={12}
-                variant="primary"
-              />
-            </TerminalButton>
-            {props.onClose && (
-              <TerminalButton variant="secondary" size="sm" onClick={props.onClose} className="p-1 h-9 w-9">
-                <EldritchIcon name={MythosIcons.close} size={12} variant="error" />
-              </TerminalButton>
-            )}
-          </div>
-        </div>
+        <ExpandedPanelHeader {...props} />
         <div
           className="flex-1 min-h-0 overflow-auto bg-mythos-terminal-background"
           style={props.minHeight != null ? { minHeight: `${props.minHeight}px` } : undefined}

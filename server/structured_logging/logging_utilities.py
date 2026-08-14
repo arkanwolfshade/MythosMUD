@@ -147,6 +147,19 @@ def _collect_rotatable_logs(env_log_dir: Path, timestamp: str) -> list[Path]:
     return [path for path in unique_files if not path.name.endswith(f".{timestamp}")]
 
 
+def _rename_or_copy_log_file(log_file: Path, rotated_path: Path) -> None:
+    """Rename a log file, using copy-then-truncate on Windows when needed."""
+    if sys.platform != "win32":
+        _ = log_file.rename(rotated_path)
+        return
+    try:
+        from server.structured_logging.windows_safe_rotation import copy_then_truncate
+
+        copy_then_truncate(str(log_file), str(rotated_path))
+    except OSError:
+        _ = log_file.rename(rotated_path)
+
+
 def _rotate_single_log_file(log_file: Path, timestamp: str) -> None:
     """Rotate one log file, with Windows retry handling."""
     try:
@@ -165,16 +178,7 @@ def _rotate_single_log_file(log_file: Path, timestamp: str) -> None:
 
     for attempt in range(max_retries):
         try:
-            if sys.platform == "win32":
-                try:
-                    from server.structured_logging.windows_safe_rotation import copy_then_truncate
-
-                    copy_then_truncate(str(log_file), str(rotated_path))
-                except OSError:
-                    _ = log_file.rename(rotated_path)
-            else:
-                _ = log_file.rename(rotated_path)
-
+            _rename_or_copy_log_file(log_file, rotated_path)
             rotation_logger = _rotation_bound_logger()
             rotation_logger.info(
                 "Rotated log file",

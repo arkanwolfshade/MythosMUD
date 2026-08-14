@@ -9,7 +9,7 @@ This module handles basic player CRUD operations and multi-character management.
 import uuid
 from typing import Any, cast
 
-from fastapi import APIRouter, Depends
+from fastapi import Depends
 from fastapi import Request as FastAPIRequest
 
 from ..app.game_tick_processing import get_current_tick, get_tick_interval
@@ -38,24 +38,13 @@ from ..schemas.players import (
 from ..schemas.players.skill import PlayerSkillEntry, PlayerSkillsResponse
 from ..schemas.quest import QuestLogEntryResponse, QuestLogResponse
 from ..structured_logging.enhanced_logging_config import get_logger
+from . import character_creation, player_effects, player_respawn
+from .player_router import player_router
 
 logger = get_logger(__name__)
 
-# Create player router
-player_router = APIRouter(prefix="/api/players", tags=["players"])
-
-# Import sub-modules to register their routes with player_router
-# This must happen after player_router is created but before it's exported
-# The imports trigger the decorators which register routes
-# pylint: disable=wrong-import-position  # noqa: E402  # Reason: Imports must occur after router creation to trigger route registration decorators
-from . import (  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Imports must occur after router creation to trigger route registration decorators
-    character_creation,
-    player_effects,
-    player_respawn,
-)
-
-# Explicitly reference the imports to indicate they're used for side effects
-_ = (character_creation, player_effects, player_respawn)  # noqa: F401  # pylint: disable=unused-import  # Reason: Imports are used for side effects (route registration), not direct usage, assignment prevents unused import warning
+# Route submodules register on player_router at import time.
+_ = (character_creation, player_effects, player_respawn)
 
 
 @player_router.post("/", response_model=PlayerRead)

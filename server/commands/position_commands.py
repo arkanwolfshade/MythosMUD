@@ -9,17 +9,35 @@ keeping persistence and live state aligned.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Protocol, cast
 
+from fastapi import Request
 from sqlalchemy.exc import SQLAlchemyError
 
 from ..alias_storage import AliasStorage
 from ..realtime.envelope import build_event
-from ..services.player_position_service import PlayerPositionService
+from ..services.player_position_service import (
+    PlayerPositionService,
+    SupportsConnectionManager,
+    SupportsPlayerPersistence,
+)
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 
 logger = get_logger(__name__)
+
+
+class _EventSequence(Protocol):
+    """Sequence counter surface used by build_event."""
+
+    sequence_counter: int
+
+
+class _RoomBroadcaster(Protocol):
+    """Connection manager surface used to fan out posture events."""
+
+    async def broadcast_to_room(self, room_id: str, event: object, exclude_player: object = None) -> None:
+        """Send event to occupants of room_id."""
 
 
 def _format_room_posture_message(player_name: str, previous_position: str | None, new_position: str) -> str:
@@ -40,43 +58,84 @@ def _format_room_posture_message(player_name: str, previous_position: str | None
     return f"{player_name} shifts their posture uneasily."
 
 
-def _get_position_command_services(request: Any) -> tuple[Any | None, Any | None]:
-    app = getattr(request, "app", None) if request else None
-    if app and hasattr(app.state, "container") and app.state.container:
-        return app.state.container.async_persistence, app.state.container.connection_manager
-    if app:
-        return getattr(app.state, "persistence", None), getattr(app.state, "connection_manager", None)
-    return None, None
+def _get_position_command_services(
+    request: Request | None,
+) -> tuple[SupportsPlayerPersistence | None, SupportsConnectionManager | None]:
+    if request is None:
+        return None, None
+    # Cast: Starlette types app as Any; we only read known state attributes via getattr.
+    app = cast(object, request.app)
+    state = cast(object | None, getattr(app, "state", None))
+    if state is None:
+        return None, None
+    container = cast(object | None, getattr(state, "container", None))
+    if container is not None:
+        persistence = getattr(container, "async_persistence", None)
+        connection_manager = getattr(container, "connection_manager", None)
+        # Cast: container fields are untyped app.state attributes; runtime objects match the Protocols.
+        return (
+            cast(SupportsPlayerPersistence | None, persistence),
+            cast(SupportsConnectionManager | None, connection_manager),
+        )
+    persistence = getattr(state, "persistence", None)
+    connection_manager = getattr(state, "connection_manager", None)
+    return (
+        cast(SupportsPlayerPersistence | None, persistence),
+        cast(SupportsConnectionManager | None, connection_manager),
+    )
+
+
+def _build_posture_change_event(
+    connection_manager: SupportsConnectionManager | None,
+    player_id: object,
+    room_id: object,
+    player_display_name: str,
+    previous_position: str | None,
+    new_position: str,
+    room_message: str,
+) -> dict[str, object]:
+    return build_event(
+        "player_posture_change",
+        {
+            "player_id": str(player_id) if player_id else None,
+            "player_name": player_display_name,
+            "previous_position": previous_position,
+            "position": new_position,
+            "message": room_message,
+        },
+        room_id=str(room_id) if room_id else None,
+        player_id=str(player_id) if player_id else None,
+        connection_manager=(
+            cast(_EventSequence, cast(object, connection_manager)) if connection_manager is not None else None
+        ),
+    )
 
 
 async def _broadcast_posture_change(
-    connection_manager: Any,
-    player_id: Any,
-    room_id: Any,
+    connection_manager: SupportsConnectionManager | None,
+    player_id: object,
+    room_id: object,
     player_display_name: str,
     previous_position: str | None,
     new_position: str,
     room_message: str,
 ) -> None:
-    if not connection_manager or not hasattr(connection_manager, "broadcast_to_room"):
+    if connection_manager is None or not hasattr(connection_manager, "broadcast_to_room"):
         return
     if not room_id or not player_id:
         return
     try:
-        event = build_event(
-            "player_posture_change",
-            {
-                "player_id": str(player_id) if player_id else None,
-                "player_name": player_display_name,
-                "previous_position": previous_position,
-                "position": new_position,
-                "message": room_message,
-            },
-            room_id=str(room_id) if room_id else None,
-            player_id=player_id,
-            connection_manager=connection_manager,
+        event = _build_posture_change_event(
+            connection_manager,
+            player_id,
+            room_id,
+            player_display_name,
+            previous_position,
+            new_position,
+            room_message,
         )
-        await connection_manager.broadcast_to_room(str(room_id) if room_id else "", event, exclude_player=player_id)
+        broadcaster = cast(_RoomBroadcaster, cast(object, connection_manager))
+        await broadcaster.broadcast_to_room(str(room_id) if room_id else "", event, exclude_player=player_id)
         logger.info(
             "Broadcasted posture change",
             player_name=player_display_name,
@@ -95,13 +154,13 @@ async def _broadcast_posture_change(
 
 
 async def _handle_position_change(
-    current_user: dict[str, Any],
-    request: Any,
+    current_user: dict[str, object],
+    request: Request | None,
     alias_storage: AliasStorage | None,
     player_name: str,
     desired_position: str,
     command_name: str,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """Shared entry point for posture-changing commands."""
     persistence, connection_manager = _get_position_command_services(request)
     target_player_name = player_name or get_username_from_user(current_user)
@@ -151,12 +210,12 @@ async def _handle_position_change(
 
 
 async def handle_sit_command(
-    _command_data: dict[str, Any],
-    current_user: dict[str, Any],
-    request: Any,
+    _command_data: dict[str, object],
+    current_user: dict[str, object],
+    request: Request | None,
     alias_storage: AliasStorage | None,
     player_name: str,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """Handle /sit command."""
     return await _handle_position_change(
         current_user,
@@ -169,12 +228,12 @@ async def handle_sit_command(
 
 
 async def handle_stand_command(
-    _command_data: dict[str, Any],
-    current_user: dict[str, Any],
-    request: Any,
+    _command_data: dict[str, object],
+    current_user: dict[str, object],
+    request: Request | None,
     alias_storage: AliasStorage | None,
     player_name: str,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """Handle /stand command."""
     return await _handle_position_change(
         current_user,
@@ -187,12 +246,12 @@ async def handle_stand_command(
 
 
 async def handle_lie_command(
-    _command_data: dict[str, Any],
-    current_user: dict[str, Any],
-    request: Any,
+    _command_data: dict[str, object],
+    current_user: dict[str, object],
+    request: Request | None,
     alias_storage: AliasStorage | None,
     player_name: str,
-) -> dict[str, Any]:
+) -> dict[str, object]:
     """Handle /lie command (accepts optional 'down')."""
     return await _handle_position_change(
         current_user,

@@ -170,18 +170,19 @@ export const handlePlayerDeliriumRespawned: EventHandler = (event, context) => {
   return updates;
 };
 
+function pickStatNumber(incoming: number | undefined, existing: number | undefined, fallback: number): number {
+  return incoming ?? existing ?? fallback;
+}
+
 function mergePlayerStats(
   existingStats: Player['stats'] | undefined,
-  // Partial patch from WS events; required fields filled from existing/defaults below
   incoming: Partial<NonNullable<Player['stats']>> & Record<string, unknown>
 ): Player['stats'] {
-  const currentDp = incoming.current_dp ?? existingStats?.current_dp ?? 0;
-  const lucidity = incoming.lucidity ?? existingStats?.lucidity ?? 0;
   return {
     ...(existingStats || {}),
     ...incoming,
-    current_dp: currentDp,
-    lucidity: lucidity,
+    current_dp: pickStatNumber(incoming.current_dp, existingStats?.current_dp, 0),
+    lucidity: pickStatNumber(incoming.lucidity, existingStats?.lucidity, 0),
   } as Player['stats'];
 }
 

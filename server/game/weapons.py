@@ -8,8 +8,9 @@ future combat command flows.
 from __future__ import annotations
 
 import random
-from typing import Any, NamedTuple
+from typing import NamedTuple
 
+from server.game.items.models import ItemPrototypeModel
 from server.game.items.prototype_registry import PrototypeRegistry, PrototypeRegistryError
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -27,20 +28,20 @@ class WeaponAttackInfo(NamedTuple):
     damage_type: str
 
 
-def _weapon_damage_bounds(weapon: dict[str, Any]) -> tuple[int, int] | None:
+def _weapon_damage_bounds(weapon: dict[str, object]) -> tuple[int, int] | None:
     min_damage = weapon.get("min_damage")
     max_damage = weapon.get("max_damage")
     if min_damage is None or max_damage is None:
         return None
-    try:
+    if isinstance(min_damage, int | float) and isinstance(max_damage, int | float):
         return int(min_damage), int(max_damage)
-    except (TypeError, ValueError):
-        return None
+    return None
 
 
-def _roll_weapon_attack(weapon: dict[str, Any], min_d: int, max_d: int) -> WeaponAttackInfo:
+def _roll_weapon_attack(weapon: dict[str, object], min_d: int, max_d: int) -> WeaponAttackInfo:
+    mod_raw = weapon.get("modifier", 0)
     try:
-        mod = int(weapon.get("modifier", 0))
+        mod = int(mod_raw) if isinstance(mod_raw, int | float | str) else 0
     except (TypeError, ValueError):
         mod = 0
     base_damage = random.randint(min_d, max_d) + mod  # nosec B311  # game damage roll, not crypto
@@ -52,25 +53,36 @@ def _roll_weapon_attack(weapon: dict[str, Any], min_d: int, max_d: int) -> Weapo
     return WeaponAttackInfo(base_damage=base_damage, damage_type=damage_type)
 
 
+def _prototype_from_equipped_stack(
+    main_hand_stack: dict[str, object],
+    registry: PrototypeRegistry,
+) -> ItemPrototypeModel | None:
+    prototype_id_raw = main_hand_stack.get("prototype_id") or main_hand_stack.get("item_id")
+    if not isinstance(prototype_id_raw, str) or not prototype_id_raw:
+        return None
+    try:
+        prototype = registry.get(prototype_id_raw)
+    except PrototypeRegistryError:
+        return None
+    if not prototype or not prototype.metadata:
+        return None
+    return prototype
+
+
 def resolve_weapon_attack_from_equipped(
-    main_hand_stack: dict[str, Any] | None,
+    main_hand_stack: dict[str, object] | None,
     registry: PrototypeRegistry | None,
 ) -> WeaponAttackInfo | None:
     """Resolve equipped main-hand stack to weapon attack info, or None if unarmed."""
     if not main_hand_stack or not registry or not isinstance(main_hand_stack, dict):
         return None
-    prototype_id = main_hand_stack.get("prototype_id") or main_hand_stack.get("item_id")
-    if not prototype_id:
+    prototype = _prototype_from_equipped_stack(main_hand_stack, registry)
+    if prototype is None:
         return None
-    try:
-        prototype = registry.get(prototype_id)
-    except PrototypeRegistryError:
+    weapon_raw: object = prototype.metadata.get("weapon")
+    if not isinstance(weapon_raw, dict):
         return None
-    if not prototype or not prototype.metadata:
-        return None
-    weapon = prototype.metadata.get("weapon")
-    if not isinstance(weapon, dict):
-        return None
+    weapon: dict[str, object] = dict(weapon_raw)
     bounds = _weapon_damage_bounds(weapon)
     if bounds is None:
         return None

@@ -427,14 +427,15 @@ async def test_process_dead_players_moves_to_limbo() -> None:
     container.player_death_service = MagicMock()
     container.player_respawn_service = MagicMock()
     player = MagicMock()
-    player.player_id = "p1"
+    player_id = uuid.uuid4()
+    player.player_id = player_id
     player.name = "Dead"
     player.current_room_id = "room-1"
     container.player_death_service.get_dead_players = AsyncMock(return_value=[player])
     container.player_respawn_service.move_player_to_limbo = AsyncMock()
     session = AsyncMock()
     await _process_dead_players(container, session)
-    container.player_respawn_service.move_player_to_limbo.assert_awaited_once()
+    container.player_respawn_service.move_player_to_limbo.assert_awaited_once_with(player_id, "room-1", session)
 
 
 @pytest.mark.asyncio

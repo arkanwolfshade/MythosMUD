@@ -16,6 +16,7 @@ from starlette.datastructures import QueryParams
 from server.api.map_helpers import MapZoneContext
 from server.api.maps import (
     _apply_exploration_filter_if_needed,
+    _CoordGenCtx,
     _ensure_coordinates_generated,
     _filter_explored_rooms,
     _get_current_room_id,
@@ -276,15 +277,20 @@ async def test_ensure_coordinates_generated_when_missing(
         patch("server.api.maps.load_rooms_with_coordinates", new_callable=AsyncMock, return_value=reloaded),
         patch("server.api.maps._apply_exploration_filter_if_needed", new_callable=AsyncMock, return_value=reloaded),
     ):
+        session = AsyncMock(spec=AsyncSession)
+        exploration = MagicMock(spec=ExplorationService)
+        room_service = MagicMock(spec=RoomService)
         out = await _ensure_coordinates_generated(
-            AsyncMock(spec=AsyncSession),
-            zone_ctx,
-            rooms,
-            player,
-            player_id,
-            MagicMock(spec=ExplorationService),
-            user,
-            MagicMock(spec=RoomService),
+            _CoordGenCtx(
+                session=session,
+                zone_ctx=zone_ctx,
+                rooms=rooms,
+                player=player,
+                player_id=player_id,
+                exploration_service=exploration,
+                current_user=user,
+                room_service=room_service,
+            )
         )
     assert out == reloaded
     generator.generate_coordinates_for_zone.assert_awaited_once()
