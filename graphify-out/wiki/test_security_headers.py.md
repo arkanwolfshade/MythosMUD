@@ -1,22 +1,16 @@
 # test_security_headers.py
 
-> 57 nodes
+> 35 nodes
 
 ## Key Concepts
 
 - **test_security_headers.py** (20 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **SecurityHeadersMiddleware** (12 connections) — `server/middleware/security_headers.py`
-- **middleware()** (9 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **MutableHeaders** (6 connections)
-- **.__call__()** (5 connections) — `server/middleware/security_headers.py`
-- **.dispatch()** (5 connections) — `server/middleware/security_headers.py`
 - **asyncio** (5 connections)
-- **._add_security_headers_to_response()** (4 connections) — `server/middleware/security_headers.py`
 - **test_security_headers_middleware_adds_headers()** (4 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_security_headers_middleware_error_handling()** (4 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_security_headers_middleware_non_http_scope()** (4 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **._add_security_headers()** (3 connections) — `server/middleware/security_headers.py`
-- **.__init__()** (3 connections) — `server/middleware/security_headers.py`
 - **mock_app()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_add_security_headers()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_add_security_headers_csp_policy()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
@@ -25,17 +19,23 @@
 - **test_add_security_headers_referrer_policy()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_dispatch_method()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_dispatch_method_error_handling()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_security_headers_middleware_init()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_security_headers_middleware_init_with_env_vars()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_add_security_headers_to_response()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_add_security_headers_to_response_hsts_with_subdomains()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- *... and 32 more nodes in this community*
+- **test_add_security_headers_to_response_hsts_without_subdomains()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **fixture** (2 connections)
+- **Add all security headers to the response.** (1 connections) — `server/middleware/security_headers.py`
+- **Unit tests for security headers middleware. Tests the SecurityHeadersMiddleware…** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test middleware error handling.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test _add_security_headers_to_response adds headers to Response.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test _add_security_headers_to_response includes subdomains in HSTS.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test _add_security_headers_to_response without subdomains in HSTS.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
-- [fastapi_integration.py](fastapi_integration.py.md) (2 shared connections)
-- [factory.py](factory.py.md) (1 shared connections)
+- [middleware](middleware.md) (5 shared connections)
+- [SecurityHeadersMiddleware](SecurityHeadersMiddleware.md) (4 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 74 (94%)
-- INFERRED: 5 (6%)
+- EXTRACTED: 47 (90%)
+- INFERRED: 5 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # performance.test.tsx
 
-> 50 nodes
+> 47 nodes
 
 ## Key Concepts
 
@@ -14,7 +14,6 @@
 - **usePerformanceTester()** (7 connections) — `client/src/utils/performanceTester.ts`
 - **chat-panel.test.tsx** (7 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
 - **ChatPanel.test.tsx** (7 connections) — `client/src/components/__tests__/ChatPanel.test.tsx`
-- **ChatPanelRuntimeView.tsx** (6 connections) — `client/src/components/panels/ChatPanelRuntimeView.tsx`
 - **ChatPanel.edgeCases.test.tsx** (6 connections) — `client/src/components/__tests__/ChatPanel.edgeCases.test.tsx`
 - **ChatPanelProps** (5 connections) — `client/src/components/panels/useChatPanelRuntime.ts`
 - **chatPanelTestHelpers.ts** (5 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
@@ -29,18 +28,18 @@
 - **chatPanelTestSetup.tsx** (3 connections) — `client/src/components/__tests__/chatPanelTestSetup.tsx`
 - **mockConsoleLog** (3 connections) — `client/src/components/__tests__/chatPanelTestSetup.tsx`
 - **PerformanceTestResult** (2 connections) — `client/src/utils/performanceTester.ts`
-- *... and 25 more nodes in this community*
+- **.getAverageResults()** (2 connections) — `client/src/utils/performanceTester.ts`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (9 shared connections)
+- [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (7 shared connections)
 - [GameLogPanel.tsx](GameLogPanel.tsx.md) (6 shared connections)
-- [ChatPanelRuntimeViewParts.tsx](ChatPanelRuntimeViewParts.tsx.md) (3 shared connections)
+- [ChatPanelRuntimeViewParts.tsx](ChatPanelRuntimeViewParts.tsx.md) (4 shared connections)
 - [EldritchIcon.tsx](EldritchIcon.tsx.md) (2 shared connections)
 - [GameTerminal.tsx](GameTerminal.tsx.md) (2 shared connections)
 - [gameStore.ts](gameStore.ts.md) (2 shared connections)
 - [CommandPanel.tsx](CommandPanel.tsx.md) (2 shared connections)
-- [ChatPanelRefactoredView.tsx](ChatPanelRefactoredView.tsx.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,8 +51,6 @@
 - `client/src/components/panels/ChatPanel.tsx`
 - `client/src/components/panels/ChatPanelCore.tsx`
 - `client/src/components/panels/ChatPanelRuntime.tsx`
-- `client/src/components/panels/ChatPanelRuntimeView.tsx`
-- `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
 - `client/src/components/panels/__tests__/chat-panel.spec.tsx`
 - `client/src/components/panels/__tests__/chat-panel.test.tsx`
 - `client/src/components/panels/useChatPanelRuntime.ts`
@@ -62,7 +59,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 106 (100%)
+- EXTRACTED: 100 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

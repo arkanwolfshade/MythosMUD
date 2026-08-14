@@ -1,59 +1,64 @@
 # log_with_context
 
-> 33 nodes
+> 39 nodes
 
 ## Key Concepts
 
-- **log_with_context()** (18 connections) — `server/structured_logging/logging_context.py`
-- **wrap_third_party_exception_enhanced()** (10 connections) — `server/utils/enhanced_error_logging.py`
-- **log_structured_error()** (9 connections) — `server/utils/enhanced_error_logging.py`
-- **Any** (9 connections)
-- **_log_http_error()** (8 connections) — `server/utils/enhanced_error_logging.py`
-- **create_logged_http_exception_enhanced()** (7 connections) — `server/utils/enhanced_error_logging.py`
-- **log_and_raise_http_enhanced()** (6 connections) — `server/utils/enhanced_error_logging.py`
-- **wrap_third_party_exception()** (6 connections) — `server/utils/error_logging.py`
-- **log_performance_metric()** (5 connections) — `server/utils/enhanced_error_logging.py`
-- **log_security_event_enhanced()** (5 connections) — `server/utils/enhanced_error_logging.py`
-- **create_logged_http_exception()** (5 connections) — `server/utils/error_logging.py`
-- **log_error_with_context()** (5 connections) — `server/utils/error_logging.py`
-- **Any** (5 connections)
-- **log_and_raise_http()** (4 connections) — `server/utils/error_logging.py`
+- **log_with_context()** (20 connections) — `server/structured_logging/logging_context.py`
+- **bind_request_context()** (18 connections) — `server/structured_logging/logging_context.py`
+- **clear_request_context()** (13 connections) — `server/structured_logging/logging_context.py`
+- **test_logging_context.py** (12 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
+- **get_current_context()** (8 connections) — `server/structured_logging/logging_context.py`
+- **WebSocketManager** (7 connections) — `docs/examples/logging/websocket_integration.py`
+- **update_player_background_task()** (7 connections) — `docs/examples/logging/fastapi_integration.py`
+- **logging_context.py** (7 connections) — `server/structured_logging/logging_context.py`
+- **add_request_context()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.disconnect()** (5 connections) — `docs/examples/logging/websocket_integration.py`
+- **correct_request_context()** (4 connections) — `docs/examples/logging/correct_patterns.py`
+- **.broadcast_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
+- **.connect()** (3 connections) — `docs/examples/logging/websocket_integration.py`
+- **.send_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
 - **.resolve_alert()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
-- **Exception** (2 connections)
-- **HTTPException** (2 connections)
-- **Exception** (2 connections)
+- **test_get_current_context_returns_empty_on_error()** (3 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
+- **Any** (3 connections)
+- **test_bind_request_context_generates_correlation_id()** (2 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
+- **test_bind_request_context_omits_none_values()** (2 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
+- **test_clear_request_context()** (2 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
+- **test_get_current_context_returns_contextvars()** (2 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
+- **test_log_with_context_merges_context()** (2 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
+- **.__init__()** (1 connections) — `docs/examples/logging/websocket_integration.py`
 - **BoundLogger** (1 connections)
-- **HTTPException** (1 connections)
-- **Resolve an alert. Args: alert_id: ID of the alert to resolve Returns: True if…** (1 connections) — `server/monitoring/monitoring_dashboard.py`
-- **Log a message with the current context automatically included. Args:…** (1 connections) — `server/structured_logging/logging_context.py`
-- **Log HTTP error and optionally raise or return HTTPException. Shared by raise vs…** (1 connections) — `server/utils/enhanced_error_logging.py`
-- **Enhanced HTTP error logging with structured logging. This function provides a…** (1 connections) — `server/utils/enhanced_error_logging.py`
-- **Create an HTTPException with proper logging and return it (caller raises when…** (1 connections) — `server/utils/enhanced_error_logging.py`
-- *... and 8 more nodes in this community*
+- **Demonstrate correct request context binding.** (1 connections) — `docs/examples/logging/correct_patterns.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [server/exceptions.py](server-exceptions.py.md) (11 shared connections)
-- [DatabaseError](DatabaseError.md) (8 shared connections)
+- [fastapi_integration.py](fastapi_integration.py.md) (6 shared connections)
 - [get_logger](get_logger.md) (6 shared connections)
+- [create_error_context](create_error_context.md) (5 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (3 shared connections)
+- [correct_patterns.py](correct_patterns.py.md) (3 shared connections)
+- [middleware](middleware.md) (3 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (3 shared connections)
 - [MonitoringDashboard](MonitoringDashboard.md) (3 shared connections)
-- [bind_request_context](bind_request_context.md) (3 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (2 shared connections)
-- [lifespan.py](lifespan.py.md) (2 shared connections)
-- [MythosMUDError](MythosMUDError.md) (2 shared connections)
-- [log_and_raise](log_and_raise.md) (1 shared connections)
+- [testing_examples.py](testing_examples.py.md) (2 shared connections)
+- [.__call__](__call__.md) (2 shared connections)
+- [migration_examples.py](migration_examples.py.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
 
+- `docs/examples/logging/correct_patterns.py`
+- `docs/examples/logging/fastapi_integration.py`
+- `docs/examples/logging/websocket_integration.py`
 - `server/monitoring/monitoring_dashboard.py`
 - `server/structured_logging/logging_context.py`
-- `server/utils/enhanced_error_logging.py`
-- `server/utils/error_logging.py`
+- `server/tests/unit/structured_logging/test_logging_context.py`
 
 ## Audit Trail
 
-- EXTRACTED: 70 (85%)
-- INFERRED: 12 (15%)
+- EXTRACTED: 62 (65%)
+- INFERRED: 33 (35%)
 - AMBIGUOUS: 0 (0%)
 
 ---

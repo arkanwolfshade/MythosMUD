@@ -1,38 +1,47 @@
 # properties
 
-> 13 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **properties** (10 connections) — `schemas/calendar/schedule.schema.json`
-- **end_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **category** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **name** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **notes** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **properties** (16 connections) — `schemas/items/item_prototype.schema.json`
+- **name** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **base_value** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **durability** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **stacking_rules** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **usage_restrictions** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **integer** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **null** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- [days](days.md) (2 shared connections)
-- [required](required.md) (1 shared connections)
-- [id](id.md) (1 shared connections)
-- [start_hour](start_hour.md) (1 shared connections)
-- [applies_to](applies_to.md) (1 shared connections)
+- [type](type.md) (4 shared connections)
+- [item_prototype.schema.json](item_prototype.schema.json.md) (1 shared connections)
+- [metadata](metadata.md) (1 shared connections)
+- [prototype_id](prototype_id.md) (1 shared connections)
+- [short_description](short_description.md) (1 shared connections)
+- [long_description](long_description.md) (1 shared connections)
+- [enum](enum_2.md) (1 shared connections)
+- [weight](weight.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

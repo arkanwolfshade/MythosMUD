@@ -1,11 +1,11 @@
 # test_player_respawn_service.py
 
-> 73 nodes
+> 85 nodes
 
 ## Key Concepts
 
-- **test_player_respawn_service.py** (48 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **asyncio** (23 connections)
+- **test_player_respawn_service.py** (54 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **asyncio** (27 connections)
 - **_utc_now()** (7 connections) — `server/services/player_respawn_service.py`
 - **fixture** (7 connections)
 - **respawn_service()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
@@ -24,20 +24,22 @@
 - **test_get_respawn_room_custom()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
 - **test_get_respawn_room_default()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
 - **test_get_respawn_room_player_not_found()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_move_player_to_limbo_catatonia_failover()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
 - **test_move_player_to_limbo_player_not_found()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
 - **test_move_player_to_limbo_refused_when_not_dead()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
 - **test_move_player_to_limbo_sqlalchemy_error()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
 - **test_move_player_to_limbo_success()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_respawn_player_clears_combat_state()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- *... and 48 more nodes in this community*
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
-- [Player](Player.md) (9 shared connections)
-- [DatabaseError](DatabaseError.md) (7 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
 - [PlayerRespawnService](PlayerRespawnService.md) (5 shared connections)
 - [event_types.py](event_types.py.md) (3 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
+- [server/models/game.py](server-models-game.py.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [LucidityService](LucidityService.md) (1 shared connections)
+- [lucidity.py](lucidity.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 126 (100%)
+- EXTRACTED: 142 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

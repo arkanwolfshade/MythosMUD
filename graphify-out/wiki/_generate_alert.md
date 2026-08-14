@@ -21,7 +21,7 @@
 ## Relationships
 
 - [CombatMonitoringService](CombatMonitoringService.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [combat_monitoring_service.py](combat_monitoring_service.py.md) (3 shared connections)
 - [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (2 shared connections)
 - [Any](Any.md) (2 shared connections)
 - [Alert](Alert.md) (1 shared connections)

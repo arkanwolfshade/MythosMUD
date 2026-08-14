@@ -1,48 +1,38 @@
 # asyncio
 
-> 37 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **asyncio** (18 connections)
-- **test_add_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_no_container_duplicate()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_player_not_found()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_success()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_not_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_player_muted_async_false()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_player_muted_async_true()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_load_player_mutes_async_cache_valid()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_load_player_mutes_batch_all_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_load_player_mutes_batch_empty_list()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_player_not_found()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_success()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test is_player_muted_async() returns True when player is muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test is_player_muted_async() returns False when player is not muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test add_admin() handles missing container.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test add_admin() handles missing persistence.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test add_admin() handles player not found.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test remove_admin() handles missing container.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- *... and 12 more nodes in this community*
+- **asyncio** (7 connections)
+- **test_close_handles_attribute_error_during_dispose()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_close_handles_closed_event_loop()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_close_handles_dispose_timeout()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_close_handles_generic_exception_during_dispose()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_close_handles_no_running_loop()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_close_handles_none_engine()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_close_handles_runtime_error_during_dispose()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **Test close handles None engine gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **Test close handles closed event loop gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **Test close handles no running loop.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **Test close handles dispose timeout.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **Test close handles RuntimeError during dispose.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **Test close handles AttributeError during dispose.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **Test close handles generic Exception during dispose.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
 
 ## Relationships
 
-- [test_user_manager.py](test_user_manager.py.md) (18 shared connections)
+- [.get_instance](get_instance.md) (21 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_user_manager.py`
+- `server/tests/unit/infrastructure/test_database_error_handling.py`
 
 ## Audit Trail
 
-- EXTRACTED: 54 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 35 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

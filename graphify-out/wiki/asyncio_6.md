@@ -19,7 +19,7 @@
 ## Relationships
 
 - [test_async_persistence_room_loading.py](test_async_persistence_room_loading.py.md) (6 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

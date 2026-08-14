@@ -4,19 +4,19 @@
 
 ## Key Concepts
 
-- **description** (5 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **maxLength** (1 connections) — `schemas/unified_room_schema.json`
-- **minLength** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (5 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **maxLength** (1 connections) — `schemas/intersection_schema.json`
+- **minLength** (1 connections) — `schemas/intersection_schema.json`
+- **type** (1 connections) — `schemas/intersection_schema.json`
 
 ## Relationships
 
-- [Schemas Unified Room](Schemas_Unified_Room.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `schemas/intersection_schema.json`
 
 ## Audit Trail
 

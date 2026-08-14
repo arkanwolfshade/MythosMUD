@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (4 shared connections)
+- [EldritchIcon.tsx](EldritchIcon.tsx.md) (2 shared connections)
 - [GameTerminal.tsx](GameTerminal.tsx.md) (2 shared connections)
 - [GameLogPanel.tsx](GameLogPanel.tsx.md) (2 shared connections)
+- [DraggablePanelView.tsx](DraggablePanelView.tsx.md) (2 shared connections)
 
 ## Source Files
 

@@ -16,7 +16,7 @@
 
 - [CombatMonitoringService](CombatMonitoringService.md) (2 shared connections)
 - [._generate_alert](_generate_alert.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [combat_monitoring_service.py](combat_monitoring_service.py.md) (1 shared connections)
 - [Any](Any.md) (1 shared connections)
 
 ## Source Files

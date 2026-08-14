@@ -1,22 +1,13 @@
 # test_character_creation_service.py
 
-> 69 nodes
+> 51 nodes
 
 ## Key Concepts
 
 - **test_character_creation_service.py** (31 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **CharacterCreationService** (12 connections) — `server/game/character_creation_service.py`
-- **.create_character_with_stats()** (6 connections) — `server/game/character_creation_service.py`
-- **.validate_character_stats()** (5 connections) — `server/game/character_creation_service.py`
-- **Any** (5 connections)
-- **.get_available_classes_info()** (4 connections) — `server/game/character_creation_service.py`
-- **.__init__()** (4 connections) — `server/game/character_creation_service.py`
-- **.roll_character_stats()** (4 connections) — `server/game/character_creation_service.py`
 - **character_creation_service()** (4 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **._get_class_description()** (3 connections) — `server/game/character_creation_service.py`
 - **mock_player_service()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
 - **sample_stats()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_character_creation_service_init()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
 - **test_create_character_with_stats_validation_error()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
 - **fixture** (3 connections)
 - **test_create_character_with_stats_custom_starting_room()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
@@ -29,25 +20,31 @@
 - **test_get_class_description_known_class()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
 - **test_get_class_description_unknown_class()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
 - **test_roll_character_stats_class_not_available()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- *... and 44 more nodes in this community*
+- **test_roll_character_stats_profession_meets_requirements_false()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_roll_character_stats_value_error()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_roll_character_stats_with_class()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_roll_character_stats_with_profession()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_roll_character_stats_without_class_or_profession()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_validate_character_stats_failed_prerequisites()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_validate_character_stats_invalid_format()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_validate_character_stats_value_error()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_validate_character_stats_with_class()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
+- [CharacterCreationService](CharacterCreationService.md) (3 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
-- [Stats](Stats.md) (3 shared connections)
-- [log_and_raise](log_and_raise.md) (3 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (3 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (2 shared connections)
+- [Stats](Stats.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/character_creation_service.py`
 - `server/tests/unit/game/test_character_creation_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 60 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

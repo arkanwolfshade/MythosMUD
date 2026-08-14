@@ -21,7 +21,7 @@
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
+- [LootAllRequest](LootAllRequest.md) (1 shared connections)
 - [ErrorType](ErrorType.md) (1 shared connections)
 - [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
 

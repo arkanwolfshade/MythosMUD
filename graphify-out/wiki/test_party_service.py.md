@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_party_service.py** (35 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_party_service.py** (38 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_add_member_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_add_member_no_such_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_add_member_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
@@ -33,9 +33,11 @@
 
 ## Relationships
 
-- [asyncio](asyncio.md) (4 shared connections)
+- [asyncio](asyncio.md) (5 shared connections)
 - [Party](Party.md) (3 shared connections)
-- [PartyService](PartyService.md) (2 shared connections)
+- [.__post_init__](__post_init__.md) (2 shared connections)
+- [PartyService](PartyService.md) (1 shared connections)
+- [party_service.py](party_service.py.md) (1 shared connections)
 - [party_service](party_service.md) (1 shared connections)
 
 ## Source Files
@@ -44,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 59 (100%)
+- EXTRACTED: 62 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

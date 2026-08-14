@@ -35,9 +35,9 @@
 
 - [PathValidator](PathValidator.md) (6 shared connections)
 - [TestValidatorComponents](TestValidatorComponents.md) (5 shared connections)
-- [Hierarchical Schema Tests](Hierarchical_Schema_Tests.md) (4 shared connections)
+- [TestHierarchicalSchema](TestHierarchicalSchema.md) (4 shared connections)
 - [ValidationRule](ValidationRule.md) (2 shared connections)
-- [SchemaValidator](SchemaValidator.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [RoomLoader](RoomLoader.md) (1 shared connections)
 
 ## Source Files

@@ -1,6 +1,6 @@
 # _asyncio_mark
 
-> 27 nodes
+> 33 nodes
 
 ## Key Concepts
 
@@ -18,6 +18,9 @@
 - **test_handle_shutdown_command_no_permission()** (4 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **test_handle_shutdown_command_no_player_service()** (4 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **test_handle_shutdown_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_validate_shutdown_admin_permission_admin()** (4 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_validate_shutdown_admin_permission_no_player()** (4 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_validate_shutdown_admin_permission_not_admin()** (4 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **Test handle_shutdown_command() when player service is not available.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **Test handle_shutdown_command() when player is not found.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **Test handle_shutdown_command() when player lacks admin permission.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
@@ -26,16 +29,12 @@
 - **Test handle_shutdown_command() with cancel when no active shutdown.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **Test handle_shutdown_command() with initiate action.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **Test handle_shutdown_command() with initiate action superseding existing…** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test handle_shutdown_command() with initiate action but no seconds.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test handle_shutdown_command() with initiate action that fails.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Await handle_shutdown_command; explicit return keeps test assertions typed as…** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- *... and 2 more nodes in this community*
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (17 shared connections)
-- [admin_shutdown_command.py](admin_shutdown_command.py.md) (3 shared connections)
-- [validate_shutdown_admin_permission](validate_shutdown_admin_permission.md) (3 shared connections)
+- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (20 shared connections)
+- [admin_shutdown_command.py](admin_shutdown_command.py.md) (6 shared connections)
 - [AliasStorage](AliasStorage.md) (1 shared connections)
 
 ## Source Files
@@ -44,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 59 (100%)
+- EXTRACTED: 68 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

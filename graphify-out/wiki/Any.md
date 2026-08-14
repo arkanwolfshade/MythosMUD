@@ -1,6 +1,6 @@
 # Any
 
-> 38 nodes
+> 28 nodes
 
 ## Key Concepts
 
@@ -10,17 +10,12 @@
 - **TaskMetadata** (7 connections) — `server/app/task_registry.py`
 - **.register_task()** (7 connections) — `server/app/task_registry.py`
 - **._create_task_completion_callback()** (5 connections) — `server/app/task_registry.py`
-- **.get_task_lifecycle_metrics()** (5 connections) — `server/app/task_registry.py`
-- **unregister_task()** (5 connections) — `server/app/task_registry.py`
-- **register_task()** (4 connections) — `server/app/task_registry.py`
 - **.__init__()** (4 connections) — `server/app/task_registry.py`
 - **.cancel_task()** (4 connections) — `server/app/task_registry.py`
 - **.unregister_task()** (4 connections) — `server/app/task_registry.py`
 - **._ensure_unique_task_name()** (3 connections) — `server/app/task_registry.py`
 - **._extract_service_name()** (3 connections) — `server/app/task_registry.py`
-- **.get_active_task_count()** (3 connections) — `server/app/task_registry.py`
 - **.get_registry_info()** (3 connections) — `server/app/task_registry.py`
-- **.get_task_stats_by_type()** (3 connections) — `server/app/task_registry.py`
 - **.list_active_tasks()** (3 connections) — `server/app/task_registry.py`
 - **._track_task_creation_metrics()** (3 connections) — `server/app/task_registry.py`
 - **.__repr__()** (2 connections) — `server/app/task_registry.py`
@@ -29,12 +24,17 @@
 - **Register and create a tracked asyncio.Task. Args: coro: The coroutine to wrap…** (1 connections) — `server/app/task_registry.py`
 - **Unregister task from tracking, optionally force-cancelling. Args: task: Task…** (1 connections) — `server/app/task_registry.py`
 - **Cancel specific task with logical timeout boundaries. Args: task: Task…** (1 connections) — `server/app/task_registry.py`
-- *... and 13 more nodes in this community*
+- **Metadata for tracked asyncio.Tasks.** (1 connections) — `server/app/task_registry.py`
+- **Initialize task metadata. Args: task: The asyncio.Task instance to track…** (1 connections) — `server/app/task_registry.py`
+- **Return list of currently registered TaskMetadata.** (1 connections) — `server/app/task_registry.py`
+- **Return comprehensive registry state information.** (1 connections) — `server/app/task_registry.py`
+- **String representation of task metadata for logging.** (1 connections) — `server/app/task_registry.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [TaskRegistry](TaskRegistry.md) (14 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [TaskRegistry](TaskRegistry.md) (15 shared connections)
+- [.get_task_lifecycle_metrics](get_task_lifecycle_metrics.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 65 (100%)
+- EXTRACTED: 52 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

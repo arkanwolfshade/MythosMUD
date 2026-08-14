@@ -14,7 +14,7 @@
 
 - [test_nats_broker.py](test_nats_broker.py.md) (2 shared connections)
 - [NATSMessageBroker](NATSMessageBroker.md) (1 shared connections)
-- [AppConfig](AppConfig.md) (1 shared connections)
+- [NATSConfig](NATSConfig.md) (1 shared connections)
 
 ## Source Files
 

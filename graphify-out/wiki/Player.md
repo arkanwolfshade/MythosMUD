@@ -1,60 +1,59 @@
 # Player
 
-> 314 nodes
+> 252 nodes
 
 ## Key Concepts
 
-- **Player** (149 connections) — `server/models/player.py`
-- **models/player.py** (82 connections) — `server/models/player.py`
-- **LucidityService** (77 connections) — `server/services/lucidity_service.py`
-- **server/models/__init__.py** (71 connections) — `server/models/__init__.py`
-- **Base** (56 connections) — `server/models/base.py`
-- **PlayerLucidity** (55 connections) — `server/models/lucidity.py`
-- **lucidity_service.py** (50 connections) — `server/services/lucidity_service.py`
-- **player_respawn_service.py** (41 connections) — `server/services/player_respawn_service.py`
-- **coerce_int()** (37 connections) — `server/utils/int_coercion.py`
-- **lucidity.py** (33 connections) — `server/models/lucidity.py`
-- **server/models/game.py** (32 connections) — `server/models/game.py`
-- **test_game_stats_methods.py** (31 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_lucidity_models.py** (28 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **Player** (158 connections) — `server/models/player.py`
+- **models/player.py** (93 connections) — `server/models/player.py`
+- **server/models/__init__.py** (73 connections) — `server/models/__init__.py`
+- **Base** (58 connections) — `server/models/base.py`
+- **test_world.py** (27 connections) — `server/tests/unit/models/test_world.py`
 - **PlayerInventory** (25 connections) — `server/models/player.py`
-- **LucidityExposureState** (23 connections) — `server/models/lucidity.py`
 - **PlayerSpell** (23 connections) — `server/models/player_spells.py`
-- **lucidity_helpers.py** (23 connections) — `server/services/lucidity_helpers.py`
-- **LucidityAdjustmentLog** (22 connections) — `server/models/lucidity.py`
 - **PlayerChannelPreferences** (22 connections) — `server/models/player.py`
-- **LucidityCooldown** (21 connections) — `server/models/lucidity.py`
-- **models/base.py** (21 connections) — `server/models/base.py`
-- **PositionState** (20 connections) — `server/models/game.py`
+- **models/base.py** (22 connections) — `server/models/base.py`
+- **test_player_related_models.py** (19 connections) — `server/tests/unit/models/test_player_related_models.py`
 - **PlayerExploration** (18 connections) — `server/models/player.py`
+- **row_to_player()** (18 connections) — `server/persistence/repositories/player_repository_mappers.py`
 - **PlayerSkill** (17 connections) — `server/models/player_skill.py`
-- **_stats_int()** (17 connections) — `server/models/player.py`
-- *... and 289 more nodes in this community*
+- **PlayerEffect** (16 connections) — `server/models/player_effect.py`
+- **test_calendar.py** (13 connections) — `server/tests/unit/models/test_calendar.py`
+- **test_emote.py** (13 connections) — `server/tests/unit/models/test_emote.py`
+- **models/skill.py** (12 connections) — `server/models/skill.py`
+- **player_spells.py** (11 connections) — `server/models/player_spells.py`
+- **player_repository_mappers.py** (11 connections) — `server/persistence/repositories/player_repository_mappers.py`
+- **test_procedures_return_shape.py** (11 connections) — `server/tests/integration/test_procedures_return_shape.py`
+- **test_metadata.py** (11 connections) — `server/tests/unit/test_metadata.py`
+- **EmoteAlias** (10 connections) — `server/models/emote.py`
+- **SpellDB** (10 connections) — `server/models/spell_db.py`
+- **RoomLink** (10 connections) — `server/models/world.py`
+- **player_skill.py** (10 connections) — `server/models/player_skill.py`
+- *... and 227 more nodes in this community*
 
 ## Relationships
 
-- [test_player_model.py](test_player_model.py.md) (46 shared connections)
-- [Stats](Stats.md) (32 shared connections)
-- [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (25 shared connections)
-- [test_world.py](test_world.py.md) (21 shared connections)
-- [get_logger](get_logger.md) (20 shared connections)
-- [get_session_maker](get_session_maker.md) (20 shared connections)
-- [PlayerService](PlayerService.md) (19 shared connections)
-- [User](User.md) (17 shared connections)
-- [DatabaseError](DatabaseError.md) (17 shared connections)
-- [LucidityFluxService](LucidityFluxService.md) (17 shared connections)
-- [PlayerRespawnService](PlayerRespawnService.md) (17 shared connections)
-- [test_player_related_models.py](test_player_related_models.py.md) (15 shared connections)
+- [get_logger](get_logger.md) (75 shared connections)
+- [test_player_model.py](test_player_model.py.md) (44 shared connections)
+- [lucidity.py](lucidity.py.md) (28 shared connections)
+- [coerce_int](coerce_int.md) (14 shared connections)
+- [LucidityService](LucidityService.md) (11 shared connections)
+- [fixtures/integration/__init__.py](fixtures-integration-__init__.py.md) (10 shared connections)
+- [ContainerService](ContainerService.md) (10 shared connections)
+- [server/models/game.py](server-models-game.py.md) (10 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (9 shared connections)
+- [User](User.md) (8 shared connections)
+- [player_effect_repository.py](player_effect_repository.py.md) (8 shared connections)
+- [inventory_equip_command.py](inventory_equip_command.py.md) (6 shared connections)
 
 ## Source Files
 
-- `server/game/player_respawn_wrapper.py`
+- `server/metadata.py`
 - `server/models/__init__.py`
 - `server/models/base.py`
+- `server/models/calendar.py`
+- `server/models/dialogue.py`
 - `server/models/emote.py`
-- `server/models/game.py`
-- `server/models/item.py`
-- `server/models/lucidity.py`
 - `server/models/player.py`
 - `server/models/player_effect.py`
 - `server/models/player_skill.py`
@@ -63,16 +62,17 @@
 - `server/models/skill_use_log.py`
 - `server/models/spell_db.py`
 - `server/models/world.py`
-- `server/services/lucidity_helpers.py`
-- `server/services/lucidity_repository.py`
-- `server/services/lucidity_service.py`
-- `server/services/player_respawn_service.py`
-- `server/tests/integration/test_lucidity_round_trip.py`
+- `server/npc_metadata.py`
+- `server/persistence/repositories/player_repository_mappers.py`
+- `server/tests/integration/test_procedures_return_shape.py`
+- `server/tests/unit/models/test_calendar.py`
+- `server/tests/unit/models/test_emote.py`
+- `server/tests/unit/models/test_player_related_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1103 (90%)
-- INFERRED: 120 (10%)
+- EXTRACTED: 692 (88%)
+- INFERRED: 90 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

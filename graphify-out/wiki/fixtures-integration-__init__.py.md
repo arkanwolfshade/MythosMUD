@@ -1,15 +1,13 @@
 # fixtures/integration/__init__.py
 
-> 51 nodes
+> 45 nodes
 
 ## Key Concepts
 
 - **session_factory()** (18 connections) — `server/tests/fixtures/integration/__init__.py`
 - **fixtures/integration/__init__.py** (18 connections) — `server/tests/fixtures/integration/__init__.py`
 - **db_cleanup()** (11 connections) — `server/tests/fixtures/integration/__init__.py`
-- **test_procedures_return_shape.py** (11 connections) — `server/tests/integration/test_procedures_return_shape.py`
 - **test_add_player_effect_generates_id()** (9 connections) — `server/tests/integration/test_procedures_return_shape.py`
-- **test_lucidity_adjustment_round_trip()** (8 connections) — `server/tests/integration/test_lucidity_round_trip.py`
 - **integration_engine()** (7 connections) — `server/tests/fixtures/integration/__init__.py`
 - **_assert_allowed_integration_test_db()** (6 connections) — `server/tests/fixtures/integration/__init__.py`
 - **test_get_npc_system_statistics_return_shape()** (6 connections) — `server/tests/integration/test_procedures_return_shape.py`
@@ -29,29 +27,28 @@
 - **_should_preserve_table_on_cleanup()** (3 connections) — `server/tests/fixtures/integration/__init__.py`
 - **FixtureRequest** (3 connections)
 - **AsyncSession** (3 connections)
-- *... and 26 more nodes in this community*
+- **_IntegrationState** (2 connections) — `server/tests/fixtures/integration/__init__.py`
+- **async_sessionmaker** (2 connections)
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
 - [Player](Player.md) (10 shared connections)
-- [User](User.md) (6 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
-- [test_quest_instance_repository.py](test_quest_instance_repository.py.md) (3 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
+- [User](User.md) (3 shared connections)
+- [LucidityService](LucidityService.md) (1 shared connections)
 
 ## Source Files
 
 - `server/tests/fixtures/integration/__init__.py`
 - `server/tests/fixtures/integration/db.py`
-- `server/tests/integration/test_lucidity_round_trip.py`
 - `server/tests/integration/test_procedures_return_shape.py`
 - `server/tests/integration/test_quest_flow.py`
 
 ## Audit Trail
 
-- EXTRACTED: 101 (90%)
-- INFERRED: 11 (10%)
+- EXTRACTED: 88 (89%)
+- INFERRED: 11 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,37 +1,48 @@
 # Any
 
-> 15 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **.get_mechanical_effects()** (3 connections) — `server/models/profession.py`
-- **.get_skill_modifiers()** (3 connections) — `server/models/profession.py`
-- **.get_stat_modifiers()** (3 connections) — `server/models/profession.py`
-- **.set_mechanical_effects()** (3 connections) — `server/models/profession.py`
-- **.set_skill_modifiers()** (3 connections) — `server/models/profession.py`
-- **.set_stat_modifiers()** (3 connections) — `server/models/profession.py`
-- **.set_stat_requirements()** (3 connections) — `server/models/profession.py`
-- **Set profession stat requirements from dictionary.** (1 connections) — `server/models/profession.py`
-- **Get profession mechanical effects as dictionary.** (1 connections) — `server/models/profession.py`
-- **Set profession mechanical effects from dictionary.** (1 connections) — `server/models/profession.py`
-- **Get stat modifiers as list of {stat, value}.** (1 connections) — `server/models/profession.py`
-- **Set stat modifiers from list of {stat, value}.** (1 connections) — `server/models/profession.py`
-- **Get skill modifiers as list of {skill_key, value}.** (1 connections) — `server/models/profession.py`
-- **Set skill modifiers from list of {skill_key, value}.** (1 connections) — `server/models/profession.py`
+- **Any** (13 connections)
+- **.__init__()** (4 connections) — `server/caching/cache_service.py`
+- **.__init__()** (4 connections) — `server/caching/cache_service.py`
+- **.__init__()** (4 connections) — `server/caching/cache_service.py`
+- **.get_cache_stats()** (3 connections) — `server/caching/cache_service.py`
+- **.get_npc_definition()** (3 connections) — `server/caching/cache_service.py`
+- **.get_npc_definitions()** (3 connections) — `server/caching/cache_service.py`
+- **.get_spawn_rules()** (3 connections) — `server/caching/cache_service.py`
+- **.get_all_professions()** (3 connections) — `server/caching/cache_service.py`
+- **.get_profession_by_id()** (3 connections) — `server/caching/cache_service.py`
+- **.get_room()** (3 connections) — `server/caching/cache_service.py`
+- **.get_room_sync()** (3 connections) — `server/caching/cache_service.py`
+- **Initialize the room cache service. Args: persistence: Persistence layer instance** (1 connections) — `server/caching/cache_service.py`
+- **Get room data with caching. Args: room_id: The room ID Returns: Room data…** (1 connections) — `server/caching/cache_service.py`
+- **Get room data with caching (synchronous version). Args: room_id: The room ID…** (1 connections) — `server/caching/cache_service.py`
+- **Initialize the NPC cache service. Args: npc_service: NPC service instance** (1 connections) — `server/caching/cache_service.py`
+- **Get NPC definitions with caching. Args: session: Database session Returns: List…** (1 connections) — `server/caching/cache_service.py`
+- **Get a specific NPC definition with caching. Args: session: Database session…** (1 connections) — `server/caching/cache_service.py`
+- **Get NPC spawn rules with caching. Args: session: Database session Returns: List…** (1 connections) — `server/caching/cache_service.py`
+- **Initialize the profession cache service. Args: persistence: Persistence layer…** (1 connections) — `server/caching/cache_service.py`
+- **Get all professions with caching. Returns: List of profession objects** (1 connections) — `server/caching/cache_service.py`
+- **Get a specific profession by ID with caching. Args: profession_id: The…** (1 connections) — `server/caching/cache_service.py`
+- **Get statistics for all caches. Returns: Dictionary containing cache statistics** (1 connections) — `server/caching/cache_service.py`
 
 ## Relationships
 
-- [Profession](Profession.md) (7 shared connections)
-- [.get_stat_requirements](get_stat_requirements.md) (1 shared connections)
+- [NPCCacheService](NPCCacheService.md) (4 shared connections)
+- [get_cache_manager](get_cache_manager.md) (4 shared connections)
+- [ProfessionCacheService](ProfessionCacheService.md) (3 shared connections)
+- [RoomCacheService](RoomCacheService.md) (3 shared connections)
+- [CacheService](CacheService.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/profession.py`
+- `server/caching/cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 38 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

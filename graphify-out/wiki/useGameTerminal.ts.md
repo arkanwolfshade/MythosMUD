@@ -1,12 +1,13 @@
 # useGameTerminal.ts
 
-> 43 nodes
+> 46 nodes
 
 ## Key Concepts
 
 - **useGameTerminal.ts** (22 connections) — `client/src/hooks/useGameTerminal.ts`
 - **GameTerminalContext.test.tsx** (18 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
 - **useGameTerminal()** (12 connections) — `client/src/hooks/useGameTerminal.ts`
+- **useGameStore** (12 connections) — `client/src/stores/gameStore.ts`
 - **GameTerminalContainer.test.tsx** (9 connections) — `client/src/components/__tests__/GameTerminalContainer.test.tsx`
 - **useGameTerminalContext.ts** (9 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
 - **GameTerminalContext.tsx** (8 connections) — `client/src/contexts/GameTerminalContext.tsx`
@@ -28,17 +29,16 @@
 - **createDefaultGameTerminalState()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
 - **GameActionsTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
 - **GameStateTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **SessionTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- *... and 18 more nodes in this community*
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
+- [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (6 shared connections)
+- [gameStore.ts](gameStore.ts.md) (5 shared connections)
+- [stateNormalization.ts](stateNormalization.ts.md) (4 shared connections)
 - [connectionStore.ts](connectionStore.ts.md) (3 shared connections)
-- [stateNormalization.ts](stateNormalization.ts.md) (3 shared connections)
 - [commandStore.ts](commandStore.ts.md) (3 shared connections)
 - [GameLogPanel.tsx](GameLogPanel.tsx.md) (3 shared connections)
-- [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (2 shared connections)
-- [gameStore.ts](gameStore.ts.md) (2 shared connections)
 
 ## Source Files
 
@@ -49,10 +49,12 @@
 - `client/src/contexts/hooks/useGameTerminalContext.ts`
 - `client/src/hooks/useGameTerminal.test.ts`
 - `client/src/hooks/useGameTerminal.ts`
+- `client/src/stores/__tests__/gameStore.test.ts`
+- `client/src/stores/gameStore.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (97%)
+- EXTRACTED: 102 (97%)
 - INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 

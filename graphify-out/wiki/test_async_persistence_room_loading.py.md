@@ -18,8 +18,7 @@
 ## Relationships
 
 - [asyncio](asyncio.md) (6 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [test_process_exit_rows_with_partial_room_ids](test_process_exit_rows_with_partial_room_ids.md) (1 shared connections)
 - [test_process_exit_rows_debug_logging](test_process_exit_rows_debug_logging.md) (1 shared connections)
 - [test_process_room_rows_with_full_room_id](test_process_room_rows_with_full_room_id.md) (1 shared connections)
@@ -29,6 +28,7 @@
 - [test_process_room_rows_empty_list](test_process_room_rows_empty_list.md) (1 shared connections)
 - [test_process_exit_rows_empty_list](test_process_exit_rows_empty_list.md) (1 shared connections)
 - [test_process_exit_rows_multiple_exits_same_room](test_process_exit_rows_multiple_exits_same_room.md) (1 shared connections)
+- [test_process_exit_rows_zone_single_part](test_process_exit_rows_zone_single_part.md) (1 shared connections)
 
 ## Source Files
 

@@ -13,7 +13,7 @@
 
 ## Relationships
 
-- [TaskRegistry](TaskRegistry.md) (2 shared connections)
+- [TrackedTaskManager](TrackedTaskManager.md) (2 shared connections)
 
 ## Source Files
 

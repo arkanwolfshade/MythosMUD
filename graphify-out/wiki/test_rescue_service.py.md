@@ -1,50 +1,54 @@
 # test_rescue_service.py
 
-> 37 nodes
+> 80 nodes
 
 ## Key Concepts
 
 - **test_rescue_service.py** (32 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **rescue_service.py** (19 connections) — `server/services/rescue_service.py`
 - **asyncio** (17 connections)
+- **RescueService** (12 connections) — `server/services/rescue_service.py`
+- **fixture** (10 connections)
+- **.rescue()** (8 connections) — `server/services/rescue_service.py`
+- **Any** (7 connections)
+- **_load_rescue_participants()** (6 connections) — `server/services/rescue_service.py`
+- **.__init__()** (6 connections) — `server/services/rescue_service.py`
+- **_ensure_uuid()** (5 connections) — `server/services/rescue_service.py`
+- **._apply_rescue_adjustment()** (5 connections) — `server/services/rescue_service.py`
+- **_dispatch_rescue_events()** (4 connections) — `server/services/rescue_service.py`
+- **_maybe_await()** (4 connections) — `server/services/rescue_service.py`
+- **rescue_service()** (4 connections) — `server/tests/unit/services/test_rescue_service.py`
 - **test_rescue_no_persistence()** (4 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_apply_lucidity_error()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_delta_calculation()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_delta_zero_or_negative()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_different_rooms()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_dispatches_events_for_both_players()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_event_dispatcher_error()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_handles_uuid_objects()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_handles_uuid_strings()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_lucidity_record_not_found()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_metadata_includes_location()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_metadata_includes_rescuer()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_not_catatonic()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_rescuer_not_found()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_success()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_target_not_found()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_with_player_name()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **Unit tests for rescue service. Tests the RescueService class for performing…** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **Test rescue() returns error when persistence is not available.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **Test rescue() returns error when rescuer is not found.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **Test rescue() returns error when target is not found.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **Test rescue() returns error when rescuer and target are in different rooms.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **Test rescue() returns error when lucidity record is not found.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
-- *... and 12 more nodes in this community*
+- **_rescue_success_payload()** (3 connections) — `server/services/rescue_service.py`
+- **async_session_factory()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **lucidity_service_factory()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_event_dispatcher()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_lucidity_service()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_session()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **sample_lucidity_record()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **sample_rescuer()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **sample_target()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [fixture](fixture.md) (10 shared connections)
-- [rescue_service.py](rescue_service.py.md) (3 shared connections)
-- [Player](Player.md) (2 shared connections)
+- [LucidityService](LucidityService.md) (8 shared connections)
+- [rescue_commands.py](rescue_commands.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (2 shared connections)
+- [lucidity.py](lucidity.py.md) (2 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
 
 ## Source Files
 
+- `server/services/rescue_service.py`
 - `server/tests/unit/services/test_rescue_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 138 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

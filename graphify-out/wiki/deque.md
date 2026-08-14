@@ -1,10 +1,10 @@
 # deque
 
-> 54 nodes
+> 50 nodes
 
 ## Key Concepts
 
-- **deque** (24 connections)
+- **deque** (26 connections)
 - **mythos_mud_mapbuilder.py** (22 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **Coord** (14 connections)
 - **RoomID** (12 connections)
@@ -29,31 +29,30 @@
 - **run_validator_on_rooms()** (5 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **example_validator()** (4 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **_load_tileset()** (4 connections) — `data/local/mythos_mud_mapbuilder.py`
-- *... and 29 more nodes in this community*
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
 - [MessageQueue](MessageQueue.md) (10 shared connections)
-- [lifespan.py](lifespan.py.md) (2 shared connections)
-- [test_metrics.py](test_metrics.py.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (2 shared connections)
+- [PersonalMessageSender](PersonalMessageSender.md) (2 shared connections)
 - [ErrorMonitor](ErrorMonitor.md) (1 shared connections)
-- [connection_initialization.py](connection_initialization.py.md) (1 shared connections)
-- [PersonalMessageSender](PersonalMessageSender.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (1 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
+- [combat_monitoring_service.py](combat_monitoring_service.py.md) (1 shared connections)
 - [CoordinateGenerator](CoordinateGenerator.md) (1 shared connections)
 - [NATSMetrics](NATSMetrics.md) (1 shared connections)
+- [test_metrics.py](test_metrics.py.md) (1 shared connections)
 
 ## Source Files
 
 - `data/local/mythos_mud_mapbuilder.py`
-- `server/monitoring/memory_leak_metrics.py`
-- `server/monitoring/performance_monitor.py`
-- `server/services/nats_subject_manager/metrics.py`
+- `server/realtime/message_queue.py`
 
 ## Audit Trail
 
-- EXTRACTED: 115 (85%)
-- INFERRED: 20 (15%)
+- EXTRACTED: 111 (83%)
+- INFERRED: 22 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -14,7 +14,7 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
+- [CombatService](CombatService.md) (2 shared connections)
 
 ## Source Files
 

@@ -34,8 +34,9 @@
 ## Relationships
 
 - [test_nats_service.py](test_nats_service.py.md) (16 shared connections)
-- [NATSService](NATSService.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [NATSConnectionStateMachine](NATSConnectionStateMachine.md) (2 shared connections)
+- [NATSConfig](NATSConfig.md) (1 shared connections)
+- [NATSService](NATSService.md) (1 shared connections)
 - [deque](deque.md) (1 shared connections)
 
 ## Source Files

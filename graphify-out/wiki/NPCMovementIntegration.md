@@ -1,14 +1,16 @@
 # NPCMovementIntegration
 
-> 31 nodes
+> 62 nodes
 
 ## Key Concepts
 
-- **NPCMovementIntegration** (24 connections) — `server/npc/movement_integration.py`
+- **NPCMovementIntegration** (50 connections) — `server/npc/movement_integration.py`
+- **test_movement_integration.py** (29 connections) — `server/tests/unit/npc/test_movement_integration.py`
 - **.move_npc_to_room()** (7 connections) — `server/npc/movement_integration.py`
+- **.__init__()** (5 connections) — `server/npc/idle_movement.py`
+- **.__init__()** (5 connections) — `server/npc/movement_integration.py`
 - **._get_destination_subzone()** (4 connections) — `server/npc/movement_integration.py`
 - **._get_room_objects()** (4 connections) — `server/npc/movement_integration.py`
-- **._publish_movement_events()** (4 connections) — `server/npc/movement_integration.py`
 - **._update_npc_instance_room_tracking()** (4 connections) — `server/npc/movement_integration.py`
 - **._update_room_occupancy()** (4 connections) — `server/npc/movement_integration.py`
 - **._is_npc_in_combat()** (3 connections) — `server/npc/movement_integration.py`
@@ -19,33 +21,36 @@
 - **.get_npc_room()** (2 connections) — `server/npc/movement_integration.py`
 - **.get_room_npcs()** (2 connections) — `server/npc/movement_integration.py`
 - **.validate_npc_movement()** (2 connections) — `server/npc/movement_integration.py`
-- **Room** (2 connections)
-- **Get room objects and validate they exist. Args: npc_id: ID of the NPC…** (1 connections) — `server/npc/movement_integration.py`
-- **Update room occupancy by removing NPC from source and adding to destination.…** (1 connections) — `server/npc/movement_integration.py`
-- **Update NPC instance room tracking for occupant queries. Args: npc_id: ID of the…** (1 connections) — `server/npc/movement_integration.py`
-- **Move an NPC to a different room with full integration. This method provides…** (1 connections) — `server/npc/movement_integration.py`
-- **Publish NPC movement events. Args: npc_id: ID of the NPC from_room_id: Source…** (1 connections) — `server/npc/movement_integration.py`
-- **Get the current room ID for an NPC. Args: npc_id: ID of the NPC Returns:…** (1 connections) — `server/npc/movement_integration.py`
-- **Get list of NPC IDs in a room. Args: room_id: ID of the room Returns:…** (1 connections) — `server/npc/movement_integration.py`
-- **Validate that an NPC can move between rooms. Args: npc_id: ID of the NPC…** (1 connections) — `server/npc/movement_integration.py`
-- **Integration layer for NPC movement with existing game systems. This class…** (1 connections) — `server/npc/movement_integration.py`
-- *... and 6 more nodes in this community*
+- **persistence()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_find_path_direct_connection()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_find_path_returns_none_without_connection()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_get_available_exits_empty_when_missing()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_get_destination_subzone_from_room_id()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_get_npc_room_returns_none()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_get_room_npcs_and_exits()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_get_room_npcs_empty_when_missing()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (6 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [IdleMovementHandler](IdleMovementHandler.md) (1 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (1 shared connections)
+- [EventBus](EventBus.md) (5 shared connections)
+- [event_types.py](event_types.py.md) (4 shared connections)
+- [IdleMovementHandler](IdleMovementHandler.md) (3 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
+- [test_room_utils.py](test_room_utils.py.md) (1 shared connections)
+- [MovementService](MovementService.md) (1 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
 
 ## Source Files
 
+- `server/npc/idle_movement.py`
 - `server/npc/movement_integration.py`
+- `server/tests/unit/npc/test_movement_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 108 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

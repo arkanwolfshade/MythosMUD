@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **PlayerGuidFormatter** (32 connections) — `server/structured_logging/player_guid_formatter.py`
+- **PlayerGuidFormatter** (33 connections) — `server/structured_logging/player_guid_formatter.py`
 - **test_player_guid_formatter.py** (24 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 - **_player_service_mock()** (11 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 - **.format()** (4 connections) — `server/structured_logging/player_guid_formatter.py`
@@ -35,7 +35,8 @@
 
 - [test_logging_utilities.py](test_logging_utilities.py.md) (2 shared connections)
 - [logging_file_setup.py](logging_file_setup.py.md) (2 shared connections)
-- [lifespan.py](lifespan.py.md) (1 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
+- [test_logging_handlers.py](test_logging_handlers.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 92 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 92 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

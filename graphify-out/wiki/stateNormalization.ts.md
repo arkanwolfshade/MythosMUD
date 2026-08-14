@@ -33,11 +33,10 @@
 
 ## Relationships
 
-- [useGameTerminal.ts](useGameTerminal.ts.md) (3 shared connections)
+- [useGameTerminal.ts](useGameTerminal.ts.md) (4 shared connections)
 - [gameStore.ts](gameStore.ts.md) (3 shared connections)
 - [commandStore.ts](commandStore.ts.md) (2 shared connections)
 - [connectionStore.ts](connectionStore.ts.md) (2 shared connections)
-- [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,31 +1,38 @@
 # fixture
 
-> 9 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **fixture** (4 connections)
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/api/test_container_events.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/api/test_container_events.py`
-- **sample_container_component()** (3 connections) — `server/tests/unit/api/test_container_events.py`
-- **sample_container_data()** (3 connections) — `server/tests/unit/api/test_container_events.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/api/test_container_events.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/api/test_container_events.py`
-- **Create sample container data for testing.** (1 connections) — `server/tests/unit/api/test_container_events.py`
-- **Create a ContainerComponent from sample data.** (1 connections) — `server/tests/unit/api/test_container_events.py`
+- **fixture** (6 connections)
+- **skill_service()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
+- **catalog_with_own_language_and_mythos()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **mock_player_skill_repo()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **mock_skill_repo()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **mock_skill_use_log_repo()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Mock PlayerSkillRepository.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Mock AsyncPersistenceLayer (get_profession_by_id, get_player_by_id).** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Mock SkillUseLogRepository for use logging and improvement (plan 10.4).** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **SkillService with mocks.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Minimal catalog: accounting, library_use, own_language, cthulhu_mythos (for…** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Mock SkillRepository returning catalog.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (4 shared connections)
+- [test_skill_service.py](test_skill_service.py.md) (6 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (1 shared connections)
+- [handle_skills_command](handle_skills_command.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/api/test_container_events.py`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 20 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

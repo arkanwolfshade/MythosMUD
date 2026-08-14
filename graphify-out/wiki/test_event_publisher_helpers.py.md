@@ -22,7 +22,8 @@
 
 ## Relationships
 
-- [TaskRegistry](TaskRegistry.md) (3 shared connections)
+- [EventPublisher](EventPublisher.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

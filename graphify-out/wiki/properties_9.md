@@ -1,34 +1,42 @@
 # properties
 
-> 13 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **properties** (7 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **down** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **east** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **north** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **south** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **up** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **west** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **properties** (10 connections) — `db/static/schemas/room.schema.json`
+- **attributes** (3 connections) — `db/static/schemas/room.schema.json`
+- **description** (3 connections) — `db/static/schemas/room.schema.json`
+- **name** (3 connections) — `db/static/schemas/room.schema.json`
+- **sub_zone** (3 connections) — `db/static/schemas/room.schema.json`
+- **zone** (3 connections) — `db/static/schemas/room.schema.json`
+- **environment** (2 connections) — `db/static/schemas/room.schema.json`
+- **additionalProperties** (1 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
 
 ## Relationships
 
+- [required](required.md) (1 shared connections)
+- [plane](plane.md) (1 shared connections)
 - [exits](exits.md) (1 shared connections)
+- [id](id.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- `db/static/schemas/room.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -5,45 +5,43 @@
 ## Key Concepts
 
 - **asyncio** (24 connections)
-- **test_cleanup_empty_subzone_subscriptions_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_subscribe_to_subzone_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_unsubscribe_from_subzone_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_cleanup_empty_subzone_subscriptions()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_handle_event_message()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_handle_player_attacked_event()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_unsubscribe_from_event_subjects_partial()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_unsubscribe_from_subzone_not_subscribed()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test cleanup_empty_subzone_subscriptions cleans up empty subzones.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test subscribe_to_subzone handles errors.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test unsubscribe_from_event_subjects handles partial success.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test cleanup_empty_subzone_subscriptions handles NATSError.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test _handle_player_attacked_event delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test unsubscribe_from_subzone handles not subscribed case.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test _handle_event_message delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test unsubscribe_from_subzone handles errors.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_delete_player_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_delete_player_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_id_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_user_id_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_save_players_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_soft_delete_player_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_update_player_last_active_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_update_player_last_active_with_timestamp()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test get_player_by_id returns None when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test get_player_by_user_id returns None when no players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test save_players successfully saves multiple players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test soft_delete_player successfully soft deletes player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test delete_player successfully deletes player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test delete_player returns False when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test update_player_last_active successfully updates timestamp.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test update_player_last_active with provided timestamp.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
 
 ## Relationships
 
-- [test_nats_message_handler_subzone_events.py](test_nats_message_handler_subzone_events.py.md) (8 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [test_handle_combat_ended_event](test_handle_combat_ended_event.md) (1 shared connections)
-- [test_handle_combat_started_event](test_handle_combat_started_event.md) (1 shared connections)
-- [test_handle_npc_attacked_event](test_handle_npc_attacked_event.md) (1 shared connections)
-- [test_handle_npc_died_event](test_handle_npc_died_event.md) (1 shared connections)
-- [test_handle_npc_took_damage_event](test_handle_npc_took_damage_event.md) (1 shared connections)
-- [test_handle_player_movement_different_subzone](test_handle_player_movement_different_subzone.md) (1 shared connections)
-- [test_handle_player_movement_error](test_handle_player_movement_error.md) (1 shared connections)
-- [test_handle_player_movement_exception](test_handle_player_movement_exception.md) (1 shared connections)
-- [test_handle_player_movement_new_subzone_none](test_handle_player_movement_new_subzone_none.md) (1 shared connections)
-- [test_handle_player_movement_old_subzone_none](test_handle_player_movement_old_subzone_none.md) (1 shared connections)
+- [test_player_repository.py](test_player_repository.py.md) (10 shared connections)
+- [_make_mock_row](_make_mock_row.md) (6 shared connections)
+- [test_get_player_by_name_database_error](test_get_player_by_name_database_error.md) (1 shared connections)
+- [test_get_player_by_user_id_success](test_get_player_by_user_id_success.md) (1 shared connections)
+- [test_get_players_batch_success](test_get_players_batch_success.md) (1 shared connections)
+- [test_list_players_database_error](test_list_players_database_error.md) (1 shared connections)
+- [test_save_player_database_error](test_save_player_database_error.md) (1 shared connections)
+- [test_save_player_success](test_save_player_success.md) (1 shared connections)
+- [test_save_player_with_bool_is_admin](test_save_player_with_bool_is_admin.md) (1 shared connections)
+- [test_soft_delete_player_not_found](test_soft_delete_player_not_found.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/persistence/test_player_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
+- EXTRACTED: 40 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

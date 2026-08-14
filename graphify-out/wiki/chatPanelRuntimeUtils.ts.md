@@ -1,6 +1,6 @@
 # chatPanelRuntimeUtils.ts
 
-> 71 nodes
+> 69 nodes
 
 ## Key Concepts
 
@@ -25,22 +25,20 @@
 - **bumpUnreadCountForMessage()** (6 connections) — `client/src/components/panels/chatPanelUnreadBump.ts`
 - **computeUnreadChatCounts()** (6 connections) — `client/src/components/panels/chatPanelUnreadCounts.ts`
 - **ChatPanelMessageRow** (6 connections) — `client/src/components/panels/ChatPanelMessagesLog.tsx`
-- **chatPanelRuntimeViewTypes.ts** (6 connections) — `client/src/components/panels/chatPanelRuntimeViewTypes.ts`
 - **applyChatSearchFilters()** (5 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
 - **buildChatExportHTML()** (5 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
 - **buildChatExportHtmlMessageBlock()** (5 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
-- *... and 46 more nodes in this community*
+- **buildChatExportPlainText()** (5 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (11 shared connections)
-- [performance.test.tsx](performance.test.tsx.md) (9 shared connections)
-- [ChatPanelRuntimeViewParts.tsx](ChatPanelRuntimeViewParts.tsx.md) (8 shared connections)
-- [ChatPanelRefactoredView.tsx](ChatPanelRefactoredView.tsx.md) (6 shared connections)
+- [ChatPanelRuntimeViewParts.tsx](ChatPanelRuntimeViewParts.tsx.md) (16 shared connections)
+- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (13 shared connections)
+- [performance.test.tsx](performance.test.tsx.md) (7 shared connections)
 - [messageHandlers.ts](messageHandlers.ts.md) (4 shared connections)
 - [EldritchIcon.tsx](EldritchIcon.tsx.md) (3 shared connections)
 - [projectorRoom.ts](projectorRoom.ts.md) (2 shared connections)
-- [security.ts](security.ts.md) (2 shared connections)
 
 ## Source Files
 
@@ -51,7 +49,6 @@
 - `client/src/components/panels/chatPanelExportFormat.ts`
 - `client/src/components/panels/chatPanelMessageClass.ts`
 - `client/src/components/panels/chatPanelRuntimeUtils.ts`
-- `client/src/components/panels/chatPanelRuntimeViewTypes.ts`
 - `client/src/components/panels/chatPanelUnreadBump.ts`
 - `client/src/components/panels/chatPanelUnreadCounts.ts`
 - `client/src/components/panels/useChatPanelRuntime.ts`
@@ -60,7 +57,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 211 (98%)
+- EXTRACTED: 206 (98%)
 - INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 

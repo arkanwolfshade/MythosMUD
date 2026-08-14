@@ -1,27 +1,32 @@
 # .__call__
 
-> 5 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **.__call__()** (3 connections) — `server/utils/liability_types.py`
-- **.__call__()** (3 connections) — `server/utils/liability_types.py`
-- **LiabilityStackEntry** (2 connections)
-- **Decode stored liability text (or empty state) into stack rows.** (1 connections) — `server/utils/liability_types.py`
-- **Encode stack rows into JSON suitable for PlayerLucidity.liabilities.** (1 connections) — `server/utils/liability_types.py`
+- **.__call__()** (8 connections) — `server/middleware/correlation_middleware.py`
+- **_get_header()** (6 connections) — `server/middleware/correlation_middleware.py`
+- **test_get_header_case_insensitive()** (2 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **Scope** (2 connections)
+- **Receive** (1 connections)
+- **Send** (1 connections)
+- **Return first header value for name (case-insensitive) from ASGI scope.** (1 connections) — `server/middleware/correlation_middleware.py`
+- **ASGI application interface. Args: scope: ASGI connection scope receive: ASGI…** (1 connections) — `server/middleware/correlation_middleware.py`
 
 ## Relationships
 
-- [Player](Player.md) (2 shared connections)
+- [middleware](middleware.md) (4 shared connections)
+- [log_with_context](log_with_context.md) (2 shared connections)
 
 ## Source Files
 
-- `server/utils/liability_types.py`
+- `server/middleware/correlation_middleware.py`
+- `server/tests/unit/middleware/test_correlation_middleware.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 12 (86%)
+- INFERRED: 2 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

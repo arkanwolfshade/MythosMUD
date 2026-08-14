@@ -1,69 +1,60 @@
 # lifespan.py
 
-> 98 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **lifespan.py** (42 connections) — `server/app/lifespan.py`
-- **MemoryLeakMetricsCollector** (32 connections) — `server/monitoring/memory_leak_metrics.py`
-- **PerformanceMonitor** (25 connections) — `server/monitoring/performance_monitor.py`
-- **performance_monitor.py** (20 connections) — `server/monitoring/performance_monitor.py`
-- **measure_performance()** (19 connections) — `server/monitoring/performance_monitor.py`
-- **lifespan()** (15 connections) — `server/app/lifespan.py`
-- **_startup_application()** (13 connections) — `server/app/lifespan.py`
-- **get_performance_monitor()** (13 connections) — `server/monitoring/performance_monitor.py`
-- **test_main.py** (13 connections) — `server/tests/unit/test_main.py`
-- **RestartInvalidatingJWTStrategy** (12 connections) — `server/auth/jwt_strategy.py`
-- **get_system_metrics()** (12 connections) — `server/api/system_monitoring.py`
-- **_shutdown_with_error_handling()** (10 connections) — `server/app/lifespan.py`
-- **set_auth_epoch()** (10 connections) — `server/auth/token_epoch.py`
-- **test_jwt_strategy.py** (9 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
-- **PerformanceMetric** (8 connections) — `server/monitoring/performance_monitor.py`
-- **_initialize_enhanced_systems()** (8 connections) — `server/app/lifespan.py`
-- **get_auth_epoch()** (8 connections) — `server/auth/token_epoch.py`
-- **update_logging_with_player_service()** (8 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **token_epoch.py** (8 connections) — `server/auth/token_epoch.py`
-- **.read_token()** (7 connections) — `server/auth/jwt_strategy.py`
-- **jwt_strategy.py** (7 connections) — `server/auth/jwt_strategy.py`
-- **.__init__()** (6 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.record_metric()** (6 connections) — `server/monitoring/performance_monitor.py`
-- **test_read_token_accepts_matching_epoch()** (6 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
-- **Any** (6 connections)
-- *... and 73 more nodes in this community*
+- **lifespan.py** (43 connections) — `server/app/lifespan.py`
+- **test_lifespan_helpers.py** (21 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
+- **lifespan()** (17 connections) — `server/app/lifespan.py`
+- **_shutdown_with_error_handling()** (12 connections) — `server/app/lifespan.py`
+- **_initialize_enhanced_systems()** (10 connections) — `server/app/lifespan.py`
+- **_cleanup_container_on_error()** (8 connections) — `server/app/lifespan.py`
+- **_calculate_metrics_delta()** (7 connections) — `server/app/lifespan.py`
+- **_persist_mythos_state_on_error()** (7 connections) — `server/app/lifespan.py`
+- **_persist_metrics_to_file()** (6 connections) — `server/app/lifespan.py`
+- **asyncio** (6 connections)
+- **FastAPI** (4 connections)
+- **test_cleanup_container_on_error_none()** (3 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
+- **test_cleanup_container_on_error_with_container()** (3 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
+- **test_initialize_enhanced_systems()** (3 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
+- **test_lifespan_happy_path()** (3 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
+- **test_shutdown_with_error_handling()** (3 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
+- **test_startup_application_minimal()** (3 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
+- **Any** (3 connections)
+- **test_calculate_metrics_delta_connection_keys()** (2 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
+- **test_calculate_metrics_delta_no_startup()** (2 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
+- **test_persist_metrics_to_file_writes_json()** (2 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
+- **test_persist_mythos_state_on_error_handles_failure()** (2 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
+- **test_persist_mythos_state_on_error_success()** (2 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
+- **Application lifecycle management for MythosMUD server. This module handles…** (1 connections) — `server/app/lifespan.py`
+- **Initialize enhanced logging and monitoring systems. Returns: LogAggregator…** (1 connections) — `server/app/lifespan.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (19 shared connections)
-- [MonitoringDashboard](MonitoringDashboard.md) (18 shared connections)
-- [system_monitoring.py](system_monitoring.py.md) (16 shared connections)
-- [get_cache_manager](get_cache_manager.md) (14 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
-- [test_users.py](test_users.py.md) (6 shared connections)
-- [fastapi_integration.py](fastapi_integration.py.md) (6 shared connections)
-- [LucidityFluxService](LucidityFluxService.md) (5 shared connections)
-- [game_tick_processing.py](game_tick_processing.py.md) (5 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (4 shared connections)
-- [LogAggregator](LogAggregator.md) (4 shared connections)
-- [testing_examples.py](testing_examples.py.md) (4 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (11 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (6 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (5 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (3 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (3 shared connections)
+- [LogAggregator](LogAggregator.md) (3 shared connections)
+- [TestMonitoringEndpoints](TestMonitoringEndpoints.md) (3 shared connections)
+- [factory.py](factory.py.md) (3 shared connections)
+- [test_lifespan_shutdown.py](test_lifespan_shutdown.py.md) (3 shared connections)
+- [log_exception_once](log_exception_once.md) (2 shared connections)
+- [RestartInvalidatingJWTStrategy](RestartInvalidatingJWTStrategy.md) (2 shared connections)
 
 ## Source Files
 
-- `server/api/system_monitoring.py`
 - `server/app/lifespan.py`
-- `server/auth/jwt_strategy.py`
-- `server/auth/token_epoch.py`
-- `server/monitoring/memory_leak_metrics.py`
-- `server/monitoring/monitoring_dashboard.py`
-- `server/monitoring/performance_monitor.py`
-- `server/structured_logging/enhanced_logging_config.py`
-- `server/tests/unit/auth/conftest.py`
-- `server/tests/unit/auth/test_jwt_strategy.py`
-- `server/tests/unit/test_main.py`
+- `server/tests/unit/app/test_lifespan_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 292 (95%)
-- INFERRED: 16 (5%)
+- EXTRACTED: 115 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

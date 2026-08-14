@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
-- [Player](Player.md) (4 shared connections)
+- [CombatService](CombatService.md) (4 shared connections)
 - [event_types.py](event_types.py.md) (3 shared connections)
+- [server/models/game.py](server-models-game.py.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
 
 ## Source Files
 

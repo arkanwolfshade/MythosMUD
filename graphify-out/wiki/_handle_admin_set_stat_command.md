@@ -1,11 +1,10 @@
 # _handle_admin_set_stat_command
 
-> 74 nodes
+> 72 nodes
 
 ## Key Concepts
 
 - **_handle_admin_set_stat_command()** (32 connections) — `server/commands/admin_setstat_command.py`
-- **admin_setstat_command.py** (28 connections) — `server/commands/admin_setstat_command.py`
 - **test_admin_setstat_command.py** (21 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
 - **asyncio** (18 connections)
 - **_apply_stat_change_and_build_result()** (8 connections) — `server/commands/admin_setstat_command.py`
@@ -29,16 +28,16 @@
 - **test_handle_admin_set_stat_command_missing_target_player()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
 - **test_handle_admin_set_stat_command_missing_value()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
 - **test_handle_admin_set_stat_command_mp_above_maximum()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- *... and 49 more nodes in this community*
+- **test_handle_admin_set_stat_command_no_app_context()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (6 shared connections)
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) (3 shared connections)
-- [build_event](build_event.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (16 shared connections)
+- [test_admin_commands.py](test_admin_commands.py.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [AdminActionsLogger](AdminActionsLogger.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 149 (100%)
+- EXTRACTED: 137 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

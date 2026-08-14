@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **RoomService** (61 connections) — `server/game/room_service.py`
+- **RoomService** (62 connections) — `server/game/room_service.py`
 - **Any** (13 connections)
 - **.get_room()** (8 connections) — `server/game/room_service.py`
 - **.get_room_info()** (7 connections) — `server/game/room_service.py`
@@ -34,16 +34,17 @@
 ## Relationships
 
 - [server/dependencies.py](server-dependencies.py.md) (8 shared connections)
-- [rooms.py](rooms.py.md) (6 shared connections)
-- [map_minimap.py](map_minimap.py.md) (5 shared connections)
-- [test_maps.py](test_maps.py.md) (4 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
-- [maps.py](maps.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [test_maps.py](test_maps.py.md) (6 shared connections)
+- [MapZoneContext](MapZoneContext.md) (5 shared connections)
+- [test_rooms_api.py](test_rooms_api.py.md) (5 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 - [HealthService](HealthService.md) (1 shared connections)
 - [fixture](fixture.md) (1 shared connections)
 - [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- [_apply_exploration_filter_if_needed](_apply_exploration_filter_if_needed.md) (1 shared connections)
+- [HolidayService](HolidayService.md) (1 shared connections)
+- [MythosTimeEventConsumer](MythosTimeEventConsumer.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 101 (92%)
+- EXTRACTED: 102 (92%)
 - INFERRED: 9 (8%)
 - AMBIGUOUS: 0 (0%)
 

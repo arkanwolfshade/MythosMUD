@@ -12,8 +12,9 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [event_handlers.py](event_handlers.py.md) (1 shared connections)
+- [lifecycle_manager.py](lifecycle_manager.py.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files
 

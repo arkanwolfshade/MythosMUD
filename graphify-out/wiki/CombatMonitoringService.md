@@ -34,12 +34,13 @@
 ## Relationships
 
 - [Any](Any.md) (6 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
+- [combat_monitoring_service.py](combat_monitoring_service.py.md) (4 shared connections)
 - [._generate_alert](_generate_alert.md) (4 shared connections)
 - [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (3 shared connections)
 - [Alert](Alert.md) (2 shared connections)
 - [monitoring_service](monitoring_service.md) (1 shared connections)
 - [get_combat_monitoring](get_combat_monitoring.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

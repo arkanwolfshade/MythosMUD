@@ -33,10 +33,11 @@
 
 ## Relationships
 
-- [test_health.py](test_health.py.md) (15 shared connections)
-- [HealthService](HealthService.md) (4 shared connections)
-- [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [test_health.py](test_health.py.md) (16 shared connections)
+- [HealthService](HealthService.md) (3 shared connections)
+- [test_monitoring_endpoints.py](test_monitoring_endpoints.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 

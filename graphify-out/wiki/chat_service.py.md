@@ -1,62 +1,70 @@
 # chat_service.py
 
-> 43 nodes
+> 139 nodes
 
 ## Key Concepts
 
-- **chat_service.py** (33 connections) — `server/game/chat_service.py`
-- **ChatMessage** (27 connections) — `server/game/chat_message.py`
-- **chat_pose_helpers.py** (14 connections) — `server/game/chat_pose_helpers.py`
-- **chat_message.py** (13 connections) — `server/game/chat_message.py`
-- **set_player_pose()** (8 connections) — `server/game/chat_pose_helpers.py`
-- **clear_player_pose()** (5 connections) — `server/game/chat_pose_helpers.py`
-- **get_player_pose()** (5 connections) — `server/game/chat_pose_helpers.py`
-- **Any** (5 connections)
-- **get_room_poses()** (4 connections) — `server/game/chat_pose_helpers.py`
-- **normalize_player_id()** (4 connections) — `server/game/chat_pose_helpers.py`
-- **test_get_room_messages()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **UUID** (4 connections)
-- **.to_dict()** (3 connections) — `server/game/chat_message.py`
-- **test_chat_message_init()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_chat_message_init_with_target()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_chat_message_log_message()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_chat_message_to_dict()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_chat_message_to_dict_with_echo_sent()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_chat_message_to_dict_with_target()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
-- **.__init__()** (2 connections) — `server/game/chat_message.py`
-- **.log_message()** (2 connections) — `server/game/chat_message.py`
-- **UUID** (2 connections)
-- **vulture_allowlist.py** (2 connections) — `vulture_allowlist.py`
-- **Any** (1 connections)
-- **Chat message model for MythosMUD. This module provides the ChatMessage class…** (1 connections) — `server/game/chat_message.py`
-- *... and 18 more nodes in this community*
+- **chat_service.py** (59 connections) — `server/game/chat_service.py`
+- **ChatMessage** (48 connections) — `server/game/chat_message.py`
+- **test_chat_npc_system.py** (46 connections) — `server/tests/unit/game/test_chat_npc_system.py`
+- **chat_npc_system.py** (33 connections) — `server/game/chat_npc_system.py`
+- **chat_message_senders.py** (30 connections) — `server/game/chat_message_senders.py`
+- **chat_message.py** (19 connections) — `server/game/chat_message.py`
+- **ChatUserManager** (14 connections) — `server/game/chat_channel_message_senders.py`
+- **create_and_log_chat_message()** (14 connections) — `server/game/chat_message_helpers.py`
+- **ChatRateLimiter** (13 connections) — `server/game/chat_channel_message_senders.py`
+- **send_npc_say_to_room()** (13 connections) — `server/game/chat_npc_system.py`
+- **chat_message_helpers.py** (13 connections) — `server/game/chat_message_helpers.py`
+- **ChatLogger** (12 connections) — `server/game/chat_channel_message_senders.py`
+- **ChatPlayerService** (12 connections) — `server/game/chat_channel_message_senders.py`
+- **test_chat_message_helpers.py** (12 connections) — `server/tests/unit/game/test_chat_message_helpers.py`
+- **store_message_in_room_history()** (11 connections) — `server/game/chat_message_helpers.py`
+- **send_personal_system_message()** (11 connections) — `server/game/chat_npc_system.py`
+- **.send_say_message()** (11 connections) — `server/game/chat_service.py`
+- **subscribe_npc_spoke_to_chat()** (9 connections) — `server/game/chat_npc_system.py`
+- **deliver_npc_room_speech()** (8 connections) — `server/game/chat_npc_system.py`
+- **schedule_npc_room_speech()** (8 connections) — `server/game/chat_npc_system.py`
+- **set_chat_service_for_npc_system()** (8 connections) — `server/game/chat_npc_system.py`
+- **asyncio** (8 connections)
+- **_ChatDeliveryService** (7 connections) — `server/game/chat_npc_system.py`
+- **.initialize()** (7 connections) — `server/container/bundles/chat.py`
+- **create_and_log_say_message()** (7 connections) — `server/game/chat_message_helpers.py`
+- *... and 114 more nodes in this community*
 
 ## Relationships
 
-- [chat_message_senders.py](chat_message_senders.py.md) (16 shared connections)
-- [get_logger](get_logger.md) (12 shared connections)
-- [test_chat_service.py](test_chat_service.py.md) (10 shared connections)
-- [chat_nats_publisher.py](chat_nats_publisher.py.md) (7 shared connections)
-- [ChatService](ChatService.md) (4 shared connections)
-- [ChatModeration](ChatModeration.md) (2 shared connections)
-- [ChatPoseManager](ChatPoseManager.md) (2 shared connections)
-- [UserManagerProtocol](UserManagerProtocol.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
+- [chat_channel_message_senders.py](chat_channel_message_senders.py.md) (40 shared connections)
+- [ChatService](ChatService.md) (27 shared connections)
+- [test_chat_message_senders.py](test_chat_message_senders.py.md) (24 shared connections)
+- [get_logger](get_logger.md) (15 shared connections)
+- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (14 shared connections)
+- [quest_chat_notify.py](quest_chat_notify.py.md) (14 shared connections)
+- [test_chat_pose_helpers.py](test_chat_pose_helpers.py.md) (8 shared connections)
+- [event_types.py](event_types.py.md) (8 shared connections)
+- [quest_commands.py](quest_commands.py.md) (7 shared connections)
+- [test_chat_validator.py](test_chat_validator.py.md) (5 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
+- [EventBus](EventBus.md) (4 shared connections)
 
 ## Source Files
 
+- `server/container/bundles/chat.py`
+- `server/game/chat_channel_message_senders.py`
 - `server/game/chat_message.py`
-- `server/game/chat_pose_helpers.py`
+- `server/game/chat_message_helpers.py`
+- `server/game/chat_message_senders.py`
+- `server/game/chat_npc_system.py`
 - `server/game/chat_service.py`
-- `server/tests/unit/game/test_chat_service.py`
+- `server/game/chat_validation_helpers.py`
+- `server/npc/npc_display_names.py`
+- `server/tests/unit/game/test_chat_message_helpers.py`
+- `server/tests/unit/game/test_chat_npc_system.py`
 - `vulture_allowlist.py`
 
 ## Audit Trail
 
-- EXTRACTED: 115 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 420 (97%)
+- INFERRED: 15 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

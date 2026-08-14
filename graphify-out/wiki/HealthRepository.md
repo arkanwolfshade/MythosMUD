@@ -1,53 +1,53 @@
 # HealthRepository
 
-> 25 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **HealthRepository** (20 connections) — `server/persistence/repositories/health_repository.py`
+- **HealthRepository** (31 connections) — `server/persistence/repositories/health_repository.py`
+- **test_health_repository.py** (19 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **asyncio** (9 connections)
 - **._damage_player_inner()** (7 connections) — `server/persistence/repositories/health_repository.py`
 - **.update_player_health()** (7 connections) — `server/persistence/repositories/health_repository.py`
 - **._heal_player_inner()** (6 connections) — `server/persistence/repositories/health_repository.py`
+- **_stats_int()** (6 connections) — `server/persistence/repositories/health_repository.py`
 - **.damage_player()** (5 connections) — `server/persistence/repositories/health_repository.py`
 - **._log_damage_error()** (5 connections) — `server/persistence/repositories/health_repository.py`
 - **._update_player_health_inner()** (5 connections) — `server/persistence/repositories/health_repository.py`
 - **Player** (5 connections)
 - **.heal_player()** (4 connections) — `server/persistence/repositories/health_repository.py`
-- **_stats_int()** (4 connections) — `server/persistence/repositories/health_repository.py`
+- **test_cold_damage_resistance_reduces_damage()** (4 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
+- **test_damage_defaults_current_dp_to_20_when_missing()** (4 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
 - **._calculate_effective_damage()** (3 connections) — `server/persistence/repositories/health_repository.py`
 - **.__init__()** (3 connections) — `server/persistence/repositories/health_repository.py`
-- **UUID** (3 connections)
-- **Exception** (1 connections)
-- **Log critical damage persistence failure.** (1 connections) — `server/persistence/repositories/health_repository.py`
-- **Execute atomic health update via update_player_health procedure.** (1 connections) — `server/persistence/repositories/health_repository.py`
-- **Damage a player and persist health changes atomically. Args: player: Player to…** (1 connections) — `server/persistence/repositories/health_repository.py`
-- **Heal a player and persist health changes atomically.** (1 connections) — `server/persistence/repositories/health_repository.py`
-- **Core heal logic without error handling wrapper.** (1 connections) — `server/persistence/repositories/health_repository.py`
-- **Update player current_dp field atomically. Args: player_id: Player UUID or…** (1 connections) — `server/persistence/repositories/health_repository.py`
-- **Convert stat values to int with a safe fallback.** (1 connections) — `server/persistence/repositories/health_repository.py`
-- **Repository for player health persistence operations. Handles damage, healing,…** (1 connections) — `server/persistence/repositories/health_repository.py`
-- **Initialize the health repository. Args: event_bus: Optional EventBus for…** (1 connections) — `server/persistence/repositories/health_repository.py`
-- **Calculate effective damage after applying simple resistance rules. Currently…** (1 connections) — `server/persistence/repositories/health_repository.py`
-- **Core damage logic without error handling wrapper.** (1 connections) — `server/persistence/repositories/health_repository.py`
+- **test_calculate_effective_damage_zero_and_resistance_edge_cases()** (3 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **test_damage_player_logs_and_reraises_on_unexpected_error()** (3 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **test_damage_player_rejects_negative()** (3 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **test_heal_player_logs_and_reraises_on_unexpected_error()** (3 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **test_heal_player_max_dp_fallback_when_zero()** (3 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **test_heal_player_no_op_when_already_full()** (3 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **test_heal_player_rejects_negative()** (3 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **test_heal_player_success_and_capped()** (3 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **test_stats_int_defaults_and_coercion()** (3 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (5 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [test_cold_damage_resistance_reduces_damage](test_cold_damage_resistance_reduces_damage.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [server/persistence/__init__.py](server-persistence-__init__.py.md) (1 shared connections)
-- [log_and_raise](log_and_raise.md) (1 shared connections)
-- [get_session_maker](get_session_maker.md) (1 shared connections)
+- [get_logger](get_logger.md) (13 shared connections)
+- [Player](Player.md) (6 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (2 shared connections)
+- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/persistence/repositories/health_repository.py`
+- `server/tests/unit/persistence/repositories/test_health_repository.py`
+- `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 95 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

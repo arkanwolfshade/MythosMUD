@@ -1,6 +1,6 @@
 # multiplayer-browser-helpers.js
 
-> 34 nodes
+> 32 nodes
 
 ## Key Concepts
 
@@ -17,7 +17,6 @@
 - **hasLoginSubmitButtonInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **hasRoomSubscriptionInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **multiplayer-browser-helpers.test.ts** (4 connections) — `client/src/test/multiplayer-browser-helpers.test.ts`
-- **multiplayer-browser-window.d.ts** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-window.d.ts`
 - **elementTextIncludesGameInfo()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **hasBodyTextGameUiIndicators()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **hasConnectedStatusInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
@@ -29,22 +28,21 @@
 - **captureOccupantsSnapshotInBrowser()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **computedStyleHidesElement()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **elementShowsConnectedStatus()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- *... and 9 more nodes in this community*
+- **fieldHasCommandPlaceholder()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [multiplayer.ts](multiplayer.ts.md) (2 shared connections)
-- [fixtures/auth.ts](fixtures-auth.ts.md) (1 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (2 shared connections)
 
 ## Source Files
 
 - `client/src/test/multiplayer-browser-helpers.test.ts`
 - `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- `client/tests/e2e/runtime/fixtures/multiplayer-browser-window.d.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 79 (100%)
+- EXTRACTED: 76 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

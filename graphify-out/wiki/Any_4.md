@@ -1,47 +1,46 @@
 # Any
 
-> 23 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **Any** (13 connections)
-- **.render_map()** (11 connections) — `server/services/ascii_map_renderer.py`
-- **._build_grid()** (6 connections) — `server/services/ascii_map_renderer.py`
-- **._build_exit_lookup()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._determine_map_style()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._get_exit_entries_for_room()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._get_horizontal_exit_char()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._render_room_row()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._resolve_exit_target()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._get_room_symbol()** (4 connections) — `server/services/ascii_map_renderer.py`
-- **._horizontal_exit_char_between()** (4 connections) — `server/services/ascii_map_renderer.py`
-- **._render_empty_map()** (3 connections) — `server/services/ascii_map_renderer.py`
-- **Resolve one exit to (target_x, target_y) and is_bidirectional. Returns None if…** (1 connections) — `server/services/ascii_map_renderer.py`
-- **Return list of (direction, (target_x, target_y), is_bidirectional) for exits…** (1 connections) — `server/services/ascii_map_renderer.py`
-- **Build exit lookup map from room data.** (1 connections) — `server/services/ascii_map_renderer.py`
-- **Render a single row of rooms with horizontal exits.** (1 connections) — `server/services/ascii_map_renderer.py`
-- **Render an ASCII map as HTML. Args: rooms: List of room dictionaries with…** (1 connections) — `server/services/ascii_map_renderer.py`
-- **Return the horizontal exit character (—, >, or <) given east/west exit state,…** (1 connections) — `server/services/ascii_map_renderer.py`
-- **Get exit character to display after a room for horizontal (east/west) exits.…** (1 connections) — `server/services/ascii_map_renderer.py`
-- **Determine map style from room data. Args: rooms: List of room dictionaries…** (1 connections) — `server/services/ascii_map_renderer.py`
-- **Build a coordinate grid from room data. Args: rooms: List of room dictionaries…** (1 connections) — `server/services/ascii_map_renderer.py`
-- **Get ASCII symbol for a room. Args: room: Room dictionary map_style: Current map…** (1 connections) — `server/services/ascii_map_renderer.py`
-- **Render an empty map. Args: width: Viewport width height: Viewport height…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Any** (12 connections)
+- **._try_evaluators()** (7 connections) — `server/npc/behavior_engine.py`
+- **.evaluate_condition()** (6 connections) — `server/npc/behavior_engine.py`
+- **.execute_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **.get_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_boolean_condition()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_equality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_inequality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_numeric_comparison()** (4 connections) — `server/npc/behavior_engine.py`
+- **.execute_action()** (4 connections) — `server/npc/behavior_engine.py`
+- **.add_rule()** (3 connections) — `server/npc/behavior_engine.py`
+- **.get_rules()** (3 connections) — `server/npc/behavior_engine.py`
+- **.register_action_handler()** (3 connections) — `server/npc/behavior_engine.py`
+- **Get all behavior rules.** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate equality condition (==). Returns: bool if condition matches, None if…** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate inequality condition (!=). Returns: bool if condition matches, None if…** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate numeric comparison conditions (>=, <=, >, <). Args: condition:…** (1 connections) — `server/npc/behavior_engine.py`
+- **Try multiple evaluator methods in sequence. Args: condition: Condition string…** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate boolean conditions and variable lookups. Args: condition: Condition…** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate a condition string against context. Args: condition: Condition string…** (1 connections) — `server/npc/behavior_engine.py`
+- **Get rules that are applicable given the current context. Args: context: Current…** (1 connections) — `server/npc/behavior_engine.py`
+- **Register an action handler for a specific action. Args: action_name: Name of…** (1 connections) — `server/npc/behavior_engine.py`
+- **Execute a specific action. Args: action_name: Name of the action to execute…** (1 connections) — `server/npc/behavior_engine.py`
+- **Execute all applicable rules based on context. Args: context: Current context…** (1 connections) — `server/npc/behavior_engine.py`
+- **Add a behavior rule to the engine. Args: rule: Rule dictionary with name,…** (1 connections) — `server/npc/behavior_engine.py`
 
 ## Relationships
 
-- [AsciiMapRenderer](AsciiMapRenderer.md) (11 shared connections)
-- [._get_vertical_exit_char](_get_vertical_exit_char.md) (4 shared connections)
-- [._exit_is_bidirectional](_exit_is_bidirectional.md) (2 shared connections)
-- [._auto_center_viewport](_auto_center_viewport.md) (1 shared connections)
+- [BehaviorEngine](BehaviorEngine.md) (12 shared connections)
 
 ## Source Files
 
-- `server/services/ascii_map_renderer.py`
+- `server/npc/behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (100%)
+- EXTRACTED: 44 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

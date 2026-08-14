@@ -32,7 +32,7 @@
 
 ## Relationships
 
-- [Package Engines Node](Package_Engines_Node.md) (1 shared connections)
+- [client/package.json](client-package.json.md) (1 shared connections)
 
 ## Source Files
 

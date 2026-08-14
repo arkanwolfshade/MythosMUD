@@ -17,12 +17,11 @@
 
 ## Relationships
 
-- [test_party_service.py](test_party_service.py.md) (3 shared connections)
 - [PartyService](PartyService.md) (3 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [_str_id](_str_id.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [test_party_service.py](test_party_service.py.md) (3 shared connections)
+- [party_service.py](party_service.py.md) (2 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files
 

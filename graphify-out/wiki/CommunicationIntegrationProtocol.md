@@ -22,7 +22,7 @@
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (5 shared connections)
+- [EventBus](EventBus.md) (5 shared connections)
 
 ## Source Files
 

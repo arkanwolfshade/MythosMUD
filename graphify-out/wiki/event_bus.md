@@ -10,7 +10,7 @@
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 - [test_event_bus.py](test_event_bus.py.md) (1 shared connections)
 
 ## Source Files

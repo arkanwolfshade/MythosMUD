@@ -9,6 +9,7 @@
 - **send_personal_message_old_impl()** (12 connections) — `server/realtime/connection_helpers.py`
 - **asyncio** (12 connections)
 - **_send_to_websockets()** (11 connections) — `server/realtime/connection_helpers.py`
+- **handle_new_login_impl()** (10 connections) — `server/realtime/connection_helpers.py`
 - **_optimize_payload()** (10 connections) — `server/realtime/connection_helpers.py`
 - **Any** (10 connections)
 - **test_connection_helpers.py** (9 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
@@ -18,7 +19,6 @@
 - **broadcast_room_event_impl()** (6 connections) — `server/realtime/connection_helpers.py`
 - **_queue_message_if_needed()** (6 connections) — `server/realtime/connection_helpers.py`
 - **test_send_to_websockets_websocket_error()** (5 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **.mark_player_seen()** (4 connections) — `server/realtime/connection_manager.py`
 - **test_broadcast_global_event_impl()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
 - **test_broadcast_room_event_impl()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
 - **test_handle_new_login_impl()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
@@ -33,22 +33,24 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (17 shared connections)
-- [connection_manager.py](connection_manager.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (13 shared connections)
+- [ConnectionManager](ConnectionManager.md) (4 shared connections)
+- [connection_manager.py](connection_manager.py.md) (3 shared connections)
 - [build_event](build_event.md) (2 shared connections)
-- [UUID](UUID.md) (2 shared connections)
 - [AttributeError](AttributeError.md) (2 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (1 shared connections)
+- [test_rest_command.py](test_rest_command.py.md) (1 shared connections)
+- [PayloadOptimizer](PayloadOptimizer.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/connection_helpers.py`
-- `server/realtime/connection_manager.py`
 - `server/tests/unit/realtime/test_connection_helpers.py`
 - `server/tests/unit/realtime/test_connection_helpers_impl.py`
 
 ## Audit Trail
 
-- EXTRACTED: 165 (99%)
+- EXTRACTED: 168 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

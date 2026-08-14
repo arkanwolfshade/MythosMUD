@@ -1,11 +1,11 @@
 # test_health_monitor.py
 
-> 30 nodes
+> 40 nodes
 
 ## Key Concepts
 
-- **test_health_monitor.py** (16 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **asyncio** (6 connections)
+- **test_health_monitor.py** (26 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **asyncio** (12 connections)
 - **fixture** (5 connections)
 - **health_monitor()** (4 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **mock_cleanup_dead_websocket()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
@@ -19,22 +19,21 @@
 - **test_health_monitor_init_custom_intervals()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **test_start_periodic_checks()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **test_stop_periodic_checks()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_check_all_connections_health_with_metadata()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_cleanup_stale_connections()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **test_health_monitor_init()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Unit tests for health monitor. Tests the HealthMonitor class.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Test check_all_connections_health() checks all connections.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Test HealthMonitor initialization with custom intervals.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Test start_periodic_checks() starts periodic checks.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Test stop_periodic_checks() stops periodic checks.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Create a mock is_websocket_open callback.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Create a mock validate_token callback.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Create a mock cleanup_dead_websocket callback.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Create a mock performance tracker.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- *... and 5 more nodes in this community*
+- **test_periodic_health_check_task_cancel()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_process_single_connection_paths()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_validate_and_update_token()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_wait_for_task_cancellation()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_check_connection_stale()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_check_websocket_open()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_find_player_id_for_cleanup()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [HealthMonitor](HealthMonitor.md) (3 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (4 shared connections)
 
 ## Source Files
 
@@ -42,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
+- EXTRACTED: 58 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -36,11 +36,12 @@
 - [Path](Path.md) (13 shared connections)
 - [RoomLoader](RoomLoader.md) (12 shared connections)
 - [Reporter](Reporter.md) (9 shared connections)
-- [SchemaValidator](SchemaValidator.md) (8 shared connections)
 - [TestValidatorComponents](TestValidatorComponents.md) (6 shared connections)
+- [SchemaValidator](SchemaValidator.md) (6 shared connections)
 - [TestPathValidator](TestPathValidator.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [alias_schema.json](alias_schema.json.md) (1 shared connections)
-- [Hierarchical Schema Tests](Hierarchical_Schema_Tests.md) (1 shared connections)
+- [TestHierarchicalSchema](TestHierarchicalSchema.md) (1 shared connections)
 
 ## Source Files
 

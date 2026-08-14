@@ -1,59 +1,63 @@
 # utils/config.ts
 
-> 22 nodes
+> 31 nodes
 
 ## Key Concepts
 
-- **utils/config.ts** (27 connections) — `client/src/utils/config.ts`
+- **utils/config.ts** (28 connections) — `client/src/utils/config.ts`
+- **MonitoringPanel.tsx** (19 connections) — `client/src/components/panels/MonitoringPanel.tsx`
 - **API_V1_BASE** (18 connections) — `client/src/utils/config.ts`
-- **getVersionedApiBaseUrl()** (15 connections) — `client/src/utils/config.ts`
-- **MapView.tsx** (14 connections) — `client/src/components/MapView.tsx`
+- **getVersionedApiBaseUrl()** (17 connections) — `client/src/utils/config.ts`
 - **AppCreationFlowViews.tsx** (10 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
+- **AppRootViews.tsx** (6 connections) — `client/src/mythosApp/AppRootViews.tsx`
 - **AppCreationFlowViews()** (5 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
 - **creationShell()** (5 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
 - **config.test.ts** (5 connections) — `client/src/utils/__tests__/config.test.ts`
-- **MapView()** (4 connections) — `client/src/components/MapView.tsx`
+- **MonitoringPanel()** (4 connections) — `client/src/components/panels/MonitoringPanel.tsx`
 - **startLoginGracePeriod.ts** (4 connections) — `client/src/mythosApp/startLoginGracePeriod.ts`
+- **ConnectionHealthStats()** (3 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **formatNumber()** (3 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **formatPercentage()** (3 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **useMonitoringPanel()** (3 connections) — `client/src/components/panels/MonitoringPanel.tsx`
 - **renderNameStep()** (3 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
 - **renderProfessionStep()** (3 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
 - **renderSkillsStep()** (3 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
 - **renderStatsStep()** (3 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
 - **getApiBaseUrl()** (3 connections) — `client/src/utils/config.ts`
-- **MapViewBody()** (2 connections) — `client/src/components/MapView.tsx`
-- **useMapViewEffects()** (2 connections) — `client/src/components/MapView.tsx`
-- **MapView.test.tsx** (2 connections) — `client/src/components/map/__tests__/MapView.test.tsx`
-- **API_BASE_URL** (2 connections) — `client/src/utils/config.ts`
-- **MapViewProps** (1 connections) — `client/src/components/MapView.tsx`
-- **Room** (1 connections) — `client/src/components/MapView.tsx`
-- **MapViewHeader()** (1 connections) — `client/src/components/MapView.tsx`
+- **DualConnectionStats()** (2 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **formatTime()** (2 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **loadMonitoringSnapshot()** (2 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **PerformanceStats()** (2 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **SessionStats()** (2 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (8 shared connections)
-- [useAsciiMapState.ts](useAsciiMapState.ts.md) (5 shared connections)
-- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (4 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (4 shared connections)
+- [deleteCharacterFlow.ts](deleteCharacterFlow.ts.md) (8 shared connections)
+- [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (5 shared connections)
+- [Profession](Profession.md) (4 shared connections)
 - [1774539086359-useMythosAppState.ts](1774539086359-useMythosAppState.ts.md) (4 shared connections)
-- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (4 shared connections)
 - [security.ts](security.ts.md) (4 shared connections)
+- [useAsciiMapState.ts](useAsciiMapState.ts.md) (3 shared connections)
 - [gameStore.ts](gameStore.ts.md) (3 shared connections)
-- [RoomMapEditorRuntime.hooks.ts](RoomMapEditorRuntime.hooks.ts.md) (3 shared connections)
+- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (3 shared connections)
 - [map/types.ts](map-types.ts.md) (3 shared connections)
-- [MonitoringPanel.tsx](MonitoringPanel.tsx.md) (3 shared connections)
-- [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (2 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (3 shared connections)
+- [MonitoringPanel.test.tsx](MonitoringPanel.test.tsx.md) (2 shared connections)
+- [EldritchIcon.tsx](EldritchIcon.tsx.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/components/MapView.tsx`
-- `client/src/components/map/__tests__/MapView.test.tsx`
+- `client/src/components/panels/MonitoringPanel.tsx`
 - `client/src/mythosApp/AppCreationFlowViews.tsx`
+- `client/src/mythosApp/AppRootViews.tsx`
 - `client/src/mythosApp/startLoginGracePeriod.ts`
 - `client/src/utils/__tests__/config.test.ts`
 - `client/src/utils/config.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 93 (100%)
+- EXTRACTED: 110 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

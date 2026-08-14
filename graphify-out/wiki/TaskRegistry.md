@@ -1,66 +1,57 @@
 # TaskRegistry
 
-> 142 nodes
+> 46 nodes
 
 ## Key Concepts
 
-- **TaskRegistry** (33 connections) — `server/app/task_registry.py`
-- **MythosChronicle** (27 connections) — `server/time/time_service.py`
-- **EventPublisher** (20 connections) — `server/realtime/event_publisher.py`
-- **get_global_tracked_manager()** (17 connections) — `server/app/tracked_task_manager.py`
-- **datetime** (15 connections)
-- **TrackedTaskManager** (14 connections) — `server/app/tracked_task_manager.py`
-- **tracked_task_manager.py** (14 connections) — `server/app/tracked_task_manager.py`
-- **_ensure_utc()** (11 connections) — `server/time/time_service.py`
-- **MemoryThresholdMonitor** (10 connections) — `server/app/memory_cleanup_service.py`
-- **.get_calendar_components()** (10 connections) — `server/time/time_service.py`
-- **memory_cleanup_service.py** (10 connections) — `server/app/memory_cleanup_service.py`
-- **memory_lifespan_coordinator.py** (10 connections) — `server/app/memory_lifespan_coordinator.py`
-- **ChronicleState** (9 connections) — `server/time/time_service.py`
-- **.get_current_mythos_datetime()** (9 connections) — `server/time/time_service.py`
-- **event_publisher.py** (9 connections) — `server/realtime/event_publisher.py`
-- **game_tick_service.py** (9 connections) — `server/services/game_tick_service.py`
-- **.get_daypart()** (8 connections) — `server/time/time_service.py`
-- **._load_state()** (8 connections) — `server/time/time_service.py`
-- **._persist_state()** (8 connections) — `server/time/time_service.py`
-- **get_registry()** (7 connections) — `server/app/task_registry.py`
+- **TaskRegistry** (48 connections) — `server/app/task_registry.py`
+- **test_task_registry.py** (24 connections) — `server/tests/unit/app/test_task_registry.py`
+- **asyncio** (14 connections)
+- **task_registry.py** (11 connections) — `server/app/task_registry.py`
+- **get_registry()** (9 connections) — `server/app/task_registry.py`
+- **_sleep_briefly()** (9 connections) — `server/tests/unit/app/test_task_registry.py`
 - **.shutdown_all()** (7 connections) — `server/app/task_registry.py`
-- **._create_event_message()** (7 connections) — `server/realtime/event_publisher.py`
-- **.__init__()** (7 connections) — `server/time/tick_scheduler.py`
-- **.is_daytime()** (7 connections) — `server/time/time_service.py`
-- **.is_witching_hour()** (7 connections) — `server/time/time_service.py`
-- *... and 117 more nodes in this community*
+- **unregister_task()** (7 connections) — `server/app/task_registry.py`
+- **register_task()** (6 connections) — `server/app/task_registry.py`
+- **test_module_level_helpers()** (6 connections) — `server/tests/unit/app/test_task_registry.py`
+- **test_register_closes_coro_when_create_task_fails()** (5 connections) — `server/tests/unit/app/test_task_registry.py`
+- **._cleanup_registry_collections()** (4 connections) — `server/app/task_registry.py`
+- **test_cancel_task_by_name()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
+- **test_get_registry_info_and_metrics()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
+- **test_list_active_tasks_and_stats_by_type()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
+- **test_register_and_unregister_task()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
+- **test_register_duplicate_name_gets_suffix()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
+- **test_register_during_shutdown_raises()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
+- **test_shutdown_all_clears_active_tasks()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
+- **test_task_metadata_repr()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
+- **._cancel_lifecycle_tasks()** (3 connections) — `server/app/task_registry.py`
+- **._cancel_remaining_tasks()** (3 connections) — `server/app/task_registry.py`
+- **._forcible_cleanup_on_timeout()** (3 connections) — `server/app/task_registry.py`
+- **._wait_for_task_completion()** (3 connections) — `server/app/task_registry.py`
+- **_hang_until_cancelled()** (3 connections) — `server/tests/unit/app/test_task_registry.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (24 shared connections)
-- [get_logger](get_logger.md) (16 shared connections)
-- [Any](Any.md) (14 shared connections)
-- [DatabaseError](DatabaseError.md) (7 shared connections)
-- [PeriodicOrphanAuditor](PeriodicOrphanAuditor.md) (6 shared connections)
-- [test_event_publisher.py](test_event_publisher.py.md) (5 shared connections)
-- [test_event_publisher_helpers.py](test_event_publisher_helpers.py.md) (3 shared connections)
-- [GameTickService](GameTickService.md) (3 shared connections)
-- [.create_supervised_task](create_supervised_task.md) (2 shared connections)
-- [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
-- [NPCEventHandler](NPCEventHandler.md) (2 shared connections)
+- [Any](Any.md) (16 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [TrackedTaskManager](TrackedTaskManager.md) (5 shared connections)
+- [.get_task_lifecycle_metrics](get_task_lifecycle_metrics.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
 - [event_types.py](event_types.py.md) (2 shared connections)
+- [MetricsCollector](MetricsCollector.md) (1 shared connections)
+- [MythosTickScheduler](MythosTickScheduler.md) (1 shared connections)
+- [test_monitoring_endpoints.py](test_monitoring_endpoints.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/memory_cleanup_service.py`
-- `server/app/memory_lifespan_coordinator.py`
 - `server/app/task_registry.py`
-- `server/app/tracked_task_manager.py`
-- `server/realtime/event_publisher.py`
-- `server/services/game_tick_service.py`
-- `server/time/tick_scheduler.py`
-- `server/time/time_service.py`
+- `server/tests/unit/app/test_task_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 302 (97%)
-- INFERRED: 10 (3%)
+- EXTRACTED: 129 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

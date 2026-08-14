@@ -1,6 +1,6 @@
 # migration_examples.py
 
-> 36 nodes
+> 38 nodes
 
 ## Key Concepts
 
@@ -13,6 +13,7 @@
 - **migration_example_11()** (3 connections) — `docs/examples/logging/migration_examples.py`
 - **migration_example_14()** (3 connections) — `docs/examples/logging/migration_examples.py`
 - **migration_example_3()** (3 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_5()** (3 connections) — `docs/examples/logging/migration_examples.py`
 - **migration_example_1()** (2 connections) — `docs/examples/logging/migration_examples.py`
 - **migration_example_12()** (2 connections) — `docs/examples/logging/migration_examples.py`
 - **migration_example_13()** (2 connections) — `docs/examples/logging/migration_examples.py`
@@ -28,14 +29,13 @@
 - **Example 10: Batch processing logging migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
 - **Example 1: Basic logging migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
 - **Example 11: Exception tracking migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
-- **Example 12: Async logging migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
-- *... and 11 more nodes in this community*
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [lifespan.py](lifespan.py.md) (1 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
+- [log_with_context](log_with_context.md) (1 shared connections)
 - [correct_patterns.py](correct_patterns.py.md) (1 shared connections)
-- [bind_request_context](bind_request_context.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 42 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 43 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

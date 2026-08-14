@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [map_minimap.py](map_minimap.py.md) (6 shared connections)
+- [MapZoneContext](MapZoneContext.md) (7 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [test_maps.py](test_maps.py.md) (3 shared connections)
-- [maps.py](maps.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 

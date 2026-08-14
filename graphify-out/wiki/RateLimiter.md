@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **RateLimiter** (51 connections) — `server/realtime/rate_limiter.py`
+- **RateLimiter** (58 connections) — `server/realtime/rate_limiter.py`
 - **test_connection_rate_limiter.py** (33 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
 - **.get_message_rate_limit_info()** (3 connections) — `server/realtime/rate_limiter.py`
 - **.get_rate_limit_info()** (3 connections) — `server/realtime/rate_limiter.py`
@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [test_connection_disconnection.py](test_connection_disconnection.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [connection_initialization.py](connection_initialization.py.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (12 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (5 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 125 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 127 (95%)
+- INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

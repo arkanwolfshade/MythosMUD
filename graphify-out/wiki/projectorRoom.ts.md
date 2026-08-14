@@ -1,6 +1,6 @@
 # projectorRoom.ts
 
-> 54 nodes
+> 53 nodes
 
 ## Key Concepts
 
@@ -29,13 +29,13 @@
 - **createRoomUpdateWithPreservedOccupants()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
 - **deriveRoomFromOccupantsWithoutExisting()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
 - **deriveRoomFromRoomState()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- *... and 29 more nodes in this community*
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [stateUpdateUtils.ts](stateUpdateUtils.ts.md) (12 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (12 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (17 shared connections)
 - [ui-v2/types.ts](ui-v2-types.ts.md) (7 shared connections)
+- [GameEvent](GameEvent.md) (7 shared connections)
 - [types/mythosTime.ts](types-mythosTime.ts.md) (5 shared connections)
 - [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (4 shared connections)
 - [logger.ts](logger.ts.md) (2 shared connections)
@@ -54,7 +54,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 166 (100%)
+- EXTRACTED: 165 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

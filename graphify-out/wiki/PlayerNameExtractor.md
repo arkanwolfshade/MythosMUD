@@ -1,6 +1,6 @@
 # PlayerNameExtractor
 
-> 160 nodes
+> 162 nodes
 
 ## Key Concepts
 
@@ -25,18 +25,20 @@
 - **._get_name_from_user_object()** (4 connections) — `server/realtime/player_name_utils.py`
 - **.is_valid_name_for_occupant()** (4 connections) — `server/realtime/player_name_utils.py`
 - **.test_extract_player_name_user_exception()** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **test_player_name_utils.py** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 - **._check_uuid_pattern_match()** (3 connections) — `server/realtime/player_name_utils.py`
 - **.__init__()** (3 connections) — `server/realtime/player_name_utils.py`
 - **.test_check_uuid_pattern_match_invalid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_check_uuid_pattern_match_valid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- *... and 135 more nodes in this community*
+- *... and 137 more nodes in this community*
 
 ## Relationships
 
-- [test_login_grace_period_visual_indicator.py](test_login_grace_period_visual_indicator.py.md) (13 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (12 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
-- [.__init__](__init__.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (12 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (5 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (4 shared connections)
+- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (3 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (1 shared connections)
+- [RealTimeEventHandler](RealTimeEventHandler.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
 
@@ -47,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 275 (97%)
+- EXTRACTED: 277 (97%)
 - INFERRED: 8 (3%)
 - AMBIGUOUS: 0 (0%)
 

@@ -23,7 +23,7 @@
 
 ## Relationships
 
-- [WebSocket Handler Tests](WebSocket_Handler_Tests.md) (9 shared connections)
+- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (9 shared connections)
 - [optimized_comprehensive_sanitize_input](optimized_comprehensive_sanitize_input.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [optimized_sanitize_unicode_input](optimized_sanitize_unicode_input.md) (2 shared connections)

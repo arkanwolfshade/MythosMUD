@@ -1,24 +1,26 @@
 # .__init__
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/game/mechanics.py`
-- **Any** (1 connections)
-- **Initialize the game mechanics service with a persistence layer.** (1 connections) — `server/game/mechanics.py`
+- **.__init__()** (6 connections) — `server/game/party_service.py`
+- **Initialize empty party store. Optionally provide event_bus, connection_manager,…** (1 connections) — `server/game/party_service.py`
 
 ## Relationships
 
+- [PartyService](PartyService.md) (2 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/mechanics.py`
+- `server/game/party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

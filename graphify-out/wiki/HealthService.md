@@ -1,11 +1,10 @@
 # HealthService
 
-> 41 nodes
+> 39 nodes
 
 ## Key Concepts
 
 - **HealthService** (23 connections) — `server/services/health_service.py`
-- **HealthComponents** (21 connections) — `server/models/health.py`
 - **.get_health_status()** (10 connections) — `server/services/health_service.py`
 - **.check_database_health_async()** (9 connections) — `server/services/health_service.py`
 - **._create_health_response()** (7 connections) — `server/services/health_service.py`
@@ -27,32 +26,30 @@
 - **.get_memory_usage()** (3 connections) — `server/services/health_service.py`
 - **.__init__()** (3 connections) — `server/services/health_service.py`
 - **HealthStatus** (3 connections)
-- **Health status for all system components.** (1 connections) — `server/models/health.py`
 - **Async database health check.** (1 connections) — `server/services/health_service.py`
-- *... and 16 more nodes in this community*
+- **check_database_health.** (1 connections) — `server/services/health_service.py`
+- **Check connection manager health.** (1 connections) — `server/services/health_service.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [test_health.py](test_health.py.md) (19 shared connections)
-- [test_health_service.py](test_health_service.py.md) (4 shared connections)
-- [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [send_game_event](send_game_event.md) (1 shared connections)
-- [MemoryProfiler](MemoryProfiler.md) (1 shared connections)
+- [test_health.py](test_health.py.md) (9 shared connections)
+- [test_health_service.py](test_health_service.py.md) (3 shared connections)
+- [NPCStartupService](NPCStartupService.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [RoomService](RoomService.md) (1 shared connections)
 - [fixture](fixture.md) (1 shared connections)
 - [test_room_service.py](test_room_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/health.py`
 - `server/services/health_service.py`
 - `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 99 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 82 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

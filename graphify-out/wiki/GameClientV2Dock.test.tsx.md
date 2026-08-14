@@ -18,7 +18,7 @@
 
 ## Relationships
 
-- [GameClientV2.tsx](GameClientV2.tsx.md) (2 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
 - [GameLogPanel.tsx](GameLogPanel.tsx.md) (1 shared connections)
 
 ## Source Files

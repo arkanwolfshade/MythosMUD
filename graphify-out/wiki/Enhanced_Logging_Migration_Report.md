@@ -1,10 +1,15 @@
 # Enhanced Logging Migration Report
 
-> 1 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **Enhanced Logging Migration Report** (0 connections) — `docs/migration_report.md`
+- **Enhanced Logging Migration Report** (5 connections) — `docs/archive/migration_report.md`
+- **migration_report.md** (1 connections) — `docs/archive/migration_report.md`
+- **Enhanced Logging Features** (1 connections) — `docs/archive/migration_report.md`
+- **Next Steps** (1 connections) — `docs/archive/migration_report.md`
+- **Successfully Updated Files** (1 connections) — `docs/archive/migration_report.md`
+- **Summary** (1 connections) — `docs/archive/migration_report.md`
 
 ## Relationships
 
@@ -12,11 +17,11 @@
 
 ## Source Files
 
-- `docs/migration_report.md`
+- `docs/archive/migration_report.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -32,9 +32,10 @@
 
 ## Relationships
 
-- [npc_database.py](npc_database.py.md) (14 shared connections)
+- [npc_database.py](npc_database.py.md) (13 shared connections)
 - [asyncio](asyncio.md) (9 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [TestResetNPCDatabase](TestResetNPCDatabase.md) (1 shared connections)
 
 ## Source Files
 

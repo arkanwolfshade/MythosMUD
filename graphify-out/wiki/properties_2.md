@@ -1,34 +1,38 @@
 # properties
 
-> 11 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **properties** (12 connections) — `schemas/intersection_schema.json`
-- **sub_zone** (4 connections) — `schemas/intersection_schema.json`
-- **field1** (2 connections) — `schemas/intersection_schema.json`
-- **field2** (2 connections) — `schemas/intersection_schema.json`
-- **field3** (2 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **pattern** (1 connections) — `schemas/intersection_schema.json`
-- **type** (1 connections) — `schemas/intersection_schema.json`
+- **properties** (7 connections) — `schemas/room_schema.json`
+- **exits** (5 connections) — `schemas/room_schema.json`
+- **down** (2 connections) — `schemas/room_schema.json`
+- **east** (2 connections) — `schemas/room_schema.json`
+- **north** (2 connections) — `schemas/room_schema.json`
+- **south** (2 connections) — `schemas/room_schema.json`
+- **up** (2 connections) — `schemas/room_schema.json`
+- **west** (2 connections) — `schemas/room_schema.json`
+- **oneOf** (1 connections) — `schemas/room_schema.json`
+- **oneOf** (1 connections) — `schemas/room_schema.json`
+- **additionalProperties** (1 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
+- **type** (1 connections) — `schemas/room_schema.json`
+- **oneOf** (1 connections) — `schemas/room_schema.json`
+- **oneOf** (1 connections) — `schemas/room_schema.json`
+- **oneOf** (1 connections) — `schemas/room_schema.json`
+- **oneOf** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
-- [Schemas Intersection Schema](Schemas_Intersection_Schema.md) (6 shared connections)
-- [zone](zone.md) (1 shared connections)
-- [id](id.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/intersection_schema.json`
+- `schemas/room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

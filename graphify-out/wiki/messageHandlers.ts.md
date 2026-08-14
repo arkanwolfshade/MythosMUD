@@ -32,10 +32,11 @@
 
 ## Relationships
 
-- [GameClientV2.tsx](GameClientV2.tsx.md) (11 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (10 shared connections)
 - [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (4 shared connections)
 - [logger.ts](logger.ts.md) (2 shared connections)
 - [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
+- [health.ts](health.ts.md) (1 shared connections)
 - [GameTerminal.tsx](GameTerminal.tsx.md) (1 shared connections)
 
 ## Source Files

@@ -1,6 +1,6 @@
 # gameStore.ts
 
-> 58 nodes
+> 60 nodes
 
 ## Key Concepts
 
@@ -29,22 +29,22 @@
 - **MapControls()** (6 connections) — `client/src/components/map/MapControls.tsx`
 - **theme.test.tsx** (6 connections) — `client/src/components/map/__tests__/theme.test.tsx`
 - **RoomDetailsPanel()** (5 connections) — `client/src/components/map/RoomDetailsPanel.tsx`
-- *... and 33 more nodes in this community*
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [RoomMapEditorRuntime.hooks.ts](RoomMapEditorRuntime.hooks.ts.md) (19 shared connections)
+- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (19 shared connections)
 - [map/types.ts](map-types.ts.md) (15 shared connections)
 - [utils/layout.ts](utils-layout.ts.md) (13 shared connections)
-- [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (6 shared connections)
 - [useRoomEditModal.ts](useRoomEditModal.ts.md) (5 shared connections)
-- [GameLogPanel.tsx](GameLogPanel.tsx.md) (5 shared connections)
+- [useGameTerminal.ts](useGameTerminal.ts.md) (5 shared connections)
 - [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (4 shared connections)
+- [GameLogPanel.tsx](GameLogPanel.tsx.md) (4 shared connections)
 - [stateNormalization.ts](stateNormalization.ts.md) (3 shared connections)
 - [MapPerformanceMonitor](MapPerformanceMonitor.md) (3 shared connections)
 - [utils/config.ts](utils-config.ts.md) (3 shared connections)
-- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (2 shared connections)
-- [useAsciiMapState.ts](useAsciiMapState.ts.md) (2 shared connections)
+- [apiTypeGuards.ts](apiTypeGuards.ts.md) (3 shared connections)
+- [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (3 shared connections)
 
 ## Source Files
 
@@ -60,6 +60,7 @@
 - `client/src/components/map/__tests__/RoomMapViewer.rendering.test.tsx`
 - `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
 - `client/src/components/map/__tests__/theme.test.tsx`
+- `client/src/components/map/hooks/__tests__/useMapLayout.test.ts`
 - `client/src/components/map/hooks/__tests__/useRoomMapData.test.ts`
 - `client/src/components/map/hooks/useMapLayout.ts`
 - `client/src/components/map/hooks/useRoomMapData.ts`
@@ -67,11 +68,10 @@
 - `client/src/components/map/utils/layout.ts`
 - `client/src/components/map/utils/mapUtils.ts`
 - `client/src/stores/gameStore.ts`
-- `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 252 (98%)
+- EXTRACTED: 257 (98%)
 - INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 

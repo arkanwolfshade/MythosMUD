@@ -1,41 +1,51 @@
 # Any
 
-> 18 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **WebSocket** (8 connections)
-- **.handle_message()** (6 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (4 connections) — `server/realtime/message_handler_factory.py`
-- **Handle a WebSocket message using the appropriate handler. Args: websocket: The…** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle a specific message type. Args: websocket: The WebSocket connection…** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle command message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle chat message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle ping message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle follow_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle party_invite_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle client_error_report message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Any** (10 connections)
+- **.check_alerts()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.collect_all_metrics()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.collect_cache_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.collect_connection_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.collect_event_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.collect_nats_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.collect_task_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.calculate_growth_rates()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
+- **._calculate_single_growth_rate()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
+- **._check_cache_alerts()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
+- **._check_connection_alerts()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
+- **._check_subscriber_alerts()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
+- **._check_task_alerts()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Collect event metrics from EventBus. Returns: Dictionary with event metrics** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Collect cache metrics from CacheManager. Returns: Dictionary with cache metrics** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Collect task metrics from TaskRegistry. Returns: Dictionary with task metrics** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Collect NATS subscription metrics from NATSService. Returns: Dictionary with…** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Calculate growth rate for a single metric. Args: current: Current metrics…** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Calculate growth rates for metrics over time. Returns: Dictionary mapping…** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Check connection-related alerts and append to alerts list.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Check subscriber growth rate alerts and append to alerts list.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Check cache-related alerts and append to alerts list.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Check task growth rate alerts and append to alerts list.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Check metrics against alert thresholds and return list of alerts. Args:…** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [message_handler_factory.py](message_handler_factory.py.md) (9 shared connections)
-- [test_message_handlers.py](test_message_handlers.py.md) (6 shared connections)
-- [ErrorType](ErrorType.md) (1 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (13 shared connections)
+- [NPCStartupService](NPCStartupService.md) (2 shared connections)
+- [get_cache_manager](get_cache_manager.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [TaskRegistry](TaskRegistry.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_handler_factory.py`
+- `server/monitoring/memory_leak_metrics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (100%)
+- EXTRACTED: 53 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

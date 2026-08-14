@@ -1000,8 +1000,8 @@
     "semantic_hash": ""
   },
   "client/src/components/panels/CommandPanel.tsx": {
-    "mtime": 1786662316.4622517,
-    "ast_hash": "eccd387fe37dbd8b838cc51169bd7c93",
+    "mtime": 1786729033.60963,
+    "ast_hash": "c5757510f16ec7692fc5d842ab88ffd7",
     "semantic_hash": ""
   },
   "client/src/components/panels/ConnectionPanel.tsx": {
@@ -5385,8 +5385,8 @@
     "semantic_hash": ""
   },
   "server/commands/position_commands.py": {
-    "mtime": 1786725976.9618044,
-    "ast_hash": "a67a8d4669713ac4f4ebf3ce6c989d25",
+    "mtime": 1786728487.357808,
+    "ast_hash": "7dadd942db6524a73219dbcb8e1383cf",
     "semantic_hash": ""
   },
   "server/commands/quest_commands.py": {
@@ -5710,8 +5710,8 @@
     "semantic_hash": ""
   },
   "server/events/event_serialization.py": {
-    "mtime": 1786664963.2694886,
-    "ast_hash": "843b45de8913f69fbe78fb004efc7c66",
+    "mtime": 1786728487.357808,
+    "ast_hash": "7f2de24f9fe1faceab866cf1cf6dc921",
     "semantic_hash": ""
   },
   "server/events/event_types.py": {
@@ -5775,8 +5775,8 @@
     "semantic_hash": "d25106e1bbe0feb90169351f7d0a17d3"
   },
   "server/game/chat_service.py": {
-    "mtime": 1786725581.333875,
-    "ast_hash": "11425defba15ca3ed2ba6457221ddb56",
+    "mtime": 1786728487.4341888,
+    "ast_hash": "18f5f4024a69a497803a8d7df113a281",
     "semantic_hash": ""
   },
   "server/game/chat_validation_helpers.py": {
@@ -7370,8 +7370,8 @@
     "semantic_hash": "c5a6753ca937f155d05d38439423aa99"
   },
   "server/scripts/migrate_combat_data.py": {
-    "mtime": 1786725581.333875,
-    "ast_hash": "3dbc877a6bcfb2335d3b6aac0ed9c868",
+    "mtime": 1786728487.433632,
+    "ast_hash": "cadab2f2999d22cf308274c216fe1ca4",
     "semantic_hash": ""
   },
   "server/scripts/player_inventory_migration.py": {
@@ -7870,8 +7870,8 @@
     "semantic_hash": "c561d81b5803bd2a6da67f03f6a19c33"
   },
   "server/services/passive_lucidity_flux/service.py": {
-    "mtime": 1786725446.9788172,
-    "ast_hash": "6e9709189e37ad63660f1e6f775fa341",
+    "mtime": 1786728487.4309921,
+    "ast_hash": "9cbe5234413e98b8355aa565ca7f9426",
     "semantic_hash": ""
   },
   "server/services/passive_lucidity_flux_service.py": {
@@ -8010,8 +8010,8 @@
     "semantic_hash": ""
   },
   "server/structured_logging/logging_utilities.py": {
-    "mtime": 1786662253.1053782,
-    "ast_hash": "1d190d26f5eb412ce82dd50574874e67",
+    "mtime": 1786729033.3440309,
+    "ast_hash": "31815e5174e5631b702abac973fdf3f4",
     "semantic_hash": ""
   },
   "server/structured_logging/player_guid_formatter.py": {
@@ -13950,8 +13950,8 @@
     "semantic_hash": ""
   },
   "client/src/components/map/RoomEditModalForm.tsx": {
-    "mtime": 1786663137.064256,
-    "ast_hash": "3a774bb6060d39958d32d328c5a35a2f",
+    "mtime": 1786729553.9394603,
+    "ast_hash": "5baad937f187ddf24ee385fc0707e290",
     "semantic_hash": ""
   },
   "client/src/components/map/RoomMapEditorRuntime.hooks.ts": {
@@ -14125,8 +14125,8 @@
     "semantic_hash": ""
   },
   "client/src/components/containers/ContainerSplitPaneView.tsx": {
-    "mtime": 1786662709.9151964,
-    "ast_hash": "6532468ff0f75023585c51a906c61bcc",
+    "mtime": 1786729341.443531,
+    "ast_hash": "27c7711abdcca2bb80195a1d5ec23ce2",
     "semantic_hash": ""
   },
   "client/src/components/map/EdgeCreationModalParts.tsx": {
@@ -14140,8 +14140,8 @@
     "semantic_hash": ""
   },
   "server/game/chat_channel_message_senders.py": {
-    "mtime": 1786725976.9628055,
-    "ast_hash": "10c1e0a560b7788be169a6e3e5f49f32",
+    "mtime": 1786728487.357808,
+    "ast_hash": "7447ac79d85457e38f5bba696c128444",
     "semantic_hash": ""
   },
   "server/realtime/connection_manager_health_cleanup.py": {
@@ -15835,8 +15835,8 @@
     "semantic_hash": ""
   },
   "server/tests/unit/structured_logging/test_admin_actions_logger.py": {
-    "mtime": 1786727613.2645674,
-    "ast_hash": "b21306fc189c3382e2df585551ad84ba",
+    "mtime": 1786727920.7977195,
+    "ast_hash": "878d2e0b3d6f1cfd6399436928555175",
     "semantic_hash": ""
   },
   "server/tests/unit/structured_logging/test_log_aggregator.py": {
@@ -16252,6 +16252,11 @@
   "scripts/hads/README.md": {
     "mtime": 1786659775.0555842,
     "ast_hash": "3583b8d27a86ea8be8aee75384964b02",
+    "semantic_hash": ""
+  },
+  "client/src/components/panels/commandPanelSubmit.ts": {
+    "mtime": 1786729458.744478,
+    "ast_hash": "974da2e293c3bbbe11954a7bc9e3c2a8",
     "semantic_hash": ""
   }
 }

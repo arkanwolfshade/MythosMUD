@@ -1,29 +1,32 @@
 # enum
 
-> 8 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **enum** (6 connections) — `schemas/calendar/holiday.schema.json`
-- **tradition** (3 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **catholic** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **islamic** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **jewish** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **mythos** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **neo_pagan** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **enum** (8 connections) — `schemas/items/item_prototype.schema.json`
+- **item_type** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **consumable** (2 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **artifact** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **container** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **currency** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **equipment** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **quest** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **environment** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
 - [properties](properties.md) (1 shared connections)
+- [enum](enum_2.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

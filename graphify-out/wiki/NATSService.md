@@ -1,63 +1,61 @@
 # NATSService
 
-> 140 nodes
+> 107 nodes
 
 ## Key Concepts
 
-- **NATSService** (72 connections) — `server/services/nats_service.py`
-- **CombatEventPublisher** (30 connections) — `server/services/combat_event_publisher.py`
-- **NATSPublishError** (30 connections) — `server/services/nats_exceptions.py`
-- **Any** (17 connections)
-- **._publish_combat_payload()** (14 connections) — `server/services/combat_event_publisher.py`
-- **_CombatPublishJob** (13 connections) — `server/services/combat_event_publisher.py`
+- **NATSService** (122 connections) — `server/services/nats_service.py`
+- **test_nats_service_helpers.py** (57 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
+- **asyncio** (25 connections)
+- **NATSUnsubscribeError** (11 connections) — `server/services/nats_exceptions.py`
 - **.disconnect()** (10 connections) — `server/services/nats_service.py`
-- **.publish_with_pool()** (10 connections) — `server/services/nats_service.py`
-- **._create_tracked_task()** (9 connections) — `server/services/nats_service.py`
 - **.connect()** (8 connections) — `server/services/nats_service.py`
-- **._flush_batch()** (7 connections) — `server/services/nats_service.py`
-- **.__init__()** (7 connections) — `server/services/nats_service.py`
-- **.publish_batch()** (6 connections) — `server/services/nats_service.py`
+- **_mock_create_tracked_task()** (7 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
 - **._verify_subscription_cleanup()** (6 connections) — `server/services/nats_service.py`
-- **.publish_combat_ended()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_combat_started()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_combat_timeout()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_combat_turn_advanced()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_npc_attacked()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_npc_died()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_npc_took_damage()** (5 connections) — `server/services/combat_event_publisher.py`
-- **.publish_player_attacked()** (5 connections) — `server/services/combat_event_publisher.py`
-- **._get_connection()** (5 connections) — `server/services/nats_service.py`
-- **._on_error()** (5 connections) — `server/services/nats_service.py`
-- **.publish()** (5 connections) — `server/services/nats_service.py`
-- *... and 115 more nodes in this community*
+- **_assert_tracked_coro_closed()** (6 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
+- **test_start_health_monitoring_creates_task()** (6 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
+- **._start_health_monitoring()** (5 connections) — `server/services/nats_service.py`
+- **._build_connect_options()** (4 connections) — `server/services/nats_service.py`
+- **._configure_tls()** (4 connections) — `server/services/nats_service.py`
+- **._health_check_loop()** (4 connections) — `server/services/nats_service.py`
+- **test_create_tracked_task_closes_coro_when_create_task_fails()** (4 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
+- **test_on_disconnect_creates_tracked_task()** (4 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
+- **test_on_error_closes_coro_when_create_task_fails()** (4 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
+- **test_on_error_creates_tracked_task()** (4 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
+- **test_on_reconnect_creates_tracked_task()** (4 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
+- **test_subscribe_message_handler_bad_json_with_manual_ack()** (4 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
+- **._cancel_background_tasks()** (3 connections) — `server/services/nats_service.py`
+- **._check_connection_allowed()** (3 connections) — `server/services/nats_service.py`
+- **._cleanup_connection_pool()** (3 connections) — `server/services/nats_service.py`
+- **._close_all_subscriptions()** (3 connections) — `server/services/nats_service.py`
+- **._close_nats_connection()** (3 connections) — `server/services/nats_service.py`
+- *... and 82 more nodes in this community*
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (21 shared connections)
-- [get_logger](get_logger.md) (18 shared connections)
-- [NATSConnectionError](NATSConnectionError.md) (15 shared connections)
-- [test_nats_service.py](test_nats_service.py.md) (5 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
+- [Any](Any.md) (28 shared connections)
+- [test_nats_service.py](test_nats_service.py.md) (8 shared connections)
+- [nats_exceptions.py](nats_exceptions.py.md) (6 shared connections)
+- [NATSConfig](NATSConfig.md) (6 shared connections)
+- [test_nats_message_handler.py](test_nats_message_handler.py.md) (3 shared connections)
+- [NATSConnectionStateMachine](NATSConnectionStateMachine.md) (3 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
-- [test_nats_service_init_with_subject_manager](test_nats_service_init_with_subject_manager.md) (3 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (2 shared connections)
-- [NATSMetrics](NATSMetrics.md) (2 shared connections)
-- [combat_event_publisher](combat_event_publisher.md) (1 shared connections)
-- [chat_nats_publisher.py](chat_nats_publisher.py.md) (1 shared connections)
-- [nats_service](nats_service.md) (1 shared connections)
+- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (3 shared connections)
+- [CombatService](CombatService.md) (3 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [NATSMetrics](NATSMetrics.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_event_publisher.py`
 - `server/services/nats_exceptions.py`
 - `server/services/nats_service.py`
-- `server/tests/unit/services/test_combat_event_publisher.py`
-- `server/tests/unit/services/test_nats_exceptions.py`
+- `server/tests/unit/services/test_nats_service_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 277 (94%)
-- INFERRED: 19 (6%)
+- EXTRACTED: 264 (97%)
+- INFERRED: 9 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

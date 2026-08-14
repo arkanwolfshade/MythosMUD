@@ -1,6 +1,6 @@
 # apiTypeGuards.ts
 
-> 50 nodes
+> 48 nodes
 
 ## Key Concepts
 
@@ -8,10 +8,10 @@
 - **apiTypeGuards.test.ts** (15 connections) — `client/src/utils/__tests__/apiTypeGuards.test.ts`
 - **isObject()** (13 connections) — `client/src/utils/apiTypeGuards.ts`
 - **isString()** (12 connections) — `client/src/utils/apiTypeGuards.ts`
+- **assertServerCharacterResponseArray()** (9 connections) — `client/src/utils/apiTypeGuards.ts`
 - **isNumber()** (9 connections) — `client/src/utils/apiTypeGuards.ts`
 - **isServerCharacterResponse()** (8 connections) — `client/src/utils/apiTypeGuards.ts`
 - **isArray()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isAsciiMapApiResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
 - **isCharacterInfo()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
 - **isLoginResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
 - **isServerCharacterResponseArray()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
@@ -29,28 +29,26 @@
 - **hasOptionalString()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
 - **hasServerCharacterCoreFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
 - **hasServerCharacterIdentifierFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- *... and 25 more nodes in this community*
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (15 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (5 shared connections)
-- [useAsciiMapState.ts](useAsciiMapState.ts.md) (5 shared connections)
-- [1774539086359-useMythosAppState.ts](1774539086359-useMythosAppState.ts.md) (5 shared connections)
-- [errorHandler.ts](errorHandler.ts.md) (3 shared connections)
-- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (3 shared connections)
+- [1774539086359-useMythosAppState.ts](1774539086359-useMythosAppState.ts.md) (13 shared connections)
+- [deleteCharacterFlow.ts](deleteCharacterFlow.ts.md) (10 shared connections)
+- [Profession](Profession.md) (8 shared connections)
+- [useAsciiMapState.ts](useAsciiMapState.ts.md) (6 shared connections)
+- [gameStore.ts](gameStore.ts.md) (3 shared connections)
 - [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (2 shared connections)
-- [gameStore.ts](gameStore.ts.md) (2 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/types/auth.ts`
 - `client/src/utils/__tests__/apiTypeGuards.test.ts`
 - `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 168 (100%)
+- EXTRACTED: 169 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

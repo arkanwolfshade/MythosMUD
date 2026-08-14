@@ -1,12 +1,12 @@
 # test_look_room.py
 
-> 98 nodes
+> 100 nodes
 
 ## Key Concepts
 
 - **test_look_room.py** (35 connections) — `server/tests/unit/commands/test_look_room.py`
-- **look_room.py** (28 connections) — `server/commands/look_room.py`
-- **test_look_room_helpers.py** (20 connections) — `server/tests/unit/commands/test_look_room_helpers.py`
+- **look_room.py** (26 connections) — `server/commands/look_room.py`
+- **test_look_room_helpers.py** (21 connections) — `server/tests/unit/commands/test_look_room_helpers.py`
 - **_filter_other_players()** (17 connections) — `server/commands/look_room.py`
 - **_handle_room_look()** (17 connections) — `server/commands/look_room.py`
 - **asyncio** (13 connections)
@@ -21,6 +21,7 @@
 - **Any** (8 connections)
 - **test_filter_other_players()** (4 connections) — `server/tests/unit/commands/test_look_room_helpers.py`
 - **test_filter_other_players_all_filtered()** (4 connections) — `server/tests/unit/commands/test_look_room_helpers.py`
+- **test_filter_other_players_includes_player_without_websocket()** (4 connections) — `server/tests/unit/commands/test_look_room_helpers.py`
 - **test_filter_other_players_excludes_current()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
 - **test_filter_other_players_no_name_attribute()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
 - **test_format_containers_section_empty()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
@@ -28,22 +29,18 @@
 - **test_format_containers_section_no_room_id()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
 - **test_format_containers_section_with_containers()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
 - **test_format_npcs_section_empty()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
-- **test_format_npcs_section_no_room_id()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
-- *... and 73 more nodes in this community*
+- *... and 75 more nodes in this community*
 
 ## Relationships
 
 - [test_look_player.py](test_look_player.py.md) (5 shared connections)
 - [look_command.py](look_command.py.md) (5 shared connections)
 - [test_room_renderer.py](test_room_renderer.py.md) (4 shared connections)
+- [AttributeError](AttributeError.md) (3 shared connections)
 - [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
-- [test_login_grace_period_visual_indicator.py](test_login_grace_period_visual_indicator.py.md) (3 shared connections)
-- [is_player_in_grace_period](is_player_in_grace_period.md) (2 shared connections)
+- [test_look_npc.py](test_look_npc.py.md) (3 shared connections)
 - [test_filter_other_players_adds_linkdead_indicator](test_filter_other_players_adds_linkdead_indicator.md) (2 shared connections)
-- [_get_npc_room_id](_get_npc_room_id.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [disconnect_grace_period.py](disconnect_grace_period.py.md) (1 shared connections)
-- [test_look_npc.py](test_look_npc.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -53,7 +50,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 206 (100%)
+- EXTRACTED: 207 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [quest_service.py](quest_service.py.md) (6 shared connections)
+- [QuestService](QuestService.md) (7 shared connections)
 - [Player](Player.md) (3 shared connections)
-- [QuestService](QuestService.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (1 shared connections)
 
 ## Source Files
 

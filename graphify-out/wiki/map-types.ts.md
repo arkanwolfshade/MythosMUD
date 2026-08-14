@@ -10,7 +10,7 @@
 - **useMapEditing.ts** (20 connections) — `client/src/components/map/hooks/useMapEditing.ts`
 - **saveMapChanges.ts** (16 connections) — `client/src/components/map/utils/saveMapChanges.ts`
 - **map/config.ts** (14 connections) — `client/src/components/map/config.ts`
-- **ExitEdge.tsx** (13 connections) — `client/src/components/map/edges/ExitEdge.tsx`
+- **ExitEdge.tsx** (14 connections) — `client/src/components/map/edges/ExitEdge.tsx`
 - **RoomNode.tsx** (9 connections) — `client/src/components/map/nodes/RoomNode.tsx`
 - **ReactFlowConfig.test.tsx** (9 connections) — `client/src/components/map/__tests__/ReactFlowConfig.test.tsx`
 - **saveMapChanges()** (7 connections) — `client/src/components/map/utils/saveMapChanges.ts`
@@ -27,13 +27,13 @@
 - **ExitEdge.edge-creation.test.tsx** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.edge-creation.test.tsx`
 - **ExitEdge.interactions.test.tsx** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.interactions.test.tsx`
 - **defaultExitEdgeProps** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
-- **useMapLayout.test.ts** (4 connections) — `client/src/components/map/hooks/__tests__/useMapLayout.test.ts`
 - **IntersectionNode** (4 connections) — `client/src/components/map/nodes/IntersectionNode.tsx`
+- **IntersectionNode.test.tsx** (4 connections) — `client/src/components/map/nodes/__tests__/IntersectionNode.test.tsx`
 - *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [RoomMapEditorRuntime.hooks.ts](RoomMapEditorRuntime.hooks.ts.md) (16 shared connections)
+- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (16 shared connections)
 - [edgeModalLogic.ts](edgeModalLogic.ts.md) (16 shared connections)
 - [gameStore.ts](gameStore.ts.md) (15 shared connections)
 - [utils/layout.ts](utils-layout.ts.md) (10 shared connections)
@@ -51,7 +51,6 @@
 - `client/src/components/map/edges/__tests__/ExitEdge.rendering.test.tsx`
 - `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
 - `client/src/components/map/hooks/__tests__/useMapEditing.test.ts`
-- `client/src/components/map/hooks/__tests__/useMapLayout.test.ts`
 - `client/src/components/map/hooks/useMapEditing.ts`
 - `client/src/components/map/hooks/useMapLayout.ts`
 - `client/src/components/map/nodes/IntersectionNode.tsx`

@@ -14,8 +14,7 @@
 
 ## Relationships
 
-- [test_idle_movement.py](test_idle_movement.py.md) (3 shared connections)
-- [IdleMovementHandler](IdleMovementHandler.md) (1 shared connections)
+- [IdleMovementHandler](IdleMovementHandler.md) (4 shared connections)
 
 ## Source Files
 

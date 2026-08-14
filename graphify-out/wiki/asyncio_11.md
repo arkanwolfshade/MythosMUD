@@ -1,47 +1,48 @@
 # asyncio
 
-> 25 nodes
+> 39 nodes
 
 ## Key Concepts
 
-- **asyncio** (12 connections)
-- **test_handle_item_look_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_in_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_look_in_skips_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_with_instance_number()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_player_no_get_equipped_items()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is in inventory.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look with look_in flag skips equipped items.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _handle_item_look() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _try_lookup_item_implicit() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _try_lookup_item_implicit() when player has no get_equipped_items method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **asyncio** (19 connections)
+- **test_validate_player_room_membership_auto_add()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_validate_player_room_membership_db_mismatch()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_add_player_to_room_player_not_found()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_add_player_to_room_room_not_found()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_add_player_to_room_success()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_get_player_room_player_not_found()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_get_player_room_success()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_move_player_empty_player_id()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_move_player_invalid_from_room()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_move_player_invalid_to_room()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_move_player_player_not_found()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_move_player_same_room()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_move_player_success()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_move_player_validation_fails()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_resolve_player_by_name()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_validate_movement_combat_blocks()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_validate_movement_player_already_in_target()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_validate_movement_success()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_validate_movement_target_room_missing()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test add_player_to_room() when room is not found.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test add_player_to_room() when player is not found.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test get_player_room() returns player's room.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test get_player_room() when player is not found.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test move_player completes a valid room transfer.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [_find_item_in_equipped](_find_item_in_equipped.md) (12 shared connections)
-- [test_look_item.py](test_look_item.py.md) (12 shared connections)
+- [test_movement_service.py](test_movement_service.py.md) (19 shared connections)
+- [movement_helpers.py](movement_helpers.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
+- EXTRACTED: 59 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -11,7 +11,8 @@
 
 ## Relationships
 
-- [Security Infrastructure](Security_Infrastructure.md) (4 shared connections)
+- [validate_secure_path](validate_secure_path.md) (2 shared connections)
+- [test_security_utils.py](test_security_utils.py.md) (2 shared connections)
 
 ## Source Files
 

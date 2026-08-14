@@ -30,7 +30,8 @@
 
 ## Relationships
 
-- [server/exceptions.py](server-exceptions.py.md) (5 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [validate_room_data](validate_room_data.md) (1 shared connections)
 
 ## Source Files
 

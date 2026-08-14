@@ -36,8 +36,8 @@
 - [get_logger](get_logger.md) (1 shared connections)
 - [TestUtilityFunctions](TestUtilityFunctions.md) (1 shared connections)
 - [fixture](fixture.md) (1 shared connections)
-- [rooms.py](rooms.py.md) (1 shared connections)
-- [LucidityRepository](LucidityRepository.md) (1 shared connections)
+- [test_rooms_api.py](test_rooms_api.py.md) (1 shared connections)
+- [lucidity.py](lucidity.py.md) (1 shared connections)
 
 ## Source Files
 

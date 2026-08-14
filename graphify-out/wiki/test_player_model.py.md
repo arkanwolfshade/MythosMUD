@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [Player](Player.md) (46 shared connections)
+- [Player](Player.md) (44 shared connections)
+- [server/models/game.py](server-models-game.py.md) (2 shared connections)
 
 ## Source Files
 

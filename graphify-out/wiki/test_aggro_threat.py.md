@@ -1,6 +1,6 @@
 # test_aggro_threat.py
 
-> 101 nodes
+> 92 nodes
 
 ## Key Concepts
 
@@ -14,9 +14,7 @@
 - **test_aggro_flow.py** (14 connections) — `server/tests/integration/test_aggro_flow.py`
 - **_make_participant()** (13 connections) — `server/tests/unit/services/test_aggro_threat.py`
 - **apply_taunt()** (12 connections) — `server/services/aggro_threat.py`
-- **_resolve_npc_target()** (11 connections) — `server/services/combat_turn_participant_actions.py`
 - **UUID** (11 connections)
-- **_apply_taunt_and_maybe_broadcast()** (9 connections) — `server/commands/combat_taunt.py`
 - **_make_participant()** (9 connections) — `server/tests/integration/test_aggro_flow.py`
 - **get_npc_current_target()** (8 connections) — `server/services/aggro_threat.py`
 - **_make_combat()** (8 connections) — `server/tests/integration/test_aggro_flow.py`
@@ -29,26 +27,30 @@
 - **test_aggro_stealth_wipe_switches_to_next()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
 - **test_aggro_taunt_from_next_room_no_effect()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
 - **clear_aggro_for_combat()** (6 connections) — `server/services/aggro_threat.py`
-- *... and 76 more nodes in this community*
+- **test_aggro_tank_swap_taunt_sequence()** (6 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_on_player_entered_stealth_wipes_from_all_npcs()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- *... and 67 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (62 shared connections)
-- [PlayerService](PlayerService.md) (4 shared connections)
-- [TauntCommandHandler](TauntCommandHandler.md) (3 shared connections)
+- [CombatService](CombatService.md) (18 shared connections)
+- [CombatInstance](CombatInstance.md) (14 shared connections)
+- [CombatParticipant](CombatParticipant.md) (10 shared connections)
+- [TargetMatch](TargetMatch.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (3 shared connections)
+- [test_combat_turn_participant_actions.py](test_combat_turn_participant_actions.py.md) (2 shared connections)
+- [test_combat_service_modules.py](test_combat_service_modules.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_taunt.py`
 - `server/services/aggro_threat.py`
-- `server/services/combat_turn_participant_actions.py`
 - `server/tests/integration/test_aggro_flow.py`
 - `server/tests/unit/services/test_aggro_threat.py`
-- `server/tests/unit/services/test_combat_turn_participant_actions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 283 (100%)
+- EXTRACTED: 258 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

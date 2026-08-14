@@ -11,7 +11,7 @@
 
 ## Relationships
 
-- [Schemas Unified Room](Schemas_Unified_Room.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 

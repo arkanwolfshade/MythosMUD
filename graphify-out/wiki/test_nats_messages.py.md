@@ -4,12 +4,11 @@
 
 ## Key Concepts
 
-- **test_nats_messages.py** (22 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **test_nats_messages.py** (23 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **validate_message()** (14 connections) — `server/schemas/realtime/nats_messages.py`
 - **BaseMessageSchema** (11 connections) — `server/schemas/realtime/nats_messages.py`
-- **ChatMessageSchema** (10 connections) — `server/schemas/realtime/nats_messages.py`
+- **ChatMessageSchema** (11 connections) — `server/schemas/realtime/nats_messages.py`
 - **EventMessageSchema** (9 connections) — `server/schemas/realtime/nats_messages.py`
-- **schemas/realtime/__init__.py** (9 connections) — `server/schemas/realtime/__init__.py`
 - **nats_messages.py** (9 connections) — `server/schemas/realtime/nats_messages.py`
 - **validate_chat_message()** (7 connections) — `server/schemas/realtime/nats_messages.py`
 - **validate_event_message()** (7 connections) — `server/schemas/realtime/nats_messages.py`
@@ -20,6 +19,7 @@
 - **test_base_message_schema_invalid_timestamp()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_base_message_schema_validate_timestamp()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_chat_message_schema()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **test_chat_message_schema_accepts_speaker_kind_and_party_id()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_chat_message_schema_content_validation()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_chat_message_schema_invalid_channel()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_chat_message_schema_validate_channel()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
@@ -33,21 +33,19 @@
 
 ## Relationships
 
-- [realtime/realtime.py](realtime-realtime.py.md) (5 shared connections)
 - [NATSMessageBroker](NATSMessageBroker.md) (2 shared connections)
-- [NATSMessageHandler](NATSMessageHandler.md) (1 shared connections)
+- [realtime/realtime.py](realtime-realtime.py.md) (2 shared connections)
+- [NATSMessageHandlerMixinBase](NATSMessageHandlerMixinBase.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/realtime/__init__.py`
 - `server/schemas/realtime/nats_messages.py`
 - `server/tests/unit/schemas/test_nats_messages.py`
 
 ## Audit Trail
 
-- EXTRACTED: 96 (100%)
+- EXTRACTED: 92 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

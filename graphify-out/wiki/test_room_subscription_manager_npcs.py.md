@@ -32,7 +32,7 @@
 ## Relationships
 
 - [RoomSubscriptionManager](RoomSubscriptionManager.md) (2 shared connections)
-- [connection_initialization.py](connection_initialization.py.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 

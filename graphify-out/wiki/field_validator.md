@@ -21,8 +21,7 @@
 
 ## Relationships
 
-- [HolidayService](HolidayService.md) (3 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
+- [HolidayCollection](HolidayCollection.md) (6 shared connections)
 
 ## Source Files
 

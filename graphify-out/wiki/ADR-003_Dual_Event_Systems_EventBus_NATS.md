@@ -1,19 +1,16 @@
 # ADR-003 Dual Event Systems EventBus NATS
 
-> 22 nodes
+> 17 nodes
 
 ## Key Concepts
 
 - **ADR-003 Dual Event Systems EventBus NATS** (5 connections) — `docs/architecture/decisions/ADR-003-dual-event-systems-eventbus-nats.md`
-- **ADR-005 Repository Pattern** (5 connections) — `docs/architecture/decisions/ADR-005-repository-pattern-data-access.md`
-- **ADR-004 WebSocket-Only Realtime** (4 connections) — `docs/architecture/decisions/ADR-004-websocket-only-realtime.md`
+- **ADR-005 Repository Pattern** (4 connections) — `docs/architecture/decisions/ADR-005-repository-pattern-data-access.md`
 - **ADR-001 Layered Architecture Event-Driven** (3 connections) — `docs/architecture/decisions/ADR-001-layered-architecture-event-driven.md`
+- **ADR-004 WebSocket-Only Realtime** (3 connections) — `docs/architecture/decisions/ADR-004-websocket-only-realtime.md`
 - **ADR-007 FastAPI Async Await** (3 connections) — `docs/architecture/decisions/ADR-007-fastapi-async-await.md`
-- **AsyncPersistenceLayer Transactions** (2 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **ConnectionManager** (2 connections) — `docs/WEBSOCKET_CODE_REVIEW.md`
 - **API OpenAPI Specification** (2 connections) — `docs/architecture/API_OPENAPI_SPECIFICATION.md`
 - **Distributed EventBus via NATS** (2 connections) — `docs/architecture/DISTRIBUTED_EVENTBUS_NATS.md`
-- **Transaction Boundaries Audit** (2 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
 - **ADR-002 ApplicationContainer DI** (2 connections) — `docs/architecture/decisions/ADR-002-application-container-dependency-injection.md`
 - **ADR-006 PostgreSQL Primary Datastore** (2 connections) — `docs/architecture/decisions/ADR-006-postgresql-primary-datastore.md`
 - **ADR-008 React TypeScript Client** (2 connections) — `docs/architecture/decisions/ADR-008-react-typescript-client.md`
@@ -23,8 +20,6 @@
 - **NATS Distributed Messaging** (1 connections) — `docs/architecture/decisions/ADR-003-dual-event-systems-eventbus-nats.md`
 - **QuestService** (1 connections) — `docs/architecture/decisions/ADR-010-quest-subsystem.md`
 - **NATSEventBusBridge** (1 connections) — `docs/architecture/DISTRIBUTED_EVENTBUS_NATS.md`
-- **PostgresConnection Context Manager** (1 connections) — `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **WebSocket Code Review** (1 connections) — `docs/WEBSOCKET_CODE_REVIEW.md`
 - **ADR-011 XState Frontend FSM** (1 connections) — `docs/architecture/decisions/ADR-011-xstate-frontend-fsm.md`
 
 ## Relationships
@@ -33,8 +28,6 @@
 
 ## Source Files
 
-- `docs/TRANSACTION_BOUNDARIES_AUDIT.md`
-- `docs/WEBSOCKET_CODE_REVIEW.md`
 - `docs/architecture/API_OPENAPI_SPECIFICATION.md`
 - `docs/architecture/DISTRIBUTED_EVENTBUS_NATS.md`
 - `docs/architecture/decisions/ADR-001-layered-architecture-event-driven.md`
@@ -50,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 18 (78%)
-- INFERRED: 5 (22%)
+- EXTRACTED: 15 (83%)
+- INFERRED: 3 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

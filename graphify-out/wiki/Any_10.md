@@ -4,36 +4,36 @@
 
 ## Key Concepts
 
-- **Any** (7 connections)
-- **UUID** (7 connections)
-- **.apply_corruption()** (5 connections) — `server/game/player_state_service.py`
-- **.apply_fear()** (5 connections) — `server/game/player_state_service.py`
-- **.apply_lucidity_loss()** (5 connections) — `server/game/player_state_service.py`
-- **.damage_player()** (5 connections) — `server/game/player_state_service.py`
-- **.gain_occult_knowledge()** (5 connections) — `server/game/player_state_service.py`
-- **.heal_player()** (5 connections) — `server/game/player_state_service.py`
-- **.__init__()** (3 connections) — `server/game/player_state_service.py`
-- **Gain occult knowledge (with lucidity loss). Args: player_id: The player's ID…** (1 connections) — `server/game/player_state_service.py`
-- **Heal a player's health. Args: player_id: The player's ID (UUID) amount: Amount…** (1 connections) — `server/game/player_state_service.py`
-- **Damage a player's health. Args: player_id: The player's ID (UUID) amount:…** (1 connections) — `server/game/player_state_service.py`
-- **Initialize with a persistence layer.** (1 connections) — `server/game/player_state_service.py`
-- **Apply lucidity loss to a player. Args: player_id: The player's ID (UUID)…** (1 connections) — `server/game/player_state_service.py`
-- **Apply fear to a player. Args: player_id: The player's ID (UUID) amount: Amount…** (1 connections) — `server/game/player_state_service.py`
-- **Apply corruption to a player. Args: player_id: The player's ID (UUID) amount:…** (1 connections) — `server/game/player_state_service.py`
+- **Any** (8 connections)
+- **WebSocket** (8 connections)
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (4 connections) — `server/realtime/message_handler_factory.py`
+- **Handle a specific message type. Args: websocket: The WebSocket connection…** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle command message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle chat message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle ping message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle follow_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle party_invite_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle client_error_report message type.** (1 connections) — `server/realtime/message_handler_factory.py`
 
 ## Relationships
 
-- [PlayerService](PlayerService.md) (7 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (6 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [message_handler_factory.py](message_handler_factory.py.md) (9 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (5 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/player_state_service.py`
+- `server/realtime/message_handler_factory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

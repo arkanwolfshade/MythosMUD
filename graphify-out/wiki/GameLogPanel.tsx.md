@@ -1,6 +1,6 @@
 # GameLogPanel.tsx
 
-> 46 nodes
+> 45 nodes
 
 ## Key Concepts
 
@@ -29,27 +29,26 @@
 - **getGameLogMessageRowClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
 - **getGameLogSearchInputClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
 - **getGameLogTimeFilterSelectClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
-- *... and 21 more nodes in this community*
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
 - [EldritchIcon.tsx](EldritchIcon.tsx.md) (8 shared connections)
 - [performance.test.tsx](performance.test.tsx.md) (6 shared connections)
-- [gameStore.ts](gameStore.ts.md) (5 shared connections)
-- [GameTerminal.tsx](GameTerminal.tsx.md) (4 shared connections)
+- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (5 shared connections)
+- [gameStore.ts](gameStore.ts.md) (4 shared connections)
+- [GameTerminal.tsx](GameTerminal.tsx.md) (3 shared connections)
 - [useGameTerminal.ts](useGameTerminal.ts.md) (3 shared connections)
 - [debugLogger](debugLogger.md) (3 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (3 shared connections)
 - [useDraggablePanelInteractions.ts](useDraggablePanelInteractions.ts.md) (2 shared connections)
 - [RoomInfoPanel.tsx](RoomInfoPanel.tsx.md) (2 shared connections)
 - [CommandPanel.tsx](CommandPanel.tsx.md) (2 shared connections)
-- [security.ts](security.ts.md) (2 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (2 shared connections)
+- [Profession](Profession.md) (2 shared connections)
+- [ChatPanelRuntimeViewParts.tsx](ChatPanelRuntimeViewParts.tsx.md) (1 shared connections)
 
 ## Source Files
 
 - `client/src/components/GameTerminalPresentation.tsx`
-- `client/src/components/__tests__/GameTerminal.test.tsx`
 - `client/src/components/__tests__/GameTerminalPresentation.test.tsx`
 - `client/src/components/__tests__/game-log-panel.test.tsx`
 - `client/src/components/panels/GameLogMessagesList.tsx`
@@ -68,7 +67,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 141 (100%)
+- EXTRACTED: 138 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

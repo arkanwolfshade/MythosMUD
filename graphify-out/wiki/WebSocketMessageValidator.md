@@ -1,6 +1,6 @@
 # WebSocketMessageValidator
 
-> 82 nodes
+> 84 nodes
 
 ## Key Concepts
 
@@ -15,6 +15,7 @@
 - **._parse_outer_json_object()** (6 connections) — `server/realtime/message_validator.py`
 - **resolve_expected_csrf_token()** (6 connections) — `server/realtime/websocket_handler_validation.py`
 - **validate_websocket_message()** (6 connections) — `server/realtime/websocket_handler_validation.py`
+- **get_message_validator()** (5 connections) — `server/realtime/message_validator.py`
 - **._extract_csrf_token_string()** (5 connections) — `server/realtime/message_validator.py`
 - **.validate_csrf()** (5 connections) — `server/realtime/message_validator.py`
 - **.validate_schema()** (5 connections) — `server/realtime/message_validator.py`
@@ -28,20 +29,19 @@
 - **test_validate_json_structure_accepts_depth_equal_to_limit()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
 - **WebSocket** (4 connections)
 - **._calculate_depth()** (3 connections) — `server/realtime/message_validator.py`
-- **.__init__()** (3 connections) — `server/realtime/message_validator.py`
-- *... and 57 more nodes in this community*
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
 - [websocket_handler.py](websocket_handler.py.md) (7 shared connections)
 - [ErrorType](ErrorType.md) (5 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
 - [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [test_websocket_handler_helpers_extended.py](test_websocket_handler_helpers_extended.py.md) (3 shared connections)
 - [test_websocket_handler_validation.py](test_websocket_handler_validation.py.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (2 shared connections)
+- [LootAllRequest](LootAllRequest.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,7 +51,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 168 (99%)
+- EXTRACTED: 171 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

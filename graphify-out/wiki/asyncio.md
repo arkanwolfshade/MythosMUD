@@ -1,45 +1,50 @@
 # asyncio
 
-> 17 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **asyncio** (11 connections)
-- **PartyChannelStrategy** (10 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **test_global_channel_strategy_broadcast()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_party_channel_strategy_broadcast_no_party_id()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_party_channel_strategy_broadcast_no_party_service_no_send()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_party_channel_strategy_broadcast_party_not_found_no_send()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_party_channel_strategy_broadcast_sends_only_to_party_members()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_system_admin_channel_strategy_broadcast()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_whisper_channel_strategy_broadcast_no_target()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Strategy for party channel broadcasting. Delivers only to current party members.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **When party_service is missing on handler, no message is sent.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **When party does not exist, no message is sent.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test PartyChannelStrategy.broadcast() handles missing party_id.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test WhisperChannelStrategy.broadcast() handles missing target_player_id.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test SystemAdminChannelStrategy.broadcast() broadcasts globally.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test GlobalChannelStrategy.broadcast() broadcasts globally.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Party chat is delivered only to current party members (visibility).** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **asyncio** (9 connections)
+- **TestCloseNpcDb** (6 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **TestNPCSession** (6 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_close_npc_db_disposes_engine()** (6 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **TestInitNpcDb** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_close_npc_db_handles_closed_loop()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_close_npc_db_handles_no_engine()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_recreates_on_loop_change()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_init_npc_db_raises_on_none_engine()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_init_npc_db_success()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_session_inits_db_for_unit_test()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_session_rollback_on_error()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_session_yields_session()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **TestEventLoopHandling** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test NPC session management.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_session() yields session.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_session() rolls back on error during yield.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_session() calls init_npc_db() for unit_test databases.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test init_npc_db() function.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test init_npc_db() successfully initializes database.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test init_npc_db() raises ValidationError when engine is None.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test close_npc_db() function.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test close_npc_db() disposes engine.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test close_npc_db() handles closed event loop.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test close_npc_db() handles case when engine is None.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [test_channel_broadcasting_strategies.py](test_channel_broadcasting_strategies.py.md) (8 shared connections)
-- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (6 shared connections)
-- [RoomBasedChannelStrategy](RoomBasedChannelStrategy.md) (2 shared connections)
-- [UUID](UUID.md) (1 shared connections)
-- [UnknownChannelStrategy](UnknownChannelStrategy.md) (1 shared connections)
-- [test_whisper_channel_strategy_broadcast](test_whisper_channel_strategy_broadcast.md) (1 shared connections)
+- [npc_database.py](npc_database.py.md) (14 shared connections)
+- [patch](patch.md) (9 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 
 ## Source Files
 
-- `server/realtime/channel_broadcasting_strategies.py`
-- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 54 (93%)
+- INFERRED: 4 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

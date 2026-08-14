@@ -36,7 +36,7 @@
 - [test_rate_limiter.py](test_rate_limiter.py.md) (3 shared connections)
 - [rate_limiter](rate_limiter.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
-- [test_chat_logger.py](test_chat_logger.py.md) (1 shared connections)
+- [chat_logger](chat_logger.md) (1 shared connections)
 
 ## Source Files
 

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **RoomSubscriptionManager** (43 connections) — `server/realtime/room_subscription_manager.py`
+- **RoomSubscriptionManager** (45 connections) — `server/realtime/room_subscription_manager.py`
 - **._canonical_room_id()** (13 connections) — `server/realtime/room_subscription_manager.py`
 - **Any** (13 connections)
 - **.get_room_occupants()** (8 connections) — `server/realtime/room_subscription_manager.py`
@@ -33,15 +33,16 @@
 
 ## Relationships
 
-- [connection_initialization.py](connection_initialization.py.md) (5 shared connections)
-- [test_connection_disconnection.py](test_connection_disconnection.py.md) (3 shared connections)
+- [connection_manager.py](connection_manager.py.md) (9 shared connections)
 - [test_room_subscription_manager_drops.py](test_room_subscription_manager_drops.py.md) (2 shared connections)
 - [test_room_subscription_manager_helpers.py](test_room_subscription_manager_helpers.py.md) (2 shared connections)
 - [test_room_subscription_manager_npcs.py](test_room_subscription_manager_npcs.py.md) (2 shared connections)
 - [test_room_subscription_manager.py](test_room_subscription_manager.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [MessageBroadcaster](MessageBroadcaster.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [test_message_broadcaster.py](test_message_broadcaster.py.md) (2 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (1 shared connections)
+- [RoomEventHandler](RoomEventHandler.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,8 +51,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 100 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 101 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

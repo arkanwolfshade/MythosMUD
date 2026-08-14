@@ -1,47 +1,58 @@
 # asyncio
 
-> 15 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **asyncio** (46 connections)
-- **test_create_player_with_stats_success()** (4 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_apply_corruption()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_gain_occult_knowledge()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_get_user_characters()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_search_players_by_name()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_soft_delete_character_already_deleted()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_update_player_location_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test create_player_with_stats() successful creation.** (1 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test search_players_by_name() returns matching players.** (1 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test update_player_location() when player not found.** (1 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test apply_corruption() applies corruption.** (1 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test gain_occult_knowledge() increases occult knowledge.** (1 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test get_user_characters() returns user's characters.** (1 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test soft_delete_character() when character already deleted.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **asyncio** (37 connections)
+- **test_get_adjacent_rooms_no_exits()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_adjacent_rooms_null_exit()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_adjacent_rooms_target_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_exits_room_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_occupants_with_cache_room_object()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_occupants_without_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_with_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_list_rooms_with_plane_zone()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_list_rooms_with_sub_zone()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_validate_player_in_room_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_validate_room_exists_with_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_validate_room_exists_without_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_adjacent_rooms() handles room with no exits.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_adjacent_rooms() skips null exits.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_adjacent_rooms() handles target room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test validate_room_exists() uses cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test validate_room_exists() falls back to persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_occupants() handles Room object with get_players/get_npcs.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_occupants() falls back to persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test validate_player_in_room() returns False when room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_exits() returns empty dict when room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test list_rooms() filters by plane and zone.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test list_rooms() filters by sub_zone.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [test_player_service.py](test_player_service.py.md) (13 shared connections)
-- [Stats](Stats.md) (1 shared connections)
-- [test_apply_fear](test_apply_fear.md) (1 shared connections)
-- [test_apply_fear_player_not_found](test_apply_fear_player_not_found.md) (1 shared connections)
-- [test_apply_lucidity_loss](test_apply_lucidity_loss.md) (1 shared connections)
-- [test_create_player_name_exists](test_create_player_name_exists.md) (1 shared connections)
-- [test_create_player_success](test_create_player_success.md) (1 shared connections)
-- [test_create_player_with_stats_character_limit](test_create_player_with_stats_character_limit.md) (1 shared connections)
-- [test_create_player_with_stats_name_exists](test_create_player_with_stats_name_exists.md) (1 shared connections)
-- [test_damage_player](test_damage_player.md) (1 shared connections)
-- [test_damage_player_player_not_found](test_damage_player_player_not_found.md) (1 shared connections)
-- [test_delete_player_not_found](test_delete_player_not_found.md) (1 shared connections)
+- [test_room_service.py](test_room_service.py.md) (13 shared connections)
+- [test_get_adjacent_rooms_source_not_found](test_get_adjacent_rooms_source_not_found.md) (1 shared connections)
+- [test_get_adjacent_rooms_success](test_get_adjacent_rooms_success.md) (1 shared connections)
+- [test_get_local_chat_scope](test_get_local_chat_scope.md) (1 shared connections)
+- [test_get_local_chat_scope_source_not_found](test_get_local_chat_scope_source_not_found.md) (1 shared connections)
+- [test_get_room_exits_no_exits](test_get_room_exits_no_exits.md) (1 shared connections)
+- [test_get_room_exits_success](test_get_room_exits_success.md) (1 shared connections)
+- [test_get_room_info_not_found](test_get_room_info_not_found.md) (1 shared connections)
+- [test_get_room_info_success](test_get_room_info_success.md) (1 shared connections)
+- [test_get_room_occupants_cache_not_found](test_get_room_occupants_cache_not_found.md) (1 shared connections)
+- [test_get_room_occupants_with_cache_dict](test_get_room_occupants_with_cache_dict.md) (1 shared connections)
+- [test_get_room_persistence_not_found](test_get_room_persistence_not_found.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (100%)
+- EXTRACTED: 63 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,48 +1,55 @@
 # test_player_event_handlers_respawn.py
 
-> 62 nodes
+> 125 nodes
 
 ## Key Concepts
 
 - **test_player_event_handlers_respawn.py** (35 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **PlayerRespawnEventHandler** (33 connections) — `server/realtime/player_event_handlers_respawn.py`
 - **asyncio** (22 connections)
-- **mock_utils()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **player_respawn_event_handler()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_send_respawn_event_with_retry_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **fixture** (4 connections)
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **mock_logger()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_current_lucidity_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_current_lucidity_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_delirium_respawn_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_delirium_respawn_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_delirium_respawn_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_delirium_respawn_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_no_get_stats()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_handle_player_delirium_respawned_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_handle_player_delirium_respawned_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_handle_player_respawned_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_handle_player_respawned_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_prepare_room_data_for_respawn_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- *... and 37 more nodes in this community*
+- **RespawnPlayerEventPayload** (13 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._extract_occupant_names()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._fetch_delirium_respawn_player_snapshot()** (8 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.get_player_data_for_respawn()** (8 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.handle_player_respawned()** (8 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._resolve_player_data_for_respawn_event()** (8 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._build_respawn_player_payload()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._fetch_fallback_player_data_for_respawn()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.send_respawn_event_with_retry()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._build_fallback_respawn_player_payload()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._build_player_respawned_event()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._enrich_room_data_with_occupant_names()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.handle_player_delirium_respawned()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._send_room_occupants_after_respawn()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **UUID** (6 connections)
+- **RespawnPlayerStatsPayload** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.get_current_lucidity()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.get_player_data_for_delirium_respawn()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.__init__()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._room_data_from_persistence_room()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._convert_npc_ids_to_names()** (4 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._get_npc_name_from_lifecycle_manager()** (4 connections) — `server/realtime/player_event_handlers_respawn.py`
+- *... and 100 more nodes in this community*
 
 ## Relationships
 
-- [RealTimeEventHandler](RealTimeEventHandler.md) (7 shared connections)
+- [event_types.py](event_types.py.md) (18 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (7 shared connections)
+- [websocket_initial_state.py](websocket_initial_state.py.md) (6 shared connections)
+- [ConnectionManager](ConnectionManager.md) (4 shared connections)
+- [coerce_int](coerce_int.md) (4 shared connections)
+- [build_event](build_event.md) (3 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
+- `server/realtime/player_event_handlers_respawn.py`
 - `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
 
 ## Audit Trail
 
-- EXTRACTED: 92 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 219 (96%)
+- INFERRED: 8 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

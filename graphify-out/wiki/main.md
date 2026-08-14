@@ -1,13 +1,22 @@
 # main
 
-> 4 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **main()** (3 connections) — `scripts/e2e_reset_daisy_quest.py`
-- **_reset_daisy_quest()** (2 connections) — `scripts/e2e_reset_daisy_quest.py`
-- **e2e_reset_daisy_quest.py** (2 connections) — `scripts/e2e_reset_daisy_quest.py`
-- **Entry point: clear daisy quest instances via anyio.** (1 connections) — `scripts/e2e_reset_daisy_quest.py`
+- **main()** (7 connections) — `scripts/arkham_rooms_summary.py`
+- **arkham_rooms_summary.py** (6 connections) — `scripts/arkham_rooms_summary.py`
+- **analyze_connectivity()** (3 connections) — `scripts/arkham_rooms_summary.py`
+- **generate_dot_file()** (3 connections) — `scripts/arkham_rooms_summary.py`
+- **load_room_data()** (3 connections) — `scripts/arkham_rooms_summary.py`
+- **print_detailed_statistics()** (3 connections) — `scripts/arkham_rooms_summary.py`
+- **print_room_listing()** (3 connections) — `scripts/arkham_rooms_summary.py`
+- **Print a detailed listing of all rooms by subzone.** (1 connections) — `scripts/arkham_rooms_summary.py`
+- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/arkham_rooms_summary.py`
+- **Generate a DOT file for visualization with Graphviz.** (1 connections) — `scripts/arkham_rooms_summary.py`
+- **Main function to analyze the room data.** (1 connections) — `scripts/arkham_rooms_summary.py`
+- **Analyze the connectivity of the rooms.** (1 connections) — `scripts/arkham_rooms_summary.py`
+- **Print detailed statistics about the room data.** (1 connections) — `scripts/arkham_rooms_summary.py`
 
 ## Relationships
 
@@ -15,12 +24,12 @@
 
 ## Source Files
 
-- `scripts/e2e_reset_daisy_quest.py`
+- `scripts/arkham_rooms_summary.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 17 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

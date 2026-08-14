@@ -3,7 +3,8 @@
  */
 
 import React from 'react';
-import { RoomEditModalForm, RoomEditModalTabs } from './RoomEditModalForm';
+import { RoomEditModalForm } from './RoomEditModalForm';
+import { RoomEditModalTabs } from './RoomEditModalTabs';
 import { useRoomEditModal, type RoomEditModalProps } from './useRoomEditModal';
 
 export type { RoomEditModalProps } from './useRoomEditModal';

@@ -1,28 +1,34 @@
 # asyncio
 
-> 7 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **test_cleanup_stale_combats()** (3 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **test_cleanup_stale_combats_no_end_combat_method()** (3 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **test_cleanup_stale_combats_no_stale_combats()** (3 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **asyncio** (3 connections)
-- **Test cleanup_stale_combats handles missing end_combat method.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **Test cleanup_stale_combats when no stale combats exist.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **Test cleanup_stale_combats removes stale combats.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **test_party_invite_event_envelope_shape()** (5 connections) — `server/tests/unit/game/test_party_service.py`
+- **asyncio** (5 connections)
+- **test_accept_party_invite_success()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_decline_party_invite_success()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_request_party_invite_creates_pending()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_request_party_invite_target_already_in_party_rejected()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **Accepting a party invite adds the player to the party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **Declining removes pending invite and does not add to party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **Request fails if target is already in a party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **party_invite producer emits a build_event-shaped envelope.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **Requesting a party invite creates a pending invite (target must accept).** (1 connections) — `server/tests/unit/game/test_party_service.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
+- [test_party_service.py](test_party_service.py.md) (5 shared connections)
+- [PartyService](PartyService.md) (1 shared connections)
+- [.__post_init__](__post_init__.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_cleanup_handler.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

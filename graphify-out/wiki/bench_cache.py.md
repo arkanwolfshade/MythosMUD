@@ -1,0 +1,34 @@
+# bench_cache.py
+
+> 9 nodes
+
+## Key Concepts
+
+- **_FakePersistence** (6 connections) — `scripts/bench_cache.py`
+- **bench_cache.py** (6 connections) — `scripts/bench_cache.py`
+- **bench_room_cache()** (5 connections) — `scripts/bench_cache.py`
+- **.async_get_room()** (2 connections) — `scripts/bench_cache.py`
+- **main()** (2 connections) — `scripts/bench_cache.py`
+- **Any** (2 connections)
+- **.__init__()** (1 connections) — `scripts/bench_cache.py`
+- **Lightweight cache benchmark for CI artifacts. Measures miss vs. hit timings for…** (1 connections) — `scripts/bench_cache.py`
+- **Fake persistence layer providing async_get_room with simulated latency.** (1 connections) — `scripts/bench_cache.py`
+
+## Relationships
+
+- [RoomCacheService](RoomCacheService.md) (3 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+
+## Source Files
+
+- `scripts/bench_cache.py`
+
+## Audit Trail
+
+- EXTRACTED: 13 (87%)
+- INFERRED: 2 (13%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

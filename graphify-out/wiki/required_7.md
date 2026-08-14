@@ -15,7 +15,7 @@
 
 ## Relationships
 
-- [Schemas Intersection Schema](Schemas_Intersection_Schema.md) (1 shared connections)
+- [intersection_schema.json](intersection_schema.json.md) (1 shared connections)
 
 ## Source Files
 

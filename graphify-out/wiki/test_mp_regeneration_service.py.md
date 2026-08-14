@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [PlayerService](PlayerService.md) (5 shared connections)
-- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (5 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
 
 ## Source Files
 

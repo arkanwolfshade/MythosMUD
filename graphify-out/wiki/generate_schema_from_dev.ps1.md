@@ -1,10 +1,11 @@
 # generate_schema_from_dev.ps1
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **generate_schema_from_dev.ps1** (0 connections) — `db/README.md`
+- **generate_schema_from_dev.ps1** (1 connections) — `scripts/generate_schema_from_dev.ps1`
+- **Write-ColorOutput()** (1 connections) — `scripts/generate_schema_from_dev.ps1`
 
 ## Relationships
 
@@ -12,11 +13,11 @@
 
 ## Source Files
 
-- `db/README.md`
+- `scripts/generate_schema_from_dev.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

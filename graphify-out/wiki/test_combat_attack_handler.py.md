@@ -33,7 +33,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (10 shared connections)
+- [CombatService](CombatService.md) (4 shared connections)
+- [CombatParticipant](CombatParticipant.md) (3 shared connections)
+- [CombatAttackHandler](CombatAttackHandler.md) (2 shared connections)
+- [CombatInstance](CombatInstance.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,26 +1,26 @@
 # fixture
 
-> 8 nodes
+> 9 nodes
 
 ## Key Concepts
 
 - **fixture** (4 connections)
-- **mock_container_service()** (3 connections) — `server/tests/unit/api/test_containers.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/api/test_containers.py`
-- **mock_request()** (3 connections) — `server/tests/unit/api/test_containers.py`
-- **mock_user()** (3 connections) — `server/tests/unit/api/test_containers.py`
-- **Create a mock request object.** (1 connections) — `server/tests/unit/api/test_containers.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/api/test_containers.py`
-- **Create a mock container service.** (1 connections) — `server/tests/unit/api/test_containers.py`
+- **mock_prototype_registry()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **sample_equipped_item()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **sample_inventory_item()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **sample_room_drop()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Create a mock prototype registry.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Create a sample room drop item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Create a sample inventory item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Create a sample equipped item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (4 shared connections)
-- [User](User.md) (1 shared connections)
+- [test_look_item.py](test_look_item.py.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/api/test_containers.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 

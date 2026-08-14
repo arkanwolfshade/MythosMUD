@@ -1,30 +1,40 @@
 # UUID
 
-> 9 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **UUID** (5 connections)
-- **.get_original_string_id()** (3 connections) — `server/game/magic/spell_effect_types.py`
-- **.get_player_by_id()** (3 connections) — `server/game/magic/spell_effect_types.py`
-- **.damage_player()** (3 connections) — `server/game/magic/spell_effect_types.py`
-- **.heal_player()** (3 connections) — `server/game/magic/spell_effect_types.py`
-- **Apply healing to a player by id.** (1 connections) — `server/game/magic/spell_effect_types.py`
-- **Apply typed damage to a player; returns damage result payload.** (1 connections) — `server/game/magic/spell_effect_types.py`
-- **Load player by id; None if missing.** (1 connections) — `server/game/magic/spell_effect_types.py`
-- **Return registry string id for npc_uuid, or None if unmapped.** (1 connections) — `server/game/magic/spell_effect_types.py`
+- **UUID** (8 connections)
+- **Any** (7 connections)
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast party message to party members only, with dampening and mute checks.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Send whisper message to specific player with communication dampening.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast system/admin message; personal when target_player_id is set.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Handle unknown channel type.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast message according to channel strategy. Args: chat_event: WebSocket…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast room-based message with server-side filtering.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast global message to all connected players.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- [PlayerService](PlayerService.md) (5 shared connections)
+- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (5 shared connections)
+- [test_channel_broadcasting_strategies.py](test_channel_broadcasting_strategies.py.md) (1 shared connections)
+- [SystemAdminChannelStrategy](SystemAdminChannelStrategy.md) (1 shared connections)
+- [UnknownChannelStrategy](UnknownChannelStrategy.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_effect_types.py`
+- `server/realtime/channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

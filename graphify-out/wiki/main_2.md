@@ -1,21 +1,22 @@
 # main
 
-> 12 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **main()** (6 connections) — `scripts/visualize_arkham_rooms.py`
-- **visualize_arkham_rooms.py** (5 connections) — `scripts/visualize_arkham_rooms.py`
-- **create_graph()** (4 connections) — `scripts/visualize_arkham_rooms.py`
-- **visualize_graph()** (4 connections) — `scripts/visualize_arkham_rooms.py`
-- **load_room_data()** (3 connections) — `scripts/visualize_arkham_rooms.py`
-- **print_statistics()** (3 connections) — `scripts/visualize_arkham_rooms.py`
-- **Graph** (2 connections)
-- **Print statistics about the room data.** (1 connections) — `scripts/visualize_arkham_rooms.py`
-- **Main function to generate the visualization.** (1 connections) — `scripts/visualize_arkham_rooms.py`
-- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/visualize_arkham_rooms.py`
-- **Create a NetworkX graph from the room data.** (1 connections) — `scripts/visualize_arkham_rooms.py`
-- **Create a visual representation of the graph.** (1 connections) — `scripts/visualize_arkham_rooms.py`
+- **main()** (7 connections) — `scripts/fix_markdownlint_errors.py`
+- **fix_markdownlint_errors.py** (6 connections) — `scripts/fix_markdownlint_errors.py`
+- **fix_md001_heading_increment()** (3 connections) — `scripts/fix_markdownlint_errors.py`
+- **fix_md013_line_length()** (3 connections) — `scripts/fix_markdownlint_errors.py`
+- **fix_md041_first_line_heading()** (3 connections) — `scripts/fix_markdownlint_errors.py`
+- **fix_md051_link_fragments()** (3 connections) — `scripts/fix_markdownlint_errors.py`
+- **parse_errors()** (3 connections) — `scripts/fix_markdownlint_errors.py`
+- **Fix MD001: Heading levels should only increment by one level at a time.** (1 connections) — `scripts/fix_markdownlint_errors.py`
+- **Parse markdownlint output file and extract errors.** (1 connections) — `scripts/fix_markdownlint_errors.py`
+- **Fix MD013: Line length issues by wrapping long lines.** (1 connections) — `scripts/fix_markdownlint_errors.py`
+- **Fix MD051: Link fragments should be valid.** (1 connections) — `scripts/fix_markdownlint_errors.py`
+- **Main function to fix markdownlint errors.** (1 connections) — `scripts/fix_markdownlint_errors.py`
+- **Fix MD041: First line should be a top-level heading.** (1 connections) — `scripts/fix_markdownlint_errors.py`
 
 ## Relationships
 
@@ -23,11 +24,11 @@
 
 ## Source Files
 
-- `scripts/visualize_arkham_rooms.py`
+- `scripts/fix_markdownlint_errors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

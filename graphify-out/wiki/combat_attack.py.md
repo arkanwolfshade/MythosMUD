@@ -33,10 +33,12 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (3 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
-- [.handle_attack_command](handle_attack_command.md) (1 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [ItemPrototypeModel](ItemPrototypeModel.md) (3 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (2 shared connections)
+- [CombatService](CombatService.md) (2 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
 
 ## Source Files
 

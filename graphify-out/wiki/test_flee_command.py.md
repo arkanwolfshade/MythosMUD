@@ -1,6 +1,6 @@
 # test_flee_command.py
 
-> 37 nodes
+> 39 nodes
 
 ## Key Concepts
 
@@ -10,6 +10,7 @@
 - **test_flee_no_exits_returns_no_escape()** (9 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **test_flee_roll_fails_returns_failure_and_uses_action()** (9 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **test_flee_roll_succeeds_returns_success()** (9 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **handler()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **_make_participant()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **_standing_player_id()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **test_flee_not_in_combat_returns_message()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
@@ -28,13 +29,15 @@
 - **_GetCombatHandlerLoaderAppState** (2 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **TypedDict** (1 connections)
 - **Unit tests for /flee command (handle_flee_command).** (1 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **Build request.app so _get_player_and_room gets player and room from persistence.** (1 connections) — `server/tests/unit/commands/test_flee_command.py`
-- *... and 12 more nodes in this community*
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (18 shared connections)
-- [Player](Player.md) (2 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (9 shared connections)
+- [CombatInstance](CombatInstance.md) (4 shared connections)
+- [CombatParticipant](CombatParticipant.md) (2 shared connections)
+- [CombatService](CombatService.md) (2 shared connections)
+- [server/models/game.py](server-models-game.py.md) (2 shared connections)
 
 ## Source Files
 
@@ -42,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 85 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 87 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -15,7 +15,7 @@
 
 ## Relationships
 
-- [Schemas Room Schema](Schemas_Room_Schema.md) (1 shared connections)
+- [room_schema.json](room_schema.json.md) (1 shared connections)
 
 ## Source Files
 

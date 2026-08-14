@@ -1,17 +1,12 @@
 # test_player_preferences_service.py
 
-> 112 nodes
+> 103 nodes
 
 ## Key Concepts
 
 - **test_player_preferences_service.py** (59 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 - **asyncio** (41 connections)
-- **preferences_service()** (4 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 - **test_create_player_preferences_integrity_error()** (4 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **fixture** (4 connections)
-- **mock_session()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **sample_player_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **sample_preferences()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 - **test_create_player_preferences_already_exists()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 - **test_create_player_preferences_invalid_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 - **test_create_player_preferences_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
@@ -29,13 +24,19 @@
 - **test_get_player_preferences_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 - **test_get_player_preferences_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 - **test_is_channel_muted_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- *... and 87 more nodes in this community*
+- **test_is_channel_muted_false()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_channel_muted_invalid_channel()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_channel_muted_invalid_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_channel_muted_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_channel_muted_true()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- *... and 78 more nodes in this community*
 
 ## Relationships
 
-- [PlayerPreferencesService](PlayerPreferencesService.md) (3 shared connections)
+- [preferences_service](preferences_service.md) (4 shared connections)
 - [Player](Player.md) (2 shared connections)
-- [test_users.py](test_users.py.md) (1 shared connections)
+- [PlayerPreferencesService](PlayerPreferencesService.md) (2 shared connections)
+- [User](User.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 159 (99%)
+- EXTRACTED: 150 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

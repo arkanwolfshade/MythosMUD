@@ -1,65 +1,75 @@
 # api/character_creation.py
 
-> 101 nodes
+> 230 nodes
 
 ## Key Concepts
 
-- **api/character_creation.py** (54 connections) — `server/api/character_creation.py`
-- **StatsGenerator** (34 connections) — `server/game/stats_generator.py`
-- **RollStatsRequest** (22 connections) — `server/schemas/players/player_requests.py`
-- **roll_character_stats()** (22 connections) — `server/api/character_creation.py`
+- **api/character_creation.py** (64 connections) — `server/api/character_creation.py`
+- **PlayerRead** (50 connections) — `server/schemas/players/player.py`
+- **SkillService** (38 connections) — `server/game/skill_service.py`
+- **players/__init__.py** (38 connections) — `server/schemas/players/__init__.py`
+- **roll_character_stats()** (26 connections) — `server/api/character_creation.py`
+- **RollStatsRequest** (23 connections) — `server/schemas/players/player_requests.py`
+- **create_character_with_stats()** (23 connections) — `server/api/character_creation.py`
+- **test_character_creation.py** (22 connections) — `server/tests/unit/api/test_character_creation.py`
+- **ProfessionService** (21 connections) — `server/game/profession_service.py`
 - **CreateCharacterRequest** (21 connections) — `server/schemas/players/player_requests.py`
-- **ProfessionService** (19 connections) — `server/game/profession_service.py`
-- **create_character_with_stats()** (18 connections) — `server/api/character_creation.py`
-- **_execute_create_character()** (15 connections) — `server/api/character_creation.py`
-- **_roll_stats_with_profession_preview()** (14 connections) — `server/api/character_creation.py`
-- **validate_character_stats()** (14 connections) — `server/api/character_creation.py`
+- **players/player.py** (20 connections) — `server/schemas/players/player.py`
+- **ClassDefinition** (15 connections) — `server/schemas/players/class_definition.py`
+- **validate_character_stats()** (15 connections) — `server/api/character_creation.py`
 - **asyncio** (14 connections)
+- **RollStatsResponse** (13 connections) — `server/schemas/players/character_creation.py`
 - **TestRollCharacterStats** (13 connections) — `server/tests/unit/api/test_character_creation.py`
+- **_execute_create_character()** (13 connections) — `server/api/character_creation.py`
+- **_roll_stats_with_profession_preview()** (12 connections) — `server/api/character_creation.py`
+- **PlayerBase** (11 connections) — `server/schemas/players/player.py`
+- **_convert_stat_summary_to_stat_summary_model()** (11 connections) — `server/api/character_creation.py`
+- **get_stats_generator()** (11 connections) — `server/dependencies.py`
 - **CreateCharacterResponse** (10 connections) — `server/schemas/players/character_creation.py`
-- **RollStatsResponse** (10 connections) — `server/schemas/players/character_creation.py`
+- **CharacterInfo** (10 connections) — `server/schemas/players/player.py`
+- **PlayerCreate** (10 connections) — `server/schemas/players/player.py`
 - **RolledStats** (10 connections) — `server/schemas/players/stat_values.py`
-- **_dispatch_roll_stats()** (10 connections) — `server/api/character_creation.py`
-- **Any** (10 connections)
-- **players/character_creation.py** (10 connections) — `server/schemas/players/character_creation.py`
-- **ValidateStatsResponse** (9 connections) — `server/schemas/players/character_creation.py`
-- **_convert_stat_summary_to_stat_summary_model()** (9 connections) — `server/api/character_creation.py`
-- **StatSummary** (8 connections) — `server/schemas/players/character_creation.py`
-- **_roll_stats_raw()** (8 connections) — `server/api/character_creation.py`
-- **_roll_stats_with_class()** (8 connections) — `server/api/character_creation.py`
-- **_prepare_create_character_request()** (7 connections) — `server/api/character_creation.py`
-- **_raise_roll_stats_error()** (7 connections) — `server/api/character_creation.py`
-- *... and 76 more nodes in this community*
+- *... and 205 more nodes in this community*
 
 ## Relationships
 
-- [User](User.md) (33 shared connections)
-- [players/__init__.py](players-__init__.py.md) (18 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (15 shared connections)
-- [Stats](Stats.md) (14 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (13 shared connections)
-- [test_users.py](test_users.py.md) (7 shared connections)
-- [PlayerRead](PlayerRead.md) (6 shared connections)
-- [DatabaseError](DatabaseError.md) (6 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (5 shared connections)
-- [players.py](players.py.md) (4 shared connections)
-- [PlayerService](PlayerService.md) (4 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (37 shared connections)
+- [get_logger](get_logger.md) (36 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (22 shared connections)
+- [User](User.md) (22 shared connections)
+- [api/player_effects.py](api-player_effects.py.md) (21 shared connections)
+- [test_player_schemas.py](test_player_schemas.py.md) (17 shared connections)
+- [PlayerService](PlayerService.md) (17 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (13 shared connections)
+- [Stats](Stats.md) (13 shared connections)
+- [MythosMUDError](MythosMUDError.md) (7 shared connections)
+- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (6 shared connections)
+- [test_professions_endpoints.py](test_professions_endpoints.py.md) (4 shared connections)
 
 ## Source Files
 
 - `server/api/character_creation.py`
+- `server/dependencies.py`
+- `server/game/player_search_service.py`
+- `server/game/player_service.py`
 - `server/game/profession_service.py`
-- `server/game/stats_generator.py`
+- `server/game/skill_service.py`
+- `server/schemas/players/__init__.py`
 - `server/schemas/players/character_creation.py`
+- `server/schemas/players/class_definition.py`
+- `server/schemas/players/player.py`
 - `server/schemas/players/player_requests.py`
+- `server/schemas/players/profession.py`
 - `server/schemas/players/stat_values.py`
+- `server/services/target_resolution_service.py`
 - `server/tests/unit/api/test_character_creation.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/test_dependency_injection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 334 (95%)
-- INFERRED: 18 (5%)
+- EXTRACTED: 654 (95%)
+- INFERRED: 35 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

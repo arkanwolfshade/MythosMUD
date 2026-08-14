@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (14 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (5 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (17 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (2 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
 
 ## Source Files
 

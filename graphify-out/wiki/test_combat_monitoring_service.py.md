@@ -34,11 +34,11 @@
 ## Relationships
 
 - [monitoring_service](monitoring_service.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [combat_monitoring_service.py](combat_monitoring_service.py.md) (3 shared connections)
 - [CombatMonitoringService](CombatMonitoringService.md) (3 shared connections)
 - [._generate_alert](_generate_alert.md) (2 shared connections)
 - [get_combat_monitoring](get_combat_monitoring.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 - [test_end_combat_monitoring_failure](test_end_combat_monitoring_failure.md) (1 shared connections)
 - [test_end_combat_monitoring_not_found](test_end_combat_monitoring_not_found.md) (1 shared connections)
 - [test_end_turn_monitoring_not_found](test_end_turn_monitoring_not_found.md) (1 shared connections)

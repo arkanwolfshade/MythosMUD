@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **enum** (6 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **environment** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **default** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **intersection** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **street_paved** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **enum** (6 connections) — `schemas/unified_room_schema.json`
+- **environment** (5 connections) — `schemas/unified_room_schema.json`
+- **default** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **indoors** (1 connections) — `schemas/unified_room_schema.json`
+- **intersection** (1 connections) — `schemas/unified_room_schema.json`
+- **outdoors** (1 connections) — `schemas/unified_room_schema.json`
+- **street_paved** (1 connections) — `schemas/unified_room_schema.json`
+- **underwater** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 
@@ -21,7 +21,7 @@
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- `schemas/unified_room_schema.json`
 
 ## Audit Trail
 

@@ -1,58 +1,41 @@
 # asyncio
 
-> 27 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **asyncio** (37 connections)
-- **test_get_adjacent_rooms_no_exits()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_adjacent_rooms_target_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_exits_room_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_occupants_with_cache_room_object()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_occupants_without_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_with_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_list_rooms_with_plane_zone()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_list_rooms_with_sub_zone()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_validate_exit_exists_from_room_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_validate_player_in_room_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_validate_room_exists_with_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_validate_room_exists_without_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_adjacent_rooms() handles room with no exits.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_adjacent_rooms() handles target room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_room_exists() uses cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_room_exists() falls back to persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_exit_exists() returns False when from_room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_occupants() handles Room object with get_players/get_npcs.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_occupants() falls back to persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_player_in_room() returns False when room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_exits() returns empty dict when room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test list_rooms() filters by plane and zone.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test list_rooms() filters by sub_zone.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- *... and 2 more nodes in this community*
+- **asyncio** (12 connections)
+- **test_execute_command_handler_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_execute_command_handler_returns_non_dict()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_command_parse_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_logging_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_no_command_type()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_success()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_unknown_command()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test _execute_command_handler handles handler errors.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test process_command handles parse errors.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test _execute_command_handler handles handler returning non-dict.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test process_validated_command successfully routes to handler.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test process_validated_command handles missing command_type.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test process_validated_command handles unknown command type.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test process_validated_command handles logging errors gracefully.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
 
 ## Relationships
 
-- [test_room_service.py](test_room_service.py.md) (13 shared connections)
-- [test_get_adjacent_rooms_null_exit](test_get_adjacent_rooms_null_exit.md) (1 shared connections)
-- [test_get_adjacent_rooms_source_not_found](test_get_adjacent_rooms_source_not_found.md) (1 shared connections)
-- [test_get_adjacent_rooms_success](test_get_adjacent_rooms_success.md) (1 shared connections)
-- [test_get_local_chat_scope](test_get_local_chat_scope.md) (1 shared connections)
-- [test_get_local_chat_scope_source_not_found](test_get_local_chat_scope_source_not_found.md) (1 shared connections)
-- [test_get_room_exits_no_exits](test_get_room_exits_no_exits.md) (1 shared connections)
-- [test_get_room_exits_success](test_get_room_exits_success.md) (1 shared connections)
-- [test_get_room_info_not_found](test_get_room_info_not_found.md) (1 shared connections)
-- [test_get_room_info_success](test_get_room_info_success.md) (1 shared connections)
-- [test_get_room_occupants_cache_not_found](test_get_room_occupants_cache_not_found.md) (1 shared connections)
-- [test_get_room_occupants_with_cache_dict](test_get_room_occupants_with_cache_dict.md) (1 shared connections)
+- [test_command_service.py](test_command_service.py.md) (7 shared connections)
+- [test_execute_command_handler_success](test_execute_command_handler_success.md) (1 shared connections)
+- [test_process_command_no_handler](test_process_command_no_handler.md) (1 shared connections)
+- [test_process_command_success](test_process_command_success.md) (1 shared connections)
+- [test_process_validated_command_handler_error](test_process_validated_command_handler_error.md) (1 shared connections)
+- [test_process_validated_command_validation_error](test_process_validated_command_validation_error.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `server/tests/unit/commands/test_command_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (100%)
+- EXTRACTED: 26 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

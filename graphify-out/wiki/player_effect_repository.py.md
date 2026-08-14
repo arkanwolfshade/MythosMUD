@@ -1,6 +1,6 @@
 # player_effect_repository.py
 
-> 64 nodes
+> 60 nodes
 
 ## Key Concepts
 
@@ -17,9 +17,7 @@
 - **Any** (6 connections)
 - **.delete_effect()** (5 connections) — `server/persistence/repositories/player_effect_repository.py`
 - **._execute_add_effect()** (5 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **.expire_effects_for_tick()** (5 connections) — `server/persistence/repositories/player_effect_repository.py`
 - **.get_effect_remaining_ticks()** (5 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **.get_effects_expiring_this_tick()** (5 connections) — `server/persistence/repositories/player_effect_repository.py`
 - **_make_effect()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
 - **_row_from_effect()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
 - **test_get_active_effects_for_player_filters_by_remaining()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
@@ -29,16 +27,14 @@
 - **_opt_str()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
 - **.has_effect()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
 - **_str_opt()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
-- *... and 39 more nodes in this community*
+- **repo()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **._remaining_ticks()** (3 connections) — `server/persistence/repositories/player_effect_repository.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
+- [get_logger](get_logger.md) (22 shared connections)
 - [Player](Player.md) (8 shared connections)
-- [DatabaseError](DatabaseError.md) (7 shared connections)
-- [log_and_raise](log_and_raise.md) (6 shared connections)
-- [get_session_maker](get_session_maker.md) (6 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 130 (97%)
+- EXTRACTED: 123 (97%)
 - INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 

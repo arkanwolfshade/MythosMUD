@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [MovementMonitor](MovementMonitor.md) (7 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [MovementMonitor](MovementMonitor.md) (2 shared connections)
 
 ## Source Files
 

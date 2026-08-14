@@ -1,20 +1,20 @@
 # .__init__
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/services/combat_attack_handler.py`
-- **Any** (1 connections)
-- **Initialize the attack handler. Args: combat_service: Reference to the parent…** (1 connections) — `server/services/combat_attack_handler.py`
+- **.__init__()** (3 connections) — `server/realtime/event_handlers.py`
+- **Initialize event handler. Args: connection_manager: ConnectionManager instance…** (1 connections) — `server/realtime/event_handlers.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [EventHandler](EventHandler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_attack_handler.py`
+- `server/realtime/event_handlers.py`
 
 ## Audit Trail
 

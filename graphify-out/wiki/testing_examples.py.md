@@ -1,6 +1,6 @@
 # testing_examples.py
 
-> 54 nodes
+> 58 nodes
 
 ## Key Concepts
 
@@ -14,7 +14,9 @@
 - **process_item()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **risky_operation()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **test_batch_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_context_binding()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **test_exception_tracking()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_logging_correlation_ids()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **test_logging_error_handling()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **test_logging_performance_metrics()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **test_middleware_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
@@ -27,15 +29,13 @@
 - **.process_request()** (2 connections) — `docs/examples/logging/testing_examples.py`
 - **test_api_request_logging()** (2 connections) — `docs/examples/logging/testing_examples.py`
 - **test_basic_logging()** (2 connections) — `docs/examples/logging/testing_examples.py`
-- **test_database_logging()** (2 connections) — `docs/examples/logging/testing_examples.py`
-- **test_error_logging()** (2 connections) — `docs/examples/logging/testing_examples.py`
-- *... and 29 more nodes in this community*
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [lifespan.py](lifespan.py.md) (4 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (4 shared connections)
 - [ExceptionTracker](ExceptionTracker.md) (3 shared connections)
-- [bind_request_context](bind_request_context.md) (2 shared connections)
+- [log_with_context](log_with_context.md) (2 shared connections)
 
 ## Source Files
 
@@ -43,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 69 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 71 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

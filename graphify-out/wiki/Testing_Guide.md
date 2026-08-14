@@ -1,16 +1,14 @@
 # Testing Guide
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **Testing Guide** (5 connections) — `docs/TESTING.md`
+- **Testing Guide** (4 connections) — `docs/TESTING.md`
 - **bcrypt PyO3 Fresh Session Limitation** (2 connections) — `docs/TESTING.md`
 - **Two-Tier Test Suite (make test)** (2 connections) — `docs/TESTING.md`
 - **Quick Start E2E Tests** (2 connections) — `docs/QUICK_START_E2E_TESTS.md`
-- **Test Modernization Plan** (2 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
 - **E2E Test Server Quick Start** (1 connections) — `docs/QUICK_START_E2E_TESTS.md`
-- **Container-Based Test Fixtures** (1 connections) — `docs/TEST_MODERNIZATION_PLAN.md`
 - **Pydantic Testing Patterns** (1 connections) — `docs/TESTING_PYDANTIC_PATTERNS.md`
 
 ## Relationships
@@ -22,12 +20,11 @@
 - `docs/QUICK_START_E2E_TESTS.md`
 - `docs/TESTING.md`
 - `docs/TESTING_PYDANTIC_PATTERNS.md`
-- `docs/TEST_MODERNIZATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (62%)
-- INFERRED: 3 (38%)
+- EXTRACTED: 4 (67%)
+- INFERRED: 2 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

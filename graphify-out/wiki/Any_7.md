@@ -1,48 +1,34 @@
 # Any
 
-> 37 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **Any** (10 connections)
-- **._handle_event_async()** (8 connections) — `server/events/event_bus.py`
-- **._create_async_subscriber_tasks()** (6 connections) — `server/events/event_bus.py`
-- **._ensure_async_processing()** (6 connections) — `server/events/event_bus.py`
-- **._process_sync_subscribers()** (5 connections) — `server/events/event_bus.py`
-- **._separate_subscribers()** (5 connections) — `server/events/event_bus.py`
-- **.unsubscribe()** (5 connections) — `server/events/event_bus.py`
-- **._wait_for_async_subscribers()** (5 connections) — `server/events/event_bus.py`
-- **.get_subscriber_stats()** (4 connections) — `server/events/event_bus.py`
-- **._handle_task_result_async()** (4 connections) — `server/events/event_bus.py`
-- **.inject()** (4 connections) — `server/events/event_bus.py`
-- **._process_events_async()** (4 connections) — `server/events/event_bus.py`
-- **.publish()** (4 connections) — `server/events/event_bus.py`
-- **.subscribe()** (4 connections) — `server/events/event_bus.py`
-- **._ensure_processing_started()** (3 connections) — `server/events/event_bus.py`
-- **.get_active_task_details()** (3 connections) — `server/events/event_bus.py`
-- **.get_all_subscriber_counts()** (3 connections) — `server/events/event_bus.py`
-- **.get_subscriber_lifecycle_metrics()** (3 connections) — `server/events/event_bus.py`
-- **Task** (3 connections)
-- **T** (2 connections)
-- **Legacy wrapper for API compatibility during transition.** (1 connections) — `server/events/event_bus.py`
-- **Pure async event processing loop replacing the dangerous threading pattern.** (1 connections) — `server/events/event_bus.py`
-- **Separate async and sync subscribers for appropriate execution. Uses…** (1 connections) — `server/events/event_bus.py`
-- **Execute sync subscribers sequentially with error isolation. Sync subscribers…** (1 connections) — `server/events/event_bus.py`
-- **Create asyncio tasks for async event subscribers and track their lifecycle.…** (1 connections) — `server/events/event_bus.py`
-- *... and 12 more nodes in this community*
+- **Any** (6 connections)
+- **._is_newer_data()** (4 connections) — `server/services/room_data_cache.py`
+- **.merge_room_data()** (4 connections) — `server/services/room_data_cache.py`
+- **.get_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **.get_cache_stats()** (3 connections) — `server/services/room_data_cache.py`
+- **.is_room_data_fresh()** (3 connections) — `server/services/room_data_cache.py`
+- **.set_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **Get statistics about the room data cache. Args: is_room_data_fresh_func:…** (1 connections) — `server/services/room_data_cache.py`
+- **Merge room data with proper conflict resolution. Args: old_data: Existing room…** (1 connections) — `server/services/room_data_cache.py`
+- **Check if new data is newer than old data for a specific key. Args: old_data:…** (1 connections) — `server/services/room_data_cache.py`
+- **Check if room data is fresh enough to use. Args: room_data: Room data to check…** (1 connections) — `server/services/room_data_cache.py`
+- **Get room data from cache. Args: room_id: Room ID to retrieve Returns: Dict[str,…** (1 connections) — `server/services/room_data_cache.py`
+- **Store room data in cache. Args: room_id: Room ID to store room_data: Room data…** (1 connections) — `server/services/room_data_cache.py`
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (18 shared connections)
-- [event_types.py](event_types.py.md) (6 shared connections)
+- [RoomDataCache](RoomDataCache.md) (6 shared connections)
 
 ## Source Files
 
-- `server/events/event_bus.py`
+- `server/services/room_data_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,57 +1,48 @@
 # test_container_persistence.py
 
-> 152 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **test_container_persistence.py** (61 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **_parse_jsonb_column()** (28 connections) — `server/container_persistence/container_persistence.py`
-- **_fetch_container_items()** (25 connections) — `server/container_persistence/container_persistence.py`
-- **create_container()** (21 connections) — `server/container_persistence/container_persistence.py`
-- **container_persistence/container_persistence.py** (21 connections) — `server/container_persistence/container_persistence.py`
-- **ContainerData** (18 connections) — `server/container_persistence/container_persistence.py`
-- **get_container()** (15 connections) — `server/container_persistence/container_persistence.py`
-- **update_container()** (15 connections) — `server/container_persistence/container_persistence.py`
-- **get_containers_by_entity_id()** (13 connections) — `server/container_persistence/container_persistence.py`
-- **get_containers_by_room_id()** (12 connections) — `server/container_persistence/container_persistence.py`
-- **delete_container()** (10 connections) — `server/container_persistence/container_persistence.py`
-- **Any** (10 connections)
-- **server/container_persistence/__init__.py** (9 connections) — `server/container_persistence/__init__.py`
-- **UUID** (8 connections)
-- **test_persistence_container_persistence.py** (8 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **.__init__()** (4 connections) — `server/container_persistence/container_persistence.py`
-- **test_create_container_get_container_success()** (4 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **test_update_container_success()** (4 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **test_update_container_with_items()** (4 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **.to_dict()** (3 connections) — `server/container_persistence/container_persistence.py`
-- **test_container_data_init()** (3 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **test_container_data_to_dict()** (3 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **test_container_data_to_dict_with_all_fields()** (3 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **test_container_data_to_dict_with_datetimes()** (3 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **test_create_container_capacity_too_high()** (3 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- *... and 127 more nodes in this community*
+- **test_container_persistence.py** (20 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_container_data_init()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_container_data_to_dict()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_container_data_to_dict_with_all_fields()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_container_data_to_dict_with_datetimes()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_fetch_container_items_empty()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_fetch_container_items_invalid_json_metadata()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_fetch_container_items_missing_fields()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_fetch_container_items_missing_item_instance_id()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_fetch_container_items_non_dict_metadata()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_fetch_container_items_non_dict_row()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_fetch_container_items_string_metadata()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_fetch_container_items_with_items()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_parse_jsonb_column_dict()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_parse_jsonb_column_empty_string()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_parse_jsonb_column_invalid_json()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_parse_jsonb_column_list()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_parse_jsonb_column_none()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_parse_jsonb_column_string()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **Unit tests for container_persistence helpers and fetch_container_items. Tests…** (1 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **Test fetch_container_items with items.** (1 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **Test fetch_container_items skips rows with missing item_instance_id.** (1 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **Test fetch_container_items handles non-dictionary rows.** (1 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **Test fetch_container_items parses string metadata.** (1 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **Test fetch_container_items handles invalid JSON metadata.** (1 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [container_persistence_async.py](container_persistence_async.py.md) (17 shared connections)
-- [log_and_raise](log_and_raise.md) (7 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (4 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
-- [persistence/container_persistence.py](persistence-container_persistence.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [container_persistence/container_persistence.py](container_persistence-container_persistence.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container_persistence/__init__.py`
-- `server/container_persistence/container_persistence.py`
 - `server/tests/unit/container_persistence/test_container_persistence.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- `server/tests/unit/persistence/test_persistence_container_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 264 (92%)
-- INFERRED: 24 (8%)
+- EXTRACTED: 38 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,11 +1,11 @@
 # logger.ts
 
-> 72 nodes
+> 77 nodes
 
 ## Key Concepts
 
-- **logger.ts** (37 connections) — `client/src/utils/logger.ts`
-- **logger** (32 connections) — `client/src/utils/logger.ts`
+- **logger.ts** (38 connections) — `client/src/utils/logger.ts`
+- **logger** (33 connections) — `client/src/utils/logger.ts`
 - **useGameConnectionRefactored.ts** (18 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
 - **useWebSocketConnection.ts** (18 connections) — `client/src/hooks/useWebSocketConnection.ts`
 - **useGameConnectionManagement.ts** (15 connections) — `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
@@ -21,6 +21,7 @@
 - **useWebSocketConnection.cleanup.test.ts** (8 connections) — `client/src/hooks/__tests__/useWebSocketConnection.cleanup.test.ts`
 - **useConnectionStateMachine.ts** (8 connections) — `client/src/hooks/useConnectionStateMachine.ts`
 - **logger.test.ts** (8 connections) — `client/src/utils/logger.test.ts`
+- **inputSanitizer** (8 connections) — `client/src/utils/security.ts`
 - **wsConnectionAfterEach()** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
 - **wsConnectionBeforeEach()** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
 - **defaultOptions** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
@@ -28,23 +29,22 @@
 - **wsTestState** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
 - **useConnectionState.ts** (7 connections) — `client/src/hooks/useConnectionState.ts`
 - **useSessionManagement.ts** (7 connections) — `client/src/hooks/useSessionManagement.ts`
-- **useGameConnectionManagement()** (5 connections) — `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
-- *... and 47 more nodes in this community*
+- *... and 52 more nodes in this community*
 
 ## Relationships
 
-- [stateUpdateUtils.ts](stateUpdateUtils.ts.md) (8 shared connections)
-- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (7 shared connections)
+- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (11 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (8 shared connections)
+- [Profession](Profession.md) (8 shared connections)
 - [security.ts](security.ts.md) (7 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (6 shared connections)
 - [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (5 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (5 shared connections)
 - [types/mythosTime.ts](types-mythosTime.ts.md) (5 shared connections)
 - [SkillAssignmentScreen.tsx](SkillAssignmentScreen.tsx.md) (4 shared connections)
 - [roomHandlers.ts](roomHandlers.ts.md) (4 shared connections)
-- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (4 shared connections)
+- [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (4 shared connections)
 - [ResourceManager](ResourceManager.md) (3 shared connections)
-- [utils/config.ts](utils-config.ts.md) (2 shared connections)
+- [1774539086359-useMythosAppState.ts](1774539086359-useMythosAppState.ts.md) (3 shared connections)
+- [GameEvent](GameEvent.md) (2 shared connections)
 
 ## Source Files
 
@@ -71,7 +71,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 223 (100%)
+- EXTRACTED: 237 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

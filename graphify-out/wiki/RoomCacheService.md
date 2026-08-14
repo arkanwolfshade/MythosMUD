@@ -1,58 +1,53 @@
 # RoomCacheService
 
-> 81 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **RoomCacheService** (17 connections) — `server/caching/cache_service.py`
-- **ProfessionCacheService** (15 connections) — `server/caching/cache_service.py`
-- **NPCCacheService** (14 connections) — `server/caching/cache_service.py`
-- **Any** (13 connections)
-- **server/caching/__init__.py** (12 connections) — `server/caching/__init__.py`
-- **CacheService** (8 connections) — `server/caching/cache_service.py`
-- **_FakeNPCService** (7 connections) — `scripts/bench_cache_npc.py`
-- **.__init__()** (7 connections) — `server/caching/cache_service.py`
-- **bench_cache_professions.py** (7 connections) — `scripts/bench_cache_professions.py`
-- **_FakePersistence** (6 connections) — `scripts/bench_cache.py`
-- **bench_cache.py** (6 connections) — `scripts/bench_cache.py`
-- **bench_cache_npc.py** (6 connections) — `scripts/bench_cache_npc.py`
-- **_FakePersistence** (5 connections) — `scripts/bench_cache_professions.py`
-- **bench_room_cache()** (5 connections) — `scripts/bench_cache.py`
-- **bench_npc_cache()** (5 connections) — `scripts/bench_cache_npc.py`
-- **bench_profession_cache()** (5 connections) — `scripts/bench_cache_professions.py`
-- **cached()** (5 connections) — `server/caching/cache_service.py`
-- **.get_all_professions()** (4 connections) — `scripts/bench_cache_professions.py`
-- **_get_empty_dict()** (4 connections) — `scripts/bench_cache_professions.py`
-- **.__init__()** (4 connections) — `server/caching/cache_service.py`
-- **.__init__()** (4 connections) — `server/caching/cache_service.py`
-- **.__init__()** (4 connections) — `server/caching/cache_service.py`
-- **Any** (4 connections)
-- **.get_npc_definition()** (3 connections) — `scripts/bench_cache_npc.py`
-- **.get_npc_definitions()** (3 connections) — `scripts/bench_cache_npc.py`
-- *... and 56 more nodes in this community*
+- **RoomCacheService** (38 connections) — `server/caching/cache_service.py`
+- **TestRoomCacheService** (17 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **_RoomObj** (9 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.persistence()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_cache_hit()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_miss_returns_none()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_miss_with_to_dict()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_sync_miss_with_to_dict()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_init_concurrent_create_uses_existing()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_init_lazy_creates_rooms_cache()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_init_uses_existing_rooms_cache()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_preload_rooms()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.invalidate_room()** (2 connections) — `server/caching/cache_service.py`
+- **.preload_rooms()** (2 connections) — `server/caching/cache_service.py`
+- **.to_dict()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_sync_cache_hit()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_sync_miss_caches_dict()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_invalidate_room()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **Any** (1 connections)
+- **Service for caching room data.** (1 connections) — `server/caching/cache_service.py`
+- **Invalidate cached room data. Args: room_id: The room ID to invalidate** (1 connections) — `server/caching/cache_service.py`
+- **Preload multiple rooms into cache. Args: room_ids: List of room IDs to preload** (1 connections) — `server/caching/cache_service.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
-- [LRUCache](LRUCache.md) (6 shared connections)
-- [DatabaseError](DatabaseError.md) (6 shared connections)
-- [get_cache_manager](get_cache_manager.md) (6 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (5 shared connections)
-- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (4 shared connections)
+- [get_cache_manager](get_cache_manager.md) (9 shared connections)
+- [NPCCacheService](NPCCacheService.md) (8 shared connections)
+- [ProfessionCacheService](ProfessionCacheService.md) (5 shared connections)
+- [CacheService](CacheService.md) (4 shared connections)
+- [bench_cache.py](bench_cache.py.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
+- [Any](Any.md) (3 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [LRUCache](LRUCache.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/bench_cache.py`
-- `scripts/bench_cache_npc.py`
-- `scripts/bench_cache_professions.py`
-- `server/caching/__init__.py`
 - `server/caching/cache_service.py`
-- `server/caching/lru_cache.py`
+- `server/tests/unit/caching/test_cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 132 (89%)
-- INFERRED: 16 (11%)
+- EXTRACTED: 54 (75%)
+- INFERRED: 18 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

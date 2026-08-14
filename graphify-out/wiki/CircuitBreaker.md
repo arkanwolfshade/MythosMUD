@@ -1,10 +1,10 @@
 # CircuitBreaker
 
-> 80 nodes
+> 82 nodes
 
 ## Key Concepts
 
-- **CircuitBreaker** (41 connections) — `server/realtime/circuit_breaker.py`
+- **CircuitBreaker** (43 connections) — `server/realtime/circuit_breaker.py`
 - **test_circuit_breaker.py** (32 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **.call()** (9 connections) — `server/realtime/circuit_breaker.py`
 - **asyncio** (8 connections)
@@ -26,17 +26,18 @@
 - **._should_attempt_reset()** (3 connections) — `server/realtime/circuit_breaker.py`
 - **test_circuit_breaker_init()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_circuit_breaker_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_circuit_breaker_open_exception()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_get_state()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_get_stats()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_get_stats_with_failure_time()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- *... and 55 more nodes in this community*
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
 - [test_nats_message_handler.py](test_nats_message_handler.py.md) (3 shared connections)
 - [MessageFilteringHelper](MessageFilteringHelper.md) (1 shared connections)
-- [NATSMessageHandler](NATSMessageHandler.md) (1 shared connections)
+- [NATSMessageHandlerMixinBase](NATSMessageHandlerMixinBase.md) (1 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 131 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 134 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

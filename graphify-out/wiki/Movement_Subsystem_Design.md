@@ -1,19 +1,21 @@
 # Movement Subsystem Design
 
-> 10 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **Movement Subsystem Design** (9 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **Movement Subsystem Design** (11 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
 - **SUBSYSTEM_MOVEMENT_DESIGN.md** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **Architecture** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **Component interactions** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **Constraints** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **Developer guide** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **Key design decisions** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **Overview** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **Related docs** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **Troubleshooting** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **1. Overview** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **2. Architecture** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **3. Key design decisions** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **4. Constraints** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **5. Component interactions** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **6. Developer guide** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **7. Troubleshooting** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **8. Related docs** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **9. Changelog** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
 
 ## Relationships
 
@@ -25,7 +27,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

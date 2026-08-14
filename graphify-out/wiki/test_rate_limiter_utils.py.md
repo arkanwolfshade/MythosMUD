@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (5 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [MythosMUDError](MythosMUDError.md) (3 shared connections)
+- [LootAllRequest](LootAllRequest.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 - [api/character_creation.py](api-character_creation.py.md) (1 shared connections)
 
 ## Source Files

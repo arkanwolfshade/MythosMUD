@@ -1,30 +1,13 @@
 # Configuration Files Reference
 
-> 22 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Configuration Files Reference** (4 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
-- **Database Access Patterns** (4 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **Documentation Audit** (4 connections) — `docs/DOCUMENTATION_AUDIT.md`
-- **AsyncPersistenceLayer Pattern** (3 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **SQLAlchemy ORM Pattern** (3 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **Container System API Reference** (3 connections) — `docs/CONTAINER_SYSTEM_API_REFERENCE.md`
-- **Container System Architecture** (3 connections) — `docs/CONTAINER_SYSTEM_ARCHITECTURE.md`
-- **E2E Testing Guide** (3 connections) — `docs/E2E_TESTING_GUIDE.md`
-- **AsyncPG Connection Pool** (2 connections) — `docs/DATABASE_POOL_CONFIGURATION.md`
-- **SQLAlchemy Connection Pool** (2 connections) — `docs/DATABASE_POOL_CONFIGURATION.md`
-- **Playwright CLI E2E Tests** (2 connections) — `docs/E2E_TESTING_GUIDE.md`
-- **Playwright MCP Multiplayer Scenarios** (2 connections) — `docs/E2E_TESTING_GUIDE.md`
-- **Container/Item Repository Async Migration Plan** (2 connections) — `docs/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Database Pool Configuration** (2 connections) — `docs/DATABASE_POOL_CONFIGURATION.md`
+- **Configuration Files Reference** (3 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
 - **Development Environment Setup** (2 connections) — `docs/DEVELOPMENT.md`
 - **Configuration File Tuples** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
 - **.env.local Secrets Pattern** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
-- **SQLAlchemy Async Migration Option** (1 connections) — `docs/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Container System API** (1 connections) — `docs/CONTAINER_SYSTEM_API_REFERENCE.md`
-- **Container Item System** (1 connections) — `docs/CONTAINER_SYSTEM_ARCHITECTURE.md`
-- **Eager Loading Best Practices** (1 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
 - **COPPA Compliance Checklist** (1 connections) — `docs/DEVELOPMENT.md`
 
 ## Relationships
@@ -34,19 +17,12 @@
 ## Source Files
 
 - `docs/CONFIGURATION_FILES_REFERENCE.md`
-- `docs/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- `docs/CONTAINER_SYSTEM_API_REFERENCE.md`
-- `docs/CONTAINER_SYSTEM_ARCHITECTURE.md`
-- `docs/DATABASE_ACCESS_PATTERNS.md`
-- `docs/DATABASE_POOL_CONFIGURATION.md`
 - `docs/DEVELOPMENT.md`
-- `docs/DOCUMENTATION_AUDIT.md`
-- `docs/E2E_TESTING_GUIDE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (79%)
-- INFERRED: 5 (21%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

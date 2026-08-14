@@ -1,6 +1,6 @@
 # test_corpse_lifecycle_service.py
 
-> 131 nodes
+> 103 nodes
 
 ## Key Concepts
 
@@ -29,17 +29,20 @@
 - **corpse_service()** (4 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
 - **._grace_period_allows_others()** (3 connections) — `server/services/corpse_lifecycle_service.py`
 - **.__init__()** (3 connections) — `server/services/corpse_lifecycle_service.py`
-- *... and 106 more nodes in this community*
+- *... and 78 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (22 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
-- [log_and_raise](log_and_raise.md) (5 shared connections)
-- [game_tick_processing.py](game_tick_processing.py.md) (4 shared connections)
+- [ContainerComponent](ContainerComponent.md) (16 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
+- [ContainerService](ContainerService.md) (4 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
+- [test_combat_death_handler.py](test_combat_death_handler.py.md) (2 shared connections)
+- [game_tick_processing.py](game_tick_processing.py.md) (2 shared connections)
+- [test_game_tick_processing.py](test_game_tick_processing.py.md) (2 shared connections)
 - [MythosMUDError](MythosMUDError.md) (2 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [LootAllRequest](LootAllRequest.md) (2 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,7 +51,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 235 (98%)
+- EXTRACTED: 207 (98%)
 - INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 

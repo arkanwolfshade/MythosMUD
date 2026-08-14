@@ -1,10 +1,10 @@
 # StyleGuideSections.tsx
 
-> 57 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **StyleGuideSections.tsx** (38 connections) — `client/src/components/ui/StyleGuideSections.tsx`
+- **StyleGuideSections.tsx** (39 connections) — `client/src/components/ui/StyleGuideSections.tsx`
 - **StatusPanel.tsx** (26 connections) — `client/src/components/ui/StatusPanel.tsx`
 - **ChannelSelector.tsx** (16 connections) — `client/src/components/ui/ChannelSelector.tsx`
 - **StyleGuide.tsx** (14 connections) — `client/src/components/ui/StyleGuide.tsx`
@@ -29,7 +29,7 @@
 - **StatusPanel()** (3 connections) — `client/src/components/ui/StatusPanel.tsx`
 - **StatusPanelProps** (2 connections) — `client/src/components/ui/StatusPanel.tsx`
 - **useChannelSelectorState()** (2 connections) — `client/src/components/ui/ChannelSelector.tsx`
-- *... and 32 more nodes in this community*
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
@@ -52,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 130 (100%)
+- EXTRACTED: 131 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

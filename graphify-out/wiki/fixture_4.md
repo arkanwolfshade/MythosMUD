@@ -1,29 +1,37 @@
 # fixture
 
-> 7 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **.mock_connection()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.mock_cursor()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.mock_cursor()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **fixture** (3 connections)
-- **Create a mock psycopg2 connection.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Create a mock psycopg2 cursor.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Create a mock psycopg2 cursor.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **fixture** (7 connections)
+- **handler()** (4 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_chat_service()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_magic_service()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_player()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_player_spell_repository()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_spell_learning_service()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_spell_registry()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Create a mock player spell repository.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Create a mock spell learning service.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Create a mock chat service.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Create a MagicCommandHandler instance.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Create a mock magic service.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Create a mock spell registry.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Create a mock player (healthy by default for cast/combat checks).** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [PostgresConnection](PostgresConnection.md) (2 shared connections)
-- [PostgresCursor](PostgresCursor.md) (1 shared connections)
+- [test_magic_commands.py](test_magic_commands.py.md) (7 shared connections)
+- [SpellLearningService](SpellLearningService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

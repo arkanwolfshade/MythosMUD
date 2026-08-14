@@ -31,9 +31,8 @@
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (4 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (3 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (4 shared connections)
 - [AttributeError](AttributeError.md) (2 shared connections)
 
 ## Source Files

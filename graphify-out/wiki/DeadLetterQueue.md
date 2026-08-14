@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **DeadLetterQueue** (35 connections) — `server/realtime/dead_letter_queue.py`
+- **DeadLetterQueue** (37 connections) — `server/realtime/dead_letter_queue.py`
 - **test_dead_letter_queue.py** (28 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **DeadLetterMessage** (25 connections) — `server/realtime/dead_letter_queue.py`
+- **DeadLetterMessage** (27 connections) — `server/realtime/dead_letter_queue.py`
 - **Any** (7 connections)
 - **.from_dict()** (6 connections) — `server/realtime/dead_letter_queue.py`
 - **Path** (5 connections)
@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [NATSMessageHandler](NATSMessageHandler.md) (4 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [NATSMessageHandlerMixinBase](NATSMessageHandlerMixinBase.md) (6 shared connections)
 - [MessageFilteringHelper](MessageFilteringHelper.md) (1 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 136 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 137 (96%)
+- INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

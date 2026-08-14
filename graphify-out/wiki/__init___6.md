@@ -1,20 +1,20 @@
 # .__init__
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/services/combat_cleanup_handler.py`
-- **Any** (1 connections)
-- **Initialize the cleanup handler. Args: combat_service: Reference to the parent…** (1 connections) — `server/services/combat_cleanup_handler.py`
+- **.__init__()** (3 connections) — `server/realtime/occupant_formatter.py`
+- **Initialize occupant formatter.** (1 connections) — `server/realtime/occupant_formatter.py`
 
 ## Relationships
 
 - [get_logger](get_logger.md) (1 shared connections)
+- [OccupantFormatter](OccupantFormatter.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_cleanup_handler.py`
+- `server/realtime/occupant_formatter.py`
 
 ## Audit Trail
 

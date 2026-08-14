@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_combat_messaging_integration.py** (32 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_combat_messaging_integration.py** (34 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 - **test_messaging_integration_init_no_connection_manager()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 - **test_connection_manager_property_lazy_load()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 - **test_connection_manager_setter()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
@@ -26,17 +26,17 @@
 ## Relationships
 
 - [asyncio](asyncio.md) (6 shared connections)
+- [.__post_init__](__post_init__.md) (2 shared connections)
 - [messaging_integration](messaging_integration.md) (2 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [test_broadcast_combat_attack_personal_message_error](test_broadcast_combat_attack_personal_message_error.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
+- [test_broadcast_combat_death](test_broadcast_combat_death.md) (1 shared connections)
+- [test_broadcast_combat_ended](test_broadcast_combat_ended.md) (1 shared connections)
 - [test_broadcast_combat_end](test_broadcast_combat_end.md) (1 shared connections)
 - [test_broadcast_combat_error](test_broadcast_combat_error.md) (1 shared connections)
 - [test_broadcast_player_mortally_wounded](test_broadcast_player_mortally_wounded.md) (1 shared connections)
 - [test_broadcast_player_died](test_broadcast_player_died.md) (1 shared connections)
 - [test_broadcast_player_mortally_wounded_with_attacker](test_broadcast_player_mortally_wounded_with_attacker.md) (1 shared connections)
-- [test_broadcast_player_mortally_wounded_no_attacker](test_broadcast_player_mortally_wounded_no_attacker.md) (1 shared connections)
 - [test_broadcast_player_respawn_personal_message_error](test_broadcast_player_respawn_personal_message_error.md) (1 shared connections)
-- [test_broadcast_combat_error_send_error](test_broadcast_combat_error_send_error.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 40 (98%)
+- EXTRACTED: 42 (98%)
 - INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 

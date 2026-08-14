@@ -1,11 +1,15 @@
 # Mythos Holiday Candidates
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **Mythos Holiday Observances** (1 connections) — `docs/MYTHOS_HOLIDAY_CANDIDATES.md`
-- **Mythos Holiday Candidates** (1 connections) — `docs/MYTHOS_HOLIDAY_CANDIDATES.md`
+- **Mythos Holiday Candidates** (4 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
+- **Implementation Notes** (2 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
+- **MYTHOS_HOLIDAY_CANDIDATES.md** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
+- **Canonical and Derived Observances** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
+- **Narrative Flavor Seeds** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
+- **Opportunities for Expansion** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
 
 ## Relationships
 
@@ -13,11 +17,11 @@
 
 ## Source Files
 
-- `docs/MYTHOS_HOLIDAY_CANDIDATES.md`
+- `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

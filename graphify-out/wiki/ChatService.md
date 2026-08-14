@@ -1,59 +1,58 @@
 # ChatService
 
-> 70 nodes
+> 151 nodes
 
 ## Key Concepts
 
-- **ChatService** (82 connections) — `server/game/chat_service.py`
-- **UUID** (26 connections)
-- **Any** (14 connections)
-- **.get_player_mutes()** (4 connections) — `server/game/chat_service.py`
-- **.send_emote_message()** (4 connections) — `server/game/chat_service.py`
+- **ChatService** (99 connections) — `server/game/chat_service.py`
+- **test_chat_service.py** (43 connections) — `server/tests/unit/game/test_chat_service.py`
+- **UUID** (28 connections)
+- **asyncio** (22 connections)
+- **.send_emote_message()** (10 connections) — `server/game/chat_service.py`
+- **._chat_send_services()** (5 connections) — `server/game/chat_service.py`
+- **._normalize_player_id()** (5 connections) — `server/game/chat_service.py`
 - **.send_global_message()** (4 connections) — `server/game/chat_service.py`
-- **.send_local_message()** (4 connections) — `server/game/chat_service.py`
-- **.send_party_message()** (4 connections) — `server/game/chat_service.py`
-- **.send_predefined_emote()** (4 connections) — `server/game/chat_service.py`
-- **.send_say_message()** (4 connections) — `server/game/chat_service.py`
 - **.send_system_message()** (4 connections) — `server/game/chat_service.py`
 - **.send_whisper_message()** (4 connections) — `server/game/chat_service.py`
-- **.set_player_pose()** (4 connections) — `server/game/chat_service.py`
-- **.add_admin()** (3 connections) — `server/game/chat_service.py`
-- **.clear_player_pose()** (3 connections) — `server/game/chat_service.py`
-- **.get_mute_status()** (3 connections) — `server/game/chat_service.py`
-- **.get_player_pose()** (3 connections) — `server/game/chat_service.py`
-- **.get_room_messages()** (3 connections) — `server/game/chat_service.py`
-- **.get_user_management_stats()** (3 connections) — `server/game/chat_service.py`
-- **.is_admin()** (3 connections) — `server/game/chat_service.py`
-- **.is_channel_muted()** (3 connections) — `server/game/chat_service.py`
-- **.is_globally_muted()** (3 connections) — `server/game/chat_service.py`
-- **.is_player_muted()** (3 connections) — `server/game/chat_service.py`
-- **.mute_channel()** (3 connections) — `server/game/chat_service.py`
-- **.mute_global()** (3 connections) — `server/game/chat_service.py`
-- *... and 45 more nodes in this community*
+- **test_get_last_whisper_sender()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_get_last_whisper_sender_none()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_get_room_messages()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_emote_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_emote_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_global_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_global_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_local_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_local_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_party_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_party_message_player_not_found()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_party_message_rate_limited()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_party_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_say_message_cannot_send()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_say_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- *... and 126 more nodes in this community*
 
 ## Relationships
 
-- [test_chat_service.py](test_chat_service.py.md) (28 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
-- [chat_service.py](chat_service.py.md) (4 shared connections)
-- [ChatPoseManager](ChatPoseManager.md) (4 shared connections)
-- [PlayerService](PlayerService.md) (2 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [chat_service.py](chat_service.py.md) (27 shared connections)
+- [chat_channel_message_senders.py](chat_channel_message_senders.py.md) (5 shared connections)
+- [SpellLearningService](SpellLearningService.md) (4 shared connections)
+- [ChatPoseManager](ChatPoseManager.md) (3 shared connections)
+- [test_chat_moderation.py](test_chat_moderation.py.md) (3 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [NPCCommunicationIntegration](NPCCommunicationIntegration.md) (2 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [NPCCommunicationIntegration](NPCCommunicationIntegration.md) (1 shared connections)
-- [ChatModeration](ChatModeration.md) (1 shared connections)
-- [UserManagerProtocol](UserManagerProtocol.md) (1 shared connections)
+- [PlayerService](PlayerService.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/chat_service.py`
+- `server/tests/unit/game/test_chat_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 147 (95%)
-- INFERRED: 8 (5%)
+- EXTRACTED: 266 (94%)
+- INFERRED: 16 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

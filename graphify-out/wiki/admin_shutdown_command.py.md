@@ -6,10 +6,10 @@
 
 - **admin_shutdown_command.py** (35 connections) — `server/commands/admin_shutdown_command.py`
 - **Any** (20 connections)
-- **handle_shutdown_command()** (14 connections) — `server/commands/admin_shutdown_command.py`
+- **handle_shutdown_command()** (13 connections) — `server/commands/admin_shutdown_command.py`
 - **initiate_shutdown_countdown()** (13 connections) — `server/commands/admin_shutdown_command.py`
 - **cancel_shutdown_countdown()** (11 connections) — `server/commands/admin_shutdown_command.py`
-- **parse_shutdown_parameters()** (11 connections) — `server/commands/admin_shutdown_command.py`
+- **validate_shutdown_admin_permission()** (9 connections) — `server/commands/admin_shutdown_command.py`
 - **broadcast_shutdown_notification()** (7 connections) — `server/commands/admin_shutdown_command.py`
 - **countdown_loop()** (7 connections) — `server/commands/admin_shutdown_command.py`
 - **_clear_shutdown_state()** (5 connections) — `server/commands/admin_shutdown_command.py`
@@ -33,17 +33,15 @@
 
 ## Relationships
 
-- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (16 shared connections)
-- [AliasStorage](AliasStorage.md) (8 shared connections)
-- [_asyncio_mark](_asyncio_mark.md) (3 shared connections)
-- [shutdown_sequence.py](shutdown_sequence.py.md) (3 shared connections)
-- [validate_shutdown_admin_permission](validate_shutdown_admin_permission.md) (3 shared connections)
-- [test_users.py](test_users.py.md) (3 shared connections)
-- [calculate_notification_times](calculate_notification_times.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (15 shared connections)
+- [_asyncio_mark](_asyncio_mark.md) (6 shared connections)
+- [AliasStorage](AliasStorage.md) (6 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [test_shutdown_sequence.py](test_shutdown_sequence.py.md) (3 shared connections)
+- [parse_shutdown_parameters](parse_shutdown_parameters.md) (3 shared connections)
+- [test_admin_commands.py](test_admin_commands.py.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 - [AdminActionsLogger](AdminActionsLogger.md) (1 shared connections)
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 117 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 113 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---
