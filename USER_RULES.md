@@ -79,3 +79,17 @@ INSTANCES!
 
 - Only kill tasks that are part of this project by name
 - Never use taskkill on node.exe
+
+## Git push — explicit permission only
+
+Never run `git push` (or `git push -u`, `gh stack push`, or any equivalent that
+uploads commits to a remote) unless the user **explicitly** says to push in this
+conversation.
+
+Do **not** infer push permission from other requests. These are **not** push
+permission: fix CI, make tests pass, open or update a PR, ship, merge, review,
+review-and-ship, follow a skill that includes a push step, or "the branch is
+behind origin."
+
+If a skill or checklist says to push, skip that step and tell the user the
+commits are local until they say **push**.

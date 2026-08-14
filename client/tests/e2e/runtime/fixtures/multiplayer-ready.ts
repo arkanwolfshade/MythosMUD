@@ -14,6 +14,7 @@ import {
   reopenPlayerPageIfClosed,
   type PlayerContext,
 } from './multiplayer-contexts';
+import { assertPlayerAlive } from './player';
 import { TEST_TIMEOUTS } from './test-data';
 
 async function waitForPlayerGameUi(page: PlayerContext['page'], username: string, timeoutMs: number): Promise<void> {
@@ -192,6 +193,7 @@ export async function ensurePlayerInGame(playerContext: PlayerContext, timeoutMs
   playerContext.context = playerContext.page.context();
   const { page } = playerContext;
   await waitForPlayerGameUi(page, player.username, timeoutMs);
+  await assertPlayerAlive(page, player.username);
   await waitForPlayerWebSocket(page, player.username, timeoutMs);
   await waitForPlayerRoomSubscription(page, player.username, timeoutMs);
   await new Promise(resolve => setTimeout(resolve, 1000));

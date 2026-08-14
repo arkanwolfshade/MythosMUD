@@ -6,8 +6,8 @@
     "organization": null,
     "repositoryId": null,
     "repositoryName": null,
-    "createdAt": "2026-08-14T18:09:20.752Z",
-    "updatedAt": "2026-08-14T18:09:20.752Z",
+    "createdAt": "2026-08-14T22:58:05.635Z",
+    "updatedAt": "2026-08-14T22:58:05.635Z",
     "languages": [
       "CSS",
       "HTML",
@@ -36,7 +36,7 @@
     },
     {
       "toolId": "markdownlint",
-      "localConfigurationFile": "c:\\projects\\MythosMUD\\.markdownlint.json",
+      "localConfigurationFile": "c:\\projects\\MythosMUD-worktrees\\bugfix-occupants-alive-playwright\\.markdownlint.json",
       "useLocalConfigurationFile": true,
       "patterns": []
     },
@@ -113,7 +113,7 @@
     },
     {
       "toolId": "Ruff",
-      "localConfigurationFile": "c:\\projects\\MythosMUD\\pyproject.toml",
+      "localConfigurationFile": "c:\\projects\\MythosMUD-worktrees\\bugfix-occupants-alive-playwright\\pyproject.toml",
       "useLocalConfigurationFile": true,
       "patterns": []
     },
@@ -145,7 +145,7 @@
     },
     {
       "toolId": "Semgrep",
-      "localConfigurationFile": "c:\\projects\\MythosMUD\\.semgrep.yml",
+      "localConfigurationFile": "c:\\projects\\MythosMUD-worktrees\\bugfix-occupants-alive-playwright\\.semgrep.yml",
       "useLocalConfigurationFile": true,
       "patterns": []
     },
@@ -2311,7 +2311,7 @@
     },
     {
       "toolId": "Bandit",
-      "localConfigurationFile": "c:\\projects\\MythosMUD\\bandit.yml",
+      "localConfigurationFile": "c:\\projects\\MythosMUD-worktrees\\bugfix-occupants-alive-playwright\\bandit.yml",
       "useLocalConfigurationFile": true,
       "patterns": [],
       "exclude": [
@@ -2326,7 +2326,7 @@
     },
     {
       "toolId": "PyLintPython3",
-      "localConfigurationFile": "c:\\projects\\MythosMUD\\.pylintrc",
+      "localConfigurationFile": "c:\\projects\\MythosMUD-worktrees\\bugfix-occupants-alive-playwright\\.pylintrc",
       "useLocalConfigurationFile": true,
       "patterns": [],
       "exclude": [
@@ -6876,7 +6876,7 @@
     },
     {
       "toolId": "SQLFluff",
-      "localConfigurationFile": "c:\\projects\\MythosMUD\\.sqlfluff",
+      "localConfigurationFile": "c:\\projects\\MythosMUD-worktrees\\bugfix-occupants-alive-playwright\\.sqlfluff",
       "useLocalConfigurationFile": true,
       "patterns": []
     },

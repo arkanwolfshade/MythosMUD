@@ -12,7 +12,6 @@ import pytest
 from fastapi import WebSocket
 
 from server.realtime.connection_establishment import (
-    _cancel_rest_countdown_if_active,
     _cleanup_dead_connections,
     _cleanup_failed_connection,
     _find_dead_connections,
@@ -379,9 +378,17 @@ async def test_track_player_presence_new_player():
     mock_manager.grace_period_players = {}
     mock_manager.resting_players = {}
     mock_manager._track_player_connected = AsyncMock()
+    mock_cancel_grace: AsyncMock = AsyncMock()
+    mock_cancel_rest: AsyncMock = AsyncMock()
 
-    await _track_player_presence(player_id, mock_player, mock_manager)
+    with (
+        patch("server.realtime.connection_establishment.cancel_grace_period", mock_cancel_grace),
+        patch("server.commands.rest_command.cancel_rest_countdown", mock_cancel_rest),
+    ):
+        await _track_player_presence(player_id, mock_player, mock_manager)
 
+    mock_cancel_grace.assert_called_once_with(player_id, mock_manager)
+    mock_cancel_rest.assert_called_once_with(player_id, mock_manager)
     mock_manager._track_player_connected.assert_called_once_with(player_id, mock_player, "websocket")
 
 
@@ -395,15 +402,21 @@ async def test_track_player_presence_existing_player():
     mock_manager.grace_period_players = {}
     mock_manager.resting_players = {}
     mock_manager._broadcast_connection_message = AsyncMock()
+    mock_cancel_grace: AsyncMock = AsyncMock()
+    mock_cancel_rest: AsyncMock = AsyncMock()
 
-    await _track_player_presence(player_id, mock_player, mock_manager)
+    with (
+        patch("server.realtime.connection_establishment.cancel_grace_period", mock_cancel_grace),
+        patch("server.commands.rest_command.cancel_rest_countdown", mock_cancel_rest),
+    ):
+        await _track_player_presence(player_id, mock_player, mock_manager)
 
     mock_manager._broadcast_connection_message.assert_called_once_with(player_id, mock_player)
 
 
 @pytest.mark.asyncio
-async def test_track_player_presence_reconnect_during_grace_tracks_connected():
-    """Linkdead reconnect (still in grace) must re-run _track_player_connected."""
+async def test_track_player_presence_reconnect_during_grace_cancels_grace():
+    """Linkdead reconnect stays in online_players; cancel grace and broadcast."""
     player_id = uuid.uuid4()
     mock_player: MagicMock = MagicMock()
     mock_manager: MagicMock = MagicMock()
@@ -412,23 +425,38 @@ async def test_track_player_presence_reconnect_during_grace_tracks_connected():
     mock_manager.resting_players = {}
     mock_manager._track_player_connected = AsyncMock()
     mock_manager._broadcast_connection_message = AsyncMock()
+    mock_cancel_grace: AsyncMock = AsyncMock()
+    mock_cancel_rest: AsyncMock = AsyncMock()
 
-    await _track_player_presence(player_id, mock_player, mock_manager)
+    with (
+        patch("server.realtime.connection_establishment.cancel_grace_period", mock_cancel_grace),
+        patch("server.commands.rest_command.cancel_rest_countdown", mock_cancel_rest),
+    ):
+        await _track_player_presence(player_id, mock_player, mock_manager)
 
-    mock_manager._track_player_connected.assert_called_once_with(player_id, mock_player, "websocket")
-    mock_manager._broadcast_connection_message.assert_not_called()
+    mock_cancel_grace.assert_called_once_with(player_id, mock_manager)
+    mock_cancel_rest.assert_called_once_with(player_id, mock_manager)
+    mock_manager._track_player_connected.assert_not_called()
+    mock_manager._broadcast_connection_message.assert_called_once_with(player_id, mock_player)
 
 
 @pytest.mark.asyncio
-async def test_cancel_rest_countdown_if_active_cancels_leftover_rest():
+async def test_track_player_presence_cancels_leftover_rest():
     """WS reconnect must cancel leftover /rest so the countdown cannot kill the new session."""
     player_id = uuid.uuid4()
+    mock_player: MagicMock = MagicMock()
     mock_manager: MagicMock = MagicMock()
+    mock_manager.online_players = {}
     mock_manager.resting_players = {player_id: MagicMock()}
+    mock_manager._track_player_connected = AsyncMock()
+    mock_cancel_grace: AsyncMock = AsyncMock()
     mock_cancel_rest: AsyncMock = AsyncMock()
 
-    with patch("server.commands.rest_command.cancel_rest_countdown", mock_cancel_rest):
-        await _cancel_rest_countdown_if_active(player_id, mock_manager)
+    with (
+        patch("server.realtime.connection_establishment.cancel_grace_period", mock_cancel_grace),
+        patch("server.commands.rest_command.cancel_rest_countdown", mock_cancel_rest),
+    ):
+        await _track_player_presence(player_id, mock_player, mock_manager)
 
     mock_cancel_rest.assert_called_once_with(player_id, mock_manager)
 

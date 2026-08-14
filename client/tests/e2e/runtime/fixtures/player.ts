@@ -17,6 +17,7 @@ import {
 } from './auth';
 import { resetE2ePlayerRoomsInDatabase } from './multiplayer';
 import { DEFAULT_SPAWN_LOOK_CUE, EASTERN_HALLWAY_LOOK_CUE } from './test-data';
+import { locationIndicatesDeathVoid, requiredAliveButDeadMessage } from '../../../../src/utils/deathVoidLocation';
 
 /** Zone key for earth_arkhamcity_sanitarium_room_foyer_001 (npc zone command). */
 const SANITARIUM_ZONE_KEY = 'arkhamcity/sanitarium';
@@ -59,20 +60,30 @@ function normalizeCultistInstanceId(raw: string): string {
 }
 
 async function isInDeathVoid(page: Page): Promise<boolean> {
-  // Location / live room id only. Game Info can retain limbo_death_void / Death > Void dumps.
-  return page
-    .evaluate(() => {
-      const t = document.body?.innerText ?? '';
-      if (/earth_arkhamcity_sanitarium_room_/i.test(t)) {
-        return false;
-      }
-      const loc = t.match(/Location\s*\n\s*([^\n]+)/i);
-      if (loc?.[1]) {
-        return /Death\s*>\s*Void/i.test(loc[1]);
-      }
-      return false;
-    })
-    .catch(() => false);
+  // Location panel is authoritative; Game Info can retain stale void dumps.
+  const body = await page.evaluate(() => document.body?.innerText ?? '').catch(() => '');
+  return locationIndicatesDeathVoid(body);
+}
+
+/** True when Location shows Death > Void or the respawn interstitial is visible. */
+export async function isPlayerDead(page: Page): Promise<boolean> {
+  if (await isInDeathVoid(page)) {
+    return true;
+  }
+  const respawnBtn = page.getByRole('button', {
+    name: /Rejoin the earthly plane|Returning to the mortal realm/i,
+  });
+  return respawnBtn.isVisible({ timeout: 500 }).catch(() => false);
+}
+
+/**
+ * Fail fast when a step requires a living player but the page is dead.
+ * Do not silent-respawn here — that hides prior-test cleanup bugs.
+ */
+export async function assertPlayerAlive(page: Page, username: string): Promise<void> {
+  if (await isPlayerDead(page)) {
+    throw new Error(requiredAliveButDeadMessage(username));
+  }
 }
 
 /** Collect Cultist of the Yellow Sign instance IDs from npc zone / look text. */

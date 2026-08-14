@@ -11,6 +11,7 @@ import './multiplayer-browser-window.d.ts';
 
 import type { Browser, BrowserContext, Page } from '@playwright/test';
 import { getLivePageForUsername, loginPlayer, logoutPlayer, rememberPageSession, reopenClosedPage } from './auth';
+import { ensurePlayableAlive, isPlayerDead } from './player';
 import { TEST_PLAYERS, type TestPlayer } from './test-data';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -148,9 +149,13 @@ export async function cleanupMultiPlayerContexts(contexts: PlayerContext[] | und
   if (!contexts || !Array.isArray(contexts)) {
     return;
   }
-  for (const { page } of contexts) {
+  for (const { page, player } of contexts) {
     if (page.isClosed()) {
       continue;
+    }
+    // Heal only in teardown so the next spec starts clean; in-test death must assert, not silent-recover.
+    if (await isPlayerDead(page).catch(() => false)) {
+      await ensurePlayableAlive(page, player.username, player.password).catch(() => {});
     }
     // spaFallback: afterAll must not hang 90s when Exit is disabled in void/ward.
     await logoutPlayer(page, 25000, { spaFallback: true }).catch(() => {});

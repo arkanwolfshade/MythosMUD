@@ -23,6 +23,7 @@ import {
 import type { OccupantsSnapshot } from './multiplayer-browser-helpers';
 import { reopenPlayerPageIfClosed, type PlayerContext } from './multiplayer-contexts';
 import { ensurePlayerInGame, waitForAllPlayersInGame } from './multiplayer-ready';
+import { assertPlayerAlive } from './player';
 import { TEST_TIMEOUTS, type TestPlayer } from './test-data';
 
 function formatOccupantsSnapshotForError(snapshot: unknown): string {
@@ -81,6 +82,7 @@ export async function ensurePlayersInSameRoom(
   for (const ctx of contexts) {
     await reopenPlayerPageIfClosed(ctx);
     await assertNoRestDisconnectPollution(ctx.page);
+    await assertPlayerAlive(ctx.page, ctx.player.username);
   }
 
   // Step 0: Wait for all players' header connection status to show "Connected" (same as waitForAllPlayersInGame).

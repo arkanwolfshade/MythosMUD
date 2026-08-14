@@ -1,1 +1,1 @@
-c:\projects\MythosMUD\client\src\pages\DialogueEditorPage.tsx
+C:\projects\MythosMUD-worktrees\bugfix-occupants-alive-playwright\server\game\movement_service.py
