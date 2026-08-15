@@ -51,6 +51,7 @@ Each ADR follows this structure:
 | [ADR-015](ADR-015-postgresql-procedures-migration.md)            | PostgreSQL Procedures and Functions for Data Access  | Accepted | 2026-02-26 |
 | [ADR-016](ADR-016-aggro-threat-management.md)                    | Aggro and Threat Management System                   | Accepted | 2026-02-26 |
 | [ADR-017](ADR-017-ast-console-pruning-client-build.md)           | AST-Based Console Pruning in Client Production Build | Proposed | 2026-03-25 |
+| [ADR-018](ADR-018-new-game-session-replacement.md)               | New Game Session vs Grace Reconnect                  | Accepted | 2026-08-14 |
 
 ## 4. Related Documentation
 
@@ -67,6 +68,6 @@ Each ADR follows this structure:
 
 **[SPEC]**
 
-| Version | Date | Change |
-| --- | --- | --- |
-| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| Version | Date       | Change                             |
+| ------- | ---------- | ---------------------------------- |
+| 1.0.0   | 2026-07-30 | Initial HADS structural conversion |

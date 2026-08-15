@@ -267,6 +267,8 @@ exclude = [
     "^docs/",
     "^tools/",
     "^monitoring/",
+    "^\\.cursor/",
+    "^\\.claude/",
     "^graphify-out/",
     ".*[\\\\/]graphify-out[\\\\/].*",
     ".*[\\\\/]graphify[\\\\/].*",
