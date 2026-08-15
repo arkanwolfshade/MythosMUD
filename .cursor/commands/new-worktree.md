@@ -23,9 +23,9 @@ arguments:
 Create a new Git branch and worktree for MythosMUD under the canonical
 directory layout:
 
-- Canonical repo: `f:/MythosMUD`
-- Worktrees root: `f:/MythosMUD-worktrees/`
-- Worktree path: `f:/MythosMUD-worktrees/<kind>-<slug>`
+- Canonical repo: `C:/projects/MythosMUD`
+- Worktrees root: `C:/projects/MythosMUD-worktrees/`
+- Worktree path: `C:/projects/MythosMUD-worktrees/<kind>-<slug>`
 - Branch name: `<kind>/<slug>`
 
 This command is a thin, focused automation layer around the workflow defined in
@@ -43,10 +43,10 @@ The command will:
 
 1. **Derive names and paths**
    - Branch: `<kind>/<slug>`
-   - Worktree path: `f:/MythosMUD-worktrees/<kind>-<slug>`
+   - Worktree path: `C:/projects/MythosMUD-worktrees/<kind>-<slug>`
 
 2. **Ensure canonical repo context**
-   - Use the Shell tool with `working_directory: "f:/MythosMUD"`.
+   - Use the Shell tool with `working_directory: "C:/projects/MythosMUD"`.
    - Optionally show:
      - `git status`
      - `git worktree list`
@@ -61,26 +61,26 @@ The command will:
      guessing.
 
 4. **Create worktrees root if needed**
-   - If `f:/MythosMUD-worktrees/` does not exist, create it using the Shell
+   - If `C:/projects/MythosMUD-worktrees/` does not exist, create it using the Shell
      tool (PowerShell semantics).
 
 5. **Create the worktree**
-   - From `f:/MythosMUD`, run:
+   - From `C:/projects/MythosMUD`, run:
 
      ```powershell
-     git worktree add f:/MythosMUD-worktrees/<kind>-<slug> -b <kind>/<slug> <base_branch>
+     git worktree add C:/projects/MythosMUD-worktrees/<kind>-<slug> -b <kind>/<slug> <base_branch>
      ```
 
    - This creates both:
      - The new branch `<kind>/<slug>` based on `<base_branch>`.
-     - The new worktree at `f:/MythosMUD-worktrees/<kind>-<slug>`.
+     - The new worktree at `C:/projects/MythosMUD-worktrees/<kind>-<slug>`.
 
 6. **Report results and next steps**
    - Print or summarize:
      - The new branch name.
      - The new worktree path.
    - Remind the caller:
-     - Open `f:/MythosMUD-worktrees/<kind>-<slug>` in a new Cursor window.
+     - Open `C:/projects/MythosMUD-worktrees/<kind>-<slug>` in a new Cursor window.
      - Create a `.cursor/plans/` plan file in the new worktree using the
        standard worktree plan template once it exists.
 
@@ -88,7 +88,7 @@ The command will:
 
 - **PowerShell only**: All Shell commands must be valid in PowerShell. Do not
   chain commands with `&&`; use separate tool calls.
-- **No nested worktrees**: Always operate from `f:/MythosMUD` as the Git root
+- **No nested worktrees**: Always operate from `C:/projects/MythosMUD` as the Git root
   when running `git worktree` commands.
 - **Server rules still apply**:
   - Creating a new worktree does **not** start the server.

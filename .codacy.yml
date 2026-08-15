@@ -21,6 +21,7 @@
 # Exclude paths from analysis
 # data/ is the mythosmud_data git submodule (Main (Integration)/data) - excluded from Codacy
 # .cursor/ contains Cursor IDE plans and rules - not production code, exclude from Codacy
+# .claude/ is the same class of agent/editor config (ported rules, hooks) - exclude like .cursor/
 # .pyenv/ excludes pyenv-win Python installation (e.g. .../pyenv-win/versions/3.12.10/) from analysis
 exclude_paths:
   - "**/node_modules/**"
@@ -35,6 +36,7 @@ exclude_paths:
   - ".data/**"
   - "data/**"
   - ".cursor/**"
+  - ".claude/**"
   - "**/.pyenv/**"
   # Coverage alignment: not in pytest-cov --cov=server (would show as 0% on Codacy otherwise).
   - "scripts/**"
@@ -103,6 +105,8 @@ engines:
       # NLOC across the demo shell (false positives; see EldritchEffectsDemo.tsx header comment).
       - "client/src/components/EldritchEffectsDemo.tsx"
       - "client/src/components/eldritchEffectsDemoData.ts"
+      - ".claude/**"
+      - ".cursor/**"
   bandit:
     exclude_paths:
       # Bandit should only scan Python files; exclude lock/docs/tooling artifacts that trigger AST parse failures.

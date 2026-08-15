@@ -7366,6 +7366,7 @@
     ".data/**",
     "data/**",
     ".cursor/**",
+    ".claude/**",
     "**/.pyenv/**",
     "scripts/**",
     "tools/**",

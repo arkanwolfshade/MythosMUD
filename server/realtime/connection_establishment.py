@@ -6,19 +6,61 @@ This module handles WebSocket connection establishment operations.
 
 import time
 import uuid
-from typing import Any
+from typing import Protocol
 
+from anyio import Lock
 from fastapi import WebSocket
 
 from ..exceptions import DatabaseError
+from ..models import Player
 from ..structured_logging.enhanced_logging_config import get_logger
 from .connection_models import ConnectionMetadata
+from .connection_session_management import handle_new_game_session_impl
 from .disconnect_grace_period import cancel_grace_period
+from .message_queue import MessageQueue
+from .monitoring.performance_tracker import PerformanceTracker
+from .rate_limiter import RateLimiter
+from .room_subscription_manager import RoomSubscriptionManager
 
 logger = get_logger(__name__)
 
+# Protocol stub bodies use Ellipsis per PEP 544; Pylint W2301 conflicts with pyright if replaced with pass.
+# pylint: disable=unnecessary-ellipsis
 
-def _find_dead_connections(player_id: uuid.UUID, manager: Any) -> list[str]:
+
+class _EstablishmentConnectionManager(Protocol):  # pylint: disable=too-few-public-methods  # Reason: PEP 544 Protocol is a structural type, not a concrete class
+    """Connection manager surface used by establishment helpers."""
+
+    active_websockets: dict[str, WebSocket]
+    connection_metadata: dict[str, ConnectionMetadata]
+    player_websockets: dict[uuid.UUID, list[str]]
+    disconnect_lock: Lock
+    session_connections: dict[str, list[str]]
+    player_sessions: dict[uuid.UUID, str]
+    async_persistence: object | None
+    room_manager: RoomSubscriptionManager
+    online_players: dict[uuid.UUID, dict[str, object]]
+    performance_tracker: PerformanceTracker
+    session_disconnect_times: dict[str, float]
+    last_seen: dict[uuid.UUID, float]
+    last_active_update_times: dict[uuid.UUID, float]
+    rate_limiter: RateLimiter
+    message_queue: MessageQueue
+
+    async def get_player(self, player_id: uuid.UUID) -> Player | None:
+        """Load player from persistence."""
+        ...
+
+    async def track_player_connected(self, player_id: uuid.UUID, player: Player, connection_type: str) -> None:
+        """Record a newly online player."""
+        ...
+
+    async def broadcast_connection_message(self, player_id: uuid.UUID, player: Player) -> None:
+        """Broadcast presence for a player already in online_players."""
+        ...
+
+
+def _find_dead_connections(player_id: uuid.UUID, manager: _EstablishmentConnectionManager) -> list[str]:
     """
     Find dead WebSocket connections for a player before acquiring lock.
 
@@ -37,8 +79,7 @@ def _find_dead_connections(player_id: uuid.UUID, manager: Any) -> list[str]:
         if conn_id not in manager.active_websockets:
             continue
 
-        existing_websocket = manager.active_websockets[conn_id]
-        # Guard against None websocket (can happen during cleanup)
+        existing_websocket: WebSocket | None = manager.active_websockets.get(conn_id)
         if existing_websocket is None:
             del manager.active_websockets[conn_id]
             raise ConnectionError("WebSocket is None")
@@ -57,7 +98,7 @@ def _find_dead_connections(player_id: uuid.UUID, manager: Any) -> list[str]:
     return dead_connection_ids
 
 
-def _remove_dead_connection(conn_id: str, manager: Any) -> None:
+def _remove_dead_connection(conn_id: str, manager: _EstablishmentConnectionManager) -> None:
     """
     Remove a single dead connection from tracking structures.
 
@@ -71,7 +112,7 @@ def _remove_dead_connection(conn_id: str, manager: Any) -> None:
         del manager.connection_metadata[conn_id]
 
 
-def _update_player_connection_list(player_id: uuid.UUID, manager: Any) -> None:
+def _update_player_connection_list(player_id: uuid.UUID, manager: _EstablishmentConnectionManager) -> None:
     """
     Update player's connection list to only include active connections.
 
@@ -89,7 +130,9 @@ def _update_player_connection_list(player_id: uuid.UUID, manager: Any) -> None:
         del manager.player_websockets[player_id]
 
 
-async def _cleanup_dead_connections(dead_connection_ids: list[str], player_id: uuid.UUID, manager: Any) -> None:
+async def _cleanup_dead_connections(
+    dead_connection_ids: list[str], player_id: uuid.UUID, manager: _EstablishmentConnectionManager
+) -> None:
     """
     Clean up dead connections under lock.
 
@@ -108,7 +151,9 @@ async def _cleanup_dead_connections(dead_connection_ids: list[str], player_id: u
         _update_player_connection_list(player_id, manager)
 
 
-def _register_new_connection(websocket: WebSocket, player_id: uuid.UUID, manager: Any) -> str:
+def _register_new_connection(
+    websocket: WebSocket, player_id: uuid.UUID, manager: _EstablishmentConnectionManager
+) -> str:
     """
     Register a new WebSocket connection.
 
@@ -133,7 +178,7 @@ def _register_new_connection(websocket: WebSocket, player_id: uuid.UUID, manager
 def _setup_connection_metadata(
     connection_id: str,
     player_id: uuid.UUID,
-    manager: Any,
+    manager: _EstablishmentConnectionManager,
     session_id: str | None,
     token: str | None,
 ) -> None:
@@ -161,7 +206,9 @@ def _setup_connection_metadata(
     )
 
 
-def _setup_session_tracking(connection_id: str, player_id: uuid.UUID, session_id: str | None, manager: Any) -> None:
+def _setup_session_tracking(
+    connection_id: str, player_id: uuid.UUID, session_id: str | None, manager: _EstablishmentConnectionManager
+) -> None:
     """
     Track connection in session.
 
@@ -181,7 +228,9 @@ def _setup_session_tracking(connection_id: str, player_id: uuid.UUID, session_id
         manager.player_sessions[player_id] = session_id
 
 
-async def _setup_player_and_room(player_id: uuid.UUID, manager: Any) -> tuple[bool, Any | None]:
+async def _setup_player_and_room(
+    player_id: uuid.UUID, manager: _EstablishmentConnectionManager
+) -> tuple[bool, Player | None]:
     """
     Get player and setup room subscription.
 
@@ -190,24 +239,29 @@ async def _setup_player_and_room(player_id: uuid.UUID, manager: Any) -> tuple[bo
         manager: ConnectionManager instance
 
     Returns:
-        tuple: (success: bool, player: Any | None)
+        tuple: (success: bool, player: Player | None)
     """
-    player = await manager._get_player(player_id)  # pylint: disable=protected-access  # Reason: Accessing internal manager method for player retrieval during connection establishment, manager is guaranteed to have this method
-    if not player:
+    player = await manager.get_player(player_id)
+    if player is None:
         if manager.async_persistence is None:
             logger.warning("Persistence not available, connecting without player tracking", player_id=player_id)
         else:
             logger.error("Player not found", player_id=player_id)
             return False, None
+        return True, None
 
-    canonical_room_id = getattr(player, "current_room_id", None)
+    if not hasattr(player, "current_room_id"):
+        return True, player
+    canonical_room_id = player.current_room_id
     if canonical_room_id:
-        manager.room_manager.subscribe_to_room(str(player_id), canonical_room_id)
+        _ = manager.room_manager.subscribe_to_room(str(player_id), str(canonical_room_id))
 
     return True, player
 
 
-async def _track_player_presence(player_id: uuid.UUID, player: Any, manager: Any) -> None:
+async def _track_player_presence(
+    player_id: uuid.UUID, player: Player | None, manager: _EstablishmentConnectionManager
+) -> None:
     """
     Track player presence and broadcast connection message.
 
@@ -216,24 +270,28 @@ async def _track_player_presence(player_id: uuid.UUID, player: Any, manager: Any
         player: The player object
         manager: ConnectionManager instance
     """
-    # Linkdead reconnect stays in online_players, so cancel here (not only in _track_player_connected).
+    # Linkdead reconnect stays in online_players, so cancel here (not only in track_player_connected).
     await cancel_grace_period(player_id, manager)
     # Orphan /rest countdown will force_disconnect the new socket if left running.
     # Inline import: rest_command -> combat -> ConnectionManager -> this module.
     from ..commands.rest_command import cancel_rest_countdown
 
     await cancel_rest_countdown(player_id, manager)
+    if player is None:
+        return
     if player_id not in manager.online_players:
-        await manager._track_player_connected(player_id, player, "websocket")  # pylint: disable=protected-access  # Reason: Accessing internal manager method for player presence tracking during connection, manager is guaranteed to have this method
+        await manager.track_player_connected(player_id, player, "websocket")
     else:
         logger.info(
             "Player already tracked as online, but broadcasting connection message for WebSocket",
             player_id=player_id,
         )
-        await manager._broadcast_connection_message(player_id, player)  # pylint: disable=protected-access  # Reason: Accessing internal manager method for connection message broadcasting, manager is guaranteed to have this method
+        await manager.broadcast_connection_message(player_id, player)
 
 
-def _cleanup_failed_connection(connection_id: str | None, player_id: uuid.UUID, manager: Any) -> None:
+def _cleanup_failed_connection(
+    connection_id: str | None, player_id: uuid.UUID, manager: _EstablishmentConnectionManager
+) -> None:
     """
     Cleanup connection on failure.
 
@@ -257,7 +315,7 @@ def _cleanup_failed_connection(connection_id: str | None, player_id: uuid.UUID, 
 async def establish_websocket_connection(
     websocket: WebSocket,
     player_id: uuid.UUID,
-    manager: Any,  # ConnectionManager - avoiding circular import
+    manager: _EstablishmentConnectionManager,
     session_id: str | None = None,
     token: str | None = None,
 ) -> tuple[bool, str | None]:
@@ -275,7 +333,7 @@ async def establish_websocket_connection(
         tuple: (success: bool, connection_id: str | None)
     """
     start_time = time.time()
-    connection_id = None
+    connection_id: str | None = None
 
     try:
         # Check for dead connections BEFORE acquiring lock
@@ -283,6 +341,11 @@ async def establish_websocket_connection(
 
         # Clean up dead connections under lock
         await _cleanup_dead_connections(dead_connection_ids, player_id, manager)
+
+        # ADR-018: replace prior sockets only when session_id actually changes.
+        current_session = manager.player_sessions.get(player_id)
+        if session_id and current_session is not None and current_session != session_id:
+            _ = await handle_new_game_session_impl(player_id, session_id, manager)
 
         # Accept the WebSocket connection
         await websocket.accept()

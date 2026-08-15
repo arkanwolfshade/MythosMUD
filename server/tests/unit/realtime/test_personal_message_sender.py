@@ -43,6 +43,30 @@ async def test_send_message_delivers_via_websocket(sender: PersonalMessageSender
 
 
 @pytest.mark.asyncio
+async def test_send_message_fans_out_to_all_listed_sockets(sender: PersonalMessageSender) -> None:
+    """Occupancy/who/chat ride the full player_websockets list (#610)."""
+    player_id = uuid.uuid4()
+    ws_a = MagicMock()
+    ws_a.send_json = AsyncMock()
+    ws_a.application_state = MagicMock()
+    ws_b = MagicMock()
+    ws_b.send_json = AsyncMock()
+    ws_b.application_state = MagicMock()
+    with patch("server.realtime.payload_optimizer.get_payload_optimizer") as opt:
+        opt.return_value.optimize_payload.side_effect = lambda x: x
+        status = await sender.send_message(
+            player_id,
+            {"event_type": "occupant_entered", "name": "Ithaqua"},
+            {player_id: ["conn-a", "conn-b"]},
+            {"conn-a": ws_a, "conn-b": ws_b},
+        )
+    assert status["success"] is True
+    assert status["websocket_delivered"] == 2
+    assert ws_a.send_json.await_count == 1
+    assert ws_b.send_json.await_count == 1
+
+
+@pytest.mark.asyncio
 async def test_send_message_queues_when_offline(sender: PersonalMessageSender) -> None:
     player_id = uuid.uuid4()
     with patch("server.realtime.payload_optimizer.get_payload_optimizer") as opt:

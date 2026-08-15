@@ -4,15 +4,49 @@ Connection session management for connection manager.
 This module handles WebSocket connection session management operations.
 """
 
+from __future__ import annotations
+
 import uuid
-from typing import Any
+from typing import Protocol, TypedDict, cast
 
 from fastapi import WebSocket
 
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
+from .connection_models import ConnectionMetadata
+from .message_queue import MessageQueue
+from .rate_limiter import RateLimiter
+from .room_subscription_manager import RoomSubscriptionManager
 
 logger = get_logger(__name__)
+
+
+class NewGameSessionResult(TypedDict):
+    """Result payload from handle_new_game_session_impl."""
+
+    player_id: uuid.UUID
+    new_session_id: str
+    previous_session_id: str | None
+    connections_disconnected: int
+    websocket_connections: int
+    success: bool
+    errors: list[str]
+
+
+class _SessionConnectionManager(Protocol):  # pylint: disable=too-few-public-methods  # Reason: PEP 544 Protocol is a structural type, not a concrete class
+    """Connection manager surface used by session-replacement helpers."""
+
+    active_websockets: dict[str, WebSocket]
+    connection_metadata: dict[str, ConnectionMetadata]
+    player_websockets: dict[uuid.UUID, list[str]]
+    player_sessions: dict[uuid.UUID, str]
+    session_connections: dict[str, list[str]]
+    session_disconnect_times: dict[str, float]
+    last_seen: dict[uuid.UUID, float]
+    last_active_update_times: dict[uuid.UUID, float]
+    rate_limiter: RateLimiter
+    message_queue: MessageQueue
+    room_manager: RoomSubscriptionManager
 
 
 def _is_websocket_connected(websocket: WebSocket) -> bool:
@@ -26,12 +60,15 @@ def _is_websocket_connected(websocket: WebSocket) -> bool:
         bool: True if connected, False otherwise
     """
     try:
-        return websocket.client_state.name == "CONNECTED"
+        client_state_name: str = websocket.client_state.name
+        return client_state_name == "CONNECTED"
     except (AttributeError, ValueError, TypeError):
         return False
 
 
-async def _disconnect_connection_for_session(connection_id: str, player_id: uuid.UUID, manager: Any) -> bool:
+async def _disconnect_connection_for_session(
+    connection_id: str, player_id: uuid.UUID, manager: _SessionConnectionManager
+) -> bool:
     """
     Disconnect a single connection for a new game session.
 
@@ -46,11 +83,12 @@ async def _disconnect_connection_for_session(connection_id: str, player_id: uuid
     if connection_id not in manager.active_websockets:
         return False
 
-    websocket = manager.active_websockets[connection_id]
+    candidate = cast(object, manager.active_websockets[connection_id])
     # Guard against None websocket (can happen during cleanup)
-    if websocket is None:
+    if candidate is None:
         del manager.active_websockets[connection_id]
         return False
+    websocket = cast(WebSocket, candidate)
     disconnected = False
 
     try:
@@ -76,7 +114,9 @@ async def _disconnect_connection_for_session(connection_id: str, player_id: uuid
     return disconnected
 
 
-async def _disconnect_all_connections_for_session(connection_ids: list[str], player_id: uuid.UUID, manager: Any) -> int:
+async def _disconnect_all_connections_for_session(
+    connection_ids: list[str], player_id: uuid.UUID, manager: _SessionConnectionManager
+) -> int:
     """
     Disconnect all connections for a new game session.
 
@@ -105,7 +145,7 @@ async def _disconnect_all_connections_for_session(connection_ids: list[str], pla
     return disconnected_count
 
 
-def _cleanup_old_session_tracking(player_id: uuid.UUID, manager: Any) -> None:
+def _cleanup_old_session_tracking(player_id: uuid.UUID, manager: _SessionConnectionManager) -> None:
     """
     Clean up old session tracking on reconnect.
 
@@ -120,12 +160,11 @@ def _cleanup_old_session_tracking(player_id: uuid.UUID, manager: Any) -> None:
             del manager.session_connections[old_session_id]
         except KeyError:
             pass
-    session_disconnect_times = getattr(manager, "session_disconnect_times", None)
-    if session_disconnect_times is not None and old_session_id in session_disconnect_times:
-        del session_disconnect_times[old_session_id]
+    if old_session_id in manager.session_disconnect_times:
+        del manager.session_disconnect_times[old_session_id]
 
 
-def _cleanup_player_data_for_session(player_id: uuid.UUID, manager: Any) -> None:
+def _cleanup_player_data_for_session(player_id: uuid.UUID, manager: _SessionConnectionManager) -> None:
     """
     Clean up player data for a new session.
 
@@ -137,15 +176,15 @@ def _cleanup_player_data_for_session(player_id: uuid.UUID, manager: Any) -> None
     manager.message_queue.remove_player_messages(str(player_id))
     if player_id in manager.last_seen:
         del manager.last_seen[player_id]
-    manager.last_active_update_times.pop(player_id, None)
-    manager.room_manager.remove_player_from_all_rooms(str(player_id))
+    _ = manager.last_active_update_times.pop(player_id, None)
+    _ = manager.room_manager.remove_player_from_all_rooms(str(player_id))
 
 
 async def handle_new_game_session_impl(
     player_id: uuid.UUID,
     new_session_id: str,
-    manager: Any,  # ConnectionManager
-) -> dict[str, Any]:
+    manager: _SessionConnectionManager,
+) -> NewGameSessionResult:
     """
     Handle a new game session by disconnecting existing connections.
 
@@ -157,7 +196,7 @@ async def handle_new_game_session_impl(
     Returns:
         dict: Session handling results
     """
-    session_results: dict[str, Any] = {
+    session_results: NewGameSessionResult = {
         "player_id": player_id,
         "new_session_id": new_session_id,
         "previous_session_id": None,
@@ -168,6 +207,17 @@ async def handle_new_game_session_impl(
     }
 
     try:
+        current_session = manager.player_sessions.get(player_id)
+        if current_session == new_session_id:
+            session_results["previous_session_id"] = current_session
+            session_results["success"] = True
+            logger.info(
+                "New game session is idempotent; keeping live sockets",
+                new_session_id=new_session_id,
+                player_id=player_id,
+            )
+            return session_results
+
         existing_count = len(manager.player_websockets.get(player_id, []))
         logger.info(
             "Handling new game session for player",
@@ -177,8 +227,8 @@ async def handle_new_game_session_impl(
             will_disconnect_all=True,
         )
 
-        if player_id in manager.player_sessions:
-            session_results["previous_session_id"] = manager.player_sessions[player_id]
+        if current_session is not None:
+            session_results["previous_session_id"] = current_session
 
         if player_id in manager.player_websockets:
             connection_ids = manager.player_websockets[player_id].copy()
