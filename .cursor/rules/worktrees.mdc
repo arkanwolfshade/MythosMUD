@@ -22,23 +22,23 @@ track of which working copy belongs to which task.
 ## Directory Layout
 
 - **Canonical repo** (primary worktree):
-  - `f:/MythosMUD`
+  - `C:/projects/MythosMUD`
   - This is the root Git repository and should normally track `main` (or the
     long-lived integration branch you are working from).
 
 - **Worktrees root** (sibling directory):
-  - `f:/MythosMUD-worktrees/`
+  - `C:/projects/MythosMUD-worktrees/`
   - Every additional worktree for MythosMUD lives under this directory.
 
 - **Worktree folders**:
-  - Pattern: `f:/MythosMUD-worktrees/<kind>-<slug>`
+  - Pattern: `C:/projects/MythosMUD-worktrees/<kind>-<slug>`
   - `<kind>`: one of `feature`, `bugfix`, `refactor`, `spike`, `chore`.
   - `<slug>`: short, kebab-case description of the task, usually derived from
     the GitHub issue title or branch name.
   - Examples:
-    - `f:/MythosMUD-worktrees/feature-aggro`
-    - `f:/MythosMUD-worktrees/bugfix-client-message-desync`
-    - `f:/MythosMUD-worktrees/refactor-combat-logging`
+    - `C:/projects/MythosMUD-worktrees/feature-aggro`
+    - `C:/projects/MythosMUD-worktrees/bugfix-client-message-desync`
+    - `C:/projects/MythosMUD-worktrees/refactor-combat-logging`
 
 ## Branch Naming
 
@@ -51,9 +51,9 @@ Branches and worktrees should have matching, predictable names:
     - Branch: `refactor/combat-logging`
 
 - **Branch ↔ worktree mapping**:
-  - `feature/aggro` ↔ `f:/MythosMUD-worktrees/feature-aggro`
+  - `feature/aggro` ↔ `C:/projects/MythosMUD-worktrees/feature-aggro`
   - `bugfix/npc-aggro-reset` ↔
-    `f:/MythosMUD-worktrees/bugfix-npc-aggro-reset`
+    `C:/projects/MythosMUD-worktrees/bugfix-npc-aggro-reset`
 
 This makes it trivial to see which directory belongs to which branch and task.
 
@@ -108,16 +108,16 @@ a plan step that creates one). Then:
 
 2. Construct branch and path:
    - Branch: `<kind>/<slug>`
-   - Worktree path: `f:/MythosMUD-worktrees/<kind>-<slug>`
+   - Worktree path: `C:/projects/MythosMUD-worktrees/<kind>-<slug>`
 
-3. From the canonical repo (`f:/MythosMUD`):
+3. From the canonical repo (`C:/projects/MythosMUD`):
    - For a **new** branch:
-     - `git worktree add f:/MythosMUD-worktrees/<kind>-<slug> -b <kind>/<slug>`
+     - `git worktree add C:/projects/MythosMUD-worktrees/<kind>-<slug> -b <kind>/<slug>`
    - For an **existing** branch:
-     - `git worktree add f:/MythosMUD-worktrees/<kind>-<slug> <kind>/<slug>`
+     - `git worktree add C:/projects/MythosMUD-worktrees/<kind>-<slug> <kind>/<slug>`
 
 4. Open a new Cursor window rooted at the worktree path:
-   - `f:/MythosMUD-worktrees/<kind>-<slug>`
+   - `C:/projects/MythosMUD-worktrees/<kind>-<slug>`
 
 5. In the new worktree, create a task plan under `.cursor/plans/` for this
    task, following the standard worktree plan template
@@ -135,7 +135,7 @@ work.
     merits its own branch **and** the user asked for a separate worktree.
 - Use the naming rules above to create:
   - A new branch on the canonical repo.
-  - A new worktree under `f:/MythosMUD-worktrees/`.
+  - A new worktree under `C:/projects/MythosMUD-worktrees/`.
 - Create a **worktree plan file** under `.cursor/plans/` that:
   - Captures the problem statement and context.
   - Lists todos for tests, implementation, docs, and cleanup.
@@ -166,8 +166,8 @@ work.
 
 After a branch has been merged or abandoned:
 
-- From the canonical repo (`f:/MythosMUD`), remove the worktree:
-  - `git worktree remove f:/MythosMUD-worktrees/<kind>-<slug>`
+- From the canonical repo (`C:/projects/MythosMUD`), remove the worktree:
+  - `git worktree remove C:/projects/MythosMUD-worktrees/<kind>-<slug>`
 - Ensure the directory is gone or manually delete it if Git left an empty
   folder.
 - If the branch is no longer needed:
@@ -181,7 +181,7 @@ confuse and clutter local disk, `.cursor/` state, and terminal history.
 At least once per week (or before starting a new major task), reconcile your
 local worktrees:
 
-- From `f:/MythosMUD`:
+- From `C:/projects/MythosMUD`:
   - `git worktree list` to see all registered worktrees.
 - For each entry:
   - Confirm whether the corresponding branch has been merged or abandoned.
@@ -197,8 +197,8 @@ local worktrees:
 
 - **Never create a worktree inside `.git/` or another worktree.**
   - All MythosMUD worktrees belong **only** under:
-    - `f:/MythosMUD`
-    - `f:/MythosMUD-worktrees/`
+    - `C:/projects/MythosMUD`
+    - `C:/projects/MythosMUD-worktrees/`
 
 - **Respect server and test rules in all worktrees**:
   - Only one MythosMUD server running at any given time.

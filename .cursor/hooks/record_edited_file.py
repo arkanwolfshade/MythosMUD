@@ -44,17 +44,24 @@ def _is_client_test_path(rel: str) -> bool:
     return any(lower_name.endswith(ext) for ext in (".test.ts", ".test.tsx", ".spec.ts", ".spec.tsx"))
 
 
+def _is_agent_config_path(rel: str) -> bool:
+    """True if path is under .claude/ or .cursor/ (agent/skill/rule/hook config, not application code)."""
+    return rel.startswith(".claude/") or rel.startswith(".cursor/")
+
+
 def _is_test_file(file_path: str, workspace_root: str | None) -> bool:
     """
-    Return True if the file is a test file and should NOT trigger the test agent.
+    Return True if the file should NOT trigger the test agent: a test file, or agent
+    config (prompts/skills/rules/hooks aren't unit-testable application code).
 
     Patterns (workspace-relative):
     - server/tests/
     - **/__tests__/
     - *.test.ts, *.test.tsx, *.spec.ts, *.spec.tsx
+    - .claude/, .cursor/
     """
     rel = _rel_path(file_path, workspace_root)
-    return _is_server_test_path(rel) or _is_client_test_path(rel)
+    return _is_server_test_path(rel) or _is_client_test_path(rel) or _is_agent_config_path(rel)
 
 
 def _load_payload() -> dict[str, Any] | None:
