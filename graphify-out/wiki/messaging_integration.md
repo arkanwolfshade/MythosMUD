@@ -13,7 +13,7 @@
 ## Relationships
 
 - [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (2 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
 
 ## Source Files
 

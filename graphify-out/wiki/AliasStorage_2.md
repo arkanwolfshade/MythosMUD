@@ -1,6 +1,6 @@
 # AliasStorage
 
-> God node · 271 connections · `server/alias_storage.py`
+> God node · 264 connections · `server/alias_storage.py`
 
 **Community:** [AliasStorage](AliasStorage.md)
 
@@ -9,33 +9,29 @@
 ### calls
 - _websocket_unified_command_result() `EXTRACTED`
 - .delete_player() `EXTRACTED`
-- test_alias_storage_init_with_env_var() `EXTRACTED`
-- test_alias_storage_creates_directory() `EXTRACTED`
-- test_alias_storage_init_with_storage_dir() `EXTRACTED`
-- test_alias_storage_init_without_env_var() `EXTRACTED`
 
 ### contains
-- alias_storage.py `EXTRACTED`
+- [alias_storage.py](alias_storage.py.md) `EXTRACTED`
 
 ### imports
 - command_service.py `EXTRACTED`
 - test_alias_storage.py `EXTRACTED`
 - [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) `EXTRACTED`
 - [command_handler_unified.py](command_handler_unified.py.md) `EXTRACTED`
+- player_service.py `EXTRACTED`
 - combat_handler.py `EXTRACTED`
 - [inventory_equip_command.py](inventory_equip_command.py.md) `EXTRACTED`
-- player_service.py `EXTRACTED`
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) `EXTRACTED`
 - [quest_commands.py](quest_commands.py.md) `EXTRACTED`
+- [admin_teleport_commands.py](admin_teleport_commands.py.md) `EXTRACTED`
 - [look_command.py](look_command.py.md) `EXTRACTED`
 - [admin_shutdown_command.py](admin_shutdown_command.py.md) `EXTRACTED`
-- admin_summon_command.py `EXTRACTED`
-- [inventory_pickup_command.py](inventory_pickup_command.py.md) `EXTRACTED`
+- [admin_summon_command.py](admin_summon_command.py.md) `EXTRACTED`
+- inventory_pickup_command.py `EXTRACTED`
 - admin_commands.py `EXTRACTED`
 - inventory_unequip_command.py `EXTRACTED`
 - [rescue_commands.py](rescue_commands.py.md) `EXTRACTED`
-- combat_taunt.py `EXTRACTED`
-- websocket_handler_commands.py `EXTRACTED`
+- [combat_taunt.py](combat_taunt.py.md) `EXTRACTED`
+- [websocket_handler_commands.py](websocket_handler_commands.py.md) `EXTRACTED`
 - admin_setlucidity_command.py `EXTRACTED`
 - communication_commands.py `EXTRACTED`
 
@@ -69,8 +65,6 @@
 - handle_ground_command() `EXTRACTED`
 - handle_alias_command() `EXTRACTED`
 - handle_logout_command() `EXTRACTED`
-- handle_read_command() `EXTRACTED`
-- _prepare_command_for_processing() `EXTRACTED`
 - handle_pray_command() `EXTRACTED`
 - handle_party_command() `EXTRACTED`
 - handle_rest_command() `EXTRACTED`
@@ -78,24 +72,36 @@
 - handle_whisper_command() `EXTRACTED`
 - handle_go_command() `EXTRACTED`
 - handle_quest_command() `EXTRACTED`
-- _process_alias_expansion() `EXTRACTED`
-- process_command_unified() `EXTRACTED`
 - handle_debrief_command() `EXTRACTED`
-- handle_teach_command() `EXTRACTED`
 - handle_mute_command() `EXTRACTED`
 - handle_unequip_command() `EXTRACTED`
+- _handle_admin_set_lucidity_command() `EXTRACTED`
+- handle_follow_command() `EXTRACTED`
+- handle_pickup_command() `EXTRACTED`
+- handle_npc_command() `EXTRACTED`
+- handle_say_command() `EXTRACTED`
 
 ### uses
 - [CombatCommandHandler](CombatCommandHandler.md) `INFERRED`
+- TestHelperFunctions `INFERRED`
 - MagicCommandHandler `INFERRED`
-- [TestHelperFunctions](TestHelperFunctions.md) `INFERRED`
-- TauntCommandHandler `INFERRED`
-- [SchemaValidator](SchemaValidator.md) `INFERRED`
-- CombatCommandHandlerExtras `INFERRED`
-- _NpcWithLife `INFERRED`
-- SpellCommandError `INFERRED`
-- [CommandRequest](CommandRequest.md) `INFERRED`
-- TestHandleSpecialCommandRouting `INFERRED`
+- handle_read_command() `INFERRED`
+- _prepare_command_for_processing() `INFERRED`
+- _process_alias_expansion() `INFERRED`
+- process_command_unified() `INFERRED`
+- handle_teach_command() `INFERRED`
+- _handle_special_command_routing() `INFERRED`
+- run_handle_taunt_command() `INFERRED`
+- _ensure_alias_storage() `INFERRED`
+- handle_kick_command() `INFERRED`
+- handle_punch_command() `INFERRED`
+- handle_strike_command() `INFERRED`
+- handle_cast_command() `INFERRED`
+- handle_learn_command() `INFERRED`
+- handle_spell_command() `INFERRED`
+- handle_spells_command() `INFERRED`
+- handle_stop_command() `INFERRED`
+- process_command() `INFERRED`
 
 ---
 

@@ -4,10 +4,10 @@
 
 ## Key Concepts
 
-- **🚀 OPTIMIZATION TIPS** (4 connections) — `.cursor/commands/mypy-remediation.md`
-- **For Large Codebases** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **For Performance** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Type Annotation Strategies** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **🚀 OPTIMIZATION TIPS** (4 connections) — `.claude/commands/mypy-remediation.md`
+- **For Large Codebases** (1 connections) — `.claude/commands/mypy-remediation.md`
+- **For Performance** (1 connections) — `.claude/commands/mypy-remediation.md`
+- **Type Annotation Strategies** (1 connections) — `.claude/commands/mypy-remediation.md`
 
 ## Relationships
 
@@ -15,7 +15,7 @@
 
 ## Source Files
 
-- `.cursor/commands/mypy-remediation.md`
+- `.claude/commands/mypy-remediation.md`
 
 ## Audit Trail
 

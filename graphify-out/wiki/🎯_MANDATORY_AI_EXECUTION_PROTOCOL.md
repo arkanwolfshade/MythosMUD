@@ -1,47 +1,32 @@
 # 🎯 MANDATORY AI EXECUTION PROTOCOL
 
-> 32 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **🎯 MANDATORY AI EXECUTION PROTOCOL** (8 connections) — `.cursor/commands/client-test-remediation.md`
-- **Phase 2: Categorize and Prioritize Failures** (6 connections) — `.cursor/commands/client-test-remediation.md`
-- **Test Client Remediation Prompt - AI-Optimized Version** (6 connections) — `.cursor/commands/client-test-remediation.md`
-- **🔧 COMMON FIX TEMPLATES** (5 connections) — `.cursor/commands/client-test-remediation.md`
-- **Phase 4: Tool Selection Guide** (5 connections) — `.cursor/commands/client-test-remediation.md`
-- **Phase 5: Fix Implementation Patterns** (4 connections) — `.cursor/commands/client-test-remediation.md`
-- **🚨 AI ERROR HANDLING** (3 connections) — `.cursor/commands/client-test-remediation.md`
-- **client-test-remediation.md** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **📋 AI EXECUTION CHECKLIST** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **🎯 AI SUCCESS METRICS** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **Component Rendering Issues** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **🔴 CRITICAL (Fix First - Blocking Issues)** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **🔴 CRITICAL FIXES - TypeScript Errors** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **For Each Failure Category** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **🟡 HIGH PRIORITY (Fix Second - Core Functionality)** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **🟡 HIGH PRIORITY FIXES - Component Issues** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **Hook Issues** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **If Multiple Categories Have Failures** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **If Tests Still Fail After Fixes** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **🔵 LOW PRIORITY (Fix Last - Polish)** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **🟢 MEDIUM PRIORITY (Fix Third - Enhancement)** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **🟢 MEDIUM PRIORITY FIXES - Hook Issues** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **Phase 1: Initial Assessment (REQUIRED FIRST)** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **Phase 3: Systematic Fixing Process** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **Phase 6: Verification Protocol** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- *... and 7 more nodes in this community*
+- **🎯 MANDATORY AI EXECUTION PROTOCOL** (8 connections) — `.claude/commands/mypy-remediation.md`
+- **Phase 4: Tool Selection Guide** (3 connections) — `.claude/commands/mypy-remediation.md`
+- **Phase 3: Systematic Fixing Process** (2 connections) — `.claude/commands/mypy-remediation.md`
+- **For Each Issue Category** (1 connections) — `.claude/commands/mypy-remediation.md`
+- **Mypy Type Checking** (1 connections) — `.claude/commands/mypy-remediation.md`
+- **Phase 1: Initial Assessment (REQUIRED FIRST)** (1 connections) — `.claude/commands/mypy-remediation.md`
+- **Phase 6: Verification Protocol** (1 connections) — `.claude/commands/mypy-remediation.md`
+- **Phase 7: Success Validation** (1 connections) — `.claude/commands/mypy-remediation.md`
+- **Understanding Mypy Error Codes** (1 connections) — `.claude/commands/mypy-remediation.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Phase 5: Fix Implementation Patterns](Phase_5-_Fix_Implementation_Patterns.md) (1 shared connections)
+- [Phase 2: Categorize and Prioritize Mypy Issues](Phase_2-_Categorize_and_Prioritize_Mypy_Issues.md) (1 shared connections)
+- [Mypy Type Checking Remediation Prompt - AI-Optimized Version](Mypy_Type_Checking_Remediation_Prompt_-_AI-Optimized_Version.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/client-test-remediation.md`
+- `.claude/commands/mypy-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 31 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

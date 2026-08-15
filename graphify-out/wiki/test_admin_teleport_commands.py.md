@@ -37,7 +37,7 @@
 - [test_admin_commands.py](test_admin_commands.py.md) (8 shared connections)
 - [test_goto_helpers.py](test_goto_helpers.py.md) (7 shared connections)
 - [AliasStorage](AliasStorage.md) (6 shared connections)
-- [AdminActionsLogger](AdminActionsLogger.md) (3 shared connections)
+- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (3 shared connections)
 - [validate_admin_permission](validate_admin_permission.md) (1 shared connections)
 
 ## Source Files

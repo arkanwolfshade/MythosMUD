@@ -34,8 +34,10 @@
 ## Relationships
 
 - [AliasStorage](AliasStorage.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [BaseCommand](BaseCommand.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 102 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 101 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

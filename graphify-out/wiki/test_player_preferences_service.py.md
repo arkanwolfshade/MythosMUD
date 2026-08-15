@@ -34,9 +34,10 @@
 ## Relationships
 
 - [preferences_service](preferences_service.md) (4 shared connections)
-- [Player](Player.md) (2 shared connections)
 - [PlayerPreferencesService](PlayerPreferencesService.md) (2 shared connections)
 - [User](User.md) (1 shared connections)
+- [PlayerChannelPreferences](PlayerChannelPreferences.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
 
 ## Source Files
 

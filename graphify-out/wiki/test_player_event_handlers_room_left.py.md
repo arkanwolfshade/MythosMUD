@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (7 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
 
 ## Source Files
 
@@ -41,8 +41,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 38 (88%)
+- INFERRED: 5 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

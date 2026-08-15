@@ -1,25 +1,25 @@
 # .__init__
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/realtime/room_id_utils.py`
-- **Any** (1 connections)
-- **Initialize room ID utilities. Args: connection_manager: ConnectionManager…** (1 connections) — `server/realtime/room_id_utils.py`
+- **.__init__()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Initialize the memory leak metrics collector.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
 
 ## Relationships
 
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (1 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (1 shared connections)
+- [deque](deque.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/room_id_utils.py`
+- `server/monitoring/memory_leak_metrics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (67%)
+- INFERRED: 1 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

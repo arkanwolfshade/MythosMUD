@@ -4,19 +4,19 @@
 
 ## Key Concepts
 
-- **Phase 5: Fix Implementation Patterns** (5 connections) — `.cursor/commands/mypy-remediation.md`
-- **🔴 CRITICAL FIXES - Import and Name Errors** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **🟡 HIGH PRIORITY FIXES - Type Errors** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **🔵 LOW PRIORITY FIXES - Type Precision** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **🟢 MEDIUM PRIORITY FIXES - Type Refinement** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **Phase 5: Fix Implementation Patterns** (5 connections) — `.claude/commands/mypy-remediation.md`
+- **🔴 CRITICAL FIXES - Import and Name Errors** (1 connections) — `.claude/commands/mypy-remediation.md`
+- **🟡 HIGH PRIORITY FIXES - Type Errors** (1 connections) — `.claude/commands/mypy-remediation.md`
+- **🔵 LOW PRIORITY FIXES - Type Precision** (1 connections) — `.claude/commands/mypy-remediation.md`
+- **🟢 MEDIUM PRIORITY FIXES - Type Refinement** (1 connections) — `.claude/commands/mypy-remediation.md`
 
 ## Relationships
 
-- [🎯 MANDATORY AI EXECUTION PROTOCOL](%F0%9F%8E%AF_MANDATORY_AI_EXECUTION_PROTOCOL.md) (1 shared connections)
+- [🎯 MANDATORY AI EXECUTION PROTOCOL](🎯_MANDATORY_AI_EXECUTION_PROTOCOL.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/mypy-remediation.md`
+- `.claude/commands/mypy-remediation.md`
 
 ## Audit Trail
 

@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (8 shared connections)
+- [test_npc_combat_integration_service.py](test_npc_combat_integration_service.py.md) (7 shared connections)
 - [test_npc_combat_integration_service_player_attacks.py](test_npc_combat_integration_service_player_attacks.py.md) (3 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

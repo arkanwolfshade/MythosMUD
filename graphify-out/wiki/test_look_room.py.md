@@ -1,6 +1,6 @@
 # test_look_room.py
 
-> 100 nodes
+> 105 nodes
 
 ## Key Concepts
 
@@ -29,17 +29,16 @@
 - **test_format_containers_section_no_room_id()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
 - **test_format_containers_section_with_containers()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
 - **test_format_npcs_section_empty()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
-- *... and 75 more nodes in this community*
+- *... and 80 more nodes in this community*
 
 ## Relationships
 
-- [test_look_player.py](test_look_player.py.md) (5 shared connections)
+- [test_look_player.py](test_look_player.py.md) (7 shared connections)
 - [look_command.py](look_command.py.md) (5 shared connections)
-- [test_room_renderer.py](test_room_renderer.py.md) (4 shared connections)
-- [AttributeError](AttributeError.md) (3 shared connections)
+- [AttributeError](AttributeError.md) (4 shared connections)
+- [occupant_display.py](occupant_display.py.md) (3 shared connections)
 - [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
 - [test_look_npc.py](test_look_npc.py.md) (3 shared connections)
-- [test_filter_other_players_adds_linkdead_indicator](test_filter_other_players_adds_linkdead_indicator.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
@@ -47,10 +46,11 @@
 - `server/commands/look_room.py`
 - `server/tests/unit/commands/test_look_room.py`
 - `server/tests/unit/commands/test_look_room_helpers.py`
+- `server/tests/unit/realtime/test_visual_indicator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 207 (100%)
+- EXTRACTED: 213 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

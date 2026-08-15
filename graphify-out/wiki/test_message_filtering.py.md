@@ -1,41 +1,36 @@
 # test_message_filtering.py
 
-> 59 nodes
+> 12 nodes
 
 ## Key Concepts
 
 - **test_message_filtering.py** (36 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **asyncio** (13 connections)
-- **message_filtering_helper()** (4 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_get_player_room_from_persistence()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_get_player_room_from_persistence_not_found()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_is_player_in_room_error_returns_false()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_is_player_in_room_false()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_is_player_in_room_true()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_preload_receiver_mute_data()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_preload_receiver_mute_data_excludes_sender()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_check_player_mute_status_patched_and_emote()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 - **test_collect_room_targets()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 - **test_collect_room_targets_empty()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_collect_room_targets_with_canonical_id()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_compare_canonical_rooms_different()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_compare_canonical_rooms_same()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_extract_chat_event_info()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_filter_target_players_room_and_mute()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_get_player_room_from_online_players()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_get_player_room_from_online_players_not_found()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_get_player_room_from_persistence_mock_player()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_get_player_room_from_persistence_no_layer()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_get_user_manager_custom()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 - **test_get_user_manager_global()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- *... and 34 more nodes in this community*
+- **test_is_player_muted_by_receiver()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_is_player_muted_by_receiver_exception()** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_is_player_muted_global_mute_and_admin()** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Unit tests for message filtering. Tests the MessageFilteringHelper class.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test is_player_muted_by_receiver() checks mute status.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test _get_user_manager() returns global user manager when custom not set.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test collect_room_targets() returns subscribed players.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test collect_room_targets() returns empty set when no subscribers.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [MessageFilteringHelper](MessageFilteringHelper.md) (2 shared connections)
-- [test_nats_message_handler.py](test_nats_message_handler.py.md) (2 shared connections)
+- [asyncio](asyncio.md) (10 shared connections)
+- [message_filtering_helper](message_filtering_helper.md) (2 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
+- [NATSError](NATSError.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
+- [test_should_apply_mute_check_sensitive_channel](test_should_apply_mute_check_sensitive_channel.md) (1 shared connections)
+- [test_should_apply_mute_check_non_sensitive_channel](test_should_apply_mute_check_non_sensitive_channel.md) (1 shared connections)
+- [test_compare_canonical_rooms_same](test_compare_canonical_rooms_same.md) (1 shared connections)
+- [test_compare_canonical_rooms_different](test_compare_canonical_rooms_different.md) (1 shared connections)
+- [test_get_player_room_from_online_players](test_get_player_room_from_online_players.md) (1 shared connections)
+- [test_get_player_room_from_online_players_not_found](test_get_player_room_from_online_players_not_found.md) (1 shared connections)
+- [test_get_player_room_from_persistence_not_found](test_get_player_room_from_persistence_not_found.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,7 +38,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 76 (100%)
+- EXTRACTED: 40 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **CombatAuditLogger** (29 connections) — `server/structured_logging/combat_audit.py`
+- **CombatAuditLogger** (30 connections) — `server/structured_logging/combat_audit.py`
 - **test_combat_audit.py** (25 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
 - **combat_audit.py** (11 connections) — `server/structured_logging/combat_audit.py`
 - **_ts()** (10 connections) — `server/structured_logging/combat_audit.py`
@@ -42,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 128 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 105 (81%)
+- INFERRED: 24 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

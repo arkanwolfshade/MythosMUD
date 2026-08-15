@@ -1,21 +1,15 @@
 # PassiveMobNPC
 
-> 71 nodes
+> 59 nodes
 
 ## Key Concepts
 
-- **PassiveMobNPC** (58 connections) — `server/npc/passive_mob_npc.py`
+- **PassiveMobNPC** (59 connections) — `server/npc/passive_mob_npc.py`
 - **test_npc_base.py** (24 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_passive_mob_npc.py** (19 connections) — `server/tests/unit/npc/test_passive_mob_npc.py`
-- **.schedule_idle_movement()** (6 connections) — `server/npc/passive_mob_npc.py`
-- **.wander()** (6 connections) — `server/npc/passive_mob_npc.py`
-- **._queue_wander_action()** (5 connections) — `server/npc/passive_mob_npc.py`
-- **._create_wander_action()** (4 connections) — `server/npc/passive_mob_npc.py`
 - **._handle_respond_to_greeting()** (3 connections) — `server/npc/passive_mob_npc.py`
-- **._handle_wander()** (3 connections) — `server/npc/passive_mob_npc.py`
 - **.respond_to_player()** (3 connections) — `server/npc/passive_mob_npc.py`
 - **._setup_passive_mob_behavior_rules()** (3 connections) — `server/npc/passive_mob_npc.py`
-- **._should_schedule_movement()** (3 connections) — `server/npc/passive_mob_npc.py`
 - **test_npc_base_execute_behavior()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_get_combat_stats()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_get_combat_stats_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
@@ -26,19 +20,22 @@
 - **.get_behavior_rules()** (2 connections) — `server/npc/passive_mob_npc.py`
 - **._handle_flee()** (2 connections) — `server/npc/passive_mob_npc.py`
 - **test_npc_base_ai_placeholders()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_from_dict()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_get_behavior_and_ai_config()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_handle_die_and_idle()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_heal_when_dead_returns_false()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
-- *... and 46 more nodes in this community*
+- **test_npc_base_inventory_operations()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_move_simple()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_move_with_event_reaction_system()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_remove_missing_item()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_speak_and_listen()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (8 shared connections)
-- [AggressiveMobNPC](AggressiveMobNPC.md) (3 shared connections)
-- [NPCActionMessage](NPCActionMessage.md) (3 shared connections)
-- [IdleMovementHandler](IdleMovementHandler.md) (2 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
-- [NPCStartupService](NPCStartupService.md) (1 shared connections)
+- [get_logger](get_logger.md) (10 shared connections)
+- [NPCActionMessage](NPCActionMessage.md) (8 shared connections)
+- [IdleMovementHandler](IdleMovementHandler.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 123 (95%)
-- INFERRED: 6 (5%)
+- EXTRACTED: 72 (63%)
+- INFERRED: 42 (37%)
 - AMBIGUOUS: 0 (0%)
 
 ---

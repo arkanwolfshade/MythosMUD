@@ -7,13 +7,13 @@
 - **test_users_current_user_logging.py** (12 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
 - **get_current_user_with_logging()** (11 connections) — `server/auth/users.py`
 - **asyncio** (7 connections)
+- **test_get_current_user_with_logging_generic_exception()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
+- **test_get_current_user_with_logging_http_exception()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
 - **test_get_current_user_with_logging_long_auth_header()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
 - **test_get_current_user_with_logging_no_auth_header()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
 - **test_get_current_user_with_logging_no_request()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
+- **test_get_current_user_with_logging_no_user()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
 - **test_get_current_user_with_logging_success()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_generic_exception()** (4 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_http_exception()** (4 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_no_user()** (4 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
 - **DependsParam** (1 connections)
 - **Enhanced get_current_user with detailed logging.** (1 connections) — `server/auth/users.py`
 - **Unit tests for get_current_user_with_logging wrapper.** (1 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
@@ -27,8 +27,9 @@
 
 ## Relationships
 
-- [User](User.md) (5 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [User](User.md) (8 shared connections)
+- [test_users.py](test_users.py.md) (2 shared connections)
+- [models/user.py](models-user.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -37,8 +38,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 40 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 36 (84%)
+- INFERRED: 7 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

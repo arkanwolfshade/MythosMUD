@@ -33,12 +33,13 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (5 shared connections)
-- [command_service](command_service.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (4 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 - [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
+- [test_alias_commands.py](test_alias_commands.py.md) (1 shared connections)
 - [test_command_service.py](test_command_service.py.md) (1 shared connections)
-- [parse_command](parse_command.md) (1 shared connections)
+- [command_service](command_service.md) (1 shared connections)
+- [test_command_parser.py](test_command_parser.py.md) (1 shared connections)
 - [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
 
 ## Source Files
@@ -47,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 52 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 51 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -21,7 +21,7 @@
 
 ## Relationships
 
-- [HolidayCollection](HolidayCollection.md) (6 shared connections)
+- [HolidayService](HolidayService.md) (6 shared connections)
 
 ## Source Files
 

@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (4 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (3 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 42 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 40 (93%)
+- INFERRED: 3 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

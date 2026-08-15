@@ -32,7 +32,7 @@
 - [plane](plane.md) (1 shared connections)
 - [zone](zone.md) (1 shared connections)
 - [sub_zone](sub_zone.md) (1 shared connections)
-- [enum](enum_2.md) (1 shared connections)
+- [enum](enum.md) (1 shared connections)
 - [properties](properties.md) (1 shared connections)
 
 ## Source Files

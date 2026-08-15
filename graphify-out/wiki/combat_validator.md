@@ -10,8 +10,8 @@
 
 ## Relationships
 
-- [CombatValidator](CombatValidator.md) (1 shared connections)
 - [test_combat_validator.py](test_combat_validator.py.md) (1 shared connections)
+- [CombatValidator](CombatValidator.md) (1 shared connections)
 
 ## Source Files
 
@@ -19,8 +19,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

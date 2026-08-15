@@ -1,6 +1,6 @@
 # e2e-bootstrap.ts
 
-> 33 nodes
+> 34 nodes
 
 ## Key Concepts
 
@@ -29,15 +29,15 @@
 - **fetchResponseBodyText()** (2 connections) — `client/tests/e2e/runtime/global-setup.ts`
 - **assertMorganVisible()** (2 connections) — `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
 - **resetDaisyQuestInstances()** (2 connections) — `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
-- *... and 8 more nodes in this community*
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [fixtures/auth.ts](fixtures-auth.ts.md) (9 shared connections)
-- [collect-n-quest.spec.ts](collect-n-quest.spec.ts.md) (5 shared connections)
-- [executeCommand](executeCommand.md) (4 shared connections)
-- [player.ts](player.ts.md) (4 shared connections)
-- [whisper-movement.spec.ts](whisper-movement.spec.ts.md) (1 shared connections)
+- [waitForMessage](waitForMessage.md) (7 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (7 shared connections)
+- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (4 shared connections)
+- [executeCommand](executeCommand.md) (3 shared connections)
+- [player.ts](player.ts.md) (2 shared connections)
 
 ## Source Files
 
@@ -47,10 +47,11 @@
 - `client/tests/e2e/runtime/fixtures/test-data.ts`
 - `client/tests/e2e/runtime/global-setup.ts`
 - `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
+- `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 99 (100%)
+- EXTRACTED: 100 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

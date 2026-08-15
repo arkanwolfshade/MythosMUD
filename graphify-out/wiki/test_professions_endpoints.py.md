@@ -7,12 +7,12 @@
 - **test_professions_endpoints.py** (13 connections) — `server/tests/unit/api/test_professions_endpoints.py`
 - **get_all_professions()** (11 connections) — `server/api/professions.py`
 - **get_profession_by_id()** (11 connections) — `server/api/professions.py`
+- **test_get_all_professions_requires_auth()** (5 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **test_get_profession_by_id_not_found()** (5 connections) — `server/tests/unit/api/test_professions_endpoints.py`
 - **test_get_all_professions_success()** (4 connections) — `server/tests/unit/api/test_professions_endpoints.py`
-- **test_get_profession_by_id_not_found()** (4 connections) — `server/tests/unit/api/test_professions_endpoints.py`
 - **test_get_profession_by_id_success()** (4 connections) — `server/tests/unit/api/test_professions_endpoints.py`
 - **_user()** (4 connections) — `server/tests/unit/api/test_professions_endpoints.py`
 - **asyncio** (4 connections)
-- **test_get_all_professions_requires_auth()** (3 connections) — `server/tests/unit/api/test_professions_endpoints.py`
 - **get** (2 connections)
 - **Request** (2 connections)
 - **Retrieve all available professions for character creation with caching. :param…** (1 connections) — `server/api/professions.py`
@@ -21,10 +21,11 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (4 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
-- [User](User.md) (3 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (7 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (5 shared connections)
+- [User](User.md) (4 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [models/user.py](models-user.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -33,8 +34,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 40 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 40 (93%)
+- INFERRED: 3 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

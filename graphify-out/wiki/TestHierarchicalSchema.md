@@ -6,8 +6,8 @@
 
 - **TestHierarchicalSchema** (22 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
 - **._validate_room()** (21 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **ValidationResult** (5 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
 - **test_hierarchical_schema.py** (5 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **ValidationResult** (4 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
 - **.setUp()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
 - **.test_environment_inheritance_logic()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
 - **.test_invalid_environment_value()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [SchemaValidator](SchemaValidator.md) (4 shared connections)
-- [PathValidator](PathValidator.md) (1 shared connections)
+- [SchemaValidator](SchemaValidator.md) (3 shared connections)
+- [RoomLoader](RoomLoader.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 67 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 67 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

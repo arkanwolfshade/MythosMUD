@@ -5,10 +5,10 @@
 ## Key Concepts
 
 - **preferences_service()** (4 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **sample_preferences()** (4 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 - **fixture** (4 connections)
 - **mock_session()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 - **sample_player_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **sample_preferences()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 - **Create a PlayerPreferencesService instance.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 - **Create a mock async session.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 - **Create a sample player ID.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
@@ -18,6 +18,7 @@
 
 - [test_player_preferences_service.py](test_player_preferences_service.py.md) (4 shared connections)
 - [PlayerPreferencesService](PlayerPreferencesService.md) (1 shared connections)
+- [PlayerChannelPreferences](PlayerChannelPreferences.md) (1 shared connections)
 
 ## Source Files
 
@@ -25,8 +26,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 12 (86%)
+- INFERRED: 2 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -6,7 +6,7 @@
 
 - **party_service.py** (16 connections) — `server/game/party_service.py`
 - **test_party_flow.py** (13 connections) — `server/tests/integration/test_party_flow.py`
-- **PartyUpdated** (12 connections) — `server/events/event_types.py`
+- **PartyUpdated** (11 connections) — `server/events/event_types.py`
 - **party_events()** (5 connections) — `server/tests/integration/test_party_flow.py`
 - **party_service()** (5 connections) — `server/tests/integration/test_party_flow.py`
 - **test_party_invite_join_leave_disband_state_and_events()** (5 connections) — `server/tests/integration/test_party_flow.py`
@@ -25,17 +25,14 @@
 
 ## Relationships
 
+- [get_logger](get_logger.md) (13 shared connections)
 - [PartyService](PartyService.md) (9 shared connections)
-- [event_types.py](event_types.py.md) (5 shared connections)
-- [EventBus](EventBus.md) (5 shared connections)
-- [Party](Party.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [.__post_init__](__post_init__.md) (1 shared connections)
-- [PlayerService](PlayerService.md) (1 shared connections)
+- [MythosTimeEventConsumer](MythosTimeEventConsumer.md) (1 shared connections)
+- [send_game_event](send_game_event.md) (1 shared connections)
 - [ConnectionManager](ConnectionManager.md) (1 shared connections)
 - [build_event](build_event.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 - [test_party_service.py](test_party_service.py.md) (1 shared connections)
+- [Party](Party.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 52 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 43 (81%)
+- INFERRED: 10 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

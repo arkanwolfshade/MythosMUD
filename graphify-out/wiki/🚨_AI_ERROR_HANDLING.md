@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **🚨 AI ERROR HANDLING** (3 connections) — `.cursor/commands/mypy-remediation.md`
-- **If Multiple Categories Have Issues** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **If Mypy Still Fails After Fixes** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **🚨 AI ERROR HANDLING** (3 connections) — `.claude/commands/mypy-remediation.md`
+- **If Multiple Categories Have Issues** (1 connections) — `.claude/commands/mypy-remediation.md`
+- **If Mypy Still Fails After Fixes** (1 connections) — `.claude/commands/mypy-remediation.md`
 
 ## Relationships
 
@@ -14,7 +14,7 @@
 
 ## Source Files
 
-- `.cursor/commands/mypy-remediation.md`
+- `.claude/commands/mypy-remediation.md`
 
 ## Audit Trail
 

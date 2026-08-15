@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (4 shared connections)
+- [HealthMonitor](HealthMonitor.md) (3 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 58 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 56 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

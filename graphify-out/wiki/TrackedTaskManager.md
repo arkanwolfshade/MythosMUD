@@ -1,16 +1,13 @@
 # TrackedTaskManager
 
-> 40 nodes
+> 33 nodes
 
 ## Key Concepts
 
 - **TrackedTaskManager** (22 connections) — `server/app/tracked_task_manager.py`
-- **get_global_tracked_manager()** (19 connections) — `server/app/tracked_task_manager.py`
 - **test_tracked_task_manager.py** (19 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
-- **tracked_task_manager.py** (15 connections) — `server/app/tracked_task_manager.py`
 - **asyncio** (8 connections)
 - **memory_leak_prevention_channel_start_session()** (5 connections) — `server/app/tracked_task_manager.py`
-- **.force_single_audit_cycle()** (4 connections) — `server/app/memory_lifespan_coordinator.py`
 - **patch_asyncio_create_task_with_tracking()** (4 connections) — `server/app/tracked_task_manager.py`
 - **reset_global_tracked_manager()** (4 connections) — `server/app/tracked_task_manager.py`
 - **.__init__()** (3 connections) — `server/app/tracked_task_manager.py`
@@ -29,32 +26,27 @@
 - **test_global_manager_singleton()** (2 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
 - **test_memory_leak_prevention_session_start()** (2 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
 - **test_set_task_registry()** (2 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
-- *... and 15 more nodes in this community*
+- **fixture** (1 connections)
+- **Audit and reclaim orphaned task candidates across the system. Returns: Number…** (1 connections) — `server/app/tracked_task_manager.py`
+- **Proactively clean up orphaned tasks by cancelling leak prevention violations.…** (1 connections) — `server/app/tracked_task_manager.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [TaskRegistry](TaskRegistry.md) (5 shared connections)
-- [PeriodicOrphanAuditor](PeriodicOrphanAuditor.md) (5 shared connections)
-- [MemoryThresholdMonitor](MemoryThresholdMonitor.md) (3 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
+- [TaskRegistry](TaskRegistry.md) (3 shared connections)
 - [.create_supervised_task](create_supervised_task.md) (2 shared connections)
-- [test_npc_event_handlers.py](test_npc_event_handlers.py.md) (2 shared connections)
-- [event_types.py](event_types.py.md) (2 shared connections)
-- [UUID](UUID.md) (1 shared connections)
-- [GameTickService](GameTickService.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/memory_lifespan_coordinator.py`
 - `server/app/tracked_task_manager.py`
 - `server/tests/unit/app/test_tracked_task_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 57 (86%)
+- INFERRED: 9 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

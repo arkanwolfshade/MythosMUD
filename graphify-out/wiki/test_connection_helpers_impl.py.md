@@ -33,13 +33,14 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (13 shared connections)
-- [ConnectionManager](ConnectionManager.md) (4 shared connections)
-- [connection_manager.py](connection_manager.py.md) (3 shared connections)
+- [DatabaseError](DatabaseError.md) (12 shared connections)
+- [ConnectionManager](ConnectionManager.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [build_event](build_event.md) (2 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (2 shared connections)
 - [AttributeError](AttributeError.md) (2 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (1 shared connections)
 - [test_rest_command.py](test_rest_command.py.md) (1 shared connections)
+- [get_config](get_config.md) (1 shared connections)
 - [PayloadOptimizer](PayloadOptimizer.md) (1 shared connections)
 
 ## Source Files

@@ -32,7 +32,7 @@
 - [prototype_id](prototype_id.md) (1 shared connections)
 - [short_description](short_description.md) (1 shared connections)
 - [long_description](long_description.md) (1 shared connections)
-- [enum](enum_2.md) (1 shared connections)
+- [enum](enum.md) (1 shared connections)
 - [weight](weight.md) (1 shared connections)
 
 ## Source Files

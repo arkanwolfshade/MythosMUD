@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **PostgresCursor** (19 connections) — `server/postgres_adapter.py`
-- **TestPostgresCursor** (13 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **PostgresCursor** (16 connections) — `server/postgres_adapter.py`
+- **TestPostgresCursor** (11 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 - **.rowcount()** (4 connections) — `server/postgres_adapter.py`
 - **.test_postgres_cursor_fetchall_empty()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 - **.test_postgres_cursor_fetchall_with_rows()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
@@ -29,15 +29,14 @@
 
 ## Relationships
 
-- [test_postgres_adapter.py](test_postgres_adapter.py.md) (4 shared connections)
-- [PostgresRow](PostgresRow.md) (4 shared connections)
-- [PostgresConnection](PostgresConnection.md) (2 shared connections)
+- [PostgresRow](PostgresRow.md) (3 shared connections)
+- [test_postgres_adapter.py](test_postgres_adapter.py.md) (2 shared connections)
 - [Any](Any.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
-- [TestUtilityFunctions](TestUtilityFunctions.md) (1 shared connections)
+- [PostgresConnection](PostgresConnection.md) (1 shared connections)
 - [fixture](fixture.md) (1 shared connections)
-- [test_rooms_api.py](test_rooms_api.py.md) (1 shared connections)
-- [lucidity.py](lucidity.py.md) (1 shared connections)
+- [RoomService](RoomService.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 33 (77%)
-- INFERRED: 10 (23%)
+- EXTRACTED: 33 (87%)
+- INFERRED: 5 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

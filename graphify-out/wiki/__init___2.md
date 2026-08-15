@@ -1,24 +1,23 @@
 # .__init__
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/middleware/correlation_middleware.py`
-- **ASGIApp** (1 connections)
-- **Initialize the correlation middleware. Args: app: ASGI application instance…** (1 connections) — `server/middleware/correlation_middleware.py`
+- **.__init__()** (2 connections) — `server/app/task_registry.py`
+- **Initialize TaskRegistry with empty task collections.** (1 connections) — `server/app/task_registry.py`
 
 ## Relationships
 
-- [middleware](middleware.md) (1 shared connections)
+- [TaskRegistry](TaskRegistry.md) (1 shared connections)
 
 ## Source Files
 
-- `server/middleware/correlation_middleware.py`
+- `server/app/task_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

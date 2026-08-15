@@ -5,9 +5,9 @@
 ## Key Concepts
 
 - **_make_mock_row()** (10 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_name_success()** (5 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **test_get_active_players_by_user_id_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **test_get_player_by_id_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_get_player_by_name_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **test_get_players_by_user_id_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **test_get_players_in_room_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **test_list_players_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
@@ -25,6 +25,7 @@
 - [test_player_repository.py](test_player_repository.py.md) (8 shared connections)
 - [asyncio](asyncio.md) (6 shared connections)
 - [test_get_players_batch_success](test_get_players_batch_success.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
 
 ## Source Files
 
@@ -32,8 +33,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 29 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

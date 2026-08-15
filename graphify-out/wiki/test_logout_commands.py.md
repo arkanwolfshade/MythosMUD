@@ -34,12 +34,14 @@
 ## Relationships
 
 - [TestLogoutCommand](TestLogoutCommand.md) (8 shared connections)
-- [get_cached_player](get_cached_player.md) (5 shared connections)
+- [catatonia_check.py](catatonia_check.py.md) (5 shared connections)
 - [AliasStorage](AliasStorage.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
 - [fixture](fixture.md) (4 shared connections)
-- [utility_commands.py](utility_commands.py.md) (3 shared connections)
+- [test_who_commands.py](test_who_commands.py.md) (3 shared connections)
 - [get_username_from_user](get_username_from_user.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [BaseCommand](BaseCommand.md) (1 shared connections)
 
 ## Source Files
 

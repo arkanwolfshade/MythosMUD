@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [test_maps.py](test_maps.py.md) (2 shared connections)
-- [get_admin_auth_service](get_admin_auth_service.md) (1 shared connections)
+- [maps.py](maps.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [deque](deque.md) (1 shared connections)
 
 ## Source Files
@@ -45,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 78 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 75 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

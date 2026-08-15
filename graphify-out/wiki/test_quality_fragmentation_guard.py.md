@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **test_quality_fragmentation_guard.py** (21 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **scan_changed_files()** (13 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **scan_changed_files()** (14 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
 - **_load_guard_module()** (13 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **_set_repo_root()** (11 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **Path** (8 connections)
@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (15 shared connections)
+- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (16 shared connections)
 - [_collect_python_public_defs_and_tiny](_collect_python_public_defs_and_tiny.md) (1 shared connections)
 
 ## Source Files
@@ -43,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 73 (82%)
-- INFERRED: 16 (18%)
+- EXTRACTED: 73 (81%)
+- INFERRED: 17 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

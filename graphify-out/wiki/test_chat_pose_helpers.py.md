@@ -33,9 +33,11 @@
 
 ## Relationships
 
-- [chat_service.py](chat_service.py.md) (8 shared connections)
+- [chat_service.py](chat_service.py.md) (5 shared connections)
 - [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (3 shared connections)
+- [ChatMessage](ChatMessage.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [chat_message.py](chat_message.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 69 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 68 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

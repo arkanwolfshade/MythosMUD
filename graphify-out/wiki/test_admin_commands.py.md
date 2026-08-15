@@ -1,6 +1,6 @@
 # test_admin_commands.py
 
-> 114 nodes
+> 112 nodes
 
 ## Key Concepts
 
@@ -14,7 +14,6 @@
 - **handle_mutes_command()** (11 connections) — `server/commands/admin_mute_commands.py`
 - **handle_unmute_command()** (11 connections) — `server/commands/admin_mute_commands.py`
 - **handle_add_admin_command()** (10 connections) — `server/commands/admin_mute_commands.py`
-- **handle_mute_global_command()** (9 connections) — `server/commands/admin_mute_commands.py`
 - **handle_unmute_global_command()** (9 connections) — `server/commands/admin_mute_commands.py`
 - **_handle_admin_status_command()** (7 connections) — `server/commands/admin_commands.py`
 - **_perform_mutes_list()** (7 connections) — `server/commands/admin_mute_commands.py`
@@ -29,22 +28,23 @@
 - **_mute_success_result()** (4 connections) — `server/commands/admin_mute_commands.py`
 - **_parse_mute_duration_minutes()** (4 connections) — `server/commands/admin_mute_commands.py`
 - **_resolve_current_player_id_for_mutes()** (4 connections) — `server/commands/admin_mute_commands.py`
-- *... and 89 more nodes in this community*
+- **_resolve_muter_and_target_players()** (4 connections) — `server/commands/admin_mute_commands.py`
+- *... and 87 more nodes in this community*
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (21 shared connections)
-- [get_logger](get_logger.md) (16 shared connections)
+- [AliasStorage](AliasStorage.md) (23 shared connections)
 - [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (8 shared connections)
+- [DatabaseError](DatabaseError.md) (6 shared connections)
+- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (5 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [admin_teleport_commands.py](admin_teleport_commands.py.md) (4 shared connections)
-- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (3 shared connections)
-- [get_username_from_user](get_username_from_user.md) (3 shared connections)
-- [_handle_admin_set_stat_command](_handle_admin_set_stat_command.md) (2 shared connections)
-- [AdminActionsLogger](AdminActionsLogger.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [_handle_admin_set_stat_command](_handle_admin_set_stat_command.md) (3 shared connections)
+- [MythosChronicle](MythosChronicle.md) (3 shared connections)
+- [get_username_from_user](get_username_from_user.md) (2 shared connections)
+- [alias_storage.py](alias_storage.py.md) (2 shared connections)
 - [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (1 shared connections)
 - [admin_shutdown_command.py](admin_shutdown_command.py.md) (1 shared connections)
-- [test_look_npc.py](test_look_npc.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -55,8 +55,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 236 (87%)
-- INFERRED: 36 (13%)
+- EXTRACTED: 233 (87%)
+- INFERRED: 35 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

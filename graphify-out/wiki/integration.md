@@ -13,7 +13,7 @@
 ## Relationships
 
 - [test_npc_combat_integration_class.py](test_npc_combat_integration_class.py.md) (2 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [NPCCombatIntegration](NPCCombatIntegration.md) (1 shared connections)
 
 ## Source Files
@@ -22,8 +22,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 7 (88%)
+- INFERRED: 1 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

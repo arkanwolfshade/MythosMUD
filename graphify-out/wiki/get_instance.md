@@ -1,59 +1,63 @@
 # .get_instance
 
-> 101 nodes
+> 63 nodes
 
 ## Key Concepts
 
-- **.get_instance()** (88 connections) — `server/database.py`
-- **.reset_instance()** (87 connections) — `server/database.py`
-- **test_database_error_handling.py** (41 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_database_manager_init_raises_when_instance_exists()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_reset_database_resets_singleton()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_database_manager_close_dispose_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_close_with_engine()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_close_without_engine()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **reset_db_state()** (4 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_get_database_path_none_url_raises()** (4 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_get_database_path_postgresql_returns_none()** (4 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_get_database_path_unsupported_raises()** (4 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_get_database_url_not_initialized()** (4 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_get_engine_event_loop_changed()** (4 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_get_engine_no_running_loop()** (4 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_get_engine_reinitializes_if_none()** (4 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_get_session_maker_not_initialized()** (4 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_config_runtime_error()** (4 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_config_validation_error()** (4 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_connection_error()** (4 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_converts_postgresql_url()** (4 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_generic_exception()** (4 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_keeps_asyncpg_url()** (4 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_none_url()** (4 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_os_error()** (4 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- *... and 76 more nodes in this community*
+- **.get_instance()** (34 connections) — `server/container/main.py`
+- **test_application_container.py** (28 connections) — `server/tests/unit/test_application_container.py`
+- **get_container()** (19 connections) — `server/container/main.py`
+- **reset_container()** (10 connections) — `server/container/main.py`
+- **.reset_instance()** (7 connections) — `server/container/main.py`
+- **test_application_container_set_instance()** (6 connections) — `server/tests/unit/test_application_container.py`
+- **._get_integration_dependencies()** (5 connections) — `server/npc/npc_base.py`
+- **test_get_and_reset_container_helpers()** (5 connections) — `server/tests/unit/container/test_application_container_main.py`
+- **_ensure_room_cache_before_npc_startup()** (4 connections) — `server/app/lifespan_startup.py`
+- **.set_instance()** (4 connections) — `server/container/main.py`
+- **test_application_container_get_instance()** (4 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_reset_instance()** (4 connections) — `server/tests/unit/test_application_container.py`
+- **test_get_container_singleton()** (4 connections) — `server/tests/unit/test_application_container.py`
+- **test_reset_container()** (4 connections) — `server/tests/unit/test_application_container.py`
+- **test_reset_container_creates_new_instance()** (4 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_decode_json_column()** (3 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_decode_json_column_dict()** (3 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_decode_json_column_empty_string()** (3 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_decode_json_column_invalid()** (3 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_decode_json_column_list()** (3 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_decode_json_column_none()** (3 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_get_project_root()** (3 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_get_service()** (3 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_get_service_invalid()** (3 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_get_service_not_initialized_service()** (3 connections) — `server/tests/unit/test_application_container.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (48 shared connections)
-- [test_database_init.py](test_database_init.py.md) (45 shared connections)
-- [asyncio](asyncio.md) (21 shared connections)
-- [test_database_helpers.py](test_database_helpers.py.md) (5 shared connections)
-- [get_database_url](get_database_url.md) (3 shared connections)
-- [get_engine](get_engine.md) (3 shared connections)
-- [._get_room_uuid_by_stable_id](_get_room_uuid_by_stable_id.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (30 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [CombatService](CombatService.md) (3 shared connections)
+- [NPCStartupService](NPCStartupService.md) (3 shared connections)
+- [UserManager](UserManager.md) (3 shared connections)
+- [lifespan.py](lifespan.py.md) (2 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (2 shared connections)
+- [HealthService](HealthService.md) (2 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (2 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (2 shared connections)
+- [test_magic_healing_events.py](test_magic_healing_events.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/database.py`
-- `server/tests/unit/infrastructure/test_database.py`
-- `server/tests/unit/infrastructure/test_database_error_handling.py`
-- `server/tests/unit/infrastructure/test_database_extended.py`
-- `server/tests/unit/infrastructure/test_database_helpers.py`
-- `server/tests/unit/infrastructure/test_database_init.py`
+- `server/app/lifespan_startup.py`
+- `server/container/main.py`
+- `server/npc/npc_base.py`
+- `server/tests/unit/container/test_application_container_main.py`
+- `server/tests/unit/test_application_container.py`
 
 ## Audit Trail
 
-- EXTRACTED: 293 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 144 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -13,9 +13,9 @@
 - **asyncio** (4 connections)
 - **repo()** (3 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
 - **_spell_row()** (3 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
+- **test_get_all_spells_db_error()** (3 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
 - **test_get_spell_by_id_not_found()** (3 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
 - **Any** (3 connections)
-- **test_get_all_spells_db_error()** (2 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
 - **test_row_to_spell_dict_maps_fields()** (2 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
 - **fixture** (1 connections)
 - **Map procedure result row to spell dict.** (1 connections) — `server/persistence/repositories/spell_repository.py`
@@ -24,8 +24,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (3 shared connections)
+- [DatabaseError](DatabaseError.md) (9 shared connections)
+- [lifespan_magic.py](lifespan_magic.py.md) (3 shared connections)
 
 ## Source Files
 
@@ -34,8 +34,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 37 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 36 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

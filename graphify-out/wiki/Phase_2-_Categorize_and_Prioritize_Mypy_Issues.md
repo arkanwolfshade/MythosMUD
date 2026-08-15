@@ -4,19 +4,19 @@
 
 ## Key Concepts
 
-- **Phase 2: Categorize and Prioritize Mypy Issues** (5 connections) — `.cursor/commands/mypy-remediation.md`
-- **🔴 CRITICAL (Fix First - Blocking Issues)** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **🟡 HIGH PRIORITY (Fix Second - Core Functionality)** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **🔵 LOW PRIORITY (Fix Last - Polish)** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **🟢 MEDIUM PRIORITY (Fix Third - Enhancement)** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **Phase 2: Categorize and Prioritize Mypy Issues** (5 connections) — `.claude/commands/mypy-remediation.md`
+- **🔴 CRITICAL (Fix First - Blocking Issues)** (1 connections) — `.claude/commands/mypy-remediation.md`
+- **🟡 HIGH PRIORITY (Fix Second - Core Functionality)** (1 connections) — `.claude/commands/mypy-remediation.md`
+- **🔵 LOW PRIORITY (Fix Last - Polish)** (1 connections) — `.claude/commands/mypy-remediation.md`
+- **🟢 MEDIUM PRIORITY (Fix Third - Enhancement)** (1 connections) — `.claude/commands/mypy-remediation.md`
 
 ## Relationships
 
-- [🎯 MANDATORY AI EXECUTION PROTOCOL](%F0%9F%8E%AF_MANDATORY_AI_EXECUTION_PROTOCOL.md) (1 shared connections)
+- [🎯 MANDATORY AI EXECUTION PROTOCOL](🎯_MANDATORY_AI_EXECUTION_PROTOCOL.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/mypy-remediation.md`
+- `.claude/commands/mypy-remediation.md`
 
 ## Audit Trail
 

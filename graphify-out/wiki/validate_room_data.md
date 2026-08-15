@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **validate_room_data()** (15 connections) — `server/world_loader.py`
+- **validate_room_data()** (17 connections) — `server/world_loader.py`
 - **TestValidateRoomData** (11 connections) — `server/tests/unit/test_world_loader.py`
 - **patch** (8 connections)
 - **.test_validate_room_data_creates_validator()** (4 connections) — `server/tests/unit/test_world_loader.py`
@@ -29,7 +29,9 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
+- [ValidationError](ValidationError.md) (4 shared connections)
+- [test_world_loader.py](test_world_loader.py.md) (2 shared connections)
+- [SchemaValidator](SchemaValidator.md) (2 shared connections)
 - [get_room_environment](get_room_environment.md) (1 shared connections)
 
 ## Source Files
@@ -39,8 +41,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 41 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 41 (93%)
+- INFERRED: 3 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

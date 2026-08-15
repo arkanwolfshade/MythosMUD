@@ -34,7 +34,7 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (3 shared connections)
-- [RoomSyncService](RoomSyncService.md) (2 shared connections)
+- [test_room_sync_service.py](test_room_sync_service.py.md) (2 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files

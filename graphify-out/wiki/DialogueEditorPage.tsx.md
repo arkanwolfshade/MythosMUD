@@ -1,6 +1,6 @@
 # DialogueEditorPage.tsx
 
-> 41 nodes
+> 40 nodes
 
 ## Key Concepts
 
@@ -29,15 +29,17 @@
 - **DialogueEditorPage()** (2 connections) — `client/src/pages/DialogueEditorPage.tsx`
 - **SkillsPage()** (2 connections) — `client/src/pages/SkillsPage.tsx`
 - **getInspectorOptions()** (2 connections) — `client/src/utils/xstateInspector.ts`
-- *... and 16 more nodes in this community*
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
 - [utils/config.ts](utils-config.ts.md) (5 shared connections)
-- [logger.ts](logger.ts.md) (4 shared connections)
-- [security.ts](security.ts.md) (4 shared connections)
 - [App.tsx](App.tsx.md) (2 shared connections)
 - [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (2 shared connections)
+- [roomHandlers.ts](roomHandlers.ts.md) (2 shared connections)
+- [logoutHandler.ts](logoutHandler.ts.md) (2 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
+- [security.ts](security.ts.md) (2 shared connections)
 
 ## Source Files
 
@@ -54,7 +56,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 86 (100%)
+- EXTRACTED: 85 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

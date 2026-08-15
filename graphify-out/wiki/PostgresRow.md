@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **PostgresRow** (26 connections) — `server/postgres_adapter.py`
-- **TestPostgresRow** (15 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **PostgresRow** (23 connections) — `server/postgres_adapter.py`
+- **TestPostgresRow** (12 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 - **.test_postgres_row_contains()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 - **.test_postgres_row_getitem_int_key()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 - **.test_postgres_row_getitem_int_key_out_of_range()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
@@ -32,12 +32,10 @@
 
 ## Relationships
 
-- [PostgresCursor](PostgresCursor.md) (4 shared connections)
-- [test_postgres_adapter.py](test_postgres_adapter.py.md) (4 shared connections)
 - [Any](Any.md) (4 shared connections)
-- [PostgresConnection](PostgresConnection.md) (2 shared connections)
+- [PostgresCursor](PostgresCursor.md) (3 shared connections)
+- [test_postgres_adapter.py](test_postgres_adapter.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
-- [TestUtilityFunctions](TestUtilityFunctions.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 41 (84%)
-- INFERRED: 8 (16%)
+- EXTRACTED: 41 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

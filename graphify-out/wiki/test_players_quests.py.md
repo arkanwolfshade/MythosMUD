@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **test_players_quests.py** (13 connections) — `server/tests/unit/api/test_players_quests.py`
+- **test_get_player_quests_403_when_not_owner()** (5 connections) — `server/tests/unit/api/test_players_quests.py`
 - **fixture** (5 connections)
-- **test_get_player_quests_403_when_not_owner()** (4 connections) — `server/tests/unit/api/test_players_quests.py`
 - **test_get_player_quests_include_completed_false()** (4 connections) — `server/tests/unit/api/test_players_quests.py`
 - **test_get_player_quests_returns_quest_log()** (4 connections) — `server/tests/unit/api/test_players_quests.py`
 - **mock_player_service()** (3 connections) — `server/tests/unit/api/test_players_quests.py`
@@ -26,8 +26,9 @@
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (6 shared connections)
+- [PlayerService](PlayerService.md) (5 shared connections)
 - [User](User.md) (2 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
 
 ## Source Files
 
@@ -35,8 +36,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 31 (94%)
+- INFERRED: 2 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -17,14 +17,14 @@
 ## Relationships
 
 - [Migration Roadmap](Migration_Roadmap.md) (1 shared connections)
-- [Migration Workflow (Per File)](Migration_Workflow_%28Per_File%29.md) (1 shared connections)
+- [Migration Workflow (Per File)](Migration_Workflow_Per_File.md) (1 shared connections)
 - [Common Conversion Patterns](Common_Conversion_Patterns.md) (1 shared connections)
-- [API Endpoints (Phase 2)](API_Endpoints_%28Phase_2%29.md) (1 shared connections)
+- [API Endpoints (Phase 2)](API_Endpoints_Phase_2.md) (1 shared connections)
 - [Testing Strategy](Testing_Strategy.md) (1 shared connections)
 - [Rollback Procedures](Rollback_Procedures.md) (1 shared connections)
 - [Success Metrics](Success_Metrics.md) (1 shared connections)
-- [Monitoring & Validation](Monitoring_%26_Validation.md) (1 shared connections)
-- [Gotchas & Solutions](Gotchas_%26_Solutions.md) (1 shared connections)
+- [Monitoring & Validation](Monitoring_&_Validation.md) (1 shared connections)
+- [Gotchas & Solutions](Gotchas_&_Solutions.md) (1 shared connections)
 - [Decision Points](Decision_Points.md) (1 shared connections)
 
 ## Source Files

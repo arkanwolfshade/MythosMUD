@@ -1,35 +1,36 @@
 # Any
 
-> 13 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **Any** (6 connections)
-- **._is_newer_data()** (4 connections) — `server/services/room_data_cache.py`
-- **.merge_room_data()** (4 connections) — `server/services/room_data_cache.py`
-- **.get_cache()** (3 connections) — `server/services/room_data_cache.py`
-- **.get_cache_stats()** (3 connections) — `server/services/room_data_cache.py`
-- **.is_room_data_fresh()** (3 connections) — `server/services/room_data_cache.py`
-- **.set_cache()** (3 connections) — `server/services/room_data_cache.py`
-- **Get statistics about the room data cache. Args: is_room_data_fresh_func:…** (1 connections) — `server/services/room_data_cache.py`
-- **Merge room data with proper conflict resolution. Args: old_data: Existing room…** (1 connections) — `server/services/room_data_cache.py`
-- **Check if new data is newer than old data for a specific key. Args: old_data:…** (1 connections) — `server/services/room_data_cache.py`
-- **Check if room data is fresh enough to use. Args: room_data: Room data to check…** (1 connections) — `server/services/room_data_cache.py`
-- **Get room data from cache. Args: room_id: Room ID to retrieve Returns: Dict[str,…** (1 connections) — `server/services/room_data_cache.py`
-- **Store room data in cache. Args: room_id: Room ID to store room_data: Room data…** (1 connections) — `server/services/room_data_cache.py`
+- **Any** (8 connections)
+- **benchmark_model_memory_usage()** (7 connections) — `server/utils/memory_profiler.py`
+- **.compare_models_memory_usage()** (4 connections) — `server/utils/memory_profiler.py`
+- **.print_comparison_results()** (4 connections) — `server/utils/memory_profiler.py`
+- **.print_model_memory_usage()** (4 connections) — `server/utils/memory_profiler.py`
+- **Compare memory usage across multiple model classes. Args: model_classes: List…** (1 connections) — `server/utils/memory_profiler.py`
+- **Print formatted model memory usage results.** (1 connections) — `server/utils/memory_profiler.py`
+- **Print formatted comparison results.** (1 connections) — `server/utils/memory_profiler.py`
+- **Benchmark memory usage for all major models.** (1 connections) — `server/utils/memory_profiler.py`
 
 ## Relationships
 
-- [RoomDataCache](RoomDataCache.md) (6 shared connections)
+- [MemoryProfiler](MemoryProfiler.md) (4 shared connections)
+- [.measure_model_deserialization](measure_model_deserialization.md) (4 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
+- [server/models/game.py](server-models-game.py.md) (1 shared connections)
+- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [.get_memory_usage_summary](get_memory_usage_summary.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/room_data_cache.py`
+- `server/utils/memory_profiler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 19 (86%)
+- INFERRED: 3 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

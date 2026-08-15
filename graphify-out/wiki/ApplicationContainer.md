@@ -1,54 +1,53 @@
 # ApplicationContainer
 
-> 308 nodes
+> 214 nodes
 
 ## Key Concepts
 
-- **ApplicationContainer** (156 connections) — `server/container/main.py`
+- **ApplicationContainer** (157 connections) — `server/container/main.py`
 - **test_container_bundles.py** (64 connections) — `server/tests/unit/container/test_container_bundles.py`
 - **GameBundle** (54 connections) — `server/container/bundles/game.py`
-- **bundles/game.py** (43 connections) — `server/container/bundles/game.py`
 - **container/main.py** (34 connections) — `server/container/main.py`
 - **CombatBundle** (33 connections) — `server/container/bundles/combat.py`
-- **RealtimeBundle** (32 connections) — `server/container/bundles/realtime.py`
-- **get_mythos_chronicle()** (26 connections) — `server/time/time_service.py`
+- **RealtimeBundle** (33 connections) — `server/container/bundles/realtime.py`
 - **asyncio** (23 connections)
+- **magic.py** (21 connections) — `server/container/bundles/magic.py`
 - **NPCBundle** (19 connections) — `server/container/bundles/npc.py`
-- **InstanceManager** (19 connections) — `server/game/instance_manager.py`
-- **get_container()** (19 connections) — `server/container/main.py`
 - **core.py** (19 connections) — `server/container/bundles/core.py`
 - **bundles/__init__.py** (19 connections) — `server/container/bundles/__init__.py`
-- **test_item.py** (19 connections) — `server/tests/unit/models/test_item.py`
 - **CoreBundle** (18 connections) — `server/container/bundles/core.py`
 - **test_application_container_main.py** (17 connections) — `server/tests/unit/container/test_application_container_main.py`
 - **._init_player_quest_layer()** (16 connections) — `server/container/bundles/game.py`
+- **_create_registry_and_targeting()** (16 connections) — `server/container/bundles/magic.py`
 - **MonitoringBundle** (15 connections) — `server/container/bundles/monitoring.py`
 - **TimeBundle** (14 connections) — `server/container/bundles/time.py`
-- **handle_follow_response_message()** (14 connections) — `server/realtime/message_handlers.py`
 - **bundles/combat.py** (14 connections) — `server/container/bundles/combat.py`
 - **bundles/realtime.py** (14 connections) — `server/container/bundles/realtime.py`
-- **ItemPrototype** (13 connections) — `server/models/item.py`
+- **MagicBundle** (13 connections) — `server/container/bundles/magic.py`
+- **.initialize()** (12 connections) — `server/container/bundles/core.py`
+- **.event_bus()** (12 connections) — `server/realtime/connection_manager.py`
 - **bundles/monitoring.py** (12 connections) — `server/container/bundles/monitoring.py`
-- *... and 283 more nodes in this community*
+- **._init_movement_layer()** (11 connections) — `server/container/bundles/game.py`
+- **.initialize()** (11 connections) — `server/container/bundles/game.py`
+- *... and 189 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (58 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (34 shared connections)
-- [test_application_container.py](test_application_container.py.md) (31 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (16 shared connections)
-- [CombatService](CombatService.md) (14 shared connections)
-- [normalize_environment](normalize_environment.md) (12 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (10 shared connections)
-- [Player](Player.md) (9 shared connections)
-- [test_message_handlers.py](test_message_handlers.py.md) (8 shared connections)
-- [EventBus](EventBus.md) (7 shared connections)
-- [connection_manager.py](connection_manager.py.md) (6 shared connections)
-- [test_lifespan_shutdown.py](test_lifespan_shutdown.py.md) (6 shared connections)
+- [get_logger](get_logger.md) (53 shared connections)
+- [.get_instance](get_instance.md) (30 shared connections)
+- [HolidayService](HolidayService.md) (17 shared connections)
+- [lifespan.py](lifespan.py.md) (15 shared connections)
+- [lifespan_magic.py](lifespan_magic.py.md) (15 shared connections)
+- [test_chat_npc_system.py](test_chat_npc_system.py.md) (10 shared connections)
+- [npc_database.py](npc_database.py.md) (9 shared connections)
+- [DatabaseError](DatabaseError.md) (8 shared connections)
+- [Player](Player.md) (7 shared connections)
+- [CombatService](CombatService.md) (6 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (6 shared connections)
+- [DatabaseManager](DatabaseManager.md) (5 shared connections)
 
 ## Source Files
 
-- `server/container/__init__.py`
 - `server/container/bundles/__init__.py`
 - `server/container/bundles/chat.py`
 - `server/container/bundles/combat.py`
@@ -61,18 +60,19 @@
 - `server/container/bundles/time.py`
 - `server/container/main.py`
 - `server/container/utils.py`
-- `server/game/instance_manager.py`
-- `server/models/item.py`
-- `server/realtime/message_handlers.py`
-- `server/tests/fixtures/unit/__init__.py`
+- `server/game/chat_npc_system.py`
+- `server/npc_database.py`
+- `server/realtime/connection_manager.py`
 - `server/tests/unit/container/test_application_container_main.py`
 - `server/tests/unit/container/test_container_bundles.py`
 - `server/tests/unit/container/test_realtime_bundle_nats.py`
+- `server/tests/unit/container/test_time_bundle.py`
+- `server/tests/unit/services/nats_subject_manager/test_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 868 (93%)
-- INFERRED: 69 (7%)
+- EXTRACTED: 629 (81%)
+- INFERRED: 145 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

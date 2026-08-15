@@ -6,7 +6,7 @@
 
 - **start_grace_period()** (20 connections) — `server/realtime/disconnect_grace_period.py`
 - **test_disconnect_grace_period.py** (18 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **cancel_grace_period()** (12 connections) — `server/realtime/disconnect_grace_period.py`
+- **cancel_grace_period()** (14 connections) — `server/realtime/disconnect_grace_period.py`
 - **asyncio** (9 connections)
 - **test_start_grace_period_reconnection_cancels()** (5 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
 - **test_cancel_grace_period_cancels_task()** (4 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
@@ -33,10 +33,13 @@
 
 ## Relationships
 
-- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (10 shared connections)
 - [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (8 shared connections)
+- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (8 shared connections)
 - [player_connection_setup.py](player_connection_setup.py.md) (2 shared connections)
+- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (2 shared connections)
 - [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (2 shared connections)
+- [establish_websocket_connection](establish_websocket_connection.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [extract_player_name](extract_player_name.md) (1 shared connections)
 
 ## Source Files
@@ -46,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 75 (100%)
+- EXTRACTED: 77 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

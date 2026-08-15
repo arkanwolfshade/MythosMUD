@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **player_connection_setup.py** (25 connections) — `server/realtime/player_connection_setup.py`
+- **player_connection_setup.py** (26 connections) — `server/realtime/player_connection_setup.py`
 - **handle_new_connection_setup()** (19 connections) — `server/realtime/player_connection_setup.py`
 - **test_player_connection_setup.py** (17 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
 - **_manager()** (11 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
@@ -33,16 +33,18 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (11 shared connections)
-- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (4 shared connections)
+- [DatabaseError](DatabaseError.md) (7 shared connections)
+- [build_event](build_event.md) (3 shared connections)
 - [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
+- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (3 shared connections)
+- [Player](Player.md) (3 shared connections)
 - [extract_player_name](extract_player_name.md) (2 shared connections)
-- [build_event](build_event.md) (2 shared connections)
 - [start_grace_period](start_grace_period.md) (2 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (1 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [event_handler](event_handler.md) (1 shared connections)
 - [.state](state.md) (1 shared connections)
 - [test_quest_service.py](test_quest_service.py.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 118 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 116 (95%)
+- INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -35,7 +35,7 @@
 
 - [asyncio](asyncio.md) (5 shared connections)
 - [Party](Party.md) (3 shared connections)
-- [.__post_init__](__post_init__.md) (2 shared connections)
+- [test_lifespan_event_subscriptions.py](test_lifespan_event_subscriptions.py.md) (2 shared connections)
 - [PartyService](PartyService.md) (1 shared connections)
 - [party_service.py](party_service.py.md) (1 shared connections)
 - [party_service](party_service.md) (1 shared connections)

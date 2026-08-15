@@ -11,21 +11,21 @@
 - **test_get_player_spell_found()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **test_get_player_spells()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **test_learn_spell()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_learn_spell_no_row_raises()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **test_record_spell_cast()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **test_update_mastery()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **repo()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **test_get_player_spell_missing()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_learn_spell_no_row_raises()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_get_player_spells_db_error()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **test_update_mastery_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_get_player_spells_db_error()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **test_row_to_player_spell_maps_fields()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **fixture** (1 connections)
 - **Unit tests for PlayerSpellRepository.** (1 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (7 shared connections)
+- [lifespan_magic.py](lifespan_magic.py.md) (2 shared connections)
 
 ## Source Files
 
@@ -33,8 +33,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 43 (93%)
+- INFERRED: 3 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

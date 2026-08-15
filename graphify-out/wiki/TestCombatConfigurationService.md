@@ -1,10 +1,13 @@
 # TestCombatConfigurationService
 
-> 36 nodes
+> 43 nodes
 
 ## Key Concepts
 
 - **TestCombatConfigurationService** (26 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.service()** (4 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.mock_config()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_validate_configuration_custom()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
 - **.test_clear_all_overrides()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
 - **.test_clear_scope_override()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
 - **.test_clear_scope_override_global_raises()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
@@ -22,20 +25,15 @@
 - **.test_update_combat_configuration_global_raises()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
 - **.test_update_combat_configuration_invalid_raises()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
 - **.test_validate_configuration()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **fixture** (2 connections)
 - **Test suite for CombatConfigurationService class.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test CombatConfigurationService initialization.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test get_combat_configuration returns configuration.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test get_combat_configuration caches configuration.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test get_combat_configuration_for_scope with global scope.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test get_combat_configuration_for_scope with room scope.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test get_combat_configuration_for_scope with player scope.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- *... and 11 more nodes in this community*
+- **Create a mock config object.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **Create a CombatConfigurationService instance for testing.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [combat_monitoring_service.py](combat_monitoring_service.py.md) (4 shared connections)
-- [.service](service.md) (2 shared connections)
-- [CombatConfiguration](CombatConfiguration.md) (2 shared connections)
+- [CombatConfiguration](CombatConfiguration.md) (7 shared connections)
 
 ## Source Files
 
@@ -43,8 +41,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 39 (91%)
-- INFERRED: 4 (9%)
+- EXTRACTED: 46 (92%)
+- INFERRED: 4 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

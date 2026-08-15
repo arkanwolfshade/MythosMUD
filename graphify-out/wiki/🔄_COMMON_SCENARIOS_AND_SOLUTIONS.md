@@ -4,10 +4,10 @@
 
 ## Key Concepts
 
-- **🔄 COMMON SCENARIOS AND SOLUTIONS** (4 connections) — `.cursor/commands/mypy-remediation.md`
-- **Scenario 1: Third-Party Library Without Stubs** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Scenario 2: Complex Union Types** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Scenario 3: Recursive Types** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **🔄 COMMON SCENARIOS AND SOLUTIONS** (4 connections) — `.claude/commands/mypy-remediation.md`
+- **Scenario 1: Third-Party Library Without Stubs** (1 connections) — `.claude/commands/mypy-remediation.md`
+- **Scenario 2: Complex Union Types** (1 connections) — `.claude/commands/mypy-remediation.md`
+- **Scenario 3: Recursive Types** (1 connections) — `.claude/commands/mypy-remediation.md`
 
 ## Relationships
 
@@ -15,7 +15,7 @@
 
 ## Source Files
 
-- `.cursor/commands/mypy-remediation.md`
+- `.claude/commands/mypy-remediation.md`
 
 ## Audit Trail
 

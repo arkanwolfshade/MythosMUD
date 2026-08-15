@@ -1,61 +1,54 @@
 # ZoneConfiguration
 
-> 100 nodes
+> 56 nodes
 
 ## Key Concepts
 
-- **ZoneConfiguration** (52 connections) — `server/npc/zone_configuration.py`
-- **should_spawn_npc()** (24 connections) — `server/npc/spawn_validator.py`
-- **test_spawn_validator.py** (24 connections) — `server/tests/unit/npc/test_spawn_validator.py`
+- **ZoneConfiguration** (54 connections) — `server/npc/zone_configuration.py`
 - **test_zone_configuration.py** (23 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **spawn_validator.py** (14 connections) — `server/npc/spawn_validator.py`
-- **zone_configuration.py** (11 connections) — `server/npc/zone_configuration.py`
-- **._should_spawn_npc()** (8 connections) — `server/npc/population_control.py`
-- **_try_spawn_rules()** (8 connections) — `server/npc/spawn_validator.py`
-- **_spawn_rule_passes()** (6 connections) — `server/npc/spawn_validator.py`
-- **_population_allows_spawn()** (5 connections) — `server/npc/spawn_validator.py`
-- **.get_population_stats()** (4 connections) — `server/npc/population_control.py`
-- **mock_npc_definition()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **mock_population_stats()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **mock_zone_config()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_multiple_rules_first_passes()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_multiple_rules_second_passes()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_no_population_stats()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_not_required_no_rules()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_population_limit_exceeded()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_population_limit_ok()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_population_stats_npcs_by_definition()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_required_npc_spawns()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_spawn_rule_fails_conditions()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_spawn_rule_fails_population()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_should_spawn_npc_spawn_rule_fails_probability()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- *... and 75 more nodes in this community*
+- **test_check_spawn_requirements_for_room_with_definitions()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_get_zone_configuration_exact_match()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_get_zone_configuration_no_slash()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_get_zone_configuration_zone_fallback()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_can_access_empty_player_requirements()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- **test_can_access_multiple_requirements_any()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- **test_can_access_no_requirements()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- **test_can_access_with_requirements_met()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- **test_can_access_with_requirements_not_met()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- **test_can_access_with_requirements_partial()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- **test_get_effective_spawn_probability_already_one()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- **test_get_effective_spawn_probability_caps_at_one()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- **test_get_effective_spawn_probability_no_modifier()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- **test_get_effective_spawn_probability_reduced_modifier()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- **test_get_effective_spawn_probability_very_high_modifier()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- **test_get_effective_spawn_probability_with_modifier()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- **test_get_effective_spawn_probability_zero_base()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- **test_zone_configuration_description()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- **test_zone_configuration_environment()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- **test_zone_configuration_init_full()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- **test_zone_configuration_init_minimal()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- **test_zone_configuration_init_partial_special_rules()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- **test_zone_configuration_weather_patterns()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (13 shared connections)
-- [zone_config_loader.py](zone_config_loader.py.md) (8 shared connections)
-- [test_population_control.py](test_population_control.py.md) (7 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (6 shared connections)
-- [population_control.py](population_control.py.md) (5 shared connections)
-- [NPCSpawnRule](NPCSpawnRule.md) (5 shared connections)
-- [test_zone_config_loader.py](test_zone_config_loader.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [process_zone_rows](process_zone_rows.md) (1 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (14 shared connections)
+- [zone_config_loader.py](zone_config_loader.py.md) (6 shared connections)
+- [should_spawn_npc](should_spawn_npc.md) (5 shared connections)
+- [test_zone_config_loader.py](test_zone_config_loader.py.md) (5 shared connections)
+- [mock_zone_config](mock_zone_config.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/population_control.py`
-- `server/npc/spawn_validator.py`
 - `server/npc/zone_configuration.py`
-- `server/tests/unit/npc/test_spawn_validator.py`
+- `server/tests/unit/npc/test_population_control.py`
 - `server/tests/unit/npc/test_zone_configuration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 194 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 69 (65%)
+- INFERRED: 37 (35%)
 - AMBIGUOUS: 0 (0%)
 
 ---

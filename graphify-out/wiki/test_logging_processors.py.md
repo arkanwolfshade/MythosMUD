@@ -14,7 +14,7 @@
 - **add_correlation_id()** (8 connections) — `server/structured_logging/logging_processors.py`
 - **test_enhance_player_ids_persistence_error()** (5 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
 - **EventDict** (5 connections)
-- **_EnhancePlayerIdsTls** (4 connections) — `server/structured_logging/logging_processors.py`
+- **_database_error_type()** (4 connections) — `server/structured_logging/logging_processors.py`
 - **_enhance_one_player_id()** (4 connections) — `server/structured_logging/logging_processors.py`
 - **test_enhance_player_ids_invalid_uuid_format()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
 - **test_enhance_player_ids_no_persistence_attribute()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
@@ -26,17 +26,18 @@
 - **test_enhance_player_ids_player_not_found()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
 - **test_enhance_player_ids_prevents_recursion()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
 - **test_enhance_player_ids_short_string()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **_database_error_type()** (3 connections) — `server/structured_logging/logging_processors.py`
+- **_EnhancePlayerIdsTls** (3 connections) — `server/structured_logging/logging_processors.py`
 - **mock_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
 - **sample_event_dict()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
 - *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (12 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
 - [test_logging_utilities.py](test_logging_utilities.py.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
 - [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
+- [lifespan.py](lifespan.py.md) (1 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
@@ -47,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 145 (95%)
-- INFERRED: 7 (5%)
+- EXTRACTED: 145 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

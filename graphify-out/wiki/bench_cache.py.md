@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **_FakePersistence** (6 connections) — `scripts/bench_cache.py`
 - **bench_cache.py** (6 connections) — `scripts/bench_cache.py`
+- **_FakePersistence** (5 connections) — `scripts/bench_cache.py`
 - **bench_room_cache()** (5 connections) — `scripts/bench_cache.py`
 - **.async_get_room()** (2 connections) — `scripts/bench_cache.py`
 - **main()** (2 connections) — `scripts/bench_cache.py`
@@ -16,8 +16,8 @@
 
 ## Relationships
 
-- [RoomCacheService](RoomCacheService.md) (3 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [RoomCacheService](RoomCacheService.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -25,8 +25,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 13 (87%)
-- INFERRED: 2 (13%)
+- EXTRACTED: 12 (86%)
+- INFERRED: 2 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

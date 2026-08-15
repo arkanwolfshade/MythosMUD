@@ -28,7 +28,7 @@
 
 ## Relationships
 
-- [PathValidator](PathValidator.md) (3 shared connections)
+- [RoomLoader](RoomLoader.md) (3 shared connections)
 
 ## Source Files
 

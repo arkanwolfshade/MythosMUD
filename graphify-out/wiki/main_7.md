@@ -7,7 +7,7 @@
 - **main()** (5 connections) — `.cursor/hooks/trigger_test_agent.py`
 - **_exit_empty()** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
 - **_load_state()** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **trigger_test_agent.py** (3 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **.cursor/hooks/trigger_test_agent.py** (3 connections) — `.cursor/hooks/trigger_test_agent.py`
 - **Path** (2 connections)
 - **NoReturn** (1 connections)
 - **Print empty JSON and exit successfully (no followup).** (1 connections) — `.cursor/hooks/trigger_test_agent.py`

@@ -33,11 +33,12 @@
 
 ## Relationships
 
-- [Player](Player.md) (4 shared connections)
 - [test_channel_commands.py](test_channel_commands.py.md) (3 shared connections)
+- [PlayerChannelPreferences](PlayerChannelPreferences.md) (3 shared connections)
 - [test_player_preferences_service.py](test_player_preferences_service.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [preferences_service](preferences_service.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 76 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 75 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

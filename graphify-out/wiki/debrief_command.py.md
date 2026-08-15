@@ -1,57 +1,58 @@
 # debrief_command.py
 
-> 69 nodes
+> 50 nodes
 
 ## Key Concepts
 
 - **debrief_command.py** (26 connections) — `server/commands/debrief_command.py`
 - **test_debrief_command.py** (25 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **active_lucidity_service.py** (23 connections) — `server/services/active_lucidity_service.py`
 - **handle_debrief_command()** (19 connections) — `server/commands/debrief_command.py`
-- **LucidityActionOnCooldownError** (17 connections) — `server/services/active_lucidity_service.py`
-- **UnknownLucidityActionError** (11 connections) — `server/services/active_lucidity_service.py`
 - **_generate_narrative_recap()** (9 connections) — `server/commands/debrief_command.py`
 - **_perform_therapy_if_requested()** (9 connections) — `server/commands/debrief_command.py`
 - **asyncio** (9 connections)
 - **Any** (8 connections)
-- **LucidityActionError** (7 connections) — `server/services/active_lucidity_service.py`
 - **_check_debrief_availability()** (7 connections) — `server/commands/debrief_command.py`
 - **_validate_debrief_context()** (7 connections) — `server/commands/debrief_command.py`
 - **_get_catatonia_registry_from_app()** (6 connections) — `server/commands/debrief_command.py`
 - **_get_persistence_from_app()** (6 connections) — `server/commands/debrief_command.py`
-- **.perform_recovery_action()** (6 connections) — `server/services/active_lucidity_service.py`
 - **_complete_debrief()** (5 connections) — `server/commands/debrief_command.py`
 - **test_handle_debrief_command_success()** (5 connections) — `server/tests/unit/commands/test_debrief_command.py`
 - **test_perform_therapy_on_cooldown()** (5 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **.get_action_cooldown()** (4 connections) — `server/services/active_lucidity_service.py`
 - **test_check_debrief_availability_not_pending()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
 - **test_handle_debrief_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
 - **test_handle_debrief_command_not_available()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
 - **test_perform_therapy_if_not_requested()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
 - **test_perform_therapy_success()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- *... and 44 more nodes in this community*
+- **test_validate_debrief_context_no_persistence()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_validate_debrief_context_player_missing()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_generate_narrative_recap_exception_fallback()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_generate_narrative_recap_no_adjustments()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_generate_narrative_recap_with_adjustments()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_get_catatonia_registry_from_state_fallback()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (17 shared connections)
-- [LucidityService](LucidityService.md) (14 shared connections)
-- [NPCCombatLucidity](NPCCombatLucidity.md) (12 shared connections)
-- [get_logger](get_logger.md) (10 shared connections)
-- [lucidity.py](lucidity.py.md) (5 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (4 shared connections)
+- [Player](Player.md) (9 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (7 shared connections)
+- [AliasStorage](AliasStorage.md) (4 shared connections)
+- [get_async_session](get_async_session.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [get_username_from_user](get_username_from_user.md) (1 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
+- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [BaseCommand](BaseCommand.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/debrief_command.py`
-- `server/services/active_lucidity_service.py`
 - `server/tests/unit/commands/test_debrief_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 176 (96%)
-- INFERRED: 8 (4%)
+- EXTRACTED: 117 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

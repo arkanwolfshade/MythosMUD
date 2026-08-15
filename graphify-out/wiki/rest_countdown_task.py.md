@@ -22,9 +22,9 @@
 
 ## Relationships
 
+- [build_event](build_event.md) (4 shared connections)
 - [test_rest_command.py](test_rest_command.py.md) (3 shared connections)
-- [build_event](build_event.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 

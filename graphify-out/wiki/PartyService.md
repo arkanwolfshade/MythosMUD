@@ -1,6 +1,6 @@
 # PartyService
 
-> 44 nodes
+> 46 nodes
 
 ## Key Concepts
 
@@ -20,6 +20,7 @@
 - **.decline_party_invite()** (7 connections) — `server/game/party_service.py`
 - **._expire_pending_invites()** (7 connections) — `server/game/party_service.py`
 - **.request_party_invite()** (7 connections) — `server/game/party_service.py`
+- **.__init__()** (6 connections) — `server/game/party_service.py`
 - **._notify_player_removed_from_party()** (6 connections) — `server/game/party_service.py`
 - **.on_player_disconnect()** (6 connections) — `server/game/party_service.py`
 - **._schedule_notification()** (6 connections) — `server/game/party_service.py`
@@ -28,22 +29,21 @@
 - **.get_party_members()** (4 connections) — `server/game/party_service.py`
 - **._send_party_invite_to_target()** (4 connections) — `server/game/party_service.py`
 - **Create a new party with the given player as leader. Returns dict with success…** (1 connections) — `server/game/party_service.py`
-- **Disband a party. If by_player_id is given, only the leader may disband. If…** (1 connections) — `server/game/party_service.py`
-- *... and 19 more nodes in this community*
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
 - [party_service.py](party_service.py.md) (9 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 - [Party](Party.md) (3 shared connections)
-- [.__init__](__init__.md) (2 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [ConnectionManager](ConnectionManager.md) (2 shared connections)
+- [HolidayService](HolidayService.md) (1 shared connections)
+- [test_party_service.py](test_party_service.py.md) (1 shared connections)
 - [party_service](party_service.md) (1 shared connections)
 - [asyncio](asyncio.md) (1 shared connections)
-- [test_party_service.py](test_party_service.py.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 - [build_event](build_event.md) (1 shared connections)
-- [PlayerService](PlayerService.md) (1 shared connections)
+- [send_game_event](send_game_event.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,8 +51,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 121 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 120 (93%)
+- INFERRED: 9 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

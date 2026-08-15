@@ -1,43 +1,35 @@
 # CircuitBreaker
 
-> 82 nodes
+> 13 nodes
 
 ## Key Concepts
 
 - **CircuitBreaker** (43 connections) — `server/realtime/circuit_breaker.py`
-- **test_circuit_breaker.py** (32 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **.call()** (9 connections) — `server/realtime/circuit_breaker.py`
-- **asyncio** (8 connections)
-- **CircuitState** (6 connections) — `server/realtime/circuit_breaker.py`
-- **._transition_to()** (6 connections) — `server/realtime/circuit_breaker.py`
-- **.get_stats()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **._on_failure()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **._on_success()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **._time_until_retry()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **test_call_closes_from_half_open_on_success()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_failure_closed_state()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_opens_circuit_after_threshold()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_rejects_when_open()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_reopens_from_half_open_on_failure()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_success_closed_state()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_transitions_to_half_open_after_timeout()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **.get_state()** (3 connections) — `server/realtime/circuit_breaker.py`
+- **test_time_until_retry_returns_remaining_time()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_time_until_retry_returns_zero_when_not_open()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_transition_to_updates_state()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **.__init__()** (3 connections) — `server/realtime/circuit_breaker.py`
-- **._should_attempt_reset()** (3 connections) — `server/realtime/circuit_breaker.py`
-- **test_circuit_breaker_init()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_circuit_breaker_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_circuit_breaker_open_exception()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_get_state()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_get_stats()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- *... and 57 more nodes in this community*
+- **.reset()** (2 connections) — `server/realtime/circuit_breaker.py`
+- **timedelta** (1 connections)
+- **Manually reset circuit breaker to CLOSED state. Clears all counters and timers.…** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Circuit breaker for NATS message processing. Implements Martin Fowler's circuit…** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Initialize circuit breaker. Args: failure_threshold: Number of failures before…** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Test _time_until_retry() returns 0 when not OPEN.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test _time_until_retry() returns remaining time.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test _transition_to() updates state.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [test_nats_message_handler.py](test_nats_message_handler.py.md) (3 shared connections)
-- [MessageFilteringHelper](MessageFilteringHelper.md) (1 shared connections)
-- [NATSMessageHandlerMixinBase](NATSMessageHandlerMixinBase.md) (1 shared connections)
+- [test_circuit_breaker.py](test_circuit_breaker.py.md) (13 shared connections)
+- [CircuitState](CircuitState.md) (9 shared connections)
+- [.call](call.md) (7 shared connections)
+- [asyncio](asyncio.md) (6 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [test_circuit_breaker_init](test_circuit_breaker_init.md) (1 shared connections)
+- [test_reset](test_reset.md) (1 shared connections)
 - [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (1 shared connections)
+- [CircuitBreakerOpen](CircuitBreakerOpen.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +38,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 134 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 25 (45%)
+- INFERRED: 30 (55%)
 - AMBIGUOUS: 0 (0%)
 
 ---

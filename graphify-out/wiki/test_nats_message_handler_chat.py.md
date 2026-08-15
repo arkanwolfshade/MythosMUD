@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [test_nats_message_handler.py](test_nats_message_handler.py.md) (3 shared connections)
+- [NATSError](NATSError.md) (3 shared connections)
 - [nats_exceptions.py](nats_exceptions.py.md) (1 shared connections)
 
 ## Source Files
@@ -42,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 95 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 93 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

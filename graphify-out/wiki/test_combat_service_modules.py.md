@@ -1,6 +1,6 @@
 # test_combat_service_modules.py
 
-> 85 nodes
+> 88 nodes
 
 ## Key Concepts
 
@@ -9,11 +9,13 @@
 - **_dp_sync()** (17 connections) — `server/tests/unit/services/test_combat_service_modules.py`
 - **CombatDPSync** (13 connections) — `server/services/combat_hp_sync.py`
 - **_combat_instance()** (13 connections) — `server/tests/unit/services/test_combat_service_modules.py`
+- **combat_service_end.py** (12 connections) — `server/services/combat_service_end.py`
+- **handle_combat_completion()** (10 connections) — `server/services/combat_service_attack.py`
 - **_participant()** (10 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- **handle_combat_completion()** (9 connections) — `server/services/combat_service_attack.py`
 - **_attack_participant()** (8 connections) — `server/tests/unit/services/test_combat_service_modules.py`
 - **._persist_player_dp_sync()** (7 connections) — `server/services/combat_hp_sync.py`
 - **end_combat()** (7 connections) — `server/services/combat_service_end.py`
+- **clear_aggro_for_combat()** (6 connections) — `server/services/aggro_threat.py`
 - **test_finalize_attack_result_and_process_attack()** (6 connections) — `server/tests/unit/services/test_combat_service_modules.py`
 - **test_register_combat_delegates_to_service()** (6 connections) — `server/tests/unit/services/test_combat_service_modules.py`
 - **._get_persistence()** (5 connections) — `server/services/combat_hp_sync.py`
@@ -27,25 +29,26 @@
 - **test_handle_combat_completion_end_error_swallowed()** (5 connections) — `server/tests/unit/services/test_combat_service_modules.py`
 - **test_publish_combat_started_event_handles_errors()** (5 connections) — `server/tests/unit/services/test_combat_service_modules.py`
 - **test_publish_combat_started_event_success()** (5 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- **test_validate_combat_can_start_ok()** (5 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- **test_validate_combat_can_start_raises_when_in_combat()** (5 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- *... and 60 more nodes in this community*
+- *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [CombatService](CombatService.md) (40 shared connections)
-- [EventBus](EventBus.md) (8 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [CombatInstance](CombatInstance.md) (5 shared connections)
+- [CombatService](CombatService.md) (31 shared connections)
+- [get_logger](get_logger.md) (12 shared connections)
+- [models/combat.py](models-combat.py.md) (8 shared connections)
+- [CombatInstance](CombatInstance.md) (6 shared connections)
+- [DatabaseError](DatabaseError.md) (4 shared connections)
+- [NATSError](NATSError.md) (3 shared connections)
 - [CombatParticipant](CombatParticipant.md) (3 shared connections)
-- [test_nats_message_handler.py](test_nats_message_handler.py.md) (2 shared connections)
-- [NPCStartupService](NPCStartupService.md) (1 shared connections)
-- [get_current_tick](get_current_tick.md) (1 shared connections)
-- [test_aggro_threat.py](test_aggro_threat.py.md) (1 shared connections)
+- [CombatParticipantData](CombatParticipantData.md) (3 shared connections)
+- [test_combat_attack_handler.py](test_combat_attack_handler.py.md) (2 shared connections)
+- [.get_instance](get_instance.md) (1 shared connections)
+- [PlayerService](PlayerService.md) (1 shared connections)
 - [nats_exceptions.py](nats_exceptions.py.md) (1 shared connections)
 
 ## Source Files
 
+- `server/services/aggro_threat.py`
 - `server/services/combat_hp_sync.py`
 - `server/services/combat_service_attack.py`
 - `server/services/combat_service_end.py`
@@ -53,8 +56,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 233 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 239 (97%)
+- INFERRED: 7 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

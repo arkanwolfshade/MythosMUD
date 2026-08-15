@@ -1,13 +1,16 @@
 # main
 
-> 4 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **main()** (3 connections) — `scripts/e2e_reset_collect_n_quest.py`
-- **_reset_collect_n_quest()** (2 connections) — `scripts/e2e_reset_collect_n_quest.py`
-- **e2e_reset_collect_n_quest.py** (2 connections) — `scripts/e2e_reset_collect_n_quest.py`
-- **Entry point: ensure collect_n quest seed and clear instances via anyio.** (1 connections) — `scripts/e2e_reset_collect_n_quest.py`
+- **main()** (4 connections) — `scripts/generate_html_visualization_fixed.py`
+- **generate_html_visualization()** (3 connections) — `scripts/generate_html_visualization_fixed.py`
+- **load_room_data()** (3 connections) — `scripts/generate_html_visualization_fixed.py`
+- **generate_html_visualization_fixed.py** (3 connections) — `scripts/generate_html_visualization_fixed.py`
+- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/generate_html_visualization_fixed.py`
+- **Main function to generate the HTML visualization.** (1 connections) — `scripts/generate_html_visualization_fixed.py`
+- **Generate an HTML visualization of the room network.** (1 connections) — `scripts/generate_html_visualization_fixed.py`
 
 ## Relationships
 
@@ -15,12 +18,12 @@
 
 ## Source Files
 
-- `scripts/e2e_reset_collect_n_quest.py`
+- `scripts/generate_html_visualization_fixed.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 8 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

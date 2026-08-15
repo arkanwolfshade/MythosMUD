@@ -6,7 +6,7 @@
 
 - **test_party_commands.py** (22 connections) — `server/tests/unit/commands/test_party_commands.py`
 - **handle_party_command()** (21 connections) — `server/commands/party_commands.py`
-- **party_commands.py** (20 connections) — `server/commands/party_commands.py`
+- **party_commands.py** (21 connections) — `server/commands/party_commands.py`
 - **asyncio** (13 connections)
 - **_party_request()** (11 connections) — `server/tests/unit/commands/test_party_commands.py`
 - **Any** (9 connections)
@@ -33,11 +33,13 @@
 
 ## Relationships
 
+- [TargetResolutionService](TargetResolutionService.md) (6 shared connections)
 - [AliasStorage](AliasStorage.md) (4 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (1 shared connections)
+- [BaseCommand](BaseCommand.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 118 (98%)
+- EXTRACTED: 119 (98%)
 - INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 

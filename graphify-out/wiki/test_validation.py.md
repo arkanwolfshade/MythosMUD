@@ -1,48 +1,51 @@
 # test_validation.py
 
-> 65 nodes
+> 111 nodes
 
 ## Key Concepts
 
 - **test_validation.py** (36 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **SubjectValidator** (23 connections) — `server/services/nats_subject_manager/validation.py`
+- **test_subscription_patterns.py** (14 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **get_subscription_pattern()** (12 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
+- **get_chat_subscription_patterns()** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
+- **get_event_subscription_patterns()** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
+- **subscription_patterns.py** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
+- **validation.py** (7 connections) — `server/services/nats_subject_manager/validation.py`
+- **.validate_parameter_value()** (5 connections) — `server/services/nats_subject_manager/validation.py`
+- **.validate_pattern_params()** (4 connections) — `server/services/nats_subject_manager/validation.py`
 - **custom_length_validator()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **strict_validator()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **validator()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_get_chat_subscription_patterns()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **test_get_chat_subscription_patterns_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **test_get_chat_subscription_patterns_missing_pattern()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **test_get_event_subscription_patterns()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **test_get_event_subscription_patterns_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **test_get_event_subscription_patterns_missing_pattern()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **test_get_subscription_pattern_multiple_params()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **test_get_subscription_pattern_no_params()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **test_get_subscription_pattern_single_param()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
 - **test_subject_validator_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_subject_validator_init_custom_length()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_subject_validator_init_strict()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **fixture** (3 connections)
-- **test_validate_parameter_value_empty()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_parameter_value_invalid_characters()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_parameter_value_none()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_parameter_value_numbers()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_parameter_value_strict_allows_hyphens()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_parameter_value_strict_no_underscores()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_parameter_value_valid()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_pattern_params_invalid()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_pattern_params_multiple_invalid()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_pattern_params_unused_ignored()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_pattern_params_valid()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_subject_basic_custom_length()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_subject_basic_double_dots()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_subject_basic_empty()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_subject_basic_ends_with_dot()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_subject_basic_starts_with_dot()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_subject_basic_too_long()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- *... and 40 more nodes in this community*
+- *... and 86 more nodes in this community*
 
 ## Relationships
 
-- [SubjectValidator](SubjectValidator.md) (10 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (17 shared connections)
 
 ## Source Files
 
+- `server/services/nats_subject_manager/subscription_patterns.py`
+- `server/services/nats_subject_manager/validation.py`
+- `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
 - `server/tests/unit/services/nats_subject_manager/test_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 76 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 146 (92%)
+- INFERRED: 12 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # deque
 
-> 50 nodes
+> 53 nodes
 
 ## Key Concepts
 
@@ -29,30 +29,34 @@
 - **run_validator_on_rooms()** (5 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **example_validator()** (4 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **_load_tileset()** (4 connections) — `data/local/mythos_mud_mapbuilder.py`
-- *... and 25 more nodes in this community*
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [MessageQueue](MessageQueue.md) (10 shared connections)
-- [connection_manager.py](connection_manager.py.md) (2 shared connections)
+- [test_message_queue.py](test_message_queue.py.md) (7 shared connections)
+- [HealthMonitor](HealthMonitor.md) (2 shared connections)
+- [.add_message](add_message.md) (2 shared connections)
 - [PersonalMessageSender](PersonalMessageSender.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [test_nats_service.py](test_nats_service.py.md) (1 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (1 shared connections)
 - [ErrorMonitor](ErrorMonitor.md) (1 shared connections)
-- [MonitoringDashboard](MonitoringDashboard.md) (1 shared connections)
+- [.__init__](__init__.md) (1 shared connections)
 - [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
-- [combat_monitoring_service.py](combat_monitoring_service.py.md) (1 shared connections)
+- [CombatMonitoringService](CombatMonitoringService.md) (1 shared connections)
 - [CoordinateGenerator](CoordinateGenerator.md) (1 shared connections)
-- [NATSMetrics](NATSMetrics.md) (1 shared connections)
-- [test_metrics.py](test_metrics.py.md) (1 shared connections)
 
 ## Source Files
 
 - `data/local/mythos_mud_mapbuilder.py`
 - `server/realtime/message_queue.py`
+- `server/services/nats_metrics.py`
+- `server/services/nats_subject_manager/metrics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 111 (83%)
-- INFERRED: 22 (17%)
+- EXTRACTED: 114 (84%)
+- INFERRED: 22 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

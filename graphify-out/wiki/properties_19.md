@@ -17,7 +17,7 @@
 
 ## Relationships
 
-- [enum](enum_2.md) (2 shared connections)
+- [enum](enum.md) (2 shared connections)
 - [holiday](holiday.md) (1 shared connections)
 - [month](month.md) (1 shared connections)
 - [day](day.md) (1 shared connections)

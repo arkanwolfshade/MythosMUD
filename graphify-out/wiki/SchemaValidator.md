@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **SchemaValidator** (56 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **SchemaValidator** (55 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **TestSchemaValidator** (28 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.validate()** (6 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
 - **.validate_room()** (5 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [PathValidator](PathValidator.md) (6 shared connections)
-- [TestValidatorComponents](TestValidatorComponents.md) (5 shared connections)
-- [TestHierarchicalSchema](TestHierarchicalSchema.md) (4 shared connections)
+- [RoomLoader](RoomLoader.md) (8 shared connections)
+- [TestValidatorComponents](TestValidatorComponents.md) (4 shared connections)
+- [TestHierarchicalSchema](TestHierarchicalSchema.md) (3 shared connections)
 - [ValidationRule](ValidationRule.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [RoomLoader](RoomLoader.md) (1 shared connections)
+- [SchemaValidator](SchemaValidator.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 127 (93%)
+- EXTRACTED: 126 (93%)
 - INFERRED: 10 (7%)
 - AMBIGUOUS: 0 (0%)
 

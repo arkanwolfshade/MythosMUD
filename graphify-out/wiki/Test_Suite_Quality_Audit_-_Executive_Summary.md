@@ -22,9 +22,9 @@
 
 ## Relationships
 
-- [**~25-30% provide CRITICAL coverage**](__~25-30%25_provide_CRITICAL_coverage__.md) (1 shared connections)
+- [**~25-30% provide CRITICAL coverage**](__~25-30__provide_CRITICAL_coverage__.md) (1 shared connections)
 - [Actionable Recommendations](Actionable_Recommendations.md) (1 shared connections)
-- [Financial Impact (If You're Tracking Dev Time)](Financial_Impact_%28If_You%27re_Tracking_Dev_Time%29.md) (1 shared connections)
+- [Financial Impact (If You're Tracking Dev Time)](Financial_Impact_If_You're_Tracking_Dev_Time.md) (1 shared connections)
 - [Recommended Decision](Recommended_Decision.md) (1 shared connections)
 - [Final Recommendation](Final_Recommendation.md) (1 shared connections)
 - [Critical Insights](Critical_Insights.md) (1 shared connections)

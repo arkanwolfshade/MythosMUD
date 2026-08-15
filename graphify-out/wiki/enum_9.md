@@ -4,13 +4,13 @@
 
 ## Key Concepts
 
-- **enum** (5 connections) — `schemas/calendar/holiday.schema.json`
-- **season** (3 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **autumn** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **spring** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **summer** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **winter** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **enum** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Relationships
 
@@ -18,7 +18,7 @@
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Audit Trail
 

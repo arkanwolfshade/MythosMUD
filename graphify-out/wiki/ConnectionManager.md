@@ -1,62 +1,65 @@
 # ConnectionManager
 
-> 208 nodes
+> 237 nodes
 
 ## Key Concepts
 
-- **ConnectionManager** (267 connections) — `server/realtime/connection_manager.py`
+- **ConnectionManager** (254 connections) — `server/realtime/connection_manager.py`
 - **UUID** (41 connections)
+- **container_events.py** (26 connections) — `server/api/container_events.py`
+- **test_container_events.py** (25 connections) — `server/tests/unit/api/test_container_events.py`
+- **asyncio** (21 connections)
+- **emit_loot_all_event()** (17 connections) — `server/api/container_events.py`
+- **emit_transfer_event()** (17 connections) — `server/api/container_events.py`
+- **emit_container_opened_events()** (16 connections) — `server/api/container_events.py`
+- **test_container_events_loot.py** (16 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **emit_close_container_event()** (15 connections) — `server/api/container_events.py`
 - **test_connection_manager_class.py** (15 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
-- **is_websocket_open_impl()** (8 connections) — `server/realtime/connection_manager_methods.py`
-- **convert_uuids_to_strings_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
-- **get_connection_id_from_websocket_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
-- **._get_player()** (6 connections) — `server/realtime/connection_manager.py`
-- **._track_player_disconnected()** (6 connections) — `server/realtime/connection_manager.py`
-- **get_active_connection_count_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **get_connection_health_stats_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **get_dual_connection_stats_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **get_memory_alerts_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **get_memory_stats_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **get_next_sequence_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **get_online_players_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **get_performance_stats_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **get_session_connections_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **stop_health_checks_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **._broadcast_connection_message()** (5 connections) — `server/realtime/connection_manager.py`
-- **.connect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
-- **.disconnect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
-- **._get_players_batch()** (5 connections) — `server/realtime/connection_manager.py`
-- **._send_initial_game_state()** (5 connections) — `server/realtime/connection_manager.py`
-- **._track_player_connected()** (5 connections) — `server/realtime/connection_manager.py`
-- **Player** (5 connections)
-- *... and 183 more nodes in this community*
+- **TestEmitLootAllEvent** (13 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **TestEmitTransferEvent** (12 connections) — `server/tests/unit/api/test_container_events.py`
+- **TestEmitCloseContainerEvent** (11 connections) — `server/tests/unit/api/test_container_events.py`
+- **_assert_warning_once()** (10 connections) — `server/tests/unit/api/test_container_events.py`
+- **TestEmitContainerOpenedEvents** (9 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_loot_all_event_emission_error()** (8 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **.test_emit_transfer_event_emission_error()** (8 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_transfer_event_to_container_direction()** (8 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_transfer_event_to_player_direction()** (8 connections) — `server/tests/unit/api/test_container_events.py`
+- **NewGameSessionResult** (7 connections) — `server/realtime/connection_session_management.py`
+- **TestEmitTransferEventDirections** (7 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_loot_all_event_all_items_removed()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **.test_emit_loot_all_event_calculates_items_removed()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **.test_emit_loot_all_event_success()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- *... and 212 more nodes in this community*
 
 ## Relationships
 
-- [connection_manager_methods.py](connection_manager_methods.py.md) (94 shared connections)
-- [container_events.py](container_events.py.md) (29 shared connections)
-- [connection_manager.py](connection_manager.py.md) (26 shared connections)
-- [LootAllRequest](LootAllRequest.md) (10 shared connections)
-- [websocket_initial_state.py](websocket_initial_state.py.md) (9 shared connections)
-- [event_types.py](event_types.py.md) (7 shared connections)
-- [connection_cleanup_methods.py](connection_cleanup_methods.py.md) (7 shared connections)
-- [CombatService](CombatService.md) (6 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (5 shared connections)
-- [connection_manager_health_cleanup.py](connection_manager_health_cleanup.py.md) (5 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (4 shared connections)
-- [event_handlers.py](event_handlers.py.md) (4 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (93 shared connections)
+- [get_logger](get_logger.md) (30 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (27 shared connections)
+- [ContainerComponent](ContainerComponent.md) (19 shared connections)
+- [LootAllRequest](LootAllRequest.md) (14 shared connections)
+- [test_connection_error_methods.py](test_connection_error_methods.py.md) (10 shared connections)
+- [test_container_websocket_events.py](test_container_websocket_events.py.md) (10 shared connections)
+- [RateLimiter](RateLimiter.md) (7 shared connections)
+- [test_connection_cleanup_methods.py](test_connection_cleanup_methods.py.md) (7 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (6 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
+- [DatabaseError](DatabaseError.md) (4 shared connections)
 
 ## Source Files
 
+- `server/api/container_events.py`
 - `server/realtime/connection_manager.py`
 - `server/realtime/connection_manager_methods.py`
+- `server/realtime/connection_session_management.py`
+- `server/tests/unit/api/test_container_events.py`
+- `server/tests/unit/api/test_container_events_loot.py`
 - `server/tests/unit/realtime/test_connection_manager_class.py`
-- `server/tests/unit/realtime/test_connection_manager_methods.py`
 
 ## Audit Trail
 
-- EXTRACTED: 514 (94%)
-- INFERRED: 35 (6%)
+- EXTRACTED: 647 (92%)
+- INFERRED: 58 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

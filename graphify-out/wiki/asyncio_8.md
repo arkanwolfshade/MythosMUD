@@ -1,30 +1,45 @@
 # asyncio
 
-> 9 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **asyncio** (4 connections)
-- **test_get_player_info_invalid_player_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **test_get_player_info_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **test_get_player_info_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **test_get_player_info_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Test get_player_info() returns None for invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Test get_player_info() returns None when player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Test get_player_info() successfully retrieves player info.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Test get_player_info() returns None when connection manager not available.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **asyncio** (21 connections)
+- **test_broadcast_combat_attack_no_attacker_id()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_broadcast_combat_attack_personal_message_error()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_broadcast_combat_attack_with_attacker_id()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_broadcast_player_death_personal_message_error()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_broadcast_player_mortally_wounded_no_attacker()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_broadcast_player_respawn()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test broadcast_combat_attack handles personal message errors gracefully.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test broadcast_player_mortally_wounded without attacker.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test broadcast_player_respawn broadcasts respawn message.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test broadcast_combat_attack sends personal message to attacker.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test broadcast_combat_attack without attacker_id.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test broadcast_player_death handles personal message errors.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Relationships
 
-- [test_player_event_handlers_utils.py](test_player_event_handlers_utils.py.md) (4 shared connections)
+- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (6 shared connections)
+- [test_broadcast_combat_attack](test_broadcast_combat_attack.md) (1 shared connections)
+- [test_broadcast_combat_death](test_broadcast_combat_death.md) (1 shared connections)
+- [test_broadcast_combat_end](test_broadcast_combat_end.md) (1 shared connections)
+- [test_broadcast_combat_ended](test_broadcast_combat_ended.md) (1 shared connections)
+- [test_broadcast_combat_error](test_broadcast_combat_error.md) (1 shared connections)
+- [test_broadcast_combat_error_send_error](test_broadcast_combat_error_send_error.md) (1 shared connections)
+- [test_broadcast_combat_start](test_broadcast_combat_start.md) (1 shared connections)
+- [test_broadcast_player_died](test_broadcast_player_died.md) (1 shared connections)
+- [test_broadcast_player_mortally_wounded](test_broadcast_player_mortally_wounded.md) (1 shared connections)
+- [test_broadcast_player_mortally_wounded_personal_message_error](test_broadcast_player_mortally_wounded_personal_message_error.md) (1 shared connections)
+- [test_broadcast_player_mortally_wounded_with_attacker](test_broadcast_player_mortally_wounded_with_attacker.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

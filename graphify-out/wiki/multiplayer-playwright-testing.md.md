@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **multiplayer-playwright-testing.md** (9 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **.cursor/commands/multiplayer-playwright-testing.md** (9 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
 - **🎯 AVAILABLE SCENARIOS** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
 - **🔄 BACKWARD COMPATIBILITY** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
 - **🚨 CRITICAL AI EXECUTOR REQUIREMENTS 🚨** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`

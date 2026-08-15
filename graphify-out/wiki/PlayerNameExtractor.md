@@ -33,13 +33,11 @@
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (12 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (12 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
 - [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (5 shared connections)
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (4 shared connections)
-- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (3 shared connections)
+- [PlayerOccupantProcessor](PlayerOccupantProcessor.md) (2 shared connections)
 - [NPCOccupantProcessor](NPCOccupantProcessor.md) (1 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
@@ -49,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 277 (97%)
-- INFERRED: 8 (3%)
+- EXTRACTED: 273 (96%)
+- INFERRED: 12 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

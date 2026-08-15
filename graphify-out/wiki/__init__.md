@@ -1,31 +1,25 @@
 # .__init__
 
-> 7 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.__init__()** (6 connections) — `server/models/lucidity.py`
-- **.__init__()** (5 connections) — `server/models/lucidity.py`
-- **.__init__()** (5 connections) — `server/models/lucidity.py`
-- **Any** (3 connections)
-- **Initialize LucidityAdjustmentLog with defaults.** (1 connections) — `server/models/lucidity.py`
-- **Initialize LucidityExposureState with defaults.** (1 connections) — `server/models/lucidity.py`
-- **Initialize PlayerLucidity with defaults.** (1 connections) — `server/models/lucidity.py`
+- **.__init__()** (3 connections) — `server/app/memory_lifespan_coordinator.py`
+- **Initialize the periodic orphan auditor. Args: check_interval_seconds: Seconds…** (1 connections) — `server/app/memory_lifespan_coordinator.py`
 
 ## Relationships
 
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (3 shared connections)
-- [lucidity.py](lucidity.py.md) (2 shared connections)
-- [LucidityService](LucidityService.md) (1 shared connections)
+- [MemoryThresholdMonitor](MemoryThresholdMonitor.md) (1 shared connections)
+- [PeriodicOrphanAuditor](PeriodicOrphanAuditor.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/lucidity.py`
+- `server/app/memory_lifespan_coordinator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (79%)
-- INFERRED: 3 (21%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

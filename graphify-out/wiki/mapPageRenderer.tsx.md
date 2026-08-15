@@ -1,6 +1,6 @@
 # mapPageRenderer.tsx
 
-> 21 nodes
+> 22 nodes
 
 ## Key Concepts
 
@@ -22,21 +22,25 @@
 - **MapPageAuthRequiredView()** (2 connections) — `client/src/pages/mapPageStatusViews.tsx`
 - **MapPageErrorView()** (2 connections) — `client/src/pages/mapPageStatusViews.tsx`
 - **MapPageLoadingView()** (2 connections) — `client/src/pages/mapPageStatusViews.tsx`
+- **MapPage** (2 connections) — `client/src/AppRouter.tsx`
 - **AuthenticatedMapProps** (1 connections) — `client/src/pages/mapPageRenderer.tsx`
 - **MapViewResolvedProps** (1 connections) — `client/src/pages/mapPageRenderer.tsx`
 - **RoomData** (1 connections) — `client/src/pages/mapPageState.ts`
 
 ## Relationships
 
-- [gameStore.ts](gameStore.ts.md) (4 shared connections)
-- [security.ts](security.ts.md) (3 shared connections)
+- [mapUtils.ts](mapUtils.ts.md) (4 shared connections)
 - [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (2 shared connections)
 - [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (2 shared connections)
 - [utils/config.ts](utils-config.ts.md) (2 shared connections)
-- [logger.ts](logger.ts.md) (2 shared connections)
+- [security.ts](security.ts.md) (2 shared connections)
+- [roomHandlers.ts](roomHandlers.ts.md) (1 shared connections)
+- [logoutHandler.ts](logoutHandler.ts.md) (1 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (1 shared connections)
 
 ## Source Files
 
+- `client/src/AppRouter.tsx`
 - `client/src/components/map/RoomMapViewer.tsx`
 - `client/src/pages/MapPage.tsx`
 - `client/src/pages/__tests__/MapPage.test.tsx`
@@ -46,7 +50,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 50 (100%)
+- EXTRACTED: 51 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

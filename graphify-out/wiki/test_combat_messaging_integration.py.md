@@ -26,9 +26,9 @@
 ## Relationships
 
 - [asyncio](asyncio.md) (6 shared connections)
-- [.__post_init__](__post_init__.md) (2 shared connections)
+- [test_lifespan_event_subscriptions.py](test_lifespan_event_subscriptions.py.md) (2 shared connections)
 - [messaging_integration](messaging_integration.md) (2 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
 - [test_broadcast_combat_death](test_broadcast_combat_death.md) (1 shared connections)
 - [test_broadcast_combat_ended](test_broadcast_combat_ended.md) (1 shared connections)
 - [test_broadcast_combat_end](test_broadcast_combat_end.md) (1 shared connections)

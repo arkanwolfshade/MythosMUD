@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
+- [ContainerServiceError](ContainerServiceError.md) (2 shared connections)
+- [get_config](get_config.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 75 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 74 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

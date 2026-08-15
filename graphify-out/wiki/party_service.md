@@ -10,8 +10,8 @@
 
 ## Relationships
 
-- [PartyService](PartyService.md) (1 shared connections)
 - [test_party_service.py](test_party_service.py.md) (1 shared connections)
+- [PartyService](PartyService.md) (1 shared connections)
 
 ## Source Files
 
@@ -19,8 +19,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

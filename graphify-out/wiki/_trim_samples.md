@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (6 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
 
 ## Source Files
 

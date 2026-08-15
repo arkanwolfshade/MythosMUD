@@ -34,11 +34,13 @@
 ## Relationships
 
 - [AliasStorage](AliasStorage.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [utility_commands.py](utility_commands.py.md) (3 shared connections)
+- [test_who_commands.py](test_who_commands.py.md) (3 shared connections)
 - [test_utility_commands_whoami.py](test_utility_commands_whoami.py.md) (3 shared connections)
 - [AttributeError](AttributeError.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [BaseCommand](BaseCommand.md) (1 shared connections)
 
 ## Source Files
 

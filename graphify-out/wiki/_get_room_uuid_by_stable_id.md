@@ -25,8 +25,9 @@
 ## Relationships
 
 - [ExplorationService](ExplorationService.md) (7 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [.get_instance](get_instance.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (4 shared connections)
+- [DatabaseManager](DatabaseManager.md) (1 shared connections)
+- [RoomService](RoomService.md) (1 shared connections)
 
 ## Source Files
 

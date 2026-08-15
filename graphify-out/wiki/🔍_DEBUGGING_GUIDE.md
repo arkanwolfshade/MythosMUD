@@ -4,10 +4,10 @@
 
 ## Key Concepts
 
-- **🔍 DEBUGGING GUIDE** (4 connections) — `.cursor/commands/mypy-remediation.md`
-- **If Mypy Command Fails** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **If Specific Issues Persist** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Understanding Type Checker Behavior** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **🔍 DEBUGGING GUIDE** (4 connections) — `.claude/commands/mypy-remediation.md`
+- **If Mypy Command Fails** (1 connections) — `.claude/commands/mypy-remediation.md`
+- **If Specific Issues Persist** (1 connections) — `.claude/commands/mypy-remediation.md`
+- **Understanding Type Checker Behavior** (1 connections) — `.claude/commands/mypy-remediation.md`
 
 ## Relationships
 
@@ -15,7 +15,7 @@
 
 ## Source Files
 
-- `.cursor/commands/mypy-remediation.md`
+- `.claude/commands/mypy-remediation.md`
 
 ## Audit Trail
 

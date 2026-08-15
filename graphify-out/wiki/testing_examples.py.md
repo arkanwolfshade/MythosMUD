@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [PerformanceMonitor](PerformanceMonitor.md) (4 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (3 shared connections)
-- [log_with_context](log_with_context.md) (2 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (6 shared connections)
+- [correct_patterns.py](correct_patterns.py.md) (2 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (1 shared connections)
 
 ## Source Files
 

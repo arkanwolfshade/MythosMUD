@@ -1,39 +1,38 @@
 # StatisticsAggregator
 
-> 48 nodes
+> 22 nodes
 
 ## Key Concepts
 
 - **StatisticsAggregator** (29 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._build_connection_stats()** (10 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 - **.get_connection_health_stats()** (8 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._compose_memory_stats()** (7 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **MemoryStatsSnapshot** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._memory_connections_section()** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **UUID** (6 connections)
-- **._memory_sessions_section()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._safe_ratio()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 - **._analyze_connection_ages()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 - **._analyze_connection_health()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 - **._build_health_stats_response()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 - **._build_health_trends()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._count_orphaned_connections()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **.get_connection_stats()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **.get_memory_stats()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 - **._analyze_connection_types()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 - **._analyze_session_health()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 - **._calculate_session_health_percentages()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._connection_age_extrema()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._memory_monitor_config_section()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._session_connection_distribution()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 - **.get_memory_alerts()** (2 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 - **.__init__()** (2 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **TypedDict** (1 connections)
-- *... and 23 more nodes in this community*
+- **Analyze connection health distribution. Args: connection_metadata: Connection…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Analyze connection types. Args: connection_metadata: Connection metadata…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Analyze connection ages. Args: connection_metadata: Connection metadata now:…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Analyze session health. Args: connection_metadata: Connection metadata Returns:…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Calculate session health percentages. Args: session_health: Session health…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Build health trends statistics. Args: connection_ages: List of connection ages…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Build connection health statistics response. Args: total_connections: Total…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Aggregates statistics from connection management components. This class…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Get comprehensive connection health statistics. Args: connection_metadata:…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Get memory-related alerts. Args: connection_timestamps: Connection timestamp…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Initialize the statistics aggregator. Args: memory_monitor: MemoryMonitor…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (8 shared connections)
+- [._build_connection_stats](_build_connection_stats.md) (7 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [UUID](UUID.md) (4 shared connections)
+- [._compose_memory_stats](_compose_memory_stats.md) (3 shared connections)
 - [test_statistics_aggregator.py](test_statistics_aggregator.py.md) (2 shared connections)
 
 ## Source Files
@@ -42,8 +41,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 81 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 47 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

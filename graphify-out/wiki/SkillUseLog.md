@@ -4,11 +4,11 @@
 
 ## Key Concepts
 
-- **SkillUseLog** (8 connections) — `server/models/skill_use_log.py`
+- **SkillUseLog** (9 connections) — `server/models/skill_use_log.py`
 - **test_skill_use_log.py** (6 connections) — `server/tests/unit/models/test_skill_use_log.py`
 - **test_skill_use_log_creation()** (3 connections) — `server/tests/unit/models/test_skill_use_log.py`
 - **test_skill_use_log_repr()** (3 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **test_skill_use_log_table_name()** (2 connections) — `server/tests/unit/models/test_skill_use_log.py`
+- **test_skill_use_log_table_name()** (3 connections) — `server/tests/unit/models/test_skill_use_log.py`
 - **.__repr__()** (1 connections) — `server/models/skill_use_log.py`
 - **Base** (1 connections)
 - **One recorded successful use of a skill by a character at a given level.…** (1 connections) — `server/models/skill_use_log.py`
@@ -28,8 +28,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 15 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 13 (76%)
+- INFERRED: 4 (24%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Reporter** (58 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **Reporter** (56 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
 - **TestReporter** (27 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
 - **.print_bidirectional_errors()** (5 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
 - **.print_error()** (5 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [PathValidator](PathValidator.md) (9 shared connections)
-- [TestValidatorComponents](TestValidatorComponents.md) (4 shared connections)
-- [RoomLoader](RoomLoader.md) (1 shared connections)
+- [RoomLoader](RoomLoader.md) (9 shared connections)
+- [TestValidatorComponents](TestValidatorComponents.md) (3 shared connections)
 
 ## Source Files
 
@@ -44,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 133 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 129 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

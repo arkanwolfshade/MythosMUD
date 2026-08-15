@@ -1,10 +1,10 @@
 # api/player_effects.py
 
-> 94 nodes
+> 96 nodes
 
 ## Key Concepts
 
-- **api/player_effects.py** (31 connections) — `server/api/player_effects.py`
+- **api/player_effects.py** (32 connections) — `server/api/player_effects.py`
 - **test_player_requests.py** (29 connections) — `server/tests/unit/schemas/test_player_requests.py`
 - **test_player_effects_endpoints.py** (28 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
 - **player_requests.py** (15 connections) — `server/schemas/players/player_requests.py`
@@ -23,29 +23,33 @@
 - **OccultKnowledgeRequest** (11 connections) — `server/schemas/players/player_requests.py`
 - **BaseModel** (11 connections)
 - **SelectCharacterRequest** (10 connections) — `server/schemas/players/player_requests.py`
+- **test_apply_lucidity_loss_validation_maps_to_404()** (8 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
 - **_user()** (8 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
 - **UUID** (7 connections)
+- **player_router.py** (7 connections) — `server/api/player_router.py`
 - **asyncio** (7 connections)
-- **test_apply_lucidity_loss_validation_maps_to_404()** (6 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
 - **FastAPIRequest** (6 connections)
-- **post** (6 connections)
-- *... and 69 more nodes in this community*
+- *... and 71 more nodes in this community*
 
 ## Relationships
 
-- [api/character_creation.py](api-character_creation.py.md) (21 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (14 shared connections)
-- [get_logger](get_logger.md) (11 shared connections)
-- [PlayerService](PlayerService.md) (7 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (24 shared connections)
+- [PlayerService](PlayerService.md) (14 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (9 shared connections)
 - [User](User.md) (7 shared connections)
-- [LootAllRequest](LootAllRequest.md) (2 shared connections)
-- [ErrorType](ErrorType.md) (2 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
+- [MythosMUDError](MythosMUDError.md) (5 shared connections)
+- [ValidationError](ValidationError.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [test_users.py](test_users.py.md) (1 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
+- [Stats](Stats.md) (1 shared connections)
+- [models/user.py](models-user.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/api/player_effects.py`
+- `server/api/player_router.py`
 - `server/schemas/players/player_effects.py`
 - `server/schemas/players/player_requests.py`
 - `server/tests/unit/api/test_player_effects_endpoints.py`
@@ -53,8 +57,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 260 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 258 (96%)
+- INFERRED: 11 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

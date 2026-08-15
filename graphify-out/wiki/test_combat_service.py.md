@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [CombatService](CombatService.md) (9 shared connections)
+- [CombatService](CombatService.md) (6 shared connections)
+- [models/combat.py](models-combat.py.md) (3 shared connections)
 - [CombatInstance](CombatInstance.md) (2 shared connections)
 - [CombatParticipant](CombatParticipant.md) (2 shared connections)
 
@@ -43,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 134 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 133 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,46 +1,44 @@
 # CombatMonitoringService
 
-> 28 nodes
+> 62 nodes
 
 ## Key Concepts
 
-- **CombatMonitoringService** (31 connections) — `server/services/combat_monitoring_service.py`
+- **CombatMonitoringService** (32 connections) — `server/services/combat_monitoring_service.py`
+- **._generate_alert()** (9 connections) — `server/services/combat_monitoring_service.py`
+- **Any** (9 connections)
+- **.__init__()** (7 connections) — `server/services/combat_monitoring_service.py`
+- **Alert** (5 connections) — `server/services/combat_monitoring_service.py`
+- **._check_error_threshold()** (4 connections) — `server/services/combat_monitoring_service.py`
+- **._check_resource_thresholds()** (4 connections) — `server/services/combat_monitoring_service.py`
+- **.record_combat_error()** (4 connections) — `server/services/combat_monitoring_service.py`
+- **.to_dict()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.to_dict()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.add_alert_callback()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **._check_performance_threshold()** (3 connections) — `server/services/combat_monitoring_service.py`
 - **.end_combat_monitoring()** (3 connections) — `server/services/combat_monitoring_service.py`
 - **.end_turn_monitoring()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.get_active_alerts()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.get_all_alerts()** (3 connections) — `server/services/combat_monitoring_service.py`
 - **.get_current_metrics()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.get_metrics_history()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.get_monitoring_summary()** (3 connections) — `server/services/combat_monitoring_service.py`
 - **.refresh_configuration()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.remove_alert_callback()** (3 connections) — `server/services/combat_monitoring_service.py`
 - **._save_metrics_snapshot()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.update_resource_metrics()** (3 connections) — `server/services/combat_monitoring_service.py`
 - **._update_timing_metrics()** (3 connections) — `server/services/combat_monitoring_service.py`
 - **._update_turn_timing_metrics()** (3 connections) — `server/services/combat_monitoring_service.py`
-- **test_record_combat_error_disabled()** (3 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **test_start_combat_monitoring_disabled()** (3 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **.clear_resolved_alerts()** (2 connections) — `server/services/combat_monitoring_service.py`
-- **.resolve_alert()** (2 connections) — `server/services/combat_monitoring_service.py`
-- **.start_combat_monitoring()** (2 connections) — `server/services/combat_monitoring_service.py`
-- **.start_turn_monitoring()** (2 connections) — `server/services/combat_monitoring_service.py`
-- **Comprehensive combat monitoring and alerting service. Tracks combat system…** (1 connections) — `server/services/combat_monitoring_service.py`
-- **Start monitoring a combat instance. Args: combat_id: Unique combat identifier** (1 connections) — `server/services/combat_monitoring_service.py`
-- **End monitoring a combat instance. Args: combat_id: Unique combat identifier…** (1 connections) — `server/services/combat_monitoring_service.py`
-- **Start monitoring a combat turn. Args: combat_id: Unique combat identifier** (1 connections) — `server/services/combat_monitoring_service.py`
-- **End monitoring a combat turn. Args: combat_id: Unique combat identifier** (1 connections) — `server/services/combat_monitoring_service.py`
-- **Get current combat metrics. Returns: CombatMetrics: Current metrics** (1 connections) — `server/services/combat_monitoring_service.py`
-- **Resolve an alert. Args: alert_id: Alert identifier Returns: bool: True if alert…** (1 connections) — `server/services/combat_monitoring_service.py`
-- **Clear resolved alerts. Returns: int: Number of alerts cleared** (1 connections) — `server/services/combat_monitoring_service.py`
-- **Update timing metrics with new combat duration.** (1 connections) — `server/services/combat_monitoring_service.py`
-- **Update turn timing metrics.** (1 connections) — `server/services/combat_monitoring_service.py`
-- **Save current metrics as a snapshot.** (1 connections) — `server/services/combat_monitoring_service.py`
-- *... and 3 more nodes in this community*
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (6 shared connections)
-- [combat_monitoring_service.py](combat_monitoring_service.py.md) (4 shared connections)
-- [._generate_alert](_generate_alert.md) (4 shared connections)
-- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (3 shared connections)
-- [Alert](Alert.md) (2 shared connections)
+- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (14 shared connections)
+- [get_config](get_config.md) (2 shared connections)
 - [monitoring_service](monitoring_service.md) (1 shared connections)
-- [get_combat_monitoring](get_combat_monitoring.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [FeatureFlagService](FeatureFlagService.md) (1 shared connections)
+- [CombatConfiguration](CombatConfiguration.md) (1 shared connections)
+- [deque](deque.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 51 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 91 (95%)
+- INFERRED: 5 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

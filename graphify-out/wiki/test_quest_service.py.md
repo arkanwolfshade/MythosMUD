@@ -5,12 +5,12 @@
 ## Key Concepts
 
 - **test_quest_service.py** (42 connections) — `server/tests/unit/game/test_quest_service.py`
-- **_MockDefRepo** (31 connections) — `server/tests/unit/game/test_quest_service.py`
+- **_MockDefRepo** (30 connections) — `server/tests/unit/game/test_quest_service.py`
 - **asyncio** (27 connections)
-- **_MockInstanceRepo** (26 connections) — `server/tests/unit/game/test_quest_service.py`
+- **_MockInstanceRepo** (25 connections) — `server/tests/unit/game/test_quest_service.py`
 - **_make_definition_row()** (18 connections) — `server/tests/unit/game/test_quest_service.py`
 - **_message()** (17 connections) — `server/tests/unit/game/test_quest_service.py`
-- **_InstanceStub** (16 connections) — `server/tests/unit/game/test_quest_service.py`
+- **_InstanceStub** (15 connections) — `server/tests/unit/game/test_quest_service.py`
 - **quest_service()** (11 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_turn_in_inventory_full_blocks_item_reward()** (10 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_abandon_not_active()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [QuestService](QuestService.md) (36 shared connections)
+- [QuestService](QuestService.md) (31 shared connections)
 - [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
 - [quest_commands.py](quest_commands.py.md) (1 shared connections)
-- [test_quest_events.py](test_quest_events.py.md) (1 shared connections)
-- [GameStateProvider](GameStateProvider.md) (1 shared connections)
+- [NPCDied](NPCDied.md) (1 shared connections)
+- [.state](state.md) (1 shared connections)
 - [player_connection_setup.py](player_connection_setup.py.md) (1 shared connections)
 
 ## Source Files
@@ -46,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 244 (96%)
-- INFERRED: 10 (4%)
+- EXTRACTED: 216 (87%)
+- INFERRED: 33 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

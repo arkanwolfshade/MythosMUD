@@ -1,6 +1,6 @@
 # chatPanelRuntimeUtils.ts
 
-> 69 nodes
+> 96 nodes
 
 ## Key Concepts
 
@@ -11,54 +11,65 @@
 - **chatPanelRuntimeUtils.test.ts** (17 connections) — `client/src/components/panels/__tests__/chatPanelRuntimeUtils.test.ts`
 - **extractChannelFromMessage()** (13 connections) — `client/src/utils/messageTypeUtils.ts`
 - **chatPanelExportFormat.ts** (13 connections) — `client/src/components/panels/chatPanelExportFormat.ts`
+- **ChatPanel()** (12 connections) — `client/src/components/panels/ChatPanelRuntime.tsx`
 - **ChatPanelMessage** (11 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
+- **ChatPanel.tsx** (11 connections) — `client/src/components/panels/ChatPanel.tsx`
 - **chatPanelChannelVisibility.ts** (11 connections) — `client/src/components/panels/chatPanelChannelVisibility.ts`
 - **useChatPanelRuntime()** (10 connections) — `client/src/components/panels/useChatPanelRuntime.ts`
 - **isChatContent()** (10 connections) — `client/src/utils/messageTypeUtils.ts`
 - **chatPanelUnreadBump.ts** (10 connections) — `client/src/components/panels/chatPanelUnreadBump.ts`
+- **chat-panel.spec.tsx** (10 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- **ChatPanelRuntime.tsx** (9 connections) — `client/src/components/panels/ChatPanelRuntime.tsx`
 - **resolveChatExportPayload()** (8 connections) — `client/src/components/panels/chatPanelExportFormat.ts`
 - **formatChatTimestampUtc()** (8 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
 - **determineMessageType()** (8 connections) — `client/src/utils/messageTypeUtils.ts`
 - **isVisibleInChannelView()** (7 connections) — `client/src/components/panels/chatPanelChannelVisibility.ts`
 - **getChatPanelMessageClass()** (7 connections) — `client/src/components/panels/chatPanelMessageClass.ts`
+- **chat-panel.test.tsx** (7 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
+- **ChatPanel.test.tsx** (7 connections) — `client/src/components/__tests__/ChatPanel.test.tsx`
 - **filterMessagesForChannelView()** (6 connections) — `client/src/components/panels/chatPanelChannelFilter.ts`
 - **bumpUnreadCountForMessage()** (6 connections) — `client/src/components/panels/chatPanelUnreadBump.ts`
-- **computeUnreadChatCounts()** (6 connections) — `client/src/components/panels/chatPanelUnreadCounts.ts`
-- **ChatPanelMessageRow** (6 connections) — `client/src/components/panels/ChatPanelMessagesLog.tsx`
-- **applyChatSearchFilters()** (5 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
-- **buildChatExportHTML()** (5 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
-- **buildChatExportHtmlMessageBlock()** (5 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
-- **buildChatExportPlainText()** (5 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
-- *... and 44 more nodes in this community*
+- *... and 71 more nodes in this community*
 
 ## Relationships
 
-- [ChatPanelRuntimeViewParts.tsx](ChatPanelRuntimeViewParts.tsx.md) (16 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (13 shared connections)
-- [performance.test.tsx](performance.test.tsx.md) (7 shared connections)
+- [EldritchIcon.tsx](EldritchIcon.tsx.md) (21 shared connections)
+- [security.ts](security.ts.md) (8 shared connections)
+- [chatPanelRefactoredDerived.ts](chatPanelRefactoredDerived.ts.md) (7 shared connections)
+- [GameLogPanel.tsx](GameLogPanel.tsx.md) (4 shared connections)
 - [messageHandlers.ts](messageHandlers.ts.md) (4 shared connections)
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (3 shared connections)
+- [GameTerminal.tsx](GameTerminal.tsx.md) (2 shared connections)
+- [performance.test.tsx](performance.test.tsx.md) (2 shared connections)
 - [projectorRoom.ts](projectorRoom.ts.md) (2 shared connections)
+- [gameStore.ts](gameStore.ts.md) (2 shared connections)
 
 ## Source Files
 
+- `client/src/components/__tests__/ChatPanel.edgeCases.test.tsx`
+- `client/src/components/__tests__/ChatPanel.test.tsx`
+- `client/src/components/__tests__/chatPanelTestHelpers.ts`
+- `client/src/components/__tests__/chatPanelTestSetup.tsx`
+- `client/src/components/panels/ChatPanel.tsx`
+- `client/src/components/panels/ChatPanelCore.tsx`
 - `client/src/components/panels/ChatPanelMessagesLog.tsx`
+- `client/src/components/panels/ChatPanelRuntime.tsx`
+- `client/src/components/panels/ChatPanelRuntimeView.tsx`
+- `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
+- `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- `client/src/components/panels/__tests__/chat-panel.test.tsx`
 - `client/src/components/panels/__tests__/chatPanelRuntimeUtils.test.ts`
 - `client/src/components/panels/chatPanelChannelFilter.ts`
 - `client/src/components/panels/chatPanelChannelVisibility.ts`
 - `client/src/components/panels/chatPanelExportFormat.ts`
 - `client/src/components/panels/chatPanelMessageClass.ts`
 - `client/src/components/panels/chatPanelRuntimeUtils.ts`
+- `client/src/components/panels/chatPanelRuntimeViewTypes.ts`
 - `client/src/components/panels/chatPanelUnreadBump.ts`
-- `client/src/components/panels/chatPanelUnreadCounts.ts`
-- `client/src/components/panels/useChatPanelRuntime.ts`
-- `client/src/utils/__tests__/messageTypeUtils.test.ts`
-- `client/src/utils/messageTypeUtils.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 206 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 267 (99%)
+- INFERRED: 4 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -9,7 +9,7 @@
 
 ## Relationships
 
-- [.__post_init__](__post_init__.md) (1 shared connections)
+- [test_lifespan_event_subscriptions.py](test_lifespan_event_subscriptions.py.md) (1 shared connections)
 - [asyncio](asyncio.md) (1 shared connections)
 - [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (1 shared connections)
 

@@ -13,7 +13,7 @@
 
 ## Relationships
 
-- [Async Remediation Summary - December 3, 2025](Async_Remediation_Summary_-_December_3%2C_2025.md) (1 shared connections)
+- [Async Remediation Summary - December 3, 2025](Async_Remediation_Summary_-_December_3,_2025.md) (1 shared connections)
 
 ## Source Files
 

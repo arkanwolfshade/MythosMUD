@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (2 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 
 ## Source Files
 
@@ -42,8 +41,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 42 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

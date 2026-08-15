@@ -1,32 +1,42 @@
-# Enum
+# enum
 
-> 9 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **Enum** (5 connections)
-- **MockEffectType** (4 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **MockRangeType** (4 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **MockSchool** (4 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **MockTargetType** (4 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Mock spell school enum.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Mock target type enum.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Mock range type enum.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Mock effect type enum.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **enum** (21 connections) — `schemas/items/item_prototype.schema.json`
+- **ACCESSORY** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **AMULET** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **BELT** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **CURSED** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **FEET** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **GLOW** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **HANDS** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **HEAD** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **LEGS** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **MAGICAL** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **MAIN_HAND** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **NO_DROP** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **NO_SALE** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **OFF_HAND** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **QUEST_ITEM** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **RING** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **SOULBOUND** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **TORSO** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- [test_magic_commands.py](test_magic_commands.py.md) (5 shared connections)
-- [SpellLearningService](SpellLearningService.md) (4 shared connections)
+- [type](type.md) (2 shared connections)
+- [enum](enum.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (76%)
-- INFERRED: 4 (24%)
+- EXTRACTED: 21 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,11 +1,12 @@
 # utils/layout.ts
 
-> 41 nodes
+> 42 nodes
 
 ## Key Concepts
 
 - **utils/layout.ts** (45 connections) — `client/src/components/map/utils/layout.ts`
 - **applyForceLayout()** (7 connections) — `client/src/components/map/utils/layout.ts`
+- **applyGridLayout()** (7 connections) — `client/src/components/map/utils/layout.ts`
 - **runForceSimulationStep()** (7 connections) — `client/src/components/map/utils/layout.ts`
 - **GridLayoutConfig** (6 connections) — `client/src/components/map/utils/layout.ts`
 - **calculateGridPosition()** (6 connections) — `client/src/components/map/utils/layout.ts`
@@ -28,13 +29,13 @@
 - **doLineSegmentsIntersect()** (3 connections) — `client/src/components/map/utils/layout.ts`
 - **gridPositionForIndex()** (3 connections) — `client/src/components/map/utils/layout.ts`
 - **groupedGridPosition()** (3 connections) — `client/src/components/map/utils/layout.ts`
-- **linkForceReduction()** (3 connections) — `client/src/components/map/utils/layout.ts`
-- *... and 16 more nodes in this community*
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [gameStore.ts](gameStore.ts.md) (13 shared connections)
-- [map/types.ts](map-types.ts.md) (10 shared connections)
+- [mapUtils.ts](mapUtils.ts.md) (14 shared connections)
+- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (6 shared connections)
+- [map/types.ts](map-types.ts.md) (4 shared connections)
 
 ## Source Files
 
@@ -47,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 104 (100%)
+- EXTRACTED: 108 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

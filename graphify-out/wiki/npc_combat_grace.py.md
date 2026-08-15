@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **npc_combat_grace.py** (14 connections) — `server/services/npc_combat_grace.py`
+- **npc_combat_grace.py** (15 connections) — `server/services/npc_combat_grace.py`
 - **is_npc_attack_on_player_blocked_by_login_grace_period()** (10 connections) — `server/services/npc_combat_grace.py`
 - **is_player_attack_blocked_by_login_grace_period()** (10 connections) — `server/services/npc_combat_grace.py`
 - **test_npc_combat_grace.py** (9 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
@@ -25,16 +25,13 @@
 
 ## Relationships
 
+- [get_logger](get_logger.md) (8 shared connections)
 - [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
 - [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [AppConfig](AppConfig.md) (1 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
+- [get_config](get_config.md) (1 shared connections)
 - [.state](state.md) (1 shared connections)
-- [test_combat_death_handler.py](test_combat_death_handler.py.md) (1 shared connections)
-- [.handle_npc_attack_on_player](handle_npc_attack_on_player.md) (1 shared connections)
-- [test_npc_combat_handlers.py](test_npc_combat_handlers.py.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 44 (96%)
+- EXTRACTED: 45 (96%)
 - INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 

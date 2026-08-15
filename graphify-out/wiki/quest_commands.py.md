@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **quest_commands.py** (39 connections) — `server/commands/quest_commands.py`
+- **quest_commands.py** (40 connections) — `server/commands/quest_commands.py`
 - **handle_quest_command()** (20 connections) — `server/commands/quest_commands.py`
 - **test_quest_commands.py** (20 connections) — `server/tests/unit/commands/test_quest_commands.py`
 - **Any** (18 connections)
@@ -34,15 +34,17 @@
 ## Relationships
 
 - [test_look_npc.py](test_look_npc.py.md) (9 shared connections)
-- [chat_service.py](chat_service.py.md) (7 shared connections)
+- [test_chat_npc_system.py](test_chat_npc_system.py.md) (7 shared connections)
 - [AliasStorage](AliasStorage.md) (6 shared connections)
 - [quest_chat_notify.py](quest_chat_notify.py.md) (6 shared connections)
 - [talk_command.py](talk_command.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [QuestService](QuestService.md) (3 shared connections)
+- [QuestService](QuestService.md) (4 shared connections)
 - [get_username_from_user](get_username_from_user.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [test_quest_service.py](test_quest_service.py.md) (1 shared connections)
-- [DialogueDefinitionRepository](DialogueDefinitionRepository.md) (1 shared connections)
+- [get_admin_auth_service](get_admin_auth_service.md) (1 shared connections)
+- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [BaseCommand](BaseCommand.md) (1 shared connections)
 
 ## Source Files
 
@@ -53,7 +55,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 207 (96%)
+- EXTRACTED: 208 (96%)
 - INFERRED: 8 (4%)
 - AMBIGUOUS: 0 (0%)
 

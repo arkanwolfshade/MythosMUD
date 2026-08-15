@@ -1,15 +1,13 @@
 # item_instance_persistence.py
 
-> 76 nodes
+> 72 nodes
 
 ## Key Concepts
 
 - **item_instance_persistence.py** (21 connections) — `server/persistence/item_instance_persistence.py`
-- **item_instance_persistence_async.py** (19 connections) — `server/persistence/item_instance_persistence_async.py`
 - **CreateItemInstanceInput** (18 connections) — `server/async_persistence_constants.py`
 - **ItemRepository** (17 connections) — `server/persistence/repositories/item_repository.py`
 - **test_item_instance_persistence.py** (16 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **item_repository.py** (15 connections) — `server/persistence/repositories/item_repository.py`
 - **create_item_instance_async()** (13 connections) — `server/persistence/item_instance_persistence_async.py`
 - **test_item_instance_persistence_async.py** (13 connections) — `server/tests/unit/persistence/test_item_instance_persistence_async.py`
 - **ensure_item_instance_async()** (12 connections) — `server/persistence/item_instance_persistence_async.py`
@@ -29,15 +27,18 @@
 - **_handle_item_instance_db_error()** (5 connections) — `server/persistence/item_instance_persistence.py`
 - **.create_item_instance()** (5 connections) — `server/persistence/repositories/item_repository.py`
 - **.ensure_item_instance()** (5 connections) — `server/persistence/repositories/item_repository.py`
-- *... and 51 more nodes in this community*
+- **asyncio** (5 connections)
+- **_item_instance_row_values()** (4 connections) — `server/persistence/item_instance_persistence.py`
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (36 shared connections)
-- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (6 shared connections)
-- [persistence/container_persistence.py](persistence-container_persistence.py.md) (3 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
-- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (34 shared connections)
+- [persistence/container_persistence.py](persistence-container_persistence.py.md) (9 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [ValidationError](ValidationError.md) (5 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [ContainerData](ContainerData.md) (2 shared connections)
 - [persistence/container_helpers.py](persistence-container_helpers.py.md) (2 shared connections)
 
 ## Source Files
@@ -53,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 201 (99%)
-- INFERRED: 3 (1%)
+- EXTRACTED: 182 (94%)
+- INFERRED: 11 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

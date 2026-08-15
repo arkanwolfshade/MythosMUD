@@ -1,13 +1,11 @@
 # test_nats_message_handler.py
 
-> 130 nodes
+> 129 nodes
 
 ## Key Concepts
 
 - **test_nats_message_handler.py** (72 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **NATSError** (67 connections) — `server/services/nats_exceptions.py`
 - **asyncio** (55 connections)
-- **CircuitBreakerOpen** (13 connections) — `server/realtime/circuit_breaker.py`
 - **test_handle_nats_message_attribute_error_handled()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_handle_nats_message_circuit_breaker_open()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_handle_nats_message_connection_manager_resolution_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
@@ -17,7 +15,9 @@
 - **test_stop_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_subscribe_to_event_subjects_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_subscribe_to_standardized_chat_subjects_nats_error_handled()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_standardized_chat_subjects_nats_subscribe_error_handled()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_subscribe_to_standardized_chat_subjects_partial_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_subject_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_subscribe_to_subject_nats_error_returns_false()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_unsubscribe_from_subject_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_unsubscribe_from_subject_not_found()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
@@ -29,33 +29,27 @@
 - **test_handle_nats_message_runtime_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_handle_nats_message_success()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_handle_nats_message_success_path_metrics()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- *... and 105 more nodes in this community*
+- *... and 104 more nodes in this community*
 
 ## Relationships
 
-- [nats_exceptions.py](nats_exceptions.py.md) (22 shared connections)
-- [get_logger](get_logger.md) (9 shared connections)
-- [test_nats_message_handler_subzone_events.py](test_nats_message_handler_subzone_events.py.md) (9 shared connections)
-- [CombatService](CombatService.md) (6 shared connections)
-- [CircuitBreaker](CircuitBreaker.md) (3 shared connections)
-- [NATSMessageHandlerMixinBase](NATSMessageHandlerMixinBase.md) (3 shared connections)
-- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (3 shared connections)
-- [NATSService](NATSService.md) (3 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
-- [test_message_filtering.py](test_message_filtering.py.md) (2 shared connections)
-- [test_combat_persistence_handler_events.py](test_combat_persistence_handler_events.py.md) (2 shared connections)
-- [test_combat_service_modules.py](test_combat_service_modules.py.md) (2 shared connections)
+- [NATSError](NATSError.md) (9 shared connections)
+- [nats_exceptions.py](nats_exceptions.py.md) (4 shared connections)
+- [CircuitBreakerOpen](CircuitBreakerOpen.md) (3 shared connections)
+- [AttributeError](AttributeError.md) (2 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
+- [NATSService](NATSService.md) (2 shared connections)
+- [CircuitState](CircuitState.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/circuit_breaker.py`
-- `server/services/nats_exceptions.py`
 - `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 251 (93%)
-- INFERRED: 18 (7%)
+- EXTRACTED: 190 (92%)
+- INFERRED: 16 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -6,7 +6,7 @@
 
 - **channel_broadcasting_strategies.py** (14 connections) — `server/realtime/channel_broadcasting_strategies.py`
 - **ChannelBroadcastingStrategy** (12 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **RoomBasedChannelStrategy** (9 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **RoomBasedChannelStrategy** (10 connections) — `server/realtime/channel_broadcasting_strategies.py`
 - **WhisperChannelStrategy** (8 connections) — `server/realtime/channel_broadcasting_strategies.py`
 - **GlobalChannelStrategy** (7 connections) — `server/realtime/channel_broadcasting_strategies.py`
 - **.__init__()** (7 connections) — `server/realtime/channel_broadcasting_strategies.py`
@@ -24,7 +24,7 @@
 
 - [test_channel_broadcasting_strategies.py](test_channel_broadcasting_strategies.py.md) (12 shared connections)
 - [UUID](UUID.md) (5 shared connections)
-- [ChannelBroadcastingStrategyFactory](ChannelBroadcastingStrategyFactory.md) (3 shared connections)
+- [ChannelBroadcastingStrategyFactory](ChannelBroadcastingStrategyFactory.md) (4 shared connections)
 - [UnknownChannelStrategy](UnknownChannelStrategy.md) (3 shared connections)
 - [SystemAdminChannelStrategy](SystemAdminChannelStrategy.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
@@ -35,8 +35,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 43 (88%)
+- INFERRED: 6 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

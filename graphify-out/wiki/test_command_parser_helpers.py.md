@@ -1,13 +1,16 @@
 # test_command_parser_helpers.py
 
-> 38 nodes
+> 41 nodes
 
 ## Key Concepts
 
 - **test_command_parser_helpers.py** (24 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_pydantic_validation_error()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_unsupported_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_value_error()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **command_parser()** (4 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_unsupported_command()** (3 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_value_error()** (3 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_empty_raises()** (3 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_whitespace_only_raises()** (3 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
 - **test_create_command_object_with_alias_g()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
 - **test_create_command_object_with_alias_l()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
 - **test_create_command_object_with_alias_w()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
@@ -18,23 +21,22 @@
 - **test_normalize_command_no_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
 - **test_normalize_command_removes_slash_prefix()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
 - **test_normalize_command_strips_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_empty_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
 - **test_parse_command_parts_lowercases_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
 - **test_parse_command_parts_simple()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_whitespace_only_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
 - **test_parse_command_parts_with_args()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **fixture** (1 connections)
 - **Unit tests for command_parser helper methods. Tests the helper methods in…** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
 - **Test _create_command_object() handles 'l' alias.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
 - **Test _create_command_object() handles 'g' alias.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
 - **Test _create_command_object() handles 'w' alias.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _create_command_object() raises error for unsupported command.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _create_command_object() handles PydanticValidationError.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- *... and 13 more nodes in this community*
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [CommandParser](CommandParser.md) (2 shared connections)
+- [ValidationError](ValidationError.md) (6 shared connections)
+- [test_command_parser.py](test_command_parser.py.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [BaseCommand](BaseCommand.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 44 (88%)
+- INFERRED: 6 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,75 +1,71 @@
 # AliasStorage
 
-> 224 nodes
+> 223 nodes
 
 ## Key Concepts
 
-- **AliasStorage** (271 connections) — `server/alias_storage.py`
+- **AliasStorage** (264 connections) — `server/alias_storage.py`
 - **command_service.py** (108 connections) — `server/commands/command_service.py`
-- **test_lucidity_recovery_commands.py** (34 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **test_alias_commands.py** (30 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **server/commands/__init__.py** (29 connections) — `server/commands/__init__.py`
-- **lucidity_recovery_commands.py** (26 connections) — `server/commands/lucidity_recovery_commands.py`
-- **position_commands.py** (26 connections) — `server/commands/position_commands.py`
-- **handle_alias_command()** (24 connections) — `server/commands/alias_commands.py`
-- **asyncio** (23 connections)
-- **handle_pray_command()** (21 connections) — `server/commands/lucidity_recovery_commands.py`
-- **asyncio** (21 connections)
-- **handle_say_command()** (16 connections) — `server/commands/communication_commands.py`
-- **alias_commands.py** (15 connections) — `server/commands/alias_commands.py`
-- **handle_pose_command()** (13 connections) — `server/commands/communication_commands.py`
+- **test_alias_storage.py** (67 connections) — `server/tests/unit/test_alias_storage.py`
+- **MagicCommandHandler** (30 connections) — `server/commands/magic_commands.py`
+- **magic_commands.py** (26 connections) — `server/commands/magic_commands.py`
+- **Any** (19 connections)
+- **get_help_content()** (15 connections) — `server/help/help_content.py`
+- **magic_service()** (14 connections) — `server/tests/unit/game/magic/test_magic_service.py`
 - **handle_inventory_command()** (13 connections) — `server/commands/inventory_commands.py`
-- **handle_look_command()** (13 connections) — `server/commands/look_command.py`
 - **system_commands.py** (13 connections) — `server/commands/system_commands.py`
-- **handle_unalias_command()** (12 connections) — `server/commands/alias_commands.py`
-- **_handle_position_change()** (12 connections) — `server/commands/position_commands.py`
-- **test_position_commands.py** (12 connections) — `server/tests/unit/commands/test_position_commands.py`
-- **handle_aliases_command()** (11 connections) — `server/commands/alias_commands.py`
-- **_perform_recovery_action()** (11 connections) — `server/commands/lucidity_recovery_commands.py`
+- **help_content.py** (12 connections) — `server/help/help_content.py`
 - **handle_help_command()** (11 connections) — `server/commands/system_commands.py`
-- **exploration_commands.py** (11 connections) — `server/commands/exploration_commands.py`
-- **handle_meditate_command()** (10 connections) — `server/commands/lucidity_recovery_commands.py`
-- *... and 199 more nodes in this community*
+- **Path** (11 connections)
+- **handle_mute_global_command()** (9 connections) — `server/commands/admin_mute_commands.py`
+- **handle_cast_command()** (9 connections) — `server/commands/magic_commands.py`
+- **handle_learn_command()** (9 connections) — `server/commands/magic_commands.py`
+- **handle_spell_command()** (9 connections) — `server/commands/magic_commands.py`
+- **handle_spells_command()** (9 connections) — `server/commands/magic_commands.py`
+- **handle_stop_command()** (9 connections) — `server/commands/magic_commands.py`
+- **.handle_cast_command()** (7 connections) — `server/commands/magic_commands.py`
+- **alias_storage()** (7 connections) — `server/tests/unit/test_alias_storage.py`
+- **SpellCommandError** (6 connections) — `server/commands/magic_commands.py`
+- **._build_cast_response()** (6 connections) — `server/commands/magic_commands.py`
+- **.handle_learn_command()** (6 connections) — `server/commands/magic_commands.py`
+- **.handle_spell_command()** (6 connections) — `server/commands/magic_commands.py`
+- *... and 198 more nodes in this community*
 
 ## Relationships
 
-- [Alias](Alias.md) (57 shared connections)
-- [get_logger](get_logger.md) (46 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (24 shared connections)
-- [request_with_app_container](request_with_app_container.md) (22 shared connections)
-- [test_admin_commands.py](test_admin_commands.py.md) (21 shared connections)
-- [SpellLearningService](SpellLearningService.md) (19 shared connections)
-- [.get_player_aliases](get_player_aliases.md) (18 shared connections)
-- [debrief_command.py](debrief_command.py.md) (17 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (16 shared connections)
-- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (15 shared connections)
-- [look_command.py](look_command.py.md) (11 shared connections)
-- [rescue_commands.py](rescue_commands.py.md) (10 shared connections)
+- [alias_storage.py](alias_storage.py.md) (47 shared connections)
+- [test_admin_commands.py](test_admin_commands.py.md) (23 shared connections)
+- [test_npc_admin_commands.py](test_npc_admin_commands.py.md) (23 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (14 shared connections)
+- [test_alias_commands.py](test_alias_commands.py.md) (14 shared connections)
+- [get_logger](get_logger.md) (13 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (13 shared connections)
+- [test_magic_commands.py](test_magic_commands.py.md) (13 shared connections)
+- [combat_loader.py](combat_loader.py.md) (11 shared connections)
+- [test_rest_command.py](test_rest_command.py.md) (11 shared connections)
+- [position_commands.py](position_commands.py.md) (10 shared connections)
+- [request_with_app_container](request_with_app_container.md) (10 shared connections)
 
 ## Source Files
 
 - `server/alias_storage.py`
-- `server/commands/__init__.py`
-- `server/commands/alias_commands.py`
+- `server/commands/admin_mute_commands.py`
 - `server/commands/command_service.py`
-- `server/commands/communication_commands.py`
-- `server/commands/exploration_commands.py`
 - `server/commands/help_commands.py`
 - `server/commands/inventory_commands.py`
-- `server/commands/look_command.py`
-- `server/commands/lucidity_recovery_commands.py`
-- `server/commands/position_commands.py`
+- `server/commands/magic_commands.py`
 - `server/commands/system_commands.py`
-- `server/services/player_position_service.py`
-- `server/tests/unit/commands/test_alias_commands.py`
-- `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- `server/tests/unit/commands/test_position_commands.py`
-- `server/tests/unit/commands/test_position_commands_helpers.py`
+- `server/help/__init__.py`
+- `server/help/help_content.py`
+- `server/tests/unit/commands/test_help_commands.py`
+- `server/tests/unit/game/magic/test_magic_service.py`
+- `server/tests/unit/realtime/test_websocket_handler_help.py`
+- `server/tests/unit/test_alias_storage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 803 (91%)
-- INFERRED: 80 (9%)
+- EXTRACTED: 572 (75%)
+- INFERRED: 187 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

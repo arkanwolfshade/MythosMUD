@@ -1,6 +1,6 @@
 # websocket_helpers.py
 
-> 59 nodes
+> 72 nodes
 
 ## Key Concepts
 
@@ -16,6 +16,9 @@
 - **_ensure_player_in_room_occupancy()** (6 connections) — `server/realtime/websocket_helpers.py`
 - **UUID** (6 connections)
 - **_get_tracked_player_from_connection_manager()** (5 connections) — `server/realtime/websocket_helpers.py`
+- **AsyncPersistenceRoomLookup** (4 connections) — `server/realtime/websocket_handler_connection.py`
+- **PlayerDisconnectService** (4 connections) — `server/realtime/websocket_handler_connection.py`
+- **.model_dump()** (4 connections) — `server/models/alias.py`
 - **_fetch_room_for_tracked_player()** (4 connections) — `server/realtime/websocket_helpers.py`
 - **test_get_player_and_room_adds_player_to_room()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
 - **test_get_player_and_room_player_not_found()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
@@ -26,34 +29,33 @@
 - **test_prepare_player_data_with_service()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
 - **test_build_basic_player_data()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
 - **test_build_basic_player_data_defaults()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_service_from_connection_manager_no_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_service_from_connection_manager_no_state()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_service_from_connection_manager_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- *... and 34 more nodes in this community*
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [websocket_initial_state.py](websocket_initial_state.py.md) (10 shared connections)
-- [test_websocket_helpers.py](test_websocket_helpers.py.md) (9 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (4 shared connections)
+- [websocket_handler.py](websocket_handler.py.md) (14 shared connections)
+- [websocket_initial_state.py](websocket_initial_state.py.md) (9 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [Player](Player.md) (5 shared connections)
 - [Room](Room.md) (2 shared connections)
-- [.state](state.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (2 shared connections)
-- [AttributeError](AttributeError.md) (2 shared connections)
-- [Alias](Alias.md) (1 shared connections)
-- [coerce_int](coerce_int.md) (1 shared connections)
-- [GameStateProvider](GameStateProvider.md) (1 shared connections)
+- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [.state](state.md) (1 shared connections)
+- [establish_websocket_connection](establish_websocket_connection.md) (1 shared connections)
+- [User](User.md) (1 shared connections)
+- [websocket_handler_commands.py](websocket_handler_commands.py.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
 
+- `server/models/alias.py`
+- `server/realtime/websocket_handler_connection.py`
 - `server/realtime/websocket_helpers.py`
+- `server/tests/unit/realtime/test_websocket_helpers.py`
 - `server/tests/unit/realtime/test_websocket_helpers_player.py`
 
 ## Audit Trail
 
-- EXTRACTED: 130 (95%)
+- EXTRACTED: 145 (95%)
 - INFERRED: 7 (5%)
 - AMBIGUOUS: 0 (0%)
 

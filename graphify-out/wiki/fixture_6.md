@@ -4,28 +4,29 @@
 
 ## Key Concepts
 
-- **fixture** (4 connections)
-- **mock_prototype_registry()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_equipped_item()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_inventory_item()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_room_drop()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a mock prototype registry.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a sample room drop item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a sample inventory item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a sample equipped item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **fixture** (5 connections)
+- **follow_service()** (4 connections) — `server/tests/integration/test_follow_flow.py`
+- **connection_manager()** (3 connections) — `server/tests/integration/test_follow_flow.py`
+- **movement_service()** (3 connections) — `server/tests/integration/test_follow_flow.py`
+- **user_manager()** (3 connections) — `server/tests/integration/test_follow_flow.py`
+- **Mock MovementService; move_player returns True then we can set False for…** (1 connections) — `server/tests/integration/test_follow_flow.py`
+- **Mock UserManager; not muted.** (1 connections) — `server/tests/integration/test_follow_flow.py`
+- **Mock ConnectionManager (optional for this flow).** (1 connections) — `server/tests/integration/test_follow_flow.py`
+- **FollowService wired to real EventBus and mock MovementService.** (1 connections) — `server/tests/integration/test_follow_flow.py`
 
 ## Relationships
 
-- [test_look_item.py](test_look_item.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [FollowService](FollowService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/integration/test_follow_flow.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

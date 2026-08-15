@@ -6,7 +6,7 @@
 
 - **TestMonitoringEndpoints** (16 connections) — `server/tests/unit/test_main.py`
 - **asyncio** (14 connections)
-- **TestLifespan** (6 connections) — `server/tests/unit/test_main.py`
+- **TestLifespan** (5 connections) — `server/tests/unit/test_main.py`
 - **.test_lifespan_initialization_failure()** (4 connections) — `server/tests/unit/test_main.py`
 - **.test_lifespan_shutdown()** (4 connections) — `server/tests/unit/test_main.py`
 - **.test_lifespan_success()** (4 connections) — `server/tests/unit/test_main.py`
@@ -35,7 +35,7 @@
 
 - [MonitoringDashboard](MonitoringDashboard.md) (13 shared connections)
 - [lifespan.py](lifespan.py.md) (3 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 66 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 66 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

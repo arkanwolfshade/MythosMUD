@@ -25,8 +25,7 @@
 
 - [asyncio](asyncio.md) (4 shared connections)
 - [player_event_handler_utils](player_event_handler_utils.md) (4 shared connections)
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (1 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (2 shared connections)
 - [test_normalize_event_ids_both_provided](test_normalize_event_ids_both_provided.md) (1 shared connections)
 - [test_normalize_event_ids_none_values](test_normalize_event_ids_none_values.md) (1 shared connections)
 - [test_extract_name_from_occupant_dict_with_player_name](test_extract_name_from_occupant_dict_with_player_name.md) (1 shared connections)
@@ -35,6 +34,7 @@
 - [test_extract_name_from_occupant_string](test_extract_name_from_occupant_string.md) (1 shared connections)
 - [test_extract_name_from_occupant_invalid_type](test_extract_name_from_occupant_invalid_type.md) (1 shared connections)
 - [test_extract_occupant_names_valid_names](test_extract_occupant_names_valid_names.md) (1 shared connections)
+- [test_extract_occupant_names_invalid_names](test_extract_occupant_names_invalid_names.md) (1 shared connections)
 
 ## Source Files
 

@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **test_shopkeeper_npc.py** (25 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
-- **ShopkeeperNPC** (20 connections) — `server/npc/shopkeeper_npc.py`
 - **_shopkeeper()** (20 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **ShopkeeperNPC** (19 connections) — `server/npc/shopkeeper_npc.py`
 - **_shop_quantity()** (5 connections) — `server/npc/shopkeeper_npc.py`
 - **.__init__()** (3 connections) — `server/npc/shopkeeper_npc.py`
 - **._setup_shopkeeper_behavior_rules()** (3 connections) — `server/npc/shopkeeper_npc.py`
@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [EventBus](EventBus.md) (6 shared connections)
-- [AggressiveMobNPC](AggressiveMobNPC.md) (1 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
@@ -44,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 73 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 71 (93%)
+- INFERRED: 5 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

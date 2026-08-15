@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **record_edited_file.py** (9 connections) — `.cursor/hooks/record_edited_file.py`
+- **.cursor/hooks/record_edited_file.py** (9 connections) — `.cursor/hooks/record_edited_file.py`
 - **_is_test_file()** (6 connections) — `.cursor/hooks/record_edited_file.py`
 - **main()** (6 connections) — `.cursor/hooks/record_edited_file.py`
 - **_should_skip_recording()** (5 connections) — `.cursor/hooks/record_edited_file.py`

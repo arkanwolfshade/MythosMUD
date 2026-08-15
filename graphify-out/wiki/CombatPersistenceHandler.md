@@ -33,13 +33,12 @@
 
 ## Relationships
 
+- [get_logger](get_logger.md) (6 shared connections)
 - [CombatService](CombatService.md) (4 shared connections)
-- [event_types.py](event_types.py.md) (4 shared connections)
 - [test_combat_persistence_handler_events.py](test_combat_persistence_handler_events.py.md) (3 shared connections)
 - [test_combat_persistence_handler_persistence.py](test_combat_persistence_handler_persistence.py.md) (3 shared connections)
-- [test_nats_message_handler.py](test_nats_message_handler.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [NPCStartupService](NPCStartupService.md) (1 shared connections)
+- [NATSError](NATSError.md) (2 shared connections)
+- [.get_instance](get_instance.md) (1 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 - [nats_exceptions.py](nats_exceptions.py.md) (1 shared connections)
 
@@ -50,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 85 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 82 (93%)
+- INFERRED: 6 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

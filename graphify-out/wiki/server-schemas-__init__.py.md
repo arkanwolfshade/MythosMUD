@@ -1,68 +1,75 @@
 # server/schemas/__init__.py
 
-> 86 nodes
+> 210 nodes
 
 ## Key Concepts
 
 - **server/schemas/__init__.py** (70 connections) — `server/schemas/__init__.py`
-- **npc_instances_api.py** (27 connections) — `server/api/admin/npc_instances_api.py`
-- **test_npc_instances_api.py** (21 connections) — `server/tests/unit/api/test_npc_instances_api.py`
-- **npc_admin.py** (15 connections) — `server/schemas/admin/npc_admin.py`
-- **AdminSession** (14 connections) — `server/schemas/admin/admin_data.py`
-- **AuditLogEntry** (14 connections) — `server/schemas/admin/admin_data.py`
-- **spawn_npc_instance()** (14 connections) — `server/api/admin/npc_instances_api.py`
-- **despawn_npc_instance()** (13 connections) — `server/api/admin/npc_instances_api.py`
-- **move_npc_instance()** (13 connections) — `server/api/admin/npc_instances_api.py`
-- **schemas/admin/__init__.py** (13 connections) — `server/schemas/admin/__init__.py`
-- **get_npc_instances()** (12 connections) — `server/api/admin/npc_instances_api.py`
-- **get_npc_stats()** (12 connections) — `server/api/admin/npc_instances_api.py`
-- **BaseModel** (10 connections)
-- **AdminAuditLogResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
-- **AdminCleanupSessionsResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
-- **AdminSessionsResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
-- **NPCDespawnResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
-- **NPCMoveResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
-- **NPCPopulationStatsResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
-- **NPCSpawnResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
-- **NPCStatsResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
-- **NPCSystemStatusResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
-- **NPCZoneStatsResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
-- **RoomData** (8 connections) — `server/schemas/rooms/room_data.py`
-- **RoomListResponse** (8 connections) — `server/schemas/rooms/room.py`
-- *... and 61 more nodes in this community*
+- **api/character_creation.py** (66 connections) — `server/api/character_creation.py`
+- **players/__init__.py** (48 connections) — `server/schemas/players/__init__.py`
+- **PlayerRead** (46 connections) — `server/schemas/players/player.py`
+- **SkillService** (38 connections) — `server/game/skill_service.py`
+- **roll_character_stats()** (26 connections) — `server/api/character_creation.py`
+- **RollStatsRequest** (23 connections) — `server/schemas/players/player_requests.py`
+- **create_character_with_stats()** (23 connections) — `server/api/character_creation.py`
+- **test_character_creation.py** (22 connections) — `server/tests/unit/api/test_character_creation.py`
+- **ProfessionService** (21 connections) — `server/game/profession_service.py`
+- **CreateCharacterRequest** (21 connections) — `server/schemas/players/player_requests.py`
+- **test_player_schemas.py** (21 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **professions.py** (20 connections) — `server/api/professions.py`
+- **players/player.py** (20 connections) — `server/schemas/players/player.py`
+- **validate_character_stats()** (15 connections) — `server/api/character_creation.py`
+- **asyncio** (14 connections)
+- **_execute_create_character()** (13 connections) — `server/api/character_creation.py`
+- **RollStatsResponse** (12 connections) — `server/schemas/players/character_creation.py`
+- **TestRollCharacterStats** (12 connections) — `server/tests/unit/api/test_character_creation.py`
+- **_roll_stats_with_profession_preview()** (12 connections) — `server/api/character_creation.py`
+- **_convert_stat_summary_to_stat_summary_model()** (11 connections) — `server/api/character_creation.py`
+- **PlayerBase** (10 connections) — `server/schemas/players/player.py`
+- **_dispatch_roll_stats()** (10 connections) — `server/api/character_creation.py`
+- **get_profession_service()** (10 connections) — `server/dependencies.py`
+- **players/character_creation.py** (10 connections) — `server/schemas/players/character_creation.py`
+- *... and 185 more nodes in this community*
 
 ## Relationships
 
-- [get_admin_auth_service](get_admin_auth_service.md) (21 shared connections)
-- [get_logger](get_logger.md) (18 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (13 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (10 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (6 shared connections)
-- [test_invite_schemas.py](test_invite_schemas.py.md) (6 shared connections)
-- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (6 shared connections)
-- [HolidayCollection](HolidayCollection.md) (5 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (5 shared connections)
-- [test_game.py](test_game.py.md) (4 shared connections)
-- [maps/__init__.py](maps-__init__.py.md) (4 shared connections)
-- [realtime/realtime.py](realtime-realtime.py.md) (4 shared connections)
+- [PlayerService](PlayerService.md) (39 shared connections)
+- [User](User.md) (25 shared connections)
+- [api/player_effects.py](api-player_effects.py.md) (24 shared connections)
+- [Stats](Stats.md) (23 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (23 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (14 shared connections)
+- [Any](Any.md) (13 shared connections)
+- [DatabaseError](DatabaseError.md) (11 shared connections)
+- [npc_instances_api.py](npc_instances_api.py.md) (11 shared connections)
+- [MythosMUDError](MythosMUDError.md) (10 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
+- [server/models/game.py](server-models-game.py.md) (9 shared connections)
 
 ## Source Files
 
-- `server/api/admin/npc_instances_api.py`
-- `server/api/admin/npc_schemas.py`
+- `docs/examples/logging/fastapi_integration.py`
+- `server/api/character_creation.py`
+- `server/api/professions.py`
+- `server/dependencies.py`
+- `server/game/player_search_service.py`
+- `server/game/profession_service.py`
+- `server/game/skill_service.py`
 - `server/schemas/__init__.py`
-- `server/schemas/admin/__init__.py`
-- `server/schemas/admin/admin_data.py`
-- `server/schemas/admin/npc_admin.py`
-- `server/schemas/rooms/__init__.py`
-- `server/schemas/rooms/room.py`
-- `server/schemas/rooms/room_data.py`
-- `server/tests/unit/api/test_npc_instances_api.py`
+- `server/schemas/players/__init__.py`
+- `server/schemas/players/character_creation.py`
+- `server/schemas/players/class_definition.py`
+- `server/schemas/players/player.py`
+- `server/schemas/players/player_requests.py`
+- `server/schemas/players/profession.py`
+- `server/schemas/players/stat_values.py`
+- `server/tests/unit/api/test_character_creation.py`
+- `server/tests/unit/schemas/test_player_schemas.py`
 
 ## Audit Trail
 
-- EXTRACTED: 283 (92%)
-- INFERRED: 23 (8%)
+- EXTRACTED: 701 (97%)
+- INFERRED: 19 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

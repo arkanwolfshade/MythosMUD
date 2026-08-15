@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
-- [TrackedTaskManager](TrackedTaskManager.md) (1 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 
 ## Source Files
 

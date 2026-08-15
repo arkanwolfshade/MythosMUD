@@ -33,7 +33,7 @@
 ## Relationships
 
 - [StatisticsAggregator](StatisticsAggregator.md) (2 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,8 +41,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 31 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

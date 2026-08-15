@@ -12,6 +12,9 @@
 - **.__init__()** (3 connections) — `server/services/environmental_container_loader.py`
 - **.load_containers_for_room()** (3 connections) — `server/services/environmental_container_loader.py`
 - **._validate_container_capacity()** (3 connections) — `server/services/environmental_container_loader.py`
+- **test_load_container_from_room_json_invalid_capacity()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_load_container_from_room_json_invalid_lock_state()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_load_container_from_room_json_success()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
 - **test_load_containers_for_room_filters_environment()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
 - **test_migrate_room_container_creates_new()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
 - **test_migrate_room_container_existing()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
@@ -19,10 +22,7 @@
 - **asyncio** (3 connections)
 - **test_environmental_loader_requires_persistence()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
 - **test_load_container_from_room_json_disabled()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
-- **test_load_container_from_room_json_invalid_capacity()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
-- **test_load_container_from_room_json_invalid_lock_state()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
 - **test_load_container_from_room_json_none_when_missing()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
-- **test_load_container_from_room_json_success()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
 - **ContainerComponent** (2 connections)
 - **UUID** (2 connections)
 - **ContainerLockState** (1 connections)
@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
-- [ContainerService](ContainerService.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (7 shared connections)
+- [ValidationError](ValidationError.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (3 shared connections)
 
 ## Source Files
 
@@ -43,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 54 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 45 (79%)
+- INFERRED: 12 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,11 +1,10 @@
 # NPCStartupService
 
-> 31 nodes
+> 29 nodes
 
 ## Key Concepts
 
 - **NPCStartupService** (52 connections) — `server/services/npc_startup_service.py`
-- **.get_instance()** (35 connections) — `server/container/main.py`
 - **Any** (16 connections)
 - **._determine_spawn_room()** (8 connections) — `server/services/npc_startup_service.py`
 - **._spawn_required_npcs()** (8 connections) — `server/services/npc_startup_service.py`
@@ -26,35 +25,30 @@
 - **._try_fallback_room()** (3 connections) — `server/services/npc_startup_service.py`
 - **._try_specific_room()** (3 connections) — `server/services/npc_startup_service.py`
 - **.__init__()** (2 connections) — `server/services/npc_startup_service.py`
-- **Get the singleton container instance.** (1 connections) — `server/container/main.py`
 - **Spawn all required NPCs. Args: required_npcs: List of required NPC definitions…** (1 connections) — `server/services/npc_startup_service.py`
 - **Spawn optional NPCs based on spawn probability. Args: optional_npcs: List of…** (1 connections) — `server/services/npc_startup_service.py`
-- *... and 6 more nodes in this community*
+- **Second pass: spawn one instance per definition (that was spawned in…** (1 connections) — `server/services/npc_startup_service.py`
+- **Determine the appropriate room for spawning an NPC. Args: npc_def: NPC…** (1 connections) — `server/services/npc_startup_service.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [test_npc_startup_service.py](test_npc_startup_service.py.md) (32 shared connections)
-- [EventBus](EventBus.md) (6 shared connections)
-- [test_combat_death_handler.py](test_combat_death_handler.py.md) (4 shared connections)
-- [UserManager](UserManager.md) (3 shared connections)
-- [test_application_container.py](test_application_container.py.md) (3 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [HealthService](HealthService.md) (2 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
-- [PlayerService](PlayerService.md) (1 shared connections)
-- [Stats](Stats.md) (1 shared connections)
+- [asyncio](asyncio.md) (10 shared connections)
+- [test_npc_startup_service.py](test_npc_startup_service.py.md) (9 shared connections)
+- [mock_container](mock_container.md) (9 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [_errors_len](_errors_len.md) (5 shared connections)
+- [.get_instance](get_instance.md) (3 shared connections)
+- [npc_database.py](npc_database.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/main.py`
 - `server/services/npc_startup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 136 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 73 (70%)
+- INFERRED: 32 (30%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -35,11 +35,11 @@
 
 - [Files to Update](Files_to_Update.md) (3 shared connections)
 - [MythosMUD Test Suite Modernization Plan](MythosMUD_Test_Suite_Modernization_Plan.md) (1 shared connections)
-- [Critical Discovery & Fix](Critical_Discovery_%26_Fix.md) (1 shared connections)
-- [Phase 1: Fix Failing Integration Tests (Week 1-2) 🚧 **IN PROGRESS**](Phase_1-_Fix_Failing_Integration_Tests_%28Week_1-2%29_%F0%9F%9A%A7___IN_PROGRESS__.md) (1 shared connections)
+- [Critical Discovery & Fix](Critical_Discovery_&_Fix.md) (1 shared connections)
+- [Phase 1: Fix Failing Integration Tests (Week 1-2) 🚧 **IN PROGRESS**](Phase_1-_Fix_Failing_Integration_Tests_Week_1-2_🚧___IN_PROGRESS__.md) (1 shared connections)
 - [Files Affected](Files_Affected.md) (1 shared connections)
-- [Category D: API Endpoint Tests (App State)](Category_D-_API_Endpoint_Tests_%28App_State%29.md) (1 shared connections)
-- [Phase 3: Modernize Test Patterns (Week 5)](Phase_3-_Modernize_Test_Patterns_%28Week_5%29.md) (1 shared connections)
+- [Category D: API Endpoint Tests (App State)](Category_D-_API_Endpoint_Tests_App_State.md) (1 shared connections)
+- [Phase 3: Modernize Test Patterns (Week 5)](Phase_3-_Modernize_Test_Patterns_Week_5.md) (1 shared connections)
 - [AFTER](AFTER.md) (1 shared connections)
 - [New Tests to Add](New_Tests_to_Add.md) (1 shared connections)
 

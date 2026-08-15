@@ -13,7 +13,7 @@
 
 ## Relationships
 
-- [✅ Phase 2 Async Persistence Migration - COMPLETE](%E2%9C%85_Phase_2_Async_Persistence_Migration_-_COMPLETE.md) (1 shared connections)
+- [✅ Phase 2 Async Persistence Migration - COMPLETE](✅_Phase_2_Async_Persistence_Migration_-_COMPLETE.md) (1 shared connections)
 
 ## Source Files
 

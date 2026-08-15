@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (14 shared connections)
+- [TargetMatch](TargetMatch.md) (13 shared connections)
 - [CombatInstance](CombatInstance.md) (3 shared connections)
-- [server/models/game.py](server-models-game.py.md) (2 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
+- [server/models/game.py](server-models-game.py.md) (3 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
 
 ## Source Files
 

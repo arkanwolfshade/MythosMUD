@@ -19,7 +19,7 @@
 - [description](description.md) (1 shared connections)
 - [weather_patterns](weather_patterns.md) (1 shared connections)
 - [special_rules](special_rules.md) (1 shared connections)
-- [enum](enum_2.md) (1 shared connections)
+- [enum](enum.md) (1 shared connections)
 
 ## Source Files
 

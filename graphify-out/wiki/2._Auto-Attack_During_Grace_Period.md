@@ -11,7 +11,7 @@
 
 ## Relationships
 
-- [MUD Disconnect Grace Period & Rest Command: Industry Comparison](MUD_Disconnect_Grace_Period_%26_Rest_Command-_Industry_Comparison.md) (1 shared connections)
+- [MUD Disconnect Grace Period & Rest Command: Industry Comparison](MUD_Disconnect_Grace_Period_&_Rest_Command-_Industry_Comparison.md) (1 shared connections)
 
 ## Source Files
 

@@ -24,7 +24,7 @@
 - [day](day.md) (1 shared connections)
 - [duration_hours](duration_hours.md) (1 shared connections)
 - [bonus_tags](bonus_tags.md) (1 shared connections)
-- [enum](enum_2.md) (1 shared connections)
+- [enum](enum.md) (1 shared connections)
 
 ## Source Files
 

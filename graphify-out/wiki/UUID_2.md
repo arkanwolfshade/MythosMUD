@@ -1,48 +1,33 @@
 # UUID
 
-> 28 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **UUID** (9 connections)
-- **._process_single_connection()** (8 connections) — `server/realtime/monitoring/health_monitor.py`
-- **.check_all_connections_health()** (6 connections) — `server/realtime/monitoring/health_monitor.py`
-- **.periodic_health_check_task()** (5 connections) — `server/realtime/monitoring/health_monitor.py`
-- **.start_periodic_checks()** (5 connections) — `server/realtime/monitoring/health_monitor.py`
-- **.check_player_connection_health()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._cleanup_stale_connections()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._find_player_id_for_cleanup()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._wait_for_task_cancellation()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._check_connection_stale()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._check_websocket_open()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
-- **.__init__()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
-- **.stop_periodic_checks()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._validate_and_update_token()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Any** (2 connections)
-- **Find player_id for cleanup when metadata is missing.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Check if connection is stale based on timeout.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Check if WebSocket is actually open.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Validate token and update last validation time if needed.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Process health check for a single connection.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Clean up stale connections.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Check health of all connections and clean up stale/dead ones. This method: -…** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Periodic health check task that runs continuously. This task: - Runs health…** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Start the periodic health check task. This should be called during application…** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Stop the periodic health check task. This should be called during application…** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- *... and 3 more nodes in this community*
+- **UUID** (6 connections)
+- **.get_players_batch()** (5 connections) — `server/persistence/protocols.py`
+- **.update_player_last_active()** (5 connections) — `server/persistence/protocols.py`
+- **.delete_player()** (4 connections) — `server/persistence/protocols.py`
+- **.get_player_by_id()** (4 connections) — `server/persistence/protocols.py`
+- **.soft_delete_player()** (4 connections) — `server/persistence/protocols.py`
+- **datetime** (2 connections)
+- **Get multiple players by IDs in a single query.** (1 connections) — `server/persistence/protocols.py`
+- **Soft delete a player (sets is_deleted=True).** (1 connections) — `server/persistence/protocols.py`
+- **Delete a player from the database.** (1 connections) — `server/persistence/protocols.py`
+- **Update the last_active timestamp for a player.** (1 connections) — `server/persistence/protocols.py`
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (14 shared connections)
-- [TrackedTaskManager](TrackedTaskManager.md) (1 shared connections)
+- [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) (12 shared connections)
+- [Player](Player.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/monitoring/health_monitor.py`
+- `server/persistence/protocols.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

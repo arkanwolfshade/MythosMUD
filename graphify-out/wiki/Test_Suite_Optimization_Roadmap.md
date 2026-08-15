@@ -14,12 +14,12 @@
 ## Relationships
 
 - [Optimization Strategy Overview](Optimization_Strategy_Overview.md) (1 shared connections)
-- [Phase 2: Infrastructure Test Reduction (Week 2)](Phase_2-_Infrastructure_Test_Reduction_%28Week_2%29.md) (1 shared connections)
-- [Phase 3: Coverage Test Optimization (Week 3)](Phase_3-_Coverage_Test_Optimization_%28Week_3%29.md) (1 shared connections)
-- [Phase 4: Test Consolidation (Week 4)](Phase_4-_Test_Consolidation_%28Week_4%29.md) (1 shared connections)
-- [Phase 1: Quick Wins (Week 1)](Phase_1-_Quick_Wins_%28Week_1%29.md) (1 shared connections)
-- [Phase 5: Strategic Additions (Week 5)](Phase_5-_Strategic_Additions_%28Week_5%29.md) (1 shared connections)
-- [Phase 6: Long-Term Optimizations (Ongoing)](Phase_6-_Long-Term_Optimizations_%28Ongoing%29.md) (1 shared connections)
+- [Phase 2: Infrastructure Test Reduction (Week 2)](Phase_2-_Infrastructure_Test_Reduction_Week_2.md) (1 shared connections)
+- [Phase 3: Coverage Test Optimization (Week 3)](Phase_3-_Coverage_Test_Optimization_Week_3.md) (1 shared connections)
+- [Phase 4: Test Consolidation (Week 4)](Phase_4-_Test_Consolidation_Week_4.md) (1 shared connections)
+- [Phase 1: Quick Wins (Week 1)](Phase_1-_Quick_Wins_Week_1.md) (1 shared connections)
+- [Phase 5: Strategic Additions (Week 5)](Phase_5-_Strategic_Additions_Week_5.md) (1 shared connections)
+- [Phase 6: Long-Term Optimizations (Ongoing)](Phase_6-_Long-Term_Optimizations_Ongoing.md) (1 shared connections)
 - [Implementation Timeline](Implementation_Timeline.md) (1 shared connections)
 - [Net Impact Projection](Net_Impact_Projection.md) (1 shared connections)
 - [Monitoring and Validation](Monitoring_and_Validation.md) (1 shared connections)

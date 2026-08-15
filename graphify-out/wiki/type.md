@@ -24,7 +24,7 @@
 ## Relationships
 
 - [properties](properties.md) (4 shared connections)
-- [enum](enum_2.md) (2 shared connections)
+- [enum](enum.md) (2 shared connections)
 
 ## Source Files
 

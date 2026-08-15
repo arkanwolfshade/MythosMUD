@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [chat_service.py](chat_service.py.md) (14 shared connections)
+- [test_chat_npc_system.py](test_chat_npc_system.py.md) (14 shared connections)
 - [QuestService](QuestService.md) (13 shared connections)
 - [quest_commands.py](quest_commands.py.md) (6 shared connections)
 - [talk_command.py](talk_command.py.md) (2 shared connections)

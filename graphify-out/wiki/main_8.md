@@ -1,17 +1,18 @@
 # main
 
-> 8 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **main()** (4 connections) — `scripts/apply_quest_migrations_to_dev.py`
-- **_run_quest_ddl()** (4 connections) — `scripts/apply_quest_migrations_to_dev.py`
-- **_seed_leave_the_tutorial()** (4 connections) — `scripts/apply_quest_migrations_to_dev.py`
-- **apply_quest_migrations_to_dev.py** (3 connections) — `scripts/apply_quest_migrations_to_dev.py`
-- **cursor** (2 connections)
-- **Connect to DB from DATABASE_URL, run quest DDL and seed (leave_the_tutorial),…** (1 connections) — `scripts/apply_quest_migrations_to_dev.py`
-- **Create quest_definitions, quest_instances, quest_offers tables and indexes.** (1 connections) — `scripts/apply_quest_migrations_to_dev.py`
-- **Insert leave_the_tutorial quest definition and room offer (idempotent).** (1 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **main()** (5 connections) — `.claude/hooks/trigger_test_agent.py`
+- **_exit_empty()** (4 connections) — `.claude/hooks/trigger_test_agent.py`
+- **_load_state()** (4 connections) — `.claude/hooks/trigger_test_agent.py`
+- **.claude/hooks/trigger_test_agent.py** (3 connections) — `.claude/hooks/trigger_test_agent.py`
+- **Path** (2 connections)
+- **NoReturn** (1 connections)
+- **Exit successfully with no decision (allow the stop).** (1 connections) — `.claude/hooks/trigger_test_agent.py`
+- **Load and validate edited-files state. Returns None if missing or invalid.** (1 connections) — `.claude/hooks/trigger_test_agent.py`
+- **Entry point: read hook payload from stdin, check edited-files state, and…** (1 connections) — `.claude/hooks/trigger_test_agent.py`
 
 ## Relationships
 
@@ -19,11 +20,11 @@
 
 ## Source Files
 
-- `scripts/apply_quest_migrations_to_dev.py`
+- `.claude/hooks/trigger_test_agent.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

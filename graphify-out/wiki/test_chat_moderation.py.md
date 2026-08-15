@@ -1,52 +1,48 @@
 # test_chat_moderation.py
 
-> 112 nodes
+> 29 nodes
 
 ## Key Concepts
 
 - **test_chat_moderation.py** (30 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **ChatModeration** (27 connections) — `server/game/chat_moderation.py`
-- **UserManagerProtocol** (21 connections) — `server/game/chat_moderation.py`
-- **normalize_player_id()** (18 connections) — `server/game/chat_moderation.py`
-- **UUID** (17 connections)
 - **asyncio** (14 connections)
-- **chat_moderation.py** (11 connections) — `server/game/chat_moderation.py`
-- **Any** (8 connections)
-- **PlayerServiceProtocol** (7 connections) — `server/game/chat_moderation.py`
-- **._format_mute_entry()** (5 connections) — `server/game/chat_moderation.py`
-- **._format_mute_section()** (5 connections) — `server/game/chat_moderation.py`
-- **.get_player_mutes()** (5 connections) — `server/game/chat_moderation.py`
-- **.add_admin()** (4 connections) — `server/game/chat_moderation.py`
-- **._format_mute_duration()** (4 connections) — `server/game/chat_moderation.py`
-- **.get_mute_status()** (4 connections) — `server/game/chat_moderation.py`
-- **.is_admin()** (4 connections) — `server/game/chat_moderation.py`
-- **.is_channel_muted()** (4 connections) — `server/game/chat_moderation.py`
-- **.is_globally_muted()** (4 connections) — `server/game/chat_moderation.py`
-- **.is_player_muted()** (4 connections) — `server/game/chat_moderation.py`
-- **.mute_channel()** (4 connections) — `server/game/chat_moderation.py`
-- **.mute_global()** (4 connections) — `server/game/chat_moderation.py`
-- **.mute_player()** (4 connections) — `server/game/chat_moderation.py`
-- **.remove_admin()** (4 connections) — `server/game/chat_moderation.py`
-- **.unmute_channel()** (4 connections) — `server/game/chat_moderation.py`
-- **.unmute_global()** (4 connections) — `server/game/chat_moderation.py`
-- *... and 87 more nodes in this community*
+- **moderation()** (3 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **fixture** (3 connections)
+- **player_service()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_add_admin_returns_true()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_get_mute_status_handles_internal_error()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_get_mute_status_includes_player_name()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_get_mute_status_invalid_player_id()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_get_mute_status_player_not_found()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_get_mute_status_with_personal_mutes()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_mute_channel_delegates_to_user_manager()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_mute_global_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_mute_player_returns_false_when_target_missing()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_mute_player_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_remove_admin()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_unmute_channel()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_unmute_global_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_unmute_player_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **user_manager()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_can_send_message()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_format_mute_duration_expired()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_format_mute_duration_permanent()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_format_mute_duration_remaining_minutes()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_format_mute_entry_and_section()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [chat_service.py](chat_service.py.md) (4 shared connections)
-- [ChatService](ChatService.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [ChatPoseManager](ChatPoseManager.md) (1 shared connections)
+- [ChatModeration](ChatModeration.md) (5 shared connections)
 
 ## Source Files
 
-- `server/game/chat_moderation.py`
 - `server/tests/unit/game/test_chat_moderation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 178 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 47 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,16 +1,17 @@
 # main
 
-> 7 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **main()** (4 connections) — `scripts/generate_html_visualization_fixed.py`
-- **generate_html_visualization()** (3 connections) — `scripts/generate_html_visualization_fixed.py`
-- **load_room_data()** (3 connections) — `scripts/generate_html_visualization_fixed.py`
-- **generate_html_visualization_fixed.py** (3 connections) — `scripts/generate_html_visualization_fixed.py`
-- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/generate_html_visualization_fixed.py`
-- **Main function to generate the HTML visualization.** (1 connections) — `scripts/generate_html_visualization_fixed.py`
-- **Generate an HTML visualization of the room network.** (1 connections) — `scripts/generate_html_visualization_fixed.py`
+- **main()** (4 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **_run_quest_ddl()** (4 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **_seed_leave_the_tutorial()** (4 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **apply_quest_migrations_to_dev.py** (3 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **cursor** (2 connections)
+- **Connect to DB from DATABASE_URL, run quest DDL and seed (leave_the_tutorial),…** (1 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **Create quest_definitions, quest_instances, quest_offers tables and indexes.** (1 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **Insert leave_the_tutorial quest definition and room offer (idempotent).** (1 connections) — `scripts/apply_quest_migrations_to_dev.py`
 
 ## Relationships
 
@@ -18,11 +19,11 @@
 
 ## Source Files
 
-- `scripts/generate_html_visualization_fixed.py`
+- `scripts/apply_quest_migrations_to_dev.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

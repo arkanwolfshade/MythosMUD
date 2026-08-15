@@ -26,7 +26,7 @@
 - [description](description.md) (1 shared connections)
 - [plane](plane.md) (1 shared connections)
 - [zone](zone.md) (1 shared connections)
-- [enum](enum_2.md) (1 shared connections)
+- [enum](enum.md) (1 shared connections)
 - [exits](exits.md) (1 shared connections)
 
 ## Source Files

@@ -1,11 +1,10 @@
 # test_shutdown_process_termination.py
 
-> 27 nodes
+> 25 nodes
 
 ## Key Concepts
 
 - **test_shutdown_process_termination.py** (9 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
-- **schedule_process_termination()** (7 connections) — `server/commands/shutdown_process_termination.py`
 - **_find_uvicorn_processes()** (4 connections) — `server/commands/shutdown_process_termination.py`
 - **_terminate_uvicorn_processes()** (4 connections) — `server/commands/shutdown_process_termination.py`
 - **_terminate_child_processes()** (3 connections) — `server/commands/shutdown_process_termination.py`
@@ -18,7 +17,6 @@
 - **test_terminate_with_signals_sends_to_child_and_parent()** (3 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
 - **test_terminator_thread_import_error_falls_back_to_signals()** (3 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
 - **Any** (2 connections)
-- **Schedule a best-effort graceful process termination after a short delay. This…** (1 connections) — `server/commands/shutdown_process_termination.py`
 - **Find all uvicorn processes using psutil.** (1 connections) — `server/commands/shutdown_process_termination.py`
 - **Terminate all uvicorn processes.** (1 connections) — `server/commands/shutdown_process_termination.py`
 - **Terminate all child processes of the current process.** (1 connections) — `server/commands/shutdown_process_termination.py`
@@ -29,12 +27,13 @@
 - **_terminate_with_signals attempts SIGINT and SIGTERM on child and parent.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
 - **_terminate_uvicorn_processes kills processes still running after terminate.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
 - **_terminate_child_processes terminates and kills surviving children.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
-- *... and 2 more nodes in this community*
+- **Terminator thread uses signal fallback when psutil import fails.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **schedule_process_termination returns early when exit is disabled.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [test_shutdown_sequence.py](test_shutdown_sequence.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [test_shutdown_sequence.py](test_shutdown_sequence.py.md) (3 shared connections)
 
 ## Source Files
 
@@ -43,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 37 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

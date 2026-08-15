@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Party** (12 connections) — `server/game/party_service.py`
+- **Party** (9 connections) — `server/game/party_service.py`
 - **.get_party()** (3 connections) — `server/game/party_service.py`
 - **test_party_post_init_includes_leader_in_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_party_post_init_preserves_other_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
@@ -19,9 +19,7 @@
 
 - [PartyService](PartyService.md) (3 shared connections)
 - [test_party_service.py](test_party_service.py.md) (3 shared connections)
-- [party_service.py](party_service.py.md) (2 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [party_service.py](party_service.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -30,8 +28,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 16 (84%)
-- INFERRED: 3 (16%)
+- EXTRACTED: 14 (88%)
+- INFERRED: 2 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

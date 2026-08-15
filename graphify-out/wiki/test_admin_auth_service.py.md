@@ -1,59 +1,58 @@
 # test_admin_auth_service.py
 
-> 34 nodes
+> 139 nodes
 
 ## Key Concepts
 
 - **test_admin_auth_service.py** (54 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_cleanup_expired_sessions_no_expired()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_get_active_sessions_filters_expired()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_get_user_id_from_dict()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_get_user_id_none()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_get_user_role_with_dict_is_admin()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_get_username_from_user_object()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_has_permission_admin()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_has_permission_moderator()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_has_permission_superuser()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_log_audit_event()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_log_audit_event_limits_size()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_update_session_no_request()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_validate_permission_logs_audit()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_validate_permission_logs_permission_denied()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_validate_permission_none_user()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_validate_permission_viewer_limited()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **Unit tests for admin authentication service. Tests the AdminAuthService class…** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **Test get_user_role returns ADMIN for dict user with is_admin.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **Test get_username from User object.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **Test get_user_id from dict.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **Test get_user_id returns 'unknown' for None.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **Test validate_permission limits viewer role.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **Test validate_permission raises for None user.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **Test _has_permission for superuser.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- *... and 9 more nodes in this community*
+- **AdminAction** (32 connections) — `server/services/admin_auth_service.py`
+- **AdminRole** (24 connections) — `server/services/admin_auth_service.py`
+- **admin_auth_service.py** (24 connections) — `server/services/admin_auth_service.py`
+- **AdminAuthService** (19 connections) — `server/services/admin_auth_service.py`
+- **.validate_permission()** (11 connections) — `server/services/admin_auth_service.py`
+- **AdminSession** (6 connections) — `server/services/admin_auth_service.py`
+- **._update_session()** (6 connections) — `server/services/admin_auth_service.py`
+- **._has_permission()** (5 connections) — `server/services/admin_auth_service.py`
+- **._log_audit_event()** (5 connections) — `server/services/admin_auth_service.py`
+- **admin_auth_service()** (5 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **._check_rate_limit()** (4 connections) — `server/services/admin_auth_service.py`
+- **.get_user_role()** (4 connections) — `server/services/admin_auth_service.py`
+- **mock_user()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **superuser()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_admin_session_init()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_admin_auth_service()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_has_permission_admin()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_has_permission_moderator()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_has_permission_superuser()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_has_permission_viewer()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **Protocol** (4 connections)
+- **Request** (4 connections)
+- **_HasId** (3 connections) — `server/services/admin_auth_service.py`
+- **_HasIsAdmin** (3 connections) — `server/services/admin_auth_service.py`
+- *... and 114 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [admin_auth_service](admin_auth_service.md) (3 shared connections)
-- [AdminAuthService](AdminAuthService.md) (2 shared connections)
-- [AdminSession](AdminSession.md) (2 shared connections)
-- [User](User.md) (1 shared connections)
-- [get_admin_auth_service](get_admin_auth_service.md) (1 shared connections)
-- [test_get_user_role_viewer](test_get_user_role_viewer.md) (1 shared connections)
-- [test_get_user_role_none](test_get_user_role_none.md) (1 shared connections)
-- [test_get_user_role_with_is_admin_attribute](test_get_user_role_with_is_admin_attribute.md) (1 shared connections)
-- [test_get_username_from_dict](test_get_username_from_dict.md) (1 shared connections)
-- [test_get_username_none](test_get_username_none.md) (1 shared connections)
-- [test_get_username_missing_attribute](test_get_username_missing_attribute.md) (1 shared connections)
+- [get_admin_auth_service](get_admin_auth_service.md) (10 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [User](User.md) (3 shared connections)
+- [npc_definitions_api.py](npc_definitions_api.py.md) (2 shared connections)
+- [npc_instances_api.py](npc_instances_api.py.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [maps.py](maps.py.md) (2 shared connections)
+- [RoomService](RoomService.md) (2 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (2 shared connections)
+- [models/user.py](models-user.py.md) (1 shared connections)
 
 ## Source Files
 
+- `server/services/admin_auth_service.py`
 - `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 70 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 196 (83%)
+- INFERRED: 39 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

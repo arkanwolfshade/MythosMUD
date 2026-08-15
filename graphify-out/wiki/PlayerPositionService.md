@@ -1,25 +1,14 @@
 # PlayerPositionService
 
-> 79 nodes
+> 51 nodes
 
 ## Key Concepts
 
 - **PlayerPositionService** (48 connections) — `server/services/player_position_service.py`
 - **test_player_position_service.py** (27 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **.change_position()** (12 connections) — `server/services/player_position_service.py`
 - **asyncio** (12 connections)
-- **Player** (8 connections)
-- **PositionChangeResponse** (6 connections) — `server/services/player_position_service.py`
-- **._apply_player_info()** (5 connections) — `server/services/player_position_service.py`
-- **._get_current_position()** (5 connections) — `server/services/player_position_service.py`
-- **._load_player_stats()** (5 connections) — `server/services/player_position_service.py`
 - **test_change_position_database_error()** (5 connections) — `server/tests/unit/services/test_player_position_service.py`
 - **test_change_position_save_error()** (5 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **._get_player_for_position_change()** (4 connections) — `server/services/player_position_service.py`
-- **._initial_response()** (4 connections) — `server/services/player_position_service.py`
-- **._update_connection_manager()** (4 connections) — `server/services/player_position_service.py`
-- **._update_player_position()** (4 connections) — `server/services/player_position_service.py`
-- **.save_player()** (4 connections) — `server/services/player_position_service.py`
 - **test_change_position_all_positions()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
 - **test_change_position_already_in_position()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
 - **test_change_position_get_stats_error()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
@@ -29,16 +18,30 @@
 - **test_change_position_player_not_found()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
 - **test_change_position_success()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
 - **test_change_position_updates_connection_manager()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
-- *... and 54 more nodes in this community*
+- **test_change_position_updates_existing_connection_info()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_ensure_default_aliases_creates_missing()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_ensure_default_aliases_handles_errors()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_ensure_default_aliases_keeps_correct()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_ensure_default_aliases_no_storage()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_ensure_default_aliases_updates_incorrect()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_player_position_service_init()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_player_position_service_init_none_values()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_update_connection_manager_handles_errors()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_update_connection_manager_no_manager()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_update_connection_manager_no_online_players()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [AliasStorage](AliasStorage.md) (5 shared connections)
+- [.change_position](change_position.md) (10 shared connections)
+- [position_commands.py](position_commands.py.md) (3 shared connections)
 - [test_rest_command.py](test_rest_command.py.md) (3 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
-- [test_follow_service.py](test_follow_service.py.md) (3 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [FollowService](FollowService.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [HolidayService](HolidayService.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 147 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 84 (76%)
+- INFERRED: 27 (24%)
 - AMBIGUOUS: 0 (0%)
 
 ---

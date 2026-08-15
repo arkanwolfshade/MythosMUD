@@ -17,7 +17,7 @@
 - [Technical Implementation](Technical_Implementation.md) (1 shared connections)
 - [UI/UX Considerations](UI-UX_Considerations.md) (1 shared connections)
 - [Implementation Phases](Implementation_Phases.md) (1 shared connections)
-- [1. Enhanced ChatPanel (New Chat Input Panel)](1._Enhanced_ChatPanel_%28New_Chat_Input_Panel%29.md) (1 shared connections)
+- [1. Enhanced ChatPanel (New Chat Input Panel)](1._Enhanced_ChatPanel_New_Chat_Input_Panel.md) (1 shared connections)
 - [Testing Strategy](Testing_Strategy.md) (1 shared connections)
 - [Migration Considerations](Migration_Considerations.md) (1 shared connections)
 - [Success Criteria](Success_Criteria.md) (1 shared connections)

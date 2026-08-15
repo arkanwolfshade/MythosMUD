@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **MythosTickScheduler** (29 connections) — `server/time/tick_scheduler.py`
+- **MythosTickScheduler** (30 connections) — `server/time/tick_scheduler.py`
 - **test_tick_scheduler.py** (18 connections) — `server/tests/unit/time/test_tick_scheduler.py`
 - **asyncio** (9 connections)
 - **._emit_pending_ticks()** (5 connections) — `server/time/tick_scheduler.py`
@@ -21,6 +21,7 @@
 - **test_start_idempotent()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
 - **test_start_registers_task()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
 - **test_stop_cancels_task()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
+- **test_truncate_to_hour()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
 - **._sleep_until_next_hour()** (3 connections) — `server/time/tick_scheduler.py`
 - **.start()** (3 connections) — `server/time/tick_scheduler.py`
 - **datetime** (3 connections)
@@ -28,18 +29,16 @@
 - **mock_event_bus()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
 - **mock_task_registry()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
 - **test_publish_tick_with_holidays()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_truncate_to_hour()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
 - *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
-- [event_types.py](event_types.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [HolidayService](HolidayService.md) (2 shared connections)
+- [MythosChronicle](MythosChronicle.md) (2 shared connections)
 - [MythosTimeEventConsumer](MythosTimeEventConsumer.md) (2 shared connections)
-- [MetricsCollector](MetricsCollector.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 - [TaskRegistry](TaskRegistry.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [MythosChronicle](MythosChronicle.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 70 (93%)
-- INFERRED: 5 (7%)
+- EXTRACTED: 60 (79%)
+- INFERRED: 16 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

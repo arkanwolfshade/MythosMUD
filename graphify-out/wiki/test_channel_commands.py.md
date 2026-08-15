@@ -33,10 +33,14 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
 - [AliasStorage](AliasStorage.md) (4 shared connections)
 - [PlayerPreferencesService](PlayerPreferencesService.md) (3 shared connections)
+- [get_async_session](get_async_session.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [BaseCommand](BaseCommand.md) (1 shared connections)
 
 ## Source Files
 

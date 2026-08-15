@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **PostgresConnection** (28 connections) — `server/postgres_adapter.py`
-- **TestPostgresConnection** (18 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **PostgresConnection** (26 connections) — `server/postgres_adapter.py`
+- **TestPostgresConnection** (16 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 - **.__exit__()** (5 connections) — `server/postgres_adapter.py`
 - **.close()** (3 connections) — `server/postgres_adapter.py`
 - **.commit()** (3 connections) — `server/postgres_adapter.py`
@@ -33,13 +33,12 @@
 
 ## Relationships
 
-- [test_postgres_adapter.py](test_postgres_adapter.py.md) (5 shared connections)
+- [test_postgres_adapter.py](test_postgres_adapter.py.md) (4 shared connections)
 - [Any](Any.md) (3 shared connections)
-- [TestUtilityFunctions](TestUtilityFunctions.md) (2 shared connections)
-- [PostgresCursor](PostgresCursor.md) (2 shared connections)
-- [PostgresRow](PostgresRow.md) (2 shared connections)
+- [TestPostgresConnectionPool](TestPostgresConnectionPool.md) (2 shared connections)
 - [fixture](fixture.md) (2 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
+- [PostgresCursor](PostgresCursor.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 55 (87%)
-- INFERRED: 8 (13%)
+- EXTRACTED: 55 (93%)
+- INFERRED: 4 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

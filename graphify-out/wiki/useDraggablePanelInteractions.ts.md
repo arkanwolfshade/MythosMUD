@@ -1,10 +1,11 @@
 # useDraggablePanelInteractions.ts
 
-> 48 nodes
+> 61 nodes
 
 ## Key Concepts
 
 - **useDraggablePanelInteractions.ts** (31 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **DraggablePanelView.tsx** (15 connections) — `client/src/components/DraggablePanelView.tsx`
 - **useDraggablePanelLayout.ts** (11 connections) — `client/src/components/useDraggablePanelLayout.ts`
 - **DraggablePanel()** (9 connections) — `client/src/components/DraggablePanelCore.tsx`
 - **useDraggablePanelLayout()** (9 connections) — `client/src/components/useDraggablePanelLayout.ts`
@@ -17,6 +18,8 @@
 - **computeInitialPanelState()** (6 connections) — `client/src/components/useDraggablePanelLayout.ts`
 - **computeFallbackPanelState()** (5 connections) — `client/src/components/useDraggablePanelLayout.ts`
 - **computeSafePanelState()** (5 connections) — `client/src/components/useDraggablePanelLayout.ts`
+- **DraggablePanelResizeHandles.tsx** (5 connections) — `client/src/components/DraggablePanelResizeHandles.tsx`
+- **DraggablePanelView()** (4 connections) — `client/src/components/DraggablePanelView.tsx`
 - **applyDragMove()** (4 connections) — `client/src/components/useDraggablePanelInteractions.ts`
 - **applyKeyboardResizeDelta()** (4 connections) — `client/src/components/useDraggablePanelInteractions.ts`
 - **canBeginHeaderDrag()** (4 connections) — `client/src/components/useDraggablePanelInteractions.ts`
@@ -26,22 +29,20 @@
 - **clampPanelPosition()** (4 connections) — `client/src/components/useDraggablePanelLayout.ts`
 - **isMouseEventOnHeader()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
 - **isPanelDragBlockedTarget()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
-- **applyResizeMove()** (3 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **beginHeaderDrag()** (3 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **computeKeyboardResizeDimensions()** (3 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- *... and 23 more nodes in this community*
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (2 shared connections)
+- [EldritchIcon.tsx](EldritchIcon.tsx.md) (7 shared connections)
 - [GameTerminal.tsx](GameTerminal.tsx.md) (2 shared connections)
 - [GameLogPanel.tsx](GameLogPanel.tsx.md) (2 shared connections)
-- [DraggablePanelView.tsx](DraggablePanelView.tsx.md) (2 shared connections)
 
 ## Source Files
 
 - `client/src/components/DraggablePanel.tsx`
 - `client/src/components/DraggablePanelCore.tsx`
+- `client/src/components/DraggablePanelResizeHandles.tsx`
+- `client/src/components/DraggablePanelView.tsx`
 - `client/src/components/__tests__/DraggablePanel.grid-positioning.test.tsx`
 - `client/src/components/__tests__/DraggablePanel.test.tsx`
 - `client/src/components/draggablePanelUtils.ts`
@@ -50,7 +51,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 104 (100%)
+- EXTRACTED: 124 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

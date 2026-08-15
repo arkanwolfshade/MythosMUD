@@ -1,6 +1,6 @@
 # test_chat_validator.py
 
-> 28 nodes
+> 26 nodes
 
 ## Key Concepts
 
@@ -10,7 +10,6 @@
 - **validate_room_access()** (9 connections) — `server/game/chat_validator.py`
 - **_message()** (8 connections) — `server/tests/unit/game/test_chat_validator.py`
 - **contains_malicious_content()** (7 connections) — `server/game/chat_validator.py`
-- **_chat_passes_nats_validation()** (5 connections) — `server/game/chat_nats_publisher.py`
 - **test_contains_malicious_content_detects_patterns()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
 - **test_validate_chat_message_accepts_valid_message()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
 - **test_validate_chat_message_handles_invalid_object()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
@@ -26,28 +25,29 @@
 - **test_validate_room_access_rejects_empty_sender()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
 - **ChatMessage** (1 connections)
 - **parametrize** (1 connections)
-- **Return True when message content and room access checks pass.** (1 connections) — `server/game/chat_nats_publisher.py`
 - **Chat message validation utilities. This module provides validation functions…** (1 connections) — `server/game/chat_validator.py`
 - **Validate chat message before transmission. Args: chat_message: The chat message…** (1 connections) — `server/game/chat_validator.py`
-- *... and 3 more nodes in this community*
+- **Validate sender has access to the room. Args: sender_id: ID of the message…** (1 connections) — `server/game/chat_validator.py`
+- **Check for malicious content patterns. Args: content: The message content to…** (1 connections) — `server/game/chat_validator.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
 - [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (5 shared connections)
-- [chat_service.py](chat_service.py.md) (5 shared connections)
+- [ChatMessage](ChatMessage.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [chat_message.py](chat_message.py.md) (2 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_nats_publisher.py`
 - `server/game/chat_validator.py`
 - `server/tests/unit/game/test_chat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 62 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 58 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

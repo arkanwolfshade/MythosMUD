@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **test_lifespan_shutdown.py** (26 connections) — `server/tests/unit/app/test_lifespan_shutdown.py`
-- **lifespan_shutdown.py** (16 connections) — `server/app/lifespan_shutdown.py`
+- **lifespan_shutdown.py** (17 connections) — `server/app/lifespan_shutdown.py`
 - **shutdown_services()** (14 connections) — `server/app/lifespan_shutdown.py`
 - **asyncio** (14 connections)
 - **FastAPI** (9 connections)
@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (6 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
+- [MythosChronicle](MythosChronicle.md) (3 shared connections)
 - [lifespan.py](lifespan.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
 
@@ -44,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 102 (100%)
+- EXTRACTED: 103 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

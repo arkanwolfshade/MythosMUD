@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **_FakeNPCService** (7 connections) — `scripts/bench_cache_npc.py`
+- **_FakeNPCService** (6 connections) — `scripts/bench_cache_npc.py`
 - **bench_cache_npc.py** (6 connections) — `scripts/bench_cache_npc.py`
 - **bench_npc_cache()** (5 connections) — `scripts/bench_cache_npc.py`
 - **Any** (4 connections)
@@ -17,8 +17,8 @@
 
 ## Relationships
 
-- [NPCCacheService](NPCCacheService.md) (3 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [NPCCacheService](NPCCacheService.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -26,8 +26,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 16 (89%)
-- INFERRED: 2 (11%)
+- EXTRACTED: 15 (88%)
+- INFERRED: 2 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

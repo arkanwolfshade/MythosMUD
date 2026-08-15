@@ -5,9 +5,9 @@
 ## Key Concepts
 
 - **test_player_repository_room.py** (14 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **validate_and_fix_player_room()** (12 connections) — `server/persistence/repositories/player_repository_room.py`
-- **should_skip_room_validation()** (9 connections) — `server/persistence/repositories/player_repository_room.py`
-- **validate_and_fix_player_room_with_persistence()** (9 connections) — `server/persistence/repositories/player_repository_room.py`
+- **validate_and_fix_player_room()** (13 connections) — `server/persistence/repositories/player_repository_room.py`
+- **should_skip_room_validation()** (10 connections) — `server/persistence/repositories/player_repository_room.py`
+- **validate_and_fix_player_room_with_persistence()** (10 connections) — `server/persistence/repositories/player_repository_room.py`
 - **_player()** (9 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
 - **player_repository_room.py** (8 connections) — `server/persistence/repositories/player_repository_room.py`
 - **test_validate_and_fix_player_room_with_persistence_commits()** (4 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
@@ -29,8 +29,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [Player](Player.md) (2 shared connections)
+- [Player](Player.md) (5 shared connections)
+- [DatabaseError](DatabaseError.md) (4 shared connections)
 
 ## Source Files
 
@@ -39,8 +39,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 52 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 52 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

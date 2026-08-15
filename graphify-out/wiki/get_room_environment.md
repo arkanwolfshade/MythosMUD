@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **get_room_environment()** (13 connections) — `server/world_loader.py`
-- **TestGetRoomEnvironment** (12 connections) — `server/tests/unit/test_world_loader.py`
+- **TestGetRoomEnvironment** (11 connections) — `server/tests/unit/test_world_loader.py`
 - **.test_get_room_environment_default()** (3 connections) — `server/tests/unit/test_world_loader.py`
 - **.test_get_room_environment_empty_string_in_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
 - **.test_get_room_environment_from_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
@@ -30,7 +30,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
+- [test_world_loader.py](test_world_loader.py.md) (2 shared connections)
+- [ValidationError](ValidationError.md) (1 shared connections)
 - [validate_room_data](validate_room_data.md) (1 shared connections)
 
 ## Source Files
@@ -40,8 +41,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 34 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 34 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

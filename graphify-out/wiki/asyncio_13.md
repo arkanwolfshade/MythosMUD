@@ -1,50 +1,46 @@
 # asyncio
 
-> 17 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **asyncio** (29 connections)
-- **test_handle_cast_command_wrapper_no_magic_service()** (4 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **test_announce_spell_cast_chat_error()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **test_announce_spell_cast_no_chat_service()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **test_handle_cast_command_no_player()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **test_handle_cast_command_no_spell_name()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **test_handle_spell_command_no_spell_name()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **test_handle_spell_command_with_mastery()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **test_handle_stop_command_success()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test cast command when player is not found.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test cast command when no spell name is provided.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test spell command when no spell name is provided.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test spell command when player has mastery.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test stop command success.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test announce spell cast when chat service is not available.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test announce spell cast when chat service raises an error.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test handle_cast_command wrapper when magic service is not available.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **asyncio** (22 connections)
+- **test_send_respawn_event_with_retry_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_current_lucidity_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_delirium_respawn_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_delirium_respawn_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **Test get_player_data_for_respawn() returns None when player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **Test get_player_data_for_respawn() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **Test send_respawn_event_with_retry() is a no-op when connection manager is…** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **Test get_current_lucidity() returns lucidity from database.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **Test get_player_data_for_delirium_respawn() successfully retrieves player data.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **Test get_player_data_for_delirium_respawn() returns None when player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
 
 ## Relationships
 
-- [test_magic_commands.py](test_magic_commands.py.md) (13 shared connections)
-- [SpellLearningService](SpellLearningService.md) (1 shared connections)
-- [test_announce_spell_cast_no_player_id](test_announce_spell_cast_no_player_id.md) (1 shared connections)
-- [test_handle_cast_command_cast_failure](test_handle_cast_command_cast_failure.md) (1 shared connections)
-- [test_handle_cast_command_success](test_handle_cast_command_success.md) (1 shared connections)
-- [test_handle_learn_command_no_player](test_handle_learn_command_no_player.md) (1 shared connections)
-- [test_handle_learn_command_success](test_handle_learn_command_success.md) (1 shared connections)
-- [test_handle_learn_command_with_corruption](test_handle_learn_command_with_corruption.md) (1 shared connections)
-- [test_handle_learn_command_wrapper_success](test_handle_learn_command_wrapper_success.md) (1 shared connections)
-- [test_handle_spell_command_no_player](test_handle_spell_command_no_player.md) (1 shared connections)
-- [test_handle_spell_command_spell_not_found](test_handle_spell_command_spell_not_found.md) (1 shared connections)
-- [test_handle_spell_command_success](test_handle_spell_command_success.md) (1 shared connections)
+- [test_player_event_handlers_respawn.py](test_player_event_handlers_respawn.py.md) (8 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (1 shared connections)
+- [test_get_current_lucidity_not_found](test_get_current_lucidity_not_found.md) (1 shared connections)
+- [test_get_player_data_for_delirium_respawn_error_handling](test_get_player_data_for_delirium_respawn_error_handling.md) (1 shared connections)
+- [test_get_player_data_for_delirium_respawn_no_connection_manager](test_get_player_data_for_delirium_respawn_no_connection_manager.md) (1 shared connections)
+- [test_get_player_data_for_respawn_no_connection_manager](test_get_player_data_for_respawn_no_connection_manager.md) (1 shared connections)
+- [test_get_player_data_for_respawn_no_get_stats](test_get_player_data_for_respawn_no_get_stats.md) (1 shared connections)
+- [test_get_player_data_for_respawn_no_persistence](test_get_player_data_for_respawn_no_persistence.md) (1 shared connections)
+- [test_get_player_data_for_respawn_success](test_get_player_data_for_respawn_success.md) (1 shared connections)
+- [test_handle_player_delirium_respawned_error_handling](test_handle_player_delirium_respawned_error_handling.md) (1 shared connections)
+- [test_handle_player_delirium_respawned_success](test_handle_player_delirium_respawned_success.md) (1 shared connections)
+- [test_handle_player_respawned_error_handling](test_handle_player_respawned_error_handling.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 34 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

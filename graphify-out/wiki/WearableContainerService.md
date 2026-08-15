@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **WearableContainerService** (31 connections) — `server/services/wearable_container_service.py`
+- **WearableContainerService** (28 connections) — `server/services/wearable_container_service.py`
 - **wearable_container_service.py** (20 connections) — `server/services/wearable_container_service.py`
 - **Any** (15 connections)
 - **UUID** (14 connections)
@@ -33,18 +33,15 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (12 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (11 shared connections)
-- [test_wearable_container_service.py](test_wearable_container_service.py.md) (7 shared connections)
-- [test_look_player.py](test_look_player.py.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (10 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (9 shared connections)
+- [test_wearable_container_service.py](test_wearable_container_service.py.md) (8 shared connections)
+- [test_look_player.py](test_look_player.py.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [wearable_service](wearable_service.md) (1 shared connections)
-- [get_shared_services](get_shared_services.md) (1 shared connections)
-- [test_look_helpers.py](test_look_helpers.py.md) (1 shared connections)
-- [test_filter_container_data](test_filter_container_data.md) (1 shared connections)
-- [test_get_enum_value_with_enum](test_get_enum_value_with_enum.md) (1 shared connections)
 - [MythosMUDError](MythosMUDError.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [LootAllRequest](LootAllRequest.md) (1 shared connections)
+- [WearableContainerServiceError](WearableContainerServiceError.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 120 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 118 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

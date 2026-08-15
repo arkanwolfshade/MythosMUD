@@ -19,7 +19,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [get_config](get_config.md) (1 shared connections)
 
 ## Source Files
 

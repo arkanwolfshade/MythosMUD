@@ -4,10 +4,10 @@
 
 ## Key Concepts
 
-- **ContainerRepository** (26 connections) — `server/persistence/repositories/container_repository.py`
+- **ContainerRepository** (25 connections) — `server/persistence/repositories/container_repository.py`
 - **test_container_repository.py** (21 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
-- **_container_data_to_dict()** (12 connections) — `server/persistence/repositories/container_repository.py`
-- **_sample_container_data()** (11 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- **_container_data_to_dict()** (13 connections) — `server/persistence/repositories/container_repository.py`
+- **_sample_container_data()** (12 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
 - **asyncio** (8 connections)
 - **.create_container()** (7 connections) — `server/persistence/repositories/container_repository.py`
 - **.get_container()** (7 connections) — `server/persistence/repositories/container_repository.py`
@@ -33,11 +33,12 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (11 shared connections)
-- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (9 shared connections)
-- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (8 shared connections)
-- [container_persistence/container_persistence.py](container_persistence-container_persistence.py.md) (6 shared connections)
-- [container_query_helpers_async.py](container_query_helpers_async.py.md) (3 shared connections)
+- [ContainerData](ContainerData.md) (16 shared connections)
+- [DatabaseError](DatabaseError.md) (8 shared connections)
+- [container_persistence/container_persistence.py](container_persistence-container_persistence.py.md) (7 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [test_container_query_helpers_async.py](test_container_query_helpers_async.py.md) (3 shared connections)
+- [persistence/container_persistence.py](persistence-container_persistence.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 112 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 102 (89%)
+- INFERRED: 13 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

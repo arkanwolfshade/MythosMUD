@@ -19,7 +19,7 @@
 
 - [properties](properties.md) (2 shared connections)
 - [applies_to](applies_to.md) (1 shared connections)
-- [enum](enum_2.md) (1 shared connections)
+- [enum](enum.md) (1 shared connections)
 
 ## Source Files
 

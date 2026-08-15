@@ -1,78 +1,78 @@
 # get_logger
 
-> 962 nodes
+> 1196 nodes
 
 ## Key Concepts
 
 - **get_logger()** (525 connections) — `server/structured_logging/enhanced_logging_config.py`
 - **enhanced_logging_config.py** (500 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **server/exceptions.py** (244 connections) — `server/exceptions.py`
-- **DatabaseError** (206 connections) — `server/exceptions.py`
-- **log_and_raise()** (196 connections) — `server/utils/error_logging.py`
-- **ValidationError** (182 connections) — `server/exceptions.py`
-- **get_config()** (105 connections) — `server/config/__init__.py`
-- **get_session_maker()** (97 connections) — `server/database.py`
-- **log_and_raise_enhanced()** (97 connections) — `server/utils/enhanced_error_logging.py`
-- **async_persistence.py** (80 connections) — `server/async_persistence.py`
-- **database.py** (80 connections) — `server/database.py`
-- **alias_storage.py** (75 connections) — `server/alias_storage.py`
-- **maps.py** (63 connections) — `server/api/maps.py`
-- **api/monitoring.py** (63 connections) — `server/api/monitoring.py`
-- **models/user.py** (62 connections) — `server/models/user.py`
-- **error_logging.py** (61 connections) — `server/utils/error_logging.py`
-- **get_async_session()** (53 connections) — `server/database.py`
-- **users.py** (48 connections) — `server/auth/users.py`
-- **player_service.py** (46 connections) — `server/game/player_service.py`
-- **threading.py** (46 connections) — `server/npc/threading.py`
-- **command_parser.py** (46 connections) — `server/utils/command_parser.py`
-- **player_respawn_service.py** (44 connections) — `server/services/player_respawn_service.py`
-- **test_database_extended.py** (43 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **enhanced_error_logging.py** (38 connections) — `server/utils/enhanced_error_logging.py`
-- **rooms.py** (36 connections) — `server/api/rooms.py`
-- *... and 937 more nodes in this community*
+- **connection_manager.py** (167 connections) — `server/realtime/connection_manager.py`
+- **EventBus** (153 connections) — `server/events/event_bus.py`
+- **NPCDefinition** (110 connections) — `server/models/npc.py`
+- **time.py** (96 connections) — `server/container/bundles/time.py`
+- **event_types.py** (86 connections) — `server/events/event_types.py`
+- **async_persistence.py** (82 connections) — `server/async_persistence.py`
+- **BaseEvent** (81 connections) — `server/events/event_types.py`
+- **game_tick_processing.py** (81 connections) — `server/app/game_tick_processing.py`
+- **NPCBase** (79 connections) — `server/npc/npc_base.py`
+- **get_npc_instance_service()** (79 connections) — `server/services/npc_instance_service.py`
+- **PlayerEnteredRoom** (75 connections) — `server/events/event_types.py`
+- **NPCLifecycleManager** (69 connections) — `server/npc/lifecycle_manager.py`
+- **NPCSpawningService** (66 connections) — `server/npc/spawning_service.py`
+- **test_population_control.py** (65 connections) — `server/tests/unit/npc/test_population_control.py`
+- **lifespan_startup.py** (63 connections) — `server/app/lifespan_startup.py`
+- **NPCPopulationController** (60 connections) — `server/npc/population_control.py`
+- **MessageQueue** (58 connections) — `server/realtime/message_queue.py`
+- **npc_combat_integration_service.py** (53 connections) — `server/services/npc_combat_integration_service.py`
+- **test_npc_instance_service.py** (53 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **RoomSubscriptionManager** (50 connections) — `server/realtime/room_subscription_manager.py`
+- **lifecycle_manager.py** (49 connections) — `server/npc/lifecycle_manager.py`
+- **PlayerLeftRoom** (48 connections) — `server/events/event_types.py`
+- **combat_handler.py** (47 connections) — `server/commands/combat_handler.py`
+- *... and 1171 more nodes in this community*
 
 ## Relationships
 
-- [CombatService](CombatService.md) (81 shared connections)
-- [Player](Player.md) (75 shared connections)
-- [MythosMUDError](MythosMUDError.md) (67 shared connections)
-- [event_types.py](event_types.py.md) (59 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (59 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (58 shared connections)
-- [ContainerService](ContainerService.md) (58 shared connections)
-- [EventBus](EventBus.md) (50 shared connections)
-- [.get_instance](get_instance.md) (48 shared connections)
-- [AliasStorage](AliasStorage.md) (46 shared connections)
-- [connection_manager.py](connection_manager.py.md) (46 shared connections)
-- [create_error_context](create_error_context.md) (45 shared connections)
+- [DatabaseError](DatabaseError.md) (126 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (116 shared connections)
+- [NPCDied](NPCDied.md) (95 shared connections)
+- [Player](Player.md) (93 shared connections)
+- [test_npc_service.py](test_npc_service.py.md) (63 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (54 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (53 shared connections)
+- [DistributedEventBus](DistributedEventBus.md) (48 shared connections)
+- [RateLimiter](RateLimiter.md) (47 shared connections)
+- [Any](Any.md) (46 shared connections)
+- [asyncio](asyncio.md) (41 shared connections)
+- [CombatService](CombatService.md) (37 shared connections)
 
 ## Source Files
 
-- `e2e-tests/load-tests/get_invite_codes.py`
 - `monitoring/webhook-receiver.py`
-- `schemas/validator.py`
-- `scripts/add_flavor_text_column.py`
-- `scripts/load_seed_using_project_db.py`
-- `scripts/verify_and_load_seed.py`
-- `server/alias_storage.py`
-- `server/api/__init__.py`
-- `server/api/admin/__init__.py`
 - `server/api/admin/npc.py`
-- `server/api/admin/npc_admin_mgmt_api.py`
 - `server/api/admin/npc_population_api.py`
 - `server/api/admin/npc_router_core.py`
-- `server/api/admin/npc_spawn_rules_api.py`
 - `server/api/base.py`
-- `server/api/containers.py`
-- `server/api/game.py`
-- `server/api/maps.py`
-- `server/api/monitoring.py`
-- `server/api/monitoring_models.py`
+- `server/app/game_tick_processing.py`
+- `server/app/lifespan_event_subscriptions.py`
+- `server/app/lifespan_startup.py`
+- `server/app/memory_cleanup_service.py`
+- `server/app/memory_lifespan_coordinator.py`
+- `server/app/tracked_task_manager.py`
+- `server/async_persistence.py`
+- `server/caching/__init__.py`
+- `server/caching/cache_service.py`
+- `server/caching/lru_cache.py`
+- `server/command_handler/alias_expansion.py`
+- `server/command_handler/command_execution_request.py`
+- `server/command_handler/processing.py`
+- `server/commands/combat_handler.py`
+- `server/commands/container_helpers_inventory_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5498 (98%)
-- INFERRED: 133 (2%)
+- EXTRACTED: 5305 (93%)
+- INFERRED: 427 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---
