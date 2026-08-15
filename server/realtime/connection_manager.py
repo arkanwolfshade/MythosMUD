@@ -115,11 +115,12 @@ from .connection_room_utils import (
     prune_player_from_all_rooms_impl,
     reconcile_room_presence_impl,
 )
-from .connection_session_management import handle_new_game_session_impl
+from .connection_session_management import NewGameSessionResult, handle_new_game_session_impl
 from .connection_statistics import get_presence_statistics_impl, get_session_stats_impl
 from .connection_utils import get_npc_name_from_instance
 from .event_publisher import EventPublisher
 from .message_queue import MessageQueue
+from .monitoring.performance_tracker import PerformanceTracker
 from .player_presence_tracker import (
     broadcast_connection_message_impl,
     track_player_connected_impl,
@@ -167,6 +168,7 @@ class ConnectionManager:
         self.intentional_disconnects: set[uuid.UUID]
         self.disconnect_lock: Lock
         self.processed_disconnect_lock: Lock
+        self.performance_tracker: PerformanceTracker
         # Set in initialize_connection_state / core components (needed for mypy + _SupportsEventSequence)
         self.sequence_counter: int
         self.online_players: dict[uuid.UUID, dict[str, object]]
@@ -277,7 +279,7 @@ class ConnectionManager:
         """Disconnect a specific WebSocket connection for a player."""
         return await disconnect_websocket_connection_impl(self, player_id, connection_id)
 
-    async def handle_new_game_session(self, player_id: uuid.UUID, new_session_id: str) -> dict[str, object]:
+    async def handle_new_game_session(self, player_id: uuid.UUID, new_session_id: str) -> NewGameSessionResult:
         """Handle a new game session by disconnecting existing connections."""
         return await handle_new_game_session_impl(player_id, new_session_id, self)
 
@@ -428,13 +430,13 @@ class ConnectionManager:
         """
         return get_next_sequence_impl(self)
 
-    async def _track_player_connected(
+    async def track_player_connected(
         self, player_id: uuid.UUID, player: Player, connection_type: str = "unknown"
     ) -> None:
         """Track when a player connects."""
         await track_player_connected_impl(player_id, player, connection_type, self)
 
-    async def _broadcast_connection_message(self, player_id: uuid.UUID, player: Player) -> None:
+    async def broadcast_connection_message(self, player_id: uuid.UUID, player: Player) -> None:
         """Broadcast a connection message for a player who is already tracked as online."""
         await broadcast_connection_message_impl(player_id, player, self)
 

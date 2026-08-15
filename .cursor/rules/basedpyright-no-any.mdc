@@ -1,0 +1,41 @@
+---
+description: Ban basedpyright reportAny and reportExplicitAny in Python; type managers and dicts without Any
+globs: "**/*.py"
+alwaysApply: true
+---
+
+# basedpyright: no `Any`
+
+Do not write Python that triggers **`reportAny`** or **`reportExplicitAny`**. Do not use `typing.Any`,
+`from typing import Any`, `dict[str, Any]`, `list[Any]`, `*args: Any`, `manager: Any`, or
+`# type: ignore` / `# pyright: ignore` to hide those rules.
+
+After editing Python, run `uv run basedpyright <edited files>` from the repo root. Fix findings before
+considering the change done.
+
+## Fixes (use these, not `Any`)
+
+- **Structured dicts:** `TypedDict` (see `NewGameSessionResult` in `connection_session_management.py`).
+- **Cross-module manager/helpers:** a `Protocol` whose **mutable dict value types match the real class
+  exactly**. `dict[str, WebSocket | None]` is not assignable to `dict[str, WebSocket]` (invariance).
+- **Cycles:** do **not** `TYPE_CHECKING`-import `ConnectionManager` from a module that
+  `connection_manager.py` already imports (`reportImportCycles`). Use a Protocol instead.
+- **Tests:** typed locals, e.g. `svc: AsyncMock = AsyncMock()`, not file-level `reportAny` suppression.
+
+```python
+# BAD
+from typing import Any
+async def handle(..., manager: Any) -> dict[str, Any]: ...
+
+# GOOD
+class _SessionConnectionManager(Protocol):
+    active_websockets: dict[str, WebSocket]
+    player_sessions: dict[uuid.UUID, str]
+    # ...same types as ConnectionManager...
+
+class NewGameSessionResult(TypedDict):
+    success: bool
+    errors: list[str]
+
+async def handle(..., manager: _SessionConnectionManager) -> NewGameSessionResult: ...
+```
