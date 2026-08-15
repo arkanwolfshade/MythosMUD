@@ -336,7 +336,7 @@ async def test_cleanup_single_decayed_corpse_success() -> None:
     service: MagicMock = MagicMock()
     service.cleanup_decayed_corpse = cleanup_decayed_corpse
     cm: MagicMock = MagicMock()
-    with patch("server.app.game_tick_corpses.emit_container_decayed", new_callable=AsyncMock):
+    with patch("server.services.container_websocket_events.emit_container_decayed", new_callable=AsyncMock):
         ok = await _cleanup_single_decayed_corpse(service, cm, corpse, 60)
     assert ok is True
 
@@ -510,7 +510,7 @@ async def test_cleanup_decayed_corpses_on_interval() -> None:
     service.get_all_decayed_corpses = AsyncMock(return_value=[corpse])
     service.cleanup_decayed_corpse = AsyncMock()
     with patch("server.app.game_tick_corpses._create_corpse_lifecycle_service", return_value=service):
-        with patch("server.app.game_tick_corpses.emit_container_decayed", new_callable=AsyncMock):
+        with patch("server.services.container_websocket_events.emit_container_decayed", new_callable=AsyncMock):
             await cleanup_decayed_corpses(app, tick_count=60)
 
 

@@ -249,7 +249,7 @@ async def _get_container_data_from_component(
 
 def _extract_container_metadata(container_component: _WearableContainer) -> JsonMap:
     """Extract metadata from container component."""
-    container_metadata = _as_map(container_component.metadata)
+    container_metadata = _as_map(getattr(container_component, "metadata", None))
     return {
         "item_name": str(container_metadata.get("item_name", "")).lower(),
         "slot": str(container_metadata.get("slot", "")).lower(),

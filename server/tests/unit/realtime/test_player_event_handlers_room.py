@@ -148,7 +148,7 @@ async def test_send_room_name_message(player_room_event_handler, mock_connection
     room_id = "room_001"
     room_name = "Test Room"
     mock_connection_manager.send_personal_message = AsyncMock()
-    with patch("server.realtime.envelope.build_event") as mock_build_event:
+    with patch("server.realtime.player_event_handlers_room.build_event") as mock_build_event:
         mock_build_event.return_value = {"type": "command_response"}
         await player_room_event_handler._send_room_name_message(player_id, room_id, room_name)
         mock_connection_manager.send_personal_message.assert_awaited_once_with(player_id, mock_build_event.return_value)
