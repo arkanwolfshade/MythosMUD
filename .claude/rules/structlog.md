@@ -1,18 +1,7 @@
 ---
 description: "Comprehensive best practices for implementing structured logging with structlog to improve debugging, monitoring, and observability. Covers configuration, formatting, performance optimization, and integration strategies."
 paths:
-  - "*.py"
-  - "*.js"
-  - "*.ts"
-  - "*.go"
-  - "*.java"
-  - "*.c"
-  - "*.cpp"
-  - "*.rb"
-  - "*.php"
-  - "*.rs"
-  - "*.kt"
-  - "*.scala"
+  - "**/*.py"
 ---
 # Structured Logging with Structlog Best Practices
 

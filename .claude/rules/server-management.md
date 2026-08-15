@@ -1,4 +1,5 @@
 ---
+description: "Server authority (client must defer to server state) and the one-server-only startup/shutdown procedure for MythosMUD."
 paths:
   - "server/**"
   - "client/**"

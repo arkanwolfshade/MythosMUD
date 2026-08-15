@@ -12,8 +12,11 @@ from __future__ import annotations
 import json
 import os
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
+
+MAX_TRACKED_SESSIONS = 20
 
 
 def _normalize_path(path: str) -> str:
@@ -45,8 +48,14 @@ def _is_client_test_path(rel: str) -> bool:
 
 
 def _is_agent_config_path(rel: str) -> bool:
-    """True if path is under .claude/ or .cursor/ (agent/skill/rule/hook config, not application code)."""
-    return rel.startswith(".claude/") or rel.startswith(".cursor/")
+    """
+    True if path is under .claude/ or .cursor/ (agent/skill/rule/hook config, not application
+    code). Checked as a path *segment* anywhere in the normalized path, not just a leading
+    prefix: `workspace_root` isn't always reliably the repo root, so a workspace-relative
+    prefix match alone can miss it when the absolute path only partially strips.
+    """
+    parts = rel.split("/")
+    return ".claude" in parts or ".cursor" in parts
 
 
 def _is_test_file(file_path: str, workspace_root: str | None) -> bool:
@@ -69,7 +78,7 @@ def _load_payload() -> dict[str, Any] | None:
     try:
         result: dict[str, Any] = json.load(sys.stdin)
         return result
-    except json.JSONDecodeError:
+    except (json.JSONDecodeError, UnicodeDecodeError, OSError):
         return None
 
 
@@ -82,6 +91,31 @@ def _load_state(state_file: Path) -> dict[str, list[str]]:
         return data if isinstance(data, dict) else {}
     except (json.JSONDecodeError, OSError):
         return {}
+
+
+def _write_state_atomic(state_dir: Path, state_file: Path, state: dict[str, list[str]]) -> None:
+    """
+    Write state via a same-directory temp file + os.replace so a concurrent afterFileEdit
+    hook never observes a partially-written file. A lost update under a race just means a
+    missed test reminder, not corrupt state, so this is deliberately not lock-protected.
+    Caps tracked conversations at MAX_TRACKED_SESSIONS (oldest-inserted first) so abandoned
+    conversations don't accumulate in the state file forever.
+    """
+    if len(state) > MAX_TRACKED_SESSIONS:
+        for stale_key in list(state.keys())[: len(state) - MAX_TRACKED_SESSIONS]:
+            del state[stale_key]
+    try:
+        state_dir.mkdir(parents=True, exist_ok=True)
+        fd, tmp_path = tempfile.mkstemp(dir=state_dir, prefix=".edited-files-", suffix=".tmp")
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                json.dump(state, f, indent=2)
+            os.replace(tmp_path, state_file)
+        except OSError:
+            Path(tmp_path).unlink(missing_ok=True)
+            raise
+    except OSError:
+        pass  # fail open: a missed state write costs a missed test reminder, not correctness
 
 
 def _should_skip_recording(payload: dict[str, Any]) -> bool:
@@ -107,19 +141,19 @@ def main() -> None:
 
     file_path = payload.get("file_path")
     conversation_id = payload.get("conversation_id")
-    assert file_path is not None and conversation_id is not None  # ensured by _should_skip_recording
+    if file_path is None or conversation_id is None:
+        sys.exit(0)  # defensive: _should_skip_recording already checked this
     project_dir = os.environ.get("CURSOR_PROJECT_DIR", "")
 
     state_dir = Path(project_dir or ".") / ".cursor" / "hooks" / "state"
     state_file = state_dir / "edited-files.json"
-    state_dir.mkdir(parents=True, exist_ok=True)
 
     state = _load_state(state_file)
     files = state.get(conversation_id, [])
     if file_path not in files:
         files.append(file_path)
         state[conversation_id] = files
-        state_file.write_text(json.dumps(state, indent=2), encoding="utf-8")
+        _write_state_atomic(state_dir, state_file, state)
 
     sys.exit(0)
 

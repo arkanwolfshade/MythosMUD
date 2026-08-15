@@ -1,4 +1,5 @@
 ---
+description: "Configuration for AI behavior when interacting with Codacy's MCP Server: run codacy_cli_analyze after every edit and after dependency changes."
 paths:
   - "server/**"
   - "client/**"

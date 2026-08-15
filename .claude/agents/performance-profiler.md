@@ -1,6 +1,7 @@
 ---
 name: "Performance Profiler"
 description: "Performance analysis, bottleneck identification, and optimization recommendations"
+disallowedTools: Edit, Write, NotebookEdit
 ---
 
 # Performance Profiler Subagent

@@ -1,18 +1,7 @@
 ---
 description: "Comprehensive best practices for implementing secure password hashing with Argon2 to protect user credentials and sensitive data. Covers configuration, performance optimization, security considerations, and integration strategies."
 paths:
-  - "*.py"
-  - "*.js"
-  - "*.ts"
-  - "*.go"
-  - "*.java"
-  - "*.c"
-  - "*.cpp"
-  - "*.rb"
-  - "*.php"
-  - "*.rs"
-  - "*.kt"
-  - "*.scala"
+  - "**/*.py"
 ---
 # Argon2 Password Hashing Best Practices
 

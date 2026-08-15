@@ -1,6 +1,7 @@
 ---
 name: "Security Auditor"
 description: "Security-focused code review, vulnerability analysis, and COPPA compliance verification"
+disallowedTools: Edit, Write, NotebookEdit
 ---
 
 # Security Auditor Subagent

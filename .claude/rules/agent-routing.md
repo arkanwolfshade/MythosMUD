@@ -1,4 +1,5 @@
 ---
+description: "Which of MythosMUD's project-specific agents to delegate to, by user intent (test analysis, bug investigation, security audit, performance, codebase exploration)."
 paths:
   - "server/**"
   - "client/**"

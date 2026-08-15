@@ -1,4 +1,5 @@
 ---
+description: "Minimum test coverage requirements (70% overall, 90%+ for critical/security code) and test quality standards for MythosMUD."
 paths:
   - "server/tests/**"
   - "client/**/*.test.*"

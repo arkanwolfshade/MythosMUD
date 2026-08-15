@@ -43,6 +43,6 @@ description: Write and run MythosMUD tests: server tests under server/tests/unit
 ## Reference
 
 - Full rules: [AGENTS.md](../../AGENTS.md) "Testing requirements"
-- Server remediation: [.cursor/commands/server-test-remediation.md](../../commands/server-test-remediation.md)
-- Client remediation: [.cursor/commands/client-test-remediation.md](../../commands/client-test-remediation.md)
+- Server remediation: [.cursor/commands/server-test-remediation.md](../../../.cursor/commands/server-test-remediation.md) (no Claude-side equivalent yet)
+- Client remediation: [client-test-remediation](../client-test-remediation/SKILL.md)
 - Makefile: [Makefile](../../Makefile) (test, test-server, test-client, test-coverage, test-comprehensive)

@@ -2,10 +2,8 @@
 description: "Comprehensive best practices for configuring and using pre-commit hooks to ensure code quality, consistency, and security in development workflows. Covers hook configuration, custom hooks, performance optimization, and common pitfalls."
 paths:
   - ".pre-commit-config.yaml"
-  - "*.yaml"
-  - "*.yml"
-  - "*.json"
-  - "*.toml"
+  - "**/*.yaml"
+  - "**/*.yml"
 ---
 # Pre-commit Hooks Best Practices
 

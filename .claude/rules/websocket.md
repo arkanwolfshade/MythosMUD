@@ -1,18 +1,9 @@
 ---
 description: "This rule provides guidelines and best practices for developing robust, scalable, and secure real-time applications using WebSockets. It covers code organization, performance optimization, security considerations, testing strategies, and common pitfalls to avoid when working with WebSockets."
 paths:
-  - "*.js"
-  - "*.ts"
-  - "*.jsx"
-  - "*.tsx"
-  - "*.py"
-  - "*.go"
-  - "*.java"
-  - "*.c"
-  - "*.cpp"
-  - "*.rb"
-  - "*.php"
-  - "*.rs"
+  - "**/*.py"
+  - "**/*.ts"
+  - "**/*.tsx"
   - "*.kt"
   - "*.scala"
 ---

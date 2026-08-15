@@ -13,13 +13,13 @@ When implementing a feature, implement the **entire stack**: client, server, and
 
 **Server is authoritative over the client.** On any disparity, server state is correct; client must follow
 server data (events, command responses, room/game state). See AGENTS.md "Server authority (critical)" and
-`.cursor/rules/server-authority.mdc`.
+[.claude/rules/server-management.md](../../rules/server-management.md).
 
 ## Checklist
 
 - [ ] **API / server:** Routes, request/response models (Pydantic), business logic. Location: `server/`
 - [ ] **Persistence:** Schema changes, migrations, repositories if needed. PostgreSQL only; see
-      [mythosmud-database-placement](.cursor/skills/mythosmud-database-placement). Location: `db/`, `server/`
+      [mythosmud-database-placement](../mythosmud-database-placement/SKILL.md). Location: `db/`, `server/`
 - [ ] **Client:** UI, hooks, API calls, types. Location: `client/`. Client state must reflect server authority.
 - [ ] **In-game help:** Player-facing commands get `help <command>` in `server/help/help_content.py`
 - [ ] **Authoring docs:** Content tools get a runbook under `docs/runbooks/` (or subsystem doc)

@@ -1,6 +1,7 @@
 ---
 name: "Codebase Explorer"
 description: "Deep codebase exploration and analysis for finding patterns, analyzing architecture, and researching dependencies, using jCodemunch MCP as the primary navigation tool"
+disallowedTools: Edit, Write, NotebookEdit
 ---
 
 # Codebase Explorer Subagent

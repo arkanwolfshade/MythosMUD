@@ -1,7 +1,9 @@
 ---
 description: "This guide defines the definitive best practices for writing clean, performant, and maintainable PostgreSQL SQL, focusing on modern conventions and avoiding common pitfalls."
 paths:
-  - "**/*"
+  - "server/**/*.py"
+  - "**/*.sql"
+  - "db/**"
 ---
 # PostgreSQL Best Practices
 

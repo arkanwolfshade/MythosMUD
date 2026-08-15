@@ -43,5 +43,5 @@ Copy and follow before any server start:
 
 - Full rules: project root [AGENTS.md](../../AGENTS.md) "Critical server management rules" (one server only, startup
   procedure)
-- Rule file: [.cursor/rules/serverstart.mdc](../../rules/serverstart.mdc)
+- Rule file: [.claude/rules/server-management.md](../../rules/server-management.md)
 - Scripts: [scripts/stop_server.ps1](../../scripts/stop_server.ps1), [scripts/start_local.ps1](../../scripts/start_local.ps1)

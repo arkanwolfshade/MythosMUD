@@ -1,6 +1,7 @@
 ---
 name: "Test Suite Analyzer"
 description: "Comprehensive test analysis, coverage reporting, and test quality assessment"
+disallowedTools: Edit, Write, NotebookEdit
 ---
 
 # Test Suite Analyzer Subagent

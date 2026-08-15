@@ -1,7 +1,7 @@
 ---
 description: "Comprehensive best practices for developing robust and scalable ASGI applications using Uvicorn server. Covers code organization, performance optimization, security considerations, testing strategies, and common pitfalls."
 paths:
-  - "*.py"
+  - "**/*.py"
 ---
 # Uvicorn ASGI Server Best Practices
 

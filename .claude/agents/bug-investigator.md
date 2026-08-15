@@ -1,6 +1,7 @@
 ---
 name: "Bug Investigator"
 description: "Systematic bug investigation, root cause analysis, and evidence collection"
+disallowedTools: Edit, Write, NotebookEdit
 ---
 
 # Bug Investigator Subagent

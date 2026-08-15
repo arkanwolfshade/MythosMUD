@@ -1,6 +1,6 @@
 ---
 description: This rule provides guidelines and best practices for developing robust, scalable, and secure real-time applications using WebSockets. It covers code organization, performance optimization, security considerations, testing strategies, and common pitfalls to avoid when working with WebSockets.
-globs: *.js,*.ts,*.jsx,*.tsx,*.py,*.go,*.java,*.c,*.cpp,*.rb,*.php,*.rs,*.kt,*.scala
+globs: **/*.py,**/*.ts,**/*.tsx
 ---
 # WebSocket Best Practices
 

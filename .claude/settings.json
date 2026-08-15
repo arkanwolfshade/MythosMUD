@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python .claude/hooks/record_edited_file.py",
+            "command": "python \"${CLAUDE_PROJECT_DIR}/.claude/hooks/record_edited_file.py\"",
             "timeout": 5
           }
         ]
@@ -18,7 +18,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python .claude/hooks/trigger_test_agent.py",
+            "command": "python \"${CLAUDE_PROJECT_DIR}/.claude/hooks/trigger_test_agent.py\"",
             "timeout": 10
           }
         ]

@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import tempfile
 from pathlib import Path
 from typing import NoReturn, cast
 
@@ -22,6 +23,8 @@ FOLLOWUP_MESSAGE = (
     "from project root to verify. If you only edited test files or fixtures, respond "
     "briefly that no action is needed."
 )
+
+MAX_TRACKED_SESSIONS = 20
 
 
 def _exit_empty() -> NoReturn:
@@ -41,6 +44,26 @@ def _load_state(state_file: Path) -> dict[str, list[str]] | None:
     return cast(dict[str, list[str]], state) if isinstance(state, dict) else None
 
 
+def _write_state_atomic(state_dir: Path, state_file: Path, state: dict[str, list[str]]) -> None:
+    """Write state via a same-directory temp file + os.replace. See record_edited_file.py
+    for the matching helper and rationale (no locking; a lost update just re-prompts later)."""
+    if len(state) > MAX_TRACKED_SESSIONS:
+        for stale_key in list(state.keys())[: len(state) - MAX_TRACKED_SESSIONS]:
+            del state[stale_key]
+    try:
+        state_dir.mkdir(parents=True, exist_ok=True)
+        fd, tmp_path = tempfile.mkstemp(dir=state_dir, prefix=".edited-files-", suffix=".tmp")
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                json.dump(state, f, indent=2)
+            os.replace(tmp_path, state_file)
+        except OSError:
+            Path(tmp_path).unlink(missing_ok=True)
+            raise
+    except OSError:
+        pass  # fail open
+
+
 def main() -> None:
     """
     Entry point: read hook payload from stdin, check edited-files state, and optionally
@@ -48,7 +71,7 @@ def main() -> None:
     """
     try:
         payload = json.load(sys.stdin)
-    except json.JSONDecodeError:
+    except (json.JSONDecodeError, UnicodeDecodeError, OSError):
         _exit_empty()
 
     conversation_id = payload.get("conversation_id")
@@ -71,12 +94,11 @@ def main() -> None:
     files = state.pop(conversation_id, [])
     if not files:
         # Write back state (in case we popped nothing but other convs exist)
-        state_file.write_text(json.dumps(state, indent=2), encoding="utf-8")
+        _write_state_atomic(state_dir, state_file, state)
         _exit_empty()
 
-    # Persist updated state (removed this conversation)
-    state_dir.mkdir(parents=True, exist_ok=True)
-    state_file.write_text(json.dumps(state, indent=2), encoding="utf-8")
+    # Persist updated state (removed this conversation) before responding
+    _write_state_atomic(state_dir, state_file, state)
 
     response = {"followup_message": FOLLOWUP_MESSAGE}
     print(json.dumps(response), end="")

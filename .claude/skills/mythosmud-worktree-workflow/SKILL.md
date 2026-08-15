@@ -13,7 +13,7 @@ description: >
 > cabinets."
 
 This skill guides the agent through creating, using, and cleaning up Git
-worktrees for MythosMUD according to the `worktrees.mdc` rule.
+worktrees for MythosMUD according to the canonical layout below.
 
 ## When to Use
 
@@ -28,8 +28,6 @@ Use this skill when:
 
 ## Canonical Layout (Summary)
 
-Follow `.cursor/rules/worktrees.mdc`:
-
 - Canonical repo: `C:/projects/MythosMUD`
 - Worktrees root: `C:/projects/MythosMUD-worktrees/`
 - Worktree path pattern: `C:/projects/MythosMUD-worktrees/<kind>-<slug>`
@@ -43,8 +41,8 @@ Follow `.cursor/rules/worktrees.mdc`:
   force-remove, or redirect work into a different worktree unless the user
   explicitly asked for that in this conversation. Plans that list a worktree
   step are proposals until approved. Default: stay on the current tree.
-- You are working on Windows with PowerShell; **do not** chain commands with
-  `&&`. Run each command separately via the Shell tool.
+- You are working on Windows with PowerShell; use the Bash tool for these
+  commands (chaining with `&&` is fine).
 - **Never** create a worktree inside `.git/` or nested inside another
   worktree. Only use:
   - `C:/projects/MythosMUD` (canonical)
@@ -84,12 +82,12 @@ Compute:
 - Branch name: `<kind>/<slug>`
 - Worktree path: `C:/projects/MythosMUD-worktrees/<kind>-<slug>`
 
-Record these in your reasoning and, when appropriate, surface them to the user
-for confirmation.
+State the derived branch name and worktree path; confirm with the user when
+appropriate.
 
 ### Step 3 — Ensure Canonical Repo Context
 
-Use the Shell tool to:
+Use the Bash tool to:
 
 1. Change directory to the canonical repo:
    - `cd C:/projects/MythosMUD`
@@ -97,8 +95,8 @@ Use the Shell tool to:
    - `git status`
    - `git worktree list`
 
-Do **not** rely on relative paths; always use the explicit `working_directory`
-argument when invoking Shell commands.
+Do **not** rely on relative paths; `cd` to the canonical repo explicitly before
+running these commands.
 
 ### Step 4 — Fetch and Validate Base Branch
 
@@ -125,8 +123,8 @@ From `C:/projects/MythosMUD`:
 - For an **existing** branch:
   - `git worktree add C:/projects/MythosMUD-worktrees/<kind>-<slug> <kind>/<slug>`
 
-Use Shell commands that are valid PowerShell invocations, one per tool call
-if necessary.
+Use PowerShell-valid commands via the Bash tool, one per tool call if
+necessary.
 
 After the command succeeds, optionally:
 
@@ -154,14 +152,14 @@ In the new worktree:
      - `<hash>` can be a short, stable identifier (e.g. derived from an issue
        number or a generated token).
 3. Seed the plan content using the standard worktree plan template:
-   - `.cursor/templates/worktree-plan-template.md`
+   - [worktree-plan-template.md](worktree-plan-template.md) (in this skill directory)
    - Copy the template into the new plan and fill in:
      - Branch name.
      - Worktree path.
      - Short description and goals derived from the user’s request.
 
-Use the Cursor ApplyPatch tool to create the file; do **not** directly edit in
-the terminal.
+Use the Write tool to create the file; do **not** create it via a shell
+heredoc/echo.
 
 ## Skill: Clean Up a Completed or Stale Worktree
 

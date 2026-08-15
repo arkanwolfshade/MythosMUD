@@ -1,4 +1,5 @@
 ---
+description: "PostgreSQL database naming and safety rules for MythosMUD: which databases (mythos_unit, mythos_e2e, mythos_dev) may be reset, and where production vs. test data lives."
 paths:
   - "db/**"
   - "**/*.sql"

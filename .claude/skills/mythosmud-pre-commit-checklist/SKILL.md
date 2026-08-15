@@ -13,7 +13,7 @@ Work is not done until these pass:
 2. **Type check** — `make mypy`
 3. **Lint** — `make lint` (and `make lint-sqlalchemy` if touching SQLAlchemy)
 4. **Tests** — `make test` (fast) or `make test-coverage` (with coverage)
-5. **Codacy** — After any file edit, run Codacy analysis per project rules (see [.cursor/rules/codacy.mdc](../../rules/codacy.mdc))
+5. **Codacy** — After any file edit, run Codacy analysis per project rules (see [.claude/rules/codacy.md](../../rules/codacy.md))
 6. **In-game help** — Player-facing commands/features have `help <topic>` content in
    `server/help/help_content.py` (and command-help lists when applicable)
 7. **Authoring docs** — If the feature adds content tools, add or update a runbook under
@@ -38,5 +38,5 @@ Run in this order: format first (so lint/mypy see formatted code), then mypy, th
 ## Reference
 
 - Definition of Done: [AGENTS.md](../../AGENTS.md) "Development practices" / "Definition of done"
-- Codacy after edit: [.cursor/rules/codacy.mdc](../../rules/codacy.mdc)
+- Codacy after edit: [.claude/rules/codacy.md](../../rules/codacy.md)
 - Makefile targets: [Makefile](../../Makefile) (help, format, mypy, lint, test, test-coverage, all)
