@@ -236,7 +236,9 @@ async def test_validate_movement_allows_ghost_in_destination(movement_service, m
     with (
         patch("server.game.movement_service.check_combat_state", return_value=True),
         patch("server.game.movement_service.check_player_posture", return_value=True),
-        patch("server.game.movement_service.validate_player_room_membership", new_callable=AsyncMock, return_value=True),
+        patch(
+            "server.game.movement_service.validate_player_room_membership", new_callable=AsyncMock, return_value=True
+        ),
         patch("server.game.movement_service.validate_exit", return_value=True),
     ):
         result = await movement_service._validate_movement(

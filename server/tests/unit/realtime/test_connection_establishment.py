@@ -604,7 +604,9 @@ async def test_establish_websocket_connection_player_not_found():
     mock_manager = _make_manager()
     mock_manager.get_player = AsyncMock(return_value=None)
 
-    success, connection_id = await establish_websocket_connection(_as_ws(mock_websocket), player_id, _as_mgr(mock_manager))
+    success, connection_id = await establish_websocket_connection(
+        _as_ws(mock_websocket), player_id, _as_mgr(mock_manager)
+    )
 
     assert success is False
     assert connection_id is not None
@@ -621,7 +623,9 @@ async def test_establish_websocket_connection_error():
     mock_manager = _make_manager()
     mock_manager.async_persistence = None
 
-    success, connection_id = await establish_websocket_connection(_as_ws(mock_websocket), player_id, _as_mgr(mock_manager))
+    success, connection_id = await establish_websocket_connection(
+        _as_ws(mock_websocket), player_id, _as_mgr(mock_manager)
+    )
 
     assert success is False
     assert connection_id is None or connection_id not in mock_manager.active_websockets
@@ -638,7 +642,9 @@ async def test_establish_websocket_connection_cleans_dead_connections():
     mock_manager.active_websockets = {dead_conn: _as_ws(_FakeWebSocket("DISCONNECTED"))}
     mock_manager.get_player = AsyncMock(return_value=_player_with_room())
 
-    success, _connection_id = await establish_websocket_connection(_as_ws(mock_websocket), player_id, _as_mgr(mock_manager))
+    success, _connection_id = await establish_websocket_connection(
+        _as_ws(mock_websocket), player_id, _as_mgr(mock_manager)
+    )
 
     assert success is True
     assert dead_conn not in mock_manager.active_websockets
@@ -654,7 +660,9 @@ async def test_establish_websocket_connection_cancels_rest_countdown():
     rest_task: asyncio.Task[None] = asyncio.create_task(asyncio.sleep(100))
     mock_manager.resting_players = {player_id: rest_task}
 
-    success, _connection_id = await establish_websocket_connection(_as_ws(mock_websocket), player_id, _as_mgr(mock_manager))
+    success, _connection_id = await establish_websocket_connection(
+        _as_ws(mock_websocket), player_id, _as_mgr(mock_manager)
+    )
 
     assert success is True
     assert player_id not in mock_manager.resting_players
