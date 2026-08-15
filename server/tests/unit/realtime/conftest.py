@@ -12,7 +12,7 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 from server.realtime.nats_message_handler import NATSMessageHandler
-from server.realtime.player_event_handlers_room import PlayerRoomEventHandler
+from server.realtime.player_event_handlers_room import PlayerRoomEventHandler, PlayerRoomEventHandlerDeps
 from server.realtime.player_event_handlers_utils import PlayerEventHandlerUtils
 
 
@@ -129,12 +129,14 @@ def player_room_event_handler(
 ):
     """Create a PlayerRoomEventHandler instance."""
     return PlayerRoomEventHandler(
-        connection_manager=mock_connection_manager,
-        room_sync_service=mock_room_sync_service,
-        chat_logger=mock_chat_logger,
-        message_builder=mock_message_builder,
-        name_extractor=mock_name_extractor,
-        occupant_manager=mock_occupant_manager,
-        utils=mock_utils,
-        logger=mock_logger,
+        PlayerRoomEventHandlerDeps(
+            connection_manager=mock_connection_manager,
+            room_sync_service=mock_room_sync_service,
+            chat_logger=mock_chat_logger,
+            message_builder=mock_message_builder,
+            name_extractor=mock_name_extractor,
+            occupant_manager=mock_occupant_manager,
+            utils=mock_utils,
+            logger=mock_logger,
+        )
     )

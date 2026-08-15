@@ -10,7 +10,8 @@ description: Run MythosMUD pre-commit checks before considering work done: forma
 Work is not done until these pass:
 
 1. **Format** — `make format`
-2. **Type check** — `make mypy`
+2. **Type check** — `make mypy`, and after Python edits `uv run basedpyright <edited files>`
+   (no `typing.Any`; no `reportAny` / `reportExplicitAny` ignores)
 3. **Lint** — `make lint` (and `make lint-sqlalchemy` if touching SQLAlchemy)
 4. **Tests** — `make test` (fast) or `make test-coverage` (with coverage)
 5. **Codacy** — After any file edit, run Codacy analysis per project rules (see [.cursor/rules/codacy.mdc](../../rules/codacy.mdc))
@@ -33,7 +34,9 @@ This runs: format, mypy, lint, lint-sqlalchemy, codacy-tools, build, openapi-spe
 
 ## Order
 
-Run in this order: format first (so lint/mypy see formatted code), then mypy, then lint, then tests. Run Codacy analysis for each edited file as specified in the Codacy rule.
+Run in this order: format first (so lint/mypy see formatted code), then mypy, then
+`uv run basedpyright` on edited Python, then lint, then tests. Run Codacy analysis for
+each edited file as specified in the Codacy rule.
 
 ## Reference
 

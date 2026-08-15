@@ -18,7 +18,7 @@ from typing import Protocol, cast
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..constants.spawn_defaults import DEFAULT_RESPAWN_ROOM
+from ..constants.spawn_defaults import DEFAULT_RESPAWN_ROOM, LIMBO_ROOM_ID
 from ..events.event_types import BaseEvent, PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
 from ..exceptions import DatabaseError
 from ..models.game import PositionState
@@ -63,12 +63,6 @@ class _RandomChoiceSource(Protocol):
     def choice(self, seq: Sequence[str]) -> str:
         """Return one element from a non-empty sequence of liability codes."""
         ...
-
-
-# Limbo room for death state isolation
-# NOTE: Room ID is generated as {plane}_{zone}_{sub_zone}_{stable_id}
-# For limbo room: limbo_death_void_limbo_death_void
-LIMBO_ROOM_ID = "limbo_death_void_limbo_death_void"
 
 
 class PlayerRespawnService:

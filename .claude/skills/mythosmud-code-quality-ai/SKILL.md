@@ -30,6 +30,7 @@ Guidance and checklist to improve code for AI-driven development (agents, code g
 - **When touching a file**: Add or fix missing annotations on the functions you change.
 - **basedpyright:** Never use `typing.Any` (`reportAny` / `reportExplicitAny`). Follow
   `.cursor/rules/basedpyright-no-any.mdc` (Protocol + TypedDict, not `manager: Any`).
+  Ponytail shortest-diff does not authorize `Any`.
 - **Why**: Annotated signatures improve AI suggestions, refactors, and catch wrong arguments.
 
 ### Naming (N)

@@ -8,14 +8,38 @@ As documented in "Player Event Propagation Protocols" - Dr. Armitage, 1928
 
 # pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments  # Reason: Event handlers require many service attributes and complex event processing logic
 
-from typing import Any
+from __future__ import annotations
 
-from ..events.event_types import PlayerDPUpdated, PlayerEnteredRoom, PlayerLeftRoom
+import uuid
+from typing import cast
+
+from structlog.stdlib import BoundLogger
+
+from ..events.event_types import (
+    PlayerDeliriumRespawnedEvent,
+    PlayerDiedEvent,
+    PlayerDPDecayEvent,
+    PlayerDPUpdated,
+    PlayerEnteredRoom,
+    PlayerLeftRoom,
+    PlayerRespawnedEvent,
+)
+from ..services.chat_logger import ChatLogger
 from ..services.player_combat_service import PlayerXPAwardEvent
+from ..services.room_sync_service import RoomSyncService
 from ..structured_logging.enhanced_logging_config import get_logger
+from .connection_manager import ConnectionManager
 from .message_builders import MessageBuilder
 from .player_event_handlers_respawn import PlayerRespawnEventHandler
-from .player_event_handlers_room import PlayerRoomEventHandler
+from .player_event_handlers_room import (
+    JsonMap,
+    OccupantsUpdateFn,
+    PlayerRoomEventHandler,
+    PlayerRoomEventHandlerDeps,
+    RoomChatLogger,
+    RoomConnectionManager,
+    RoomSyncOrdering,
+)
 from .player_event_handlers_state import PlayerStateEventHandler
 from .player_event_handlers_utils import PlayerEventHandlerUtils
 from .player_name_utils import PlayerNameExtractor
@@ -25,12 +49,25 @@ from .room_occupant_manager import RoomOccupantManager
 class PlayerEventHandler:
     """Handles all player-related real-time events."""
 
+    connection_manager: ConnectionManager | None
+    room_sync_service: RoomSyncService
+    chat_logger: ChatLogger
+    task_registry: object | None
+    message_builder: MessageBuilder
+    name_extractor: PlayerNameExtractor
+    occupant_manager: RoomOccupantManager
+    _logger: BoundLogger
+    _utils: PlayerEventHandlerUtils
+    _room_handler: PlayerRoomEventHandler
+    _state_handler: PlayerStateEventHandler
+    _respawn_handler: PlayerRespawnEventHandler
+
     def __init__(
         self,
-        connection_manager: Any,
-        room_sync_service: Any,
-        chat_logger: Any,
-        task_registry: Any | None,
+        connection_manager: ConnectionManager | None,
+        room_sync_service: RoomSyncService,
+        chat_logger: ChatLogger,
+        task_registry: object | None,
         message_builder: MessageBuilder,
         name_extractor: PlayerNameExtractor,
         occupant_manager: RoomOccupantManager,
@@ -61,14 +98,16 @@ class PlayerEventHandler:
         """Initialize utility functions and specialized handlers."""
         self._utils = PlayerEventHandlerUtils(self.connection_manager, self.name_extractor, self._logger)
         self._room_handler = PlayerRoomEventHandler(
-            connection_manager=self.connection_manager,
-            room_sync_service=self.room_sync_service,
-            chat_logger=self.chat_logger,
-            message_builder=self.message_builder,
-            name_extractor=self.name_extractor,
-            occupant_manager=self.occupant_manager,
-            utils=self._utils,
-            logger=self._logger,
+            PlayerRoomEventHandlerDeps(
+                connection_manager=cast(RoomConnectionManager | None, cast(object, self.connection_manager)),
+                room_sync_service=cast(RoomSyncOrdering, cast(object, self.room_sync_service)),
+                chat_logger=cast(RoomChatLogger, cast(object, self.chat_logger)),
+                message_builder=self.message_builder,
+                name_extractor=self.name_extractor,
+                occupant_manager=self.occupant_manager,
+                utils=self._utils,
+                logger=self._logger,
+            )
         )
         self._state_handler = PlayerStateEventHandler(
             connection_manager=self.connection_manager,
@@ -81,8 +120,9 @@ class PlayerEventHandler:
             logger=self._logger,
         )
 
-    # Room-related methods (delegated to room handler)
-    async def handle_player_entered(self, event: PlayerEnteredRoom, send_occupants_update: Any | None = None) -> None:
+    async def handle_player_entered(
+        self, event: PlayerEnteredRoom, send_occupants_update: OccupantsUpdateFn | None = None
+    ) -> None:
         """
         Handle player entering a room with enhanced synchronization.
 
@@ -92,7 +132,7 @@ class PlayerEventHandler:
         """
         await self._room_handler.handle_player_entered(event, send_occupants_update)
 
-    async def handle_player_left(self, event: PlayerLeftRoom, send_occupants_update: Any) -> None:
+    async def handle_player_left(self, event: PlayerLeftRoom, send_occupants_update: OccupantsUpdateFn) -> None:
         """
         Handle player leaving a room with enhanced synchronization.
 
@@ -102,7 +142,7 @@ class PlayerEventHandler:
         """
         await self._room_handler.handle_player_left(event, send_occupants_update)
 
-    async def send_occupants_snapshot_to_player(self, player_id: Any, room_id: str) -> None:
+    async def send_occupants_snapshot_to_player(self, player_id: uuid.UUID | str, room_id: str) -> None:
         """
         Send occupants snapshot to a player.
 
@@ -115,7 +155,7 @@ class PlayerEventHandler:
         """
         await self._room_handler.send_occupants_snapshot_to_player(player_id, room_id)
 
-    async def get_room_state_event(self, player_id: Any, room_id: str) -> dict[str, Any] | None:
+    async def get_room_state_event(self, player_id: uuid.UUID | str, room_id: str) -> JsonMap | None:
         """
         Build authoritative room_state event for a room (for request/response enter-room).
 
@@ -131,7 +171,6 @@ class PlayerEventHandler:
         """
         return await self._room_handler.get_room_state_event(player_id, room_id)
 
-    # State update methods (delegated to state handler)
     async def handle_player_xp_awarded(self, event: PlayerXPAwardEvent) -> None:
         """
         Handle player XP award events by sending updates to the client.
@@ -150,7 +189,7 @@ class PlayerEventHandler:
         """
         await self._state_handler.handle_player_dp_updated(event)
 
-    async def handle_player_died(self, event: Any) -> None:
+    async def handle_player_died(self, event: PlayerDiedEvent) -> None:
         """
         Handle player death events by sending death notification to the client.
 
@@ -159,7 +198,7 @@ class PlayerEventHandler:
         """
         await self._state_handler.handle_player_died(event)
 
-    async def handle_player_dp_decay(self, event: Any) -> None:
+    async def handle_player_dp_decay(self, event: PlayerDPDecayEvent) -> None:
         """
         Handle player DP decay events by sending decay notification to the client.
 
@@ -168,8 +207,7 @@ class PlayerEventHandler:
         """
         await self._state_handler.handle_player_dp_decay(event)
 
-    # Respawn methods (delegated to respawn handler)
-    async def handle_player_respawned(self, event: Any) -> None:
+    async def handle_player_respawned(self, event: PlayerRespawnedEvent) -> None:
         """
         Handle player respawn events by sending respawn notification to the client.
 
@@ -178,7 +216,7 @@ class PlayerEventHandler:
         """
         await self._respawn_handler.handle_player_respawned(event)
 
-    async def handle_player_delirium_respawned(self, event: Any) -> None:
+    async def handle_player_delirium_respawned(self, event: PlayerDeliriumRespawnedEvent) -> None:
         """
         Handle player delirium respawn events by sending respawn notification to the client.
 

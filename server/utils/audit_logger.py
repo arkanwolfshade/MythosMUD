@@ -10,14 +10,25 @@ AI: Audit logs are critical for incident response and compliance.
 # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Audit logging requires many parameters for complete audit context
 
 import json
-from datetime import UTC, datetime
+from collections.abc import Mapping
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import Any
+from typing import cast
 
 from ..config import get_config
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
+
+JsonMap = dict[str, object]
+
+
+def _json_map_from_line(line: str) -> JsonMap:
+    raw = cast(object, json.loads(line))
+    if not isinstance(raw, dict):
+        raise ValueError("audit entry is not an object")
+    typed = cast(dict[object, object], raw)
+    return {str(k): v for k, v in typed.items()}
 
 
 class AuditLogger:
@@ -32,6 +43,8 @@ class AuditLogger:
 
     AI: Audit logs should be immutable and stored separately from regular logs.
     """
+
+    log_directory: Path
 
     def __init__(self, log_directory: str | None = None) -> None:
         """
@@ -78,7 +91,7 @@ class AuditLogger:
 
         AI: Daily rotation prevents individual files from growing too large.
         """
-        today = datetime.now(UTC).strftime("%Y-%m-%d")
+        today = datetime.now(UTC).date().isoformat()
         return self.log_directory / f"audit_{today}.jsonl"
 
     def log_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command logging requires many parameters for complete audit context
@@ -88,7 +101,7 @@ class AuditLogger:
         success: bool,
         result: str | None = None,
         session_id: str | None = None,
-        metadata: dict[str, Any] | None = None,
+        metadata: Mapping[str, object] | None = None,
     ) -> None:
         """
         Log security-sensitive command execution.
@@ -106,7 +119,7 @@ class AuditLogger:
         AI: Include as much context as possible for forensic analysis.
         Note: IP addresses are not logged to protect user privacy (PII).
         """
-        entry = {
+        entry: JsonMap = {
             "timestamp": datetime.now(UTC).isoformat(),
             "event_type": "command_execution",
             "player": player_name,
@@ -148,7 +161,7 @@ class AuditLogger:
 
         AI: Critical for tracking privilege escalation.
         """
-        entry = {
+        entry: JsonMap = {
             "timestamp": datetime.now(UTC).isoformat(),
             "event_type": "permission_change",
             "admin": admin_name,
@@ -179,7 +192,7 @@ class AuditLogger:
         items_count: int | None = None,
         success: bool = True,
         session_id: str | None = None,
-        metadata: dict[str, Any] | None = None,
+        metadata: Mapping[str, object] | None = None,
     ) -> None:
         """
         Log container interaction events for security and compliance.
@@ -203,7 +216,7 @@ class AuditLogger:
         for compliance and forensic analysis.
         Note: IP addresses are not logged to protect user privacy (PII).
         """
-        entry = {
+        entry: JsonMap = {
             "timestamp": datetime.now(UTC).isoformat(),
             "event_type": event_type,
             "player_id": player_id,
@@ -254,7 +267,7 @@ class AuditLogger:
 
         AI: Essential for tracking moderation actions.
         """
-        entry = {
+        entry: JsonMap = {
             "timestamp": datetime.now(UTC).isoformat(),
             "event_type": "player_action",
             "admin": admin_name,
@@ -275,7 +288,7 @@ class AuditLogger:
         player_name: str | None,
         description: str,
         severity: str = "medium",  # 'low', 'medium', 'high', 'critical'
-        metadata: dict[str, Any] | None = None,
+        metadata: Mapping[str, object] | None = None,
     ) -> None:
         """
         Log general security events.
@@ -291,7 +304,7 @@ class AuditLogger:
 
         AI: Use for anomaly detection and security monitoring.
         """
-        entry = {
+        entry: JsonMap = {
             "timestamp": datetime.now(UTC).isoformat(),
             "event_type": "security_event",
             "security_event_type": event_type,
@@ -331,7 +344,7 @@ class AuditLogger:
 
         AI: Helps detect alias bombs and suspicious patterns.
         """
-        entry = {
+        entry: JsonMap = {
             "timestamp": datetime.now(UTC).isoformat(),
             "event_type": "alias_expansion",
             "player": player_name,
@@ -346,7 +359,7 @@ class AuditLogger:
         if cycle_detected:
             logger.warning("Circular alias detected", player=player_name, alias=alias_name)
 
-    def _write_entry(self, entry: dict[str, Any]) -> None:
+    def _write_entry(self, entry: JsonMap) -> None:
         """
         Write audit log entry to file.
 
@@ -362,14 +375,14 @@ class AuditLogger:
 
             # Append to file (create if doesn't exist)
             with open(log_file, "a", encoding="utf-8") as f:
-                f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+                _ = f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: File write errors unpredictable, must log but not fail
             logger.error("Failed to write audit log entry", error=str(e), entry_type=entry.get("event_type"))
 
     def get_recent_entries(
         self, hours: int = 24, event_type: str | None = None, player_name: str | None = None
-    ) -> list[dict[str, Any]]:
+    ) -> list[JsonMap]:
         """
         Retrieve recent audit log entries.
 
@@ -385,10 +398,8 @@ class AuditLogger:
 
         AI: For large deployments, consider using dedicated log aggregation tools.
         """
-        from datetime import timedelta
-
         cutoff_time = datetime.now(UTC) - timedelta(hours=hours)
-        entries = []
+        entries: list[JsonMap] = []
 
         # Get all log files in directory (sorted newest first)
         log_files = sorted(self.log_directory.glob("audit_*.jsonl"), reverse=True)
@@ -402,8 +413,11 @@ class AuditLogger:
                             continue
 
                         try:
-                            entry = json.loads(line)
-                            entry_time = datetime.fromisoformat(entry["timestamp"])
+                            entry = _json_map_from_line(line)
+                            raw_ts = entry.get("timestamp")
+                            if not isinstance(raw_ts, str):
+                                continue
+                            entry_time = datetime.fromisoformat(raw_ts)
 
                             # Check if within time range
                             if entry_time < cutoff_time:
@@ -428,7 +442,7 @@ class AuditLogger:
 
         return entries
 
-    def get_statistics(self, hours: int = 24) -> dict[str, Any]:
+    def get_statistics(self, hours: int = 24) -> JsonMap:
         """
         Get audit log statistics.
 
@@ -447,33 +461,34 @@ class AuditLogger:
         security_events_by_severity: dict[str, int] = {}
         top_players: dict[str, int] = {}
 
-        stats: dict[str, Any] = {
+        failed_commands = 0
+        stats: JsonMap = {
             "total_entries": len(entries),
             "time_window_hours": hours,
             "event_types": event_types,
             "security_events_by_severity": security_events_by_severity,
             "top_players": top_players,
-            "failed_commands": 0,
+            "failed_commands": failed_commands,
         }
 
         for entry in entries:
-            # Count event types
-            event_type = entry.get("event_type", "unknown")
+            raw_event = entry.get("event_type", "unknown")
+            event_type = raw_event if isinstance(raw_event, str) else "unknown"
             event_types[event_type] = event_types.get(event_type, 0) + 1
 
-            # Count security events by severity
             if event_type == "security_event":
-                severity = entry.get("severity", "unknown")
+                raw_severity = entry.get("severity", "unknown")
+                severity = raw_severity if isinstance(raw_severity, str) else "unknown"
                 security_events_by_severity[severity] = security_events_by_severity.get(severity, 0) + 1
 
-            # Count player activity
             player = entry.get("player")
-            if player:
+            if isinstance(player, str) and player:
                 top_players[player] = top_players.get(player, 0) + 1
 
-            # Count failures
             if not entry.get("success", True):
-                stats["failed_commands"] = stats["failed_commands"] + 1
+                failed_commands += 1
+
+        stats["failed_commands"] = failed_commands
 
         # Sort top players
         stats["top_players"] = dict(sorted(top_players.items(), key=lambda x: x[1], reverse=True)[:10])

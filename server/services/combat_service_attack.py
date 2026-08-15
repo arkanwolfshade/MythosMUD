@@ -9,6 +9,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from uuid import UUID
 
+from server.app.game_tick_counter import get_current_tick
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType, CombatResult
 from server.services.aggro_threat import add_damage_threat
 from server.services.nats_exceptions import NATSError
@@ -45,10 +46,6 @@ async def handle_combat_completion(service: CombatService, combat: CombatInstanc
                 exc_info=True,
             )
     else:
-        from server.app.game_tick_processing import (  # noqa: E402  # Lazy import to avoid circular dependency
-            get_current_tick,
-        )
-
         combat.next_turn_tick = get_current_tick() + combat.turn_interval_ticks
         logger.debug("Combat attack processed, auto-progression enabled", combat_id=combat.combat_id)
 

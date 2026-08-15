@@ -35,18 +35,19 @@ function formatRemaining(seconds: number | undefined): string {
   return m > 0 ? `${m}:${s.toString().padStart(2, '0')}` : `0:${s.toString().padStart(2, '0')}`;
 }
 
-export const HeaderBar: React.FC<HeaderBarProps> = ({
-  playerName,
-  isConnected,
-  isConnecting,
-  error,
-  reconnectAttempts,
-  mythosTime,
-  onLogout,
-  isLoggingOut = false,
-  activeEffects = [],
-  followingTarget = null,
-}) => {
+export const HeaderBar: React.FC<HeaderBarProps> = props => {
+  const {
+    playerName,
+    isConnected,
+    isConnecting,
+    error,
+    reconnectAttempts,
+    mythosTime,
+    onLogout,
+    isLoggingOut = false,
+    activeEffects = [],
+    followingTarget = null,
+  } = props;
   const [isCollapsed, setIsCollapsed] = useState(() => {
     const stored = localStorage.getItem('mythosmud-ui-v2-header-collapsed');
     return stored === 'true';

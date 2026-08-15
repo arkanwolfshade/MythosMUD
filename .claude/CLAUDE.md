@@ -5,3 +5,5 @@
   document (Claude Code, Copilot, and other tools that do not read Cursor config).
 - **Router stub:** [`CLAUDE.md`](../CLAUDE.md) at the repository root only forwards readers to `AGENTS.md`; do not
   duplicate bodies there.
+- **basedpyright:** no `typing.Any`; see [`basedpyright.md`](rules/basedpyright.md) and
+  [`.cursor/rules/basedpyright-no-any.mdc`](../.cursor/rules/basedpyright-no-any.mdc).

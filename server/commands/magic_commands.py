@@ -455,9 +455,9 @@ class MagicCommandHandler:
         result = await self.magic_service.interrupt_casting(player.player_id)
 
         if not result.get("success"):
-            return {"result": result.get("message", "Failed to interrupt casting.")}
+            return {"result": str(result.get("message", "Failed to interrupt casting."))}
 
-        return {"result": result.get("message", "Casting interrupted.")}
+        return {"result": str(result.get("message", "Casting interrupted."))}
 
 
 # Command handler functions for integration with CommandService

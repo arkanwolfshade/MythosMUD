@@ -6,6 +6,7 @@ Tests the NATSService class and NATSMetrics.
 # pylint: disable=too-many-lines  # Reason: Test file exceeds 550 lines but contains comprehensive test coverage for NATS service, splitting would reduce cohesion
 # pylint: disable=redefined-outer-name  # Reason: Pytest fixtures are injected as function parameters, which triggers this warning but is the standard pytest pattern
 # pylint: disable=protected-access  # Reason: Tests need to access protected members to verify internal state and behavior
+# pyright: reportPrivateUsage=false
 
 import asyncio
 import json
@@ -19,12 +20,12 @@ from server.config.models import NATSConfig
 from server.realtime.connection_state_machine import NATSConnectionStateMachine
 from server.services.nats_exceptions import NATSPublishError, NATSSubscribeError
 from server.services.nats_metrics import NATSMetrics
-from server.services.nats_service import NATSService
+from server.services.nats_service import JsonMap, NATSService
 from server.services.nats_subject_manager import NATSSubjectManager
 
 
 @pytest.fixture
-def nats_config():
+def nats_config() -> NATSConfig:
     """Create a NATSConfig instance."""
     return NATSConfig(
         url="nats://localhost:4222",
@@ -36,7 +37,7 @@ def nats_config():
 
 
 @pytest.fixture
-def nats_service(nats_config):
+def nats_service(nats_config: NATSConfig) -> NATSService:
     """Create a NATSService instance."""
     return NATSService(nats_config)
 
@@ -177,7 +178,7 @@ def test_nats_metrics_message_processing_times_maxlen():
     assert len(metrics.message_processing_times) == 1000
 
 
-def test_nats_service_init_with_config(nats_config):
+def test_nats_service_init_with_config(nats_config: NATSConfig) -> None:
     """Test NATSService initialization with NATSConfig."""
     service = NATSService(nats_config)
     assert service.config == nats_config
@@ -207,14 +208,14 @@ def test_nats_service_init_with_none():
     assert isinstance(service.config, NATSConfig)
 
 
-def test_nats_service_init_with_subject_manager(nats_config):
+def test_nats_service_init_with_subject_manager(nats_config: NATSConfig) -> None:
     """Test NATSService initialization with subject manager."""
     subject_manager = NATSSubjectManager()
     service = NATSService(nats_config, subject_manager=subject_manager)
     assert service.subject_manager == subject_manager
 
 
-def test_nats_service_init_connection_pool(nats_config):
+def test_nats_service_init_connection_pool(nats_config: NATSConfig) -> None:
     """Test NATSService initializes connection pool structures."""
     service = NATSService(nats_config)
     assert not service.connection_pool
@@ -223,7 +224,7 @@ def test_nats_service_init_connection_pool(nats_config):
     assert service._pool_initialized is False
 
 
-def test_nats_service_init_message_batch(nats_config):
+def test_nats_service_init_message_batch(nats_config: NATSConfig) -> None:
     """Test NATSService initializes message batching structures."""
     service = NATSService(nats_config)
     assert not service.message_batch
@@ -232,7 +233,7 @@ def test_nats_service_init_message_batch(nats_config):
 
 
 @pytest.mark.asyncio
-async def test_connect_success(nats_service):
+async def test_connect_success(nats_service: NATSService) -> None:
     """Test connect() successfully connects to NATS."""
     mock_client = MagicMock()
     mock_client.is_connected = True
@@ -240,7 +241,7 @@ async def test_connect_success(nats_service):
     mock_client.add_disconnect_listener = MagicMock()
     mock_client.add_reconnect_listener = MagicMock()
     mock_client.flush = AsyncMock()
-    with patch("server.services.nats_service.nats.connect", new_callable=AsyncMock, return_value=mock_client):
+    with patch("server.services.nats_service_pool.nats.connect", new_callable=AsyncMock, return_value=mock_client):
         with patch.object(nats_service, "_initialize_connection_pool", new_callable=AsyncMock):
             with patch.object(nats_service, "_start_health_monitoring", new_callable=AsyncMock):
                 result = await nats_service.connect()
@@ -250,25 +251,29 @@ async def test_connect_success(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_connect_state_machine_blocked(nats_service):
+async def test_connect_state_machine_blocked(nats_service: NATSService) -> None:
     """Test connect() returns False when state machine blocks connection."""
     # Force state machine to block connection by opening circuit first
     nats_service.state_machine.max_reconnect_attempts = 1
     # Trigger a connection failure to get into reconnecting state
     with patch(
-        "server.services.nats_service.nats.connect", new_callable=AsyncMock, side_effect=Exception("Connection failed")
+        "server.services.nats_service_pool.nats.connect",
+        new_callable=AsyncMock,
+        side_effect=Exception("Connection failed"),
     ):
-        await nats_service.connect()  # This will open circuit
+        _ = await nats_service.connect()  # This will open circuit
     # Now try to connect again - should be blocked
     result = await nats_service.connect()
     assert result is False
 
 
 @pytest.mark.asyncio
-async def test_connect_failure(nats_service):
+async def test_connect_failure(nats_service: NATSService) -> None:
     """Test connect() handles connection failure."""
     with patch(
-        "server.services.nats_service.nats.connect", new_callable=AsyncMock, side_effect=Exception("Connection failed")
+        "server.services.nats_service_pool.nats.connect",
+        new_callable=AsyncMock,
+        side_effect=Exception("Connection failed"),
     ):
         result = await nats_service.connect()
         assert result is False
@@ -276,12 +281,14 @@ async def test_connect_failure(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_connect_circuit_breaker_opens(nats_service):
+async def test_connect_circuit_breaker_opens(nats_service: NATSService) -> None:
     """Test connect() opens circuit breaker after max retries."""
     nats_service._max_retries = 1
     nats_service.state_machine.max_reconnect_attempts = 1
     with patch(
-        "server.services.nats_service.nats.connect", new_callable=AsyncMock, side_effect=Exception("Connection failed")
+        "server.services.nats_service_pool.nats.connect",
+        new_callable=AsyncMock,
+        side_effect=Exception("Connection failed"),
     ):
         # First failure - should open circuit
         result = await nats_service.connect()
@@ -291,13 +298,16 @@ async def test_connect_circuit_breaker_opens(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_disconnect_success(nats_service):
+async def test_disconnect_success(nats_service: NATSService) -> None:
     """Test disconnect() successfully disconnects."""
     mock_client = MagicMock()
     mock_subscription = MagicMock()
-    mock_subscription.drain = AsyncMock()
-    mock_subscription.unsubscribe = AsyncMock()
-    mock_client.close = AsyncMock()
+    drain: AsyncMock = AsyncMock()
+    unsub: AsyncMock = AsyncMock()
+    close: AsyncMock = AsyncMock()
+    mock_subscription.drain = drain
+    mock_subscription.unsubscribe = unsub
+    mock_client.close = close
     nats_service.nc = mock_client
     nats_service.subscriptions = {"test.subject": mock_subscription}
     nats_service._running = True
@@ -306,15 +316,15 @@ async def test_disconnect_success(nats_service):
         with patch.object(nats_service, "_cleanup_connection_pool", new_callable=AsyncMock):
             with patch.object(nats_service, "_stop_health_monitoring", new_callable=AsyncMock):
                 await nats_service.disconnect()
-                mock_subscription.drain.assert_awaited_once()
-                mock_subscription.unsubscribe.assert_awaited_once()
-                mock_client.close.assert_awaited_once()
+                drain.assert_awaited_once()
+                unsub.assert_awaited_once()
+                close.assert_awaited_once()
                 assert nats_service.nc is None
                 assert nats_service._running is False
 
 
 @pytest.mark.asyncio
-async def test_disconnect_flushes_batch(nats_service):
+async def test_disconnect_flushes_batch(nats_service: NATSService) -> None:
     """Test disconnect() flushes pending batch."""
     nats_service.message_batch = [("test.subject", {"key": "value"})]
     nats_service.nc = None
@@ -325,7 +335,7 @@ async def test_disconnect_flushes_batch(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_disconnect_handles_drain_error(nats_service):
+async def test_disconnect_handles_drain_error(nats_service: NATSService) -> None:
     """Test disconnect() handles drain errors gracefully."""
     mock_client = MagicMock()
     mock_subscription = MagicMock()
@@ -343,14 +353,14 @@ async def test_disconnect_handles_drain_error(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_publish_not_initialized(nats_service):
+async def test_publish_not_initialized(nats_service: NATSService) -> None:
     """Test publish() raises error when pool not initialized."""
     with pytest.raises(NATSPublishError, match="Connection pool not initialized"):
         await nats_service.publish("test.subject", {"key": "value"})
 
 
 @pytest.mark.asyncio
-async def test_publish_no_available_connections(nats_service):
+async def test_publish_no_available_connections(nats_service: NATSService) -> None:
     """Test publish() raises error when no connections available after waiting for pool_wait_timeout."""
     nats_service._pool_initialized = True
     nats_service.config.pool_wait_timeout = 0.01  # Short timeout so test does not block
@@ -360,7 +370,7 @@ async def test_publish_no_available_connections(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_publish_success(nats_service):
+async def test_publish_success(nats_service: NATSService) -> None:
     """Test publish() successfully publishes using pool."""
     nats_service._pool_initialized = True
     mock_connection = MagicMock()
@@ -372,7 +382,7 @@ async def test_publish_success(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_subscribe_not_connected(nats_service):
+async def test_subscribe_not_connected(nats_service: NATSService) -> None:
     """Test subscribe() raises error when not connected."""
     nats_service.nc = None
     callback = AsyncMock()
@@ -381,7 +391,7 @@ async def test_subscribe_not_connected(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_subscribe_not_running(nats_service):
+async def test_subscribe_not_running(nats_service: NATSService) -> None:
     """Test subscribe() raises error when not running."""
     mock_client = MagicMock()
     nats_service.nc = mock_client
@@ -392,21 +402,22 @@ async def test_subscribe_not_running(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_subscribe_success(nats_service):
+async def test_subscribe_success(nats_service: NATSService) -> None:
     """Test subscribe() successfully subscribes."""
     mock_client = MagicMock()
     mock_subscription = MagicMock()
-    mock_client.subscribe = AsyncMock(return_value=mock_subscription)
+    client_subscribe: AsyncMock = AsyncMock(return_value=mock_subscription)
+    mock_client.subscribe = client_subscribe
     nats_service.nc = mock_client
     nats_service._running = True
     callback = AsyncMock()
     await nats_service.subscribe("test.subject", callback)
     assert "test.subject" in nats_service.subscriptions
-    mock_client.subscribe.assert_awaited_once()
+    client_subscribe.assert_awaited_once()
 
 
 @pytest.mark.asyncio
-async def test_subscribe_with_manual_ack(nats_service):
+async def test_subscribe_with_manual_ack(nats_service: NATSService) -> None:
     """Test subscribe() handles manual acknowledgment."""
     mock_client = MagicMock()
     mock_subscription = MagicMock()
@@ -421,19 +432,20 @@ async def test_subscribe_with_manual_ack(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_unsubscribe_success(nats_service):
+async def test_unsubscribe_success(nats_service: NATSService) -> None:
     """Test unsubscribe() successfully unsubscribes."""
 
     mock_subscription = MagicMock()
-    mock_subscription.unsubscribe = AsyncMock()
+    unsub: AsyncMock = AsyncMock()
+    mock_subscription.unsubscribe = unsub
     nats_service.subscriptions = {"test.subject": mock_subscription}
     await nats_service.unsubscribe("test.subject")
     assert "test.subject" not in nats_service.subscriptions
-    mock_subscription.unsubscribe.assert_awaited_once()
+    unsub.assert_awaited_once()
 
 
 @pytest.mark.asyncio
-async def test_unsubscribe_not_found(nats_service):
+async def test_unsubscribe_not_found(nats_service: NATSService) -> None:
     """Test unsubscribe() raises NATSUnsubscribeError when subscription not found."""
     from server.services.nats_exceptions import NATSUnsubscribeError
 
@@ -443,7 +455,7 @@ async def test_unsubscribe_not_found(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_unsubscribe_error(nats_service):
+async def test_unsubscribe_error(nats_service: NATSService) -> None:
     """Test unsubscribe() raises NATSUnsubscribeError on unsubscribe errors."""
     from server.services.nats_exceptions import NATSUnsubscribeError
 
@@ -455,7 +467,7 @@ async def test_unsubscribe_error(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_request_success(nats_service):
+async def test_request_success(nats_service: NATSService) -> None:
     """Test request() successfully sends request and receives reply."""
     mock_client = MagicMock()
     mock_client.is_connected = True
@@ -470,17 +482,17 @@ async def test_request_success(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_request_not_connected(nats_service):
+async def test_request_not_connected(nats_service: NATSService) -> None:
     """Test request() raises NATSRequestError when not connected."""
     from server.services.nats_exceptions import NATSRequestError
 
     nats_service.nc = None
     with pytest.raises(NATSRequestError):
-        await nats_service.request("test.subject", {"request": "data"})
+        _ = await nats_service.request("test.subject", {"request": "data"})
 
 
 @pytest.mark.asyncio
-async def test_request_timeout(nats_service):
+async def test_request_timeout(nats_service: NATSService) -> None:
     """Test request() raises NATSRequestError on timeout."""
     from server.services.nats_exceptions import NATSRequestError
 
@@ -491,11 +503,11 @@ async def test_request_timeout(nats_service):
     nats_service._running = True
     nats_service.config.health_check_interval = 0  # Disable health check for simpler test
     with pytest.raises(NATSRequestError):
-        await nats_service.request("test.subject", {"request": "data"}, timeout=0.1)
+        _ = await nats_service.request("test.subject", {"request": "data"}, timeout=0.1)
 
 
 @pytest.mark.asyncio
-async def test_request_error(nats_service):
+async def test_request_error(nats_service: NATSService) -> None:
     """Test request() raises NATSRequestError on errors."""
     from server.services.nats_exceptions import NATSRequestError
 
@@ -506,11 +518,11 @@ async def test_request_error(nats_service):
     nats_service._running = True
     nats_service.config.health_check_interval = 0  # Disable health check for simpler test
     with pytest.raises(NATSRequestError):
-        await nats_service.request("test.subject", {"request": "data"})
+        _ = await nats_service.request("test.subject", {"request": "data"})
 
 
 @pytest.mark.asyncio
-async def test_is_connected_true(nats_service):
+async def test_is_connected_true(nats_service: NATSService) -> None:
     """Test is_connected() returns True when connected."""
     mock_client = MagicMock()
     mock_client.is_connected = True
@@ -521,31 +533,32 @@ async def test_is_connected_true(nats_service):
     assert nats_service.is_connected() is True
 
 
-def test_is_connected_false(nats_service):
+def test_is_connected_false(nats_service: NATSService) -> None:
     """Test is_connected() returns False when not connected."""
     nats_service.nc = None
     assert nats_service.is_connected() is False
 
 
-def test_get_subscription_count(nats_service):
+def test_get_subscription_count(nats_service: NATSService) -> None:
     """Test get_subscription_count() returns correct count."""
     nats_service.subscriptions = {"sub1": MagicMock(), "sub2": MagicMock(), "sub3": MagicMock()}
     assert nats_service.get_subscription_count() == 3
 
 
 @pytest.mark.asyncio
-async def test_perform_health_check_success(nats_service):
+async def test_perform_health_check_success(nats_service: NATSService) -> None:
     """Test _perform_health_check() returns True when healthy."""
     mock_client = MagicMock()
-    mock_client.flush = AsyncMock()
+    flush: AsyncMock = AsyncMock()
+    mock_client.flush = flush
     nats_service.nc = mock_client
     result = await nats_service._perform_health_check()
     assert result is True
-    mock_client.flush.assert_awaited_once()
+    flush.assert_awaited_once()
 
 
 @pytest.mark.asyncio
-async def test_perform_health_check_no_client(nats_service):
+async def test_perform_health_check_no_client(nats_service: NATSService) -> None:
     """Test _perform_health_check() returns False when no client."""
     nats_service.nc = None
     result = await nats_service._perform_health_check()
@@ -553,7 +566,7 @@ async def test_perform_health_check_no_client(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_perform_health_check_timeout(nats_service):
+async def test_perform_health_check_timeout(nats_service: NATSService) -> None:
     """Test _perform_health_check() returns False on timeout."""
     mock_client = MagicMock()
     mock_client.flush = AsyncMock(side_effect=TimeoutError())
@@ -563,7 +576,7 @@ async def test_perform_health_check_timeout(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_perform_health_check_error(nats_service):
+async def test_perform_health_check_error(nats_service: NATSService) -> None:
     """Test _perform_health_check() returns False on error."""
     mock_client = MagicMock()
     mock_client.flush = AsyncMock(side_effect=Exception("Flush error"))
@@ -573,7 +586,7 @@ async def test_perform_health_check_error(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_cancel_background_tasks(nats_service):
+async def test_cancel_background_tasks(nats_service: NATSService) -> None:
     """Test _cancel_background_tasks() cancels all tasks."""
     task1 = asyncio.create_task(asyncio.sleep(10))
     task2 = asyncio.create_task(asyncio.sleep(10))
@@ -585,7 +598,7 @@ async def test_cancel_background_tasks(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_cancel_background_tasks_empty(nats_service):
+async def test_cancel_background_tasks_empty(nats_service: NATSService) -> None:
     """Test _cancel_background_tasks() handles empty task set."""
     nats_service._background_tasks = set()
     # Should not raise
@@ -593,7 +606,7 @@ async def test_cancel_background_tasks_empty(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_stop_health_monitoring(nats_service):
+async def test_stop_health_monitoring(nats_service: NATSService) -> None:
     """Test _stop_health_monitoring() stops health check task."""
 
     # Create a real task that can be cancelled
@@ -608,7 +621,7 @@ async def test_stop_health_monitoring(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_stop_health_monitoring_no_task(nats_service):
+async def test_stop_health_monitoring_no_task(nats_service: NATSService) -> None:
     """Test _stop_health_monitoring() handles no task."""
     nats_service._health_check_task = None
     # Should not raise
@@ -616,7 +629,7 @@ async def test_stop_health_monitoring_no_task(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_publish_batch_adds_to_batch(nats_service):
+async def test_publish_batch_adds_to_batch(nats_service: NATSService) -> None:
     """Test publish_batch() adds message to batch."""
     # Disable subject validation for this test
     nats_service.config.enable_subject_validation = False
@@ -628,18 +641,18 @@ async def test_publish_batch_adds_to_batch(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_publish_batch_flushes_when_full(nats_service):
+async def test_publish_batch_flushes_when_full(nats_service: NATSService) -> None:
     """Test publish_batch() flushes when batch is full."""
     nats_service.config.enable_subject_validation = False
     nats_service.batch_size = 2
     nats_service.message_batch = [("sub1", {}), ("sub2", {})]
     with patch.object(nats_service, "_flush_batch", new_callable=AsyncMock) as mock_flush:
-        await nats_service.publish_batch("test.subject", {"key": "value"})
+        _ = await nats_service.publish_batch("test.subject", {"key": "value"})
         mock_flush.assert_awaited_once()
 
 
 @pytest.mark.asyncio
-async def test_flush_batch_success(nats_service):
+async def test_flush_batch_success(nats_service: NATSService) -> None:
     """Test _flush_batch() successfully flushes batch."""
     nats_service.message_batch = [("sub1", {"msg1": "data1"}), ("sub2", {"msg2": "data2"})]
     nats_service._pool_initialized = True
@@ -653,14 +666,14 @@ async def test_flush_batch_success(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_flush_batch_empty(nats_service):
+async def test_flush_batch_empty(nats_service: NATSService) -> None:
     """Test _flush_batch() handles empty batch."""
     nats_service.message_batch = []
     # Should not raise
     await nats_service._flush_batch()
 
 
-def test_get_connection_stats(nats_service):
+def test_get_connection_stats(nats_service: NATSService) -> None:
     """Test get_connection_stats() returns connection statistics."""
     nats_service.subscriptions = {"sub1": MagicMock(), "sub2": MagicMock()}
     nats_service._connection_retries = 3
@@ -680,7 +693,7 @@ def test_get_connection_stats(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_disconnect_removes_all_subscriptions(nats_service):
+async def test_disconnect_removes_all_subscriptions(nats_service: NATSService) -> None:
     """
     Test that disconnect() removes all subscriptions on service shutdown.
 
@@ -690,10 +703,12 @@ async def test_disconnect_removes_all_subscriptions(nats_service):
     mock_client.close = AsyncMock()
     mock_sub1 = MagicMock()
     mock_sub1.drain = AsyncMock()
-    mock_sub1.unsubscribe = AsyncMock()
+    unsub1: AsyncMock = AsyncMock()
+    mock_sub1.unsubscribe = unsub1
     mock_sub2 = MagicMock()
     mock_sub2.drain = AsyncMock()
-    mock_sub2.unsubscribe = AsyncMock()
+    unsub2: AsyncMock = AsyncMock()
+    mock_sub2.unsubscribe = unsub2
 
     nats_service.nc = mock_client
     nats_service.subscriptions = {
@@ -713,8 +728,8 @@ async def test_disconnect_removes_all_subscriptions(nats_service):
                 await nats_service.disconnect()
 
     # Verify all subscriptions were unsubscribed
-    assert mock_sub1.unsubscribe.await_count == 1
-    assert mock_sub2.unsubscribe.await_count == 1
+    assert unsub1.await_count == 1
+    assert unsub2.await_count == 1
 
     # Verify subscriptions dict is cleared
     assert len(nats_service.subscriptions) == 0
@@ -722,7 +737,7 @@ async def test_disconnect_removes_all_subscriptions(nats_service):
 
 
 @pytest.mark.asyncio
-async def test_service_restart_no_duplicate_subscriptions(nats_service):
+async def test_service_restart_no_duplicate_subscriptions(nats_service: NATSService) -> None:
     """
     Test that service restart does not create duplicate subscriptions.
 
@@ -732,7 +747,7 @@ async def test_service_restart_no_duplicate_subscriptions(nats_service):
     mock_client.close = AsyncMock()
 
     # Create a function that returns a new mock subscription each time
-    def create_mock_subscription(*_args, **_kwargs):
+    def create_mock_subscription(*_args: object, **_kwargs: object) -> MagicMock:
         return MagicMock()
 
     mock_client.subscribe = AsyncMock(side_effect=create_mock_subscription)
@@ -742,8 +757,8 @@ async def test_service_restart_no_duplicate_subscriptions(nats_service):
     nats_service.subscriptions = {}
 
     # First subscription
-    async def callback1(_msg):  # pylint: disable=unused-argument  # Reason: Callback parameter required by NATS subscription signature but not used in this test
-        pass
+    async def callback1(message_data: JsonMap) -> None:
+        _ = message_data
 
     await nats_service.subscribe("test.subject", callback1)
     assert len(nats_service.subscriptions) == 1
@@ -767,8 +782,8 @@ async def test_service_restart_no_duplicate_subscriptions(nats_service):
     nats_service._running = True
 
     # Subscribe again to same subject
-    async def callback2(_msg):  # pylint: disable=unused-argument  # Reason: Callback parameter required by NATS subscription signature but not used in this test
-        pass
+    async def callback2(message_data: JsonMap) -> None:
+        _ = message_data
 
     await nats_service.subscribe("test.subject", callback2)
 

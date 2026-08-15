@@ -15,6 +15,12 @@ scans as a last resort when jCodemunch cannot answer the question.
 
 Workspace mirror (always-on for agents): `.cursor/rules/token-efficiency.mdc`.
 
+## basedpyright: no `Any`
+
+Do not use `typing.Any` or suppress `reportAny` / `reportExplicitAny`. Protocol + TypedDict
+is required; Ponytail must not treat `Any` as a one-liner. After Python edits:
+`uv run basedpyright <edited files>`. Rule: `.cursor/rules/basedpyright-no-any.mdc`.
+
 ## MANDATORY SERVER RULES
 
 ### NEVER use is_background: true for server startup commands

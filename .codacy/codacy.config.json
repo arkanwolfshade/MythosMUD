@@ -6,8 +6,8 @@
     "organization": null,
     "repositoryId": null,
     "repositoryName": null,
-    "createdAt": "2026-08-14T22:58:05.719Z",
-    "updatedAt": "2026-08-14T22:58:05.719Z",
+    "createdAt": "2026-08-15T06:08:45.608Z",
+    "updatedAt": "2026-08-15T06:08:45.608Z",
     "languages": [
       "CSS",
       "HTML",
@@ -19,6 +19,7 @@
       "SQL",
       "Shell",
       "TypeScript",
+      "XML",
       "YAML"
     ]
   },
@@ -36,7 +37,7 @@
     },
     {
       "toolId": "markdownlint",
-      "localConfigurationFile": "c:\\projects\\MythosMUD-worktrees\\bugfix-occupants-alive-playwright\\.markdownlint.json",
+      "localConfigurationFile": "c:\\projects\\MythosMUD\\.markdownlint.json",
       "useLocalConfigurationFile": true,
       "patterns": []
     },
@@ -113,7 +114,7 @@
     },
     {
       "toolId": "Ruff",
-      "localConfigurationFile": "c:\\projects\\MythosMUD-worktrees\\bugfix-occupants-alive-playwright\\pyproject.toml",
+      "localConfigurationFile": "c:\\projects\\MythosMUD\\pyproject.toml",
       "useLocalConfigurationFile": true,
       "patterns": []
     },
@@ -145,7 +146,7 @@
     },
     {
       "toolId": "Semgrep",
-      "localConfigurationFile": "c:\\projects\\MythosMUD-worktrees\\bugfix-occupants-alive-playwright\\.semgrep.yml",
+      "localConfigurationFile": "c:\\projects\\MythosMUD\\.semgrep.yml",
       "useLocalConfigurationFile": true,
       "patterns": []
     },
@@ -2311,7 +2312,7 @@
     },
     {
       "toolId": "Bandit",
-      "localConfigurationFile": "c:\\projects\\MythosMUD-worktrees\\bugfix-occupants-alive-playwright\\bandit.yml",
+      "localConfigurationFile": "c:\\projects\\MythosMUD\\bandit.yml",
       "useLocalConfigurationFile": true,
       "patterns": [],
       "exclude": [
@@ -2326,7 +2327,7 @@
     },
     {
       "toolId": "PyLintPython3",
-      "localConfigurationFile": "c:\\projects\\MythosMUD-worktrees\\bugfix-occupants-alive-playwright\\.pylintrc",
+      "localConfigurationFile": "c:\\projects\\MythosMUD\\.pylintrc",
       "useLocalConfigurationFile": true,
       "patterns": [],
       "exclude": [
@@ -6121,7 +6122,9 @@
         "client/src/**/*.test.ts",
         "client/src/**/*.test.tsx",
         "client/src/components/EldritchEffectsDemo.tsx",
-        "client/src/components/eldritchEffectsDemoData.ts"
+        "client/src/components/eldritchEffectsDemoData.ts",
+        ".claude/**",
+        ".cursor/**"
       ]
     },
     {
@@ -6150,6 +6153,21 @@
         },
         {
           "patternId": "PMD7_category_jsp_design_NoInlineScript"
+        },
+        {
+          "patternId": "PMD7_category_pom_errorprone_InvalidDependencyTypes"
+        },
+        {
+          "patternId": "PMD7_category_pom_errorprone_ProjectVersionAsDependencyVersion"
+        },
+        {
+          "patternId": "PMD7_category_xml_errorprone_MistypedCDATASection"
+        },
+        {
+          "patternId": "PMD7_category_xsl_codestyle_UseConcatOnce"
+        },
+        {
+          "patternId": "PMD7_category_xsl_performance_AvoidAxisNavigation"
         }
       ]
     },
@@ -6876,7 +6894,7 @@
     },
     {
       "toolId": "SQLFluff",
-      "localConfigurationFile": "c:\\projects\\MythosMUD-worktrees\\bugfix-occupants-alive-playwright\\.sqlfluff",
+      "localConfigurationFile": "c:\\projects\\MythosMUD\\.sqlfluff",
       "useLocalConfigurationFile": true,
       "patterns": []
     },
@@ -7361,6 +7379,9 @@
     "**/build/**",
     "uv.lock",
     "**/uv.lock",
+    "package-lock.json",
+    "**/package-lock.json",
+    "client/package-lock.json",
     "Makefile",
     "**/mythosmud_data/**",
     ".data/**",

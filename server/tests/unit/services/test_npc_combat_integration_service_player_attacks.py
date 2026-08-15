@@ -346,7 +346,7 @@ async def test_process_combat_attack_queue_failure(
     integration_service._combat_service.queue_combat_action = AsyncMock(return_value=False)  # Queue fails
     integration_service._combat_service.process_attack = mock_process_attack
 
-    with patch("server.app.game_tick_processing.get_current_tick", return_value=1):
+    with patch("server.services.npc_combat_integration_combat_mixin.get_current_tick", return_value=1):
         result = cast(
             MagicMock,
             await integration_service._process_combat_attack(
@@ -382,7 +382,7 @@ async def test_process_combat_attack_start_new_combat(
     integration_service._combat_service.start_combat = mock_start_combat
     integration_service._combat_service.process_attack = AsyncMock(return_value=mock_combat_result)
 
-    with patch("server.app.game_tick_processing.get_current_tick", return_value=1):
+    with patch("server.services.npc_combat_integration_combat_mixin.get_current_tick", return_value=1):
         result = cast(
             MagicMock,
             await integration_service._process_combat_attack(
