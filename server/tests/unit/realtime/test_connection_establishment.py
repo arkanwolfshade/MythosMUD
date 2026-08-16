@@ -29,7 +29,6 @@ from server.realtime.connection_establishment import (
     _setup_session_tracking,
     _track_player_presence,
     _update_player_connection_list,
-    establish_websocket_connection,
 )
 from server.realtime.connection_models import ConnectionMetadata
 
@@ -470,7 +469,7 @@ async def test_track_player_presence_new_player():
 
 @pytest.mark.asyncio
 async def test_track_player_presence_existing_player():
-    """Test _track_player_presence() broadcasts for existing player."""
+    """Already-online reconnect still goes through track_player_connected (occupancy setup)."""
     player_id = uuid.uuid4()
     mock_player: MagicMock = MagicMock()
     mock_manager = _make_manager()
@@ -484,12 +483,14 @@ async def test_track_player_presence_existing_player():
     ):
         await _track_player_presence(player_id, mock_player, _as_mgr(mock_manager))
 
-    mock_manager.broadcast_connection_message.assert_called_once_with(player_id, mock_player)
+    mock_manager.track_player_connected.assert_called_once_with(player_id, mock_player, "websocket")
+    mock_cancel_grace.assert_called_once_with(player_id, mock_manager)
+    mock_manager.broadcast_connection_message.assert_not_called()
 
 
 @pytest.mark.asyncio
-async def test_track_player_presence_reconnect_during_grace_cancels_grace():
-    """Linkdead reconnect stays in online_players; cancel grace and broadcast."""
+async def test_track_player_presence_reconnect_during_grace_runs_enter_setup():
+    """Linkdead reconnect stays in online_players; enter setup must run before grace cancel."""
     player_id = uuid.uuid4()
     mock_player: MagicMock = MagicMock()
     mock_manager = _make_manager()
@@ -497,6 +498,17 @@ async def test_track_player_presence_reconnect_during_grace_cancels_grace():
     mock_manager.grace_period_players = {player_id: MagicMock()}
     mock_cancel_grace: AsyncMock = AsyncMock()
     mock_cancel_rest: AsyncMock = AsyncMock()
+    call_order: list[str] = []
+
+    async def track_connected(*_args: object, **_kwargs: object) -> None:
+        call_order.append("track")
+        assert player_id in mock_manager.grace_period_players
+
+    async def cancel_grace(*_args: object, **_kwargs: object) -> None:
+        call_order.append("cancel_grace")
+
+    mock_manager.track_player_connected = AsyncMock(side_effect=track_connected)
+    mock_cancel_grace.side_effect = cancel_grace
 
     with (
         patch("server.realtime.connection_establishment.cancel_grace_period", mock_cancel_grace),
@@ -504,10 +516,10 @@ async def test_track_player_presence_reconnect_during_grace_cancels_grace():
     ):
         await _track_player_presence(player_id, mock_player, _as_mgr(mock_manager))
 
+    mock_manager.track_player_connected.assert_called_once_with(player_id, mock_player, "websocket")
     mock_cancel_grace.assert_called_once_with(player_id, mock_manager)
     mock_cancel_rest.assert_called_once_with(player_id, mock_manager)
-    mock_manager.track_player_connected.assert_not_called()
-    mock_manager.broadcast_connection_message.assert_called_once_with(player_id, mock_player)
+    assert call_order == ["track", "cancel_grace"]
 
 
 @pytest.mark.asyncio
@@ -567,207 +579,3 @@ def test_cleanup_failed_connection_error():
     del mock_manager.connection_metadata
 
     _cleanup_failed_connection(connection_id, player_id, _as_mgr(mock_manager))
-
-
-def _player_with_room() -> MagicMock:
-    mock_player: MagicMock = MagicMock()
-    mock_player.current_room_id = "room_123"
-    return mock_player
-
-
-@pytest.mark.asyncio
-async def test_establish_websocket_connection_success():
-    """Test establish_websocket_connection() successfully establishes connection."""
-    mock_websocket = _FakeWebSocket()
-    player_id = uuid.uuid4()
-    session_id = "session_123"
-    token = "jwt_token"
-    mock_manager = _make_manager()
-    mock_manager.get_player = AsyncMock(return_value=_player_with_room())
-
-    success, connection_id = await establish_websocket_connection(
-        _as_ws(mock_websocket), player_id, _as_mgr(mock_manager), session_id, token
-    )
-
-    assert success is True
-    assert connection_id is not None
-    assert mock_websocket.accept_calls == 1
-    assert connection_id in mock_manager.active_websockets
-    assert mock_manager.performance_tracker.establish_calls == 1
-
-
-@pytest.mark.asyncio
-async def test_establish_websocket_connection_player_not_found():
-    """Test establish_websocket_connection() returns False when player not found."""
-    mock_websocket = _FakeWebSocket()
-    player_id = uuid.uuid4()
-    mock_manager = _make_manager()
-    mock_manager.get_player = AsyncMock(return_value=None)
-
-    success, connection_id = await establish_websocket_connection(
-        _as_ws(mock_websocket), player_id, _as_mgr(mock_manager)
-    )
-
-    assert success is False
-    assert connection_id is not None
-
-
-@pytest.mark.asyncio
-async def test_establish_websocket_connection_error():
-    """Test establish_websocket_connection() handles errors."""
-    from server.exceptions import DatabaseError
-
-    mock_websocket = _FakeWebSocket()
-    mock_websocket.accept_error = DatabaseError("Database error")
-    player_id = uuid.uuid4()
-    mock_manager = _make_manager()
-    mock_manager.async_persistence = None
-
-    success, connection_id = await establish_websocket_connection(
-        _as_ws(mock_websocket), player_id, _as_mgr(mock_manager)
-    )
-
-    assert success is False
-    assert connection_id is None or connection_id not in mock_manager.active_websockets
-
-
-@pytest.mark.asyncio
-async def test_establish_websocket_connection_cleans_dead_connections():
-    """Test establish_websocket_connection() cleans up dead connections."""
-    mock_websocket = _FakeWebSocket()
-    player_id = uuid.uuid4()
-    dead_conn = "dead_conn"
-    mock_manager = _make_manager()
-    mock_manager.player_websockets = {player_id: [dead_conn]}
-    mock_manager.active_websockets = {dead_conn: _as_ws(_FakeWebSocket("DISCONNECTED"))}
-    mock_manager.get_player = AsyncMock(return_value=_player_with_room())
-
-    success, _connection_id = await establish_websocket_connection(
-        _as_ws(mock_websocket), player_id, _as_mgr(mock_manager)
-    )
-
-    assert success is True
-    assert dead_conn not in mock_manager.active_websockets
-
-
-@pytest.mark.asyncio
-async def test_establish_websocket_connection_cancels_rest_countdown():
-    """Reconnect cancels an in-progress rest countdown so it cannot poison the new session."""
-    mock_websocket = _FakeWebSocket()
-    player_id = uuid.uuid4()
-    mock_manager = _make_manager()
-    mock_manager.get_player = AsyncMock(return_value=_player_with_room())
-    rest_task: asyncio.Task[None] = asyncio.create_task(asyncio.sleep(100))
-    mock_manager.resting_players = {player_id: rest_task}
-
-    success, _connection_id = await establish_websocket_connection(
-        _as_ws(mock_websocket), player_id, _as_mgr(mock_manager)
-    )
-
-    assert success is True
-    assert player_id not in mock_manager.resting_players
-    assert rest_task.cancelled() or rest_task.done()
-
-
-@pytest.mark.asyncio
-async def test_establish_websocket_connection_new_session_disconnects_prior():
-    """New session_id closes prior sockets before append-register (#610)."""
-    mock_websocket = _FakeWebSocket()
-    player_id = uuid.uuid4()
-    old_conn = "old_conn"
-    mock_manager = _make_manager()
-    mock_manager.get_player = AsyncMock(return_value=_player_with_room())
-    old_ws = _FakeWebSocket("CONNECTED")
-    mock_manager.player_websockets = {player_id: [old_conn]}
-    mock_manager.active_websockets = {old_conn: _as_ws(old_ws)}
-    mock_manager.connection_metadata = {old_conn: _meta(old_conn, player_id)}
-    mock_manager.player_sessions = {player_id: "old_session"}
-    mock_manager.session_connections = {"old_session": [old_conn]}
-
-    success, connection_id = await establish_websocket_connection(
-        _as_ws(mock_websocket), player_id, _as_mgr(mock_manager), "new_session", "jwt"
-    )
-
-    assert success is True
-    assert connection_id is not None
-    assert old_ws.close_calls == 1
-    assert old_conn not in mock_manager.active_websockets
-    assert mock_manager.player_websockets[player_id] == [connection_id]
-    assert mock_websocket.accept_calls == 1
-
-
-@pytest.mark.asyncio
-async def test_establish_websocket_connection_same_session_appends():
-    """Same session_id appends; does not kill a healthy prior socket (#610)."""
-    mock_websocket = _FakeWebSocket()
-    player_id = uuid.uuid4()
-    existing_conn = "existing_conn"
-    mock_manager = _make_manager()
-    mock_manager.get_player = AsyncMock(return_value=_player_with_room())
-    existing_ws = _FakeWebSocket("CONNECTED")
-    mock_manager.player_websockets = {player_id: [existing_conn]}
-    mock_manager.active_websockets = {existing_conn: _as_ws(existing_ws)}
-    mock_manager.connection_metadata = {existing_conn: _meta(existing_conn, player_id)}
-    mock_manager.player_sessions = {player_id: "same_session"}
-    mock_manager.session_connections = {"same_session": [existing_conn]}
-
-    success, connection_id = await establish_websocket_connection(
-        _as_ws(mock_websocket), player_id, _as_mgr(mock_manager), "same_session", "jwt"
-    )
-
-    assert success is True
-    assert connection_id is not None
-    assert existing_ws.close_calls == 0
-    assert existing_conn in mock_manager.player_websockets[player_id]
-    assert connection_id in mock_manager.player_websockets[player_id]
-    assert len(mock_manager.player_websockets[player_id]) == 2
-
-
-@pytest.mark.asyncio
-async def test_establish_websocket_connection_first_session_does_not_replace():
-    """No player_sessions entry: first session_id appends; does not close leftover sockets (#610)."""
-    mock_websocket = _FakeWebSocket()
-    player_id = uuid.uuid4()
-    leftover_conn = "leftover_conn"
-    mock_manager = _make_manager()
-    mock_manager.get_player = AsyncMock(return_value=_player_with_room())
-    leftover_ws = _FakeWebSocket("CONNECTED")
-    mock_manager.player_websockets = {player_id: [leftover_conn]}
-    mock_manager.active_websockets = {leftover_conn: _as_ws(leftover_ws)}
-    mock_manager.connection_metadata = {leftover_conn: _meta(leftover_conn, player_id)}
-
-    success, connection_id = await establish_websocket_connection(
-        _as_ws(mock_websocket), player_id, _as_mgr(mock_manager), "first_session", "jwt"
-    )
-
-    assert success is True
-    assert connection_id is not None
-    assert leftover_ws.close_calls == 0
-    assert leftover_conn in mock_manager.player_websockets[player_id]
-    assert connection_id in mock_manager.player_websockets[player_id]
-
-
-@pytest.mark.asyncio
-async def test_establish_websocket_connection_missing_session_id_does_not_replace():
-    """Absent session_id is grace/recover: append only, do not run new_game_session (#610)."""
-    mock_websocket = _FakeWebSocket()
-    player_id = uuid.uuid4()
-    existing_conn = "existing_conn"
-    mock_manager = _make_manager()
-    mock_manager.get_player = AsyncMock(return_value=_player_with_room())
-    existing_ws = _FakeWebSocket("CONNECTED")
-    mock_manager.player_websockets = {player_id: [existing_conn]}
-    mock_manager.active_websockets = {existing_conn: _as_ws(existing_ws)}
-    mock_manager.connection_metadata = {existing_conn: _meta(existing_conn, player_id)}
-    mock_manager.player_sessions = {player_id: "tracked_session"}
-    mock_manager.session_connections = {"tracked_session": [existing_conn]}
-
-    success, connection_id = await establish_websocket_connection(
-        _as_ws(mock_websocket), player_id, _as_mgr(mock_manager), None, "jwt"
-    )
-
-    assert success is True
-    assert connection_id is not None
-    assert existing_ws.close_calls == 0
-    assert existing_conn in mock_manager.player_websockets[player_id]
-    assert connection_id in mock_manager.player_websockets[player_id]

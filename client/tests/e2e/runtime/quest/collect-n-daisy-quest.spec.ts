@@ -18,7 +18,7 @@ const DAISY_PROTOTYPE = 'misc.herb.sanitarium_daisy';
 
 function resetDaisyQuestInstances(): void {
   loadE2eEnv();
-  const scriptPath = join(E2E_PROJECT_ROOT, 'scripts', 'e2e_reset_daisy_quest.py');
+  const scriptPath = join(E2E_PROJECT_ROOT, 'scripts', 'e2e_reset_collect_n_quest.py');
   const result = spawnSync('uv', ['run', '--no-sync', 'python', scriptPath], {
     cwd: E2E_PROJECT_ROOT,
     encoding: 'utf-8',
@@ -26,7 +26,7 @@ function resetDaisyQuestInstances(): void {
   });
   if (result.status !== 0) {
     throw new Error(
-      `e2e_reset_daisy_quest.py failed (status ${result.status}): ${result.stdout ?? ''}\n${result.stderr ?? ''}`
+      `e2e_reset_collect_n_quest.py failed (status ${result.status}): ${result.stdout ?? ''}\n${result.stderr ?? ''}`
     );
   }
 }

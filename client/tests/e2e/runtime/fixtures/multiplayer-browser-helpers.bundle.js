@@ -258,7 +258,12 @@
   };
 
   window.__mythosE2eHasOtherPlayerNames = function mythosE2eHasOtherPlayerNames(names) {
-    const bodyText = getBodyInnerText();
+    const root = document.querySelector('[data-testid="occupants-other-players"]');
+    const listed = root ? root.getAttribute('data-names') : null;
+    if (listed !== null && listed !== undefined) {
+      return names.every(name => listed.includes(name));
+    }
+    const bodyText = document.body ? document.body.textContent || '' : '';
     return names.every(name => bodyText.includes(name));
   };
 

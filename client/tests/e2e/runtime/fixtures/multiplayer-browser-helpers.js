@@ -263,7 +263,13 @@ export function hasExpectedOccupantCountInBrowser(expected) {
 }
 
 export function hasOtherPlayerNamesInBrowser(names) {
-  const bodyText = getBodyInnerText();
+  // data-names survives overflow clipping; innerText of a header-height Occupants panel does not.
+  const root = document.querySelector('[data-testid="occupants-other-players"]');
+  const listed = root?.getAttribute('data-names');
+  if (listed !== null && listed !== undefined) {
+    return names.every(name => listed.includes(name));
+  }
+  const bodyText = document.body ? (document.body.textContent ?? '') : '';
   return names.every(name => bodyText.includes(name));
 }
 

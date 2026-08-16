@@ -2,6 +2,7 @@
  * Tests for OccupantsPanel component.
  */
 
+import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import type { Room } from '../../types';
@@ -42,6 +43,7 @@ describe('OccupantsPanel', () => {
     render(<OccupantsPanel room={room} />);
     expect(screen.getByText('Player1')).toBeInTheDocument();
     expect(screen.getByText('Player2')).toBeInTheDocument();
+    expect(screen.getByTestId('occupants-other-players')).toHaveAttribute('data-names', 'Player1\nPlayer2');
   });
 
   it('should render NPCs when available', () => {

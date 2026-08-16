@@ -1,1 +1,1 @@
-c:\projects\MythosMUD\server\services\nats_service.py
+c:\projects\MythosMUD\server\realtime\connection_establishment.py

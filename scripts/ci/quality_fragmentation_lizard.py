@@ -23,7 +23,7 @@ from scripts.ci.quality_fragmentation_core import (
 
 CCN_MAX = 10
 NLOC_MAX = 55
-PARAMS_MAX = 6
+PARAMS_MAX = 8
 FILE_NLOC_MAX = 550
 
 

@@ -53,10 +53,19 @@ Guidance and checklist to improve code for AI-driven development (agents, code g
 
 ### Complexity policy
 
-- **Hard limit**: Existing Ruff C901 threshold (complexity ≤ 11) remains; do not add branches that would exceed it.
-- **Target for new/refactored code**: Aim for complexity ≤ 7 so functions stay small and single-purpose.
-- **When C901 would fire**: Refactor (extract helpers, simplify branches) before adding more logic.
-- **Why**: Smaller functions are easier for AI to edit without breaking unrelated behavior.
+- **Hard gates (pre-commit blocks the commit, not just a lint warning)**, from
+  `scripts/ci/quality_fragmentation_lizard.py`, aligned with Codacy's
+  `.codacy/tools-configs/lizard.yaml`: per function, Lizard cyclomatic complexity (CCN) ≤ 10,
+  length ≤ 55 NLOC, **≤ 8 parameters**; new files ≤ 550 NLOC. Ruff C901 (complexity ≤ 11)
+  applies separately and remains.
+- **Target for new/refactored code**: aim well under those — complexity ≤ 7, and reach for a
+  params object/dataclass/kwargs-with-a-type before a signature would hit 8 args.
+- **When a gate would fire**: refactor (extract helpers, simplify branches, split params) before
+  adding more logic. A same-line `# lizard: allow CCN=N NLOC=N` comment overrides the check, but
+  pre-commit also requires the change to touch a test file when an override is used — don't add
+  the comment without a matching test edit.
+- **Why**: smaller functions are easier for AI to edit without breaking unrelated behavior, and
+  these numbers are the actual gate, not just style guidance.
 
 ---
 
@@ -88,7 +97,8 @@ When writing or reviewing code, use this checklist (tick what applies):
 **Medium**
 
 - [ ] No `assert` used for validation or control flow in production code.
-- [ ] New/refactored functions aim for complexity ≤ 7; none exceed the project’s C901 limit.
+- [ ] New/refactored functions aim for complexity ≤ 7; none exceed CCN 10, NLOC 55, or 8 params
+      (Lizard pre-commit gate), or the project's C901 limit.
 
 **As you touch**
 
@@ -100,4 +110,5 @@ When writing or reviewing code, use this checklist (tick what applies):
 ## Reference
 
 - Project lint/format/mypy config is in [pyproject.toml](../../pyproject.toml) and [.pylintrc](../../.pylintrc); this skill does not require changing them.
-- Complexity and lint alignment: [docs/LINTING_COMPLEXITY_ALIGNMENT.md](../../docs/LINTING_COMPLEXITY_ALIGNMENT.md).
+- Lizard complexity gate (source of truth for the numbers above):
+  [scripts/ci/quality_fragmentation_lizard.py](../../scripts/ci/quality_fragmentation_lizard.py).
